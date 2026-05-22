@@ -1,0 +1,116 @@
+import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { buildPetAnalysisHistoryRecord } from "@/services/petAnalysisHistoryBuilder";
+import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
+import type { Pet } from "@/types/pet";
+import type { PetAnalysis } from "@/types/pet-analysis";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const authUserId = String(body.authUserId ?? "");
+    const pet = body.pet as Pet;
+    const analysis = body.analysis as PetAnalysis | null;
+    const metadata = body.metadata ?? null;
+
+    if (!authUserId) {
+      return NextResponse.json(
+        { error: "Missing auth user id." },
+        { status: 400 }
+      );
+    }
+
+    if (!pet) {
+      return NextResponse.json({ error: "Missing pet." }, { status: 400 });
+    }
+
+    const { data: customer, error: customerError } = await supabaseAdmin
+      .from("customers")
+      .select("*")
+      .eq("auth_user_id", authUserId)
+      .maybeSingle();
+
+    if (customerError) {
+      return NextResponse.json({ error: customerError.message }, { status: 500 });
+    }
+
+    if (!customer) {
+      return NextResponse.json(
+        { error: "Customer profile not found." },
+        { status: 404 }
+      );
+    }
+
+    const now = new Date().toISOString();
+
+    const { data: newPet, error: petError } = await supabaseAdmin
+      .from("pets")
+      .insert({
+        id: pet.id || crypto.randomUUID(),
+        owner_id: "11111111-1111-1111-1111-111111111111",
+        name: pet.name,
+        species: pet.species,
+        breed: pet.breed || "unknown",
+        age: pet.age,
+        weight: pet.weight,
+        activity_level: pet.activityLevel,
+        neutered: pet.neutered,
+        allergies: pet.allergies ?? [],
+        health_issues: pet.healthIssues ?? [],
+        customer_id: customer.id,
+        created_at: now,
+        updated_at: now,
+      })
+      .select("*")
+      .single();
+
+    if (petError) {
+      return NextResponse.json({ error: petError.message }, { status: 500 });
+    }
+
+    let historyRecord = null;
+
+    if (analysis) {
+      historyRecord = buildPetAnalysisHistoryRecord(
+        {
+          ...pet,
+          id: newPet.id,
+          ownerId: newPet.owner_id,
+        },
+        analysis
+      );
+
+const savedHistory = await petAnalysisHistoryService.saveAnalysis(historyRecord);
+
+if (metadata && savedHistory?.id) {
+  await supabaseAdmin
+    .from("pet_analyses")
+    .update({
+      food_score: metadata.foodScore ?? null,
+      matched_food_id: metadata.matchedFoodId ?? null,
+      matched_food_name: metadata.matchedFoodName ?? null,
+      feeding_grams_per_day: metadata.feedingGramsPerDay ?? null,
+      weight_goal: metadata.weightGoal ?? null,
+    })
+    .eq("id", savedHistory.id);
+}    }
+
+    return NextResponse.json({
+      success: true,
+      customer,
+      pet: newPet,
+      analysisHistory: historyRecord,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to save account chatbot result.",
+      },
+      { status: 500 }
+    );
+  }
+}

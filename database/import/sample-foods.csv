@@ -1,0 +1,4 @@
+id,brand,name,species,lifeStage,activitySupport,healthSupport,protein,fat,fiber,sodium,magnesium,calcium,phosphorus,ingredients,tags
+dog-101,Example Brand,Adult Chicken Formula,dog,adult,normal,general|weight control,26,14,3.5,0.3,0.08,1.1,0.9,chicken|rice,adult|general
+dog-102,Example Brand,Sensitive Salmon Formula,dog,adult,normal,sensitive stomach|skin support,25,15,4,0.28,0.07,1.0,0.8,salmon|oatmeal,sensitive stomach|salmon
+cat-101,Example Cat Brand,Indoor Cat Formula,cat,adult,low,general,32,14,5,0.3,0.08,1.0,0.85,chicken|rice,indoor|adult

@@ -1,0 +1,1 @@
+export { foodsSeed as foods } from "@/database/seeds/foods.seed";

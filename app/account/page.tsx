@@ -1,0 +1,122 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
+type Customer = {
+  id: string;
+  authUserId?: string | null;
+  fullName: string;
+  email?: string | null;
+  phone?: string | null;
+  bonusCardCode?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export default function AccountPage() {
+  const router = useRouter();
+
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadAccount() {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase.auth.getSession();
+
+        if (!data.session?.user) {
+          router.replace("/login");
+          return;
+        }
+
+        const response = await fetch("/api/account/me", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            authUserId: data.session.user.id,
+            email: data.session.user.email,
+            fullName:
+              data.session.user.user_metadata?.full_name ||
+              data.session.user.email ||
+              "Customer",
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Failed to load account.");
+        }
+
+        setCustomer(result as Customer);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadAccount();
+  }, [router]);
+
+  if (isLoading) {
+    return <p className="text-gray-600">Loading account...</p>;
+  }
+
+  if (!customer) {
+    return <p className="text-red-600">Could not load account.</p>;
+  }
+
+  return (
+    <section className="space-y-6">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h1 className="text-3xl font-bold text-black">
+          Welcome, {customer.fullName}
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Το προσωπικό σου Nutritail AI προφίλ.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <a
+          href="/account/chatbot"
+          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+        >
+          <h2 className="text-lg font-semibold text-black">
+            Nutrition Chatbot
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Πάρε εξατομικευμένη διατροφική καθοδήγηση για το κατοικίδιό σου.
+          </p>
+        </a>
+
+        <a
+          href="/account/pets"
+          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+        >
+          <h2 className="text-lg font-semibold text-black">My Pets</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Δες τα κατοικίδιά σου και το ιστορικό αναλύσεων.
+          </p>
+        </a>
+
+        <a
+          href="/account/profile"
+          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+        >
+          <h2 className="text-lg font-semibold text-black">Profile</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Στοιχεία λογαριασμού, bonus card και προτιμήσεις.
+          </p>
+        </a>
+      </div>
+    </section>
+  );
+}
