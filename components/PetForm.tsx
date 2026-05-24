@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/currentUser";
 import { editingPetRepository } from "@/repositories/editingPetRepository";
@@ -34,22 +34,16 @@ const initialPet: Pet = {
 
 export default function PetForm() {
   const router = useRouter();
-  const [pet, setPet] = useState<Pet>(initialPet);
-  const [allergiesText, setAllergiesText] = useState("");
-  const [healthIssuesText, setHealthIssuesText] = useState("");
+  const [editingPet] = useState(() => editingPetRepository.get());
+  const [pet, setPet] = useState<Pet>(editingPet ?? initialPet);
+  const [allergiesText, setAllergiesText] = useState(
+    editingPet?.allergies?.join(", ") ?? ""
+  );
+  const [healthIssuesText, setHealthIssuesText] = useState(
+    editingPet?.healthIssues?.join(", ") ?? ""
+  );
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    const editingPet = editingPetRepository.get();
-
-    if (!editingPet) return;
-
-    setPet(editingPet);
-    setAllergiesText(editingPet.allergies?.join(", ") ?? "");
-    setHealthIssuesText(editingPet.healthIssues?.join(", ") ?? "");
-    setIsEditing(true);
-  }, []);
+  const [isEditing] = useState(Boolean(editingPet));
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

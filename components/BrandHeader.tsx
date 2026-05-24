@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
 
 type Props = {
@@ -14,20 +14,7 @@ export default function BrandHeader({
   subtitle,
   compact = false,
 }: Props) {
-  const [brandSettings, setBrandSettings] = useState<BrandSettings | null>(null);
-
-  useEffect(() => {
-    setBrandSettings(getBrandSettings());
-  }, []);
-
-  if (!brandSettings) {
-    return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-black">{title}</h1>
-        {subtitle && <p className="mt-2 text-gray-600">{subtitle}</p>}
-      </div>
-    );
-  }
+  const brandSettings: BrandSettings = getBrandSettings();
 
   return (
     <div
@@ -38,9 +25,12 @@ export default function BrandHeader({
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           {brandSettings.logoDataUrl ? (
-            <img
+            <Image
               src={brandSettings.logoDataUrl}
               alt={`${brandSettings.appName} logo`}
+              width={56}
+              height={56}
+              unoptimized
               className="h-14 w-14 rounded-2xl border border-gray-200 object-cover bg-white"
             />
           ) : (

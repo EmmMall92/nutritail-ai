@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
 import { getPetSession } from "@/lib/storage";
 import { petAnalysisService } from "@/services/petAnalysisService";
@@ -103,9 +104,12 @@ export default function PetReportPage() {
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-4">
             {brandSettings.logoDataUrl ? (
-              <img
+              <Image
                 src={brandSettings.logoDataUrl}
                 alt={`${brandSettings.appName} logo`}
+                width={64}
+                height={64}
+                unoptimized
                 className="h-16 w-16 rounded-2xl border border-gray-200 object-cover bg-white"
               />
             ) : (

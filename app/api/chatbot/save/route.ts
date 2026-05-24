@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { buildPetAnalysisHistoryRecord } from "@/services/petAnalysisHistoryBuilder";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
+import type { DbCustomer } from "@/types/db/db-customer";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
 
     const now = new Date().toISOString();
 
-    let customer: any = null;
+    let customer: DbCustomer | null = null;
 
     if (customerId) {
       const { data, error } = await supabaseAdmin
@@ -87,6 +88,13 @@ export async function POST(request: Request) {
 
         customer = newCustomer;
       }
+    }
+
+    if (!customer) {
+      return NextResponse.json(
+        { error: "Customer not found." },
+        { status: 404 }
+      );
     }
 
     const { data: newPet, error: petError } = await supabaseAdmin

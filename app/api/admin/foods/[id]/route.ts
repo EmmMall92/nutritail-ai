@@ -2,13 +2,49 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
 import type { DbFood } from "@/types/db/db-food";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type Context = {
   params: Promise<{ id: string }>;
 };
 
+function normalizeArrayField(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeNumberOrNull(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : null;
+}
+
+function normalizeStatus(value: unknown) {
+  const status = String(value ?? "needs_review");
+
+  return ["needs_review", "partial", "verified", "unknown"].includes(status)
+    ? status
+    : "needs_review";
+}
+
 export async function GET(_: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
 
     const { data, error } = await supabase
@@ -38,85 +74,53 @@ export async function GET(_: Request, context: Context) {
 
 export async function PATCH(request: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
     const body = await request.json();
+
+    const proteinPercent = normalizeNumberOrNull(body.protein_percent);
+    const fatPercent = normalizeNumberOrNull(body.fat_percent);
+    const fiberPercent = normalizeNumberOrNull(body.fiber_percent);
+    const sodiumPercent = normalizeNumberOrNull(body.sodium_percent);
+    const magnesiumPercent = normalizeNumberOrNull(body.magnesium_percent);
+    const calciumPercent = normalizeNumberOrNull(body.calcium_percent);
+    const phosphorusPercent = normalizeNumberOrNull(body.phosphorus_percent);
 
     const payload = {
       brand: String(body.brand ?? "").trim(),
       name: String(body.name ?? "").trim(),
       species: String(body.species ?? "").trim(),
       life_stage: String(body.life_stage ?? "").trim(),
-      activity_support: Array.isArray(body.activity_support)
-        ? body.activity_support
-        : [],
-      health_support: Array.isArray(body.health_support)
-        ? body.health_support
-        : [],
-      protein: Number(body.protein),
-      fat: Number(body.fat),
-      fiber: Number(body.fiber),
-      sodium: Number(body.sodium),
-      magnesium: Number(body.magnesium),
-      calcium: Number(body.calcium),
-      phosphorus: Number(body.phosphorus),
-      ingredients: Array.isArray(body.ingredients) ? body.ingredients : [],
-      tags: Array.isArray(body.tags) ? body.tags : [],
+      ingredients: normalizeArrayField(body.ingredients),
+      tags: normalizeArrayField(body.tags),
       updated_at: new Date().toISOString(),
-    kcal_per_100g:
-  body.kcal_per_100g === null || body.kcal_per_100g === ""
-    ? null
-    : Number(body.kcal_per_100g),
 
-protein_percent:
-  body.protein_percent === null || body.protein_percent === ""
-    ? null
-    : Number(body.protein_percent),
+      kcal_per_100g: normalizeNumberOrNull(body.kcal_per_100g),
+      protein_percent: proteinPercent,
+      fat_percent: fatPercent,
+      fiber_percent: fiberPercent,
+      sodium_percent: sodiumPercent,
+      magnesium_percent: magnesiumPercent,
+      calcium_percent: calciumPercent,
+      phosphorus_percent: phosphorusPercent,
 
-fat_percent:
-  body.fat_percent === null || body.fat_percent === ""
-    ? null
-    : Number(body.fat_percent),
+      protein: normalizeNumberOrNull(body.protein) ?? proteinPercent ?? 0,
+      fat: normalizeNumberOrNull(body.fat) ?? fatPercent ?? 0,
+      fiber: normalizeNumberOrNull(body.fiber) ?? fiberPercent ?? 0,
+      sodium: normalizeNumberOrNull(body.sodium) ?? sodiumPercent ?? 0,
+      magnesium:
+        normalizeNumberOrNull(body.magnesium) ?? magnesiumPercent ?? 0,
+      calcium: normalizeNumberOrNull(body.calcium) ?? calciumPercent ?? 0,
+      phosphorus:
+        normalizeNumberOrNull(body.phosphorus) ?? phosphorusPercent ?? 0,
 
-fiber_percent:
-  body.fiber_percent === null || body.fiber_percent === ""
-    ? null
-    : Number(body.fiber_percent),
-
-sodium_percent:
-  body.sodium_percent === null || body.sodium_percent === ""
-    ? null
-    : Number(body.sodium_percent),
-
-magnesium_percent:
-  body.magnesium_percent === null || body.magnesium_percent === ""
-    ? null
-    : Number(body.magnesium_percent),
-
-calcium_percent:
-  body.calcium_percent === null || body.calcium_percent === ""
-    ? null
-    : Number(body.calcium_percent),
-
-phosphorus_percent:
-  body.phosphorus_percent === null || body.phosphorus_percent === ""
-    ? null
-    : Number(body.phosphorus_percent),
-    data_quality_status: [
-  "needs_review",
-  "partial",
-  "verified",
-  "unknown",
-].includes(String(body.data_quality_status))
-  ? String(body.data_quality_status)
-  : "needs_review",
-
-data_source_url: body.data_source_url
-  ? String(body.data_source_url).trim()
-  : null,
-
-data_notes: body.data_notes
-  ? String(body.data_notes).trim()
-  : null,
+      data_quality_status: normalizeStatus(body.data_quality_status),
+      data_source_url: body.data_source_url
+        ? String(body.data_source_url).trim()
+        : null,
+      data_notes: body.data_notes ? String(body.data_notes).trim() : null,
     };
 
     const { data, error } = await supabase
@@ -134,7 +138,7 @@ data_notes: body.data_notes
       action: "update",
       entityType: "food",
       entityId: id,
-      message: `Updated food ${data.brand} — ${data.name}`,
+      message: `Updated food ${data.brand} - ${data.name}`,
       metadata: {
         brand: data.brand,
         name: data.name,
@@ -155,31 +159,33 @@ data_notes: body.data_notes
 
 export async function DELETE(_: Request, context: Context) {
   try {
-    const { id } = await context.params;
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
 
+    const { id } = await context.params;
     const now = new Date().toISOString();
 
-const { error } = await supabase
-  .from("foods")
-  .update({
-    deleted_at: now,
-    updated_at: now,
-  })
-  .eq("id", id);
+    const { error } = await supabase
+      .from("foods")
+      .update({
+        deleted_at: now,
+        updated_at: now,
+      })
+      .eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-await adminActivityLogService.log({
-  action: "soft-delete",
-  entityType: "food",
-  entityId: id,
-  message: `Soft-deleted food ${id}`,
-  metadata: {
-    deletedAt: now,
-  },
-});
+    await adminActivityLogService.log({
+      action: "soft-delete",
+      entityType: "food",
+      entityId: id,
+      message: `Soft-deleted food ${id}`,
+      metadata: {
+        deletedAt: now,
+      },
+    });
 
     return NextResponse.json({ success: true, deletedId: id });
   } catch (error) {

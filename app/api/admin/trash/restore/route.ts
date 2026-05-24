@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function POST(request: Request) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const body = await request.json();
 
     const type = String(body.type ?? "");

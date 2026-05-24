@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type EnrichmentRow = {
   id: string;
@@ -36,6 +37,9 @@ function normalizeStatus(value: unknown) {
 
 export async function POST(request: Request) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const body = await request.json();
 
     const rows: EnrichmentRow[] = Array.isArray(body.rows) ? body.rows : [];

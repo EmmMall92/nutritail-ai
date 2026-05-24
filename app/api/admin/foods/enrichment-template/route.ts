@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function GET() {
+  const forbidden = await requireAdminApiAccess();
+  if (forbidden) return forbidden;
+
   const headers = [
     "id",
     "brand",

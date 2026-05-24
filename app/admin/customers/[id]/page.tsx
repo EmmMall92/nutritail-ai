@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 type Customer = {
@@ -105,12 +106,12 @@ export default function AdminCustomerDetailPage() {
           </p>
         </div>
 
-        <a
+        <Link
           href="/admin/customers"
           className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
         >
           Back to Customers
-        </a>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

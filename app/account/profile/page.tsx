@@ -59,8 +59,7 @@ export default function AccountProfilePage() {
           body: JSON.stringify({
             authUserId: user.id,
             email: user.email,
-            fullName:
-              user.user_metadata?.full_name || user.email || "Customer",
+            fullName: user.user_metadata?.full_name || user.email || "Customer",
           }),
         });
 
@@ -149,7 +148,7 @@ export default function AccountProfilePage() {
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <h1 className="text-3xl font-bold text-black">Profile</h1>
         <p className="mt-2 text-gray-600">
-          Τα στοιχεία του λογαριασμού σου στο Nutritail AI.
+          Manage the account details connected to your Nutritail AI profile.
         </p>
       </div>
 
@@ -179,6 +178,7 @@ export default function AccountProfilePage() {
                 setForm((prev) => ({ ...prev, fullName: e.target.value }))
               }
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              placeholder="Your full name"
             />
           </div>
 
@@ -203,7 +203,7 @@ export default function AccountProfilePage() {
                 setForm((prev) => ({ ...prev, phone: e.target.value }))
               }
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
-              placeholder="π.χ. +30 69..."
+              placeholder="+1 555 000 0000"
             />
           </div>
 
@@ -220,7 +220,7 @@ export default function AccountProfilePage() {
                 }))
               }
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
-              placeholder="π.χ. NT-000123"
+              placeholder="NT-000123"
             />
           </div>
 
@@ -235,7 +235,7 @@ export default function AccountProfilePage() {
               }
               rows={4}
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
-              placeholder="Προαιρετικές σημειώσεις..."
+              placeholder="Optional notes..."
             />
           </div>
 
@@ -244,7 +244,7 @@ export default function AccountProfilePage() {
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-xl bg-black px-6 py-3 text-white disabled:opacity-50"
+              className="w-full rounded-xl bg-black px-6 py-3 text-white disabled:opacity-50 sm:w-auto"
             >
               {isSaving ? "Saving..." : "Save profile"}
             </button>

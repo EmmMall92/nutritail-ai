@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { generateIngredientInsights } from "@/lib/nutrition/ingredientInsights";
+import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFeedingGrams } from "@/lib/feedingCalculator";
@@ -25,6 +27,7 @@ type ActivityLevel = "low" | "normal" | "high";
 type WeightGoal = "maintain" | "loss" | "gain";
 
 type IntakeStep =
+  | "petChoice"
   | "species"
   | "name"
   | "weight"
@@ -54,6 +57,19 @@ type PetIntake = {
   allergies: string[];
   currentFoodName?: string;
   weightGoal?: WeightGoal;
+};
+
+type AccountPet = {
+  id: string;
+  name: string;
+  species: Species;
+  breed?: string | null;
+  age: number;
+  weight: number;
+  activity_level: ActivityLevel;
+  neutered?: boolean | null;
+  allergies?: string[] | null;
+  health_issues?: string[] | null;
 };
 
 type AnalysisMetadata = {
@@ -191,40 +207,54 @@ function createPetFromIntake(intake: PetIntake): Pet {
   };
 }
 
+function createIntakeFromSavedPet(savedPet: AccountPet): PetIntake {
+  return {
+    species: savedPet.species,
+    name: savedPet.name,
+    weight: savedPet.weight,
+    age: savedPet.age,
+    activityLevel: savedPet.activity_level,
+    neutered: savedPet.neutered ?? false,
+    healthIssues: savedPet.health_issues ?? [],
+    allergies: savedPet.allergies ?? [],
+  };
+}
+
 function formatAnalysisResult(analysis: PetAnalysis) {
   const { nutrition, advice, recommendedFoods } = analysis;
   const topFoods = recommendedFoods.slice(0, 3);
 
-  return `Έτοιμη η πρώτη διατροφική ανάλυση:
+  return `Your first nutrition analysis is ready:
 
 RER: ${nutrition.rer} kcal
 MER/DER: ${nutrition.der} kcal
 
-Βασικά σημεία:
+Key notes:
 ${
   advice.length > 0
     ? advice
-        .map((item) => `• ${item.title}: ${item.description}`)
+        .map((item) => `- ${item.title}: ${item.description}`)
         .join("\n")
-    : "• Δεν υπάρχουν ειδικές παρατηρήσεις."
+    : "- No special notes for this analysis."
 }
 
-Προτεινόμενες τροφές:
+Recommended foods:
 ${
   topFoods.length > 0
     ? topFoods
         .map(
           (item, index) =>
-            `${index + 1}. ${item.food.brand} — ${item.food.name}`
+            `${index + 1}. ${item.food.brand} - ${item.food.name}`
         )
         .join("\n")
-    : "Δεν βρέθηκαν κατάλληλες τροφές."
+    : "No matching foods were found yet."
 }
 
-Σημείωση: Η πρόταση είναι βοηθητική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
+Note: This guidance is educational and does not replace veterinary advice.`;
 }
 
-function getFoodKcalPer100g(food: any): number | null {
+
+function getFoodKcalPer100g(food: Record<string, unknown>): number | null {
   const possibleValues = [
     food.kcal_per_100g,
     food.kcalPer100g,
@@ -251,8 +281,11 @@ export default function AccountChatbotPage() {
   const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const [step, setStep] = useState<IntakeStep>("species");
+  const [step, setStep] = useState<IntakeStep>("petChoice");
   const [input, setInput] = useState("");
+  const [savedPets, setSavedPets] = useState<AccountPet[]>([]);
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const [isLoadingPets, setIsLoadingPets] = useState(true);
 
   const [pet, setPet] = useState<PetIntake>({
     healthIssues: [],
@@ -272,12 +305,106 @@ export default function AccountChatbotPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
       "bot",
-      "Γεια σου! Θα σε βοηθήσω να βρούμε τις βασικές διατροφικές ανάγκες του κατοικιδίου σου. Έχεις σκύλο ή γάτα;"
+      "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet."
     ),
   ]);
 
   function addMessages(...nextMessages: ChatMessage[]) {
     setMessages((prev) => [...prev, ...nextMessages]);
+  }
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [messages, showSave, step]);
+
+  useEffect(() => {
+    async function loadSavedPets() {
+      try {
+        setIsLoadingPets(true);
+
+        const supabase = createClient();
+        const { data } = await supabase.auth.getSession();
+
+        if (!data.session?.user) {
+          router.replace("/login");
+          return;
+        }
+
+        const response = await fetch("/api/account/pets", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            authUserId: data.session.user.id,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Failed to load saved pets.");
+        }
+
+        const pets = (result.pets ?? []) as AccountPet[];
+        setSavedPets(pets);
+
+        if (pets.length === 0) {
+          setStep("species");
+          addMessages(
+            createMessage(
+              "bot",
+              "No saved pets yet. Let's start a new analysis. Do you have a dog or a cat?"
+            )
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        setStep("species");
+        addMessages(
+          createMessage(
+            "bot",
+            "I could not load your saved pets, so let's start a new analysis. Do you have a dog or a cat?"
+          )
+        );
+      } finally {
+        setIsLoadingPets(false);
+      }
+    }
+
+    loadSavedPets();
+  }, [router]);
+
+  function selectSavedPet(savedPet: AccountPet) {
+    const nextPet = createIntakeFromSavedPet(savedPet);
+
+    setSelectedPetId(savedPet.id);
+    setPet(nextPet);
+    setStep("currentFood");
+
+    addMessages(
+      createMessage("user", `Use ${savedPet.name}`),
+      createMessage(
+        "bot",
+        `Great. I will use ${savedPet.name}'s saved profile. What food is ${savedPet.name} eating now? If you are not sure, type "I don't know".`
+      )
+    );
+  }
+
+  function startNewPetAnalysis() {
+    setSelectedPetId(null);
+    setPet({ healthIssues: [], allergies: [] });
+    setStep("species");
+
+    addMessages(
+      createMessage("user", "Start with a new pet"),
+      createMessage("bot", "Great. Do you have a dog or a cat?")
+    );
   }
 
   async function runAnalysis(nextPet: PetIntake) {
@@ -288,7 +415,7 @@ export default function AccountChatbotPage() {
       addMessages(
         createMessage(
           "bot",
-          "Τέλεια. Υπολογίζω τώρα τις ανάγκες και ψάχνω κατάλληλες τροφές..."
+          "Great. I am calculating nutrition needs and checking suitable foods..."
         )
       );
 
@@ -318,10 +445,10 @@ export default function AccountChatbotPage() {
           createMessage(
             "bot",
             nextPet.weightGoal === "maintain"
-              ? "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης."
+              ? "Goal: weight maintenance. Calories are based on maintenance needs."
               : nextPet.weightGoal === "loss"
-                ? "Στόχος: απώλεια βάρους. Οι θερμίδες έχουν μειωθεί προσεκτικά για πιο ασφαλή έλεγχο βάρους."
-                : "Στόχος: αύξηση βάρους. Οι θερμίδες έχουν αυξηθεί ελεγχόμενα."
+                ? "Goal: weight loss. Calories have been reduced carefully for safer weight control."
+                : "Goal: weight gain. Calories have been increased in a controlled way."
           )
         );
       }
@@ -337,12 +464,12 @@ export default function AccountChatbotPage() {
         addMessages(
           createMessage(
             "bot",
-            `Λιχουδιές:
-Καλό είναι οι λιχουδιές να μην ξεπερνούν περίπου το 10% των ημερήσιων θερμίδων.
+            `Treat allowance:
+Treats should stay around 10% of daily calories.
 
-Σύνολο στόχου: ${treats.dailyCalories} kcal/ημέρα
-Μέγιστο από λιχουδιές: περίπου ${treats.maxTreatCalories} kcal/ημέρα
-Κύρια τροφή: περίπου ${treats.mainFoodCalories} kcal/ημέρα`
+Daily calorie target: ${treats.dailyCalories} kcal/day
+Maximum from treats: about ${treats.maxTreatCalories} kcal/day
+Main food calories: about ${treats.mainFoodCalories} kcal/day`
           )
         );
       }
@@ -389,7 +516,7 @@ export default function AccountChatbotPage() {
             const calcium = matchedFood.calcium_percent ?? matchedFood.calcium;
             const phosphorus =
               matchedFood.phosphorus_percent ?? matchedFood.phosphorus;
-
+            
             const foodScore = calculateFoodScore({
               species: nextPet.species ?? "dog",
               age: nextPet.age ?? 1,
@@ -403,7 +530,30 @@ export default function AccountChatbotPage() {
               magnesium,
               lifeStage: matchedFood.life_stage,
             });
+            const nutritionInsights = generateNutritionInsights({
+  species: nextPet.species,
+  neutered: nextPet.neutered,
+  activityLevel: nextPet.activityLevel,
+  weightGoal: nextPet.weightGoal,
+  healthIssues: nextPet.healthIssues,
 
+  protein,
+  fat,
+  fiber,
+  calcium,
+  phosphorus,
+  magnesium,
+  sodium,
+  kcalPer100g: getFoodKcalPer100g(matchedFood),
+});
+
+const ingredientInsights = generateIngredientInsights(
+  Array.isArray(matchedFood.ingredients)
+    ? matchedFood.ingredients.join(", ")
+    : matchedFood.ingredients ??
+      matchedFood.ingredient_list ??
+      null
+);
             const explanation = buildFoodExplanation({
               species: nextPet.species ?? "dog",
               age: nextPet.age ?? 1,
@@ -430,36 +580,64 @@ export default function AccountChatbotPage() {
                 setAnalysisMetadata({
                   foodScore,
                   matchedFoodId: matchedFood.id ?? null,
-                  matchedFoodName: `${matchedFood.brand} — ${matchedFood.name}`,
+                  matchedFoodName: `${matchedFood.brand} - ${matchedFood.name}`,
                   feedingGramsPerDay: grams.gramsPerDay,
                   weightGoal: nextPet.weightGoal ?? "maintain",
                 });
                 addMessages(
                   createMessage(
                     "bot",
-                    `Βρήκα πιθανή αντιστοίχιση με την τροφή:
-${matchedFood.brand} — ${matchedFood.name}
+                    `I found a likely match for the current food:
+${matchedFood.brand} - ${matchedFood.name}
 
-Food score: ${foodScore}/100 — ${getFoodScoreLabel(foodScore)}
+Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
 ${buildFoodScoreExplanation(foodScore)}
+Nutrition confidence: ${nutritionInsights.confidence.toUpperCase()}
+${nutritionInsights.summary}
 
-Με βάση στόχο ${getWeightGoalLabel(nextPet.weightGoal)} και ${grams.dailyCalories} kcal/ημέρα:
+${
+  nutritionInsights.positives.length > 0
+    ? `Positive nutrition points:
+${nutritionInsights.positives.map((item) => `- ${item}`).join("\n")}`
+    : ""
+}
 
-Ποσότητα κύριας τροφής: περίπου ${grams.gramsPerDay}g/ημέρα
-Αν ταΐζεις 2 γεύματα: περίπου ${grams.gramsPerMealTwoMeals}g ανά γεύμα
-Αν ταΐζεις 3 γεύματα: περίπου ${grams.gramsPerMealThreeMeals}g ανά γεύμα
+${
+  nutritionInsights.cautions.length > 0
+    ? `Things to monitor:
+${nutritionInsights.cautions.map((item) => `- ${item}`).join("\n")}`
+    : ""
+}
+${
+  ingredientInsights.positives.length > 0
+    ? `Ingredient positives:
+${ingredientInsights.positives.map((item) => `- ${item}`).join("\n")}`
+    : ""
+}
+
+${
+  ingredientInsights.cautions.length > 0
+    ? `Ingredient cautions:
+${ingredientInsights.cautions.map((item) => `- ${item}`).join("\n")}`
+    : ""
+}
+Based on ${getWeightGoalLabel(nextPet.weightGoal)} and ${grams.dailyCalories} kcal/day:
+
+Main food amount: about ${grams.gramsPerDay}g/day
+If feeding 2 meals: about ${grams.gramsPerMealTwoMeals}g per meal
+If feeding 3 meals: about ${grams.gramsPerMealThreeMeals}g per meal
 
 ${
   treats
-    ? `Αν δίνεις λιχουδιές, κράτησέ τες έως περίπου ${treats.maxTreatCalories} kcal/ημέρα.
-Η ποσότητα τροφής παραπάνω έχει υπολογιστεί με χώρο για λιχουδιές.`
+    ? `If you give treats, keep them within about ${treats.maxTreatCalories} kcal/day.
+The food amount above leaves room for treats.`
     : ""
 }
 
 ${
   explanation.length > 0
-    ? `Τι παρατηρώ για την τροφή:
-${explanation.map((item) => `• ${item}`).join("\n")}`
+    ? `Food notes:
+${explanation.map((item) => `- ${item}`).join("\n")}`
     : ""
 }`
                   )
@@ -469,25 +647,25 @@ ${explanation.map((item) => `• ${item}`).join("\n")}`
               setAnalysisMetadata({
                 foodScore,
                 matchedFoodId: matchedFood.id ?? null,
-                matchedFoodName: `${matchedFood.brand} — ${matchedFood.name}`,
+                matchedFoodName: `${matchedFood.brand} - ${matchedFood.name}`,
                 feedingGramsPerDay: null,
                 weightGoal: nextPet.weightGoal ?? "maintain",
               });
               addMessages(
                 createMessage(
                   "bot",
-                  `Βρήκα πιθανή τροφή:
-${matchedFood.brand} — ${matchedFood.name}
+                  `I found a likely food match:
+${matchedFood.brand} - ${matchedFood.name}
 
-Food score: ${foodScore}/100 — ${getFoodScoreLabel(foodScore)}
+Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
 ${buildFoodScoreExplanation(foodScore)}
 
-Δεν βρήκα θερμίδες ανά 100g στη βάση, οπότε δεν μπορώ ακόμα να υπολογίσω ακριβή γραμμάρια για αυτή την τροφή.
+I did not find kcal per 100g in the database, so I cannot calculate exact grams for this food yet.
 
 ${
   explanation.length > 0
-    ? `Τι παρατηρώ για την τροφή:
-${explanation.map((item) => `• ${item}`).join("\n")}`
+    ? `Food notes:
+${explanation.map((item) => `- ${item}`).join("\n")}`
     : ""
 }`
                 )
@@ -497,7 +675,7 @@ ${explanation.map((item) => `• ${item}`).join("\n")}`
             addMessages(
               createMessage(
                 "bot",
-                "Δεν βρήκα με σιγουριά την τωρινή τροφή στη βάση. Μπορώ όμως να συνεχίσω με τις γενικές θερμιδικές ανάγκες."
+                "I could not confidently match the current food in the database. I can still continue with the general calorie guidance."
               )
             );
           }
@@ -512,11 +690,11 @@ ${explanation.map((item) => `• ${item}`).join("\n")}`
         addMessages(
           createMessage(
             "bot",
-            `Αν αποφασίσεις να αλλάξεις τροφή, κάν' το σταδιακά:
+            `If you decide to change food, do it gradually:
 
-${transitionGuide.map((item) => `• ${item}`).join("\n")}
+${transitionGuide.map((item) => `- ${item}`).join("\n")}
 
-Αν εμφανιστούν εμετοί, διάρροια ή έντονη δυσφορία, σταμάτα την αλλαγή και μίλα με κτηνίατρο.`
+If vomiting, diarrhea, or strong discomfort appears, stop the transition and speak with a veterinarian.`
           )
         );
       }
@@ -527,7 +705,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-          "Μπορείς να αποθηκεύσεις την ανάλυση στο προσωπικό σου προφίλ."
+          "You can save this analysis to your personal profile."
         )
       );
     } catch (error) {
@@ -547,6 +725,16 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
   }
 
   async function handleStep(text: string) {
+    if (step === "petChoice") {
+      addMessages(
+        createMessage(
+          "bot",
+          "Use the pet buttons above, or choose Start with a new pet."
+        )
+      );
+      return;
+    }
+
     if (step === "species") {
       const species = parseSpecies(text);
 
@@ -554,7 +742,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         addMessages(
           createMessage(
             "bot",
-            "Δεν κατάλαβα αν είναι σκύλος ή γάτα. Γράψε π.χ. «σκύλος» ή «γάτα»."
+            "I could not tell whether this is a dog or cat. Please type dog or cat."
           )
         );
 
@@ -568,8 +756,8 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         createMessage(
           "bot",
           species === "dog"
-            ? "Τέλεια, σκύλος. Πώς τον λένε;"
-            : "Τέλεια, γάτα. Πώς τη λένε;"
+            ? "Great, a dog. What is their name?"
+            : "Great, a cat. What is their name?"
         )
       );
 
@@ -581,7 +769,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       setStep("weight");
 
       addMessages(
-        createMessage("bot", `Ωραία. Πόσα κιλά είναι περίπου ο/η ${text};`)
+        createMessage("bot", `Nice. About how many kg is ${text}?`)
       );
 
       return;
@@ -592,7 +780,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
 
       if (!weight || weight <= 0) {
         addMessages(
-          createMessage("bot", "Γράψε μου το βάρος με αριθμό, π.χ. 4.5 κιλά.")
+          createMessage("bot", "Please enter weight as a number, for example 4.5 kg.")
         );
 
         return;
@@ -601,7 +789,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       setPet((prev) => ({ ...prev, weight }));
       setStep("age");
 
-      addMessages(createMessage("bot", "Τέλεια. Τι ηλικία έχει;"));
+      addMessages(createMessage("bot", "Great. How old is your pet?"));
 
       return;
     }
@@ -611,7 +799,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
 
       if (age === null || age < 0) {
         addMessages(
-          createMessage("bot", "Γράψε μου την ηλικία με αριθμό, π.χ. 3 ετών.")
+          createMessage("bot", "Please enter age as a number, for example 3.")
         );
 
         return;
@@ -623,7 +811,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-          "Πώς είναι η δραστηριότητά του; Χαμηλή, κανονική ή υψηλή;"
+          "What is your pet's activity level: low, normal, or high?"
         )
       );
 
@@ -637,7 +825,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         addMessages(
           createMessage(
             "bot",
-            "Γράψε μία επιλογή: χαμηλή, κανονική ή υψηλή δραστηριότητα."
+            "Choose one option: low, normal, or high activity."
           )
         );
 
@@ -647,7 +835,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       setPet((prev) => ({ ...prev, activityLevel }));
       setStep("neutered");
 
-      addMessages(createMessage("bot", "Είναι στειρωμένο; Ναι ή όχι;"));
+      addMessages(createMessage("bot", "Is your pet neutered? Yes or no?"));
 
       return;
     }
@@ -656,7 +844,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       const neutered = parseYesNo(text);
 
       if (neutered === null) {
-        addMessages(createMessage("bot", "Γράψε απλά «ναι» ή «όχι»."));
+        addMessages(createMessage("bot", "Please answer yes or no."));
         return;
       }
 
@@ -666,7 +854,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-          "Υπάρχουν αλλεργίες, ευαισθησίες ή θέματα υγείας; Αν όχι, γράψε «όχι». Αν ναι, γράψε τα χωρισμένα με κόμμα."
+          "Any allergies, sensitivities, or health issues? If not, type no. If yes, separate them with commas."
         )
       );
 
@@ -688,7 +876,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-          "Ποια τροφή δίνεις τώρα; Γράψε μάρκα και όνομα τροφής αν τα ξέρεις. Αν δεν δίνεις κάποια συγκεκριμένη, γράψε «δεν ξέρω»."
+          "What food are you feeding now? Write the brand and product name if you know it. If you are not sure, type I don't know."
         )
       );
 
@@ -701,6 +889,9 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       const nextPet: PetIntake = {
         ...pet,
         currentFoodName:
+          currentFoodName.toLowerCase().includes("i don't know") ||
+          currentFoodName.toLowerCase().includes("dont know") ||
+          currentFoodName.toLowerCase().includes("not sure") ||
           currentFoodName.toLowerCase().includes("δεν ξέρω") ||
           currentFoodName.toLowerCase().includes("δεν ξερω")
             ? undefined
@@ -713,7 +904,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-          "Ποιος είναι ο στόχος βάρους; Να κρατήσει βάρος, να χάσει βάρος ή να πάρει βάρος;"
+          "What is the weight goal: maintain weight, lose weight, or gain weight?"
         )
       );
 
@@ -727,7 +918,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         addMessages(
           createMessage(
             "bot",
-            "Γράψε μία επιλογή: να κρατήσει βάρος, να χάσει βάρος ή να πάρει βάρος."
+            "Choose one option: maintain weight, lose weight, or gain weight."
           )
         );
 
@@ -745,10 +936,10 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         createMessage(
           "bot",
           weightGoal === "maintain"
-            ? "Οκ, στόχος είναι η διατήρηση βάρους. Προχωράω στην ανάλυση."
+            ? "Got it. The goal is weight maintenance. I will continue with the analysis."
             : weightGoal === "loss"
-              ? "Οκ, στόχος είναι η απώλεια βάρους. Θα είμαι πιο προσεκτικός με τις θερμίδες."
-              : "Οκ, στόχος είναι η αύξηση βάρους. Θα λάβω υπόψη αυξημένες ανάγκες."
+              ? "Got it. The goal is weight loss. I will be more careful with calories."
+              : "Got it. The goal is weight gain. I will account for higher energy needs."
         )
       );
 
@@ -758,7 +949,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
 
     if (step === "analysis") {
       addMessages(
-        createMessage("bot", "Περίμενε λίγο, ολοκληρώνω την ανάλυση.")
+        createMessage("bot", "Hold on a moment, I am finishing the analysis.")
       );
 
       return;
@@ -767,7 +958,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
     addMessages(
       createMessage(
         "bot",
-        "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να πατήσεις Restart."
+        "The analysis is complete. You can save it or press Restart."
       )
     );
   }
@@ -776,7 +967,6 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
     const text = input.trim();
 
     if (!text || isAnalyzing || isSaving) return;
-
     addMessages(createMessage("user", text));
     setInput("");
 
@@ -791,7 +981,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         addMessages(
           createMessage(
             "bot",
-            "Δεν υπάρχει ανάλυση για αποθήκευση. Κάνε πρώτα ανάλυση."
+            "There is no analysis to save yet. Run an analysis first."
           )
         );
 
@@ -806,7 +996,10 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         return;
       }
 
-      const petForSave = createPetFromIntake(pet);
+      const petForSave = {
+        ...createPetFromIntake(pet),
+        id: selectedPetId ?? crypto.randomUUID(),
+      };
 
       const response = await fetch("/api/account/chatbot/save", {
         method: "POST",
@@ -815,6 +1008,7 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
         },
         body: JSON.stringify({
           authUserId: data.session.user.id,
+          existingPetId: selectedPetId,
           pet: petForSave,
           analysis: latestAnalysis,
           metadata: analysisMetadata,
@@ -830,7 +1024,9 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       addMessages(
         createMessage(
           "bot",
-`Αποθηκεύτηκε επιτυχώς στο προφίλ σου!\n\nΜπορείς να το δεις εδώ:\n${siteUrl}/account/pets/${result.pet.id}`        )
+          `Saved successfully to your profile! You can view it here:
+${siteUrl}/account/pets/${result.pet.id}`
+        )
       );
 
       setShowSave(false);
@@ -838,7 +1034,10 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
       console.error(error);
 
       addMessages(
-        createMessage("bot", "Σφάλμα κατά την αποθήκευση. Δοκίμασε ξανά.")
+        createMessage(
+          "bot",
+          "There was a problem saving the analysis. Please try again."
+        )
       );
     } finally {
       setIsSaving(false);
@@ -846,8 +1045,9 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
   }
 
   function restartChat() {
-    setStep("species");
+    setStep(savedPets.length > 0 ? "petChoice" : "species");
     setPet({ healthIssues: [], allergies: [] });
+    setSelectedPetId(null);
     setInput("");
     setLatestAnalysis(null);
     setIsAnalyzing(false);
@@ -856,27 +1056,32 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
     setAnalysisMetadata(null);
 
     setMessages([
-      createMessage("bot", "Ξεκινάμε ξανά. Έχεις σκύλο ή γάτα;"),
+      createMessage(
+        "bot",
+        savedPets.length > 0
+          ? "Let's start again. Choose a saved pet or start with a new pet."
+          : "Let's start again. Do you have a dog or a cat?"
+      ),
     ]);
   }
 
   return (
-    <section className="mx-auto flex max-w-3xl flex-col rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-start justify-between gap-4 border-b border-gray-200 p-5">
-        <div>
+    <section className="mx-auto flex h-[calc(100svh-11rem)] min-h-[560px] max-w-3xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="flex shrink-0 flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-black">
             Nutritail AI Chatbot
           </h1>
 
           <p className="mt-1 text-sm text-gray-600">
-            Προσωπικός βοηθός διατροφής για το κατοικίδιό σου.
+            Personalized nutrition guidance for your pet.
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex shrink-0 gap-2">
           <a
             href="/account"
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:flex-none"
           >
             Account
           </a>
@@ -884,18 +1089,65 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
           <button
             type="button"
             onClick={restartChat}
-            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+            className="flex-1 rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100 sm:flex-none"
           >
             Restart
           </button>
         </div>
       </div>
 
-      <div className="flex min-h-[500px] flex-1 flex-col gap-4 p-5">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-4 sm:p-5">
+        {step === "petChoice" && (
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <p className="font-semibold text-black">Choose a pet</p>
+            <p className="mt-1 text-sm text-gray-600">
+              Run a fresh analysis using a saved profile, or start a new pet.
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {isLoadingPets ? (
+                <p className="text-sm text-gray-600">Loading saved pets...</p>
+              ) : (
+                savedPets.map((savedPet) => (
+                  <button
+                    key={savedPet.id}
+                    type="button"
+                    onClick={() => selectSavedPet(savedPet)}
+                    className="min-h-[92px] rounded-xl border border-gray-300 bg-white p-4 text-left transition hover:border-black focus:outline-none focus:ring-2 focus:ring-black"
+                  >
+                    <span className="block font-semibold text-black">
+                      {savedPet.name}
+                    </span>
+                    <span className="mt-1 block text-sm text-gray-600">
+                      {savedPet.species} - {savedPet.weight} kg - age{" "}
+                      {savedPet.age}
+                    </span>
+                  </button>
+                ))
+              )}
+
+              {!isLoadingPets && (
+                <button
+                  type="button"
+                  onClick={startNewPetAnalysis}
+                  className="min-h-[92px] rounded-xl border border-black bg-white p-4 text-left transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black"
+                >
+                  <span className="block font-semibold text-black">
+                    Start with a new pet
+                  </span>
+                  <span className="mt-1 block text-sm text-gray-600">
+                    Answer the full intake flow from scratch.
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm ${
+            className={`max-w-[92%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
               message.role === "bot"
                 ? "self-start bg-gray-100 text-black"
                 : "self-end bg-black text-white"
@@ -904,30 +1156,64 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
             {message.text}
           </div>
         ))}
+
+        {showSave && (
+          <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            {latestAnalysis && (
+              <div className="rounded-xl border border-gray-200 bg-white p-4">
+                <p className="font-semibold text-black">Analysis summary</p>
+                <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-500">Pet</p>
+                    <p className="font-semibold text-black">
+                      {pet.name ?? "Pet"} - {pet.species ?? "pet"}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-500">Daily calories</p>
+                    <p className="font-semibold text-black">
+                      {latestAnalysis.nutrition.der} kcal/day
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-500">Weight goal</p>
+                    <p className="font-semibold text-black">
+                      {getWeightGoalLabel(pet.weightGoal)}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-500">Food match</p>
+                    <p className="font-semibold text-black">
+                      {analysisMetadata?.matchedFoodName ?? "No matched food"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+              <p className="font-semibold text-black">Save to my account</p>
+
+              <p className="mt-1 text-sm text-gray-700">
+                Save this pet and nutrition analysis to your personal profile.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={saveToMyAccount}
+              disabled={isSaving}
+              className="w-full rounded-xl bg-green-600 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
+            >
+              {isSaving ? "Saving..." : "Save to my account"}
+            </button>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
       </div>
 
-      {showSave && (
-        <div className="space-y-4 border-t border-gray-200 px-5 py-4">
-          <div className="rounded-xl border border-green-200 bg-green-50 p-4">
-            <p className="font-semibold text-black">Save to my account</p>
-
-            <p className="mt-1 text-sm text-gray-700">
-              Αποθήκευσε το κατοικίδιο και την ανάλυση στο προσωπικό σου προφίλ.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={saveToMyAccount}
-            disabled={isSaving}
-            className="w-full rounded-xl bg-green-600 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
-          >
-            {isSaving ? "Saving..." : "💾 Save to my account"}
-          </button>
-        </div>
-      )}
-
-      <div className="flex gap-3 border-t border-gray-200 p-5">
+      <div className="sticky bottom-0 flex shrink-0 gap-3 border-t border-gray-200 bg-white p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] sm:p-5">
         <input
           value={input}
           disabled={isAnalyzing || isSaving}
@@ -937,15 +1223,15 @@ ${transitionGuide.map((item) => `• ${item}`).join("\n")}
               sendMessage();
             }
           }}
-          placeholder={isAnalyzing ? "Γίνεται ανάλυση..." : "Γράψε μήνυμα..."}
-          className="flex-1 rounded-xl border border-gray-300 p-3 text-black disabled:bg-gray-100"
+          placeholder={isAnalyzing ? "Analyzing..." : "Write a message..."}
+          className="min-w-0 flex-1 rounded-xl border border-gray-300 p-3 text-black disabled:bg-gray-100"
         />
 
         <button
           type="button"
           onClick={sendMessage}
           disabled={isAnalyzing || isSaving}
-          className="rounded-xl bg-black px-5 py-3 text-white disabled:opacity-50"
+          className="rounded-xl bg-black px-4 py-3 text-white disabled:opacity-50 sm:px-5"
         >
           {isAnalyzing ? "..." : "Send"}
         </button>

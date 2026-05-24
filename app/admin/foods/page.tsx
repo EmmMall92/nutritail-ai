@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { getFoodCompleteness } from "@/lib/foodCompleteness";
 
 type AdminFood = {
@@ -111,24 +112,25 @@ export default function AdminFoodsPage() {
             </h1>
 
             <p className="mt-2 text-gray-600">
-              Διαχείριση τροφών, διατροφικών στοιχείων και quality status.
+              Manage foods, nutrition fields, enrichment data, and quality
+              status.
             </p>
           </div>
-<div className="flex flex-wrap gap-3">
-  <a
-    href="/admin/foods/enrichment-import"
-    className="rounded-xl border border-black px-5 py-3 text-center text-black transition hover:bg-gray-100"
-  >
-    Import Enrichment
-  </a>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/admin/foods/enrichment-import"
+              className="rounded-xl border border-black px-5 py-3 text-center text-black transition hover:bg-gray-100"
+            >
+              Import Enrichment
+            </Link>
 
-  <a
-    href="/admin/foods/new"
-    className="rounded-xl bg-black px-5 py-3 text-center text-white transition hover:opacity-90"
-  >
-    + Add Food
-  </a>
-</div>
+            <Link
+              href="/admin/foods/new"
+              className="rounded-xl bg-black px-5 py-3 text-center text-white transition hover:opacity-90"
+            >
+              + Add Food
+            </Link>
+          </div>
 
         </div>
 
@@ -244,12 +246,12 @@ export default function AdminFoodsPage() {
                       </p>
                     </div>
 
-                    <a
+                    <Link
                       href={`/admin/foods/${food.id}`}
                       className="rounded-xl border border-black px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100"
                     >
                       Edit
-                    </a>
+                    </Link>
                   </div>
 
                   <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">

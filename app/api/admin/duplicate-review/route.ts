@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { adminDuplicateReviewService } from "@/services/adminDuplicateReviewService";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function POST(request: Request) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const body = await request.json();
 
     const result = await adminDuplicateReviewService.save({

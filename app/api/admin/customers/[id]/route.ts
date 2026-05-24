@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { mapDbCustomerToCustomer } from "@/mappers/customerMapper";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import type { DbCustomer } from "@/types/db/db-customer";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type Context = {
   params: Promise<{ id: string }>;
@@ -10,6 +11,9 @@ type Context = {
 
 export async function GET(_: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
 
     const { data: customer, error: customerError } = await supabaseAdmin

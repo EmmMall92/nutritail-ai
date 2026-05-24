@@ -2,9 +2,13 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { mapFoodToDbFood } from "@/mappers/foodMapper";
 import { foodsSeed } from "@/database/seeds/foods.seed";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function POST() {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const dbFoods = foodsSeed.map(mapFoodToDbFood);
 
     const { data, error } = await supabase
