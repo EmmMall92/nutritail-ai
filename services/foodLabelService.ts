@@ -13,7 +13,7 @@ export async function getFoodLabelsMap(
           return [id, id] as const;
         }
 
-        return [id, `${food.brand} — ${food.name}`] as const;
+        return [id, `${food.brand} - ${food.name}`] as const;
       } catch {
         return [id, id] as const;
       }

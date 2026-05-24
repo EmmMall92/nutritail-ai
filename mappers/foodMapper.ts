@@ -19,6 +19,15 @@ export function mapDbFoodToFood(dbFood: DbFood): Food {
     phosphorus: dbFood.phosphorus,
     ingredients: dbFood.ingredients,
     tags: dbFood.tags,
+    kcalPer100g: dbFood.kcal_per_100g ?? null,
+    proteinPercent: dbFood.protein_percent ?? null,
+    fatPercent: dbFood.fat_percent ?? null,
+    fiberPercent: dbFood.fiber_percent ?? null,
+    sodiumPercent: dbFood.sodium_percent ?? null,
+    magnesiumPercent: dbFood.magnesium_percent ?? null,
+    calciumPercent: dbFood.calcium_percent ?? null,
+    phosphorusPercent: dbFood.phosphorus_percent ?? null,
+    dataQualityStatus: dbFood.data_quality_status ?? null,
   };
 }
 
