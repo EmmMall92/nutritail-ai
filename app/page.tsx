@@ -1,11 +1,31 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { brand } from "@/lib/brand";
+
+export const metadata: Metadata = {
+  title: `${brand.name} | AI Pet Nutrition Guidance`,
+  description:
+    "Personalized AI pet nutrition guidance for dogs and cats, including feeding estimates, calorie goals, and food quality insights.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: `${brand.name} | AI Pet Nutrition Guidance`,
+    description:
+      "Understand your pet's calories, feeding amounts, weight goals, treats, and food quality with Nutritail AI.",
+    url: "/",
+    type: "website",
+  },
+};
+
 const features = [
   {
     title: "Personalized feeding guidance",
-    text: "Get calorie and feeding estimates based on your pet’s species, age, weight, activity and goals.",
+    text: "Get calorie and feeding estimates based on your pet's species, age, weight, activity and goals.",
   },
   {
     title: "Food-aware recommendations",
-    text: "Connect your pet’s needs with the food you already use and understand if it fits.",
+    text: "Connect your pet's needs with the food you already use and understand if it fits.",
   },
   {
     title: "Pet nutrition history",
@@ -19,29 +39,66 @@ const steps = [
   "Get practical nutrition guidance",
 ];
 
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: brand.name,
+    url: brand.domain,
+    email: brand.contactEmail,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: brand.name,
+    url: brand.domain,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: brand.name,
+    applicationCategory: "HealthApplication",
+    operatingSystem: "Web",
+    url: brand.domain,
+    description: brand.description,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  },
+];
+
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+
       <header className="border-b border-black/10 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <a href="/" className="text-xl font-black tracking-tight">
+          <Link href="/" className="text-xl font-black tracking-tight">
             Nutritail AI
-          </a>
+          </Link>
 
           <nav className="flex w-full gap-2 sm:w-auto">
-            <a
+            <Link
               href="/login"
               className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
             >
               Login
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/register"
               className="flex-1 rounded-full bg-black px-5 py-2 text-center text-sm font-medium text-white transition hover:opacity-90 sm:flex-none"
             >
               Get Started
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -63,19 +120,19 @@ export default function HomePage() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
+            <Link
               href="/register"
               className="rounded-full bg-black px-7 py-4 text-sm font-semibold text-white transition hover:opacity-90"
             >
               Start free analysis
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/login"
               className="rounded-full border border-black/20 bg-white px-7 py-4 text-sm font-semibold transition hover:bg-gray-50"
             >
               I already have an account
-            </a>
+            </Link>
           </div>
 
           <p className="mt-5 text-xs text-gray-500">
@@ -89,7 +146,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-bold text-black">Example Analysis</p>
-                <p className="text-sm text-gray-500">Luna · Adult cat</p>
+                <p className="text-sm text-gray-500">Luna - Adult cat</p>
               </div>
 
               <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
@@ -125,8 +182,8 @@ export default function HomePage() {
 
             <div className="mt-5 rounded-2xl bg-black p-5 text-white">
               <p className="text-sm font-semibold">
-                “This food looks suitable, but portion control matters because
-                Luna is sterilized.”
+                This food looks suitable, but portion control matters because
+                Luna is sterilized.
               </p>
             </div>
           </div>
@@ -188,29 +245,29 @@ export default function HomePage() {
             overview in minutes.
           </p>
 
-          <a
+          <Link
             href="/register"
             className="mt-6 inline-flex rounded-full bg-black px-7 py-4 text-sm font-semibold text-white transition hover:opacity-90"
           >
             Create free account
-          </a>
+          </Link>
         </div>
       </section>
 
       <footer className="border-t border-black/10 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-sm text-gray-600 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Nutritail AI. All rights reserved.</p>
+          <p>(c) {new Date().getFullYear()} Nutritail AI. All rights reserved.</p>
 
           <div className="flex gap-4">
-            <a href="/privacy" className="hover:text-black">
+            <Link href="/privacy" className="hover:text-black">
               Privacy
-            </a>
-            <a href="/terms" className="hover:text-black">
+            </Link>
+            <Link href="/terms" className="hover:text-black">
               Terms
-            </a>
-            <a href="/login" className="hover:text-black">
+            </Link>
+            <Link href="/login" className="hover:text-black">
               Login
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

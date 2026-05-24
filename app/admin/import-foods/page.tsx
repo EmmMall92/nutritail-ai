@@ -17,7 +17,6 @@ type ImportResponse = {
 };
 
 export default function ImportFoodsPage() {
-  const [csvText, setCsvText] = useState("");
   const [previewFoods, setPreviewFoods] = useState<Food[]>([]);
   const [warnings, setWarnings] = useState<ImportWarning[]>([]);
   const [error, setError] = useState("");
@@ -38,7 +37,6 @@ export default function ImportFoodsPage() {
 
       if (fileName.endsWith(".csv")) {
         const text = await file.text();
-        setCsvText(text);
 
         const preview = previewCsvFoods(text);
         const foods = convertCsvToFoods(text);
@@ -52,8 +50,6 @@ export default function ImportFoodsPage() {
         const buffer = await file.arrayBuffer();
         const foods = convertExcelBufferToFoods(buffer);
 
-        const jsonPayload = JSON.stringify(foods, null, 2);
-        setCsvText(jsonPayload);
         setPreviewFoods(foods);
         setWarnings([]);
         return;

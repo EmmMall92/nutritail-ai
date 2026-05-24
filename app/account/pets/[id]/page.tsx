@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -116,24 +117,38 @@ export default function AccountPetDetailPage() {
           <div>
             <h1 className="text-3xl font-bold text-black">{pet.name}</h1>
             <p className="mt-2 text-gray-600">
-              Προφίλ κατοικιδίου και ιστορικό διατροφικών αναλύσεων.
+              Pet profile and nutrition analysis history.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <a
+            <Link
               href="/account/pets"
               className="rounded-xl border border-black px-4 py-2 text-sm text-black"
             >
               Back to My Pets
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/account/chatbot"
               className="rounded-xl bg-black px-4 py-2 text-sm text-white"
             >
               New Analysis
-            </a>
+            </Link>
+
+            <Link
+              href={`/print/pet-report/${pet.id}`}
+              className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+            >
+              Print Report
+            </Link>
+
+            <Link
+              href={`/print/pet-timeline/${pet.id}`}
+              className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+            >
+              Print Timeline
+            </Link>
           </div>
         </div>
 
@@ -233,7 +248,7 @@ export default function AccountPetDetailPage() {
 
           {analysisHistory.length === 0 ? (
             <p className="mt-4 text-sm text-gray-600">
-              Δεν υπάρχει ακόμα ιστορικό αναλύσεων.
+              No analysis history yet.
             </p>
           ) : (
             <div className="mt-4 space-y-3">
@@ -246,7 +261,7 @@ export default function AccountPetDetailPage() {
                     {new Date(item.createdAt).toLocaleString()}
                   </p>
                   <p className="mt-1 text-sm text-gray-700">
-                    RER {item.rer} kcal • MER {item.mer} kcal
+                    RER {item.rer} kcal - MER {item.mer} kcal
                   </p>
                   {item.food_score !== null && item.food_score !== undefined && (
                   <p className="mt-1 text-sm text-gray-700">

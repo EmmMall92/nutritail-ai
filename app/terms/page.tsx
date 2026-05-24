@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
+import { brand } from "@/lib/brand";
+
+export const metadata: Metadata = {
+  title: `Terms of Use | ${brand.name}`,
+  description:
+    "Read Nutritail AI's terms for educational pet nutrition guidance.",
+  alternates: {
+    canonical: "/terms",
+  },
+};
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12">

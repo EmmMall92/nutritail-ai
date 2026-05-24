@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type ImportResult = {
   success: boolean;
@@ -84,19 +85,19 @@ export default function FoodEnrichmentImportPage() {
         </p>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <a
+          <Link
             href="/api/admin/foods/enrichment-template"
             className="rounded-xl border border-black px-4 py-2 text-sm text-black"
           >
             Download CSV template
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/foods"
             className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black"
           >
             Back to Foods
-          </a>
+          </Link>
         </div>
       </div>
 

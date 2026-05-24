@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type DuplicateGroup = {
   type: "food" | "pet";
@@ -22,6 +23,9 @@ function normalizeText(value: unknown) {
 
 export async function GET() {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const [{ data: foods, error: foodsError }, { data: pets, error: petsError }] =
       await Promise.all([
         supabase.from("foods").select("*"),

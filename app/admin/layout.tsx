@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { profileService } from "@/services/profileService";
@@ -18,14 +19,14 @@ function AdminNavLink({
   const isActive = pathname === href;
 
   return (
-    <a
+    <Link
       href={href}
       className={`rounded-lg px-4 py-2 text-sm transition ${
         isActive ? "bg-black text-white" : "text-black hover:bg-gray-100"
       }`}
     >
       {label}
-    </a>
+    </Link>
   );
 }
 
@@ -92,7 +93,7 @@ export default function AdminLayout({
           <div>
             <h1 className="text-lg font-semibold text-black">Admin Panel</h1>
             <p className="text-xs text-gray-600">
-              {profile?.email} • {profile?.role}
+              {profile?.email} - {profile?.role}
             </p>
           </div>
 

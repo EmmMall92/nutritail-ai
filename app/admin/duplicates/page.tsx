@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type DuplicateRecord = {
   id: string;
@@ -46,6 +46,14 @@ type SavedDuplicateReview = {
   updated_at: string;
 };
 
+function getReviewKey(group: DuplicateGroup) {
+  return `${group.type}::${group.key}`;
+}
+
+function getReviewKeyFromSavedReview(review: SavedDuplicateReview) {
+  return `${review.duplicate_type}::${review.duplicate_key}`;
+}
+
 export default function AdminDuplicatesPage() {
   const [data, setData] = useState<DuplicateResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,15 +65,7 @@ export default function AdminDuplicatesPage() {
     null
   );
 
-  function getReviewKey(group: DuplicateGroup) {
-    return `${group.type}::${group.key}`;
-  }
-
-  function getReviewKeyFromSavedReview(review: SavedDuplicateReview) {
-    return `${review.duplicate_type}::${review.duplicate_key}`;
-  }
-
-  async function loadDuplicates() {
+  const loadDuplicates = useCallback(async () => {
     try {
       setIsLoading(true);
       setError("");
@@ -118,11 +118,11 @@ export default function AdminDuplicatesPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     loadDuplicates();
-  }, []);
+  }, [loadDuplicates]);
 
   function updateReview(group: DuplicateGroup, patch: Partial<ReviewState>) {
     const key = getReviewKey(group);

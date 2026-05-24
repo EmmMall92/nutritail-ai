@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -80,12 +81,13 @@ export default function AccountPage() {
           Welcome, {customer.fullName}
         </h1>
         <p className="mt-2 text-gray-600">
-          Το προσωπικό σου Nutritail AI προφίλ.
+          Your Nutritail AI dashboard for pet nutrition guidance, saved pets,
+          and account details.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <a
+        <Link
           href="/account/chatbot"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
@@ -93,29 +95,29 @@ export default function AccountPage() {
             Nutrition Chatbot
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Πάρε εξατομικευμένη διατροφική καθοδήγηση για το κατοικίδιό σου.
+            Start a new guided nutrition analysis for a saved pet or a new pet.
           </p>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/account/pets"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
           <h2 className="text-lg font-semibold text-black">My Pets</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Δες τα κατοικίδιά σου και το ιστορικό αναλύσεων.
+            Review saved pet profiles, analysis history, reports, and timelines.
           </p>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/account/profile"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
           <h2 className="text-lg font-semibold text-black">Profile</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Στοιχεία λογαριασμού, bonus card και προτιμήσεις.
+            Manage your account details and customer information.
           </p>
-        </a>
+        </Link>
       </div>
     </section>
   );

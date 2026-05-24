@@ -3,9 +3,13 @@ import { supabase } from "@/lib/db/supabase";
 import { mapFoodToDbFood } from "@/mappers/foodMapper";
 import { parseImportFoods } from "@/lib/import/foodImportParser";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function POST(request: Request) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const body = await request.json();
     const foods = parseImportFoods(body);
     const dbFoods = foods.map(mapFoodToDbFood);

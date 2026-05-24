@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type Context = {
   params: Promise<{ id: string }>;
@@ -8,6 +9,9 @@ type Context = {
 
 export async function GET(_: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
 
     const { data: pet, error } = await supabase

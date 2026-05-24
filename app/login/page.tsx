@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -18,10 +19,14 @@ export default function LoginPage() {
       setIsLoading(true);
       setError("");
 
+      if (!email.trim() || !password) {
+        throw new Error("Enter your email and password to continue.");
+      }
+
       const supabase = createClient();
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -64,7 +69,7 @@ export default function LoginPage() {
         <h1 className="text-3xl font-bold text-black">Login</h1>
 
         <p className="mt-2 text-sm text-gray-600">
-          Συνδέσου στο Nutritail AI account σου.
+          Sign in to your Nutritail AI account.
         </p>
 
         <div className="mt-6 space-y-4">
@@ -73,6 +78,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
+            autoComplete="email"
             className="w-full rounded-xl border border-gray-300 p-3 text-black"
           />
 
@@ -81,8 +87,18 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             type="password"
+            autoComplete="current-password"
             className="w-full rounded-xl border border-gray-300 p-3 text-black"
           />
+
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-gray-600 underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           {error && (
             <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">
@@ -99,12 +115,12 @@ export default function LoginPage() {
             {isLoading ? "Logging in..." : "Login"}
           </button>
 
-          <a
+          <Link
             href="/register"
             className="block text-center text-sm text-gray-600 underline"
           >
-            Δεν έχεις λογαριασμό; Δημιούργησε έναν.
-          </a>
+            Do not have an account? Create one.
+          </Link>
         </div>
       </section>
     </main>

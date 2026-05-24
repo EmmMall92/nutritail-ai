@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type Context = {
   params: Promise<{ id: string }>;
@@ -8,6 +9,9 @@ type Context = {
 
 export async function GET(_: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
 
     const { data, error } = await supabase
@@ -37,6 +41,9 @@ export async function GET(_: Request, context: Context) {
 
 export async function PATCH(request: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
     const body = await request.json();
 
@@ -90,6 +97,9 @@ export async function PATCH(request: Request, context: Context) {
 
 export async function DELETE(_: Request, context: Context) {
   try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
     const { id } = await context.params;
 
 const now = new Date().toISOString();

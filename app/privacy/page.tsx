@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
+import { brand } from "@/lib/brand";
+
+export const metadata: Metadata = {
+  title: `Privacy Policy | ${brand.name}`,
+  description:
+    "Read how Nutritail AI handles account, pet profile, and nutrition analysis data.",
+  alternates: {
+    canonical: "/privacy",
+  },
+};
+
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12">

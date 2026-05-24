@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type AdminStats = {
   totalFoods: number;
@@ -80,7 +81,8 @@ export default function AdminDashboardPage() {
           </h1>
 
           <p className="mt-2 text-gray-600">
-            Dashboard διαχείρισης τροφών, nutrition quality και database stats.
+            Manage foods, nutrition data quality, customers, pets, and
+            operational database stats.
           </p>
         </div>
 
@@ -155,7 +157,7 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-              <a
+              <Link
                 href="/admin/foods"
                 className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
               >
@@ -164,11 +166,12 @@ export default function AdminDashboardPage() {
                 </h3>
 
                 <p className="mt-2 text-gray-600">
-                  Διαχείριση τροφών, nutrition fields και quality status.
+                  Manage foods, nutrition fields, enrichment data, and quality
+                  status.
                 </p>
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="/admin/customers"
                 className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
               >
@@ -177,11 +180,12 @@ export default function AdminDashboardPage() {
                 </h3>
 
                 <p className="mt-2 text-gray-600">
-                  Διαχείριση λογαριασμών πελατών και bonus cards.
+                  Review customer accounts, contact details, and bonus card
+                  records.
                 </p>
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="/admin/pets"
                 className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
               >
@@ -190,9 +194,10 @@ export default function AdminDashboardPage() {
                 </h3>
 
                 <p className="mt-2 text-gray-600">
-                  Προβολή κατοικιδίων και nutrition analyses.
+                  View saved pets, nutrition analyses, and account-linked pet
+                  data.
                 </p>
-              </a>
+              </Link>
             </div>
           </>
         )}

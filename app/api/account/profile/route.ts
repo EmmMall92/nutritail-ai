@@ -73,7 +73,7 @@ export async function PATCH(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Αυτός ο κωδικός bonus card χρησιμοποιείται ήδη από άλλο λογαριασμό.",
+              "This bonus card code is already used by another account.",
           },
           { status: 400 }
         );
@@ -96,7 +96,7 @@ export async function PATCH(request: Request) {
     if (error) {
       const message =
         error.code === "23505"
-          ? "Αυτός ο κωδικός bonus card χρησιμοποιείται ήδη από άλλο λογαριασμό."
+          ? "This bonus card code is already used by another account."
           : error.message;
 
       return NextResponse.json({ error: message }, { status: 500 });

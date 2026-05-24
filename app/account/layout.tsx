@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,14 +16,14 @@ function AccountNavLink({
   const isActive = pathname === href;
 
   return (
-    <a
+    <Link
       href={href}
       className={`rounded-lg px-4 py-2 text-sm transition ${
         isActive ? "bg-black text-white" : "text-black hover:bg-gray-100"
       }`}
     >
       {label}
-    </a>
+    </Link>
   );
 }
 
@@ -44,9 +45,9 @@ export default function AccountLayout({
     <main className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <a href="/account" className="text-lg font-bold text-black">
+          <Link href="/account" className="text-lg font-bold text-black">
             Nutritail AI
-          </a>
+          </Link>
 
           <button
             type="button"

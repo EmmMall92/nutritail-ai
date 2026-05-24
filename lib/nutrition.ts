@@ -49,26 +49,26 @@ export function getNutritionGuidance(pet: Pet): NutritionResult {
       issue.toLowerCase().includes("kidney")
     ) ?? false;
 
-  let protein = pet.species === "dog" ? "24–28%" : "30–40%";
-  let fat = pet.species === "dog" ? "12–16%" : "15–20%";
-  let fiber = "3–5%";
-  let sodium = "0.2–0.4%";
-  let magnesium = "0.04–0.1%";
-  let calcium = "0.8–1.5%";
-  let phosphorus = "0.6–1.2%";
+  const protein = pet.species === "dog" ? "24-28%" : "30-40%";
+  let fat = pet.species === "dog" ? "12-16%" : "15-20%";
+  let fiber = "3-5%";
+  let sodium = "0.2-0.4%";
+  const magnesium = "0.04-0.1%";
+  const calcium = "0.8-1.5%";
+  let phosphorus = "0.6-1.2%";
 
   if (isSenior) {
-    fat = pet.species === "dog" ? "10–14%" : "12–18%";
+    fat = pet.species === "dog" ? "10-14%" : "12-18%";
   }
 
   if (hasWeightIssue) {
-    fat = "8–12%";
-    fiber = "5–10%";
+    fat = "8-12%";
+    fiber = "5-10%";
   }
 
   if (hasKidneyIssue) {
-    phosphorus = "0.3–0.6%";
-    sodium = "0.1–0.3%";
+    phosphorus = "0.3-0.6%";
+    sodium = "0.1-0.3%";
   }
 
   return {

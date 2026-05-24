@@ -1,65 +1,153 @@
 import { NextResponse } from "next/server";
-import { foodCatalogService } from "@/services/foodCatalogService";
-import { parseImportFoodRow } from "@/lib/import/foodImportParser";
-import { mapFoodToDbFood, mapDbFoodToFood } from "@/mappers/foodMapper";
-import { supabase } from "@/lib/db/supabase";
-import { adminActivityLogService } from "@/services/adminActivityLogService";
-import type { DbFood } from "@/types/db/db-food";
+import { randomUUID } from "crypto";
+import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
-export async function GET(request: Request) {
+function normalizeArrayField(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item).trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeNumber(value: unknown, fallback = 0): number {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : fallback;
+}
+
+function normalizeStatus(value: unknown) {
+  const status = String(value ?? "needs_review");
+
+  return ["needs_review", "partial", "verified", "unknown"].includes(status)
+    ? status
+    : "needs_review";
+}
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const species = searchParams.get("species");
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
 
-    const foods =
-      species === "dog" || species === "cat"
-        ? await foodCatalogService.getFoodsBySpecies(species)
-        : await foodCatalogService.getAllFoods();
+    const { data, error } = await supabaseAdmin
+      .from("foods")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    return NextResponse.json(foods);
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({
+      foods: data ?? [],
+    });
   } catch (error) {
-    console.error("GET /api/admin/foods error:", error);
+    console.error(error);
 
     return NextResponse.json(
-      { error: "Failed to load foods." },
-      { status: 500 }
+      {
+        error: "Failed to fetch foods.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const parsedFood = parseImportFoodRow(body);
-    const dbFood = mapFoodToDbFood(parsedFood);
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
 
-    const { data, error } = await supabase
+    const body = await request.json();
+    const id = String(body.id ?? "").trim() || randomUUID();
+    const protein = normalizeNumber(body.protein ?? body.protein_percent);
+    const fat = normalizeNumber(body.fat ?? body.fat_percent);
+    const fiber = normalizeNumber(body.fiber ?? body.fiber_percent);
+    const sodium = normalizeNumber(body.sodium ?? body.sodium_percent);
+    const magnesium = normalizeNumber(body.magnesium ?? body.magnesium_percent);
+    const calcium = normalizeNumber(body.calcium ?? body.calcium_percent);
+    const phosphorus = normalizeNumber(
+      body.phosphorus ?? body.phosphorus_percent
+    );
+
+    const payload = {
+      id,
+      brand: String(body.brand ?? "").trim(),
+      name: String(body.name ?? "").trim(),
+      species: String(body.species ?? "dog").trim(),
+
+      life_stage: body.life_stage ?? body.lifeStage ?? "adult",
+      activity_support: body.activity_support ?? body.activitySupport ?? "all",
+      health_support: normalizeArrayField(
+        body.health_support ?? body.healthSupport
+      ),
+      size: body.size || null,
+
+      tags: normalizeArrayField(body.tags),
+      ingredients: normalizeArrayField(body.ingredients),
+
+      protein,
+      fat,
+      fiber,
+      sodium,
+      magnesium,
+      calcium,
+      phosphorus,
+
+      kcal_per_100g:
+        body.kcal_per_100g === "" ? null : body.kcal_per_100g ?? null,
+      protein_percent: body.protein_percent ?? protein,
+      fat_percent: body.fat_percent ?? fat,
+      fiber_percent: body.fiber_percent ?? fiber,
+      sodium_percent: body.sodium_percent ?? sodium,
+      magnesium_percent: body.magnesium_percent ?? magnesium,
+      calcium_percent: body.calcium_percent ?? calcium,
+      phosphorus_percent: body.phosphorus_percent ?? phosphorus,
+
+      data_quality_status: normalizeStatus(body.data_quality_status),
+      data_source_url: body.data_source_url || null,
+      data_notes: body.data_notes || null,
+    };
+
+    const { data, error } = await supabaseAdmin
       .from("foods")
-      .insert(dbFood)
-      .select("*")
+      .insert(payload)
+      .select()
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      throw error;
     }
 
-    await adminActivityLogService.log({
-      action: "create",
-      entityType: "food",
-      entityId: String(data.id),
-      message: `Created food ${data.brand} — ${data.name}`,
-      metadata: {
-        species: data.species,
-        brand: data.brand,
-        name: data.name,
-      },
+    return NextResponse.json({
+      success: true,
+      food: data,
     });
-
-    return NextResponse.json(mapDbFoodToFood(data as DbFood));
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create food." },
-      { status: 400 }
+      {
+        error: "Failed to create food.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

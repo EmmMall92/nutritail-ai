@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -22,14 +23,21 @@ export default function RegisterPage() {
       setError("");
       setSuccess("");
 
+      if (!fullName.trim() || !email.trim() || password.length < 6) {
+        throw new Error(
+          "Enter your name, email, and a password with at least 6 characters."
+        );
+      }
+
       const supabase = createClient();
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/account`,
           data: {
-            full_name: fullName,
+            full_name: fullName.trim(),
           },
         },
       });
@@ -49,24 +57,26 @@ export default function RegisterPage() {
         },
         body: JSON.stringify({
           authUserId: data.user.id,
-          email,
-          fullName,
+          email: email.trim(),
+          fullName: fullName.trim(),
         }),
       });
 
-      setSuccess(
-        "Ο λογαριασμός δημιουργήθηκε! Μπορείς τώρα να συνδεθείς."
-      );
+      if (data.session) {
+        setSuccess("Account created. Redirecting to your dashboard...");
+        setTimeout(() => {
+          router.push("/account");
+        }, 1000);
+        return;
+      }
 
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500);
+      setSuccess(
+        "Account created. Check your email to confirm your address before signing in."
+      );
     } catch (err) {
       console.error(err);
 
-      setError(
-        err instanceof Error ? err.message : "Failed to register."
-      );
+      setError(err instanceof Error ? err.message : "Failed to register.");
     } finally {
       setIsLoading(false);
     }
@@ -75,12 +85,10 @@ export default function RegisterPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <section className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">
-          Create account
-        </h1>
+        <h1 className="text-3xl font-bold text-black">Create account</h1>
 
         <p className="mt-2 text-sm text-gray-600">
-          Δημιούργησε λογαριασμό στο Nutritail AI.
+          Create your Nutritail AI account to save pet nutrition history.
         </p>
 
         <div className="mt-6 space-y-4">
@@ -88,7 +96,8 @@ export default function RegisterPage() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Full name"
-            className="w-full rounded-xl border border-gray-300 p-3"
+            autoComplete="name"
+            className="w-full rounded-xl border border-gray-300 p-3 text-black"
           />
 
           <input
@@ -96,7 +105,8 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
-            className="w-full rounded-xl border border-gray-300 p-3"
+            autoComplete="email"
+            className="w-full rounded-xl border border-gray-300 p-3 text-black"
           />
 
           <input
@@ -104,7 +114,8 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             type="password"
-            className="w-full rounded-xl border border-gray-300 p-3"
+            autoComplete="new-password"
+            className="w-full rounded-xl border border-gray-300 p-3 text-black"
           />
 
           {error && (
@@ -120,12 +131,20 @@ export default function RegisterPage() {
           )}
 
           <button
+            type="button"
             onClick={handleRegister}
             disabled={isLoading}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
             {isLoading ? "Creating..." : "Create account"}
           </button>
+
+          <Link
+            href="/login"
+            className="block text-center text-sm text-gray-600 underline"
+          >
+            Already have an account? Login.
+          </Link>
         </div>
       </section>
     </main>

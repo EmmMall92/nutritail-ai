@@ -1,39 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
+type DataQualityStatus = "needs_review" | "partial" | "verified" | "unknown";
 
 type AdminFood = {
   id: string;
   brand: string;
   name: string;
-  species: "dog" | "cat";
-  life_stage: string;
-  activity_support: string[] | string | null;
-  health_support: string[] | string | null;
-  protein: number;
-  fat: number;
-  fiber: number;
-  sodium: number;
-  magnesium: number;
-  calcium: number;
-  phosphorus: number;
-  ingredients: string[] | string | null;
-  tags: string[] | string | null;
+  species: string;
+  life_stage?: string | null;
+  size?: string | null;
+  tags?: string[] | string | null;
+  ingredients?: string[] | string | null;
+
+  kcal_per_100g?: number | null;
+  protein_percent?: number | null;
+  fat_percent?: number | null;
+  fiber_percent?: number | null;
+  sodium_percent?: number | null;
+  magnesium_percent?: number | null;
+  calcium_percent?: number | null;
+  phosphorus_percent?: number | null;
+
+  data_quality_status?: DataQualityStatus;
+  data_source_url?: string | null;
+  data_notes?: string | null;
+
   created_at?: string;
   updated_at?: string;
-  kcal_per_100g?: number | null;
-protein_percent?: number | null;
-fat_percent?: number | null;
-fiber_percent?: number | null;
-sodium_percent?: number | null;
-magnesium_percent?: number | null;
-calcium_percent?: number | null;
-phosphorus_percent?: number | null;
-data_quality_status?: "needs_review" | "partial" | "verified" | "unknown";
-data_source_url?: string | null;
-data_notes?: string | null;
 };
+
+function toText(value: string[] | string | null | undefined) {
+  if (Array.isArray(value)) return value.join(", ");
+  return value ?? "";
+}
 
 function parseCommaList(value: string) {
   return value
@@ -42,16 +45,41 @@ function parseCommaList(value: string) {
     .filter(Boolean);
 }
 
-function toCommaText(value: unknown) {
-  if (Array.isArray(value)) {
-    return value.join(", ");
-  }
+function toNumberOrNull(value: string) {
+  if (value.trim() === "") return null;
 
-  if (typeof value === "string") {
-    return value;
-  }
+  const numberValue = Number(value.replace(",", "."));
 
-  return "";
+  return Number.isFinite(numberValue) ? numberValue : null;
+}
+
+function NumberInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: number | null | undefined;
+  onChange: (value: number | null) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-black">
+        {label}
+      </label>
+
+      <input
+        type="number"
+        step="any"
+        value={value ?? ""}
+        onChange={(e) => onChange(toNumberOrNull(e.target.value))}
+        placeholder={placeholder}
+        className="w-full rounded-lg border border-gray-300 p-3 text-black"
+      />
+    </div>
+  );
 }
 
 export default function AdminFoodDetailPage() {
@@ -59,52 +87,78 @@ export default function AdminFoodDetailPage() {
   const router = useRouter();
 
   const [food, setFood] = useState<AdminFood | null>(null);
-  const [ingredientsText, setIngredientsText] = useState("");
   const [tagsText, setTagsText] = useState("");
-  const [activitySupportText, setActivitySupportText] = useState("");
-  const [healthSupportText, setHealthSupportText] = useState("");
+  const [ingredientsText, setIngredientsText] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
 
-  useEffect(() => {
-    async function loadFood() {
-      try {
-        setIsLoading(true);
-        setError("");
+  const isNew = params.id === "new";
 
-        const response = await fetch(`/api/admin/foods/${params.id}`, {
-          method: "GET",
-          cache: "no-store",
-        });
+  const loadFood = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError("");
 
-        const result = await response.json();
+      const response = await fetch(`/api/admin/foods/${params.id}`, {
+        method: "GET",
+        cache: "no-store",
+      });
 
-        if (!response.ok) {
-          throw new Error(result.error || "Failed to load food.");
-        }
+      const result = await response.json();
 
-        const loadedFood = result as AdminFood;
-        setFood(loadedFood);
-        setIngredientsText(toCommaText(loadedFood.ingredients));
-        setTagsText(toCommaText(loadedFood.tags));
-        setActivitySupportText(toCommaText(loadedFood.activity_support));
-        setHealthSupportText(toCommaText(loadedFood.health_support));
-      } catch (err) {
-        console.error(err);
-        setError(err instanceof Error ? err.message : "Failed to load food.");
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to load food.");
       }
+
+      const loadedFood = (result.food ?? result) as AdminFood;
+
+      setFood(loadedFood);
+      setTagsText(toText(loadedFood.tags));
+      setIngredientsText(toText(loadedFood.ingredients));
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Failed to load food.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (isNew) {
+      const emptyFood: AdminFood = {
+        id: "new",
+        brand: "",
+        name: "",
+        species: "dog",
+        life_stage: "",
+        size: "",
+        tags: [],
+        ingredients: [],
+        kcal_per_100g: null,
+        protein_percent: null,
+        fat_percent: null,
+        fiber_percent: null,
+        sodium_percent: null,
+        magnesium_percent: null,
+        calcium_percent: null,
+        phosphorus_percent: null,
+        data_quality_status: "needs_review",
+        data_source_url: null,
+        data_notes: null,
+      };
+
+      setFood(emptyFood);
+      setTagsText("");
+      setIngredientsText("");
+      setIsLoading(false);
+      return;
     }
 
-    if (params?.id) {
-      loadFood();
-    }
-  }, [params]);
+    loadFood();
+  }, [isNew, loadFood]);
 
   async function handleSave() {
     if (!food) return;
@@ -114,75 +168,98 @@ export default function AdminFoodDetailPage() {
       setError("");
       setSavedMessage("");
 
-      const response = await fetch(`/api/admin/foods/${food.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...food,
-          ingredients: parseCommaList(ingredientsText),
-          tags: parseCommaList(tagsText),
-          activity_support: parseCommaList(activitySupportText),
-          health_support: parseCommaList(healthSupportText),
-        kcal_per_100g: food.kcal_per_100g ?? null,
-protein_percent: food.protein_percent ?? null,
-fat_percent: food.fat_percent ?? null,
-fiber_percent: food.fiber_percent ?? null,
-sodium_percent: food.sodium_percent ?? null,
-magnesium_percent: food.magnesium_percent ?? null,
-calcium_percent: food.calcium_percent ?? null,
-phosphorus_percent: food.phosphorus_percent ?? null,
-data_quality_status: food.data_quality_status ?? "needs_review",
-data_source_url: food.data_source_url ?? null,
-data_notes: food.data_notes ?? null,
+      if (!food.brand.trim()) {
+        throw new Error("Brand is required.");
+      }
 
-        }),
-      });
+      if (!food.name.trim()) {
+        throw new Error("Name is required.");
+      }
+
+      if (!food.species.trim()) {
+        throw new Error("Species is required.");
+      }
+
+      const payload = {
+        brand: food.brand.trim(),
+        name: food.name.trim(),
+        species: food.species,
+        life_stage: food.life_stage || null,
+        size: food.size || null,
+        tags: parseCommaList(tagsText),
+        ingredients: parseCommaList(ingredientsText),
+
+        kcal_per_100g: food.kcal_per_100g ?? null,
+        protein_percent: food.protein_percent ?? null,
+        fat_percent: food.fat_percent ?? null,
+        fiber_percent: food.fiber_percent ?? null,
+        sodium_percent: food.sodium_percent ?? null,
+        magnesium_percent: food.magnesium_percent ?? null,
+        calcium_percent: food.calcium_percent ?? null,
+        phosphorus_percent: food.phosphorus_percent ?? null,
+
+        data_quality_status: food.data_quality_status ?? "needs_review",
+        data_source_url: food.data_source_url || null,
+        data_notes: food.data_notes || null,
+      };
+
+      const response = await fetch(
+        isNew ? "/api/admin/foods" : `/api/admin/foods/${food.id}`,
+        {
+          method: isNew ? "POST" : "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update food.");
+        throw new Error(result.error || "Failed to save food.");
       }
 
-      const updatedFood = result as AdminFood;
-      setFood(updatedFood);
-      setIngredientsText(toCommaText(updatedFood.ingredients));
-      setTagsText(toCommaText(updatedFood.tags));
-      setActivitySupportText(toCommaText(updatedFood.activity_support));
-      setHealthSupportText(toCommaText(updatedFood.health_support));
-      setSavedMessage("Food updated successfully.");
+      const savedFood = (result.food ?? result) as AdminFood;
+
+      setFood(savedFood);
+      setTagsText(toText(savedFood.tags));
+      setIngredientsText(toText(savedFood.ingredients));
+      setSavedMessage("Food saved successfully.");
+
+      if (isNew && savedFood.id) {
+        router.replace(`/admin/foods/${savedFood.id}`);
+      }
 
       setTimeout(() => {
         setSavedMessage("");
       }, 2500);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Failed to update food.");
+      setError(err instanceof Error ? err.message : "Failed to save food.");
     } finally {
       setIsSaving(false);
     }
   }
 
   async function handleDelete() {
-    if (!food) return;
+    if (!food || isNew) return;
 
     const confirmed = window.confirm(
-     `This will move the food to Trash. You can restore it later.\n\nContinue?`
+      "Are you sure you want to move this food to trash?"
     );
 
     if (!confirmed) return;
 
     try {
-      setIsDeleting(true);
+      setIsSaving(true);
       setError("");
 
       const response = await fetch(`/api/admin/foods/${food.id}`, {
         method: "DELETE",
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to delete food.");
@@ -193,24 +270,38 @@ data_notes: food.data_notes ?? null,
       console.error(err);
       setError(err instanceof Error ? err.message : "Failed to delete food.");
     } finally {
-      setIsDeleting(false);
+      setIsSaving(false);
     }
   }
+
+  const completeness = useMemo(() => {
+    if (!food) return { filled: 0, total: 8 };
+
+    const values = [
+      food.kcal_per_100g,
+      food.protein_percent,
+      food.fat_percent,
+      food.fiber_percent,
+      food.sodium_percent,
+      food.magnesium_percent,
+      food.calcium_percent,
+      food.phosphorus_percent,
+    ];
+
+    const filled = values.filter(
+      (value) => typeof value === "number" && Number.isFinite(value)
+    ).length;
+
+    return {
+      filled,
+      total: values.length,
+    };
+  }, [food]);
 
   if (isLoading) {
     return (
       <section className="space-y-6">
-        <p className="text-gray-600">Loading food details...</p>
-      </section>
-    );
-  }
-
-  if (error && !food) {
-    return (
-      <section className="space-y-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
-          {error}
-        </div>
+        <p className="text-gray-600">Loading food...</p>
       </section>
     );
   }
@@ -227,72 +318,23 @@ data_notes: food.data_notes ?? null,
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-black">
-            {food.brand} — {food.name}
-          </h2>
+          <h1 className="text-3xl font-bold text-black">
+            {isNew ? "Add Food" : "Edit Food"}
+          </h1>
+
           <p className="mt-2 text-gray-600">
-            Edit the food record and manage its nutritional profile.
+            Manage product details, nutrition data, ingredients and data quality.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/admin/foods"
-            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-          >
-            Back to Foods
-          </a>
-
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                const response = await fetch(`/api/admin/foods/${food.id}/export`, {
-                  method: "GET",
-                  cache: "no-store",
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                  throw new Error(result.error || "Failed to export food bundle.");
-                }
-
-                const blob = new Blob([JSON.stringify(result, null, 2)], {
-                  type: "application/json",
-                });
-
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = `food-bundle-${food.id}.json`;
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                URL.revokeObjectURL(url);
-              } catch (error) {
-                console.error(error);
-                alert(
-                  error instanceof Error ? error.message : "Failed to export food bundle."
-                );
-              }
-            }}
-            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-          >
-            Export Bundle
-          </button>
-
-          <a
-            href={`/api/admin/foods/${food.id}`}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-lg border border-gray-400 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-          >
-            Open API
-          </a>
-        </div>
+        <Link
+          href="/admin/foods"
+          className="rounded-xl border border-black px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100"
+        >
+          Back to Foods
+        </Link>
       </div>
 
       {error && (
@@ -307,501 +349,311 @@ data_notes: food.data_notes ?? null,
         </div>
       )}
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Brand
-            </label>
-            <input
-              value={food.brand}
-              onChange={(e) =>
-                setFood((prev) => (prev ? { ...prev, brand: e.target.value } : prev))
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
+      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2">
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Brand
+          </label>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Name
-            </label>
-            <input
-              value={food.name}
-              onChange={(e) =>
-                setFood((prev) => (prev ? { ...prev, name: e.target.value } : prev))
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Species
-            </label>
-            <select
-              value={food.species}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, species: e.target.value as "dog" | "cat" } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            >
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Life Stage
-            </label>
-            <input
-              value={food.life_stage}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, life_stage: e.target.value } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-              placeholder="e.g. puppy, adult, senior"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Protein
-            </label>
-            <input
-              type="number"
-              value={food.protein}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, protein: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Fat
-            </label>
-            <input
-              type="number"
-              value={food.fat}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, fat: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Fiber
-            </label>
-            <input
-              type="number"
-              value={food.fiber}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, fiber: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Sodium
-            </label>
-            <input
-              type="number"
-              value={food.sodium}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, sodium: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Magnesium
-            </label>
-            <input
-              type="number"
-              value={food.magnesium}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, magnesium: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Calcium
-            </label>
-            <input
-              type="number"
-              value={food.calcium}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, calcium: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Phosphorus
-            </label>
-            <input
-              type="number"
-              value={food.phosphorus}
-              onChange={(e) =>
-                setFood((prev) =>
-                  prev ? { ...prev, phosphorus: Number(e.target.value) } : prev
-                )
-              }
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-black">
-              Ingredients
-            </label>
-            <input
-              value={ingredientsText}
-              onChange={(e) => setIngredientsText(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-              placeholder="comma separated ingredients"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Tags
-            </label>
-            <input
-              value={tagsText}
-              onChange={(e) => setTagsText(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-              placeholder="comma separated tags"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-black">
-              Activity Support
-            </label>
-            <input
-              value={activitySupportText}
-              onChange={(e) => setActivitySupportText(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-              placeholder="comma separated values"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-black">
-              Health Support
-            </label>
-            <input
-              value={healthSupportText}
-              onChange={(e) => setHealthSupportText(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-3 text-black"
-              placeholder="comma separated values"
-            />
-          </div>
-           <div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Kcal per 100g
-  </label>
-  <input
-    type="number"
-    value={food.kcal_per_100g ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              kcal_per_100g:
-                e.target.value === "" ? null : Number(e.target.value),
+          <input
+            value={food.brand}
+            onChange={(e) =>
+              setFood((prev) =>
+                prev ? { ...prev, brand: e.target.value } : prev
+              )
             }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+          />
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Protein %
-  </label>
-  <input
-    type="number"
-    value={food.protein_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              protein_percent:
-                e.target.value === "" ? null : Number(e.target.value),
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Name
+          </label>
+
+          <input
+            value={food.name}
+            onChange={(e) =>
+              setFood((prev) =>
+                prev ? { ...prev, name: e.target.value } : prev
+              )
             }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+          />
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Fat %
-  </label>
-  <input
-    type="number"
-    value={food.fat_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              fat_percent:
-                e.target.value === "" ? null : Number(e.target.value),
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Species
+          </label>
+
+          <select
+            value={food.species}
+            onChange={(e) =>
+              setFood((prev) =>
+                prev ? { ...prev, species: e.target.value } : prev
+              )
             }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+          >
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+          </select>
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Fiber %
-  </label>
-  <input
-    type="number"
-    value={food.fiber_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              fiber_percent:
-                e.target.value === "" ? null : Number(e.target.value),
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Life stage
+          </label>
+
+          <input
+            value={food.life_stage ?? ""}
+            onChange={(e) =>
+              setFood((prev) =>
+                prev ? { ...prev, life_stage: e.target.value || null } : prev
+              )
             }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+            placeholder="adult, puppy, kitten, senior..."
+          />
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Sodium %
-  </label>
-  <input
-    type="number"
-    value={food.sodium_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              sodium_percent:
-                e.target.value === "" ? null : Number(e.target.value),
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Size
+          </label>
+
+          <input
+            value={food.size ?? ""}
+            onChange={(e) =>
+              setFood((prev) =>
+                prev ? { ...prev, size: e.target.value || null } : prev
+              )
             }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+            placeholder="small, medium, large..."
+          />
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Magnesium %
-  </label>
-  <input
-    type="number"
-    value={food.magnesium_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              magnesium_percent:
-                e.target.value === "" ? null : Number(e.target.value),
-            }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+        <div>
+          <label className="mb-2 block text-sm font-medium text-black">
+            Tags
+          </label>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Calcium %
-  </label>
-  <input
-    type="number"
-    value={food.calcium_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              calcium_percent:
-                e.target.value === "" ? null : Number(e.target.value),
-            }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>
+          <input
+            value={tagsText}
+            onChange={(e) => setTagsText(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+            placeholder="sterilised, sensitive, grain-free..."
+          />
+        </div>
 
-<div>
-  <label className="mb-2 block text-sm font-medium text-black">
-    Phosphorus %
-  </label>
-  <input
-    type="number"
-    value={food.phosphorus_percent ?? ""}
-    onChange={(e) =>
-      setFood((prev) =>
-        prev
-          ? {
-              ...prev,
-              phosphorus_percent:
-                e.target.value === "" ? null : Number(e.target.value),
-            }
-          : prev
-      )
-    }
-    className="w-full rounded-lg border border-gray-300 p-3 text-black"
-  />
-</div>   
-<div className="md:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
-  <h3 className="text-lg font-semibold text-black">Data Quality</h3>
+        <div className="md:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-black">
+              Nutrition Data
+            </h2>
 
-  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-    <div>
-      <label className="mb-2 block text-sm font-medium text-black">
-        Status
-      </label>
+            <p className="text-sm text-gray-600">
+              {completeness.filled}/{completeness.total} complete
+            </p>
+          </div>
 
-      <select
-        value={food.data_quality_status ?? "needs_review"}
-        onChange={(e) =>
-          setFood((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  data_quality_status: e.target.value as
-                    | "needs_review"
-                    | "partial"
-                    | "verified"
-                    | "unknown",
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <NumberInput
+              label="Kcal per 100g"
+              value={food.kcal_per_100g}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, kcal_per_100g: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Protein %"
+              value={food.protein_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, protein_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Fat %"
+              value={food.fat_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, fat_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Fiber %"
+              value={food.fiber_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, fiber_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Sodium %"
+              value={food.sodium_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, sodium_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Magnesium %"
+              value={food.magnesium_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, magnesium_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Calcium %"
+              value={food.calcium_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, calcium_percent: value } : prev
+                )
+              }
+            />
+
+            <NumberInput
+              label="Phosphorus %"
+              value={food.phosphorus_percent}
+              onChange={(value) =>
+                setFood((prev) =>
+                  prev ? { ...prev, phosphorus_percent: value } : prev
+                )
+              }
+            />
+          </div>
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="mb-2 block text-sm font-medium text-black">
+            Ingredients
+          </label>
+
+          <textarea
+            value={ingredientsText}
+            onChange={(e) => setIngredientsText(e.target.value)}
+            rows={5}
+            className="w-full rounded-lg border border-gray-300 p-3 text-black"
+            placeholder="chicken, rice, salmon oil, minerals..."
+          />
+        </div>
+
+        <div className="md:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <h2 className="text-lg font-semibold text-black">Data Quality</h2>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Status
+              </label>
+
+              <select
+                value={food.data_quality_status ?? "needs_review"}
+                onChange={(e) =>
+                  setFood((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          data_quality_status: e.target
+                            .value as DataQualityStatus,
+                        }
+                      : prev
+                  )
                 }
-              : prev
-          )
-        }
-        className="w-full rounded-lg border border-gray-300 p-3 text-black"
-      >
-        <option value="needs_review">Needs review</option>
-        <option value="partial">Partial</option>
-        <option value="verified">Verified</option>
-        <option value="unknown">Unknown</option>
-      </select>
-    </div>
+                className="w-full rounded-lg border border-gray-300 p-3 text-black"
+              >
+                <option value="needs_review">Needs review</option>
+                <option value="partial">Partial</option>
+                <option value="verified">Verified</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </div>
 
-    <div>
-      <label className="mb-2 block text-sm font-medium text-black">
-        Data source URL
-      </label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Data source URL
+              </label>
 
-      <input
-        value={food.data_source_url ?? ""}
-        onChange={(e) =>
-          setFood((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  data_source_url: e.target.value || null,
+              <input
+                value={food.data_source_url ?? ""}
+                onChange={(e) =>
+                  setFood((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          data_source_url: e.target.value || null,
+                        }
+                      : prev
+                  )
                 }
-              : prev
-          )
-        }
-        className="w-full rounded-lg border border-gray-300 p-3 text-black"
-        placeholder="https://..."
-      />
-    </div>
+                className="w-full rounded-lg border border-gray-300 p-3 text-black"
+                placeholder="https://..."
+              />
+            </div>
 
-    <div className="md:col-span-2">
-      <label className="mb-2 block text-sm font-medium text-black">
-        Data notes
-      </label>
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-black">
+                Data notes
+              </label>
 
-      <textarea
-        value={food.data_notes ?? ""}
-        onChange={(e) =>
-          setFood((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  data_notes: e.target.value || null,
+              <textarea
+                value={food.data_notes ?? ""}
+                onChange={(e) =>
+                  setFood((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          data_notes: e.target.value || null,
+                        }
+                      : prev
+                  )
                 }
-              : prev
-          )
-        }
-        rows={3}
-        className="w-full rounded-lg border border-gray-300 p-3 text-black"
-        placeholder="π.χ. Values copied from official product page, checked on..."
-      />
-    </div>
-  </div>
-</div>  
-          <div className="md:col-span-2 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving}
-              className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
-            >
-              {isSaving ? "Saving..." : "Save Food Changes"}
-            </button>
+                rows={3}
+                className="w-full rounded-lg border border-gray-300 p-3 text-black"
+                placeholder="Values copied from official product page..."
+              />
+            </div>
+          </div>
+        </div>
 
+        <div className="md:col-span-2 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving}
+            className="rounded-xl bg-black px-6 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save Food"}
+          </button>
+
+          {!isNew && (
             <button
               type="button"
               onClick={handleDelete}
-              disabled={isDeleting}
-              className="rounded-lg border border-red-600 px-5 py-3 text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+              disabled={isSaving}
+              className="rounded-xl border border-red-600 px-6 py-3 text-red-600 transition hover:bg-red-50 disabled:opacity-50"
             >
-              {isDeleting ? "Deleting..." : "Delete Food"}
+              Move to Trash
             </button>
-          </div>
+          )}
         </div>
       </div>
     </section>

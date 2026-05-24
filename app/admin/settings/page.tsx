@@ -1,21 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 import {
-  defaultBrandSettings,
   getBrandSettings,
   saveBrandSettings,
   type BrandSettings,
 } from "@/lib/brand";
 
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<BrandSettings>(defaultBrandSettings);
+  const [settings, setSettings] = useState<BrandSettings>(() =>
+    getBrandSettings()
+  );
   const [savedMessage, setSavedMessage] = useState("");
-
-  useEffect(() => {
-    const current = getBrandSettings();
-    setSettings(current);
-  }, []);
 
   function updateField<K extends keyof BrandSettings>(
     key: K,
@@ -200,9 +197,12 @@ export default function AdminSettingsPage() {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             {settings.logoDataUrl ? (
               <>
-                <img
+                <Image
                   src={settings.logoDataUrl}
                   alt="Brand logo preview"
+                  width={64}
+                  height={64}
+                  unoptimized
                   className="h-16 w-16 rounded-xl border border-gray-200 object-cover bg-white"
                 />
                 <button
@@ -227,9 +227,12 @@ export default function AdminSettingsPage() {
 
         <div className="flex items-center gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
           {settings.logoDataUrl ? (
-            <img
+            <Image
               src={settings.logoDataUrl}
               alt="Brand logo"
+              width={64}
+              height={64}
+              unoptimized
               className="h-16 w-16 rounded-2xl border border-gray-200 object-cover bg-white"
             />
           ) : (
