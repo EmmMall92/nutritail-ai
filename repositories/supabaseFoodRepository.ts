@@ -25,6 +25,8 @@ export const supabaseFoodRepository = {
     const { data, error } = await supabase
       .from("foods")
       .select("*")
+      .is("deleted_at", null)
+      .in("data_quality_status", ["partial", "verified"])
       .order("brand", { ascending: true });
 
     if (error) {
@@ -39,7 +41,9 @@ export const supabaseFoodRepository = {
     const { data, error } = await supabase
       .from("foods")
       .select("*")
+      .is("deleted_at", null)
       .eq("species", species)
+      .in("data_quality_status", ["partial", "verified"])
       .order("brand", { ascending: true });
 
     if (error) {

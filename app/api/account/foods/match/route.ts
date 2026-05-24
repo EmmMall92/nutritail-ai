@@ -16,7 +16,10 @@ export async function POST(request: Request) {
       .from("foods")
       .select("*")
       .is("deleted_at", null)
-      .limit(10);
+      .in("data_quality_status", ["partial", "verified"])
+      .order("brand", { ascending: true })
+      .order("name", { ascending: true })
+      .limit(50);
 
     if (species === "dog" || species === "cat") {
       foodsQuery = foodsQuery.eq("species", species);

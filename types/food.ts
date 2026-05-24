@@ -27,11 +27,12 @@ export interface Food {
 
   tags: string[];
   kcalPer100g?: number | null;
-proteinPercent?: number | null;
-fatPercent?: number | null;
-fiberPercent?: number | null;
-sodiumPercent?: number | null;
-magnesiumPercent?: number | null;
-calciumPercent?: number | null;
-phosphorusPercent?: number | null;
+  proteinPercent?: number | null;
+  fatPercent?: number | null;
+  fiberPercent?: number | null;
+  sodiumPercent?: number | null;
+  magnesiumPercent?: number | null;
+  calciumPercent?: number | null;
+  phosphorusPercent?: number | null;
+  dataQualityStatus?: "needs_review" | "partial" | "verified" | "unknown" | null;
 }

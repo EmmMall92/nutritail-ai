@@ -17,12 +17,16 @@ export interface DbFood {
   tags: string[];
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
   kcal_per_100g?: number | null;
-protein_percent?: number | null;
-fat_percent?: number | null;
-fiber_percent?: number | null;
-sodium_percent?: number | null;
-magnesium_percent?: number | null;
-calcium_percent?: number | null;
-phosphorus_percent?: number | null;
+  protein_percent?: number | null;
+  fat_percent?: number | null;
+  fiber_percent?: number | null;
+  sodium_percent?: number | null;
+  magnesium_percent?: number | null;
+  calcium_percent?: number | null;
+  phosphorus_percent?: number | null;
+  data_quality_status?: "needs_review" | "partial" | "verified" | "unknown" | null;
+  data_source_url?: string | null;
+  data_notes?: string | null;
 }
