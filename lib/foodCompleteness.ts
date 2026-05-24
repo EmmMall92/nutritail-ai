@@ -1,5 +1,12 @@
 export type FoodCompletenessInput = {
   kcal_per_100g?: number | null;
+  protein?: number | null;
+  fat?: number | null;
+  fiber?: number | null;
+  sodium?: number | null;
+  magnesium?: number | null;
+  calcium?: number | null;
+  phosphorus?: number | null;
   protein_percent?: number | null;
   fat_percent?: number | null;
   fiber_percent?: number | null;
@@ -20,10 +27,31 @@ const REQUIRED_FIELDS: Array<keyof FoodCompletenessInput> = [
   "phosphorus_percent",
 ];
 
+const LEGACY_FIELD_FALLBACKS: Partial<
+  Record<keyof FoodCompletenessInput, keyof FoodCompletenessInput>
+> = {
+  protein_percent: "protein",
+  fat_percent: "fat",
+  fiber_percent: "fiber",
+  sodium_percent: "sodium",
+  magnesium_percent: "magnesium",
+  calcium_percent: "calcium",
+  phosphorus_percent: "phosphorus",
+};
+
+function hasNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
 export function getFoodCompleteness(food: FoodCompletenessInput) {
   const filled = REQUIRED_FIELDS.filter((field) => {
     const value = food[field];
-    return typeof value === "number" && Number.isFinite(value);
+    const fallbackField = LEGACY_FIELD_FALLBACKS[field];
+
+    return (
+      hasNumber(value) ||
+      (fallbackField ? hasNumber(food[fallbackField]) : false)
+    );
   });
 
   const missing = REQUIRED_FIELDS.filter((field) => !filled.includes(field));
