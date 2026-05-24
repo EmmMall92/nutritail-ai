@@ -1,6 +1,28 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 
+const MIN_MATCH_SCORE = 20;
+const GENERIC_QUERY_WORDS = new Set([
+  "adult",
+  "brand",
+  "cat",
+  "chicken",
+  "dog",
+  "dry",
+  "food",
+  "formula",
+  "recipe",
+  "wet",
+]);
+
+function getSearchWords(query: string) {
+  return query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.replace(/[^a-z0-9&'-]/g, ""))
+    .filter((word) => word.length >= 3 && !GENERIC_QUERY_WORDS.has(word));
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -32,6 +54,7 @@ export async function POST(request: Request) {
     }
 
     const normalizedQuery = query.toLowerCase();
+    const searchWords = getSearchWords(normalizedQuery);
 
     const scoredFoods = (data ?? [])
       .map((food) => {
@@ -45,7 +68,7 @@ export async function POST(request: Request) {
         if (normalizedQuery.includes(brand) && brand) score += 30;
         if (normalizedQuery.includes(name) && name) score += 50;
 
-        for (const word of normalizedQuery.split(" ").filter(Boolean)) {
+        for (const word of searchWords) {
           if (fullName.includes(word)) score += 10;
         }
 
@@ -54,7 +77,7 @@ export async function POST(request: Request) {
           score,
         };
       })
-      .filter((item) => item.score > 0)
+      .filter((item) => item.score >= MIN_MATCH_SCORE)
       .sort((a, b) => b.score - a.score);
 
     const bestMatch = scoredFoods[0]?.food ?? null;
