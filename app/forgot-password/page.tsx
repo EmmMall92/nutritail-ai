@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -10,7 +11,9 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleResetRequest() {
+  async function handleResetRequest(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
     try {
       setIsLoading(true);
       setError("");
@@ -54,7 +57,7 @@ export default function ForgotPasswordPage() {
           Enter your email and we will send a secure password reset link.
         </p>
 
-        <div className="mt-6 space-y-4">
+        <form onSubmit={handleResetRequest} className="mt-6 space-y-4">
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -77,8 +80,7 @@ export default function ForgotPasswordPage() {
           )}
 
           <button
-            type="button"
-            onClick={handleResetRequest}
+            type="submit"
             disabled={isLoading}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
@@ -91,7 +93,7 @@ export default function ForgotPasswordPage() {
           >
             Back to login
           </Link>
-        </div>
+        </form>
       </section>
     </main>
   );

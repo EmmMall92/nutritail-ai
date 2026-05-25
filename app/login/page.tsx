@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -14,7 +15,9 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleLogin() {
+  async function handleLogin(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
     try {
       setIsLoading(true);
       setError("");
@@ -72,7 +75,7 @@ export default function LoginPage() {
           Sign in to your Nutritail AI account.
         </p>
 
-        <div className="mt-6 space-y-4">
+        <form onSubmit={handleLogin} className="mt-6 space-y-4">
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -107,8 +110,7 @@ export default function LoginPage() {
           )}
 
           <button
-            type="button"
-            onClick={handleLogin}
+            type="submit"
             disabled={isLoading}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
@@ -121,7 +123,7 @@ export default function LoginPage() {
           >
             Do not have an account? Create one.
           </Link>
-        </div>
+        </form>
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -17,7 +18,9 @@ export default function RegisterPage() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleRegister() {
+  async function handleRegister(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
     try {
       setIsLoading(true);
       setError("");
@@ -91,7 +94,7 @@ export default function RegisterPage() {
           Create your Nutritail AI account to save pet nutrition history.
         </p>
 
-        <div className="mt-6 space-y-4">
+        <form onSubmit={handleRegister} className="mt-6 space-y-4">
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
@@ -131,8 +134,7 @@ export default function RegisterPage() {
           )}
 
           <button
-            type="button"
-            onClick={handleRegister}
+            type="submit"
             disabled={isLoading}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
@@ -145,7 +147,7 @@ export default function RegisterPage() {
           >
             Already have an account? Login.
           </Link>
-        </div>
+        </form>
       </section>
     </main>
   );
