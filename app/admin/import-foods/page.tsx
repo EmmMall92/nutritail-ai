@@ -98,7 +98,7 @@ export default function ImportFoodsPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <label className="mb-2 block text-sm font-medium text-black">
-          Upload CSV File
+          Upload CSV file
         </label>
         <input
           type="file"
@@ -107,12 +107,13 @@ export default function ImportFoodsPage() {
           className="block w-full text-black"
         />
       </div>
-          <a
-            href="/admin"
-            className="inline-block rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-          >
-            Back to Admin Dashboard
-          </a>
+
+      <a
+        href="/admin"
+        className="inline-block rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+      >
+        Back to Admin Dashboard
+      </a>
       {error && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
           {error}
@@ -125,7 +126,7 @@ export default function ImportFoodsPage() {
           <div className="space-y-2 text-sm">
             {warnings.slice(0, 10).map((warning, index) => (
               <p key={index}>
-                Row {warning.rowIndex} — {warning.field}: {warning.message}
+                Row {warning.rowIndex} - {warning.field}: {warning.message}
               </p>
             ))}
           </div>
@@ -171,11 +172,11 @@ export default function ImportFoodsPage() {
                   className="rounded-xl border border-gray-200 bg-gray-50 p-4"
                 >
                   <p className="font-semibold text-black">
-                    {food.brand} — {food.name}
+                    {food.brand} - {food.name}
                   </p>
                   <p className="text-sm text-black">
-                    {food.species} • {food.lifeStage} • protein {food.protein}%
-                    {" • "}fat {food.fat}%
+                    {food.species} / {food.lifeStage} / protein {food.protein}%
+                    {" / "}fat {food.fat}%
                   </p>
                   <p className="mt-1 text-sm text-black">
                     Ingredients: {food.ingredients.join(", ")}
