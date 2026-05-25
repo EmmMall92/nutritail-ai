@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 
 type ImportResult = {
@@ -38,7 +38,9 @@ export default function FoodEnrichmentImportPage() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<ImportResult | null>(null);
 
-  async function handleImport() {
+  async function handleImport(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     try {
       setIsImporting(true);
       setError("");
@@ -101,27 +103,33 @@ export default function FoodEnrichmentImportPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <form
+        onSubmit={handleImport}
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      >
         <label className="mb-2 block text-sm font-medium text-black">
           Enrichment JSON
         </label>
 
         <textarea
           value={jsonText}
-          onChange={(e) => setJsonText(e.target.value)}
+          onChange={(e) => {
+            setJsonText(e.target.value);
+            setError("");
+            setResult(null);
+          }}
           rows={18}
           className="w-full rounded-xl border border-gray-300 p-4 font-mono text-sm text-black"
         />
 
         <button
-          type="button"
-          onClick={handleImport}
+          type="submit"
           disabled={isImporting}
           className="mt-4 rounded-xl bg-black px-6 py-3 text-white disabled:opacity-50"
         >
           {isImporting ? "Importing..." : "Import enrichment data"}
         </button>
-      </div>
+      </form>
 
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
