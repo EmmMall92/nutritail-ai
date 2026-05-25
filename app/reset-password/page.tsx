@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -34,7 +35,9 @@ export default function ResetPasswordPage() {
     };
   }, []);
 
-  async function handlePasswordUpdate() {
+  async function handlePasswordUpdate(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
     try {
       setIsLoading(true);
       setError("");
@@ -90,7 +93,7 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        <div className="mt-6 space-y-4">
+        <form onSubmit={handlePasswordUpdate} className="mt-6 space-y-4">
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -122,8 +125,7 @@ export default function ResetPasswordPage() {
           )}
 
           <button
-            type="button"
-            onClick={handlePasswordUpdate}
+            type="submit"
             disabled={isLoading || !isReady}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
@@ -136,7 +138,7 @@ export default function ResetPasswordPage() {
           >
             Request a new reset link
           </Link>
-        </div>
+        </form>
       </section>
     </main>
   );
