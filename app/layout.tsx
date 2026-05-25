@@ -20,8 +20,12 @@ export const metadata: Metadata = {
   publisher: brand.businessName,
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/nutritail-icon.svg", type: "image/svg+xml" },
+    ],
     shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   robots: {
     index: true,
