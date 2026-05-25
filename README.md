@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nutritail AI
 
-## Getting Started
+Nutritail AI is a Next.js 16 and Supabase pet nutrition SaaS for dog and cat
+nutrition guidance, pet profiles, food matching, saved analyses, printable
+reports, and admin food database management.
 
-First, run the development server:
+Live site: https://nutritail.ai
+
+## Current Stack
+
+- Next.js 16 App Router
+- React 19
+- Supabase Auth and database
+- Vercel production hosting
+- GitHub Actions CI
+
+## Core Areas
+
+- Public homepage, SEO metadata, sitemap, robots, manifest, and Open Graph image
+- Customer auth, profile, pet profiles, chatbot, saved analyses, and reports
+- Food scoring, nutrition insights, ingredient insights, and food matching
+- Admin dashboard, foods database, enrichment import, validation checks, trash,
+  restore, activity logs, customers, pets, and duplicate tools
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create `.env.local` from `.env.example`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run these before opening or merging a PR:
 
-## Learn More
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm.cmd run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+The project is linked to Vercel as `nutritail-ai` and production is served at
+https://nutritail.ai.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Manual production deploy:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx vercel deploy --prod --yes
+```
+
+After deploy, verify:
+
+```bash
+https://nutritail.ai
+https://nutritail.ai/sitemap.xml
+https://nutritail.ai/robots.txt
+https://nutritail.ai/manifest.webmanifest
+https://nutritail.ai/opengraph-image
+```
+
+## Data Notes
+
+Food data quality is tracked with `data_quality_status`, `data_source_url`,
+`data_notes`, and nutrition fields such as `kcal_per_100g`. Use official product
+pages or packaging when enriching foods. Do not guess analytical constituents or
+calorie density when a reliable source is not available.
+
+Placeholder/demo foods should not be active production data. Use the admin
+validation page to find production blockers before launch.
+
+## Medical Disclaimer
+
+Nutritail AI provides educational nutrition guidance only. It does not replace
+veterinary diagnosis, treatment, or medical advice.
