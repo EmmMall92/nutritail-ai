@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   getBrandSettings,
   saveBrandSettings,
@@ -18,6 +18,7 @@ export default function AdminSettingsPage() {
     key: K,
     value: BrandSettings[K]
   ) {
+    setSavedMessage("");
     setSettings((prev) => ({
       ...prev,
       [key]: value,
@@ -46,7 +47,9 @@ export default function AdminSettingsPage() {
     updateField("logoDataUrl", "");
   }
 
-  function handleSave() {
+  function handleSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     saveBrandSettings(settings);
     setSavedMessage("Brand settings saved successfully.");
 
@@ -70,7 +73,10 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2">
+      <form
+        onSubmit={handleSave}
+        className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2"
+      >
         <div>
           <label className="mb-2 block text-sm font-medium text-black">
             App Name
@@ -220,7 +226,15 @@ export default function AdminSettingsPage() {
             )}
           </div>
         </div>
-      </div>
+        <div className="md:col-span-2">
+          <button
+            type="submit"
+            className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90"
+          >
+            Save Brand Settings
+          </button>
+        </div>
+      </form>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <p className="mb-3 text-sm font-medium text-black">Preview</p>
@@ -254,16 +268,6 @@ export default function AdminSettingsPage() {
             <p className="text-sm text-gray-600">{settings.tagline}</p>
           </div>
         </div>
-      </div>
-
-      <div>
-        <button
-          type="button"
-          onClick={handleSave}
-          className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90"
-        >
-          Save Brand Settings
-        </button>
       </div>
     </section>
   );
