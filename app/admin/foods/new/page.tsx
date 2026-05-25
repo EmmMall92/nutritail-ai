@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import type { Food } from "@/types/food";
 
 const initialFood: Food = {
@@ -43,7 +43,9 @@ export default function NewFoodPage() {
       .filter(Boolean);
   }
 
-  async function handleSave() {
+  async function handleSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     try {
       setIsSaving(true);
       setError("");
@@ -96,7 +98,10 @@ export default function NewFoodPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2">
+      <form
+        onSubmit={handleSave}
+        className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2"
+      >
         <div>
           <label className="mb-2 block text-sm font-medium text-black">ID</label>
           <input
@@ -274,32 +279,32 @@ export default function NewFoodPage() {
             placeholder="e.g. adult|general"
           />
         </div>
-      </div>
+        <div className="flex flex-col gap-3 md:col-span-2 sm:flex-row">
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="rounded-lg bg-black px-5 py-3 text-white disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Create Food"}
+          </button>
 
-      <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={isSaving}
-          className="rounded-lg bg-black px-5 py-3 text-white disabled:opacity-50"
-        >
-          {isSaving ? "Saving..." : "Create Food"}
-        </button>
+          <button
+            type="button"
+            onClick={() => router.push("/admin/foods")}
+            className="rounded-lg border border-black px-5 py-3 text-black transition hover:bg-gray-100"
+          >
+            Back to Catalog
+          </button>
 
-        <button
-          type="button"
-          onClick={() => router.push("/admin/foods")}
-          className="rounded-lg border border-black px-5 py-3 text-black"
-        >
-          Back to Catalog
-        </button>
-        <a
-            href="/admin"
-            className="inline-block rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-            >
+          <button
+            type="button"
+            onClick={() => router.push("/admin")}
+            className="rounded-lg border border-gray-300 px-5 py-3 text-black transition hover:bg-gray-100"
+          >
             Back to Admin Dashboard
-            </a>
-      </div>
+          </button>
+        </div>
+      </form>
     </main>
   );
 }
