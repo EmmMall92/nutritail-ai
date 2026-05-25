@@ -50,7 +50,7 @@ export default function AdminActivityPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {error && (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
@@ -58,7 +58,9 @@ export default function AdminActivityPage() {
         {isLoading ? (
           <p className="text-sm text-gray-600">Loading activity...</p>
         ) : logs.length === 0 ? (
-          <p className="text-sm text-gray-600">No activity yet.</p>
+          <p className="text-sm text-gray-600">
+            No admin activity has been recorded yet.
+          </p>
         ) : (
           <div className="space-y-4">
             {logs.map((log) => (
@@ -70,7 +72,7 @@ export default function AdminActivityPage() {
                   <div>
                     <p className="font-semibold text-black">{log.message}</p>
                     <p className="mt-1 text-sm text-gray-600">
-                      {log.action} • {log.entityType} • {log.entityId}
+                      {log.action} / {log.entityType} / {log.entityId}
                     </p>
 
                     {Object.keys(log.metadata ?? {}).length > 0 && (
