@@ -111,16 +111,28 @@ export default function AccountPetsPage() {
         {isLoading ? (
           <p className="text-sm text-gray-600">Loading pets...</p>
         ) : pets.length === 0 ? (
-          <div>
-            <p className="text-sm text-gray-600">
-              You do not have any saved pets yet.
+          <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-6">
+            <p className="text-lg font-semibold text-black">
+              No saved pets yet
             </p>
-            <Link
-              href="/account/chatbot"
-              className="mt-4 inline-block rounded-xl bg-black px-5 py-3 text-white"
-            >
-              Start with the chatbot
-            </Link>
+            <p className="mt-2 max-w-xl text-sm text-gray-600">
+              Start a nutrition analysis and Nutritail will save the pet profile
+              here, together with its report and history.
+            </p>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/account/chatbot"
+                className="rounded-xl bg-black px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+              >
+                Start first analysis
+              </Link>
+              <Link
+                href="/account"
+                className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-white"
+              >
+                Back to dashboard
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -176,18 +188,29 @@ export default function AccountPetsPage() {
                       >
                         Open
                       </Link>
-                      <Link
-                        href={`/print/pet-report/${pet.id}`}
-                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
-                      >
-                        Report
-                      </Link>
-                      <Link
-                        href={`/print/pet-timeline/${pet.id}`}
-                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
-                      >
-                        Timeline
-                      </Link>
+                      {latest ? (
+                        <>
+                          <Link
+                            href={`/print/pet-report/${pet.id}`}
+                            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
+                          >
+                            Report
+                          </Link>
+                          <Link
+                            href={`/print/pet-timeline/${pet.id}`}
+                            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
+                          >
+                            Timeline
+                          </Link>
+                        </>
+                      ) : (
+                        <Link
+                          href="/account/chatbot"
+                          className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
+                        >
+                          Run analysis
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
