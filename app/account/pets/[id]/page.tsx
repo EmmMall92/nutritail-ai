@@ -91,19 +91,33 @@ export default function AccountPetDetailPage() {
 
   if (isLoading) {
     return (
-      
-        <p className="text-gray-600">Loading pet...</p>
-      
+      <section className="mx-auto max-w-4xl space-y-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading pet...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching the saved profile and analysis history.
+          </p>
+        </div>
+      </section>
     );
   }
 
   if (error || !data) {
     return (
-    
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+      <section className="mx-auto max-w-4xl space-y-6">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
+          <p className="font-semibold">Could not load this pet</p>
+          <p className="mt-2 text-sm">
             {error || "Pet not found."}
-          </div>
-
+          </p>
+          <Link
+            href="/account/pets"
+            className="mt-4 inline-block rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100"
+          >
+            Back to My Pets
+          </Link>
+        </div>
+      </section>
     );
   }
 
@@ -111,7 +125,6 @@ export default function AccountPetDetailPage() {
   const latest = analysisHistory[0];
 
   return (
-    
       <section className="mx-auto max-w-4xl space-y-6">
         <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between">
           <div>
