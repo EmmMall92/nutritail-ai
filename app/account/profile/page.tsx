@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -89,7 +90,9 @@ export default function AccountProfilePage() {
     loadProfile();
   }, [router]);
 
-  async function handleSave() {
+  async function handleSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     try {
       setIsSaving(true);
       setError("");
@@ -136,11 +139,35 @@ export default function AccountProfilePage() {
   }
 
   if (isLoading) {
-    return <p className="text-gray-600">Loading profile...</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading profile...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching the account details connected to your profile.
+          </p>
+        </div>
+      </section>
+    );
   }
 
   if (!customer) {
-    return <p className="text-red-600">Could not load profile.</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
+          <p className="font-semibold">Could not load profile</p>
+          <p className="mt-2 text-sm">
+            {error || "Please try again from your account dashboard."}
+          </p>
+          <Link
+            href="/account"
+            className="mt-4 inline-block rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100"
+          >
+            Back to dashboard
+          </Link>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -164,7 +191,10 @@ export default function AccountProfilePage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <form
+        onSubmit={handleSave}
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      >
         <h2 className="text-xl font-semibold text-black">Edit profile</h2>
 
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -241,8 +271,7 @@ export default function AccountProfilePage() {
 
           <div className="md:col-span-2">
             <button
-              type="button"
-              onClick={handleSave}
+              type="submit"
               disabled={isSaving}
               className="w-full rounded-xl bg-black px-6 py-3 text-white disabled:opacity-50 sm:w-auto"
             >
@@ -250,7 +279,7 @@ export default function AccountProfilePage() {
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 }
