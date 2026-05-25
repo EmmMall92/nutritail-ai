@@ -136,19 +136,23 @@ export default function AccountPetDetailPage() {
               New Analysis
             </Link>
 
-            <Link
-              href={`/print/pet-report/${pet.id}`}
-              className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-            >
-              Print Report
-            </Link>
+            {latest && (
+              <>
+                <Link
+                  href={`/print/pet-report/${pet.id}`}
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                >
+                  Print Report
+                </Link>
 
-            <Link
-              href={`/print/pet-timeline/${pet.id}`}
-              className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-            >
-              Print Timeline
-            </Link>
+                <Link
+                  href={`/print/pet-timeline/${pet.id}`}
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                >
+                  Print Timeline
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -247,9 +251,19 @@ export default function AccountPetDetailPage() {
           <h2 className="text-xl font-semibold text-black">Analysis history</h2>
 
           {analysisHistory.length === 0 ? (
-            <p className="mt-4 text-sm text-gray-600">
-              No analysis history yet.
-            </p>
+            <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5">
+              <p className="font-semibold text-black">No analysis history yet</p>
+              <p className="mt-2 text-sm text-gray-600">
+                Run a new analysis to create this pet&apos;s first nutrition
+                report and timeline entry.
+              </p>
+              <Link
+                href="/account/chatbot"
+                className="mt-4 inline-block rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              >
+                Run analysis
+              </Link>
+            </div>
           ) : (
             <div className="mt-4 space-y-3">
               {analysisHistory.map((item) => (
