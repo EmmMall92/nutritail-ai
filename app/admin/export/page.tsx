@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+
+type ExportKey = "foods" | "pets" | "activity";
+
 async function downloadJson(url: string, filename: string) {
   const response = await fetch(url, {
     method: "GET",
@@ -27,12 +31,23 @@ async function downloadJson(url: string, filename: string) {
 }
 
 export default function AdminExportPage() {
-  async function handleExport(url: string, filename: string) {
+  const [exporting, setExporting] = useState<ExportKey | null>(null);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  async function handleExport(key: ExportKey, url: string, filename: string) {
     try {
+      setExporting(key);
+      setError("");
+      setSuccessMessage("");
+
       await downloadJson(url, filename);
+      setSuccessMessage(`${filename} downloaded successfully.`);
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : "Export failed.");
+      setError(error instanceof Error ? error.message : "Export failed.");
+    } finally {
+      setExporting(null);
     }
   }
 
@@ -45,6 +60,18 @@ export default function AdminExportPage() {
         </p>
       </div>
 
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+          {successMessage}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-black">Export Foods</h3>
@@ -54,11 +81,16 @@ export default function AdminExportPage() {
           <button
             type="button"
             onClick={() =>
-              handleExport("/api/admin/export/foods", "foods-export.json")
+              handleExport(
+                "foods",
+                "/api/admin/export/foods",
+                "foods-export.json"
+              )
             }
-            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90"
+            disabled={exporting !== null}
+            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90 disabled:opacity-50"
           >
-            Download Foods
+            {exporting === "foods" ? "Downloading..." : "Download Foods"}
           </button>
         </div>
 
@@ -70,11 +102,16 @@ export default function AdminExportPage() {
           <button
             type="button"
             onClick={() =>
-              handleExport("/api/admin/export/pets", "pets-export.json")
+              handleExport(
+                "pets",
+                "/api/admin/export/pets",
+                "pets-export.json"
+              )
             }
-            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90"
+            disabled={exporting !== null}
+            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90 disabled:opacity-50"
           >
-            Download Pets
+            {exporting === "pets" ? "Downloading..." : "Download Pets"}
           </button>
         </div>
 
@@ -86,11 +123,18 @@ export default function AdminExportPage() {
           <button
             type="button"
             onClick={() =>
-              handleExport("/api/admin/export/activity", "activity-export.json")
+              handleExport(
+                "activity",
+                "/api/admin/export/activity",
+                "activity-export.json"
+              )
             }
-            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90"
+            disabled={exporting !== null}
+            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90 disabled:opacity-50"
           >
-            Download Activity
+            {exporting === "activity"
+              ? "Downloading..."
+              : "Download Activity"}
           </button>
         </div>
       </div>
