@@ -21,6 +21,8 @@ export default function AdminRestorePage() {
   const [resultMessage, setResultMessage] = useState("");
   const [isRestoring, setIsRestoring] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
+  const hasUploadedJson = rawText.trim().length > 0;
+  const isBusy = isPreviewing || isRestoring;
 
   async function handleFileChange(
     event: React.ChangeEvent<HTMLInputElement>
@@ -182,6 +184,12 @@ export default function AdminRestorePage() {
           </div>
         )}
 
+        {!hasUploadedJson && (
+          <p className="text-sm text-gray-600">
+            Upload a JSON backup file before previewing or restoring data.
+          </p>
+        )}
+
         {preview && (
           <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-yellow-800 space-y-2">
             <p>Total records: {preview.total}</p>
@@ -213,7 +221,7 @@ export default function AdminRestorePage() {
           <button
             type="button"
             onClick={handlePreview}
-            disabled={isPreviewing}
+            disabled={!hasUploadedJson || isBusy}
             className="rounded-lg border border-black px-5 py-3 text-black transition hover:bg-gray-100 disabled:opacity-50"
           >
             {isPreviewing ? "Previewing..." : "Preview Restore"}
@@ -222,7 +230,7 @@ export default function AdminRestorePage() {
           <button
             type="button"
             onClick={handleRestore}
-            disabled={isRestoring}
+            disabled={!hasUploadedJson || isBusy}
             className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
           >
             {isRestoring ? "Restoring..." : "Restore Data"}
