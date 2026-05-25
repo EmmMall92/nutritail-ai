@@ -5,7 +5,6 @@ import {
   previewCsvFoods,
   convertCsvToFoods,
 } from "@/lib/import/csvFoodImporter";
-import { convertExcelBufferToFoods } from "@/lib/import/excelFoodImporter";
 import type { Food } from "@/types/food";
 import type { ImportWarning } from "@/types/import-preview";
 
@@ -46,16 +45,7 @@ export default function ImportFoodsPage() {
         return;
       }
 
-      if (fileName.endsWith(".xlsx")) {
-        const buffer = await file.arrayBuffer();
-        const foods = convertExcelBufferToFoods(buffer);
-
-        setPreviewFoods(foods);
-        setWarnings([]);
-        return;
-      }
-
-      throw new Error("Unsupported file type. Please upload CSV or XLSX.");
+      throw new Error("Unsupported file type. Please upload a CSV file.");
     } catch (err) {
       console.error(err);
       setPreviewFoods([]);
@@ -101,18 +91,18 @@ export default function ImportFoodsPage() {
       <div>
         <h1 className="text-3xl font-bold text-black">Admin: Import Foods</h1>
         <p className="mt-2 text-gray-600">
-          Upload a CSV or Excel file, preview the parsed foods, and import them
-          into the database.
+          Upload a CSV file, preview the parsed foods, and import them into the
+          database.
         </p>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <label className="mb-2 block text-sm font-medium text-black">
-          Upload CSV or Excel File
+          Upload CSV File
         </label>
         <input
           type="file"
-          accept=".csv,.xlsx"
+          accept=".csv,text/csv"
           onChange={handleFileChange}
           className="block w-full text-black"
         />
