@@ -31,6 +31,7 @@ export default function AdminPetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -71,6 +72,7 @@ export default function AdminPetPage() {
 
       setIsSaving(true);
       setError("");
+      setSuccessMessage("");
 
       const response = await fetch(`/api/admin/pets/${pet.id}`, {
         method: "PATCH",
@@ -89,7 +91,7 @@ export default function AdminPetPage() {
         throw new Error(result.error || "Failed to save.");
       }
 
-      alert("Saved successfully!");
+      setSuccessMessage("Pet saved successfully.");
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Save failed.");
@@ -107,11 +109,25 @@ export default function AdminPetPage() {
 
     if (!confirmed) return;
 
-    await fetch(`/api/admin/pets/${pet.id}`, {
-      method: "DELETE",
-    });
+    try {
+      setError("");
+      setSuccessMessage("");
 
-    router.push("/admin/pets");
+      const response = await fetch(`/api/admin/pets/${pet.id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to delete pet.");
+      }
+
+      router.push("/admin/pets");
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Failed to delete pet.");
+    }
   }
 
   if (isLoading || !pet) {
@@ -123,8 +139,14 @@ export default function AdminPetPage() {
       <h2 className="text-2xl font-bold text-black">Edit Pet</h2>
 
       {error && (
-        <div className="rounded-xl bg-red-100 p-3 text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+          {successMessage}
         </div>
       )}
 
@@ -193,7 +215,7 @@ export default function AdminPetPage() {
               <option key={customer.id} value={customer.id}>
                 {customer.fullName}
                 {customer.bonusCardCode
-                  ? ` • ${customer.bonusCardCode}`
+                  ? ` / ${customer.bonusCardCode}`
                   : ""}
               </option>
             ))}
