@@ -96,3 +96,43 @@ export interface FoodValidationResult {
   errors: FoodValidationIssue[];
   completenessScore: number;
 }
+
+export interface FoodSkuMapRow {
+  formula_key: string;
+  brand: string;
+  name: string;
+  species: "dog" | "cat";
+  market: string;
+  pack_size: string;
+  barcode: string | null;
+  source_url: string | null;
+  evidence_photo_path: string | null;
+  notes: string | null;
+}
+
+export interface FoodMissingPhotoQueueRow {
+  formula_key: string;
+  brand: string;
+  name: string;
+  species: "dog" | "cat";
+  market: string;
+  missing_fields: string[];
+  data_source_url: string | null;
+  priority: "low" | "medium" | "high";
+  notes: string | null;
+}
+
+export interface FoodPhotoManifestRow {
+  formula_key: string;
+  brand_guess: string;
+  name_guess: string;
+  species_guess: "dog" | "cat" | "";
+  market: string;
+  pack_size: string;
+  barcode: string | null;
+  front_photo: string | null;
+  ingredients_photo: string | null;
+  analysis_photo: string | null;
+  calorie_photo: string | null;
+  notes: string | null;
+}
