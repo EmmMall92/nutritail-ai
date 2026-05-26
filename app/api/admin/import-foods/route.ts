@@ -12,6 +12,22 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const foods = parseImportFoods(body);
+    const ids = foods.map((food) => food.id);
+
+    const { data: existingFoods, error: existingError } = await supabase
+      .from("foods")
+      .select("id")
+      .in("id", ids);
+
+    if (existingError) {
+      console.error("Existing foods lookup error:", existingError);
+      return NextResponse.json(
+        { error: "Failed to check existing foods." },
+        { status: 500 }
+      );
+    }
+
+    const existingIds = new Set((existingFoods ?? []).map((item) => item.id));
     const dbFoods = foods.map(mapFoodToDbFood);
 
     const { data, error } = await supabase
@@ -40,6 +56,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       imported: data?.length ?? 0,
+      updatedIds: ids.filter((id) => existingIds.has(id)),
+      insertedIds: ids.filter((id) => !existingIds.has(id)),
     });
   } catch (error) {
     console.error("Import foods route error:", error);

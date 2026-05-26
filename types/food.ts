@@ -35,4 +35,6 @@ export interface Food {
   calciumPercent?: number | null;
   phosphorusPercent?: number | null;
   dataQualityStatus?: "needs_review" | "partial" | "verified" | "unknown" | null;
+  dataSourceUrl?: string | null;
+  dataNotes?: string | null;
 }

@@ -1,12 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-  previewCsvFoods,
-  convertCsvToFoods,
-} from "@/lib/import/csvFoodImporter";
+import { previewCsvFoods } from "@/lib/import/csvFoodImporter";
 import type { Food } from "@/types/food";
-import type { ImportWarning } from "@/types/import-preview";
+import type { ImportRowScore, ImportWarning } from "@/types/import-preview";
 
 type ImportResponse = {
   success: boolean;
@@ -18,6 +15,8 @@ type ImportResponse = {
 export default function ImportFoodsPage() {
   const [previewFoods, setPreviewFoods] = useState<Food[]>([]);
   const [warnings, setWarnings] = useState<ImportWarning[]>([]);
+  const [rowScores, setRowScores] = useState<ImportRowScore[]>([]);
+  const [invalidCount, setInvalidCount] = useState(0);
   const [error, setError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<ImportResponse | null>(null);
@@ -38,10 +37,11 @@ export default function ImportFoodsPage() {
         const text = await file.text();
 
         const preview = previewCsvFoods(text);
-        const foods = convertCsvToFoods(text);
 
-        setPreviewFoods(foods);
+        setPreviewFoods(preview.foods);
         setWarnings(preview.warnings);
+        setRowScores(preview.rowScores);
+        setInvalidCount(preview.invalidCount);
         return;
       }
 
@@ -50,6 +50,8 @@ export default function ImportFoodsPage() {
       console.error(err);
       setPreviewFoods([]);
       setWarnings([]);
+      setRowScores([]);
+      setInvalidCount(0);
       setError(
         err instanceof Error ? err.message : "Failed to parse import file."
       );
@@ -62,6 +64,10 @@ export default function ImportFoodsPage() {
       setIsImporting(true);
       setError("");
       setImportResult(null);
+
+      if (invalidCount > 0) {
+        throw new Error("Fix invalid rows before importing foods.");
+      }
 
       const response = await fetch("/api/admin/import-foods", {
         method: "POST",
@@ -126,7 +132,8 @@ export default function ImportFoodsPage() {
           <div className="space-y-2 text-sm">
             {warnings.slice(0, 10).map((warning, index) => (
               <p key={index}>
-                Row {warning.rowIndex} - {warning.field}: {warning.message}
+                Row {warning.rowIndex} - {warning.severity ?? "warning"} -{" "}
+                {warning.field}: {warning.message}
               </p>
             ))}
           </div>
@@ -151,14 +158,17 @@ export default function ImportFoodsPage() {
               <div>
                 <h2 className="text-xl font-semibold text-black">Preview</h2>
                 <p className="text-sm text-gray-600">
-                  Parsed {previewFoods.length} foods from the file.
+                  Parsed {previewFoods.length} foods from the file.{" "}
+                  {invalidCount > 0
+                    ? `${invalidCount} invalid rows need review.`
+                    : "All rows are importable."}
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={handleImport}
-                disabled={isImporting}
+                disabled={isImporting || invalidCount > 0}
                 className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
               >
                 {isImporting ? "Importing..." : "Import Foods"}
@@ -166,26 +176,43 @@ export default function ImportFoodsPage() {
             </div>
 
             <div className="space-y-4">
-              {previewFoods.slice(0, 10).map((food) => (
-                <div
-                  key={food.id}
-                  className="rounded-xl border border-gray-200 bg-gray-50 p-4"
-                >
-                  <p className="font-semibold text-black">
-                    {food.brand} - {food.name}
-                  </p>
-                  <p className="text-sm text-black">
-                    {food.species} / {food.lifeStage} / protein {food.protein}%
-                    {" / "}fat {food.fat}%
-                  </p>
-                  <p className="mt-1 text-sm text-black">
-                    Ingredients: {food.ingredients.join(", ")}
-                  </p>
-                  <p className="text-sm text-black">
-                    Tags: {food.tags.join(", ")}
-                  </p>
-                </div>
-              ))}
+              {previewFoods.slice(0, 10).map((food) => {
+                const rowScore = rowScores.find((score) => score.id === food.id);
+
+                return (
+                  <div
+                    key={food.id}
+                    className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-semibold text-black">
+                        {food.brand} - {food.name}
+                      </p>
+                      {rowScore && (
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            rowScore.isValid
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          Score {rowScore.completenessScore}/100
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-black">
+                      {food.species} / {food.lifeStage} / protein{" "}
+                      {food.protein}%{" / "}fat {food.fat}%
+                    </p>
+                    <p className="mt-1 text-sm text-black">
+                      Ingredients: {food.ingredients.join(", ")}
+                    </p>
+                    <p className="text-sm text-black">
+                      Tags: {food.tags.join(", ")}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
