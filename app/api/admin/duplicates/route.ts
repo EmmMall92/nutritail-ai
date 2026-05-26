@@ -51,8 +51,8 @@ export async function GET() {
 
       foodMap.get(key)!.push({
         id: String(food.id),
-        title: `${food.brand || "Unknown brand"} — ${food.name || "Unnamed food"}`,
-        subtitle: `${food.species || "unknown species"} • ${food.life_stage || "unknown stage"}`,
+        title: `${food.brand || "Unknown brand"} - ${food.name || "Unnamed food"}`,
+        subtitle: `${food.species || "unknown species"} / ${food.life_stage || "unknown stage"}`,
         href: `/admin/foods/${food.id}`,
       });
     }
@@ -80,8 +80,8 @@ export async function GET() {
 
       petMap.get(key)!.push({
         id: String(pet.id),
-        title: `${pet.name || "Unnamed pet"} — ${pet.breed || "Unknown breed"}`,
-        subtitle: `${pet.species || "unknown species"} • age ${pet.age ?? "-"} • weight ${pet.weight ?? "-"} kg`,
+        title: `${pet.name || "Unnamed pet"} - ${pet.breed || "Unknown breed"}`,
+        subtitle: `${pet.species || "unknown species"} / age ${pet.age ?? "-"} / weight ${pet.weight ?? "-"} kg`,
         href: `/admin/pets/${pet.id}`,
       });
     }

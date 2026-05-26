@@ -87,14 +87,17 @@ export default function AdminDashboardPage() {
         </div>
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {isLoading ? (
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-gray-600">Loading dashboard...</p>
+            <p className="text-sm font-medium text-black">Loading dashboard...</p>
+            <p className="mt-2 text-sm text-gray-600">
+              We are collecting admin database stats.
+            </p>
           </div>
         ) : (
           <>

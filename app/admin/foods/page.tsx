@@ -195,7 +195,7 @@ export default function AdminFoodsPage() {
         </div>
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
@@ -203,11 +203,17 @@ export default function AdminFoodsPage() {
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
           {isLoading ? (
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-gray-600">Loading foods...</p>
+              <p className="text-sm font-medium text-black">Loading foods...</p>
+              <p className="mt-2 text-sm text-gray-600">
+                We are fetching the active food catalog.
+              </p>
             </div>
           ) : filteredFoods.length === 0 ? (
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <p className="text-gray-600">No foods found.</p>
+              <p className="text-sm font-medium text-black">No foods found</p>
+              <p className="mt-2 text-sm text-gray-600">
+                Try clearing filters or add a new food to the catalog.
+              </p>
             </div>
           ) : (
             filteredFoods.map((food) => {

@@ -80,13 +80,22 @@ export default function AdminCustomerDetailPage() {
   }, [params]);
 
   if (isLoading) {
-    return <p className="text-gray-600">Loading customer...</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading customer...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching customer details, linked pets, and analysis history.
+          </p>
+        </div>
+      </section>
+    );
   }
 
   if (error || !data) {
     return (
       <section className="space-y-6">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error || "Customer not found."}
         </div>
       </section>

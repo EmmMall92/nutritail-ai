@@ -60,6 +60,7 @@ export default function AdminDuplicatesPage() {
   const [error, setError] = useState("");
   const [savingKey, setSavingKey] = useState("");
   const [mergingKey, setMergingKey] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
   const [reviews, setReviews] = useState<Record<string, ReviewState>>({});
   const [mergePreview, setMergePreview] = useState<MergePreviewState | null>(
     null
@@ -148,6 +149,8 @@ export default function AdminDuplicatesPage() {
 
     try {
       setSavingKey(key);
+      setError("");
+      setFeedbackMessage("");
 
       const response = await fetch("/api/admin/duplicate-review", {
         method: "POST",
@@ -169,11 +172,11 @@ export default function AdminDuplicatesPage() {
         throw new Error(result.error || "Failed to save review.");
       }
 
-      alert("Duplicate review saved.");
+      setFeedbackMessage("Duplicate review saved.");
       await loadDuplicates();
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to save review.");
+      setError(err instanceof Error ? err.message : "Failed to save review.");
     } finally {
       setSavingKey("");
     }
@@ -188,7 +191,8 @@ export default function AdminDuplicatesPage() {
     };
 
     if (!review.chosenRecordId) {
-      alert("Please choose which record should survive before merging.");
+      setError("Please choose which record should survive before merging.");
+      setFeedbackMessage("");
       return;
     }
 
@@ -197,7 +201,8 @@ export default function AdminDuplicatesPage() {
     );
 
     if (!survivor) {
-      alert("The selected survivor record was not found in this group.");
+      setError("The selected survivor record was not found in this group.");
+      setFeedbackMessage("");
       return;
     }
 
@@ -224,7 +229,8 @@ export default function AdminDuplicatesPage() {
     );
 
     if (!group) {
-      alert("Duplicate group could not be found.");
+      setError("Duplicate group could not be found.");
+      setFeedbackMessage("");
       return;
     }
 
@@ -232,6 +238,8 @@ export default function AdminDuplicatesPage() {
 
     try {
       setMergingKey(reviewKey);
+      setError("");
+      setFeedbackMessage("");
 
       const response = await fetch("/api/admin/duplicates/merge", {
         method: "POST",
@@ -253,11 +261,13 @@ export default function AdminDuplicatesPage() {
       }
 
       setMergePreview(null);
-      alert("Duplicate group merged successfully.");
+      setFeedbackMessage("Duplicate group merged successfully.");
       await loadDuplicates();
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to merge duplicate group.");
+      setError(
+        err instanceof Error ? err.message : "Failed to merge duplicate group."
+      );
     } finally {
       setMergingKey("");
     }
@@ -364,8 +374,14 @@ export default function AdminDuplicatesPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {error && (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {feedbackMessage && (
+          <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            {feedbackMessage}
           </div>
         )}
 
@@ -427,7 +443,7 @@ export default function AdminDuplicatesPage() {
                               <div>
                                 <p className="font-semibold text-black">
                                   {record.title}
-                                  {isChosen ? " • chosen survivor" : ""}
+                                  {isChosen ? " / chosen survivor" : ""}
                                 </p>
                                 <p className="mt-1 text-sm text-gray-600">
                                   {record.subtitle}

@@ -131,7 +131,16 @@ export default function AdminPetPage() {
   }
 
   if (isLoading || !pet) {
-    return <p className="text-gray-600">Loading...</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading pet...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching the pet profile and linked customer options.
+          </p>
+        </div>
+      </section>
+    );
   }
 
   return (
