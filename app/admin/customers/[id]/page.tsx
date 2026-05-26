@@ -192,11 +192,11 @@ export default function AdminCustomerDetailPage() {
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div>
                       <p className="font-semibold text-black">
-                        {pet.name} — {pet.breed}
+                        {pet.name} - {pet.breed || "Unknown breed"}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-600">
-                        {pet.species} • age {pet.age} • weight {pet.weight} kg •{" "}
+                        {pet.species} / age {pet.age} / weight {pet.weight} kg /{" "}
                         {pet.activity_level}
                       </p>
 
@@ -206,8 +206,8 @@ export default function AdminCustomerDetailPage() {
 
                       {latest ? (
                         <p className="mt-1 text-sm text-gray-700">
-                          Latest: RER {latest.rer} kcal • MER {latest.mer} kcal
-                          • {new Date(latest.createdAt).toLocaleString()}
+                          Latest: RER {latest.rer} kcal / MER {latest.mer} kcal
+                          / {new Date(latest.createdAt).toLocaleString()}
                         </p>
                       ) : (
                         <p className="mt-1 text-sm text-gray-500">
@@ -261,7 +261,7 @@ export default function AdminCustomerDetailPage() {
                               {new Date(item.createdAt).toLocaleString()}
                             </p>
                             <p className="text-gray-700">
-                              RER {item.rer} kcal • MER {item.mer} kcal
+                              RER {item.rer} kcal / MER {item.mer} kcal
                             </p>
                             <p className="text-xs text-gray-500">
                               Foods:{" "}
