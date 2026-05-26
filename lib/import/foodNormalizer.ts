@@ -207,23 +207,25 @@ export function normalizeFoodRow(row: RawFoodRow): NormalizedFoodRow {
       firstValue(row.kcal_per_100g, row.kcalPer100g)
     ),
     protein_percent: normalizeNutritionValue(
-      firstValue(row.protein_percent, row.proteinPercent)
+      firstValue(row.protein_percent, row.proteinPercent, row.protein)
     ),
-    fat_percent: normalizeNutritionValue(firstValue(row.fat_percent, row.fatPercent)),
+    fat_percent: normalizeNutritionValue(
+      firstValue(row.fat_percent, row.fatPercent, row.fat)
+    ),
     fiber_percent: normalizeNutritionValue(
-      firstValue(row.fiber_percent, row.fiberPercent)
+      firstValue(row.fiber_percent, row.fiberPercent, row.fiber)
     ),
     sodium_percent: normalizeNutritionValue(
-      firstValue(row.sodium_percent, row.sodiumPercent)
+      firstValue(row.sodium_percent, row.sodiumPercent, row.sodium)
     ),
     magnesium_percent: normalizeNutritionValue(
-      firstValue(row.magnesium_percent, row.magnesiumPercent)
+      firstValue(row.magnesium_percent, row.magnesiumPercent, row.magnesium)
     ),
     calcium_percent: normalizeNutritionValue(
-      firstValue(row.calcium_percent, row.calciumPercent)
+      firstValue(row.calcium_percent, row.calciumPercent, row.calcium)
     ),
     phosphorus_percent: normalizeNutritionValue(
-      firstValue(row.phosphorus_percent, row.phosphorusPercent)
+      firstValue(row.phosphorus_percent, row.phosphorusPercent, row.phosphorus)
     ),
     data_quality_status: normalizeDataQualityStatus(
       firstValue(row.data_quality_status, row.dataQualityStatus)

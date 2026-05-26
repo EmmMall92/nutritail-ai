@@ -1,6 +1,17 @@
+import {
+  normalizeBrand,
+  normalizeDataQualityStatus,
+  normalizeIngredients,
+  normalizeLifeStage as normalizeDatasetLifeStage,
+  normalizeNutritionValue,
+  normalizeTags,
+} from "@/lib/import/foodNormalizer";
+import { validateFoodRow } from "@/lib/import/foodValidation";
 import type { Food } from "@/types/food";
+import type { RawFoodRow } from "@/types/food-dataset";
 import type {
   ImportPreviewResult,
+  ImportRowScore,
   ImportWarning,
 } from "@/types/import-preview";
 
@@ -22,25 +33,55 @@ const HEADER_ALIASES: Record<string, string> = {
   animal: "species",
 
   lifeStage: "lifeStage",
+  life_stage: "lifeStage",
   lifestage: "lifeStage",
   stage: "lifeStage",
 
   activitySupport: "activitySupport",
+  activity_support: "activitySupport",
   activity: "activitySupport",
 
   healthSupport: "healthSupport",
+  health_support: "healthSupport",
   health: "healthSupport",
 
   protein: "protein",
+  proteinPercent: "proteinPercent",
+  protein_percent: "proteinPercent",
   fat: "fat",
+  fatPercent: "fatPercent",
+  fat_percent: "fatPercent",
   fiber: "fiber",
+  fiberPercent: "fiberPercent",
+  fiber_percent: "fiberPercent",
   sodium: "sodium",
+  sodiumPercent: "sodiumPercent",
+  sodium_percent: "sodiumPercent",
   magnesium: "magnesium",
+  magnesiumPercent: "magnesiumPercent",
+  magnesium_percent: "magnesiumPercent",
   calcium: "calcium",
+  calciumPercent: "calciumPercent",
+  calcium_percent: "calciumPercent",
   phosphorus: "phosphorus",
+  phosphorusPercent: "phosphorusPercent",
+  phosphorus_percent: "phosphorusPercent",
+  kcal: "kcalPer100g",
+  calories: "kcalPer100g",
+  kcalPer100g: "kcalPer100g",
+  kcal_per_100g: "kcalPer100g",
 
   ingredients: "ingredients",
   tags: "tags",
+  size: "size",
+  dataQualityStatus: "dataQualityStatus",
+  data_quality_status: "dataQualityStatus",
+  dataSourceUrl: "dataSourceUrl",
+  data_source_url: "dataSourceUrl",
+  source: "dataSourceUrl",
+  dataNotes: "dataNotes",
+  data_notes: "dataNotes",
+  notes: "dataNotes",
 };
 
 function parseCsvLine(line: string): string[] {
@@ -77,18 +118,13 @@ export function parseCsvText(csvText: string): CsvFoodRow[] {
 }
 
 function parseStringArray(value: string): string[] {
-  if (!value.trim()) return [];
-
-  return value
-    .split("|")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return normalizeTags(value);
 }
 
-function parseNumber(value: string, fieldName: string): number {
-  const parsed = Number(value);
+function parseNumber(value: string | undefined, fieldName: string): number {
+  const parsed = normalizeNutritionValue(value);
 
-  if (Number.isNaN(parsed)) {
+  if (parsed === null) {
     throw new Error(`Field "${fieldName}" must be a valid number.`);
   }
 
@@ -108,13 +144,11 @@ function normalizeSpecies(value: string): "dog" | "cat" {
 function normalizeLifeStage(
   value: string
 ): "young" | "adult" | "senior" | "all" {
-  const normalized = value.trim().toLowerCase();
+  const normalized = normalizeDatasetLifeStage(value);
 
-  if (["young", "adult", "senior", "all"].includes(normalized)) {
-    return normalized as "young" | "adult" | "senior" | "all";
+  if (normalized) {
+    return normalized;
   }
-
-  if (normalized === "puppy" || normalized === "kitten") return "young";
 
   throw new Error(`Invalid lifeStage value: ${value}`);
 }
@@ -129,6 +163,39 @@ function normalizeActivitySupport(
   }
 
   throw new Error(`Invalid activitySupport value: ${value}`);
+}
+
+function optionalNumber(value: string | undefined): number | null {
+  return normalizeNutritionValue(value);
+}
+
+function optionalString(value: string | undefined): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
+
+function csvRowToRawFoodRow(row: CsvFoodRow): RawFoodRow {
+  return {
+    id: row.id,
+    brand: row.brand,
+    name: row.name,
+    species: row.species,
+    lifeStage: row.lifeStage,
+    size: row.size,
+    tags: row.tags,
+    ingredients: row.ingredients,
+    kcalPer100g: row.kcalPer100g,
+    proteinPercent: row.proteinPercent ?? row.protein,
+    fatPercent: row.fatPercent ?? row.fat,
+    fiberPercent: row.fiberPercent ?? row.fiber,
+    sodiumPercent: row.sodiumPercent ?? row.sodium,
+    magnesiumPercent: row.magnesiumPercent ?? row.magnesium,
+    calciumPercent: row.calciumPercent ?? row.calcium,
+    phosphorusPercent: row.phosphorusPercent ?? row.phosphorus,
+    dataQualityStatus: row.dataQualityStatus,
+    dataSourceUrl: row.dataSourceUrl,
+    dataNotes: row.dataNotes,
+  };
 }
 
 export function mapCsvRowToFood(row: CsvFoodRow): Food {
@@ -146,21 +213,37 @@ export function mapCsvRowToFood(row: CsvFoodRow): Food {
 
   return {
     id: row.id.trim(),
-    brand: row.brand.trim(),
+    brand: normalizeBrand(row.brand) ?? row.brand.trim(),
     name: row.name.trim(),
     species: normalizeSpecies(row.species),
     lifeStage: normalizeLifeStage(row.lifeStage),
-    activitySupport: normalizeActivitySupport(row.activitySupport),
+    activitySupport: row.activitySupport?.trim()
+      ? normalizeActivitySupport(row.activitySupport)
+      : "all",
     healthSupport: parseStringArray(row.healthSupport),
-    protein: parseNumber(row.protein, "protein"),
-    fat: parseNumber(row.fat, "fat"),
-    fiber: parseNumber(row.fiber, "fiber"),
-    sodium: parseNumber(row.sodium, "sodium"),
-    magnesium: parseNumber(row.magnesium, "magnesium"),
-    calcium: parseNumber(row.calcium, "calcium"),
-    phosphorus: parseNumber(row.phosphorus, "phosphorus"),
-    ingredients: parseStringArray(row.ingredients),
+    protein: parseNumber(row.proteinPercent ?? row.protein, "protein"),
+    fat: parseNumber(row.fatPercent ?? row.fat, "fat"),
+    fiber: parseNumber(row.fiberPercent ?? row.fiber, "fiber"),
+    sodium: parseNumber(row.sodiumPercent ?? row.sodium, "sodium"),
+    magnesium: parseNumber(row.magnesiumPercent ?? row.magnesium, "magnesium"),
+    calcium: parseNumber(row.calciumPercent ?? row.calcium, "calcium"),
+    phosphorus: parseNumber(
+      row.phosphorusPercent ?? row.phosphorus,
+      "phosphorus"
+    ),
+    ingredients: normalizeIngredients(row.ingredients),
     tags: parseStringArray(row.tags),
+    kcalPer100g: optionalNumber(row.kcalPer100g),
+    proteinPercent: optionalNumber(row.proteinPercent ?? row.protein),
+    fatPercent: optionalNumber(row.fatPercent ?? row.fat),
+    fiberPercent: optionalNumber(row.fiberPercent ?? row.fiber),
+    sodiumPercent: optionalNumber(row.sodiumPercent ?? row.sodium),
+    magnesiumPercent: optionalNumber(row.magnesiumPercent ?? row.magnesium),
+    calciumPercent: optionalNumber(row.calciumPercent ?? row.calcium),
+    phosphorusPercent: optionalNumber(row.phosphorusPercent ?? row.phosphorus),
+    dataQualityStatus: normalizeDataQualityStatus(row.dataQualityStatus),
+    dataSourceUrl: optionalString(row.dataSourceUrl),
+    dataNotes: optionalString(row.dataNotes),
   };
 }
 
@@ -168,10 +251,44 @@ export function previewCsvFoods(csvText: string): ImportPreviewResult {
   const rows = parseCsvText(csvText);
   const foods: Food[] = [];
   const warnings: ImportWarning[] = [];
+  const rowScores: ImportRowScore[] = [];
   const seenIds = new Set<string>();
 
   rows.forEach((row, index) => {
     const rowNumber = index + 2;
+    const validation = validateFoodRow(csvRowToRawFoodRow(row));
+
+    rowScores.push({
+      rowIndex: rowNumber,
+      id: validation.normalized.id,
+      name: validation.normalized.name,
+      completenessScore: validation.completenessScore,
+      isValid: true,
+    });
+
+    validation.errors.forEach((error) => {
+      const field = String(error.field);
+      const isEnrichmentGap =
+        error.message === "Missing critical field." &&
+        ["kcal_per_100g", "data_source_url"].includes(field);
+      const isNonDogRow = error.message === "Only dog food rows are supported.";
+
+      warnings.push({
+        rowIndex: rowNumber,
+        field,
+        message: error.message,
+        severity: isEnrichmentGap || isNonDogRow ? "warning" : "error",
+      });
+    });
+
+    validation.warnings.forEach((warning) => {
+      warnings.push({
+        rowIndex: rowNumber,
+        field: String(warning.field),
+        message: warning.message,
+        severity: "warning",
+      });
+    });
 
     try {
       const food = mapCsvRowToFood(row);
@@ -181,6 +298,7 @@ export function previewCsvFoods(csvText: string): ImportPreviewResult {
           rowIndex: rowNumber,
           field: "id",
           message: `Duplicate id in file: ${food.id}`,
+          severity: "error",
         });
       } else {
         seenIds.add(food.id);
@@ -191,6 +309,7 @@ export function previewCsvFoods(csvText: string): ImportPreviewResult {
           rowIndex: rowNumber,
           field: "healthSupport",
           message: "No healthSupport values provided.",
+          severity: "warning",
         });
       }
 
@@ -199,6 +318,7 @@ export function previewCsvFoods(csvText: string): ImportPreviewResult {
           rowIndex: rowNumber,
           field: "tags",
           message: "No tags provided.",
+          severity: "warning",
         });
       }
 
@@ -209,30 +329,37 @@ export function previewCsvFoods(csvText: string): ImportPreviewResult {
         field: "row",
         message:
           error instanceof Error ? error.message : "Unknown parsing error.",
+        severity: "error",
       });
     }
   });
 
+  const invalidRows = new Set(
+    warnings
+      .filter((warning) => warning.severity === "error")
+      .map((warning) => warning.rowIndex)
+  );
+
   return {
     foods,
     warnings,
+    rowScores: rowScores.map((score) => ({
+      ...score,
+      isValid: score.isValid && !invalidRows.has(score.rowIndex),
+    })),
+    validCount: rows.length - invalidRows.size,
+    invalidCount: invalidRows.size,
   };
 }
 
 export function convertCsvToFoods(csvText: string): Food[] {
   const preview = previewCsvFoods(csvText);
-
-  const duplicateWarnings = preview.warnings.filter(
-    (warning) => warning.message.includes("Duplicate id")
+  const blockingWarnings = preview.warnings.filter(
+    (warning) => warning.severity === "error"
   );
 
-  if (duplicateWarnings.length > 0) {
-    throw new Error(duplicateWarnings[0].message);
-  }
-
-  const rowErrors = preview.warnings.filter((warning) => warning.field === "row");
-  if (rowErrors.length > 0) {
-    throw new Error(rowErrors[0].message);
+  if (blockingWarnings.length > 0) {
+    throw new Error(blockingWarnings[0].message);
   }
 
   return preview.foods;
