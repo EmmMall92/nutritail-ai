@@ -1,0 +1,29 @@
+{
+  "dataset_version": "euuk_v1",
+  "primary_market_scope": ["UK", "EU"],
+  "canonical_row_grain": "formula",
+  "sku_traceability": "sidecar",
+  "nutrient_basis": "as-fed",
+  "canonical_artifacts": {
+    "json_master": "data/imports/nutritail_foods_euuk_v1.json",
+    "csv_mirror": "data/imports/nutritail_foods_euuk_v1.csv",
+    "sku_map": "data/imports/nutritail_foods_euuk_v1_sku_map.csv",
+    "missing_photo_queue": "data/imports/nutritail_foods_missing_photo_queue.csv"
+  },
+  "schema_policy": {
+    "database_schema_changes_allowed": false,
+    "store_market_and_basis_in_data_notes": true,
+    "store_moisture_in_data_notes_until_schema_support_exists": true
+  },
+  "formula_key_rule": "slug(brand|name|species|market)",
+  "supported_species": ["dog", "cat"],
+  "life_stage_policy": {
+    "puppy": "young",
+    "kitten": "young",
+    "growth": "young",
+    "maintenance": "adult",
+    "adult": "adult",
+    "senior": "senior",
+    "all_life_stages": "all"
+  }
+}

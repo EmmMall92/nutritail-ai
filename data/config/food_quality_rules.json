@@ -1,0 +1,58 @@
+{
+  "dataset_version": "euuk_v1",
+  "source_tiers": {
+    "official": "Manufacturer product page, official product PDF, or official veterinary/spec sheet.",
+    "authorized": "Authorized retailer, distributor, or veterinary portal when manufacturer data is incomplete.",
+    "photo": "User-supplied private pack evidence.",
+    "unknown": "Placeholder or unreviewed source."
+  },
+  "data_quality_status": {
+    "verified": {
+      "requires_source_tier": "official",
+      "required_fields": [
+        "brand",
+        "name",
+        "species",
+        "ingredients",
+        "kcal_per_100g",
+        "protein_percent",
+        "fat_percent",
+        "fiber_percent",
+        "sodium_percent",
+        "magnesium_percent",
+        "calcium_percent",
+        "phosphorus_percent",
+        "data_source_url"
+      ]
+    },
+    "partial": {
+      "requires_source_tier": "official",
+      "allows_missing": ["sodium_percent", "magnesium_percent"]
+    },
+    "needs_review": {
+      "source_tiers": ["authorized", "photo"],
+      "merge_to_production": false
+    },
+    "unknown": {
+      "merge_to_production": false
+    }
+  },
+  "unit_conversions": {
+    "kcal_per_kg_to_kcal_per_100g": "kcal_per_kg / 10",
+    "kj_per_kg_to_kcal_per_100g": "kj_per_kg / 4.184 / 10",
+    "kcal_per_can_to_kcal_per_100g": "kcal_per_can / can_grams * 100",
+    "g_per_kg_to_percent": "g_per_kg / 10",
+    "mg_per_kg_to_percent": "mg_per_kg / 10000"
+  },
+  "material_delta_thresholds": {
+    "kcal_percent_delta": 5,
+    "protein_fat_fiber_absolute_points": 2,
+    "mineral_absolute_points": 0.05
+  },
+  "production_merge_policy": {
+    "merge_statuses": ["verified", "partial"],
+    "hold_statuses": ["needs_review", "unknown"],
+    "stage_before_merge": true,
+    "dedupe_by_formula_key": true
+  }
+}

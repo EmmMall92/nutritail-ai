@@ -1,0 +1,4 @@
+priority_wave,brand_cohort,source_domains,why_this_wave
+1,"Hill's Science Plan / Prescription Diet; Farmina N&D / Vet Life; Virbac Veterinary HPM; Royal Canin UK; Purina PRO PLAN / Veterinary Diets UK","hillspet.co.uk; farmina.com; uk.virbac.com; royalcanin.com/uk; purina.co.uk; vetcentre.purina.co.uk","Official-rich first wave with strong EU/UK product pages or PDFs for ingredients, analytical constituents, energy, and minerals."
+2,"ACANA / ORIJEN EMEA; SPECIFIC / Dechra; Monge / Gemon","emea.acana.com; orijenpetfoods.com; specific-guide.com; dechra.cld.bz; monge.it","Strong official sources, but extraction and sodium/magnesium availability are less uniform."
+3,"Zooplus EU; Tesco UK; authorized distributor PDFs; user-supplied store photos","zooplus.*; tesco.com; private food-evidence bucket","Controlled fallback sources for unresolved calories, sodium, magnesium, barcode, or market-specific evidence."

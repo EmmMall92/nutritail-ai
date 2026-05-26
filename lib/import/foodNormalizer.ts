@@ -5,6 +5,7 @@ import type {
   NormalizedFoodRow,
   RawFoodRow,
 } from "@/types/food-dataset";
+import { percentFromUnit } from "@/lib/import/foodUnitConversions";
 
 const NULL_STRINGS = new Set([
   "",
@@ -158,8 +159,12 @@ export function normalizeNutritionValue(value: unknown): number | null {
 
   if (!Number.isFinite(parsed)) return null;
 
+  if (lower.includes("mg/kg")) {
+    return percentFromUnit(parsed, "mg_per_kg");
+  }
+
   if (lower.includes("g/kg")) {
-    return Number((parsed / 10).toFixed(3));
+    return percentFromUnit(parsed, "g_per_kg");
   }
 
   return parsed;
