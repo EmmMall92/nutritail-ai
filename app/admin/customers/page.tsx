@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Customer = {
   id: string;
@@ -56,7 +56,9 @@ export default function AdminCustomersPage() {
     loadCustomers();
   }, []);
 
-  async function handleCreate() {
+  async function handleCreate(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     try {
       setIsCreating(true);
       setError("");
@@ -101,7 +103,10 @@ export default function AdminCustomersPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <form
+        onSubmit={handleCreate}
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      >
         <h3 className="text-lg font-semibold text-black">Add Customer</h3>
 
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -155,18 +160,17 @@ export default function AdminCustomersPage() {
           />
 
           <button
-            type="button"
-            onClick={handleCreate}
+            type="submit"
             disabled={isCreating}
             className="rounded-lg bg-black py-3 text-white transition hover:opacity-90 disabled:opacity-50 md:col-span-2"
           >
             {isCreating ? "Creating..." : "Create Customer"}
           </button>
         </div>
-      </div>
+      </form>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -192,7 +196,7 @@ export default function AdminCustomersPage() {
                     </p>
 
                     <p className="mt-1 text-sm text-gray-600">
-                      {customer.email || "-"} • {customer.phone || "-"}
+                      {customer.email || "-"} / {customer.phone || "-"}
                     </p>
 
                     {customer.bonusCardCode && (
