@@ -24,6 +24,7 @@ export default function AdminPetsPage() {
   const [pets, setPets] = useState<AdminPet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [search, setSearch] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState<"all" | "dog" | "cat">(
@@ -71,6 +72,9 @@ export default function AdminPetsPage() {
     if (!confirmed) return;
 
     try {
+      setError("");
+      setSuccessMessage("");
+
       const response = await fetch(`/api/admin/pets/${pet.id}`, {
         method: "DELETE",
       });
@@ -82,9 +86,10 @@ export default function AdminPetsPage() {
       }
 
       setPets((prev) => prev.filter((item) => item.id !== pet.id));
+      setSuccessMessage(`${pet.name} was moved to trash.`);
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "Failed to delete pet.");
+      setError(err instanceof Error ? err.message : "Failed to delete pet.");
     }
   }
 
@@ -238,8 +243,14 @@ export default function AdminPetsPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {error && (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            {successMessage}
           </div>
         )}
 
@@ -256,11 +267,11 @@ export default function AdminPetsPage() {
               <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                 <div>
                   <p className="font-semibold text-black">
-                    {pet.name} — {pet.breed}
+                    {pet.name} - {pet.breed || "Unknown breed"}
                   </p>
 
                   <p className="text-sm text-black">
-                    {pet.species} • age {pet.age} • weight {pet.weight} kg •{" "}
+                    {pet.species} / age {pet.age} / weight {pet.weight} kg /{" "}
                     {pet.activity_level}
                   </p>
                 </div>
