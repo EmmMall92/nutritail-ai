@@ -143,7 +143,10 @@ export default function PrintablePetReportPage() {
     return (
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="mx-auto max-w-4xl rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-          <p className="text-gray-600">Loading report...</p>
+          <p className="text-sm font-medium text-black">Loading report...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching the saved pet report.
+          </p>
         </div>
       </main>
     );
@@ -153,7 +156,7 @@ export default function PrintablePetReportPage() {
     return (
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="mx-auto max-w-4xl rounded-xl border border-red-200 bg-red-50 p-8 shadow-sm">
-          <p className="text-red-700">
+          <p className="text-sm text-red-700">
             {error || "Pet report not found."}
           </p>
         </div>

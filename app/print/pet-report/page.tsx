@@ -79,7 +79,12 @@ export default function PetReportPage() {
   if (!isLoaded) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        Loading report...
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading report...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are preparing the printable nutrition report.
+          </p>
+        </div>
       </main>
     );
   }
@@ -240,11 +245,11 @@ export default function PetReportPage() {
               className="rounded-xl border border-gray-200 bg-gray-50 p-4"
             >
               <p className="font-semibold">
-                {item.food.brand} — {item.food.name}
+                {item.food.brand} - {item.food.name}
               </p>
               <p className="mt-1 text-sm text-gray-700">
-                {item.food.species} • {item.food.lifeStage} • protein{" "}
-                {item.food.protein}% • fat {item.food.fat}%
+                {item.food.species} / {item.food.lifeStage} / protein{" "}
+                {item.food.protein}% / fat {item.food.fat}%
               </p>
               <p className="mt-2 text-sm">
                 <span className="font-semibold">Recommendation reasons:</span>{" "}
