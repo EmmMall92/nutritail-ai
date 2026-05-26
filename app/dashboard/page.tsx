@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const [history, setHistory] = useState<PetAnalysisHistoryType[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [pageError, setPageError] = useState("");
 
   async function loadPetHistory(petId: string) {
     try {
@@ -90,6 +91,7 @@ export default function DashboardPage() {
 
   async function handleSelectPet(pet: Pet) {
     try {
+      setPageError("");
       const analysisResult = await petAnalysisService.analyzePet(pet);
 
       const historyRecord = buildPetAnalysisHistoryRecord(pet, analysisResult);
@@ -107,7 +109,7 @@ export default function DashboardPage() {
       await loadPetHistory(pet.id);
     } catch (error) {
       console.error("Failed to analyze selected pet:", error);
-      alert("Failed to load pet analysis.");
+      setPageError("Failed to load pet analysis.");
     }
   }
 
@@ -126,6 +128,7 @@ export default function DashboardPage() {
     if (!shouldDelete) return;
 
     try {
+      setPageError("");
       await petLibraryService.deletePet(pet.id);
 
       const updatedPets = await petLibraryService.getPetsByOwner(currentUser.id);
@@ -154,14 +157,19 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error("Failed to delete pet:", error);
-      alert("Failed to delete pet profile.");
+      setPageError("Failed to delete pet profile.");
     }
   }
 
   if (!isLoaded || !session || !analysis) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <p className="text-gray-600">Loading dashboard...</p>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading dashboard...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are preparing the current pet nutrition overview.
+          </p>
+        </div>
       </main>
     );
   }
@@ -176,9 +184,15 @@ export default function DashboardPage() {
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-10">
       <DashboardHeader
         title="Pet Nutrition Dashboard"
-        description="Here is your pet’s personalized nutrition overview."
+        description="Here is your pet's personalized nutrition overview."
         userName={currentUser.name}
       />
+
+      {pageError && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {pageError}
+        </div>
+      )}
 
       <PetSummaryStats pet={pet} nutrition={nutrition} />
 
@@ -204,7 +218,7 @@ export default function DashboardPage() {
           rel="noreferrer"
           className="rounded-lg border border-black px-5 py-3 text-black transition hover:bg-gray-100"
         >
-        Print Report
+          Print Report
         </a>
       </div>
 

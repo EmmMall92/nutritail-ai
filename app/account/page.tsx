@@ -39,10 +39,12 @@ export default function AccountPage() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [pets, setPets] = useState<AccountPet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadAccount() {
       try {
+        setError("");
         const supabase = createClient();
         const { data } = await supabase.auth.getSession();
 
@@ -91,6 +93,7 @@ export default function AccountPage() {
         }
       } catch (error) {
         console.error(error);
+        setError(error instanceof Error ? error.message : "Failed to load account.");
       } finally {
         setIsLoading(false);
       }
@@ -100,11 +103,26 @@ export default function AccountPage() {
   }, [router]);
 
   if (isLoading) {
-    return <p className="text-gray-600">Loading account...</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading account...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching your profile, saved pets, and analysis summary.
+          </p>
+        </div>
+      </section>
+    );
   }
 
   if (!customer) {
-    return <p className="text-red-600">Could not load account.</p>;
+    return (
+      <section className="space-y-6">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
+          {error || "Could not load account."}
+        </div>
+      </section>
+    );
   }
 
   const totalAnalyses = pets.reduce(
