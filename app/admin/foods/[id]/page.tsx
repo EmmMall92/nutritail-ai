@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 type DataQualityStatus = "needs_review" | "partial" | "verified" | "unknown";
@@ -160,7 +160,9 @@ export default function AdminFoodDetailPage() {
     loadFood();
   }, [isNew, loadFood]);
 
-  async function handleSave() {
+  async function handleSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     if (!food) return;
 
     try {
@@ -301,7 +303,12 @@ export default function AdminFoodDetailPage() {
   if (isLoading) {
     return (
       <section className="space-y-6">
-        <p className="text-gray-600">Loading food...</p>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-black">Loading food...</p>
+          <p className="mt-2 text-sm text-gray-600">
+            We are fetching product details and nutrition fields.
+          </p>
+        </div>
       </section>
     );
   }
@@ -338,18 +345,21 @@ export default function AdminFoodDetailPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
         </div>
       )}
 
       {savedMessage && (
-        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-700">
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           {savedMessage}
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2">
+      <form
+        onSubmit={handleSave}
+        className="grid grid-cols-1 gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid-cols-2"
+      >
         <div>
           <label className="mb-2 block text-sm font-medium text-black">
             Brand
@@ -636,8 +646,7 @@ export default function AdminFoodDetailPage() {
 
         <div className="md:col-span-2 flex flex-wrap gap-3">
           <button
-            type="button"
-            onClick={handleSave}
+            type="submit"
             disabled={isSaving}
             className="rounded-xl bg-black px-6 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
           >
@@ -655,7 +664,7 @@ export default function AdminFoodDetailPage() {
             </button>
           )}
         </div>
-      </div>
+      </form>
     </section>
   );
 }
