@@ -4,6 +4,8 @@ import { adminActivityLogService } from "@/services/adminActivityLogService";
 import { adminDuplicateReviewService } from "@/services/adminDuplicateReviewService";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
+const SUPPORTED_DUPLICATE_TYPES = new Set(["pet", "food"]);
+
 export async function POST(request: Request) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -11,14 +13,22 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const duplicateType = String(body.duplicateType ?? "");
-    const duplicateKey = String(body.duplicateKey ?? "");
-    const chosenRecordId = String(body.chosenRecordId ?? "");
+    const duplicateType = String(body.duplicateType ?? "")
+      .trim()
+      .toLowerCase();
+    const duplicateKey = String(body.duplicateKey ?? "").trim();
+    const chosenRecordId = String(body.chosenRecordId ?? "").trim();
     const recordIds: string[] = Array.isArray(body.recordIds)
-      ? body.recordIds.map((id: unknown) => String(id))
+      ? Array.from(
+          new Set(
+            body.recordIds
+              .map((id: unknown) => String(id).trim())
+              .filter(Boolean)
+          )
+        )
       : [];
 
-    if (!["pet", "food"].includes(duplicateType)) {
+    if (!SUPPORTED_DUPLICATE_TYPES.has(duplicateType)) {
       return NextResponse.json(
         { error: "Only pet and food merge are supported." },
         { status: 400 }
