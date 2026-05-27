@@ -153,10 +153,22 @@ function parseListOrEmpty(text: string) {
 
   if (no) return [];
 
-  return text
-    .split(",")
+  const seen = new Set<string>();
+  const items: string[] = [];
+
+  text
+    .split(/[,|\n]+/)
     .map((item) => item.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .forEach((item) => {
+      const key = item.toLowerCase();
+      if (seen.has(key)) return;
+
+      seen.add(key);
+      items.push(item);
+    });
+
+  return items;
 }
 
 function parseWeightGoal(text: string): WeightGoal | null {
