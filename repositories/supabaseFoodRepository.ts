@@ -59,6 +59,8 @@ export const supabaseFoodRepository = {
       .from("foods")
       .select("*")
       .eq("id", foodId)
+      .is("deleted_at", null)
+      .in("data_quality_status", ["partial", "verified"])
       .maybeSingle();
 
     if (error) {
