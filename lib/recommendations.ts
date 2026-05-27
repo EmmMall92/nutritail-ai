@@ -1,4 +1,8 @@
 import { scoreFoodForPet } from "@/lib/foodScoring";
+import {
+  foodSupportsCondition,
+  hasPetCondition,
+} from "@/lib/petConditionSignals";
 import { getPetLifeStage } from "@/lib/petLifeStage";
 import { foodCatalogService } from "@/services/foodCatalogService";
 import type { Pet } from "@/types/pet";
@@ -24,7 +28,6 @@ function containsAllergen(food: Food, allergies: string[]) {
 
 function buildReasons(food: Food, pet: Pet): string[] {
   const reasons: string[] = [];
-  const healthIssues = pet.healthIssues?.map((h) => h.toLowerCase()) ?? [];
   const petLifeStage = getPetLifeStage(pet);
 
   if (food.species === pet.species) {
@@ -42,21 +45,27 @@ function buildReasons(food: Food, pet: Pet): string[] {
     reasons.push(`Supports ${pet.activityLevel} activity level.`);
   }
 
-  if (healthIssues.some((issue) => issue.includes("obesity"))) {
-    if (food.healthSupport.includes("weight control")) {
+  if (hasPetCondition(pet.healthIssues, "weight")) {
+    if (foodSupportsCondition(food, "weight")) {
       reasons.push("Helpful for weight control.");
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("kidney"))) {
-    if (food.healthSupport.includes("kidney support")) {
+  if (hasPetCondition(pet.healthIssues, "kidney")) {
+    if (foodSupportsCondition(food, "kidney")) {
       reasons.push("Better suited for kidney support.");
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("sensitive"))) {
-    if (food.healthSupport.includes("sensitive stomach")) {
+  if (hasPetCondition(pet.healthIssues, "digestive")) {
+    if (foodSupportsCondition(food, "digestive")) {
       reasons.push("Designed for sensitive digestion.");
+    }
+  }
+
+  if (hasPetCondition(pet.healthIssues, "urinary")) {
+    if (foodSupportsCondition(food, "urinary")) {
+      reasons.push("Supports urinary health needs.");
     }
   }
 
@@ -70,7 +79,6 @@ function buildReasons(food: Food, pet: Pet): string[] {
 function getRecommendationScore(food: Food, pet: Pet): number {
   let score = 0;
 
-  const healthIssues = pet.healthIssues?.map((h) => h.toLowerCase()) ?? [];
   const petLifeStage = getPetLifeStage(pet);
 
   if (matchesLifeStage(food, petLifeStage)) score += 2;
@@ -82,16 +90,20 @@ function getRecommendationScore(food: Food, pet: Pet): number {
     score += 1;
   }
 
-  if (healthIssues.some((issue) => issue.includes("obesity"))) {
-    if (food.healthSupport.includes("weight control")) score += 4;
+  if (hasPetCondition(pet.healthIssues, "weight")) {
+    if (foodSupportsCondition(food, "weight")) score += 4;
   }
 
-  if (healthIssues.some((issue) => issue.includes("kidney"))) {
-    if (food.healthSupport.includes("kidney support")) score += 4;
+  if (hasPetCondition(pet.healthIssues, "kidney")) {
+    if (foodSupportsCondition(food, "kidney")) score += 4;
   }
 
-  if (healthIssues.some((issue) => issue.includes("sensitive"))) {
-    if (food.healthSupport.includes("sensitive stomach")) score += 4;
+  if (hasPetCondition(pet.healthIssues, "digestive")) {
+    if (foodSupportsCondition(food, "digestive")) score += 4;
+  }
+
+  if (hasPetCondition(pet.healthIssues, "urinary")) {
+    if (foodSupportsCondition(food, "urinary")) score += 4;
   }
 
   if (petLifeStage === "senior" && food.lifeStage === "senior") score += 3;

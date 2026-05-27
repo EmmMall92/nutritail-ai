@@ -1,4 +1,8 @@
 import { getPetLifeStage } from "@/lib/petLifeStage";
+import {
+  foodSupportsCondition,
+  hasPetCondition,
+} from "@/lib/petConditionSignals";
 import type { Food } from "@/types/food";
 import type { Pet } from "@/types/pet";
 
@@ -11,7 +15,6 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   let score = 0;
   const reasons: string[] = [];
 
-  const healthIssues = pet.healthIssues?.map((item) => item.toLowerCase()) ?? [];
   const allergies = pet.allergies?.map((item) => item.toLowerCase()) ?? [];
   const petLifeStage = getPetLifeStage(pet);
 
@@ -30,8 +33,8 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     reasons.push(`Suitable for ${pet.activityLevel} activity level.`);
   }
 
-  if (healthIssues.some((issue) => issue.includes("obesity"))) {
-    if (food.healthSupport.includes("weight control")) {
+  if (hasPetCondition(pet.healthIssues, "weight")) {
+    if (foodSupportsCondition(food, "weight")) {
       score += 3;
       reasons.push("Supports weight control.");
     }
@@ -47,8 +50,8 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("kidney"))) {
-    if (food.healthSupport.includes("kidney support")) {
+  if (hasPetCondition(pet.healthIssues, "kidney")) {
+    if (foodSupportsCondition(food, "kidney")) {
       score += 3;
       reasons.push("Supports kidney health.");
     }
@@ -64,10 +67,17 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("sensitive"))) {
-    if (food.healthSupport.includes("sensitive stomach")) {
+  if (hasPetCondition(pet.healthIssues, "digestive")) {
+    if (foodSupportsCondition(food, "digestive")) {
       score += 3;
       reasons.push("Supports sensitive digestion.");
+    }
+  }
+
+  if (hasPetCondition(pet.healthIssues, "urinary")) {
+    if (foodSupportsCondition(food, "urinary")) {
+      score += 3;
+      reasons.push("Supports urinary health needs.");
     }
   }
 
