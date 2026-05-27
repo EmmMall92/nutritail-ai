@@ -25,13 +25,16 @@ export type PetAnalysisComparison = {
 function buildSummary(params: {
   rerDelta: number;
   merDelta: number;
+  energyComparable: boolean;
   weightDelta?: number;
   addedFoodIds: string[];
   removedFoodIds: string[];
 }) {
   const summary: string[] = [];
 
-  if (params.merDelta > 0) {
+  if (!params.energyComparable) {
+    summary.push("Energy comparison is unavailable for this analysis pair.");
+  } else if (params.merDelta > 0) {
     summary.push("Energy needs increased compared to the previous analysis.");
   } else if (params.merDelta < 0) {
     summary.push("Energy needs decreased compared to the previous analysis.");
@@ -74,10 +77,17 @@ export function comparePetAnalyses(
   );
 
   const hasWeights =
-    typeof previous.weight === "number" && typeof current.weight === "number";
+    typeof previous.weight === "number" &&
+    typeof current.weight === "number" &&
+    Number.isFinite(previous.weight) &&
+    Number.isFinite(current.weight);
 
-  const rerDelta = current.rer - previous.rer;
-  const merDelta = current.mer - previous.mer;
+  const rerComparable =
+    Number.isFinite(current.rer) && Number.isFinite(previous.rer);
+  const merComparable =
+    Number.isFinite(current.mer) && Number.isFinite(previous.mer);
+  const rerDelta = rerComparable ? current.rer - previous.rer : 0;
+  const merDelta = merComparable ? current.mer - previous.mer : 0;
   const weightDelta = hasWeights ? current.weight! - previous.weight! : undefined;
 
   return {
@@ -102,6 +112,7 @@ export function comparePetAnalyses(
     summary: buildSummary({
       rerDelta,
       merDelta,
+      energyComparable: rerComparable && merComparable,
       weightDelta,
       addedFoodIds,
       removedFoodIds,
