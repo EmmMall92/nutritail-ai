@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "validate:foods": "node scripts/data/validate-food-import.mjs"
+    "validate:foods": "node scripts/data/validate-food-import.mjs",
+    "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
