@@ -35,6 +35,16 @@ function toFiniteNumber(value: number | null | undefined) {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
+function hasHealthIssue(
+  healthIssues: string[] | null | undefined,
+  keywords: string[]
+) {
+  return (healthIssues ?? [])
+    .map((issue) => issue.trim().toLowerCase())
+    .filter(Boolean)
+    .some((issue) => keywords.some((keyword) => issue.includes(keyword)));
+}
+
 export function generateNutritionInsights(
   input: NutritionInsightInput
 ): NutritionInsightResult {
@@ -81,11 +91,7 @@ export function generateNutritionInsights(
     cautions.push("Weight loss plans require controlled calorie intake.");
   }
 
-  if (
-    input.healthIssues?.some((issue) =>
-      issue.toLowerCase().includes("obesity")
-    )
-  ) {
+  if (hasHealthIssue(input.healthIssues, ["obesity", "overweight"])) {
     cautions.push(
       "Obesity management may require lower calorie density foods."
     );
