@@ -8,20 +8,20 @@ export function getFoodScoreLabel(score: number) {
 
 export function buildFoodScoreExplanation(score: number) {
   if (score >= 85) {
-    return "Η τροφή φαίνεται πολύ καλή επιλογή με βάση τα στοιχεία του κατοικιδίου.";
+    return "This food looks like a strong match based on the pet profile and available food data.";
   }
 
   if (score >= 70) {
-    return "Η τροφή φαίνεται αρκετά κατάλληλη, με μερικά σημεία που αξίζει να προσέξεις.";
+    return "This food looks like a good fit, with a few details worth monitoring.";
   }
 
   if (score >= 55) {
-    return "Η τροφή μπορεί να είναι αποδεκτή επιλογή, αλλά ίσως υπάρχουν καλύτερες εναλλακτικές.";
+    return "This food may be acceptable, but there may be better-matched alternatives.";
   }
 
   if (score >= 40) {
-    return "Η τροφή φαίνεται μέτρια επιλογή για το συγκεκριμένο προφίλ.";
+    return "This food looks like a moderate match for this specific profile.";
   }
 
-  return "Η τροφή ίσως δεν είναι η καλύτερη επιλογή για τις ανάγκες του κατοικιδίου.";
+  return "This food may not be the best fit for the pet's current needs.";
 }
