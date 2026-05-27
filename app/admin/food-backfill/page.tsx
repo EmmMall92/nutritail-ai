@@ -76,6 +76,11 @@ export default function AdminFoodBackfillPage() {
           Prioritized formulas that need official PDFs, manufacturer responses,
           or label photos before the chatbot can speak confidently.
         </p>
+        <p className="mt-2 text-sm text-gray-500">
+          Generated artifacts: data/review/food_backfill_priority_queue.csv,
+          data/review/food_backfill_priority_queue.json, and
+          reports/food_backfill_evidence_requests.md.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

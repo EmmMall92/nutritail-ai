@@ -6,6 +6,7 @@ const paths = {
   report: "reports/food_backfill_priority_queue.md",
   csv: "data/review/food_backfill_priority_queue.csv",
   json: "data/review/food_backfill_priority_queue.json",
+  requests: "reports/food_backfill_evidence_requests.md",
 };
 
 const coreFields = [
@@ -35,6 +36,24 @@ function rowLabel(row) {
   return `${row.brand ?? "Unknown brand"} - ${row.name ?? "Unnamed formula"}`;
 }
 
+function marketFromNotes(notes) {
+  const match = String(notes ?? "").match(/(?:^|;\s*)market=([^;]+)/i);
+  return match?.[1]?.trim() || "source market";
+}
+
+function buildRequestText(item) {
+  const market = marketFromNotes(item.notes);
+  const missing = item.missing.join(", ");
+  const label = `${item.brand} ${item.name}`.trim();
+
+  return [
+    `Please provide official labelled/as-fed analytical values for ${label} (${item.species}, ${market}).`,
+    `Missing fields: ${missing}.`,
+    "Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market.",
+    `Current source: ${item.source || "not recorded"}.`,
+  ].join(" ");
+}
+
 function buildQueue(rows) {
   return rows
     .map((row) => {
@@ -47,7 +66,7 @@ function buildQueue(rows) {
           ? "official_pdf_or_label_photo"
           : "official_pdf_manufacturer_response_or_label_photo";
 
-      return {
+      const item = {
         label: rowLabel(row),
         brand: row.brand ?? "",
         name: row.name ?? "",
@@ -60,6 +79,11 @@ function buildQueue(rows) {
         evidenceNeeded,
         source: row.data_source_url ?? "",
         notes: row.data_notes ?? "",
+      };
+
+      return {
+        ...item,
+        requestText: buildRequestText(item),
       };
     })
     .filter(
@@ -88,6 +112,7 @@ function renderCsv(queue) {
     "status",
     "missing_fields",
     "evidence_needed",
+    "request_text",
     "source_url",
     "notes",
   ];
@@ -103,6 +128,7 @@ function renderCsv(queue) {
         item.status,
         item.missing,
         item.evidenceNeeded,
+        item.requestText,
         item.source,
         item.notes,
       ]
@@ -141,6 +167,8 @@ Generated: ${now}
 - Medium priority: ${counts.medium}
 - Low priority: ${counts.low}
 - CSV queue: ${paths.csv}
+- JSON queue: ${paths.json}
+- Evidence request templates: ${paths.requests}
 
 ## High Priority
 
@@ -172,7 +200,54 @@ ${mediumItems
 2. Use official manufacturer pages or PDFs before retailer sources.
 3. Use label photos only for rows that official sources cannot complete.
 4. Keep rows as partial or needs_review until source evidence is strong enough.
-5. Re-run npm run review:foods and npm run review:backfill after every batch.
+5. Re-run npm run review:backfill after every batch.
+`;
+}
+
+function renderEvidenceRequests(queue) {
+  const now = new Date().toISOString();
+  const byBrand = queue.reduce((acc, item) => {
+    acc[item.brand] ??= [];
+    acc[item.brand].push(item);
+    return acc;
+  }, {});
+
+  const sections = Object.entries(byBrand)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([brand, items]) => {
+      const rows = items
+        .map(
+          (item) =>
+            `- ${item.name} (${item.species}): missing ${item.missing.join(
+              ", "
+            )}; market=${marketFromNotes(item.notes)}; source=${
+              item.source || "n/a"
+            }`
+        )
+        .join("\n");
+
+      return `## ${brand}
+
+Request:
+
+Hello ${brand} team,
+
+We are verifying nutrition data for NutriTail AI. Could you please provide official as-fed analytical values or a technical sheet for the formulas below, specifically for the missing fields listed? We are looking for kcal/100g or kcal/kg, calcium, phosphorus, sodium, and magnesium where available, plus confirmation of market/pack variant.
+
+Rows:
+
+${rows}
+`;
+    })
+    .join("\n");
+
+  return `# Food Backfill Evidence Requests
+
+Generated: ${now}
+
+Use these request blocks for manufacturer support emails, official distributor contacts, or label-photo collection planning. Do not update production rows until the evidence source is saved in notes and the row is re-reviewed.
+
+${sections}
 `;
 }
 
@@ -192,11 +267,13 @@ async function main() {
   await writeFile(paths.report, report);
   await writeFile(paths.csv, `${csv}\n`);
   await writeFile(paths.json, `${JSON.stringify(queue, null, 2)}\n`);
+  await writeFile(paths.requests, renderEvidenceRequests(queue));
 
   console.log(`Reviewed ${rows.length} food rows for backfill priorities.`);
   console.log(`Report written to ${paths.report}`);
   console.log(`CSV written to ${paths.csv}`);
   console.log(`JSON written to ${paths.json}`);
+  console.log(`Evidence requests written to ${paths.requests}`);
 }
 
 main().catch((error) => {

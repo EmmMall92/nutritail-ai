@@ -16,6 +16,18 @@ function getFeedbackType(log: AdminActivityLog) {
   return String(log.metadata?.eventType ?? log.action ?? "unknown");
 }
 
+function getFeedbackContext(log: AdminActivityLog) {
+  const context = log.metadata?.context;
+  return typeof context === "object" && context !== null
+    ? (context as Record<string, unknown>)
+    : {};
+}
+
+function getCurrentFoodName(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  return String(context.currentFoodName ?? log.metadata?.message ?? "").trim();
+}
+
 export default function AdminChatFeedbackPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,6 +76,19 @@ export default function AdminChatFeedbackPage() {
   const notHelpful = feedbackLogs.filter(
     (log) => String(log.metadata?.rating ?? "") === "not_helpful"
   );
+  const helpfulnessTotal = helpful.length + notHelpful.length;
+  const helpfulRate =
+    helpfulnessTotal > 0 ? Math.round((helpful.length / helpfulnessTotal) * 100) : 0;
+  const failedMatchTrends = Object.entries(
+    failedMatches.reduce<Record<string, number>>((acc, log) => {
+      const foodName = getCurrentFoodName(log) || "Unknown food query";
+      acc[foodName] = (acc[foodName] ?? 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([query, count]) => ({ query, count }))
+    .sort((a, b) => b.count - a.count || a.query.localeCompare(b.query))
+    .slice(0, 8);
 
   return (
     <section className="space-y-6">
@@ -95,10 +120,66 @@ export default function AdminChatFeedbackPage() {
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Not helpful</p>
+          <p className="text-sm text-gray-500">Helpful rate</p>
           <p className="mt-2 text-3xl font-bold text-black">
-            {notHelpful.length}
+            {helpfulnessTotal > 0 ? `${helpfulRate}%` : "-"}
           </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-black">
+            Failed Match Trends
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">
+            Repeated queries here should feed the food-data cleanup backlog.
+          </p>
+
+          {failedMatchTrends.length === 0 ? (
+            <p className="mt-4 text-sm text-gray-600">
+              No failed food match trends yet.
+            </p>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {failedMatchTrends.map((item) => (
+                <div
+                  key={item.query}
+                  className="flex items-start justify-between gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3"
+                >
+                  <p className="break-words text-sm font-medium text-black">
+                    {item.query}
+                  </p>
+                  <span className="rounded-full bg-black px-2 py-1 text-xs font-semibold text-white">
+                    {item.count}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-black">
+            Helpfulness Snapshot
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">
+            Lightweight feedback signal for chatbot answer quality.
+          </p>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+              <p className="text-sm text-green-700">Helpful</p>
+              <p className="mt-2 text-2xl font-bold text-green-800">
+                {helpful.length}
+              </p>
+            </div>
+            <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+              <p className="text-sm text-red-700">Not helpful</p>
+              <p className="mt-2 text-2xl font-bold text-red-800">
+                {notHelpful.length}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

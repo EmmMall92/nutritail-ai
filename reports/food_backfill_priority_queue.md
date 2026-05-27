@@ -1,6 +1,6 @@
 # Food Backfill Priority Queue
 
-Generated: 2026-05-27T20:38:07.365Z
+Generated: 2026-05-27T20:43:31.507Z
 
 ## Summary
 
@@ -10,6 +10,8 @@ Generated: 2026-05-27T20:38:07.365Z
 - Medium priority: 26
 - Low priority: 0
 - CSV queue: data/review/food_backfill_priority_queue.csv
+- JSON queue: data/review/food_backfill_priority_queue.json
+- Evidence request templates: reports/food_backfill_evidence_requests.md
 
 ## High Priority
 
@@ -46,4 +48,4 @@ Generated: 2026-05-27T20:38:07.365Z
 2. Use official manufacturer pages or PDFs before retailer sources.
 3. Use label photos only for rows that official sources cannot complete.
 4. Keep rows as partial or needs_review until source evidence is strong enough.
-5. Re-run npm run review:foods and npm run review:backfill after every batch.
+5. Re-run npm run review:backfill after every batch.
