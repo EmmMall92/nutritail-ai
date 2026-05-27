@@ -13,9 +13,14 @@ const requiredSignals = [
   "digestive",
   "ingredient_myth",
   "kidney",
+  "large_breed",
   "low_confidence_match",
   "needs_context",
+  "neutered",
   "product_lookup",
+  "growth",
+  "senior",
+  "urgent",
   "urinary",
   "weight",
 ];
@@ -84,6 +89,10 @@ function inferSignals(prompt) {
 
   if (includesAny(text, ["kidney", "renal", "ckd", "νεφρ"])) {
     signals.add("kidney");
+  }
+
+  if (includesAny(text, ["senior", "old dog", "8+", "11 years", "12 years"])) {
+    signals.add("senior");
   }
 
   if (includesAny(text, ["puppy", "5 months", "growth"])) {

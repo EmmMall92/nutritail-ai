@@ -1,18 +1,18 @@
 # Chatbot Golden Eval Summary
 
-Generated: 2026-05-27T20:43:41.868Z
+Generated: 2026-05-27T21:03:27.680Z
 
 ## Result
 
 PASS
 
-Cases: 10
-Passed: 10
+Cases: 14
+Passed: 14
 Failed: 0
 
 ## Coverage
 
-Signals covered: allergy, chicken, compare, digestive, growth, ingredient_myth, kidney, large_breed, low_confidence_match, needs_context, neutered, product_lookup, urgent, urinary, weight
+Signals covered: allergy, chicken, compare, digestive, growth, ingredient_myth, kidney, large_breed, low_confidence_match, needs_context, neutered, product_lookup, senior, urgent, urinary, weight
 Missing signals: none
 
 Safety levels covered: caution, normal, urgent
@@ -30,3 +30,7 @@ Missing safety levels: none
 - PASS low-confidence-product: normal / low_confidence_match; inferred=normal / low_confidence_match, product_lookup
 - PASS grain-myth: normal / ingredient_myth; inferred=normal / ingredient_myth
 - PASS best-food-vague: normal / needs_context; inferred=normal / needs_context
+- PASS senior-kidney-context: caution / senior, kidney; inferred=caution / kidney, senior
+- PASS greeklish-urinary-dog: caution / urinary; inferred=caution / urinary
+- PASS large-puppy-product-lookup: normal / growth, large_breed, compare, product_lookup; inferred=normal / compare, growth, large_breed, product_lookup
+- PASS neutered-treat-calories: normal / neutered, weight; inferred=normal / neutered, weight

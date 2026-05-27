@@ -41,6 +41,18 @@
       "brand": "Ambrosia",
       "name": "Fresh Salmon & Rabbit Adult Dog",
       "species": "dog"
+    },
+    {
+      "id": "royal-canin-maxi-adult-5-plus",
+      "brand": "Royal Canin",
+      "name": "Maxi Adult 5+",
+      "species": "dog"
+    },
+    {
+      "id": "royal-canin-mini-digestive-care",
+      "brand": "Royal Canin",
+      "name": "Mini Digestive Care",
+      "species": "dog"
     }
   ],
   "cases": [
@@ -134,6 +146,27 @@
       "species": "dog",
       "expectedTopId": "ambrosia-fresh-salmon-rabbit",
       "minimumScore": 30
+    },
+    {
+      "id": "royal-canin-maxi-5-plus",
+      "query": "RC maxi 5+",
+      "species": "dog",
+      "expectedTopId": "royal-canin-maxi-adult-5-plus",
+      "minimumScore": 30
+    },
+    {
+      "id": "royal-canin-digestive-mini",
+      "query": "royal canin digestive care mini",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-digestive-care",
+      "minimumScore": 40
+    },
+    {
+      "id": "zooplus-digestive-care-query",
+      "query": "zooplus mini digestive care",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-digestive-care",
+      "minimumScore": 20
     }
   ]
 }

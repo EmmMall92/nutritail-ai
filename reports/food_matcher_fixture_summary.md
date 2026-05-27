@@ -1,13 +1,13 @@
 # Food Matcher Fixture Summary
 
-Generated: 2026-05-27T20:43:41.873Z
+Generated: 2026-05-27T21:03:27.728Z
 
 ## Result
 
 PASS
 
-Cases: 13
-Passed: 13
+Cases: 16
+Passed: 16
 Failed: 0
 
 ## Cases
@@ -25,3 +25,6 @@ Failed: 0
 - PASS pro-plan-hyphen: pro-plan medium adult -> purina-pro-plan-medium-adult (130)
 - PASS hills-apostrophe: hills small mini chicken -> hills-science-plan-small-mini-chicken (70)
 - PASS ambrosia-ampersand: Ambrosia salmon rabbit -> ambrosia-fresh-salmon-rabbit (70)
+- PASS royal-canin-maxi-5-plus: RC maxi 5+ -> royal-canin-maxi-adult-5-plus (80)
+- PASS royal-canin-digestive-mini: royal canin digestive care mini -> royal-canin-mini-digestive-care (90)
+- PASS zooplus-digestive-care-query: zooplus mini digestive care -> royal-canin-mini-digestive-care (90)
