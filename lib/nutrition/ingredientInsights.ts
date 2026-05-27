@@ -44,15 +44,19 @@ export function generateIngredientInsights(
     text.includes("maize") ||
     text.includes("wheat")
   ) {
-    cautions.push(
-      "Includes grains such as corn/maize/wheat. This is not always negative, but should be reviewed per pet."
+    positives.push(
+      "Includes common carbohydrate sources such as corn/maize/wheat, which can provide usable energy when tolerated."
     );
   }
 
   if (
     text.includes("prebiotic") ||
     text.includes("fos") ||
-    text.includes("mos")
+    text.includes("mos") ||
+    text.includes("chicory") ||
+    text.includes("inulin") ||
+    text.includes("beet pulp") ||
+    text.includes("psyllium")
   ) {
     positives.push(
       "Includes prebiotic ingredients that may support digestion."
