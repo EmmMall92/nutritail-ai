@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
+import { validatePetAnalysisPayload } from "@/lib/petRequestValidation";
 import { petAnalysisService } from "@/services/petAnalysisService";
 
 export async function POST(request: Request) {
   try {
-    const pet = await request.json();
+    const validation = validatePetAnalysisPayload(await request.json());
 
-    const analysis = petAnalysisService.analyzePet(pet);
+    if (!validation.ok) {
+      return NextResponse.json(
+        {
+          error: validation.error,
+        },
+        { status: 400 }
+      );
+    }
+
+    const analysis = await petAnalysisService.analyzePet(validation.pet);
 
     return NextResponse.json(analysis);
   } catch (error) {
