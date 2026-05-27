@@ -22,7 +22,10 @@ const GI_TERMS = [
 const ALLERGY_TERMS = ["allergy", "allergic", "itch", "skin", "ear", "αλλεργ"];
 
 function hasTerm(values: string[] | undefined, terms: string[]) {
-  const text = (values ?? []).join(" ").toLowerCase();
+  const text = (values ?? [])
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean)
+    .join(" ");
 
   return terms.some((term) => text.includes(term));
 }
@@ -35,7 +38,12 @@ function pushAdvice(advice: Advice[], nextAdvice: Advice) {
 
 export function generateNutritionAdvice(pet: Pet): Advice[] {
   const advice: Advice[] = [];
-  const healthIssues = pet.healthIssues ?? [];
+  const healthIssues = (pet.healthIssues ?? [])
+    .map((issue) => issue.trim())
+    .filter(Boolean);
+  const allergies = (pet.allergies ?? [])
+    .map((allergy) => allergy.trim())
+    .filter(Boolean);
 
   if (pet.age >= 7) {
     pushAdvice(advice, {
@@ -79,7 +87,7 @@ export function generateNutritionAdvice(pet: Pet): Advice[] {
     });
   }
 
-  if ((pet.allergies && pet.allergies.length > 0) || hasTerm(healthIssues, ALLERGY_TERMS)) {
+  if (allergies.length > 0 || hasTerm(healthIssues, ALLERGY_TERMS)) {
     pushAdvice(advice, {
       title: "Food Allergies",
       description:
