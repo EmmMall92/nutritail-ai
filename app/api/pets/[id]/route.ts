@@ -13,6 +13,7 @@ export async function GET(_: Request, context: Context) {
       .from("pets")
       .select("*")
       .eq("id", id)
+      .is("deleted_at", null)
       .maybeSingle();
 
     if (error) {
