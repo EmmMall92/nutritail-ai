@@ -25,9 +25,12 @@ const URINARY_TERMS = [
   "urine",
   "ουρο",
   "κατουρ",
+  "ouro",
+  "ourin",
+  "katour",
 ];
 
-const KIDNEY_TERMS = ["kidney", "renal", "ckd", "νεφρ"];
+const KIDNEY_TERMS = ["kidney", "renal", "ckd", "νεφρ", "nefr", "nefro"];
 const GI_TERMS = [
   "vomit",
   "vomiting",
@@ -39,6 +42,9 @@ const GI_TERMS = [
   "gastro",
   "εμετ",
   "διαρ",
+  "emet",
+  "diarr",
+  "gastr",
 ];
 const ALLERGY_TERMS = [
   "allergy",
@@ -51,12 +57,23 @@ const ALLERGY_TERMS = [
   "αλλεργ",
   "φαγουρ",
   "ξυν",
+  "allerg",
+  "fagour",
+  "xyn",
+  "ksin",
 ];
 
-function includesAnyTerm(values: string[] | null | undefined, terms: string[]) {
-  const text = (values ?? []).join(" ").toLowerCase();
+function normalizeClinicalText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
 
-  return terms.some((term) => text.includes(term));
+function includesAnyTerm(values: string[] | null | undefined, terms: string[]) {
+  const text = normalizeClinicalText((values ?? []).join(" "));
+
+  return terms.some((term) => text.includes(normalizeClinicalText(term)));
 }
 
 export function generateChatGuardrails(

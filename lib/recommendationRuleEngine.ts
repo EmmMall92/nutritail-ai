@@ -15,9 +15,25 @@ export type RecommendationRuleResult = {
   excluded: boolean;
 };
 
-const WEIGHT_TERMS = ["obesity", "overweight", "weight", "παχ", "βάρος"];
-const KIDNEY_TERMS = ["kidney", "renal", "ckd", "νεφρ"];
-const URINARY_TERMS = ["urinary", "struvite", "crystal", "uti", "ουρο"];
+const WEIGHT_TERMS = [
+  "obesity",
+  "overweight",
+  "weight",
+  "παχ",
+  "βάρος",
+  "pax",
+  "varos",
+];
+const KIDNEY_TERMS = ["kidney", "renal", "ckd", "νεφρ", "nefr", "nefro"];
+const URINARY_TERMS = [
+  "urinary",
+  "struvite",
+  "crystal",
+  "uti",
+  "ουρο",
+  "ouro",
+  "ourin",
+];
 const GI_TERMS = [
   "sensitive",
   "digestion",
@@ -30,27 +46,47 @@ const GI_TERMS = [
   "γαστρ",
   "διαρ",
   "εμετ",
+  "gastr",
+  "diarr",
+  "emet",
 ];
-const ALLERGY_TERMS = ["allergy", "allergic", "itch", "skin", "ear", "αλλεργ"];
+const ALLERGY_TERMS = [
+  "allergy",
+  "allergic",
+  "itch",
+  "skin",
+  "ear",
+  "αλλεργ",
+  "φαγουρ",
+  "allerg",
+  "fagour",
+];
+
+function normalizeClinicalText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
 
 function textIncludesAny(values: string[] | undefined, terms: string[]) {
-  const text = (values ?? []).join(" ").toLowerCase();
+  const text = normalizeClinicalText((values ?? []).join(" "));
 
-  return terms.some((term) => text.includes(term));
+  return terms.some((term) => text.includes(normalizeClinicalText(term)));
 }
 
 function foodText(food: Food) {
-  return [
-    food.brand,
-    food.name,
-    food.lifeStage,
-    food.activitySupport,
-    ...(food.healthSupport ?? []),
-    ...(food.tags ?? []),
-    ...(food.ingredients ?? []),
-  ]
-    .join(" ")
-    .toLowerCase();
+  return normalizeClinicalText(
+    [
+      food.brand,
+      food.name,
+      food.lifeStage,
+      food.activitySupport,
+      ...(food.healthSupport ?? []),
+      ...(food.tags ?? []),
+      ...(food.ingredients ?? []),
+    ].join(" ")
+  );
 }
 
 function nutrientValue(primary?: number | null, fallback?: number | null) {

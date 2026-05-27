@@ -3,8 +3,18 @@ import type { Food } from "@/types/food";
 export type PetConditionSignal = "weight" | "kidney" | "digestive" | "urinary";
 
 const CONDITION_ALIASES: Record<PetConditionSignal, string[]> = {
-  weight: ["obesity", "obese", "overweight", "weight", "slimming"],
-  kidney: ["kidney", "renal", "ckd"],
+  weight: [
+    "obesity",
+    "obese",
+    "overweight",
+    "weight",
+    "slimming",
+    "παχ",
+    "βάρος",
+    "pax",
+    "varos",
+  ],
+  kidney: ["kidney", "renal", "ckd", "νεφρ", "nefr", "nefro"],
   digestive: [
     "sensitive",
     "digestion",
@@ -14,18 +24,42 @@ const CONDITION_ALIASES: Record<PetConditionSignal, string[]> = {
     "diarrhea",
     "diarrhoea",
     "gi",
+    "γαστρ",
+    "διαρ",
+    "εμετ",
+    "gastr",
+    "diarr",
+    "emet",
   ],
-  urinary: ["urinary", "struvite", "crystal", "bladder"],
+  urinary: [
+    "urinary",
+    "struvite",
+    "crystal",
+    "bladder",
+    "ουρο",
+    "κατουρ",
+    "ouro",
+    "ourin",
+    "katour",
+  ],
 };
 
 const FOOD_SUPPORT_ALIASES: Record<PetConditionSignal, string[]> = {
-  weight: ["weight control", "weight management", "light", "satiety"],
-  kidney: ["kidney support", "renal", "renal support", "kidney"],
+  weight: [
+    "weight control",
+    "weight management",
+    "light",
+    "satiety",
+    "slim",
+    "obesity",
+  ],
+  kidney: ["kidney support", "renal", "renal support", "kidney", "renal care"],
   digestive: [
     "sensitive stomach",
     "sensitive digestion",
     "digestive",
     "gastrointestinal",
+    "gastro",
   ],
   urinary: ["urinary", "urinary support", "urinary health", "struvite"],
 };
@@ -33,6 +67,8 @@ const FOOD_SUPPORT_ALIASES: Record<PetConditionSignal, string[]> = {
 function normalizeSignal(value: string) {
   return value
     .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();

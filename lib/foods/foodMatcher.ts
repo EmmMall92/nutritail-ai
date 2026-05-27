@@ -27,6 +27,8 @@ const QUERY_ALIASES: Array<[RegExp, string]> = [
   [/\brc\b/g, "royal canin"],
   [/\bρογιαλ\s+κανιν\b/g, "royal canin"],
   [/\broyal\s+canine\b/g, "royal canin"],
+  [/\broyal\s+kanin\b/g, "royal canin"],
+  [/\broial\s+(canin|kanin)\b/g, "royal canin"],
   [/\broyalcanin\b/g, "royal canin"],
   [/\bproplan\b/g, "pro plan"],
   [/\bn\s*&\s*d\b/g, "n d"],
@@ -41,6 +43,7 @@ export function normalizeFoodSearchText(value: string) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/&/g, " and ")
     .replace(/[+]/g, " plus ")
+    .replace(/[-_/]/g, " ")
     .replace(/['’]/g, "");
 
   for (const [pattern, replacement] of QUERY_ALIASES) {
