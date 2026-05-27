@@ -10,7 +10,7 @@ export async function POST(request: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const authUserId = String(body.authUserId ?? "");
+    const authUserId = String(body.authUserId ?? "").trim();
 
     if (!authUserId) {
       return NextResponse.json({ error: "Missing auth user id." }, { status: 400 });

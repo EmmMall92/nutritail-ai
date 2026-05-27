@@ -5,7 +5,7 @@ import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService"
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const authUserId = String(body.authUserId ?? "");
+    const authUserId = String(body.authUserId ?? "").trim();
 
     if (!authUserId) {
       return NextResponse.json(

@@ -7,7 +7,7 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json();
 
-    const authUserId = String(body.authUserId ?? "");
+    const authUserId = String(body.authUserId ?? "").trim();
     const fullName = String(body.fullName ?? "").trim();
     const phone = body.phone ? String(body.phone).trim() : null;
     const bonusCardCode = body.bonusCardCode
