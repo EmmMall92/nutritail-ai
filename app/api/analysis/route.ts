@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const pet = await request.json();
 
-    const analysis = petAnalysisService.analyzePet(pet);
+    const analysis = await petAnalysisService.analyzePet(pet);
 
     return NextResponse.json(analysis);
   } catch (error) {
