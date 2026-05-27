@@ -53,6 +53,22 @@ function optionalString(value: unknown, fieldName: string): string | null {
   return trimmed || null;
 }
 
+function ensureOneOf<T extends string>(
+  value: unknown,
+  fieldName: string,
+  allowedValues: readonly T[]
+): T {
+  const normalized = ensureString(value, fieldName).toLowerCase();
+
+  if (allowedValues.includes(normalized as T)) {
+    return normalized as T;
+  }
+
+  throw new Error(
+    `${fieldName} must be one of: ${allowedValues.join(", ")}.`
+  );
+}
+
 export function parseImportFoodRow(row: unknown): Food {
   if (typeof row !== "object" || row === null) {
     throw new Error("Each food row must be an object.");
@@ -64,17 +80,19 @@ export function parseImportFoodRow(row: unknown): Food {
     id: ensureString(data.id, "id"),
     brand: ensureString(data.brand, "brand"),
     name: ensureString(data.name, "name"),
-    species: ensureString(data.species, "species") as "dog" | "cat",
-    lifeStage: ensureString(data.lifeStage, "lifeStage") as
-      | "young"
-      | "adult"
-      | "senior"
-      | "all",
-    activitySupport: ensureString(data.activitySupport, "activitySupport") as
-      | "low"
-      | "normal"
-      | "high"
-      | "all",
+    species: ensureOneOf(data.species, "species", ["dog", "cat"]),
+    lifeStage: ensureOneOf(data.lifeStage, "lifeStage", [
+      "young",
+      "adult",
+      "senior",
+      "all",
+    ]),
+    activitySupport: ensureOneOf(data.activitySupport, "activitySupport", [
+      "low",
+      "normal",
+      "high",
+      "all",
+    ]),
     healthSupport: ensureStringArray(data.healthSupport, "healthSupport"),
     protein: ensureNumber(data.protein, "protein"),
     fat: ensureNumber(data.fat, "fat"),
