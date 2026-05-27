@@ -21,8 +21,18 @@ type DuplicateResponse = {
   groups: DuplicateGroup[];
 };
 
+const REVIEW_STATUS_OPTIONS = [
+  { value: "open", label: "Open" },
+  { value: "reviewed", label: "Reviewed" },
+  { value: "false-positive", label: "False Positive" },
+  { value: "merge-later", label: "Merge Later" },
+  { value: "merged", label: "Merged" },
+] as const;
+
+type DuplicateReviewStatus = (typeof REVIEW_STATUS_OPTIONS)[number]["value"];
+
 type ReviewState = {
-  status: string;
+  status: DuplicateReviewStatus;
   notes: string;
   chosenRecordId: string;
 };
@@ -52,6 +62,16 @@ function getReviewKey(group: DuplicateGroup) {
 
 function getReviewKeyFromSavedReview(review: SavedDuplicateReview) {
   return `${review.duplicate_type}::${review.duplicate_key}`;
+}
+
+function normalizeReviewStatus(status: string | null | undefined) {
+  const normalizedStatus = String(status ?? "").trim().toLowerCase();
+
+  return REVIEW_STATUS_OPTIONS.some(
+    (option) => option.value === normalizedStatus
+  )
+    ? (normalizedStatus as DuplicateReviewStatus)
+    : "open";
 }
 
 export default function AdminDuplicatesPage() {
@@ -103,7 +123,7 @@ export default function AdminDuplicatesPage() {
       for (const review of savedReviews) {
         const key = getReviewKeyFromSavedReview(review);
         nextReviews[key] = {
-          status: review.status ?? "open",
+          status: normalizeReviewStatus(review.status),
           notes: review.notes ?? "",
           chosenRecordId: review.chosen_record_id ?? "",
         };
@@ -473,15 +493,17 @@ export default function AdminDuplicatesPage() {
                         <select
                           value={review.status}
                           onChange={(e) =>
-                            updateReview(group, { status: e.target.value })
+                            updateReview(group, {
+                              status: normalizeReviewStatus(e.target.value),
+                            })
                           }
                           className="w-full rounded-lg border border-gray-300 p-3 text-black"
                         >
-                          <option value="open">Open</option>
-                          <option value="reviewed">Reviewed</option>
-                          <option value="false-positive">False Positive</option>
-                          <option value="merge-later">Merge Later</option>
-                          <option value="merged">Merged</option>
+                          {REVIEW_STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
