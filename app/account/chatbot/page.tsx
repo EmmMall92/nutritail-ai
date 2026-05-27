@@ -463,7 +463,11 @@ function getFoodKcalPer100g(food: Record<string, unknown>): number | null {
   for (const value of possibleValues) {
     const numberValue = Number(value);
 
-    if (Number.isFinite(numberValue) && numberValue > 0) {
+    if (
+      Number.isFinite(numberValue) &&
+      numberValue >= 20 &&
+      numberValue <= 900
+    ) {
       return numberValue;
     }
   }
