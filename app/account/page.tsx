@@ -30,7 +30,11 @@ type AccountPet = {
 function formatDate(value?: string) {
   if (!value) return "No analyses yet";
 
-  return new Date(value).toLocaleDateString();
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "No analyses yet";
+
+  return date.toLocaleDateString();
 }
 
 export default function AccountPage() {
