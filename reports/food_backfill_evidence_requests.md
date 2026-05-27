@@ -1,6 +1,6 @@
 # Food Backfill Evidence Requests
 
-Generated: 2026-05-27T20:43:31.519Z
+Generated: 2026-05-27T20:46:59.875Z
 
 Use these request blocks for manufacturer support emails, official distributor contacts, or label-photo collection planning. Do not update production rows until the evidence source is saved in notes and the row is re-reviewed.
 
