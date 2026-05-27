@@ -19,6 +19,13 @@ const CRITICAL_FIELDS: Array<keyof NormalizedFoodRow> = [
   "data_source_url",
 ];
 
+const MINERAL_FIELDS: Array<keyof NormalizedFoodRow> = [
+  "calcium_percent",
+  "phosphorus_percent",
+  "magnesium_percent",
+  "sodium_percent",
+];
+
 const NUTRITION_RANGES: Record<
   string,
   { min: number; max: number; unit: string }
@@ -166,6 +173,22 @@ export function validateFoodRow(row: RawFoodRow): FoodValidationResult {
   const warnings: FoodValidationIssue[] = [
     ...impossibleNutritionValues.filter((item) => item.severity === "warning"),
   ];
+
+  if (normalizedWithScore.data_quality_status === "verified") {
+    const missingMinerals = MINERAL_FIELDS.filter(
+      (field) => !hasValue(normalizedWithScore[field])
+    );
+
+    missingMinerals.forEach((field) => {
+      warnings.push(
+        issue(
+          field,
+          "Verified rows should include a complete mineral profile when available.",
+          "warning"
+        )
+      );
+    });
+  }
 
   if (row.species !== undefined && normalizedWithScore.species !== "dog") {
     errors.push(issue("species", "Only dog food rows are supported.", "error"));
