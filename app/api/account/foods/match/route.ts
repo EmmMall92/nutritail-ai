@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { findFoodMatches } from "@/lib/foods/foodMatcher";
 
+const FOOD_MATCH_FETCH_LIMIT = 500;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -20,7 +22,7 @@ export async function POST(request: Request) {
       .in("data_quality_status", ["partial", "verified"])
       .order("brand", { ascending: true })
       .order("name", { ascending: true })
-      .limit(50);
+      .limit(FOOD_MATCH_FETCH_LIMIT);
 
     if (species === "dog" || species === "cat") {
       foodsQuery = foodsQuery.eq("species", species);
