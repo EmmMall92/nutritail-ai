@@ -856,7 +856,10 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
       }
 
       if (nextPet.currentFoodName) {
-        const transitionGuide = buildFoodTransitionGuide();
+        const transitionGuide = buildFoodTransitionGuide({
+          healthIssues: nextPet.healthIssues,
+          allergies: nextPet.allergies,
+        });
 
         addMessages(
           createMessage(
