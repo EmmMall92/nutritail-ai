@@ -65,7 +65,8 @@ export function percentFromUnit(
 }
 
 export function classifyFoodRow(row: NormalizedFoodRow): FoodDataQualityStatus {
-  const official = row.data_notes?.includes("source_tier=official") ?? false;
+  const official =
+    row.data_notes?.toLowerCase().includes("source_tier=official") ?? false;
   const coreComplete = Boolean(
     row.brand &&
       row.name &&
