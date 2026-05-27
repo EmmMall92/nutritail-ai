@@ -7,12 +7,17 @@ export type FoodScoreResult = {
   reasons: string[];
 };
 
+function normalizeTokens(items: string[]) {
+  return items.map((item) => item.trim().toLowerCase()).filter(Boolean);
+}
+
 export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   let score = 0;
   const reasons: string[] = [];
 
   const healthIssues = pet.healthIssues?.map((item) => item.toLowerCase()) ?? [];
   const allergies = pet.allergies?.map((item) => item.toLowerCase()) ?? [];
+  const healthSupport = normalizeTokens(food.healthSupport);
   const petLifeStage = getPetLifeStage(pet);
 
   if (food.species === pet.species) {
@@ -31,7 +36,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   }
 
   if (healthIssues.some((issue) => issue.includes("obesity"))) {
-    if (food.healthSupport.includes("weight control")) {
+    if (healthSupport.includes("weight control")) {
       score += 3;
       reasons.push("Supports weight control.");
     }
@@ -48,7 +53,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   }
 
   if (healthIssues.some((issue) => issue.includes("kidney"))) {
-    if (food.healthSupport.includes("kidney support")) {
+    if (healthSupport.includes("kidney support")) {
       score += 3;
       reasons.push("Supports kidney health.");
     }
@@ -65,7 +70,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   }
 
   if (healthIssues.some((issue) => issue.includes("sensitive"))) {
-    if (food.healthSupport.includes("sensitive stomach")) {
+    if (healthSupport.includes("sensitive stomach")) {
       score += 3;
       reasons.push("Supports sensitive digestion.");
     }
