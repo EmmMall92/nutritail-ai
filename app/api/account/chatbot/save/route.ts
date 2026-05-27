@@ -8,6 +8,18 @@ import type { PetAnalysis } from "@/types/pet-analysis";
 const MAX_PET_AGE_YEARS = 40;
 const MAX_PET_WEIGHT_KG = 150;
 
+function toFiniteNumberOrNull(value: unknown): number | null {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
+function toTrimmedStringOrNull(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
 function getPetValidationError(pet: Pet): string | null {
   const age = Number(pet.age);
   const weight = Number(pet.weight);
@@ -135,20 +147,24 @@ export async function POST(request: Request) {
         analysis
       );
 
-const savedHistory = await petAnalysisHistoryService.saveAnalysis(historyRecord);
+      const savedHistory =
+        await petAnalysisHistoryService.saveAnalysis(historyRecord);
 
-if (metadata && savedHistory?.id) {
-  await supabaseAdmin
-    .from("pet_analyses")
-    .update({
-      food_score: metadata.foodScore ?? null,
-      matched_food_id: metadata.matchedFoodId ?? null,
-      matched_food_name: metadata.matchedFoodName ?? null,
-      feeding_grams_per_day: metadata.feedingGramsPerDay ?? null,
-      weight_goal: metadata.weightGoal ?? null,
-    })
-    .eq("id", savedHistory.id);
-}    }
+      if (metadata && savedHistory?.id) {
+        await supabaseAdmin
+          .from("pet_analyses")
+          .update({
+            food_score: toFiniteNumberOrNull(metadata.foodScore),
+            matched_food_id: toTrimmedStringOrNull(metadata.matchedFoodId),
+            matched_food_name: toTrimmedStringOrNull(metadata.matchedFoodName),
+            feeding_grams_per_day: toFiniteNumberOrNull(
+              metadata.feedingGramsPerDay
+            ),
+            weight_goal: toTrimmedStringOrNull(metadata.weightGoal),
+          })
+          .eq("id", savedHistory.id);
+      }
+    }
 
     return NextResponse.json({
       success: true,
