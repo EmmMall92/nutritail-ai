@@ -2,12 +2,16 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { findFoodMatches } from "@/lib/foods/foodMatcher";
 
+const MAX_FOOD_MATCH_QUERY_LENGTH = 160;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const query = String(body.query ?? "").trim();
-    const species = String(body.species ?? "").trim();
+    const query = String(body.query ?? "")
+      .trim()
+      .slice(0, MAX_FOOD_MATCH_QUERY_LENGTH);
+    const species = String(body.species ?? "").trim().toLowerCase();
 
     if (!query) {
       return NextResponse.json({ match: null });
