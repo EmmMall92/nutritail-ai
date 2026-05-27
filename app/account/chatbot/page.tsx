@@ -349,10 +349,22 @@ function isUnknownFoodAnswer(text: string) {
     "dont know",
     "don't know",
     "not sure",
+    "none",
+    "nothing",
+    "no current food",
+    "no food",
+    "not feeding one",
     "δεν ξερω",
     "δεν ξέρω",
+    "καμια",
+    "καμία",
+    "οχι",
+    "όχι",
     "den ksero",
     "den xero",
+    "kamia",
+    "oxi",
+    "ochi",
   ].some((phrase) => value.includes(phrase));
 }
 
