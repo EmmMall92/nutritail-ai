@@ -92,7 +92,10 @@ export function calculateFoodScore(
 
     if (
       input.age >= 7 &&
-      stage.includes("senior")
+      (stage.includes("senior") ||
+        stage.includes("aging") ||
+        stage.includes("ageing") ||
+        stage.includes("elderly"))
     ) {
       score += 6;
     }
