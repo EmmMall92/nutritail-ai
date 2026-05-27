@@ -36,7 +36,8 @@ function isActiveRecord(record: ValidationRecord) {
 }
 
 function getQualityStatus(food: ValidationRecord) {
-  return String(food.data_quality_status ?? "needs_review");
+  const status = normalizeText(food.data_quality_status);
+  return status === "needs review" ? "needs_review" : status || "needs_review";
 }
 
 function isPlaceholderFood(food: ValidationRecord) {
