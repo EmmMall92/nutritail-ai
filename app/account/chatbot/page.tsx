@@ -95,6 +95,30 @@ type FoodMatchCandidate = Record<string, unknown> & {
   match_confidence?: string | null;
 };
 
+type FoodComparisonItem = {
+  query: string;
+  match: {
+    brand?: string | null;
+    name?: string | null;
+    data_quality_status?: string | null;
+  } | null;
+  match_score?: number;
+  data_confidence?: string;
+  nutrition?: Record<string, number | null>;
+  missing_nutrition_fields?: string[];
+};
+
+type FoodCompareResponse = {
+  comparisons?: FoodComparisonItem[];
+  summary?: {
+    lowest_calorie?: string | null;
+    highest_protein?: string | null;
+    highest_fiber?: string | null;
+    note?: string;
+  } | null;
+  error?: string;
+};
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -431,6 +455,80 @@ function formatFoodMatchCandidates(candidates: unknown) {
     .join("\n");
 }
 
+function parseCompareQueries(text: string) {
+  const normalized = normalizeUserText(text);
+  const looksLikeCompare =
+    normalized.includes("compare") ||
+    normalized.includes("versus") ||
+    normalized.includes(" vs ") ||
+    normalized.includes("συγκριν") ||
+    normalized.includes("συγκρινε");
+
+  if (!looksLikeCompare) return [];
+
+  return text
+    .replace(/\bcompare\b/gi, "")
+    .replace(/\bversus\b/gi, " vs ")
+    .replace(/\bvs\.?\b/gi, " vs ")
+    .replace(/σύγκρινε|συγκρινε|σύγκριση|συγκριση/gi, "")
+    .split(/\s+vs\s+|[,;\n]+/i)
+    .map((item) => item.trim())
+    .filter((item) => item.length >= 3)
+    .slice(0, 5);
+}
+
+function formatNutritionValue(value: number | null | undefined, suffix: string) {
+  if (value === null || value === undefined) return "missing";
+  return `${value}${suffix}`;
+}
+
+function formatFoodComparison(result: FoodCompareResponse) {
+  const comparisons = result.comparisons ?? [];
+
+  if (comparisons.length === 0) {
+    return "I could not compare those foods yet. Try brand + formula names, separated with vs.";
+  }
+
+  const rows = comparisons.map((item, index) => {
+    if (!item.match) {
+      return `${index + 1}. ${item.query}: no confident database match.`;
+    }
+
+    const nutrition = item.nutrition ?? {};
+    const missing = item.missing_nutrition_fields ?? [];
+
+    return `${index + 1}. ${item.match.brand ?? "Unknown brand"} - ${
+      item.match.name ?? item.query
+    }
+Match score: ${item.match_score ?? 0}; data confidence: ${
+      item.data_confidence ?? "low"
+    }
+Kcal/100g: ${formatNutritionValue(nutrition.kcal_per_100g, "")}
+Protein: ${formatNutritionValue(nutrition.protein_percent, "%")}
+Fat: ${formatNutritionValue(nutrition.fat_percent, "%")}
+Fiber: ${formatNutritionValue(nutrition.fiber_percent, "%")}
+Calcium/Phosphorus: ${formatNutritionValue(
+      nutrition.calcium_percent,
+      "%"
+    )} / ${formatNutritionValue(nutrition.phosphorus_percent, "%")}
+Missing fields: ${missing.length > 0 ? missing.join(", ") : "none"}`;
+  });
+
+  const summary = result.summary
+    ? `
+
+Quick read:
+- Lowest calorie: ${result.summary.lowest_calorie ?? "not enough data"}
+- Highest protein: ${result.summary.highest_protein ?? "not enough data"}
+- Highest fiber: ${result.summary.highest_fiber ?? "not enough data"}
+- ${result.summary.note ?? "Use this as a structured comparison aid."}`
+    : "";
+
+  return `Food comparison:
+
+${rows.join("\n\n")}${summary}`;
+}
+
 function buildGuardrailText(pet: PetIntake) {
   const guardrails = generateChatGuardrails({
     species: pet.species,
@@ -494,10 +592,12 @@ Recommended foods:
 ${
   topFoods.length > 0
     ? topFoods
-        .map(
-          (item, index) =>
-            `${index + 1}. ${item.food.brand} - ${item.food.name}`
-        )
+        .map((item, index) => {
+          const signals = formatRecommendationSignals(item.ruleSignals);
+          return `${index + 1}. ${item.food.brand} - ${item.food.name}${
+            signals ? `\n${signals}` : ""
+          }`;
+        })
         .join("\n")
     : "No matching foods were found yet."
 }
@@ -532,6 +632,23 @@ function getFoodKcalPer100g(food: Record<string, unknown>): number | null {
   return null;
 }
 
+function formatRecommendationSignals(
+  signals: PetAnalysis["recommendedFoods"][number]["ruleSignals"]
+) {
+  const visibleSignals = (signals ?? [])
+    .filter((signal) => signal.type === "boost" || signal.type === "caution")
+    .slice(0, 3);
+
+  if (visibleSignals.length === 0) return "";
+
+  return visibleSignals
+    .map((signal) => {
+      const label = signal.type === "boost" ? "boost" : "caution";
+      return `   - ${label}: ${signal.message}`;
+    })
+    .join("\n");
+}
+
 export default function AccountChatbotPage() {
   const router = useRouter();
   const siteUrl =
@@ -557,6 +674,7 @@ export default function AccountChatbotPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showSave, setShowSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [feedbackStatus, setFeedbackStatus] = useState("");
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
@@ -567,6 +685,94 @@ export default function AccountChatbotPage() {
 
   function addMessages(...nextMessages: ChatMessage[]) {
     setMessages((prev) => [...prev, ...nextMessages]);
+  }
+
+  async function runFoodComparison(queries: string[]) {
+    try {
+      addMessages(
+        createMessage(
+          "bot",
+          `I will compare these foods: ${queries.join(" vs ")}`
+        )
+      );
+
+      const response = await fetch("/api/account/foods/compare", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          queries,
+          species: pet.species ?? "dog",
+        }),
+      });
+
+      const result = (await response.json()) as FoodCompareResponse;
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to compare foods.");
+      }
+
+      addMessages(createMessage("bot", formatFoodComparison(result)));
+    } catch (error) {
+      console.error(error);
+      addMessages(
+        createMessage(
+          "bot",
+          "I could not complete the comparison. Try using exact brand and formula names."
+        )
+      );
+    }
+  }
+
+  async function submitChatFeedback({
+    eventType,
+    rating,
+    message,
+    context,
+    showConfirmation = false,
+  }: {
+    eventType: string;
+    rating: string;
+    message?: string;
+    context?: Record<string, unknown>;
+    showConfirmation?: boolean;
+  }) {
+    try {
+      const response = await fetch("/api/feedback/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventType,
+          rating,
+          message,
+          context: {
+            petSpecies: pet.species ?? null,
+            currentFoodName: pet.currentFoodName ?? null,
+            weightGoal: pet.weightGoal ?? null,
+            healthIssues: pet.healthIssues,
+            allergies: pet.allergies,
+            ...context,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || "Failed to record feedback.");
+      }
+
+      if (showConfirmation) {
+        setFeedbackStatus("Thanks. Your feedback was recorded.");
+      }
+    } catch (error) {
+      console.error(error);
+      if (showConfirmation) {
+        setFeedbackStatus("I could not record feedback right now.");
+      }
+    }
   }
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -960,6 +1166,17 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
                   )}\n\nPlease send the exact brand and formula from the bag if one of these is not correct.`
                 : "";
 
+            void submitChatFeedback({
+              eventType: "failed_food_match",
+              rating: "needs_review",
+              message: nextPet.currentFoodName,
+              context: {
+                matchScore: matchResult?.match_score ?? 0,
+                matchConfidence: matchResult?.match_confidence ?? "none",
+                candidates: matchResult?.candidates ?? [],
+              },
+            });
+
             addMessages(
               createMessage(
                 "bot",
@@ -1016,6 +1233,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   async function handleStep(text: string) {
+    const compareQueries = parseCompareQueries(text);
+
+    if (compareQueries.length >= 2 && step !== "analysis") {
+      await runFoodComparison(compareQueries);
+      return;
+    }
+
     if (step === "petChoice") {
       addMessages(
         createMessage(
@@ -1347,6 +1571,7 @@ ${siteUrl}/account/pets/${result.pet.id}`
     setShowSave(false);
     setIsSaving(false);
     setAnalysisMetadata(null);
+    setFeedbackStatus("");
 
     setMessages([
       createMessage(
@@ -1490,6 +1715,43 @@ ${siteUrl}/account/pets/${result.pet.id}`
               <p className="mt-1 text-sm text-gray-700">
                 Save this pet and nutrition analysis to your personal profile.
               </p>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <p className="font-semibold text-black">Was this helpful?</p>
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() =>
+                    submitChatFeedback({
+                      eventType: "chat_helpfulness",
+                      rating: "helpful",
+                      message: "User marked chatbot analysis as helpful.",
+                      showConfirmation: true,
+                    })
+                  }
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                >
+                  Helpful
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    submitChatFeedback({
+                      eventType: "chat_helpfulness",
+                      rating: "not_helpful",
+                      message: "User marked chatbot analysis as not helpful.",
+                      showConfirmation: true,
+                    })
+                  }
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                >
+                  Not helpful
+                </button>
+              </div>
+              {feedbackStatus && (
+                <p className="mt-2 text-sm text-gray-600">{feedbackStatus}</p>
+              )}
             </div>
 
             <button

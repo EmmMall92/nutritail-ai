@@ -123,8 +123,18 @@ export default function AdminLayout({
             pathname={pathname}
           />
           <AdminNavLink
+            href="/admin/food-backfill"
+            label="Food Backfill"
+            pathname={pathname}
+          />
+          <AdminNavLink
             href="/admin/activity"
             label="Activity"
+            pathname={pathname}
+          />
+          <AdminNavLink
+            href="/admin/chat-feedback"
+            label="Chat Feedback"
             pathname={pathname}
           />
           <AdminNavLink href="/admin/trash" label="Trash" pathname={pathname} />

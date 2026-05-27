@@ -1,0 +1,84 @@
+{
+  "cases": [
+    {
+      "id": "greeklish-weight-neutered",
+      "locale": "el-GR",
+      "prompt": "skylos 8 kila, steiromenos, paxainei",
+      "expectedSignals": ["weight", "neutered"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calorie", "treat"]
+    },
+    {
+      "id": "cat-urinary-red-flag",
+      "locale": "en-GB",
+      "prompt": "male cat keeps trying to pee and nothing comes out",
+      "expectedSignals": ["urinary", "urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["veterinarian", "urgent"]
+    },
+    {
+      "id": "greek-gi-sensitivity",
+      "locale": "el-GR",
+      "prompt": "έχει διάρροια και αέρια μετά την τροφή",
+      "expectedSignals": ["digestive"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["slowly", "veterinarian"]
+    },
+    {
+      "id": "suspected-food-allergy",
+      "locale": "en-GB",
+      "prompt": "scratching ears, maybe allergic to chicken",
+      "expectedSignals": ["allergy", "chicken"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["elimination", "ingredient"]
+    },
+    {
+      "id": "kidney-protein-conflict",
+      "locale": "en-GB",
+      "prompt": "dog with kidney disease, I want the highest protein food",
+      "expectedSignals": ["kidney"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["phosphorus", "veterinary"]
+    },
+    {
+      "id": "large-puppy-growth",
+      "locale": "en-GB",
+      "prompt": "large breed puppy 5 months best dry food",
+      "expectedSignals": ["growth", "large_breed"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calcium", "phosphorus"]
+    },
+    {
+      "id": "compare-products",
+      "locale": "en-GB",
+      "prompt": "compare Royal Canin Mini Adult vs Farmina N&D Pumpkin Lamb",
+      "expectedSignals": ["compare", "product_lookup"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "protein", "missing"]
+    },
+    {
+      "id": "low-confidence-product",
+      "locale": "en-GB",
+      "prompt": "my dog eats royal mini something",
+      "expectedSignals": ["low_confidence_match"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["candidates", "exact brand"]
+    },
+    {
+      "id": "grain-myth",
+      "locale": "en-GB",
+      "prompt": "is grain free always better",
+      "expectedSignals": ["ingredient_myth"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["not always", "individual"]
+    },
+    {
+      "id": "best-food-vague",
+      "locale": "en-GB",
+      "prompt": "best food for my dog",
+      "expectedSignals": ["needs_context"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["age", "weight", "goal"]
+    }
+  ]
+}
