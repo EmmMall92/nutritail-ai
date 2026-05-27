@@ -12,5 +12,10 @@ export type DbPetAnalysis = {
   neutered: boolean | null;
   allergies: string[];
   health_issues: string[];
+  food_score?: number | null;
+  matched_food_id?: string | null;
+  matched_food_name?: string | null;
+  feeding_grams_per_day?: number | null;
+  weight_goal?: string | null;
   created_at: string;
 };

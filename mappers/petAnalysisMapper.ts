@@ -18,6 +18,11 @@ export function mapDbPetAnalysisToPetAnalysisHistory(
     neutered: db.neutered ?? undefined,
     allergies: db.allergies ?? [],
     healthIssues: db.health_issues ?? [],
+    food_score: db.food_score ?? null,
+    matched_food_id: db.matched_food_id ?? null,
+    matched_food_name: db.matched_food_name ?? null,
+    feeding_grams_per_day: db.feeding_grams_per_day ?? null,
+    weight_goal: db.weight_goal ?? null,
     createdAt: db.created_at,
   };
 }
@@ -39,6 +44,11 @@ export function mapPetAnalysisHistoryToDbPetAnalysis(
     neutered: analysis.neutered ?? null,
     allergies: analysis.allergies ?? [],
     health_issues: analysis.healthIssues ?? [],
+    food_score: analysis.food_score ?? null,
+    matched_food_id: analysis.matched_food_id ?? null,
+    matched_food_name: analysis.matched_food_name ?? null,
+    feeding_grams_per_day: analysis.feeding_grams_per_day ?? null,
+    weight_goal: analysis.weight_goal ?? null,
     created_at: analysis.createdAt,
   };
 }
