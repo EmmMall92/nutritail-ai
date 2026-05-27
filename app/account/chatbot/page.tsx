@@ -649,6 +649,22 @@ function formatRecommendationSignals(
     .join("\n");
 }
 
+function getSignalBadgeClasses(
+  type: NonNullable<
+    PetAnalysis["recommendedFoods"][number]["ruleSignals"]
+  >[number]["type"]
+) {
+  if (type === "boost") {
+    return "border-green-200 bg-green-50 text-green-800";
+  }
+
+  if (type === "caution") {
+    return "border-amber-200 bg-amber-50 text-amber-800";
+  }
+
+  return "border-gray-200 bg-gray-50 text-gray-700";
+}
+
 export default function AccountChatbotPage() {
   const router = useRouter();
   const siteUrl =
@@ -1706,6 +1722,56 @@ ${siteUrl}/account/pets/${result.pet.id}`
                     </p>
                   </div>
                 </div>
+
+                {latestAnalysis.recommendedFoods.length > 0 && (
+                  <div className="mt-4 border-t border-gray-200 pt-4">
+                    <p className="text-sm font-semibold text-black">
+                      Recommendation signals
+                    </p>
+                    <div className="mt-3 space-y-3">
+                      {latestAnalysis.recommendedFoods
+                        .slice(0, 3)
+                        .map((item) => {
+                          const visibleSignals = (item.ruleSignals ?? [])
+                            .filter(
+                              (signal) =>
+                                signal.type === "boost" ||
+                                signal.type === "caution"
+                            )
+                            .slice(0, 3);
+
+                          return (
+                            <div
+                              key={`${item.food.brand}-${item.food.name}`}
+                              className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+                            >
+                              <p className="text-sm font-medium text-black">
+                                {item.food.brand} - {item.food.name}
+                              </p>
+                              {visibleSignals.length === 0 ? (
+                                <p className="mt-2 text-xs text-gray-600">
+                                  No specific rule signals for this match yet.
+                                </p>
+                              ) : (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {visibleSignals.map((signal) => (
+                                    <span
+                                      key={signal.code}
+                                      className={`rounded-full border px-2.5 py-1 text-xs font-medium ${getSignalBadgeClasses(
+                                        signal.type
+                                      )}`}
+                                    >
+                                      {signal.type}: {signal.message}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
