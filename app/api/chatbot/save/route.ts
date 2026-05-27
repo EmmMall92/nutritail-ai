@@ -6,6 +6,24 @@ import type { DbCustomer } from "@/types/db/db-customer";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
+const MAX_PET_AGE_YEARS = 40;
+const MAX_PET_WEIGHT_KG = 150;
+
+function getPetValidationError(pet: Pet): string | null {
+  const age = Number(pet.age);
+  const weight = Number(pet.weight);
+
+  if (!Number.isFinite(age) || age < 0 || age > MAX_PET_AGE_YEARS) {
+    return `Pet age must be between 0 and ${MAX_PET_AGE_YEARS}.`;
+  }
+
+  if (!Number.isFinite(weight) || weight <= 0 || weight > MAX_PET_WEIGHT_KG) {
+    return `Pet weight must be between 0 and ${MAX_PET_WEIGHT_KG} kg.`;
+  }
+
+  return null;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -17,6 +35,11 @@ export async function POST(request: Request) {
 
     if (!pet) {
       return NextResponse.json({ error: "Missing pet." }, { status: 400 });
+    }
+
+    const petValidationError = getPetValidationError(pet);
+    if (petValidationError) {
+      return NextResponse.json({ error: petValidationError }, { status: 400 });
     }
 
     if (!customerId && !customerName) {
