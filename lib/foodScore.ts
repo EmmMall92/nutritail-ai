@@ -20,62 +20,62 @@ export function calculateFoodScore(
 ) {
   let score = 50;
 
-  const protein = Number(input.protein ?? 0);
-  const fat = Number(input.fat ?? 0);
-  const fiber = Number(input.fiber ?? 0);
-  const sodium = Number(input.sodium ?? 0);
-  const magnesium = Number(input.magnesium ?? 0);
+  const protein = toOptionalNumber(input.protein);
+  const fat = toOptionalNumber(input.fat);
+  const fiber = toOptionalNumber(input.fiber);
+  const sodium = toOptionalNumber(input.sodium);
+  const magnesium = toOptionalNumber(input.magnesium);
 
   // Cats prefer higher protein
-  if (input.species === "cat") {
+  if (input.species === "cat" && protein !== null) {
     if (protein >= 38) score += 12;
     else if (protein >= 32) score += 8;
     else if (protein < 28) score -= 10;
   }
 
   // Dogs
-  if (input.species === "dog") {
+  if (input.species === "dog" && protein !== null) {
     if (protein >= 28) score += 8;
     else if (protein < 20) score -= 8;
   }
 
   // Sterilised pets
-  if (input.neutered) {
+  if (input.neutered && fat !== null) {
     if (fat <= 14) score += 8;
     if (fat >= 20) score -= 10;
   }
 
   // Weight loss
   if (input.weightGoal === "loss") {
-    if (fiber >= 5) score += 8;
-    if (fat <= 12) score += 6;
-    if (fat >= 18) score -= 12;
+    if (fiber !== null && fiber >= 5) score += 8;
+    if (fat !== null && fat <= 12) score += 6;
+    if (fat !== null && fat >= 18) score -= 12;
   }
 
   // Weight gain
-  if (input.weightGoal === "gain") {
+  if (input.weightGoal === "gain" && fat !== null) {
     if (fat >= 18) score += 8;
   }
 
   // Active pets
   if (input.activityLevel === "high") {
-    if (protein >= 30) score += 6;
-    if (fat >= 16) score += 4;
+    if (protein !== null && protein >= 30) score += 6;
+    if (fat !== null && fat >= 16) score += 4;
   }
 
   // Urinary sensitivity logic for cats
   if (input.species === "cat") {
-    if (magnesium > 0 && magnesium <= 0.09) {
+    if (magnesium !== null && magnesium > 0 && magnesium <= 0.09) {
       score += 6;
     }
 
-    if (sodium >= 0.3 && sodium <= 0.6) {
+    if (sodium !== null && sodium >= 0.3 && sodium <= 0.6) {
       score += 3;
     }
   }
 
   // Senior pets
-  if (input.age >= 7) {
+  if (input.age >= 7 && fat !== null) {
     if (fat >= 20) score -= 5;
   }
 
@@ -99,4 +99,12 @@ export function calculateFoodScore(
   }
 
   return Math.max(0, Math.min(100, score));
+}
+
+function toOptionalNumber(value?: number | null) {
+  if (value === null || value === undefined) return null;
+
+  const numericValue = Number(value);
+
+  return Number.isFinite(numericValue) ? numericValue : null;
 }
