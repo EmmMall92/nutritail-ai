@@ -10,7 +10,7 @@ The model should not rely on memory for brand or formula facts. Product facts sh
 
 ## Phase 1: Safer Current Chatbot
 
-Status: in progress.
+Status: shipped foundation.
 
 Focus:
 
@@ -27,6 +27,8 @@ Exit criteria:
 
 ## Phase 2: Product Resolver And Compare Mode
 
+Status: shipped foundation.
+
 Focus:
 
 - Centralize fuzzy food matching.
@@ -41,6 +43,8 @@ Exit criteria:
 - Low-confidence matches are not presented as certain.
 
 ## Phase 3: Golden Evaluation Harness
+
+Status: shipped foundation.
 
 Focus:
 
@@ -80,6 +84,8 @@ Exit criteria:
 
 ## Phase 5: Admin Review And Feedback Loop
 
+Status: foundation in progress.
+
 Focus:
 
 - Let admins review unresolved chatbot matches.
@@ -102,10 +108,12 @@ Exit criteria:
 
 ## Near-Term PR Order
 
-1. Chatbot parsing and confidence polish.
-2. Safety guardrails.
-3. Food compare API.
-4. Golden eval cases and validator.
-5. Recommendation rule engine helper.
-6. Chatbot UI integration for compare mode.
-7. Admin feedback capture for failed matches.
+1. Chatbot parsing and confidence polish. Done.
+2. Safety guardrails. Done.
+3. Food compare API. Done.
+4. Golden eval cases and validator. Done.
+5. Recommendation rule engine helper. Done.
+6. Chatbot UI integration for compare mode. Done.
+7. Admin feedback capture for failed matches. Done.
+8. Next: expand golden evals from structure checks into response regression checks.
+9. Next: connect admin feedback trends directly to food-data cleanup batches.

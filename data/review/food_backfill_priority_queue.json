@@ -1,0 +1,618 @@
+[
+  {
+    "label": "Royal Canin - Maxi Adult 5+",
+    "brand": "Royal Canin",
+    "name": "Maxi Adult 5+",
+    "species": "dog",
+    "status": "needs_review",
+    "priority": "high",
+    "missingCore": [
+      "kcal_per_100g",
+      "calcium_percent",
+      "phosphorus_percent"
+    ],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "kcal_per_100g",
+      "calcium_percent",
+      "phosphorus_percent",
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_or_label_photo",
+    "source": "https://www.royalcanin.com/uk/dogs/products/retail-products/maxi-adult-5%2B-3008",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; pack_sizes=15kg; note=Official Royal Canin UK page lacks kcal_per_100g, calcium_percent, phosphorus_percent, sodium_percent, and magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Royal Canin Maxi Adult 5+ (dog, UK). Missing fields: kcal_per_100g, calcium_percent, phosphorus_percent, sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://www.royalcanin.com/uk/dogs/products/retail-products/maxi-adult-5%2B-3008."
+  },
+  {
+    "label": "Royal Canin - Mini Adult",
+    "brand": "Royal Canin",
+    "name": "Mini Adult",
+    "species": "dog",
+    "status": "needs_review",
+    "priority": "high",
+    "missingCore": [
+      "calcium_percent",
+      "phosphorus_percent"
+    ],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "calcium_percent",
+      "phosphorus_percent",
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_or_label_photo",
+    "source": "https://www.royalcanin.com/uk/dogs/products/retail-products/mini-adult-3001",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; pack_sizes=2kg|4kg|8kg; note=Official Royal Canin UK page lacks calcium_percent, phosphorus_percent, sodium_percent, and magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Royal Canin Mini Adult (dog, UK). Missing fields: calcium_percent, phosphorus_percent, sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://www.royalcanin.com/uk/dogs/products/retail-products/mini-adult-3001."
+  },
+  {
+    "label": "Royal Canin - Mini Digestive Care",
+    "brand": "Royal Canin",
+    "name": "Mini Digestive Care",
+    "species": "dog",
+    "status": "needs_review",
+    "priority": "high",
+    "missingCore": [
+      "kcal_per_100g",
+      "calcium_percent",
+      "phosphorus_percent"
+    ],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "kcal_per_100g",
+      "calcium_percent",
+      "phosphorus_percent",
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_or_label_photo",
+    "source": "https://www.royalcanin.com/uk/dogs/products/retail-products/digestive-care-mini-2447",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; pack_sizes=3kg|8kg; note=Official Royal Canin UK page lacks kcal_per_100g, calcium_percent, phosphorus_percent, sodium_percent, and magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Royal Canin Mini Digestive Care (dog, UK). Missing fields: kcal_per_100g, calcium_percent, phosphorus_percent, sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://www.royalcanin.com/uk/dogs/products/retail-products/digestive-care-mini-2447."
+  },
+  {
+    "label": "Ambrosia - Beef & Fresh Salmon",
+    "brand": "Ambrosia",
+    "name": "Beef & Fresh Salmon",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/beef-fresh-salmon/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Beef & Fresh Salmon (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/beef-fresh-salmon/."
+  },
+  {
+    "label": "Ambrosia - Chicken & Fresh Fish",
+    "brand": "Ambrosia",
+    "name": "Chicken & Fresh Fish",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/chicken-fresh-fish/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Chicken & Fresh Fish (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/chicken-fresh-fish/."
+  },
+  {
+    "label": "Ambrosia - Chicken & Fresh Salmon",
+    "brand": "Ambrosia",
+    "name": "Chicken & Fresh Salmon",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/chicken-fresh-salmon/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Chicken & Fresh Salmon (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/chicken-fresh-salmon/."
+  },
+  {
+    "label": "Ambrosia - Chicken & Veggies",
+    "brand": "Ambrosia",
+    "name": "Chicken & Veggies",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/chicken-veggies/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Chicken & Veggies (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/chicken-veggies/."
+  },
+  {
+    "label": "Ambrosia - Fresh Duck",
+    "brand": "Ambrosia",
+    "name": "Fresh Duck",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-duck/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Duck (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-duck/."
+  },
+  {
+    "label": "Ambrosia - Fresh Lamb",
+    "brand": "Ambrosia",
+    "name": "Fresh Lamb",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-lamb/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Lamb (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-lamb/."
+  },
+  {
+    "label": "Ambrosia - Fresh Salmon & Chicken",
+    "brand": "Ambrosia",
+    "name": "Fresh Salmon & Chicken",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-salmon-chicken/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Salmon & Chicken (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-salmon-chicken/."
+  },
+  {
+    "label": "Ambrosia - Fresh Salmon & Rabbit",
+    "brand": "Ambrosia",
+    "name": "Fresh Salmon & Rabbit",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-salmon-rabbit/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Salmon & Rabbit (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-salmon-rabbit/."
+  },
+  {
+    "label": "Ambrosia - Fresh Salmon & Turkey",
+    "brand": "Ambrosia",
+    "name": "Fresh Salmon & Turkey",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-salmon-turkey/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Salmon & Turkey (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-salmon-turkey/."
+  },
+  {
+    "label": "Ambrosia - Fresh Sardine & Cod",
+    "brand": "Ambrosia",
+    "name": "Fresh Sardine & Cod",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-sardine-cod/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Sardine & Cod (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-sardine-cod/."
+  },
+  {
+    "label": "Ambrosia - Fresh Sardine & Tuna",
+    "brand": "Ambrosia",
+    "name": "Fresh Sardine & Tuna",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-sardine-tuna/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Sardine & Tuna (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-sardine-tuna/."
+  },
+  {
+    "label": "Ambrosia - Fresh Turkey",
+    "brand": "Ambrosia",
+    "name": "Fresh Turkey",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-turkey/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Turkey (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-turkey/."
+  },
+  {
+    "label": "Ambrosia - Fresh Turkey & Chicken",
+    "brand": "Ambrosia",
+    "name": "Fresh Turkey & Chicken",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-turkey-chicken/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Turkey & Chicken (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-turkey-chicken/."
+  },
+  {
+    "label": "Ambrosia - Fresh Turkey & Duck",
+    "brand": "Ambrosia",
+    "name": "Fresh Turkey & Duck",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-turkey-duck/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Turkey & Duck (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-turkey-duck/."
+  },
+  {
+    "label": "Ambrosia - Fresh Turkey & Rabbit",
+    "brand": "Ambrosia",
+    "name": "Fresh Turkey & Rabbit",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-turkey-rabbit/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Turkey & Rabbit (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-turkey-rabbit/."
+  },
+  {
+    "label": "Ambrosia - Fresh Turkey & Salmon",
+    "brand": "Ambrosia",
+    "name": "Fresh Turkey & Salmon",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-turkey-salmon/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Turkey & Salmon (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-turkey-salmon/."
+  },
+  {
+    "label": "Ambrosia - Fresh Venison & Lamb",
+    "brand": "Ambrosia",
+    "name": "Fresh Venison & Lamb",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/fresh-venison-lamb/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Fresh Venison & Lamb (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/fresh-venison-lamb/."
+  },
+  {
+    "label": "Ambrosia - Lamb & Fresh Salmon",
+    "brand": "Ambrosia",
+    "name": "Lamb & Fresh Salmon",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://ambrosiapetfood.com/el/products/lamb-fresh-salmon/",
+    "notes": "market=GR; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; form=dry; note=Ambrosia official Greek product page; sodium_percent and magnesium_percent not published.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Ambrosia Lamb & Fresh Salmon (dog, GR). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://ambrosiapetfood.com/el/products/lamb-fresh-salmon/."
+  },
+  {
+    "label": "Farmina - N&D Ancestral Grain Chicken & Pomegranate Puppy Mini",
+    "brand": "Farmina",
+    "name": "N&D Ancestral Grain Chicken & Pomegranate Puppy Mini",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://www.farmina.com/mt/eshop/dog-food/n%26d-ancestral-grain-dog/106-chicken-%26-pomegranate-puppy-mini.html",
+    "notes": "market=MT; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; pack_sizes=2.5kg; note=Official Farmina Malta page does not publish sodium_percent or magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Farmina N&D Ancestral Grain Chicken & Pomegranate Puppy Mini (dog, MT). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://www.farmina.com/mt/eshop/dog-food/n%26d-ancestral-grain-dog/106-chicken-%26-pomegranate-puppy-mini.html."
+  },
+  {
+    "label": "Farmina - N&D Pumpkin Chicken and Pomegranate Adult Mini",
+    "brand": "Farmina",
+    "name": "N&D Pumpkin Chicken and Pomegranate Adult Mini",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "missing": [
+      "sodium_percent",
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://www.farmina.com/mt/eshop/dog-food/n%26d-pumpkin-dog/390-chicken-and-pomegranate-adult-mini.html",
+    "notes": "market=MT; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; pack_sizes=800g|2.5kg|7kg; note=Official Farmina Malta page does not publish sodium_percent or magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Farmina N&D Pumpkin Chicken and Pomegranate Adult Mini (dog, MT). Missing fields: sodium_percent, magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://www.farmina.com/mt/eshop/dog-food/n%26d-pumpkin-dog/390-chicken-and-pomegranate-adult-mini.html."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Adult Entire Large & Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Adult Entire Large & Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://uk.virbac.com/products/petfood/adult-neutered-dog-food-large",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; pack_sizes=3kg|7kg|12kg; note=Official Virbac UK page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Adult Entire Large & Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://uk.virbac.com/products/petfood/adult-neutered-dog-food-large."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Adult Neutered Large & Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Adult Neutered Large & Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://uk.virbac.com/products/adult-neutered-large-medium-dog-food-for-medium-large-breeds?category=94",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; note=Official Virbac UK page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Adult Neutered Large & Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://uk.virbac.com/products/adult-neutered-large-medium-dog-food-for-medium-large-breeds?category=94."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Adult Sensitive Neutered Large & Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Adult Sensitive Neutered Large & Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://uk.virbac.com/products/adult-sensitive-neutered-dog-food-for-medium-large-breeds",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; pack_sizes=3kg|12kg; note=Official Virbac UK page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Adult Sensitive Neutered Large & Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://uk.virbac.com/products/adult-sensitive-neutered-dog-food-for-medium-large-breeds."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Junior Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Junior Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://store.uk.virbac.com/dog-junior-medium-breed-diet",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; pack_sizes=3kg|12kg; note=Official Virbac UK web store page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Junior Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://store.uk.virbac.com/dog-junior-medium-breed-diet."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Puppy Large & Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Puppy Large & Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://checkout.uk.virbac.com/products/puppy-large-medium-dry-puppy-food-for-medium-large-breeds",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; note=Official Virbac UK page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Puppy Large & Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://checkout.uk.virbac.com/products/puppy-large-medium-dry-puppy-food-for-medium-large-breeds."
+  },
+  {
+    "label": "Virbac - Veterinary HPM Senior Entire Large & Medium",
+    "brand": "Virbac",
+    "name": "Veterinary HPM Senior Entire Large & Medium",
+    "species": "dog",
+    "status": "partial",
+    "priority": "medium",
+    "missingCore": [],
+    "missingOptionalMinerals": [
+      "magnesium_percent"
+    ],
+    "missing": [
+      "magnesium_percent"
+    ],
+    "evidenceNeeded": "official_pdf_manufacturer_response_or_label_photo",
+    "source": "https://uk.virbac.com/products/senior-entire-dry-dog-food-for-medium-large-breeds",
+    "notes": "market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moisture=9; pack_sizes=3kg|12kg; note=Official Virbac UK page does not publish magnesium_percent.",
+    "requestText": "Please provide official labelled/as-fed analytical values for Virbac Veterinary HPM Senior Entire Large & Medium (dog, UK). Missing fields: magnesium_percent. Accepted evidence: current manufacturer PDF, official technical sheet, manufacturer support response, or clear label photos for the exact formula and market. Current source: https://uk.virbac.com/products/senior-entire-dry-dog-food-for-medium-large-breeds."
+  }
+]

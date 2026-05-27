@@ -201,6 +201,34 @@ export default function AdminDashboardPage() {
                   data.
                 </p>
               </Link>
+
+              <Link
+                href="/admin/chat-feedback"
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+              >
+                <h3 className="text-xl font-semibold text-black">
+                  Chatbot Feedback
+                </h3>
+
+                <p className="mt-2 text-gray-600">
+                  Review failed food matches and helpfulness signals from
+                  chatbot sessions.
+                </p>
+              </Link>
+
+              <Link
+                href="/admin/food-backfill"
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+              >
+                <h3 className="text-xl font-semibold text-black">
+                  Food Backfill Queue
+                </h3>
+
+                <p className="mt-2 text-gray-600">
+                  Prioritize missing nutrition values using official sources,
+                  manufacturer evidence, or label photos.
+                </p>
+              </Link>
             </div>
           </>
         )}
