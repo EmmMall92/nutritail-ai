@@ -16,5 +16,5 @@ Gatoskilo,gatoskilo.gr,GR,authorized,html,"Greek retailer fallback for pack size
 Petshop88,petshop88.gr,GR,authorized,html,"Greek retailer fallback for product pages with Greek composition and analytical details; keep rows needs_review unless corroborated by official source or photo."
 Pet City,petcity.gr,GR,authorized,html,"Greek retail chain fallback for local pack sizes, product matching, and translated label details; keep rows needs_review unless corroborated by official source or photo."
 Pet Samolis,petsamolis.gr,GR,authorized,html,"Greek retailer fallback for pack sizes, local availability, translated composition, and label details; keep rows needs_review unless corroborated by official source or photo."
-Petit,petit.gr,GR,unknown,html,"Needs verification: current domain resolves to food and coffee delivery, not a pet-food retailer. Do not use for pet-food rows until the intended pet source URL is confirmed."
+Pet-it,pet-it.gr,GR,authorized,html,"Greek retailer fallback for pack sizes, local availability, translated composition, and label details; keep rows needs_review unless corroborated by official source or photo."
 Store photos,food-evidence/private,UK,photo,photo,"Private Supabase Storage evidence for barcode, pack size, ingredients, analysis, calories, and market confirmation."

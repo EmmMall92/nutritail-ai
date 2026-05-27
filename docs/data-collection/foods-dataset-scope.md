@@ -44,12 +44,11 @@ Greek retailer fallbacks currently approved for research and backfill:
 
 - `gatoskilo.gr`
 - `petshop88.gr`
+- `pet-it.gr`
 - `petcity.gr`
 - `petsamolis.gr`
 
 Use these sources for Greek-market pack sizes, local availability, barcode clues, translated label text, or missing-field backfill. Do not classify a row as `verified` from these sources alone.
-
-`petit.gr` is not currently approved for pet-food rows because the checked domain resolves to food and coffee delivery, not a pet-food retailer. Keep it out of imports until the intended pet source URL is confirmed.
 
 ## Quality Classification
 
