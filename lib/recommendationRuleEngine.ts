@@ -61,6 +61,23 @@ const ALLERGY_TERMS = [
   "allerg",
   "fagour",
 ];
+const LARGE_BREED_TERMS = [
+  "large",
+  "giant",
+  "maxi",
+  "labrador",
+  "golden",
+  "german shepherd",
+  "rottweiler",
+  "great dane",
+  "mastiff",
+  "large breed",
+  "giant breed",
+  "megalo",
+  "megalos",
+  "gigas",
+  "gigant",
+];
 
 function normalizeClinicalText(value: string) {
   return value
@@ -110,6 +127,17 @@ function containsDeclaredAllergen(food: Food, allergies: string[]) {
   );
 }
 
+function isLargeBreedDog(pet: Pet) {
+  if (pet.species !== "dog") return false;
+
+  const breedText = normalizeClinicalText(pet.breed ?? "");
+  const breedLooksLarge = LARGE_BREED_TERMS.some((term) =>
+    breedText.includes(normalizeClinicalText(term))
+  );
+
+  return breedLooksLarge || pet.weight >= 25;
+}
+
 export function evaluateFoodRecommendationRules(
   food: Food,
   pet: Pet
@@ -121,6 +149,7 @@ export function evaluateFoodRecommendationRules(
   const healthIssues = pet.healthIssues ?? [];
   const allergies = pet.allergies ?? [];
   const lowerFoodText = foodText(food);
+  const largeBreedDog = isLargeBreedDog(pet);
 
   const protein = nutrientValue(food.proteinPercent, food.protein);
   const fat = nutrientValue(food.fatPercent, food.fat);
@@ -197,6 +226,16 @@ export function evaluateFoodRecommendationRules(
 
   const hasWeightConcern = textIncludesAny(healthIssues, WEIGHT_TERMS);
   if (hasWeightConcern || pet.neutered) {
+    if (pet.neutered) {
+      suitabilityScore += 4;
+      addSignal(signals, {
+        type: "boost",
+        code: "neutered_weight_awareness",
+        message: "Neutered pets benefit from calorie-aware food selection.",
+        points: 4,
+      });
+    }
+
     if (kcal !== null && kcal <= 370) {
       suitabilityScore += 8;
       addSignal(signals, {
@@ -204,6 +243,22 @@ export function evaluateFoodRecommendationRules(
         code: "moderate_calories",
         message: "Moderate calorie density can help portion control.",
         points: 8,
+      });
+    } else if (kcal !== null && kcal >= 410) {
+      suitabilityScore -= 7;
+      addSignal(signals, {
+        type: "caution",
+        code: "energy_dense_weight_risk",
+        message: "Higher calorie density needs careful portions for weight-prone pets.",
+        points: -7,
+      });
+    } else if (kcal === null) {
+      suitabilityScore -= 3;
+      addSignal(signals, {
+        type: "caution",
+        code: "weight_kcal_missing",
+        message: "Calorie data is missing, so weight-management confidence is lower.",
+        points: -3,
       });
     }
 
@@ -306,6 +361,26 @@ export function evaluateFoodRecommendationRules(
         points: -5,
       });
     }
+
+    if (magnesium !== null && magnesium > 0.12) {
+      suitabilityScore -= 6;
+      addSignal(signals, {
+        type: "caution",
+        code: "urinary_magnesium_high",
+        message: "Magnesium is not especially low for urinary-sensitive context.",
+        points: -6,
+      });
+    }
+
+    if (sodium !== null && sodium > 0.6) {
+      suitabilityScore -= 4;
+      addSignal(signals, {
+        type: "caution",
+        code: "urinary_sodium_high",
+        message: "Higher sodium should be reviewed carefully in urinary cases.",
+        points: -4,
+      });
+    }
   }
 
   if (textIncludesAny(healthIssues, GI_TERMS)) {
@@ -338,6 +413,16 @@ export function evaluateFoodRecommendationRules(
         points: 6,
       });
     }
+
+    if (fat !== null && fat >= 20) {
+      suitabilityScore -= 4;
+      addSignal(signals, {
+        type: "caution",
+        code: "gi_high_fat_caution",
+        message: "Higher fat can be a caution for some sensitive-digestion pets.",
+        points: -4,
+      });
+    }
   }
 
   if (textIncludesAny(healthIssues, ALLERGY_TERMS)) {
@@ -366,30 +451,80 @@ export function evaluateFoodRecommendationRules(
   if (petLifeStage === "young" && pet.species === "dog") {
     if (calcium !== null && phosphorus !== null && phosphorus > 0) {
       const ratio = calcium / phosphorus;
-      if (ratio >= 1 && ratio <= 2) {
-        suitabilityScore += 5;
+      const idealGrowthRatio = largeBreedDog
+        ? ratio >= 1.1 && ratio <= 1.6
+        : ratio >= 1 && ratio <= 2;
+
+      if (idealGrowthRatio) {
+        suitabilityScore += largeBreedDog ? 8 : 5;
         addSignal(signals, {
           type: "boost",
           code: "growth_calcium_phosphorus_present",
-          message: "Calcium and phosphorus are available for growth-stage review.",
-          points: 5,
+          message: largeBreedDog
+            ? "Calcium/phosphorus data is available for large-breed growth review."
+            : "Calcium and phosphorus are available for growth-stage review.",
+          points: largeBreedDog ? 8 : 5,
         });
       } else {
-        suitabilityScore -= 10;
+        suitabilityScore -= largeBreedDog ? 14 : 10;
         addSignal(signals, {
           type: "caution",
           code: "growth_calcium_phosphorus_ratio",
-          message: "Calcium/phosphorus ratio needs closer review for growth.",
-          points: -10,
+          message: largeBreedDog
+            ? "Large-breed puppy calcium/phosphorus ratio needs closer review."
+            : "Calcium/phosphorus ratio needs closer review for growth.",
+          points: largeBreedDog ? -14 : -10,
         });
       }
     } else {
-      suitabilityScore -= 8;
+      suitabilityScore -= largeBreedDog ? 12 : 8;
       addSignal(signals, {
         type: "caution",
         code: "growth_minerals_missing",
-        message: "Puppy recommendations need calcium and phosphorus data.",
-        points: -8,
+        message: largeBreedDog
+          ? "Large-breed puppy recommendations need calcium and phosphorus data."
+          : "Puppy recommendations need calcium and phosphorus data.",
+        points: largeBreedDog ? -12 : -8,
+      });
+    }
+
+    if (largeBreedDog && kcal !== null && kcal >= 410) {
+      suitabilityScore -= 5;
+      addSignal(signals, {
+        type: "caution",
+        code: "large_puppy_energy_density",
+        message: "Energy-dense food needs careful feeding for large-breed growth.",
+        points: -5,
+      });
+    }
+  }
+
+  if (petLifeStage === "senior") {
+    if (lowerFoodText.includes("senior") || lowerFoodText.includes("ageing")) {
+      suitabilityScore += 8;
+      addSignal(signals, {
+        type: "boost",
+        code: "senior_positioning",
+        message: "Food is positioned for senior pets.",
+        points: 8,
+      });
+    }
+
+    if (phosphorus !== null && phosphorus <= 0.8) {
+      suitabilityScore += 4;
+      addSignal(signals, {
+        type: "boost",
+        code: "senior_phosphorus_awareness",
+        message: "Phosphorus is available and not especially high for senior review.",
+        points: 4,
+      });
+    } else if (phosphorus === null) {
+      suitabilityScore -= 3;
+      addSignal(signals, {
+        type: "caution",
+        code: "senior_phosphorus_missing",
+        message: "Senior recommendations are stronger when phosphorus is known.",
+        points: -3,
       });
     }
   }
