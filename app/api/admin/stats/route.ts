@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
+function getQualityStatus(value: unknown) {
+  const status = String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+  return status === "needs review" ? "needs_review" : status;
+}
+
 export async function GET() {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -29,21 +38,22 @@ export async function GET() {
     ).size;
 
     const needsReviewFoods = foods.filter(
-      (food) =>
-        food.data_quality_status === "needs_review" ||
-        !food.data_quality_status
+      (food) => {
+        const status = getQualityStatus(food.data_quality_status);
+        return status === "needs_review" || !status;
+      }
     ).length;
 
     const partialFoods = foods.filter(
-      (food) => food.data_quality_status === "partial"
+      (food) => getQualityStatus(food.data_quality_status) === "partial"
     ).length;
 
     const verifiedFoods = foods.filter(
-      (food) => food.data_quality_status === "verified"
+      (food) => getQualityStatus(food.data_quality_status) === "verified"
     ).length;
 
     const unknownFoods = foods.filter(
-      (food) => food.data_quality_status === "unknown"
+      (food) => getQualityStatus(food.data_quality_status) === "unknown"
     ).length;
 
     return NextResponse.json({
