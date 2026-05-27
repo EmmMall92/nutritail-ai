@@ -1,13 +1,19 @@
 import type { Pet, PetLifeStage } from "@/types/pet";
 
 export function getPetLifeStage(pet: Pet): PetLifeStage {
-  if (pet.species === "dog") {
-    if (pet.age < 1) return "young";
-    if (pet.age >= 7) return "senior";
+  const age = Number(pet.age);
+
+  if (!Number.isFinite(age) || age < 0) {
     return "adult";
   }
 
-  if (pet.age < 1) return "young";
-  if (pet.age >= 10) return "senior";
+  if (pet.species === "dog") {
+    if (age < 1) return "young";
+    if (age >= 7) return "senior";
+    return "adult";
+  }
+
+  if (age < 1) return "young";
+  if (age >= 10) return "senior";
   return "adult";
 }
