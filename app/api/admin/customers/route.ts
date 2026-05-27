@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
     const payload = {
       full_name: String(body.fullName ?? "").trim(),
-      email: body.email ? String(body.email).trim() : null,
+      email: body.email ? String(body.email).trim().toLowerCase() : null,
       phone: body.phone ? String(body.phone).trim() : null,
       bonus_card_code: body.bonusCardCode
         ? String(body.bonusCardCode).trim()
