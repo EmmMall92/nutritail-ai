@@ -4,20 +4,27 @@ import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 function normalizeArrayField(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => String(item).trim())
-      .filter(Boolean);
-  }
+  const values = Array.isArray(value) ? value : [value];
+  const seen = new Set<string>();
+  const normalized: string[] = [];
 
-  if (typeof value === "string") {
-    return value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
+  const addItem = (item: string) => {
+    const text = String(item ?? "").trim();
+    if (!text) return;
 
-  return [];
+    const key = text.toLowerCase();
+    if (seen.has(key)) return;
+
+    seen.add(key);
+    normalized.push(text);
+  };
+
+  values.forEach((item) => {
+    if (item === null || item === undefined) return;
+    String(item).split(/[,|\n]+/).forEach(addItem);
+  });
+
+  return normalized;
 }
 
 function normalizeNumber(value: unknown, fallback = 0): number {
