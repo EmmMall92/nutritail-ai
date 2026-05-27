@@ -7,7 +7,7 @@ export function adjustCaloriesForWeightGoal(params: {
   const calories = Number(params.calories);
 
   if (!Number.isFinite(calories) || calories <= 0) {
-    return calories;
+    return 0;
   }
 
   if (params.goal === "loss") {
