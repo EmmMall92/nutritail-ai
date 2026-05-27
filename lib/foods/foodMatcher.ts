@@ -25,8 +25,11 @@ const GENERIC_QUERY_WORDS = new Set([
 
 const QUERY_ALIASES: Array<[RegExp, string]> = [
   [/\brc\b/g, "royal canin"],
+  [/\broyal\s+canine\b/g, "royal canin"],
   [/\broyalcanin\b/g, "royal canin"],
+  [/\bproplan\b/g, "pro plan"],
   [/\bn\s*&\s*d\b/g, "n d"],
+  [/\bn\s+and\s+d\b/g, "n d"],
   [/\bnd\b/g, "n d"],
 ];
 
