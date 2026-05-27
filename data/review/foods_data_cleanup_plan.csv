@@ -1,0 +1,13 @@
+priority,brand,task_type,affected_rows,affected_fields,recommended_batch,acceptance_check
+high,Royal Canin,core_backfill,3,calcium_percent|phosphorus_percent|kcal_per_100g,Batch 1: Royal Canin core nutrition backfill,Core fields are filled or row remains needs_review with explicit note.
+high,Royal Canin,photo_evidence,3,missing_fields,Batch 1: Royal Canin label photo evidence,Photo/source evidence is attached or row remains in the missing-photo queue.
+medium,Ambrosia,mineral_backfill,18,sodium_percent|magnesium_percent,Batch 2: Ambrosia sodium/magnesium backfill,sodium_percent and magnesium_percent are filled where source evidence exists.
+medium,Ambrosia,photo_evidence,18,missing_fields,Batch 2: Ambrosia label photo evidence,Photo/source evidence is attached or row remains in the missing-photo queue.
+medium,Ambrosia,status_upgrade_review,18,data_quality_status,Batch 2: Ambrosia partial status review,Rows move from partial to verified only when required mineral fields are present.
+medium,Farmina,mineral_backfill,2,sodium_percent|magnesium_percent,Batch 2: Farmina sodium/magnesium backfill,sodium_percent and magnesium_percent are filled where source evidence exists.
+medium,Farmina,photo_evidence,2,missing_fields,Batch 2: Farmina label photo evidence,Photo/source evidence is attached or row remains in the missing-photo queue.
+medium,Farmina,status_upgrade_review,2,data_quality_status,Batch 2: Farmina partial status review,Rows move from partial to verified only when required mineral fields are present.
+medium,Royal Canin,mineral_backfill,3,sodium_percent|magnesium_percent,Batch 2: Royal Canin sodium/magnesium backfill,sodium_percent and magnesium_percent are filled where source evidence exists.
+medium,Virbac,mineral_backfill,6,magnesium_percent,Batch 2: Virbac sodium/magnesium backfill,sodium_percent and magnesium_percent are filled where source evidence exists.
+medium,Virbac,photo_evidence,6,missing_fields,Batch 2: Virbac label photo evidence,Photo/source evidence is attached or row remains in the missing-photo queue.
+medium,Virbac,status_upgrade_review,6,data_quality_status,Batch 2: Virbac partial status review,Rows move from partial to verified only when required mineral fields are present.
