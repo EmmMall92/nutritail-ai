@@ -7,6 +7,9 @@ import type { PetAnalysis } from "@/types/pet-analysis";
 type Species = "dog" | "cat";
 type ActivityLevel = "low" | "normal" | "high";
 
+const MAX_PET_WEIGHT_KG = 150;
+const MAX_PET_AGE_YEARS = 40;
+
 type IntakeStep =
   | "species"
   | "name"
@@ -302,9 +305,12 @@ export default function ChatbotPage() {
     if (step === "weight") {
       const weight = parseNumber(text);
 
-      if (!weight || weight <= 0) {
+      if (!weight || weight <= 0 || weight > MAX_PET_WEIGHT_KG) {
         addMessages(
-          createMessage("bot", "Γράψε μου το βάρος με αριθμό, π.χ. 4.5 κιλά.")
+          createMessage(
+            "bot",
+            `Γράψε μου ένα ρεαλιστικό βάρος σε kg, π.χ. 4.5. Μέγιστο υποστηριζόμενο βάρος: ${MAX_PET_WEIGHT_KG} kg.`
+          )
         );
         return;
       }
@@ -319,9 +325,12 @@ export default function ChatbotPage() {
     if (step === "age") {
       const age = parseNumber(text);
 
-      if (age === null || age < 0) {
+      if (age === null || age < 0 || age > MAX_PET_AGE_YEARS) {
         addMessages(
-          createMessage("bot", "Γράψε μου την ηλικία με αριθμό, π.χ. 3 ετών.")
+          createMessage(
+            "bot",
+            `Γράψε μου μια ρεαλιστική ηλικία σε χρόνια, π.χ. 3. Μέγιστη υποστηριζόμενη ηλικία: ${MAX_PET_AGE_YEARS}.`
+          )
         );
         return;
       }

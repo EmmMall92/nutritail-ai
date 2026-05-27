@@ -26,6 +26,9 @@ type Species = "dog" | "cat";
 type ActivityLevel = "low" | "normal" | "high";
 type WeightGoal = "maintain" | "loss" | "gain";
 
+const MAX_PET_WEIGHT_KG = 150;
+const MAX_PET_AGE_YEARS = 40;
+
 type IntakeStep =
   | "petChoice"
   | "species"
@@ -949,9 +952,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (step === "weight") {
       const weight = parseNumber(text);
 
-      if (!weight || weight <= 0) {
+      if (!weight || weight <= 0 || weight > MAX_PET_WEIGHT_KG) {
         addMessages(
-          createMessage("bot", "Please enter weight as a number, for example 4.5 kg.")
+          createMessage(
+            "bot",
+            `Please enter a realistic weight in kg, for example 4.5. Maximum supported weight is ${MAX_PET_WEIGHT_KG} kg.`
+          )
         );
 
         return;
@@ -968,9 +974,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (step === "age") {
       const age = parseNumber(text);
 
-      if (age === null || age < 0) {
+      if (age === null || age < 0 || age > MAX_PET_AGE_YEARS) {
         addMessages(
-          createMessage("bot", "Please enter age as a number, for example 3.")
+          createMessage(
+            "bot",
+            `Please enter a realistic age in years, for example 3. Maximum supported age is ${MAX_PET_AGE_YEARS}.`
+          )
         );
 
         return;
