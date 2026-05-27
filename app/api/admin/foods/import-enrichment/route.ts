@@ -23,11 +23,13 @@ function toNumberOrNull(value: unknown) {
 }
 
 function normalizeStatus(value: unknown) {
-  const status = String(value ?? "needs_review");
+  const status = String(value ?? "needs_review").trim().toLowerCase();
 
   if (["needs_review", "partial", "verified", "unknown"].includes(status)) {
     return status;
   }
+
+  if (status === "needs review") return "needs_review";
 
   return "needs_review";
 }

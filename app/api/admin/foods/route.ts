@@ -33,11 +33,15 @@ function normalizeNumber(value: unknown, fallback = 0): number {
 }
 
 function normalizeStatus(value: unknown) {
-  const status = String(value ?? "needs_review");
+  const status = String(value ?? "needs_review").trim().toLowerCase();
 
-  return ["needs_review", "partial", "verified", "unknown"].includes(status)
-    ? status
-    : "needs_review";
+  if (["needs_review", "partial", "verified", "unknown"].includes(status)) {
+    return status;
+  }
+
+  if (status === "needs review") return "needs_review";
+
+  return "needs_review";
 }
 
 export async function GET() {
