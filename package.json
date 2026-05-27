@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run build",
     "validate:foods": "node scripts/data/validate-food-import.mjs",
     "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs",
     "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs",
