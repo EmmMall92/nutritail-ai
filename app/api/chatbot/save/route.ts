@@ -9,6 +9,47 @@ import type { PetAnalysis } from "@/types/pet-analysis";
 const MAX_PET_AGE_YEARS = 40;
 const MAX_PET_WEIGHT_KG = 150;
 
+function normalizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizePetPayload(value: unknown): Pet | null {
+  if (typeof value !== "object" || value === null) return null;
+
+  const input = value as Partial<Pet>;
+  const name = String(input.name ?? "").trim();
+  const species =
+    input.species === "dog" || input.species === "cat" ? input.species : null;
+  const age = Number(input.age);
+  const weight = Number(input.weight);
+
+  if (!name || !species) return null;
+
+  return {
+    id: String(input.id ?? "").trim(),
+    ownerId: String(input.ownerId ?? "").trim(),
+    name,
+    species,
+    breed: String(input.breed ?? "").trim(),
+    age,
+    weight,
+    activityLevel:
+      input.activityLevel === "low" ||
+      input.activityLevel === "normal" ||
+      input.activityLevel === "high"
+        ? input.activityLevel
+        : "normal",
+    neutered: Boolean(input.neutered),
+    allergies: normalizeStringArray(input.allergies),
+    healthIssues: normalizeStringArray(input.healthIssues),
+  };
+}
+
 function getPetValidationError(pet: Pet): string | null {
   const age = Number(pet.age);
   const weight = Number(pet.weight);
@@ -28,7 +69,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const pet = body.pet as Pet;
+    const pet = normalizePetPayload(body.pet);
     const analysis = body.analysis as PetAnalysis | null;
     const customerName = String(body.customerName ?? "").trim();
     const customerId = body.customerId ? String(body.customerId).trim() : "";
