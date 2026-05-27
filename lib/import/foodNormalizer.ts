@@ -23,7 +23,9 @@ const BRAND_OVERRIDES: Record<string, string> = {
 };
 
 function firstValue(...values: unknown[]): unknown {
-  return values.find((value) => value !== undefined);
+  return values.find(
+    (value) => value !== undefined && value !== null && value !== ""
+  );
 }
 
 function cleanText(value: unknown): string | null {
