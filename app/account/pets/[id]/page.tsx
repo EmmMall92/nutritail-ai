@@ -37,6 +37,16 @@ type PetDetailResponse = {
   analysisHistory: AnalysisHistoryItem[];
 };
 
+function formatDateTime(value?: string) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString();
+}
+
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -255,7 +265,7 @@ export default function AccountPetDetailPage() {
           </p>
         )}
             <p className="mt-1 text-sm text-gray-700">
-              {new Date(latest.createdAt).toLocaleString()}
+              {formatDateTime(latest.createdAt)}
             </p>
           </div>
         )}
@@ -285,7 +295,7 @@ export default function AccountPetDetailPage() {
                   className="rounded-xl border border-gray-200 bg-gray-50 p-4"
                 >
                   <p className="font-semibold text-black">
-                    {new Date(item.createdAt).toLocaleString()}
+                    {formatDateTime(item.createdAt)}
                   </p>
                   <p className="mt-1 text-sm text-gray-700">
                     RER {item.rer} kcal - MER {item.mer} kcal

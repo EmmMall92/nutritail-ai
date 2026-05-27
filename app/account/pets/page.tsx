@@ -31,7 +31,11 @@ type AccountPet = {
 function formatDate(value?: string) {
   if (!value) return "-";
 
-  return new Date(value).toLocaleDateString();
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleDateString();
 }
 
 export default function AccountPetsPage() {
