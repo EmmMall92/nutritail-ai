@@ -156,6 +156,8 @@ ${
 }
 
 export default function ChatbotPage() {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const [step, setStep] = useState<IntakeStep>("species");
   const [input, setInput] = useState("");
   const [pet, setPet] = useState<PetIntake>({
@@ -495,10 +497,10 @@ export default function ChatbotPage() {
           `Αποθηκεύτηκε επιτυχώς!
 
 Customer:
-http://localhost:3000/admin/customers/${result.customer.id}
+${siteUrl}/admin/customers/${result.customer.id}
 
 Pet:
-http://localhost:3000/admin/pets/${result.pet.id}
+${siteUrl}/admin/pets/${result.pet.id}
 
 Το ιστορικό ανάλυσης αποθηκεύτηκε επίσης.`
         )
