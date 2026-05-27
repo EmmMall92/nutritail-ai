@@ -1,5 +1,6 @@
 import { scoreFoodForPet } from "@/lib/foodScoring";
 import { getPetLifeStage } from "@/lib/petLifeStage";
+import { evaluateFoodRecommendationRules } from "@/lib/recommendationRuleEngine";
 import { foodCatalogService } from "@/services/foodCatalogService";
 import type { Pet } from "@/types/pet";
 import type { Food } from "@/types/food";
@@ -26,6 +27,7 @@ function buildReasons(food: Food, pet: Pet): string[] {
   const reasons: string[] = [];
   const healthIssues = pet.healthIssues?.map((h) => h.toLowerCase()) ?? [];
   const petLifeStage = getPetLifeStage(pet);
+  const ruleResult = evaluateFoodRecommendationRules(food, pet);
 
   if (food.species === pet.species) {
     reasons.push(`Suitable for ${pet.species}s.`);
@@ -64,7 +66,13 @@ function buildReasons(food: Food, pet: Pet): string[] {
     reasons.push("Filtered to avoid allergens.");
   }
 
-  return reasons;
+  for (const signal of ruleResult.signals) {
+    if (signal.type === "boost" && !reasons.includes(signal.message)) {
+      reasons.push(signal.message);
+    }
+  }
+
+  return reasons.slice(0, 6);
 }
 
 function getRecommendationScore(food: Food, pet: Pet): number {
@@ -111,6 +119,7 @@ export async function getRecommendedFoods(
   const filteredFoods = allFoods.filter((food) => {
     if (!matchesLifeStage(food, petLifeStage)) return false;
     if (allergies.length > 0 && containsAllergen(food, allergies)) return false;
+    if (evaluateFoodRecommendationRules(food, pet).excluded) return false;
 
     return true;
   });
@@ -119,13 +128,18 @@ export async function getRecommendedFoods(
     .map((food) => {
       const nutritionScoreResult = scoreFoodForPet(food, pet);
       const recommendationScore = getRecommendationScore(food, pet);
+      const ruleResult = evaluateFoodRecommendationRules(food, pet);
+      const cautionReasons = ruleResult.signals
+        .filter((signal) => signal.type === "caution")
+        .map((signal) => signal.message);
 
       return {
         food,
-        score: recommendationScore,
-        reasons: buildReasons(food, pet),
+        score: recommendationScore + ruleResult.suitabilityScore,
+        reasons: [...buildReasons(food, pet), ...cautionReasons].slice(0, 8),
         nutritionScore: nutritionScoreResult.score,
         nutritionReasons: nutritionScoreResult.reasons,
+        ruleSignals: ruleResult.signals,
       };
     })
     .sort((a, b) => {
