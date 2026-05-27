@@ -53,21 +53,55 @@ function createMessage(role: "bot" | "user", text: string): ChatMessage {
 
 function parseSpecies(text: string): Species | null {
   const value = text.toLowerCase();
-  if (value.includes("σκυ") || value.includes("dog")) return "dog";
-  if (value.includes("γατ") || value.includes("cat")) return "cat";
+  if (
+    value.includes("σκυ") ||
+    value.includes("σκύ") ||
+    value.includes("skyl") ||
+    value.includes("skil") ||
+    value.includes("dog")
+  ) {
+    return "dog";
+  }
+  if (
+    value.includes("γατ") ||
+    value.includes("γάτ") ||
+    value.includes("gat") ||
+    value.includes("cat")
+  ) {
+    return "cat";
+  }
   return null;
 }
 
 function parseActivity(text: string): ActivityLevel | null {
   const value = text.toLowerCase();
 
-  if (value.includes("χαμη") || value.includes("low")) return "low";
-  if (value.includes("υψη") || value.includes("πολυ") || value.includes("high")) {
+  if (
+    value.includes("χαμη") ||
+    value.includes("xamhl") ||
+    value.includes("xamil") ||
+    value.includes("low")
+  ) {
+    return "low";
+  }
+  if (
+    value.includes("υψη") ||
+    value.includes("ψηλ") ||
+    value.includes("πολυ") ||
+    value.includes("πολύ") ||
+    value.includes("ypsil") ||
+    value.includes("ipsil") ||
+    value.includes("poly") ||
+    value.includes("high")
+  ) {
     return "high";
   }
   if (
     value.includes("κανον") ||
     value.includes("μετρι") ||
+    value.includes("μέτρι") ||
+    value.includes("kanon") ||
+    value.includes("metri") ||
     value.includes("normal") ||
     value.includes("medium")
   ) {
@@ -80,8 +114,14 @@ function parseActivity(text: string): ActivityLevel | null {
 function parseYesNo(text: string): boolean | null {
   const value = text.toLowerCase();
 
-  if (value.includes("ναι") || value.includes("yes")) return true;
-  if (value.includes("οχι") || value.includes("όχι") || value.includes("no")) {
+  if (value.includes("ναι") || value.includes("nai") || value.includes("yes")) return true;
+  if (
+    value.includes("οχι") ||
+    value.includes("όχι") ||
+    value.includes("oxi") ||
+    value.includes("ochi") ||
+    value.includes("no")
+  ) {
     return false;
   }
 
