@@ -27,21 +27,29 @@ export type NutritionInsightResult = {
   confidence: "low" | "moderate" | "high";
 };
 
+function toFiniteNumber(value: number | null | undefined) {
+  if (value === null || value === undefined) return null;
+
+  const numericValue = Number(value);
+
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
 export function generateNutritionInsights(
   input: NutritionInsightInput
 ): NutritionInsightResult {
   const positives: string[] = [];
   const cautions: string[] = [];
 
-  const protein = input.protein ?? null;
-  const fat = input.fat ?? null;
-  const fiber = input.fiber ?? null;
-  const kcal = input.kcalPer100g ?? null;
+  const protein = toFiniteNumber(input.protein);
+  const fat = toFiniteNumber(input.fat);
+  const fiber = toFiniteNumber(input.fiber);
+  const kcal = toFiniteNumber(input.kcalPer100g);
 
-  const calcium = input.calcium ?? null;
-  const phosphorus = input.phosphorus ?? null;
-  const magnesium = input.magnesium ?? null;
-  const sodium = input.sodium ?? null;
+  const calcium = toFiniteNumber(input.calcium);
+  const phosphorus = toFiniteNumber(input.phosphorus);
+  const magnesium = toFiniteNumber(input.magnesium);
+  const sodium = toFiniteNumber(input.sodium);
 
   if (protein !== null) {
     if (protein >= 32) {
