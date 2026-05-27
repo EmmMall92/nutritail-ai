@@ -5,6 +5,10 @@ export function calculateTreatsAllowance(dailyCalories: number) {
     return null;
   }
 
+  if (calories > 10000) {
+    return null;
+  }
+
   const maxTreatCalories = Math.round(calories * 0.1);
   const mainFoodCalories = Math.round(calories * 0.9);
 
