@@ -1,4 +1,6 @@
 export function getFoodScoreLabel(score: number) {
+  if (!Number.isFinite(score)) return "Not scored";
+
   if (score >= 85) return "Excellent match";
   if (score >= 70) return "Very good match";
   if (score >= 55) return "Good match";
@@ -7,6 +9,10 @@ export function getFoodScoreLabel(score: number) {
 }
 
 export function buildFoodScoreExplanation(score: number) {
+  if (!Number.isFinite(score)) {
+    return "There is not enough reliable nutrition data to explain this food score yet.";
+  }
+
   if (score >= 85) {
     return "This food looks like a strong match based on the pet profile and available food data.";
   }
