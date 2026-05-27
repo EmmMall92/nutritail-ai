@@ -85,7 +85,36 @@ const HEADER_ALIASES: Record<string, string> = {
 };
 
 function parseCsvLine(line: string): string[] {
-  return line.split(",").map((cell) => cell.trim());
+  const cells: string[] = [];
+  let currentCell = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const nextChar = line[index + 1];
+
+    if (char === '"' && inQuotes && nextChar === '"') {
+      currentCell += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      cells.push(currentCell.trim());
+      currentCell = "";
+      continue;
+    }
+
+    currentCell += char;
+  }
+
+  cells.push(currentCell.trim());
+  return cells;
 }
 
 function normalizeHeader(header: string): string {
