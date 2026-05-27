@@ -149,7 +149,7 @@ function parseNumber(text: string): number | null {
 }
 
 function parseListOrEmpty(text: string) {
-  const no = parseYesNo(text) === false;
+  const no = parseYesNoInput(text) === false;
 
   if (no) return [];
 
@@ -189,6 +189,169 @@ function parseWeightGoal(text: string): WeightGoal | null {
   }
 
   return null;
+}
+
+function parseSpeciesInput(text: string): Species | null {
+  const value = text.toLowerCase();
+
+  if (
+    value.includes("dog") ||
+    value.includes("σκυλ") ||
+    value.includes("σκύλ") ||
+    value.includes("skyl") ||
+    value.includes("skil")
+  ) {
+    return "dog";
+  }
+
+  if (
+    value.includes("cat") ||
+    value.includes("γατ") ||
+    value.includes("γάτ") ||
+    value.includes("gat")
+  ) {
+    return "cat";
+  }
+
+  return parseSpecies(text);
+}
+
+function parseActivityInput(text: string): ActivityLevel | null {
+  const value = text.toLowerCase();
+
+  if (
+    value.includes("low") ||
+    value.includes("χαμηλ") ||
+    value.includes("xamhl") ||
+    value.includes("xamil")
+  ) {
+    return "low";
+  }
+
+  if (
+    value.includes("high") ||
+    value.includes("υψηλ") ||
+    value.includes("ψηλ") ||
+    value.includes("πολυ") ||
+    value.includes("πολύ") ||
+    value.includes("ypsil") ||
+    value.includes("ipsil") ||
+    value.includes("poly")
+  ) {
+    return "high";
+  }
+
+  if (
+    value.includes("normal") ||
+    value.includes("medium") ||
+    value.includes("κανον") ||
+    value.includes("μετρι") ||
+    value.includes("μέτρι") ||
+    value.includes("kanon") ||
+    value.includes("metri")
+  ) {
+    return "normal";
+  }
+
+  return parseActivity(text);
+}
+
+function parseYesNoInput(text: string): boolean | null {
+  const value = text.toLowerCase();
+
+  if (
+    value === "y" ||
+    value.includes("yes") ||
+    value.includes("ναι") ||
+    value.includes("nai")
+  ) {
+    return true;
+  }
+
+  if (
+    value === "n" ||
+    value.includes("no") ||
+    value.includes("όχι") ||
+    value.includes("οχι") ||
+    value.includes("oxi") ||
+    value.includes("ochi")
+  ) {
+    return false;
+  }
+
+  return parseYesNo(text);
+}
+
+function parseWeightGoalInput(text: string): WeightGoal | null {
+  const value = text.toLowerCase();
+
+  if (
+    value.includes("maintain") ||
+    value.includes("maintenance") ||
+    value.includes("κρατ") ||
+    value.includes("συντηρ") ||
+    value.includes("diatir") ||
+    value.includes("syntir")
+  ) {
+    return "maintain";
+  }
+
+  if (
+    value.includes("loss") ||
+    value.includes("lose") ||
+    value.includes("χασ") ||
+    value.includes("αδυνατ") ||
+    value.includes("xas") ||
+    value.includes("adynat")
+  ) {
+    return "loss";
+  }
+
+  if (
+    value.includes("gain") ||
+    value.includes("παρ") ||
+    value.includes("βαλ") ||
+    value.includes("parei") ||
+    value.includes("pari") ||
+    value.includes("valei")
+  ) {
+    return "gain";
+  }
+
+  return parseWeightGoal(text);
+}
+
+function isUnknownFoodAnswer(text: string) {
+  const value = text.toLowerCase();
+
+  return [
+    "i don't know",
+    "dont know",
+    "don't know",
+    "not sure",
+    "δεν ξερω",
+    "δεν ξέρω",
+    "den ksero",
+    "den xero",
+  ].some((phrase) => value.includes(phrase));
+}
+
+function getFoodQualityNote(food: Record<string, unknown>) {
+  const status = String(food.data_quality_status ?? "").toLowerCase();
+
+  if (status === "verified") {
+    return "Data quality: verified official source. I can be more confident about this formula's published nutrition fields.";
+  }
+
+  if (status === "partial") {
+    return "Data quality: partial official source. Some minerals or calories may be missing, so I will avoid overclaiming.";
+  }
+
+  if (status === "needs_review" || status === "unknown") {
+    return "Data quality: needs review. Treat this match as tentative until the nutrition panel is confirmed.";
+  }
+
+  return "Data quality: not fully classified yet. I will keep the recommendation cautious.";
 }
 
 function createPetFromIntake(intake: PetIntake): Pet {
@@ -545,6 +708,10 @@ Main food calories: about ${treats.mainFoodCalories} kcal/day`
   magnesium,
   sodium,
   kcalPer100g: getFoodKcalPer100g(matchedFood),
+  dataQualityStatus: matchedFood.data_quality_status,
+  ingredients: Array.isArray(matchedFood.ingredients)
+    ? matchedFood.ingredients.join(", ")
+    : matchedFood.ingredients ?? matchedFood.ingredient_list ?? null,
 });
 
 const ingredientInsights = generateIngredientInsights(
@@ -589,6 +756,8 @@ const ingredientInsights = generateIngredientInsights(
                     "bot",
                     `I found a likely match for the current food:
 ${matchedFood.brand} - ${matchedFood.name}
+
+${getFoodQualityNote(matchedFood)}
 
 Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
 ${buildFoodScoreExplanation(foodScore)}
@@ -656,6 +825,8 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
                   "bot",
                   `I found a likely food match:
 ${matchedFood.brand} - ${matchedFood.name}
+
+${getFoodQualityNote(matchedFood)}
 
 Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
 ${buildFoodScoreExplanation(foodScore)}
@@ -736,7 +907,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "species") {
-      const species = parseSpecies(text);
+      const species = parseSpeciesInput(text);
 
       if (!species) {
         addMessages(
@@ -819,7 +990,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "activity") {
-      const activityLevel = parseActivity(text);
+      const activityLevel = parseActivityInput(text);
 
       if (!activityLevel) {
         addMessages(
@@ -841,7 +1012,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "neutered") {
-      const neutered = parseYesNo(text);
+      const neutered = parseYesNoInput(text);
 
       if (neutered === null) {
         addMessages(createMessage("bot", "Please answer yes or no."));
@@ -889,11 +1060,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const nextPet: PetIntake = {
         ...pet,
         currentFoodName:
-          currentFoodName.toLowerCase().includes("i don't know") ||
-          currentFoodName.toLowerCase().includes("dont know") ||
-          currentFoodName.toLowerCase().includes("not sure") ||
-          currentFoodName.toLowerCase().includes("δεν ξέρω") ||
-          currentFoodName.toLowerCase().includes("δεν ξερω")
+          isUnknownFoodAnswer(currentFoodName)
             ? undefined
             : currentFoodName,
       };
@@ -912,7 +1079,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "weightGoal") {
-      const weightGoal = parseWeightGoal(text);
+      const weightGoal = parseWeightGoalInput(text);
 
       if (!weightGoal) {
         addMessages(
