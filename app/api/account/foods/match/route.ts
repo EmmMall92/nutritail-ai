@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { findFoodMatches } from "@/lib/foods/foodMatcher";
 
+function getMatchConfidence(score: number) {
+  if (score >= 100) return "high";
+  if (score >= 50) return "moderate";
+  if (score > 0) return "low";
+  return "none";
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -33,11 +40,19 @@ export async function POST(request: Request) {
     }
 
     const scoredFoods = findFoodMatches(data ?? [], query);
-    const bestMatch = scoredFoods[0]?.food ?? null;
+    const bestMatch = scoredFoods[0] ?? null;
 
     return NextResponse.json({
-      match: bestMatch,
-      candidates: scoredFoods.slice(0, 5).map((item) => item.food),
+      match: bestMatch?.food ?? null,
+      match_score: bestMatch?.score ?? 0,
+      match_confidence: bestMatch
+        ? getMatchConfidence(bestMatch.score)
+        : "none",
+      candidates: scoredFoods.slice(0, 5).map((item) => ({
+        ...item.food,
+        match_score: item.score,
+        match_confidence: getMatchConfidence(item.score),
+      })),
     });
   } catch (error) {
     return NextResponse.json(
