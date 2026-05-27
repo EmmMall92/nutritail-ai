@@ -38,11 +38,23 @@ function toText(value: string[] | string | null | undefined) {
   return value ?? "";
 }
 
-function parseCommaList(value: string) {
-  return value
-    .split(",")
+function parseList(value: string) {
+  const seen = new Set<string>();
+  const items: string[] = [];
+
+  value
+    .split(/[,|\n]+/)
     .map((item) => item.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .forEach((item) => {
+      const key = item.toLowerCase();
+      if (seen.has(key)) return;
+
+      seen.add(key);
+      items.push(item);
+    });
+
+  return items;
 }
 
 function toNumberOrNull(value: string) {
@@ -188,8 +200,8 @@ export default function AdminFoodDetailPage() {
         species: food.species,
         life_stage: food.life_stage || null,
         size: food.size || null,
-        tags: parseCommaList(tagsText),
-        ingredients: parseCommaList(ingredientsText),
+        tags: parseList(tagsText),
+        ingredients: parseList(ingredientsText),
 
         kcal_per_100g: food.kcal_per_100g ?? null,
         protein_percent: food.protein_percent ?? null,
