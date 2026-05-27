@@ -35,25 +35,41 @@ export function calculateDER(pet: Pet) {
   return rer * factor;
 }
 
+const WEIGHT_TERMS = ["obesity", "overweight", "weight", "παχ", "βάρος"];
+const KIDNEY_TERMS = ["kidney", "renal", "ckd", "νεφρ"];
+const URINARY_TERMS = ["urinary", "uti", "struvite", "crystal", "ουρο"];
+const GI_TERMS = [
+  "digest",
+  "sensitive",
+  "diarrhea",
+  "diarrhoea",
+  "stool",
+  "gas",
+  "γαστρ",
+  "διαρ",
+];
+
+function hasHealthIssue(pet: Pet, terms: string[]) {
+  const text = (pet.healthIssues ?? []).join(" ").toLowerCase();
+
+  return terms.some((term) => text.includes(term));
+}
+
 export function getNutritionGuidance(pet: Pet): NutritionResult {
   const rer = calculateRER(pet.weight);
   const der = calculateDER(pet);
 
   const isSenior = pet.age >= 7;
-  const hasWeightIssue =
-    pet.healthIssues?.some((issue) =>
-      issue.toLowerCase().includes("obesity")
-    ) ?? false;
-  const hasKidneyIssue =
-    pet.healthIssues?.some((issue) =>
-      issue.toLowerCase().includes("kidney")
-    ) ?? false;
+  const hasWeightIssue = hasHealthIssue(pet, WEIGHT_TERMS) || pet.neutered;
+  const hasKidneyIssue = hasHealthIssue(pet, KIDNEY_TERMS);
+  const hasUrinaryIssue = hasHealthIssue(pet, URINARY_TERMS);
+  const hasDigestiveIssue = hasHealthIssue(pet, GI_TERMS);
 
   const protein = pet.species === "dog" ? "24-28%" : "30-40%";
   let fat = pet.species === "dog" ? "12-16%" : "15-20%";
   let fiber = "3-5%";
   let sodium = "0.2-0.4%";
-  const magnesium = "0.04-0.1%";
+  let magnesium = "0.04-0.1%";
   const calcium = "0.8-1.5%";
   let phosphorus = "0.6-1.2%";
 
@@ -66,9 +82,18 @@ export function getNutritionGuidance(pet: Pet): NutritionResult {
     fiber = "5-10%";
   }
 
+  if (hasDigestiveIssue) {
+    fiber = "3-7%";
+  }
+
   if (hasKidneyIssue) {
     phosphorus = "0.3-0.6%";
     sodium = "0.1-0.3%";
+  }
+
+  if (hasUrinaryIssue && pet.species === "cat") {
+    magnesium = "0.04-0.09%";
+    sodium = "confirm with urinary diet target";
   }
 
   return {
