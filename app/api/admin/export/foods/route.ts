@@ -10,6 +10,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("foods")
       .select("*")
+      .is("deleted_at", null)
       .order("brand", { ascending: true });
 
     if (error) {
