@@ -88,6 +88,13 @@ type AnalysisMetadata = {
   weightGoal?: WeightGoal | null;
 };
 
+type FoodMatchCandidate = Record<string, unknown> & {
+  brand?: string | null;
+  name?: string | null;
+  match_score?: number | null;
+  match_confidence?: string | null;
+};
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -391,6 +398,37 @@ function getFoodQualityNote(food: Record<string, unknown>) {
   }
 
   return "Data quality: not fully classified yet. I will keep the recommendation cautious.";
+}
+
+function isConfidentFoodMatch(matchResult: Record<string, unknown>) {
+  const confidence = String(matchResult.match_confidence ?? "none");
+  const score = Number(matchResult.match_score ?? 0);
+
+  return confidence === "high" || confidence === "moderate" || score >= 50;
+}
+
+function getFoodCandidateLabel(candidate: FoodMatchCandidate) {
+  const brand = String(candidate.brand ?? "").trim();
+  const name = String(candidate.name ?? "").trim();
+  const label = [brand, name].filter(Boolean).join(" - ");
+  const confidence = String(candidate.match_confidence ?? "low");
+  const score = Number(candidate.match_score ?? 0);
+
+  return `${label || "Unnamed food"} (${confidence}, score ${score})`;
+}
+
+function formatFoodMatchCandidates(candidates: unknown) {
+  if (!Array.isArray(candidates) || candidates.length === 0) {
+    return "No close database candidates were found.";
+  }
+
+  return candidates
+    .slice(0, 3)
+    .map(
+      (candidate) =>
+        `- ${getFoodCandidateLabel(candidate as FoodMatchCandidate)}`
+    )
+    .join("\n");
 }
 
 function buildGuardrailText(pet: PetIntake) {
@@ -720,7 +758,11 @@ ${guardrailText}`
 
           const matchResult = await matchResponse.json();
 
-          if (matchResponse.ok && matchResult.match) {
+          if (
+            matchResponse.ok &&
+            matchResult.match &&
+            isConfidentFoodMatch(matchResult)
+          ) {
             const matchedFood = matchResult.match;
 
             const protein =
@@ -911,10 +953,17 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
               );
             }
           } else {
+            const candidatesText =
+              matchResponse.ok && matchResult?.candidates
+                ? `\n\nClosest database candidates:\n${formatFoodMatchCandidates(
+                    matchResult.candidates
+                  )}\n\nPlease send the exact brand and formula from the bag if one of these is not correct.`
+                : "";
+
             addMessages(
               createMessage(
                 "bot",
-                "I could not confidently match the current food in the database. I can still continue with the general calorie guidance."
+                `I could not confidently match the current food in the database, so I will not attach a specific formula to this analysis yet.${candidatesText}\n\nI can still continue with the general calorie guidance.`
               )
             );
           }
