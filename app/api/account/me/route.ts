@@ -7,9 +7,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const authUserId = String(body.authUserId ?? "");
-    const email = body.email ? String(body.email) : null;
-    const fullName = body.fullName ? String(body.fullName) : email ?? "Customer";
+    const authUserId = String(body.authUserId ?? "").trim();
+    const email = body.email ? String(body.email).trim() : null;
+    const fullName = body.fullName
+      ? String(body.fullName).trim()
+      : email ?? "Customer";
 
     if (!authUserId) {
       return NextResponse.json(

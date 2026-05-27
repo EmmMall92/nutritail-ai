@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const authUserId = String(body.authUserId ?? "");
+    const authUserId = String(body.authUserId ?? "").trim();
     const existingPetId = body.existingPetId
       ? String(body.existingPetId)
       : null;
