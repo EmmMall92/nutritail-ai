@@ -90,7 +90,9 @@ export async function GET() {
 
     const foodDuplicateMap = new Map<string, string[]>();
     for (const food of activeFoods) {
-      const key = `${normalizeText(food.brand)}|${normalizeText(food.name)}`;
+      const key = `${normalizeText(food.brand)}|${normalizeText(
+        food.name
+      )}|${normalizeText(food.species)}`;
       if (!foodDuplicateMap.has(key)) {
         foodDuplicateMap.set(key, []);
       }
@@ -155,7 +157,7 @@ export async function GET() {
 
       const duplicateKey = `${normalizeText(food.brand)}|${normalizeText(
         food.name
-      )}`;
+      )}|${normalizeText(food.species)}`;
       const duplicateIds = foodDuplicateMap.get(duplicateKey) ?? [];
       if (duplicateIds.length > 1) {
         blockers.push(
