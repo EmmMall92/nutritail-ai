@@ -17,7 +17,7 @@ function ensureStringArray(value: unknown, fieldName: string): string[] {
 }
 
 function ensureNumber(value: unknown, fieldName: string): number {
-  if (typeof value !== "number" || Number.isNaN(value)) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new Error(`${fieldName} must be a valid number.`);
   }
 
@@ -35,7 +35,7 @@ function ensureString(value: unknown, fieldName: string): string {
 function optionalNumber(value: unknown, fieldName: string): number | null {
   if (value === null || value === undefined || value === "") return null;
 
-  if (typeof value !== "number" || Number.isNaN(value)) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new Error(`${fieldName} must be a valid number when provided.`);
   }
 
