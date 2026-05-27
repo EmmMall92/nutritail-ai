@@ -108,7 +108,13 @@ export function normalizeLifeStage(
   }
 
   if (
-    ["all", "all ages", "all life stages", "all-life-stages"].includes(cleaned)
+    [
+      "all",
+      "all ages",
+      "all life stages",
+      "all-life-stages",
+      "all_life_stages",
+    ].includes(cleaned)
   ) {
     return "all";
   }
@@ -125,7 +131,9 @@ export function normalizeDogSize(value: unknown): NormalizedDogSize | null {
   if (["medium", "med", "medium dog"].includes(cleaned)) return "medium";
   if (["large", "maxi", "large dog"].includes(cleaned)) return "large";
   if (["giant", "giant dog"].includes(cleaned)) return "giant";
-  if (["all", "all sizes", "all breeds"].includes(cleaned)) return "all";
+  if (["all", "all sizes", "all breeds", "all_breeds"].includes(cleaned)) {
+    return "all";
+  }
 
   return null;
 }
