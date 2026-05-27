@@ -34,6 +34,10 @@ function formatDate(value?: string) {
   return new Date(value).toLocaleDateString();
 }
 
+function hasValidFoodScore(score?: number | null) {
+  return typeof score === "number" && Number.isFinite(score);
+}
+
 export default function AccountPetsPage() {
   const router = useRouter();
 
@@ -164,8 +168,7 @@ export default function AccountPetsPage() {
                           <span className="rounded-full bg-white px-3 py-1">
                             MER {latest.mer} kcal
                           </span>
-                          {latest.food_score !== null &&
-                            latest.food_score !== undefined && (
+                          {hasValidFoodScore(latest.food_score) && (
                               <span className="rounded-full bg-white px-3 py-1">
                                 Score {latest.food_score}/100
                               </span>
