@@ -152,10 +152,45 @@ export function normalizeNutritionValue(value: unknown): number | null {
   if (!cleaned) return null;
 
   const lower = cleaned.toLowerCase();
-  const normalizedNumberText = lower
-    .replace(/,/g, ".")
-    .replace(/[^0-9.+-]/g, "");
-  const parsed = Number(normalizedNumberText);
+  const numberText = lower.match(/[+-]?\d[\d.,\s]*/)?.[0];
+  if (!numberText) return null;
+
+  const usesLargeUnit =
+    lower.includes("mg/kg") ||
+    lower.includes("g/kg") ||
+    lower.includes("kcal/kg") ||
+    lower.includes("kj/kg");
+  const compactNumberText = numberText.replace(/\s+/g, "");
+  const hasComma = compactNumberText.includes(",");
+  const hasDot = compactNumberText.includes(".");
+  let normalizedNumberText = compactNumberText;
+
+  if (hasComma && hasDot) {
+    const decimalSeparator =
+      compactNumberText.lastIndexOf(",") > compactNumberText.lastIndexOf(".")
+        ? ","
+        : ".";
+    const thousandsSeparator = decimalSeparator === "," ? "." : ",";
+    normalizedNumberText = compactNumberText
+      .replaceAll(thousandsSeparator, "")
+      .replace(decimalSeparator, ".");
+  } else if (hasComma) {
+    const [integerPart, fractionPart = ""] = compactNumberText.split(",");
+    const isThousandsComma =
+      usesLargeUnit && integerPart !== "0" && fractionPart.length === 3;
+    normalizedNumberText = isThousandsComma
+      ? `${integerPart}${fractionPart}`
+      : compactNumberText.replace(",", ".");
+  } else if (hasDot) {
+    const [integerPart, fractionPart = ""] = compactNumberText.split(".");
+    const isThousandsDot =
+      usesLargeUnit && integerPart !== "0" && fractionPart.length === 3;
+    normalizedNumberText = isThousandsDot
+      ? `${integerPart}${fractionPart}`
+      : compactNumberText;
+  }
+
+  const parsed = Number(normalizedNumberText.replace(/[^0-9.+-]/g, ""));
 
   if (!Number.isFinite(parsed)) return null;
 
