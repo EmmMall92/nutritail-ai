@@ -44,8 +44,8 @@ export function generateIngredientInsights(
     text.includes("maize") ||
     text.includes("wheat")
   ) {
-    cautions.push(
-      "Includes grains such as corn/maize/wheat. This is not always negative, but should be reviewed per pet."
+    positives.push(
+      "Includes common carbohydrate sources such as corn/maize/wheat, which can be appropriate unless the pet has a known sensitivity or trial restriction."
     );
   }
 

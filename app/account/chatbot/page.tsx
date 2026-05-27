@@ -15,6 +15,10 @@ import { calculateTreatsAllowance } from "@/lib/treatsCalculator";
 import { buildFoodTransitionGuide } from "@/lib/foodTransitionGuide";
 import { calculateFoodScore } from "@/lib/foodScore";
 import {
+  formatChatGuardrails,
+  generateChatGuardrails,
+} from "@/lib/nutrition/chatGuardrails";
+import {
   buildFoodScoreExplanation,
   getFoodScoreLabel,
 } from "@/lib/foodScoreExplanation";
@@ -354,6 +358,18 @@ function getFoodQualityNote(food: Record<string, unknown>) {
   return "Data quality: not fully classified yet. I will keep the recommendation cautious.";
 }
 
+function buildGuardrailText(pet: PetIntake) {
+  const guardrails = generateChatGuardrails({
+    species: pet.species,
+    age: pet.age,
+    weightGoal: pet.weightGoal,
+    healthIssues: pet.healthIssues,
+    allergies: pet.allergies,
+  });
+
+  return formatChatGuardrails(guardrails);
+}
+
 function createPetFromIntake(intake: PetIntake): Pet {
   return {
     id: crypto.randomUUID(),
@@ -633,6 +649,19 @@ Treats should stay around 10% of daily calories.
 Daily calorie target: ${treats.dailyCalories} kcal/day
 Maximum from treats: about ${treats.maxTreatCalories} kcal/day
 Main food calories: about ${treats.mainFoodCalories} kcal/day`
+          )
+        );
+      }
+
+      const guardrailText = buildGuardrailText(nextPet);
+
+      if (guardrailText) {
+        addMessages(
+          createMessage(
+            "bot",
+            `Before food-specific advice, here are the guardrails I would keep in mind:
+
+${guardrailText}`
           )
         );
       }
