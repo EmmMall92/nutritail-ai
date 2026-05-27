@@ -25,6 +25,12 @@
       "species": "dog"
     },
     {
+      "id": "purina-pro-plan-medium-adult",
+      "brand": "Purina Pro Plan",
+      "name": "Medium Adult Chicken",
+      "species": "dog"
+    },
+    {
       "id": "hills-science-plan-small-mini-chicken",
       "brand": "Hill's",
       "name": "Science Plan Small & Mini Adult Chicken",
@@ -53,8 +59,29 @@
       "minimumScore": 40
     },
     {
+      "id": "royalcanin-greek-alias",
+      "query": "ρογιαλ κανιν mini adult",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-adult",
+      "minimumScore": 40
+    },
+    {
+      "id": "royal-canine-typo",
+      "query": "royal canine medium puppy",
+      "species": "dog",
+      "expectedTopId": "royal-canin-medium-puppy",
+      "minimumScore": 40
+    },
+    {
       "id": "n-and-d-symbol",
       "query": "Farmina N&D pumpkin lamb",
+      "species": "dog",
+      "expectedTopId": "farmina-n-d-pumpkin-lamb",
+      "minimumScore": 40
+    },
+    {
+      "id": "n-and-d-words",
+      "query": "farmina n and d pumpkin",
       "species": "dog",
       "expectedTopId": "farmina-n-d-pumpkin-lamb",
       "minimumScore": 40
@@ -65,6 +92,13 @@
       "species": "dog",
       "expectedTopId": "farmina-n-d-pumpkin-lamb",
       "minimumScore": 20
+    },
+    {
+      "id": "proplan-joined-brand",
+      "query": "proplan medium adult",
+      "species": "dog",
+      "expectedTopId": "purina-pro-plan-medium-adult",
+      "minimumScore": 40
     },
     {
       "id": "hills-apostrophe",

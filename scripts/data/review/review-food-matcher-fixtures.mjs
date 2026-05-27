@@ -21,8 +21,12 @@ const genericQueryWords = new Set([
 
 const queryAliases = [
   [/\brc\b/g, "royal canin"],
+  [/\b\u03c1\u03bf\u03b3\u03b9\u03b1\u03bb\s+\u03ba\u03b1\u03bd\u03b9\u03bd\b/g, "royal canin"],
+  [/\broyal\s+canine\b/g, "royal canin"],
   [/\broyalcanin\b/g, "royal canin"],
+  [/\bproplan\b/g, "pro plan"],
   [/\bn\s*&\s*d\b/g, "n d"],
+  [/\bn\s+and\s+d\b/g, "n d"],
   [/\bnd\b/g, "n d"],
 ];
 
@@ -65,6 +69,9 @@ function scoreFood(food, query) {
   for (const word of searchWords) {
     if (fullName.includes(word)) score += 10;
   }
+
+  if (brand && normalizedQuery.startsWith(brand)) score += 10;
+  if (name && normalizedQuery.endsWith(name)) score += 10;
 
   return score;
 }
