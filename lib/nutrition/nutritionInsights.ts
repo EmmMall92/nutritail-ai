@@ -151,19 +151,28 @@ export function generateNutritionInsights(
 
   const ingredientText = String(input.ingredients ?? "").toLowerCase();
 
-  if (
+  const hasBroadAnimalTerms =
     ingredientText.includes("by-products") ||
     ingredientText.includes("animal derivatives") ||
-    ingredientText.includes("meat derivatives")
-  ) {
+    ingredientText.includes("meat derivatives");
+
+  if (hasBroadAnimalTerms) {
     cautions.push(
       "Ingredient list includes broad animal derivative terms, so quality confidence is lower."
     );
     confidence = "low";
   }
 
-  if (input.dataQualityStatus === "verified") {
+  if (
+    input.dataQualityStatus === "verified" &&
+    availableData >= 6 &&
+    !hasBroadAnimalTerms
+  ) {
     confidence = "high";
+  }
+
+  if (input.dataQualityStatus === "partial" && confidence === "high") {
+    confidence = "moderate";
   }
 
   if (
