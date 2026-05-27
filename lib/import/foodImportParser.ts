@@ -13,7 +13,7 @@ function ensureStringArray(value: unknown, fieldName: string): string[] {
     throw new Error(`${fieldName} must contain only strings.`);
   }
 
-  return value;
+  return value.map((item) => item.trim()).filter(Boolean);
 }
 
 function ensureNumber(value: unknown, fieldName: string): number {
