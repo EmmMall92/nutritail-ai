@@ -12,8 +12,20 @@ export type NutritionResult = {
   phosphorus: string;
 };
 
+const MAX_NUTRITION_WEIGHT_KG = 150;
+
 export function calculateRER(weight: number) {
-  return 70 * Math.pow(weight, 0.75);
+  const normalizedWeight = Number(weight);
+
+  if (
+    !Number.isFinite(normalizedWeight) ||
+    normalizedWeight <= 0 ||
+    normalizedWeight > MAX_NUTRITION_WEIGHT_KG
+  ) {
+    return 0;
+  }
+
+  return 70 * Math.pow(normalizedWeight, 0.75);
 }
 
 export function getActivityFactor(pet: Pet) {
