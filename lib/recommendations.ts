@@ -33,9 +33,16 @@ const ALLERGEN_ALIASES: Record<string, string[]> = {
 
 function normalizeText(value: string) {
   return value
+    .trim()
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "");
+}
+
+function normalizeSearchTokens(items: string[] | undefined) {
+  return Array.from(
+    new Set((items ?? []).map(normalizeText).filter(Boolean))
+  );
 }
 
 function expandAllergenTerms(allergy: string) {
@@ -56,7 +63,9 @@ function containsAllergen(food: Food, allergies: string[]) {
   const lowerIngredients = food.ingredients.map((ingredient) =>
     normalizeText(ingredient)
   );
-  const allergenTerms = allergies.flatMap(expandAllergenTerms);
+  const allergenTerms = normalizeSearchTokens(allergies).flatMap(
+    expandAllergenTerms
+  );
 
   return allergenTerms.some((allergy) =>
     lowerIngredients.some((ingredient) =>
@@ -69,6 +78,7 @@ function buildReasons(food: Food, pet: Pet): string[] {
   const reasons: string[] = [];
   const petLifeStage = getPetLifeStage(pet);
   const ruleResult = evaluateFoodRecommendationRules(food, pet);
+  const allergies = normalizeSearchTokens(pet.allergies);
 
   if (food.species === pet.species) {
     reasons.push(`Suitable for ${pet.species}s.`);
@@ -109,7 +119,7 @@ function buildReasons(food: Food, pet: Pet): string[] {
     }
   }
 
-  if ((pet.allergies ?? []).length > 0) {
+  if (allergies.length > 0) {
     reasons.push("Filtered to avoid allergens.");
   }
 
@@ -162,7 +172,7 @@ export async function getRecommendedFoods(
   pet: Pet
 ): Promise<FoodRecommendation[]> {
   const petLifeStage = getPetLifeStage(pet);
-  const allergies = pet.allergies ?? [];
+  const allergies = normalizeSearchTokens(pet.allergies);
 
   const allFoods = await foodCatalogService.getFoodsBySpecies(pet.species);
 
