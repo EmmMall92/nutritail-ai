@@ -12,35 +12,40 @@ type FoodExplanationParams = {
   phosphorus?: number | null;
 };
 
+function finiteNumberOrNull(value: number | null | undefined): number | null {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : null;
+}
+
 export function buildFoodExplanation(
   params: FoodExplanationParams
 ): string[] {
   const advice: string[] = [];
 
-  const protein = Number(params.protein ?? 0);
-  const fat = Number(params.fat ?? 0);
-  const fiber = Number(params.fiber ?? 0);
-  const sodium = Number(params.sodium ?? 0);
-  const magnesium = Number(params.magnesium ?? 0);
-  const calcium = Number(params.calcium ?? 0);
-  const phosphorus = Number(params.phosphorus ?? 0);
+  const protein = finiteNumberOrNull(params.protein);
+  const fat = finiteNumberOrNull(params.fat);
+  const fiber = finiteNumberOrNull(params.fiber);
+  const sodium = finiteNumberOrNull(params.sodium);
+  const magnesium = finiteNumberOrNull(params.magnesium);
+  const calcium = finiteNumberOrNull(params.calcium);
+  const phosphorus = finiteNumberOrNull(params.phosphorus);
 
   if (params.species === "cat") {
-    if (protein >= 35) {
+    if (protein !== null && protein >= 35) {
       advice.push(
         "Η πρωτεΐνη φαίνεται αρκετά υψηλή, κάτι που συνήθως είναι θετικό για γάτες."
       );
-    } else if (protein > 0 && protein < 30) {
+    } else if (protein !== null && protein > 0 && protein < 30) {
       advice.push(
         "Η πρωτεΐνη φαίνεται σχετικά χαμηλή για γάτα, ειδικά αν είναι δραστήρια."
       );
     }
 
-    if (magnesium > 0 && magnesium <= 0.09) {
+    if (magnesium !== null && magnesium > 0 && magnesium <= 0.09) {
       advice.push(
         "Το μαγνήσιο φαίνεται σε ελεγχόμενο επίπεδο, κάτι που συχνά είναι σημαντικό για γάτες με ευαισθησία στο ουροποιητικό."
       );
-    } else if (magnesium > 0.12) {
+    } else if (magnesium !== null && magnesium > 0.12) {
       advice.push(
         "Το μαγνήσιο φαίνεται σχετικά αυξημένο. Σε γάτες με ιστορικό ουροποιητικών θεμάτων χρειάζεται προσοχή."
       );
@@ -48,16 +53,16 @@ export function buildFoodExplanation(
   }
 
   if (params.species === "dog") {
-    if (protein >= 28) {
+    if (protein !== null && protein >= 28) {
       advice.push("Η πρωτεΐνη φαίνεται αρκετά καλή για δραστήριο σκύλο.");
-    } else if (protein > 0 && protein < 22) {
+    } else if (protein !== null && protein > 0 && protein < 22) {
       advice.push(
         "Η πρωτεΐνη ίσως είναι χαμηλή για ορισμένους σκύλους με αυξημένες ανάγκες."
       );
     }
   }
 
-  if (params.neutered) {
+  if (params.neutered && fat !== null) {
     if (fat >= 18) {
       advice.push(
         "Η τροφή φαίνεται αρκετά πλούσια σε λιπαρά για στειρωμένο κατοικίδιο. Ίσως χρειάζεται έλεγχος ποσότητας."
@@ -75,19 +80,19 @@ export function buildFoodExplanation(
     );
   }
 
-  if (fiber >= 6) {
+  if (fiber !== null && fiber >= 6) {
     advice.push(
       "Οι φυτικές ίνες φαίνονται αρκετά αυξημένες, κάτι που μπορεί να βοηθήσει στον κορεσμό."
     );
   }
 
-  if (sodium > 0.5) {
+  if (sodium !== null && sodium > 0.5) {
     advice.push(
       "Το νάτριο φαίνεται σχετικά αυξημένο. Σε ζώα με καρδιολογικά ή νεφρικά θέματα χρειάζεται προσοχή και κτηνιατρική καθοδήγηση."
     );
   }
 
-  if (calcium > 0 && phosphorus > 0) {
+  if (calcium !== null && phosphorus !== null && calcium > 0 && phosphorus > 0) {
     const ratio = calcium / phosphorus;
 
     if (ratio >= 1 && ratio <= 2) {
