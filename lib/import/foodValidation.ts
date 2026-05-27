@@ -92,7 +92,15 @@ export function detectImpossibleNutritionValues(
 
   if (calcium !== null && phosphorus !== null && phosphorus > 0) {
     const ratio = calcium / phosphorus;
-    if (ratio < 0.5 || ratio > 3) {
+    if (ratio <= 0.4) {
+      issues.push(
+        issue(
+          "calcium_percent",
+          "Calcium to phosphorus ratio is too low for a complete dog food row.",
+          "error"
+        )
+      );
+    } else if (ratio < 0.5 || ratio > 3) {
       issues.push(
         issue(
           "calcium_percent",
