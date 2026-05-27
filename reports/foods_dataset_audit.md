@@ -1,16 +1,16 @@
 # Foods Dataset Audit
 
-Generated: 2026-05-27T09:11:45.765Z
+Generated: 2026-05-27T09:48:04.609Z
 Status: pass
 
 ## Counts
 
-- JSON food rows: 20
-- CSV food rows: 20
+- JSON food rows: 38
+- CSV food rows: 38
 - SKU sidecar rows: 34
-- Missing photo queue rows: 11
+- Missing photo queue rows: 29
 - Photo manifest rows: 0
-- Formula keys: 20
+- Formula keys: 38
 - Errors: 0
 - Warnings: 0
 
