@@ -11,6 +11,12 @@ export async function POST(request: Request) {
 
     const csvText = await request.text();
     const foods = convertCsvToFoods(csvText);
+    if (foods.length === 0) {
+      return NextResponse.json(
+        { error: "CSV import must contain at least one food row." },
+        { status: 400 }
+      );
+    }
 
     const ids = foods.map((food) => food.id);
 

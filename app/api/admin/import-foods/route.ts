@@ -12,6 +12,13 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const foods = parseImportFoods(body);
+    if (foods.length === 0) {
+      return NextResponse.json(
+        { error: "Import payload must contain at least one food row." },
+        { status: 400 }
+      );
+    }
+
     const ids = foods.map((food) => food.id);
 
     const { data: existingFoods, error: existingError } = await supabase
