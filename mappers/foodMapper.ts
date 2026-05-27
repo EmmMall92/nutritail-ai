@@ -1,6 +1,12 @@
 import type { DbFood } from "@/types/db/db-food";
 import type { Food } from "@/types/food";
 
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map((item) => String(item).trim()).filter(Boolean)
+    : [];
+}
+
 export function mapDbFoodToFood(dbFood: DbFood): Food {
   return {
     id: dbFood.id,
@@ -9,7 +15,7 @@ export function mapDbFoodToFood(dbFood: DbFood): Food {
     species: dbFood.species,
     lifeStage: dbFood.life_stage,
     activitySupport: dbFood.activity_support,
-    healthSupport: dbFood.health_support,
+    healthSupport: normalizeStringArray(dbFood.health_support),
     protein: dbFood.protein,
     fat: dbFood.fat,
     fiber: dbFood.fiber,
@@ -17,8 +23,8 @@ export function mapDbFoodToFood(dbFood: DbFood): Food {
     magnesium: dbFood.magnesium,
     calcium: dbFood.calcium,
     phosphorus: dbFood.phosphorus,
-    ingredients: dbFood.ingredients,
-    tags: dbFood.tags,
+    ingredients: normalizeStringArray(dbFood.ingredients),
+    tags: normalizeStringArray(dbFood.tags),
     kcalPer100g: dbFood.kcal_per_100g ?? null,
     proteinPercent: dbFood.protein_percent ?? null,
     fatPercent: dbFood.fat_percent ?? null,
