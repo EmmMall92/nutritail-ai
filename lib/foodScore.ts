@@ -90,7 +90,10 @@ export function calculateFoodScore(
 
     if (
       input.age < 1 &&
-      (stage.includes("puppy") || stage.includes("kitten"))
+      (stage.includes("puppy") ||
+        stage.includes("kitten") ||
+        stage.includes("young") ||
+        stage.includes("growth"))
     ) {
       score += 10;
     }
