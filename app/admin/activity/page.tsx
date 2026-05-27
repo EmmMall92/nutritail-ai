@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import type { AdminActivityLog } from "@/types/admin-activity-log";
 
+function formatDateTime(value?: string | null) {
+  if (!value) return "Unknown date";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+
+  return date.toLocaleString();
+}
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,7 +92,7 @@ export default function AdminActivityPage() {
                   </div>
 
                   <div className="text-sm text-gray-600">
-                    {new Date(log.createdAt).toLocaleString()}
+                    {formatDateTime(log.createdAt)}
                   </div>
                 </div>
               </div>

@@ -23,6 +23,15 @@ type TrashResponse = {
   foods: TrashFood[];
 };
 
+function formatDateTime(value?: string | null) {
+  if (!value) return "Unknown date";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+
+  return date.toLocaleString();
+}
+
 export default function AdminTrashPage() {
   const [data, setData] = useState<TrashResponse>({ pets: [], foods: [] });
   const [isLoading, setIsLoading] = useState(true);
@@ -139,8 +148,7 @@ export default function AdminTrashPage() {
                       </p>
 
                       <p className="mt-1 text-sm text-gray-600">
-                        {pet.species} / deleted{" "}
-                        {new Date(pet.deleted_at).toLocaleString()}
+                        {pet.species} / deleted {formatDateTime(pet.deleted_at)}
                       </p>
 
                       <button
@@ -178,7 +186,7 @@ export default function AdminTrashPage() {
 
                       <p className="mt-1 text-sm text-gray-600">
                         {food.species} / deleted{" "}
-                        {new Date(food.deleted_at).toLocaleString()}
+                        {formatDateTime(food.deleted_at)}
                       </p>
 
                       <button
