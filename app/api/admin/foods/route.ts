@@ -25,7 +25,7 @@ function normalizeNumber(value: unknown, fallback = 0): number {
     return fallback;
   }
 
-  const numberValue = Number(value);
+  const numberValue = Number(String(value).trim().replace(",", "."));
   return Number.isFinite(numberValue) ? numberValue : fallback;
 }
 

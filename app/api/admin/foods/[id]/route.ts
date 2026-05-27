@@ -28,7 +28,7 @@ function normalizeNumberOrNull(value: unknown): number | null {
     return null;
   }
 
-  const numberValue = Number(value);
+  const numberValue = Number(String(value).trim().replace(",", "."));
   return Number.isFinite(numberValue) ? numberValue : null;
 }
 
