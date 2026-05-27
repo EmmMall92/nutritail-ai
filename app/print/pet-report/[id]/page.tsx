@@ -48,7 +48,10 @@ function formatWeightGoal(value?: string | null) {
 }
 
 function getFoodScoreLabel(score?: number | null) {
-  if (score === null || score === undefined) return "Not scored";
+  if (score === null || score === undefined || !Number.isFinite(score)) {
+    return "Not scored";
+  }
+
   if (score >= 80) return "Strong match";
   if (score >= 60) return "Good match";
   if (score >= 40) return "Needs review";
