@@ -3,33 +3,38 @@ import { supabase } from "@/lib/db/supabase";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
 import type { DbFood } from "@/types/db/db-food";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { normalizeNutritionValue } from "@/lib/import/foodNormalizer";
 
 type Context = {
   params: Promise<{ id: string }>;
 };
 
 function normalizeArrayField(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.map((item) => String(item).trim()).filter(Boolean);
-  }
+  const values = Array.isArray(value) ? value : [value];
+  const seen = new Set<string>();
+  const normalized: string[] = [];
 
-  if (typeof value === "string") {
-    return value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
+  const addItem = (item: string) => {
+    const text = item.trim();
+    if (!text) return;
 
-  return [];
+    const key = text.toLowerCase();
+    if (seen.has(key)) return;
+
+    seen.add(key);
+    normalized.push(text);
+  };
+
+  values.forEach((item) => {
+    if (item === null || item === undefined) return;
+    String(item).split(/[,|\n]+/).forEach(addItem);
+  });
+
+  return normalized;
 }
 
 function normalizeNumberOrNull(value: unknown): number | null {
-  if (value === null || value === undefined || value === "") {
-    return null;
-  }
-
-  const numberValue = Number(value);
-  return Number.isFinite(numberValue) ? numberValue : null;
+  return normalizeNutritionValue(value);
 }
 
 function normalizeStatus(value: unknown) {
