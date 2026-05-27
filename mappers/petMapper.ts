@@ -1,6 +1,12 @@
 import type { DbPet } from "@/types/db/db-pet";
 import type { Pet } from "@/types/pet";
 
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map((item) => String(item).trim()).filter(Boolean)
+    : [];
+}
+
 export function mapDbPetToPet(dbPet: DbPet): Pet {
   return {
     id: dbPet.id,
@@ -12,8 +18,8 @@ export function mapDbPetToPet(dbPet: DbPet): Pet {
     weight: dbPet.weight,
     activityLevel: dbPet.activity_level,
     neutered: dbPet.neutered,
-    allergies: dbPet.allergies,
-    healthIssues: dbPet.health_issues,
+    allergies: normalizeStringArray(dbPet.allergies),
+    healthIssues: normalizeStringArray(dbPet.health_issues),
   };
 }
 

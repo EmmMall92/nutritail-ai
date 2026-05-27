@@ -1,6 +1,12 @@
 import type { DbPetAnalysis } from "@/types/db/db-pet-analysis";
 import type { PetAnalysisHistory } from "@/types/pet-analysis-history";
 
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map((item) => String(item).trim()).filter(Boolean)
+    : [];
+}
+
 export function mapDbPetAnalysisToPetAnalysisHistory(
   db: DbPetAnalysis
 ): PetAnalysisHistory {
@@ -10,14 +16,14 @@ export function mapDbPetAnalysisToPetAnalysisHistory(
     ownerId: db.owner_id,
     rer: db.rer,
     mer: db.mer,
-    recommendedFoodIds: db.recommended_food_ids,
+    recommendedFoodIds: normalizeStringArray(db.recommended_food_ids),
     notes: db.notes ?? undefined,
     weight: db.weight ?? undefined,
     age: db.age ?? undefined,
     activityLevel: db.activity_level ?? undefined,
     neutered: db.neutered ?? undefined,
-    allergies: db.allergies ?? [],
-    healthIssues: db.health_issues ?? [],
+    allergies: normalizeStringArray(db.allergies),
+    healthIssues: normalizeStringArray(db.health_issues),
     createdAt: db.created_at,
   };
 }
