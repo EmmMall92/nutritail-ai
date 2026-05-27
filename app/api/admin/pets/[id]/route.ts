@@ -7,6 +7,28 @@ type Context = {
   params: Promise<{ id: string }>;
 };
 
+const MAX_PET_AGE_YEARS = 40;
+const MAX_PET_WEIGHT_KG = 150;
+
+function normalizeBoundedNumber(
+  value: unknown,
+  fieldName: string,
+  min: number,
+  max: number
+): number {
+  const numberValue = Number(value);
+
+  if (
+    !Number.isFinite(numberValue) ||
+    numberValue < min ||
+    numberValue > max
+  ) {
+    throw new Error(`${fieldName} must be between ${min} and ${max}.`);
+  }
+
+  return numberValue;
+}
+
 export async function GET(_: Request, context: Context) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -46,13 +68,25 @@ export async function PATCH(request: Request, context: Context) {
 
     const { id } = await context.params;
     const body = await request.json();
+    const age = normalizeBoundedNumber(
+      body.age,
+      "Age",
+      0,
+      MAX_PET_AGE_YEARS
+    );
+    const weight = normalizeBoundedNumber(
+      body.weight,
+      "Weight",
+      0.1,
+      MAX_PET_WEIGHT_KG
+    );
 
     const payload = {
       name: String(body.name ?? "").trim(),
       species: body.species,
       breed: String(body.breed ?? "").trim(),
-      age: Number(body.age),
-      weight: Number(body.weight),
+      age,
+      weight,
       activity_level: body.activity_level,
       neutered: Boolean(body.neutered),
       allergies: Array.isArray(body.allergies) ? body.allergies : [],
