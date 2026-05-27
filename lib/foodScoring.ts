@@ -7,6 +7,10 @@ export type FoodScoreResult = {
   reasons: string[];
 };
 
+function hasPositiveNumber(value: number | null | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
+}
+
 export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   let score = 0;
   const reasons: string[] = [];
@@ -36,12 +40,12 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
       reasons.push("Supports weight control.");
     }
 
-    if (food.fat <= 12) {
+    if (hasPositiveNumber(food.fat) && food.fat <= 12) {
       score += 2;
       reasons.push("Lower fat level is helpful for weight management.");
     }
 
-    if (food.fiber >= 5) {
+    if (hasPositiveNumber(food.fiber) && food.fiber >= 5) {
       score += 1;
       reasons.push("Higher fiber may support satiety.");
     }
@@ -53,12 +57,12 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
       reasons.push("Supports kidney health.");
     }
 
-    if (food.phosphorus <= 0.6) {
+    if (hasPositiveNumber(food.phosphorus) && food.phosphorus <= 0.6) {
       score += 2;
       reasons.push("Lower phosphorus is more suitable for kidney support.");
     }
 
-    if (food.sodium <= 0.3) {
+    if (hasPositiveNumber(food.sodium) && food.sodium <= 0.3) {
       score += 1;
       reasons.push("Moderate sodium level is preferable.");
     }
@@ -89,12 +93,17 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     }
   }
 
-  if (food.protein >= 24 && food.protein <= 32 && pet.species === "dog") {
+  if (
+    hasPositiveNumber(food.protein) &&
+    food.protein >= 24 &&
+    food.protein <= 32 &&
+    pet.species === "dog"
+  ) {
     score += 1;
     reasons.push("Protein level is in a solid range for many dogs.");
   }
 
-  if (food.protein >= 30 && pet.species === "cat") {
+  if (hasPositiveNumber(food.protein) && food.protein >= 30 && pet.species === "cat") {
     score += 1;
     reasons.push("Protein level is appropriate for many cats.");
   }
