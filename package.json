@@ -12,7 +12,8 @@
     "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs",
     "review:ambrosia": "node scripts/data/review/review-ambrosia-import.mjs",
     "review:foods": "node scripts/data/review/review-food-data-quality.mjs",
-    "plan:food-cleanup": "node scripts/data/review/plan-food-data-cleanup.mjs"
+    "plan:food-cleanup": "node scripts/data/review/plan-food-data-cleanup.mjs",
+    "review:matcher": "node scripts/data/review/review-food-matcher-fixtures.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",

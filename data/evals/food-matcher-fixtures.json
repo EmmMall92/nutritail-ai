@@ -1,0 +1,84 @@
+{
+  "foods": [
+    {
+      "id": "royal-canin-mini-adult",
+      "brand": "Royal Canin",
+      "name": "Mini Adult",
+      "species": "dog"
+    },
+    {
+      "id": "royal-canin-mini-adult-8-plus",
+      "brand": "Royal Canin",
+      "name": "Mini Adult 8+",
+      "species": "dog"
+    },
+    {
+      "id": "royal-canin-medium-puppy",
+      "brand": "Royal Canin",
+      "name": "Medium Puppy",
+      "species": "dog"
+    },
+    {
+      "id": "farmina-n-d-pumpkin-lamb",
+      "brand": "Farmina N&D",
+      "name": "Pumpkin Lamb & Blueberry Adult Mini",
+      "species": "dog"
+    },
+    {
+      "id": "hills-science-plan-small-mini-chicken",
+      "brand": "Hill's",
+      "name": "Science Plan Small & Mini Adult Chicken",
+      "species": "dog"
+    },
+    {
+      "id": "ambrosia-fresh-salmon-rabbit",
+      "brand": "Ambrosia",
+      "name": "Fresh Salmon & Rabbit Adult Dog",
+      "species": "dog"
+    }
+  ],
+  "cases": [
+    {
+      "id": "rc-mini-alias",
+      "query": "RC mini adult",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-adult",
+      "minimumScore": 40
+    },
+    {
+      "id": "royalcanin-joined-brand",
+      "query": "royalcanin mini adult 8+",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-adult-8-plus",
+      "minimumScore": 40
+    },
+    {
+      "id": "n-and-d-symbol",
+      "query": "Farmina N&D pumpkin lamb",
+      "species": "dog",
+      "expectedTopId": "farmina-n-d-pumpkin-lamb",
+      "minimumScore": 40
+    },
+    {
+      "id": "nd-short-alias",
+      "query": "nd lamb mini",
+      "species": "dog",
+      "expectedTopId": "farmina-n-d-pumpkin-lamb",
+      "minimumScore": 20
+    },
+    {
+      "id": "hills-apostrophe",
+      "query": "hills small mini chicken",
+      "species": "dog",
+      "expectedTopId": "hills-science-plan-small-mini-chicken",
+      "minimumScore": 30
+    },
+    {
+      "id": "ambrosia-ampersand",
+      "query": "Ambrosia salmon rabbit",
+      "species": "dog",
+      "expectedTopId": "ambrosia-fresh-salmon-rabbit",
+      "minimumScore": 30
+    }
+  ]
+}
