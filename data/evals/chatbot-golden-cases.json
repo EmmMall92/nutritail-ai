@@ -79,6 +79,38 @@
       "expectedSignals": ["needs_context"],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": ["age", "weight", "goal"]
+    },
+    {
+      "id": "senior-kidney-context",
+      "locale": "en-GB",
+      "prompt": "senior dog 11 years with kidney disease needs dry food",
+      "expectedSignals": ["senior", "kidney"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["phosphorus", "veterinary", "senior"]
+    },
+    {
+      "id": "greeklish-urinary-dog",
+      "locale": "el-GR",
+      "prompt": "skylos with urinary crystals kai thelo xira trofi",
+      "expectedSignals": ["urinary"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["minerals", "veterinarian"]
+    },
+    {
+      "id": "large-puppy-product-lookup",
+      "locale": "en-GB",
+      "prompt": "large breed puppy 5 months compare Royal Canin Maxi Puppy",
+      "expectedSignals": ["growth", "large_breed", "compare", "product_lookup"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calcium", "phosphorus", "compare"]
+    },
+    {
+      "id": "neutered-treat-calories",
+      "locale": "en-GB",
+      "prompt": "neutered dog gaining weight but gets many treats",
+      "expectedSignals": ["neutered", "weight"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "treats", "portion"]
     }
   ]
 }
