@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const pet = body.pet as Pet;
     const analysis = body.analysis as PetAnalysis | null;
     const customerName = String(body.customerName ?? "").trim();
-    const customerId = body.customerId ? String(body.customerId) : "";
+    const customerId = body.customerId ? String(body.customerId).trim() : "";
 
     if (!pet) {
       return NextResponse.json({ error: "Missing pet." }, { status: 400 });
