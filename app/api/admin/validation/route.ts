@@ -55,6 +55,14 @@ function getFoodTitle(food: ValidationRecord) {
   }`;
 }
 
+function getFoodDuplicateKey(food: ValidationRecord) {
+  if (!hasText(food.brand) || !hasText(food.name)) return null;
+
+  return `${normalizeText(food.brand)}|${normalizeText(
+    food.name
+  )}|${normalizeText(food.species)}`;
+}
+
 function addIssue(
   issues: ValidationIssue[],
   issue: Omit<ValidationIssue, "severity"> & { severity?: ValidationSeverity }
@@ -90,7 +98,9 @@ export async function GET() {
 
     const foodDuplicateMap = new Map<string, string[]>();
     for (const food of activeFoods) {
-      const key = `${normalizeText(food.brand)}|${normalizeText(food.name)}`;
+      const key = getFoodDuplicateKey(food);
+      if (!key) continue;
+
       if (!foodDuplicateMap.has(key)) {
         foodDuplicateMap.set(key, []);
       }
@@ -153,14 +163,14 @@ export async function GET() {
         warnings.push(`Missing nutrition fields: ${missingNutrition.join(", ")}`);
       }
 
-      const duplicateKey = `${normalizeText(food.brand)}|${normalizeText(
-        food.name
-      )}`;
-      const duplicateIds = foodDuplicateMap.get(duplicateKey) ?? [];
-      if (duplicateIds.length > 1) {
-        blockers.push(
-          `Possible duplicate food (${duplicateIds.length} similar records)`
-        );
+      const duplicateKey = getFoodDuplicateKey(food);
+      if (duplicateKey) {
+        const duplicateIds = foodDuplicateMap.get(duplicateKey) ?? [];
+        if (duplicateIds.length > 1) {
+          blockers.push(
+            `Possible duplicate food (${duplicateIds.length} similar records)`
+          );
+        }
       }
 
       if (blockers.length > 0) {
