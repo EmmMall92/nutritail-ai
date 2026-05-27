@@ -35,19 +35,22 @@ export function calculateDER(pet: Pet) {
   return rer * factor;
 }
 
+function hasHealthIssue(pet: Pet, keywords: string[]) {
+  return (
+    pet.healthIssues?.some((issue) => {
+      const normalizedIssue = issue.trim().toLowerCase();
+      return keywords.some((keyword) => normalizedIssue.includes(keyword));
+    }) ?? false
+  );
+}
+
 export function getNutritionGuidance(pet: Pet): NutritionResult {
   const rer = calculateRER(pet.weight);
   const der = calculateDER(pet);
 
   const isSenior = pet.age >= 7;
-  const hasWeightIssue =
-    pet.healthIssues?.some((issue) =>
-      issue.toLowerCase().includes("obesity")
-    ) ?? false;
-  const hasKidneyIssue =
-    pet.healthIssues?.some((issue) =>
-      issue.toLowerCase().includes("kidney")
-    ) ?? false;
+  const hasWeightIssue = hasHealthIssue(pet, ["obesity", "overweight"]);
+  const hasKidneyIssue = hasHealthIssue(pet, ["kidney", "renal"]);
 
   const protein = pet.species === "dog" ? "24-28%" : "30-40%";
   let fat = pet.species === "dog" ? "12-16%" : "15-20%";
