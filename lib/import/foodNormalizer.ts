@@ -77,6 +77,40 @@ function uniqueByLowercase(values: string[]): string[] {
   return unique;
 }
 
+function parseLocalizedNumber(value: string): number | null {
+  const match = value.match(/[+-]?\d[\d.,]*/);
+  if (!match) return null;
+
+  const token = match[0];
+  const hasComma = token.includes(",");
+  const hasDot = token.includes(".");
+
+  let normalized = token;
+
+  if (hasComma && hasDot) {
+    const lastComma = token.lastIndexOf(",");
+    const lastDot = token.lastIndexOf(".");
+    const decimalSeparator = lastComma > lastDot ? "," : ".";
+    const thousandsSeparator = decimalSeparator === "," ? "." : ",";
+
+    normalized = token
+      .replace(new RegExp(`\\${thousandsSeparator}`, "g"), "")
+      .replace(decimalSeparator, ".");
+  } else if (hasComma) {
+    const parts = token.split(",");
+    const lastPart = parts.at(-1) ?? "";
+    const commaLooksLikeThousands =
+      parts.length > 1 && lastPart.length === 3 && parts[0].length <= 3;
+
+    normalized = commaLooksLikeThousands
+      ? token.replace(/,/g, "")
+      : token.replace(/,/g, ".");
+  }
+
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export function normalizeNullableString(value: unknown): string | null {
   return cleanText(value);
 }
@@ -152,12 +186,9 @@ export function normalizeNutritionValue(value: unknown): number | null {
   if (!cleaned) return null;
 
   const lower = cleaned.toLowerCase();
-  const normalizedNumberText = lower
-    .replace(/,/g, ".")
-    .replace(/[^0-9.+-]/g, "");
-  const parsed = Number(normalizedNumberText);
+  const parsed = parseLocalizedNumber(lower);
 
-  if (!Number.isFinite(parsed)) return null;
+  if (parsed === null) return null;
 
   if (lower.includes("mg/kg")) {
     return percentFromUnit(parsed, "mg_per_kg");
