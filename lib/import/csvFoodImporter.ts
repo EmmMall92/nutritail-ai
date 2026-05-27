@@ -134,9 +134,8 @@ function parseNumber(value: string | undefined, fieldName: string): number {
 function normalizeSpecies(value: string): "dog" | "cat" {
   const normalized = value.trim().toLowerCase();
 
-  if (normalized === "dog" || normalized === "cat") {
-    return normalized;
-  }
+  if (["dog", "dogs", "canine"].includes(normalized)) return "dog";
+  if (["cat", "cats", "feline"].includes(normalized)) return "cat";
 
   throw new Error(`Invalid species value: ${value}`);
 }
