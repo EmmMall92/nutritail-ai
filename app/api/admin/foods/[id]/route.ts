@@ -47,6 +47,7 @@ export async function GET(_: Request, context: Context) {
       .from("foods")
       .select("*")
       .eq("id", id)
+      .is("deleted_at", null)
       .maybeSingle();
 
     if (error) {
