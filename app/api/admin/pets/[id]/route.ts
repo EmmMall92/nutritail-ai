@@ -7,6 +7,11 @@ type Context = {
   params: Promise<{ id: string }>;
 };
 
+function parseFiniteNumber(value: unknown): number | null {
+  const numericValue = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
+
 export async function GET(_: Request, context: Context) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -46,13 +51,23 @@ export async function PATCH(request: Request, context: Context) {
 
     const { id } = await context.params;
     const body = await request.json();
+    const age = parseFiniteNumber(body.age);
+    const weight = parseFiniteNumber(body.weight);
+
+    if (age === null || age < 0) {
+      return NextResponse.json({ error: "Invalid age." }, { status: 400 });
+    }
+
+    if (weight === null || weight <= 0) {
+      return NextResponse.json({ error: "Invalid weight." }, { status: 400 });
+    }
 
     const payload = {
       name: String(body.name ?? "").trim(),
       species: body.species,
       breed: String(body.breed ?? "").trim(),
-      age: Number(body.age),
-      weight: Number(body.weight),
+      age,
+      weight,
       activity_level: body.activity_level,
       neutered: Boolean(body.neutered),
       allergies: Array.isArray(body.allergies) ? body.allergies : [],
@@ -102,28 +117,28 @@ export async function DELETE(_: Request, context: Context) {
 
     const { id } = await context.params;
 
-const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-const { error } = await supabase
-  .from("pets")
-  .update({
-    deleted_at: now,
-    updated_at: now,
-  })
-  .eq("id", id);
+    const { error } = await supabase
+      .from("pets")
+      .update({
+        deleted_at: now,
+        updated_at: now,
+      })
+      .eq("id", id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-await adminActivityLogService.log({
-  action: "soft-delete",
-  entityType: "pet",
-  entityId: id,
-  message: `Soft-deleted pet profile ${id}`,
-  metadata: {
-    deletedAt: now,
-  },
-});
+    await adminActivityLogService.log({
+      action: "soft-delete",
+      entityType: "pet",
+      entityId: id,
+      message: `Soft-deleted pet profile ${id}`,
+      metadata: {
+        deletedAt: now,
+      },
+    });
 
     return NextResponse.json({ success: true, deletedId: id });
   } catch (error) {
