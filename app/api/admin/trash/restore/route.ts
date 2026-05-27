@@ -10,8 +10,8 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const type = String(body.type ?? "");
-    const id = String(body.id ?? "");
+    const type = String(body.type ?? "").trim().toLowerCase();
+    const id = String(body.id ?? "").trim();
 
     if (!["pet", "food"].includes(type) || !id) {
       return NextResponse.json({ error: "Invalid restore input." }, { status: 400 });
