@@ -16,6 +16,9 @@ type ValidationIssue = {
 
 type ValidationRecord = Record<string, unknown>;
 
+const MAX_PET_AGE_YEARS = 40;
+const MAX_PET_WEIGHT_KG = 150;
+
 function normalizeText(value: unknown) {
   return String(value ?? "")
     .trim()
@@ -194,9 +197,13 @@ export async function GET() {
       if (!hasText(pet.breed)) problems.push("Missing breed");
       if (!hasNumber(pet.age) || Number(pet.age) < 0) {
         problems.push("Invalid age");
+      } else if (Number(pet.age) > MAX_PET_AGE_YEARS) {
+        problems.push(`Age looks too high (${pet.age} years)`);
       }
       if (!hasNumber(pet.weight) || Number(pet.weight) <= 0) {
         problems.push("Invalid weight");
+      } else if (Number(pet.weight) > MAX_PET_WEIGHT_KG) {
+        problems.push(`Weight looks too high (${pet.weight} kg)`);
       }
       if (!hasText(pet.activity_level)) {
         problems.push("Missing activity level");
