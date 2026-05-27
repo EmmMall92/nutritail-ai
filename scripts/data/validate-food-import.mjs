@@ -177,8 +177,13 @@ function sameHeaders(actual, expected) {
 }
 
 function hasValue(value) {
-  if (Array.isArray(value)) return value.length > 0;
-  return value !== null && value !== undefined && value !== "";
+  if (Array.isArray(value)) {
+    return value.some((item) => String(item ?? "").trim().length > 0);
+  }
+
+  if (typeof value === "string") return value.trim().length > 0;
+
+  return value !== null && value !== undefined;
 }
 
 function issue(list, type, message) {
