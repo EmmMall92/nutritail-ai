@@ -3,6 +3,7 @@ import { supabase } from "@/lib/db/supabase";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
 import type { DbFood } from "@/types/db/db-food";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { normalizeNutritionValue } from "@/lib/import/foodNormalizer";
 
 type Context = {
   params: Promise<{ id: string }>;
@@ -24,12 +25,7 @@ function normalizeArrayField(value: unknown): string[] {
 }
 
 function normalizeNumberOrNull(value: unknown): number | null {
-  if (value === null || value === undefined || value === "") {
-    return null;
-  }
-
-  const numberValue = Number(value);
-  return Number.isFinite(numberValue) ? numberValue : null;
+  return normalizeNutritionValue(value);
 }
 
 function normalizeStatus(value: unknown) {

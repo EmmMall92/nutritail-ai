@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { normalizeNutritionValue } from "@/lib/import/foodNormalizer";
 
 function normalizeArrayField(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -21,12 +22,7 @@ function normalizeArrayField(value: unknown): string[] {
 }
 
 function normalizeNumber(value: unknown, fallback = 0): number {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
-  }
-
-  const numberValue = Number(value);
-  return Number.isFinite(numberValue) ? numberValue : fallback;
+  return normalizeNutritionValue(value) ?? fallback;
 }
 
 function normalizeStatus(value: unknown) {
@@ -109,15 +105,16 @@ export async function POST(request: Request) {
       calcium,
       phosphorus,
 
-      kcal_per_100g:
-        body.kcal_per_100g === "" ? null : body.kcal_per_100g ?? null,
-      protein_percent: body.protein_percent ?? protein,
-      fat_percent: body.fat_percent ?? fat,
-      fiber_percent: body.fiber_percent ?? fiber,
-      sodium_percent: body.sodium_percent ?? sodium,
-      magnesium_percent: body.magnesium_percent ?? magnesium,
-      calcium_percent: body.calcium_percent ?? calcium,
-      phosphorus_percent: body.phosphorus_percent ?? phosphorus,
+      kcal_per_100g: normalizeNutritionValue(body.kcal_per_100g),
+      protein_percent: normalizeNutritionValue(body.protein_percent) ?? protein,
+      fat_percent: normalizeNutritionValue(body.fat_percent) ?? fat,
+      fiber_percent: normalizeNutritionValue(body.fiber_percent) ?? fiber,
+      sodium_percent: normalizeNutritionValue(body.sodium_percent) ?? sodium,
+      magnesium_percent:
+        normalizeNutritionValue(body.magnesium_percent) ?? magnesium,
+      calcium_percent: normalizeNutritionValue(body.calcium_percent) ?? calcium,
+      phosphorus_percent:
+        normalizeNutritionValue(body.phosphorus_percent) ?? phosphorus,
 
       data_quality_status: normalizeStatus(body.data_quality_status),
       data_source_url: body.data_source_url || null,
