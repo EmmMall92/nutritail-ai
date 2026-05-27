@@ -40,6 +40,17 @@ market=UK; basis=as-fed; source_tier=official; source_kind=product_page; moistur
 
 Rows from official sources can be `verified` or `partial`. Retailer-only and photo-only rows should stay `needs_review` until corroborated.
 
+Greek retailer fallbacks currently approved for research and backfill:
+
+- `gatoskilo.gr`
+- `petshop88.gr`
+- `petcity.gr`
+- `petsamolis.gr`
+
+Use these sources for Greek-market pack sizes, local availability, barcode clues, translated label text, or missing-field backfill. Do not classify a row as `verified` from these sources alone.
+
+`petit.gr` is not currently approved for pet-food rows because the checked domain resolves to food and coffee delivery, not a pet-food retailer. Keep it out of imports until the intended pet source URL is confirmed.
+
 ## Quality Classification
 
 - `verified`: official source, core fields complete, sodium and magnesium present.
