@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -431,12 +432,12 @@ export default function ChatbotPage() {
     }
 
     if (step === "health") {
-      const healthIssues = parseListOrEmpty(text);
+      const intakeClassification = classifyIntakeNotes(parseListOrEmpty(text));
 
       const nextPet: PetIntake = {
         ...pet,
-        healthIssues,
-        allergies: [],
+        healthIssues: intakeClassification.healthIssues,
+        allergies: intakeClassification.allergies,
       };
 
       setPet(nextPet);

@@ -2,6 +2,7 @@
 
 import { generateIngredientInsights } from "@/lib/nutrition/ingredientInsights";
 import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
+import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -1074,12 +1075,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "health") {
-      const healthIssues = parseListOrEmpty(text);
+      const intakeClassification = classifyIntakeNotes(parseListOrEmpty(text));
 
       const nextPet: PetIntake = {
         ...pet,
-        healthIssues,
-        allergies: [],
+        healthIssues: intakeClassification.healthIssues,
+        allergies: intakeClassification.allergies,
       };
 
       setPet(nextPet);
