@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { normalizeNutritionValue } from "@/lib/import/foodNormalizer";
 
 type EnrichmentRow = {
   id: string;
@@ -18,11 +19,7 @@ type EnrichmentRow = {
 };
 
 function toNumberOrNull(value: unknown) {
-  if (value === null || value === undefined || value === "") return null;
-
-  const numberValue = Number(String(value).replace(",", "."));
-
-  return Number.isFinite(numberValue) ? numberValue : null;
+  return normalizeNutritionValue(value);
 }
 
 function normalizeStatus(value: unknown) {
