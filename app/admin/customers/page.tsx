@@ -12,6 +12,16 @@ type Customer = {
   createdAt: string;
 };
 
+function formatDateTime(value?: string) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString();
+}
+
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,7 +222,7 @@ export default function AdminCustomersPage() {
                     )}
 
                     <p className="mt-2 text-xs text-gray-500">
-                      Created: {new Date(customer.createdAt).toLocaleString()}
+                      Created: {formatDateTime(customer.createdAt)}
                     </p>
                   </div>
 

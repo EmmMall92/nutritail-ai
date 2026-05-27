@@ -39,6 +39,16 @@ type CustomerDetailResponse = {
   pets: CustomerPet[];
 };
 
+function formatDateTime(value?: string) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString();
+}
+
 export default function AdminCustomerDetailPage() {
   const params = useParams<{ id: string }>();
 
@@ -170,7 +180,7 @@ export default function AdminCustomerDetailPage() {
 
           <p className="text-black">
             <span className="font-semibold">Created:</span>{" "}
-            {new Date(customer.createdAt).toLocaleString()}
+            {formatDateTime(customer.createdAt)}
           </p>
 
           <p className="text-black md:col-span-2">
@@ -216,7 +226,7 @@ export default function AdminCustomerDetailPage() {
                       {latest ? (
                         <p className="mt-1 text-sm text-gray-700">
                           Latest: RER {latest.rer} kcal / MER {latest.mer} kcal
-                          / {new Date(latest.createdAt).toLocaleString()}
+                          / {formatDateTime(latest.createdAt)}
                         </p>
                       ) : (
                         <p className="mt-1 text-sm text-gray-500">
@@ -267,7 +277,7 @@ export default function AdminCustomerDetailPage() {
                           >
                             <p className="text-black">
                               <span className="font-semibold">Date:</span>{" "}
-                              {new Date(item.createdAt).toLocaleString()}
+                              {formatDateTime(item.createdAt)}
                             </p>
                             <p className="text-gray-700">
                               RER {item.rer} kcal / MER {item.mer} kcal
