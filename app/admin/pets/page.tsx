@@ -20,6 +20,20 @@ type AdminPet = {
 
 type SortMode = "newest" | "oldest" | "name-asc" | "weight-desc";
 
+function getTimeOrFallback(value: string, fallback: number) {
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? fallback : time;
+}
+
+function formatDateTime(value?: string | null) {
+  if (!value) return "Unknown date";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+
+  return date.toLocaleString();
+}
+
 export default function AdminPetsPage() {
   const [pets, setPets] = useState<AdminPet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -127,7 +141,8 @@ export default function AdminPetsPage() {
       switch (sortMode) {
         case "oldest":
           return (
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            getTimeOrFallback(a.created_at, Number.MAX_SAFE_INTEGER) -
+            getTimeOrFallback(b.created_at, Number.MAX_SAFE_INTEGER)
           );
         case "name-asc":
           return a.name.localeCompare(b.name);
@@ -136,7 +151,8 @@ export default function AdminPetsPage() {
         case "newest":
         default:
           return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            getTimeOrFallback(b.created_at, 0) -
+            getTimeOrFallback(a.created_at, 0)
           );
       }
     });
@@ -277,7 +293,7 @@ export default function AdminPetsPage() {
                 </div>
 
                 <div className="text-sm text-gray-600">
-                  Created: {new Date(pet.created_at).toLocaleString()}
+                  Created: {formatDateTime(pet.created_at)}
                 </div>
               </div>
 
