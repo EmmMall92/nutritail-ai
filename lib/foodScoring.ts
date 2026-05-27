@@ -7,6 +7,12 @@ export type FoodScoreResult = {
   reasons: string[];
 };
 
+function hasCondition(healthIssues: string[], keywords: string[]) {
+  return healthIssues.some((issue) =>
+    keywords.some((keyword) => issue.includes(keyword))
+  );
+}
+
 export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
   let score = 0;
   const reasons: string[] = [];
@@ -30,7 +36,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     reasons.push(`Suitable for ${pet.activityLevel} activity level.`);
   }
 
-  if (healthIssues.some((issue) => issue.includes("obesity"))) {
+  if (hasCondition(healthIssues, ["obesity", "overweight"])) {
     if (food.healthSupport.includes("weight control")) {
       score += 3;
       reasons.push("Supports weight control.");
@@ -47,7 +53,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("kidney"))) {
+  if (hasCondition(healthIssues, ["kidney", "renal"])) {
     if (food.healthSupport.includes("kidney support")) {
       score += 3;
       reasons.push("Supports kidney health.");
@@ -64,7 +70,7 @@ export function scoreFoodForPet(food: Food, pet: Pet): FoodScoreResult {
     }
   }
 
-  if (healthIssues.some((issue) => issue.includes("sensitive"))) {
+  if (hasCondition(healthIssues, ["sensitive", "digestion", "digestive"])) {
     if (food.healthSupport.includes("sensitive stomach")) {
       score += 3;
       reasons.push("Supports sensitive digestion.");
