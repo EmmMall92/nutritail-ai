@@ -13,12 +13,50 @@ function matchesLifeStage(
   return food.lifeStage === "all" || food.lifeStage === petLifeStage;
 }
 
-function containsAllergen(food: Food, allergies: string[]) {
-  const lowerIngredients = food.ingredients.map((i) => i.toLowerCase());
+const ALLERGEN_ALIASES: Record<string, string[]> = {
+  beef: ["beef", "μοσχα", "mosxari", "moshari"],
+  chicken: ["chicken", "κοτοπου", "kotopoulo"],
+  dairy: ["dairy", "milk", "γαλα", "gala"],
+  egg: ["egg", "αυγ", "avgo"],
+  fish: ["fish", "ψαρ", "psari"],
+  lamb: ["lamb", "αρν", "arni"],
+  pork: ["pork", "χοιρ", "xoirino", "hoirino"],
+  salmon: ["salmon", "σολομ", "solomos"],
+  soy: ["soy", "soya", "σόγια", "σογια", "sogia"],
+  turkey: ["turkey", "γαλοπου", "galopoula"],
+  wheat: ["wheat", "σιταρ", "sitar"],
+};
 
-  return allergies.some((allergy) =>
+function normalizeText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function expandAllergenTerms(allergy: string) {
+  const normalized = normalizeText(allergy);
+  const terms = new Set([normalized]);
+
+  for (const [canonical, aliases] of Object.entries(ALLERGEN_ALIASES)) {
+    if (aliases.some((alias) => normalized.includes(normalizeText(alias)))) {
+      terms.add(canonical);
+      aliases.forEach((alias) => terms.add(normalizeText(alias)));
+    }
+  }
+
+  return [...terms].filter(Boolean);
+}
+
+function containsAllergen(food: Food, allergies: string[]) {
+  const lowerIngredients = food.ingredients.map((ingredient) =>
+    normalizeText(ingredient)
+  );
+  const allergenTerms = allergies.flatMap(expandAllergenTerms);
+
+  return allergenTerms.some((allergy) =>
     lowerIngredients.some((ingredient) =>
-      ingredient.includes(allergy.toLowerCase())
+      ingredient.includes(allergy)
     )
   );
 }
