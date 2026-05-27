@@ -156,6 +156,13 @@ function parseNumber(text: string): number | null {
   return Number.isFinite(value) ? value : null;
 }
 
+function normalizeUserText(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function parseListOrEmpty(text: string) {
   const no = parseYesNoInput(text) === false;
 
@@ -169,7 +176,7 @@ function parseListOrEmpty(text: string) {
     .map((item) => item.trim())
     .filter(Boolean)
     .forEach((item) => {
-      const key = item.toLowerCase();
+      const key = normalizeUserText(item);
       if (seen.has(key)) return;
 
       seen.add(key);
@@ -180,7 +187,7 @@ function parseListOrEmpty(text: string) {
 }
 
 function parseWeightGoal(text: string): WeightGoal | null {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   if (
     value.includes("κρατ") ||
@@ -212,7 +219,7 @@ function parseWeightGoal(text: string): WeightGoal | null {
 }
 
 function parseSpeciesInput(text: string): Species | null {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   if (
     value.includes("dog") ||
@@ -237,7 +244,7 @@ function parseSpeciesInput(text: string): Species | null {
 }
 
 function parseActivityInput(text: string): ActivityLevel | null {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   if (
     value.includes("low") ||
@@ -277,7 +284,7 @@ function parseActivityInput(text: string): ActivityLevel | null {
 }
 
 function parseYesNoInput(text: string): boolean | null {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   if (
     value === "y" ||
@@ -303,7 +310,7 @@ function parseYesNoInput(text: string): boolean | null {
 }
 
 function parseWeightGoalInput(text: string): WeightGoal | null {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   if (
     value.includes("maintain") ||
@@ -342,7 +349,7 @@ function parseWeightGoalInput(text: string): WeightGoal | null {
 }
 
 function isUnknownFoodAnswer(text: string) {
-  const value = text.toLowerCase();
+  const value = normalizeUserText(text);
 
   return [
     "i don't know",

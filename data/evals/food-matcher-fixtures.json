@@ -73,8 +73,22 @@
       "minimumScore": 40
     },
     {
+      "id": "royal-kanin-greeklish",
+      "query": "royal kanin mini adult",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-adult",
+      "minimumScore": 40
+    },
+    {
       "id": "n-and-d-symbol",
       "query": "Farmina N&D pumpkin lamb",
+      "species": "dog",
+      "expectedTopId": "farmina-n-d-pumpkin-lamb",
+      "minimumScore": 40
+    },
+    {
+      "id": "n-d-hyphen",
+      "query": "farmina n-d pumpkin lamb",
       "species": "dog",
       "expectedTopId": "farmina-n-d-pumpkin-lamb",
       "minimumScore": 40
@@ -96,6 +110,13 @@
     {
       "id": "proplan-joined-brand",
       "query": "proplan medium adult",
+      "species": "dog",
+      "expectedTopId": "purina-pro-plan-medium-adult",
+      "minimumScore": 40
+    },
+    {
+      "id": "pro-plan-hyphen",
+      "query": "pro-plan medium adult",
       "species": "dog",
       "expectedTopId": "purina-pro-plan-medium-adult",
       "minimumScore": 40

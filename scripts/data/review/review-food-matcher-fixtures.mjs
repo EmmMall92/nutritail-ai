@@ -23,6 +23,8 @@ const queryAliases = [
   [/\brc\b/g, "royal canin"],
   [/\b\u03c1\u03bf\u03b3\u03b9\u03b1\u03bb\s+\u03ba\u03b1\u03bd\u03b9\u03bd\b/g, "royal canin"],
   [/\broyal\s+canine\b/g, "royal canin"],
+  [/\broyal\s+kanin\b/g, "royal canin"],
+  [/\broial\s+(canin|kanin)\b/g, "royal canin"],
   [/\broyalcanin\b/g, "royal canin"],
   [/\bproplan\b/g, "pro plan"],
   [/\bn\s*&\s*d\b/g, "n d"],
@@ -37,6 +39,7 @@ function normalizeSearchText(value) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/&/g, " and ")
     .replace(/[+]/g, " plus ")
+    .replace(/[-_/]/g, " ")
     .replace(/['’]/g, "");
 
   for (const [pattern, replacement] of queryAliases) {
