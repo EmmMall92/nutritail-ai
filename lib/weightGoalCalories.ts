@@ -21,8 +21,17 @@ export function adjustCaloriesForWeightGoal(params: {
   return Math.round(calories);
 }
 
-export function getWeightGoalLabel(goal?: WeightGoal) {
-  if (goal === "loss") return "απώλεια βάρους";
-  if (goal === "gain") return "αύξηση βάρους";
-  return "διατήρηση βάρους";
+export function getWeightGoalLabel(
+  goal?: WeightGoal,
+  locale: "en" | "el" = "en"
+) {
+  if (locale === "el") {
+    if (goal === "loss") return "απώλεια βάρους";
+    if (goal === "gain") return "αύξηση βάρους";
+    return "διατήρηση βάρους";
+  }
+
+  if (goal === "loss") return "weight loss";
+  if (goal === "gain") return "weight gain";
+  return "weight maintenance";
 }
