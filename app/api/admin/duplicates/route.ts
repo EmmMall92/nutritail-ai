@@ -28,8 +28,8 @@ export async function GET() {
 
     const [{ data: foods, error: foodsError }, { data: pets, error: petsError }] =
       await Promise.all([
-        supabase.from("foods").select("*"),
-        supabase.from("pets").select("*"),
+        supabase.from("foods").select("*").is("deleted_at", null),
+        supabase.from("pets").select("*").is("deleted_at", null),
       ]);
 
     if (foodsError) {

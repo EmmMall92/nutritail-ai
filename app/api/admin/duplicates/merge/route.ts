@@ -41,10 +41,14 @@ export async function POST(request: Request) {
 
     const idsToDelete = recordIds.filter((id: string) => id !== chosenRecordId);
     const tableName = duplicateType === "pet" ? "pets" : "foods";
+    const now = new Date().toISOString();
 
     const { error: deleteError } = await supabase
       .from(tableName)
-      .delete()
+      .update({
+        deleted_at: now,
+        updated_at: now,
+      })
       .in("id", idsToDelete);
 
     if (deleteError) {
@@ -71,6 +75,7 @@ export async function POST(request: Request) {
         duplicateKey,
         chosenRecordId,
         deletedRecordIds: idsToDelete,
+        deletedAt: now,
       },
     });
 
