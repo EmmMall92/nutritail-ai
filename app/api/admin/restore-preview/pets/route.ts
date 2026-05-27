@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       .filter((id): id is string => typeof id === "string" && id.trim().length > 0);
 
     const { data, error } = await supabase
-      .from("foods")
+      .from("pets")
       .select("id")
       .in("id", ids);
 
