@@ -24,9 +24,21 @@ export function generateIngredientInsights(
     text.includes("salmon") ||
     text.includes("lamb") ||
     text.includes("beef") ||
-    text.includes("fish")
+    text.includes("fish") ||
+    text.includes("rabbit") ||
+    text.includes("duck")
   ) {
     positives.push("Includes a recognizable animal protein source.");
+  }
+
+  if (
+    text.includes("hydrolysed") ||
+    text.includes("hydrolyzed") ||
+    text.includes("hypoallergenic")
+  ) {
+    positives.push(
+      "Includes hydrolysed or hypoallergenic positioning that may be relevant for supervised allergy trials."
+    );
   }
 
   if (
@@ -42,20 +54,40 @@ export function generateIngredientInsights(
   if (
     text.includes("corn") ||
     text.includes("maize") ||
-    text.includes("wheat")
+    text.includes("wheat") ||
+    text.includes("rice") ||
+    text.includes("barley") ||
+    text.includes("oats") ||
+    text.includes("potato")
   ) {
     positives.push(
-      "Includes common carbohydrate sources such as corn/maize/wheat, which can be appropriate unless the pet has a known sensitivity or trial restriction."
+      "Includes carbohydrate sources such as grains, rice, or potato; these are not automatically negative unless the pet has a known sensitivity or trial restriction."
     );
   }
 
   if (
     text.includes("prebiotic") ||
     text.includes("fos") ||
-    text.includes("mos")
+    text.includes("mos") ||
+    text.includes("beet pulp") ||
+    text.includes("chicory") ||
+    text.includes("psyllium") ||
+    text.includes("inulin")
   ) {
     positives.push(
       "Includes prebiotic ingredients that may support digestion."
+    );
+  }
+
+  if (
+    text.includes("fish oil") ||
+    text.includes("salmon oil") ||
+    text.includes("algal oil") ||
+    text.includes("dha") ||
+    text.includes("epa")
+  ) {
+    positives.push(
+      "Includes omega-3 or DHA/EPA signals that may support skin, coat, and development goals."
     );
   }
 
