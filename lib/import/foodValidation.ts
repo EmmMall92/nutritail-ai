@@ -135,12 +135,20 @@ export function generateFoodCompletenessScore(
 
   if (normalized.data_quality_status === "verified" && normalized.data_source_url) {
     score += 10;
-  } else if (normalized.data_source_url) {
+  } else if (
+    normalized.data_quality_status === "partial" &&
+    normalized.data_source_url
+  ) {
     score += 6;
   } else if (normalized.data_quality_status === "partial") {
     score += 4;
-  } else if (normalized.data_quality_status === "needs_review") {
+  } else if (
+    normalized.data_quality_status === "needs_review" &&
+    normalized.data_source_url
+  ) {
     score += 2;
+  } else if (normalized.data_source_url) {
+    score += 1;
   }
 
   return Math.max(0, Math.min(100, Math.round(score)));
