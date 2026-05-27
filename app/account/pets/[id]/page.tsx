@@ -37,6 +37,10 @@ type PetDetailResponse = {
   analysisHistory: AnalysisHistoryItem[];
 };
 
+function hasValidFoodScore(score?: number | null) {
+  return typeof score === "number" && Number.isFinite(score);
+}
+
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -225,7 +229,7 @@ export default function AccountPetDetailPage() {
             <p className="mt-1 text-black">
               MER: <span className="font-semibold">{latest.mer} kcal</span>
             </p>
-            {latest.food_score !== null && latest.food_score !== undefined && (
+            {hasValidFoodScore(latest.food_score) && (
           <p className="mt-1 text-black">
             Food score:{" "}
             <span className="font-semibold">{latest.food_score}/100</span>
@@ -290,7 +294,7 @@ export default function AccountPetDetailPage() {
                   <p className="mt-1 text-sm text-gray-700">
                     RER {item.rer} kcal - MER {item.mer} kcal
                   </p>
-                  {item.food_score !== null && item.food_score !== undefined && (
+                  {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">
                     Food score: {item.food_score}/100
                   </p>
