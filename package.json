@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "validate:foods": "node scripts/data/validate-food-import.mjs",
     "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs",
-    "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs"
+    "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs",
+    "review:ambrosia": "node scripts/data/review/review-ambrosia-import.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
