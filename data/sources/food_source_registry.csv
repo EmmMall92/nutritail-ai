@@ -10,6 +10,7 @@ ORIJEN,orijenpetfoods.com,EU,official,html,"Official product pages can expose in
 SPECIFIC,specific-guide.com,EU,official,html,"Official guide pages can expose composition and analytical constituents."
 Dechra,dechra.cld.bz,EU,official,pdf,"Official PDF catalog source for SPECIFIC/Dechra evidence."
 Monge,monge.it,EU,official,html,"Official product pages can expose composition, analytical constituents, and energy for some lines."
+Ambrosia,ambrosiapetfood.com,GR,official,html,"Official Greek product pages expose formula names, ingredients, analytical constituents, and kcal/kg for many products; sodium and magnesium are often missing."
 Zooplus,zooplus.com,EU,authorized,html,"Fallback only when official manufacturer data is incomplete; mark needs_review until corroborated."
 Tesco,tesco.com,UK,authorized,html,"Fallback retail evidence for UK pack data; mark needs_review until corroborated."
 Gatoskilo,gatoskilo.gr,GR,authorized,html,"Greek retailer fallback for pack sizes, local availability, translated composition, and label details; keep rows needs_review unless corroborated by official source or photo."

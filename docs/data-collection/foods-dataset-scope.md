@@ -50,6 +50,12 @@ Greek retailer fallbacks currently approved for research and backfill:
 
 Use these sources for Greek-market pack sizes, local availability, barcode clues, translated label text, or missing-field backfill. Do not classify a row as `verified` from these sources alone.
 
+Official Greek manufacturer sources currently approved for collection:
+
+- `ambrosiapetfood.com`
+
+Use official Greek manufacturer pages before Greek retailer fallbacks. Ambrosia rows should remain raw collection candidates until species, life stage, and product form are parser-verified, then may be normalized into `partial` rows when the core fields are complete.
+
 ## Quality Classification
 
 - `verified`: official source, core fields complete, sodium and magnesium present.
