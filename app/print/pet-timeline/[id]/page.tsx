@@ -49,7 +49,11 @@ function Section({
 function formatDate(value?: string) {
   if (!value) return "-";
 
-  return new Date(value).toLocaleString();
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString();
 }
 
 export default function PetTimelineReportPage() {
