@@ -116,4 +116,5 @@ Exit criteria:
 6. Chatbot UI integration for compare mode. Done.
 7. Admin feedback capture for failed matches. Done.
 8. Response contract evals for golden cases. Done.
-9. Next: connect admin feedback trends directly to food-data cleanup batches.
+9. Admin feedback trends connected to food-data cleanup batches. Done.
+10. Next: add feedback cleanup metadata to make future batches easier to audit.

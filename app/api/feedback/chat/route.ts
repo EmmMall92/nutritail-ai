@@ -43,6 +43,53 @@ function cleanMetadata(value: unknown) {
   return metadata;
 }
 
+function getContextText(context: Record<string, unknown>, key: string) {
+  const value = context[key];
+  return typeof value === "string" ? cleanText(value) : "";
+}
+
+function getContextNumber(context: Record<string, unknown>, key: string) {
+  const value = Number(context[key]);
+  return Number.isFinite(value) ? value : null;
+}
+
+function buildCleanupMetadata({
+  eventType,
+  message,
+  context,
+}: {
+  eventType: string;
+  message: string;
+  context: Record<string, unknown>;
+}) {
+  if (eventType !== "failed_food_match") return null;
+
+  const query = getContextText(context, "currentFoodName") || message;
+  const matchScore = getContextNumber(context, "matchScore");
+  const confidence = getContextText(context, "matchConfidence") || "none";
+  const priority =
+    matchScore === null || matchScore < 20 || confidence === "none"
+      ? "high"
+      : matchScore < 50
+        ? "medium"
+        : "watch";
+
+  return {
+    type: "food_data_cleanup",
+    query,
+    priority,
+    reason:
+      confidence === "none"
+        ? "No confident database match was found."
+        : `Food match confidence was ${confidence}.`,
+    matchScore,
+    href: `/admin/food-backfill?${new URLSearchParams({
+      search: query,
+      source: "chat_feedback",
+    }).toString()}`,
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -66,6 +113,11 @@ export async function POST(request: Request) {
     const rating = ALLOWED_RATINGS.has(rawRating) ? rawRating : "unknown";
     const message = cleanText(body.message);
     const context = cleanMetadata(body.context);
+    const cleanup = buildCleanupMetadata({
+      eventType,
+      message,
+      context,
+    });
     const id = crypto.randomUUID();
 
     const { error } = await supabaseAdmin.from("admin_activity_logs").insert({
@@ -84,6 +136,7 @@ export async function POST(request: Request) {
         rating,
         message,
         context,
+        cleanup,
       },
       created_at: new Date().toISOString(),
     });
