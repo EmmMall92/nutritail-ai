@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/db/supabase";
-import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { requireAdminOnlyApiAccess } from "@/lib/auth/adminApiGuard";
 
 export async function GET() {
   try {
-    const forbidden = await requireAdminApiAccess();
+    const forbidden = await requireAdminOnlyApiAccess();
     if (forbidden) return forbidden;
 
     const { data, error } = await supabase

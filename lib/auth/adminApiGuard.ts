@@ -5,7 +5,7 @@ import type { UserRole } from "@/types/profile";
 
 const ADMIN_ROLES: UserRole[] = ["admin", "staff"];
 
-export async function requireAdminApiAccess() {
+async function requireAdminRoleAccess(allowedRoles: UserRole[]) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -29,9 +29,17 @@ export async function requireAdminApiAccess() {
     );
   }
 
-  if (!profile || !ADMIN_ROLES.includes(profile.role as UserRole)) {
+  if (!profile || !allowedRoles.includes(profile.role as UserRole)) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
   return null;
+}
+
+export async function requireAdminApiAccess() {
+  return requireAdminRoleAccess(ADMIN_ROLES);
+}
+
+export async function requireAdminOnlyApiAccess() {
+  return requireAdminRoleAccess(["admin"]);
 }
