@@ -29,6 +29,13 @@ function getCurrentFoodName(log: AdminActivityLog) {
   return String(context.currentFoodName ?? log.metadata?.message ?? "").trim();
 }
 
+function getCleanupMetadata(log: AdminActivityLog) {
+  const cleanup = log.metadata?.cleanup;
+  return typeof cleanup === "object" && cleanup !== null
+    ? (cleanup as Record<string, unknown>)
+    : {};
+}
+
 function cleanupBatchHref(query: string) {
   const params = new URLSearchParams({
     search: query,
@@ -36,6 +43,21 @@ function cleanupBatchHref(query: string) {
   });
 
   return `/admin/food-backfill?${params.toString()}`;
+}
+
+function getCleanupHref(log: AdminActivityLog, query: string) {
+  const cleanup = getCleanupMetadata(log);
+  const href = cleanup.href;
+  return typeof href === "string" && href.startsWith("/admin/")
+    ? href
+    : cleanupBatchHref(query);
+}
+
+function getCleanupPriority(log: AdminActivityLog, fallbackCount: number) {
+  const cleanup = getCleanupMetadata(log);
+  const priority = cleanup.priority;
+  if (typeof priority === "string" && priority) return priority;
+  return fallbackCount >= 3 ? "high" : fallbackCount >= 2 ? "medium" : "watch";
 }
 
 export default function AdminChatFeedbackPage() {
@@ -89,20 +111,28 @@ export default function AdminChatFeedbackPage() {
   const helpfulnessTotal = helpful.length + notHelpful.length;
   const helpfulRate =
     helpfulnessTotal > 0 ? Math.round((helpful.length / helpfulnessTotal) * 100) : 0;
-  const failedMatchTrends = Object.entries(
-    failedMatches.reduce<Record<string, number>>((acc, log) => {
+  const failedMatchGroups = failedMatches.reduce<
+    Record<string, { count: number; latestLog: AdminActivityLog }>
+  >((acc, log) => {
       const foodName = getCurrentFoodName(log) || "Unknown food query";
-      acc[foodName] = (acc[foodName] ?? 0) + 1;
+      acc[foodName] = {
+        count: (acc[foodName]?.count ?? 0) + 1,
+        latestLog: log,
+      };
       return acc;
-    }, {})
-  )
-    .map(([query, count]) => ({ query, count }))
+    }, {});
+  const failedMatchTrends = Object.entries(failedMatchGroups)
+    .map(([query, data]) => ({ query, count: data.count, latestLog: data.latestLog }))
     .sort((a, b) => b.count - a.count || a.query.localeCompare(b.query))
     .slice(0, 8);
   const cleanupBatches = failedMatchTrends.map((item) => ({
-    ...item,
-    href: cleanupBatchHref(item.query),
-    priority: item.count >= 3 ? "high" : item.count >= 2 ? "medium" : "watch",
+    query: item.query,
+    count: item.count,
+    href: getCleanupHref(item.latestLog, item.query),
+    priority: getCleanupPriority(item.latestLog, item.count),
+    reason:
+      String(getCleanupMetadata(item.latestLog).reason ?? "").trim() ||
+      "Repeated failed food match should be reviewed.",
   }));
 
   return (
@@ -227,8 +257,7 @@ export default function AdminChatFeedbackPage() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  Review matching queued foods, source gaps, and possible alias
-                  cleanup for this failed query.
+                  {batch.reason}
                 </p>
                 <Link
                   href={batch.href}
