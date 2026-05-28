@@ -115,5 +115,5 @@ Exit criteria:
 5. Recommendation rule engine helper. Done.
 6. Chatbot UI integration for compare mode. Done.
 7. Admin feedback capture for failed matches. Done.
-8. Next: expand golden evals from structure checks into response regression checks.
+8. Response contract evals for golden cases. Done.
 9. Next: connect admin feedback trends directly to food-data cleanup batches.
