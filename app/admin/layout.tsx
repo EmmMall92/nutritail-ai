@@ -44,9 +44,10 @@ export default function AdminLayout({
   useEffect(() => {
     async function checkAuthAndRole() {
       const { data } = await supabaseClient.auth.getSession();
+      const loginPath = `/login?next=${encodeURIComponent(pathname || "/admin")}`;
 
       if (!data.session) {
-        router.replace("/login");
+        router.replace(loginPath);
         return;
       }
 
@@ -54,7 +55,7 @@ export default function AdminLayout({
 
       if (!currentProfile) {
         await supabaseClient.auth.signOut();
-        router.replace("/login");
+        router.replace(loginPath);
         return;
       }
 
@@ -69,7 +70,7 @@ export default function AdminLayout({
     }
 
     checkAuthAndRole();
-  }, [router]);
+  }, [pathname, router]);
 
   async function handleLogout() {
     await supabaseClient.auth.signOut();
