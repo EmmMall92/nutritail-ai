@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { supabaseClient } from "@/lib/supabaseClient";
-import { profileService } from "@/services/profileService";
 import type { Profile } from "@/types/profile";
 
 function AdminNavLink({
@@ -43,29 +42,33 @@ export default function AdminLayout({
 
   useEffect(() => {
     async function checkAuthAndRole() {
-      const { data } = await supabaseClient.auth.getSession();
       const loginPath = `/login?next=${encodeURIComponent(pathname || "/admin")}`;
+      const { data } = await supabaseClient.auth.getSession();
 
       if (!data.session) {
         router.replace(loginPath);
         return;
       }
 
-      const currentProfile = await profileService.getCurrentProfile();
+      const response = await fetch("/api/admin/me", {
+        cache: "no-store",
+      });
 
-      if (!currentProfile) {
+      if (!response.ok) {
         await supabaseClient.auth.signOut();
         router.replace(loginPath);
         return;
       }
 
-      if (!["admin", "staff"].includes(currentProfile.role)) {
+      const result = (await response.json()) as { profile?: Profile };
+
+      if (!result.profile) {
         await supabaseClient.auth.signOut();
         router.replace(loginPath);
         return;
       }
 
-      setProfile(currentProfile);
+      setProfile(result.profile);
       setIsLoading(false);
     }
 
