@@ -5,12 +5,18 @@ import type { UserRole } from "@/types/profile";
 
 const ADMIN_ROLES: UserRole[] = ["admin", "staff"];
 
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createServerSupabaseClient();
+  const authHeader = request.headers.get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length).trim()
+    : null;
   const {
     data: { user },
     error: userError,
-  } = await supabase.auth.getUser();
+  } = bearerToken
+    ? await supabaseAdmin.auth.getUser(bearerToken)
+    : await supabase.auth.getUser();
 
   if (userError || !user) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });

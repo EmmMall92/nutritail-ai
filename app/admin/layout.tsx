@@ -52,6 +52,9 @@ export default function AdminLayout({
 
       const response = await fetch("/api/admin/me", {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${data.session.access_token}`,
+        },
       });
 
       if (!response.ok) {
