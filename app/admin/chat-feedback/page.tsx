@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { AdminActivityLog } from "@/types/admin-activity-log";
 
 function formatDateTime(value?: string | null) {
@@ -26,6 +27,15 @@ function getFeedbackContext(log: AdminActivityLog) {
 function getCurrentFoodName(log: AdminActivityLog) {
   const context = getFeedbackContext(log);
   return String(context.currentFoodName ?? log.metadata?.message ?? "").trim();
+}
+
+function cleanupBatchHref(query: string) {
+  const params = new URLSearchParams({
+    search: query,
+    source: "chat_feedback",
+  });
+
+  return `/admin/food-backfill?${params.toString()}`;
 }
 
 export default function AdminChatFeedbackPage() {
@@ -89,6 +99,11 @@ export default function AdminChatFeedbackPage() {
     .map(([query, count]) => ({ query, count }))
     .sort((a, b) => b.count - a.count || a.query.localeCompare(b.query))
     .slice(0, 8);
+  const cleanupBatches = failedMatchTrends.map((item) => ({
+    ...item,
+    href: cleanupBatchHref(item.query),
+    priority: item.count >= 3 ? "high" : item.count >= 2 ? "medium" : "watch",
+  }));
 
   return (
     <section className="space-y-6">
@@ -181,6 +196,50 @@ export default function AdminChatFeedbackPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Feedback Cleanup Batches
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Turn repeated failed matches into focused food-data review searches.
+        </p>
+
+        {cleanupBatches.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No cleanup batches are suggested yet.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {cleanupBatches.map((batch) => (
+              <div
+                key={batch.query}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-semibold text-black">{batch.query}</p>
+                  <span className="rounded-full border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700">
+                    {batch.count} reports
+                  </span>
+                  <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700">
+                    {batch.priority}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  Review matching queued foods, source gaps, and possible alias
+                  cleanup for this failed query.
+                </p>
+                <Link
+                  href={batch.href}
+                  className="mt-3 inline-flex rounded-lg border border-black px-3 py-2 text-sm font-medium text-black transition hover:bg-black hover:text-white"
+                >
+                  Open cleanup search
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">

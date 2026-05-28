@@ -33,6 +33,23 @@ export default function AdminFoodBackfillPage() {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [brandFilter, setBrandFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sourceHint, setSourceHint] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const initialSearch = params.get("search") ?? "";
+    const initialPriority = params.get("priority") ?? "all";
+    const initialBrand = params.get("brand") ?? "all";
+
+    if (initialSearch) setSearchTerm(initialSearch);
+    if (["all", "high", "medium", "low"].includes(initialPriority)) {
+      setPriorityFilter(initialPriority);
+    }
+    if (initialBrand) setBrandFilter(initialBrand);
+    if (params.get("source") === "chat_feedback") {
+      setSourceHint("Opened from chatbot failed-match feedback.");
+    }
+  }, []);
 
   useEffect(() => {
     async function loadQueue() {
@@ -131,6 +148,12 @@ export default function AdminFoodBackfillPage() {
           data/review/food_backfill_priority_queue.json, and
           reports/food_backfill_evidence_requests.md.
         </p>
+        {sourceHint && (
+          <p className="mt-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+            {sourceHint} Adjust filters below to turn this into a focused
+            cleanup batch.
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
