@@ -61,7 +61,7 @@ export default function AdminLayout({
 
       if (!["admin", "staff"].includes(currentProfile.role)) {
         await supabaseClient.auth.signOut();
-        router.replace("/login");
+        router.replace(loginPath);
         return;
       }
 
