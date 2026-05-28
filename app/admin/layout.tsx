@@ -29,6 +29,12 @@ function AdminNavLink({
   );
 }
 
+function isAdminOnlyPath(pathname: string) {
+  return ["/admin/export", "/admin/restore", "/admin/settings"].some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
+
 export default function AdminLayout({
   children,
 }: {
@@ -69,6 +75,11 @@ export default function AdminLayout({
       if (!result.profile) {
         await supabase.auth.signOut();
         router.replace(loginPath);
+        return;
+      }
+
+      if (result.profile.role !== "admin" && isAdminOnlyPath(pathname)) {
+        router.replace("/admin");
         return;
       }
 
