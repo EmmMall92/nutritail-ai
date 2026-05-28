@@ -24,6 +24,31 @@ function getSafeRedirectPath() {
   return nextPath;
 }
 
+async function verifyAdminRedirect(accessToken: string, redirectPath: string) {
+  if (!redirectPath.startsWith("/admin")) {
+    return;
+  }
+
+  const response = await fetch("/api/admin/me", {
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (response.ok) {
+    return;
+  }
+
+  const result = (await response.json().catch(() => null)) as {
+    error?: string;
+  } | null;
+
+  throw new Error(
+    result?.error || "Login succeeded, but this account is not an admin."
+  );
+}
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -59,6 +84,8 @@ export default function LoginPage() {
         throw new Error("Login failed. No session returned.");
       }
 
+      const redirectPath = getSafeRedirectPath();
+
       await fetch("/api/account/me", {
         method: "POST",
         headers: {
@@ -74,7 +101,9 @@ export default function LoginPage() {
         }),
       });
 
-      router.replace(getSafeRedirectPath());
+      await verifyAdminRedirect(data.session.access_token, redirectPath);
+
+      router.replace(redirectPath);
       router.refresh();
     } catch (err) {
       console.error(err);
