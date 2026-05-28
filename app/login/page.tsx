@@ -6,6 +6,24 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+function getSafeRedirectPath() {
+  if (typeof window === "undefined") {
+    return "/account";
+  }
+
+  const nextPath = new URLSearchParams(window.location.search).get("next");
+
+  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
+    return "/account";
+  }
+
+  if (nextPath.startsWith("/login") || nextPath.startsWith("/register")) {
+    return "/account";
+  }
+
+  return nextPath;
+}
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -56,7 +74,7 @@ export default function LoginPage() {
         }),
       });
 
-      router.replace("/account");
+      router.replace(getSafeRedirectPath());
       router.refresh();
     } catch (err) {
       console.error(err);
