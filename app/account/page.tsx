@@ -20,10 +20,16 @@ type Customer = {
 type AnalysisHistoryItem = {
   id: string;
   createdAt: string;
+  matched_food_name?: string | null;
+  feeding_grams_per_day?: number | null;
+  food_score?: number | null;
 };
 
 type AccountPet = {
   id: string;
+  name?: string | null;
+  species?: string | null;
+  weight?: number | null;
   analysisHistory?: AnalysisHistoryItem[];
 };
 
@@ -35,6 +41,11 @@ function formatDate(value?: string) {
   if (Number.isNaN(date.getTime())) return "No analyses yet";
 
   return date.toLocaleDateString();
+}
+
+function hasReadyReport(pet: AccountPet) {
+  const latest = pet.analysisHistory?.[0];
+  return Boolean(latest?.matched_food_name && latest?.feeding_grams_per_day);
 }
 
 export default function AccountPage() {
@@ -133,12 +144,21 @@ export default function AccountPage() {
     (count, pet) => count + (pet.analysisHistory?.length ?? 0),
     0
   );
-  const latestAnalysis = pets
-    .flatMap((pet) => pet.analysisHistory ?? [])
+  const petsNeedingAnalysis = pets.filter(
+    (pet) => (pet.analysisHistory?.length ?? 0) === 0
+  ).length;
+  const readyReports = pets.filter(hasReadyReport).length;
+  const latestAnalysisEntry = pets
+    .flatMap((pet) =>
+      (pet.analysisHistory ?? []).map((analysis) => ({ analysis, pet }))
+    )
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.analysis.createdAt).getTime() -
+        new Date(a.analysis.createdAt).getTime()
     )[0];
+  const latestAnalysis = latestAnalysisEntry?.analysis;
+  const latestPet = latestAnalysisEntry?.pet;
 
   return (
     <section className="space-y-6">
@@ -152,7 +172,7 @@ export default function AccountPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Saved pets</p>
           <p className="mt-2 text-3xl font-bold text-black">{pets.length}</p>
@@ -164,14 +184,98 @@ export default function AccountPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Latest analysis</p>
-          <p className="mt-2 text-lg font-semibold text-black">
-            {formatDate(latestAnalysis?.createdAt)}
+          <p className="text-sm text-gray-500">Reports ready</p>
+          <p className="mt-2 text-3xl font-bold text-black">{readyReports}</p>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-gray-500">Need analysis</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {petsNeedingAnalysis}
           </p>
         </div>
       </div>
 
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm text-gray-500">Latest report</p>
+            <h2 className="mt-2 text-xl font-semibold text-black">
+              {latestPet?.name ?? "No saved report yet"}
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              {latestAnalysis
+                ? `${formatDate(latestAnalysis.createdAt)}${
+                    latestAnalysis.matched_food_name
+                      ? ` - ${latestAnalysis.matched_food_name}`
+                      : ""
+                  }`
+                : "Run an analysis to create the first report."}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {latestPet && (
+              <>
+                <Link
+                  href={`/account/pets/${latestPet.id}`}
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+                >
+                  Open pet
+                </Link>
+                <Link
+                  href={`/print/pet-report/${latestPet.id}`}
+                  className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                >
+                  Open report
+                </Link>
+              </>
+            )}
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+            >
+              New analysis
+            </Link>
+          </div>
+        </div>
+
+        {latestAnalysis && (
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-gray-700">
+            {latestAnalysis.food_score !== null &&
+              latestAnalysis.food_score !== undefined && (
+                <span className="rounded-full bg-gray-100 px-3 py-1">
+                  Score {latestAnalysis.food_score}/100
+                </span>
+              )}
+            {latestAnalysis.feeding_grams_per_day && (
+              <span className="rounded-full bg-gray-100 px-3 py-1">
+                {latestAnalysis.feeding_grams_per_day}g/day
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-sm text-gray-500">Suggested next step</p>
+          <p className="mt-2 text-lg font-semibold text-black">
+            {pets.length === 0
+              ? "Create your first pet"
+              : petsNeedingAnalysis > 0
+                ? "Run missing analyses"
+                : "Review latest report"}
+          </p>
+          <p className="mt-2 text-sm text-gray-600">
+            {pets.length === 0
+              ? "Start with the chatbot to save a profile and report."
+              : petsNeedingAnalysis > 0
+                ? "Some saved pets do not have an analysis yet."
+                : "Your pets have saved analysis history."}
+          </p>
+        </div>
+
         <Link
           href="/account/chatbot"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"

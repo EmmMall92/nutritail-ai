@@ -539,12 +539,21 @@ function formatFoodComparison(result: FoodCompareResponse) {
   const comparisons = result.comparisons ?? [];
 
   if (comparisons.length === 0) {
-    return "I could not compare those foods yet. Try brand + formula names, separated with vs.";
+    return "I could not compare those foods yet. Try brand + formula names, separated with vs. Example: Royal Canin Mini Adult vs Farmina N&D Pumpkin Lamb.";
   }
+
+  const missedMatches = comparisons.filter((item) => !item.match);
+  const partialMatches = comparisons.filter(
+    (item) =>
+      item.match &&
+      ((item.missing_nutrition_fields ?? []).length > 0 ||
+        item.data_confidence === "low")
+  );
 
   const rows = comparisons.map((item, index) => {
     if (!item.match) {
-      return `${index + 1}. ${item.query}: no confident database match.`;
+      return `${index + 1}. ${item.query}: no confident database match.
+Next step: send the exact brand and formula from the bag, or try a shorter query with brand + line name.`;
     }
 
     const nutrition = item.nutrition ?? {};
@@ -582,9 +591,23 @@ Quick read:
 - ${result.summary.note ?? "Use this as a structured comparison aid."}`
     : "";
 
+  const followUp =
+    missedMatches.length > 0 || partialMatches.length > 0
+      ? `
+
+What this means:
+- ${missedMatches.length} item(s) need a more exact product name before I can compare them confidently.
+- ${partialMatches.length} matched item(s) have missing nutrition fields, so use the comparison as directional rather than final.
+- For health issues, weight loss, puppies, kidney, or urinary concerns, confirm the label data before choosing.`
+      : `
+
+What this means:
+- These products matched the database well enough for a structured comparison.
+- Still use pet context before choosing: age, weight goal, neuter status, and health issues matter.`;
+
   return `Food comparison:
 
-${rows.join("\n\n")}${summary}`;
+${rows.join("\n\n")}${summary}${followUp}`;
 }
 
 function formatPetIntakeSummary(pet: PetIntake) {
@@ -1662,8 +1685,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          `Saved successfully to your profile! You can view it here:
-${siteUrl}/account/pets/${result.pet.id}`
+          `Saved successfully.
+
+Next actions:
+- Open pet profile: ${siteUrl}/account/pets/${result.pet.id}
+- Open printable report: ${siteUrl}/print/pet-report/${result.pet.id}
+- Start another analysis: ${siteUrl}/account/chatbot`
         )
       );
 

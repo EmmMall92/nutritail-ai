@@ -60,6 +60,15 @@ function getCleanupPriority(log: AdminActivityLog, fallbackCount: number) {
   return fallbackCount >= 3 ? "high" : fallbackCount >= 2 ? "medium" : "watch";
 }
 
+function getQualityGroupKey(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  const food = String(context.currentFoodName ?? "").trim() || "No food";
+  const goal = String(context.weightGoal ?? "").trim() || "No goal";
+  const type = getFeedbackType(log);
+
+  return `${type} | ${food} | ${goal}`;
+}
+
 export default function AdminChatFeedbackPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -185,6 +194,21 @@ export default function AdminChatFeedbackPage() {
       return bTime - aTime;
     })
     .slice(0, 5);
+  const notHelpfulGroups = Object.entries(
+    notHelpful.reduce<
+      Record<string, { count: number; latestLog: AdminActivityLog }>
+    >((acc, log) => {
+      const key = getQualityGroupKey(log);
+      acc[key] = {
+        count: (acc[key]?.count ?? 0) + 1,
+        latestLog: log,
+      };
+      return acc;
+    }, {})
+  )
+    .map(([key, data]) => ({ key, ...data }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key))
+    .slice(0, 8);
 
   return (
     <section className="space-y-6">
@@ -361,6 +385,54 @@ export default function AdminChatFeedbackPage() {
                       {formatDateTime(log.createdAt)}
                     </p>
                   </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Not-Helpful Patterns
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Grouped signals by feedback type, current food, and weight goal.
+        </p>
+
+        {notHelpfulGroups.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No not-helpful patterns yet.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {notHelpfulGroups.map((group) => {
+              const context = getFeedbackContext(group.latestLog);
+
+              return (
+                <div
+                  key={group.key}
+                  className="rounded-xl border border-red-200 bg-red-50 p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-red-700 px-2 py-1 text-xs font-semibold text-white">
+                      {group.count}
+                    </span>
+                    <p className="font-semibold text-black">
+                      {getFeedbackType(group.latestLog)}
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm text-red-900">
+                    Food/query:{" "}
+                    {String(context.currentFoodName ?? "").trim() ||
+                      "not provided"}
+                  </p>
+                  <p className="mt-1 text-sm text-red-900">
+                    Goal: {String(context.weightGoal ?? "unknown")}
+                  </p>
+                  <p className="mt-2 text-xs text-red-800">
+                    Latest: {formatDateTime(group.latestLog.createdAt)}
+                  </p>
                 </div>
               );
             })}
