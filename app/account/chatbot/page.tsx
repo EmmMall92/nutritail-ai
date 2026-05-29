@@ -128,6 +128,19 @@ function createMessage(role: "bot" | "user", text: string): ChatMessage {
   };
 }
 
+function getQuickReplies(step: IntakeStep) {
+  if (step === "species") return ["Dog", "Cat"];
+  if (step === "activity") return ["Low", "Normal", "High"];
+  if (step === "neutered") return ["Yes", "No"];
+  if (step === "health") return ["No", "Sensitive stomach", "Itchy skin", "Urinary issue"];
+  if (step === "currentFood") return ["I don't know"];
+  if (step === "weightGoal") {
+    return ["Maintain weight", "Lose weight", "Gain weight"];
+  }
+
+  return [];
+}
+
 function parseSpecies(text: string): Species | null {
   const value = text.toLowerCase();
 
@@ -766,6 +779,7 @@ export default function AccountChatbotPage() {
       "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet."
     ),
   ]);
+  const quickReplies = getQuickReplies(step);
 
   function addMessages(...nextMessages: ChatMessage[]) {
     setMessages((prev) => [...prev, ...nextMessages]);
@@ -1588,6 +1602,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     await handleStep(text);
   }
 
+  async function sendQuickReply(text: string) {
+    if (isAnalyzing || isSaving) return;
+
+    addMessages(createMessage("user", text));
+    setInput("");
+
+    await handleStep(text);
+  }
+
   async function saveToMyAccount() {
     try {
       setIsSaving(true);
@@ -1916,28 +1939,45 @@ ${siteUrl}/account/pets/${result.pet.id}`
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="sticky bottom-0 flex shrink-0 gap-3 border-t border-gray-200 bg-white p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] sm:p-5">
-        <input
-          value={input}
-          disabled={isAnalyzing || isSaving}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              sendMessage();
-            }
-          }}
-          placeholder={isAnalyzing ? "Analyzing..." : "Write a message..."}
-          className="min-w-0 flex-1 rounded-xl border border-gray-300 p-3 text-black disabled:bg-gray-100"
-        />
+      <div className="sticky bottom-0 shrink-0 border-t border-gray-200 bg-white p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] sm:p-5">
+        {quickReplies.length > 0 && !isAnalyzing && !isSaving && (
+          <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+            {quickReplies.map((reply) => (
+              <button
+                key={reply}
+                type="button"
+                onClick={() => sendQuickReply(reply)}
+                className="shrink-0 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
+              >
+                {reply}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <button
-          type="button"
-          onClick={sendMessage}
-          disabled={isAnalyzing || isSaving}
-          className="rounded-xl bg-black px-4 py-3 text-white disabled:opacity-50 sm:px-5"
-        >
-          {isAnalyzing ? "..." : "Send"}
-        </button>
+        <div className="flex gap-3">
+          <input
+            value={input}
+            disabled={isAnalyzing || isSaving}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+              }
+            }}
+            placeholder={isAnalyzing ? "Analyzing..." : "Write a message..."}
+            className="min-w-0 flex-1 rounded-xl border border-gray-300 p-3 text-black disabled:bg-gray-100"
+          />
+
+          <button
+            type="button"
+            onClick={sendMessage}
+            disabled={isAnalyzing || isSaving}
+            className="rounded-xl bg-black px-4 py-3 text-white disabled:opacity-50 sm:px-5"
+          >
+            {isAnalyzing ? "..." : "Send"}
+          </button>
+        </div>
       </div>
     </section>
   );
