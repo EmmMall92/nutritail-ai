@@ -2,12 +2,35 @@
 
 import Link from "next/link";
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+function getSafeRedirectPath() {
+  if (typeof window === "undefined") {
+    return "/account";
+  }
+
+  const nextPath = new URLSearchParams(window.location.search).get("next");
+
+  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
+    return "/account";
+  }
+
+  if (nextPath.startsWith("/login") || nextPath.startsWith("/register")) {
+    return "/account";
+  }
+
+  return nextPath;
+}
+
 export default function RegisterPage() {
   const router = useRouter();
+  const [redirectPath, setRedirectPath] = useState("/account");
+  const loginHref =
+    redirectPath === "/account"
+      ? "/login"
+      : `/login?next=${encodeURIComponent(redirectPath)}`;
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,6 +40,10 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setRedirectPath(getSafeRedirectPath());
+  }, []);
 
   async function handleRegister(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -38,7 +65,7 @@ export default function RegisterPage() {
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/account`,
+          emailRedirectTo: `${window.location.origin}${redirectPath}`,
           data: {
             full_name: fullName.trim(),
           },
@@ -68,7 +95,7 @@ export default function RegisterPage() {
       if (data.session) {
         setSuccess("Account created. Redirecting to your dashboard...");
         setTimeout(() => {
-          router.push("/account");
+          router.push(redirectPath);
         }, 1000);
         return;
       }
@@ -142,7 +169,7 @@ export default function RegisterPage() {
           </button>
 
           <Link
-            href="/login"
+            href={loginHref}
             className="block text-center text-sm text-gray-600 underline"
           >
             Already have an account? Login.

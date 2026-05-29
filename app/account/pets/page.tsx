@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type AnalysisHistoryItem = {
@@ -65,6 +65,7 @@ function getReadinessClass(readiness: string) {
 
 export default function AccountPetsPage() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [pets, setPets] = useState<AccountPet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +81,7 @@ export default function AccountPetsPage() {
         const { data } = await supabase.auth.getSession();
 
         if (!data.session?.user) {
-          router.replace("/login");
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           return;
         }
 
@@ -110,7 +111,7 @@ export default function AccountPetsPage() {
     }
 
     loadPets();
-  }, [router]);
+  }, [pathname, router]);
 
   return (
     <section className="space-y-6">

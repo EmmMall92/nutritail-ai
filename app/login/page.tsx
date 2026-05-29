@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -51,12 +51,21 @@ async function verifyAdminRedirect(accessToken: string, redirectPath: string) {
 
 export default function LoginPage() {
   const router = useRouter();
+  const [redirectPath, setRedirectPath] = useState("/account");
+  const registerHref =
+    redirectPath === "/account"
+      ? "/register"
+      : `/register?next=${encodeURIComponent(redirectPath)}`;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setRedirectPath(getSafeRedirectPath());
+  }, []);
 
   async function handleLogin(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -83,8 +92,6 @@ export default function LoginPage() {
       if (!data.session || !data.user) {
         throw new Error("Login failed. No session returned.");
       }
-
-      const redirectPath = getSafeRedirectPath();
 
       await fetch("/api/account/me", {
         method: "POST",
@@ -165,7 +172,7 @@ export default function LoginPage() {
           </button>
 
           <Link
-            href="/register"
+            href={registerHref}
             className="block text-center text-sm text-gray-600 underline"
           >
             Do not have an account? Create one.
