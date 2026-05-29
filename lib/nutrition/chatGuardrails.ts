@@ -23,6 +23,9 @@ const URINARY_TERMS = [
   "pee",
   "peeing",
   "urine",
+  "straining",
+  "blood",
+  "nothing comes out",
   "ουρο",
   "κατουρ",
   "ouro",
@@ -146,7 +149,7 @@ export function generateChatGuardrails(
 
   return {
     safetyNotes: [...new Set(safetyNotes)],
-    followUpQuestions: [...new Set(followUpQuestions)].slice(0, 2),
+    followUpQuestions: [...new Set(followUpQuestions)].slice(0, 3),
     confidenceNotes: [...new Set(confidenceNotes)],
     hasUrgentSignal,
   };

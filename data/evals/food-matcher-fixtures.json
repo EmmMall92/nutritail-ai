@@ -162,6 +162,20 @@
       "minimumScore": 40
     },
     {
+      "id": "royal-mini-typo",
+      "query": "royal mini adut",
+      "species": "dog",
+      "expectedTopId": "royal-canin-mini-adult",
+      "minimumScore": 30
+    },
+    {
+      "id": "farmina-joined-nd",
+      "query": "farmina nd pumpkin lamb",
+      "species": "dog",
+      "expectedTopId": "farmina-n-d-pumpkin-lamb",
+      "minimumScore": 40
+    },
+    {
       "id": "zooplus-digestive-care-query",
       "query": "zooplus mini digestive care",
       "species": "dog",

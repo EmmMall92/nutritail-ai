@@ -134,6 +134,14 @@ export default function AdminChatFeedbackPage() {
       String(getCleanupMetadata(item.latestLog).reason ?? "").trim() ||
       "Repeated failed food match should be reviewed.",
   }));
+  const responseQualityPriorities = notHelpful
+    .slice()
+    .sort((a, b) => {
+      const aTime = new Date(a.createdAt ?? "").getTime();
+      const bTime = new Date(b.createdAt ?? "").getTime();
+      return bTime - aTime;
+    })
+    .slice(0, 5);
 
   return (
     <section className="space-y-6">
@@ -267,6 +275,52 @@ export default function AdminChatFeedbackPage() {
                 </Link>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Response Quality Priorities
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Recent not-helpful ratings that should guide chatbot copy and safety
+          polish.
+        </p>
+
+        {responseQualityPriorities.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No not-helpful ratings have been recorded yet.
+          </p>
+        ) : (
+          <div className="mt-4 space-y-3">
+            {responseQualityPriorities.map((log) => {
+              const context = getFeedbackContext(log);
+
+              return (
+                <div
+                  key={log.id}
+                  className="rounded-xl border border-amber-200 bg-amber-50 p-4"
+                >
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <p className="font-semibold text-black">{log.message}</p>
+                      <p className="mt-1 text-sm text-amber-800">
+                        Food:{" "}
+                        {String(context.currentFoodName ?? "").trim() ||
+                          "not provided"}
+                      </p>
+                      <p className="mt-1 text-sm text-amber-800">
+                        Goal: {String(context.weightGoal ?? "unknown")}
+                      </p>
+                    </div>
+                    <p className="text-sm text-amber-800">
+                      {formatDateTime(log.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
