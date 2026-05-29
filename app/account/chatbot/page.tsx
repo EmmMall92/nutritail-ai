@@ -106,6 +106,7 @@ type FoodComparisonItem = {
   data_confidence?: string;
   nutrition?: Record<string, number | null>;
   missing_nutrition_fields?: string[];
+  cautions?: string[];
 };
 
 type FoodCompareResponse = {
@@ -477,6 +478,45 @@ function parseCompareQueries(text: string) {
     .slice(0, 5);
 }
 
+function getStandaloneNutritionReply(text: string) {
+  const value = normalizeUserText(text);
+
+  const hasGrainMyth =
+    value.includes("grain free") ||
+    value.includes("grain-free") ||
+    value.includes("by-product") ||
+    value.includes("by product");
+
+  if (hasGrainMyth) {
+    return "Not always. Grain-free is not automatically better, and by-products are not automatically bad. The better question is whether the food is complete, appropriate for the pet's life stage and health context, and supported by clear nutrition data.";
+  }
+
+  const hasUrinaryEmergency =
+    (value.includes("cat") || value.includes("gata") || value.includes("gatos")) &&
+    (value.includes("pee") ||
+      value.includes("urine") ||
+      value.includes("urinary") ||
+      value.includes("katour")) &&
+    (value.includes("nothing") ||
+      value.includes("blocked") ||
+      value.includes("straining") ||
+      value.includes("blood"));
+
+  if (hasUrinaryEmergency) {
+    return "This can be urgent, especially in male cats. If the cat is straining, painful, passing little/no urine, or there is blood, contact a veterinarian or emergency clinic now. Food comparison can wait until the immediate risk is checked.";
+  }
+
+  if (
+    value.includes("best food") ||
+    value.includes("best dry food") ||
+    value.includes("kalyteri trofi")
+  ) {
+    return "I can help choose, but I need context first: species, age, weight, weight goal, neuter status, health issues, and the current food if you know it.";
+  }
+
+  return null;
+}
+
 function formatNutritionValue(value: number | null | undefined, suffix: string) {
   if (value === null || value === undefined) return "missing";
   return `${value}${suffix}`;
@@ -496,6 +536,7 @@ function formatFoodComparison(result: FoodCompareResponse) {
 
     const nutrition = item.nutrition ?? {};
     const missing = item.missing_nutrition_fields ?? [];
+    const cautions = item.cautions ?? [];
 
     return `${index + 1}. ${item.match.brand ?? "Unknown brand"} - ${
       item.match.name ?? item.query
@@ -511,7 +552,11 @@ Calcium/Phosphorus: ${formatNutritionValue(
       nutrition.calcium_percent,
       "%"
     )} / ${formatNutritionValue(nutrition.phosphorus_percent, "%")}
-Missing fields: ${missing.length > 0 ? missing.join(", ") : "none"}`;
+Missing fields: ${missing.length > 0 ? missing.join(", ") : "none"}${
+      cautions.length > 0
+        ? `\nCautions:\n${cautions.map((item) => `- ${item}`).join("\n")}`
+        : ""
+    }`;
   });
 
   const summary = result.summary
@@ -527,6 +572,29 @@ Quick read:
   return `Food comparison:
 
 ${rows.join("\n\n")}${summary}`;
+}
+
+function formatPetIntakeSummary(pet: PetIntake) {
+  const details = [
+    `Pet: ${pet.name ?? "pet"} (${pet.species ?? "unknown species"})`,
+    `Weight/age: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} years`,
+    `Activity: ${pet.activityLevel ?? "unknown"}`,
+    `Neutered: ${
+      pet.neutered === undefined ? "unknown" : pet.neutered ? "yes" : "no"
+    }`,
+    `Goal: ${getWeightGoalLabel(pet.weightGoal)}`,
+    `Current food: ${pet.currentFoodName ?? "not provided"}`,
+  ];
+
+  if (pet.healthIssues.length > 0) {
+    details.push(`Health notes: ${pet.healthIssues.join(", ")}`);
+  }
+
+  if (pet.allergies.length > 0) {
+    details.push(`Allergies/sensitivities: ${pet.allergies.join(", ")}`);
+  }
+
+  return details.join("\n");
 }
 
 function buildGuardrailText(pet: PetIntake) {
@@ -1229,7 +1297,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "You can save this analysis to your personal profile."
+          "Next step: save this analysis if it looks right. If the food match was uncertain, send the exact bag name or a label photo before relying on formula-specific advice."
         )
       );
     } catch (error) {
@@ -1253,6 +1321,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (compareQueries.length >= 2 && step !== "analysis") {
       await runFoodComparison(compareQueries);
+      return;
+    }
+
+    const standaloneReply = getStandaloneNutritionReply(text);
+
+    if (standaloneReply && step !== "analysis") {
+      addMessages(createMessage("bot", standaloneReply));
       return;
     }
 
@@ -1473,6 +1548,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             : weightGoal === "loss"
               ? "Got it. The goal is weight loss. I will be more careful with calories."
               : "Got it. The goal is weight gain. I will account for higher energy needs."
+        )
+      );
+
+      addMessages(
+        createMessage(
+          "bot",
+          `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet)}`
         )
       );
 

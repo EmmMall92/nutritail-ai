@@ -63,6 +63,37 @@ function getFoodScoreLabel(score?: number | null) {
   return "Low match";
 }
 
+function getReportConfidence(score?: number | null) {
+  if (score === null || score === undefined || !Number.isFinite(score)) {
+    return "General guidance only";
+  }
+
+  if (score >= 80) return "High confidence";
+  if (score >= 60) return "Moderate confidence";
+  return "Needs review";
+}
+
+function getReportNextSteps(analysis?: AnalysisHistoryItem | null) {
+  const steps = [
+    "Use the daily calorie target as the starting point and monitor body condition.",
+    "Make food changes gradually over several days unless your veterinarian says otherwise.",
+  ];
+
+  if (!analysis?.matched_food_name) {
+    steps.push("Add the exact food name or label photo before relying on formula-specific advice.");
+  }
+
+  if (!analysis?.feeding_grams_per_day) {
+    steps.push("Confirm kcal per 100g to calculate a precise gram-per-day feeding amount.");
+  }
+
+  if ((analysis?.food_score ?? 0) < 60) {
+    steps.push("Review the food choice if there are health issues, allergies, or weight concerns.");
+  }
+
+  return steps;
+}
+
 function ReportCard({
   label,
   value,
@@ -300,6 +331,17 @@ export default function PrintablePetReportPage() {
                   </div>
                 )}
 
+                <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
+                  <p className="text-gray-500">Report confidence</p>
+                  <p className="mt-1 font-semibold text-black">
+                    {getReportConfidence(latestAnalysis.food_score)}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Confidence depends on pet context, food match quality, and
+                    available nutrition data.
+                  </p>
+                </div>
+
                 <p className="text-xs text-gray-500">
                   Analysis date: {formatDate(latestAnalysis.created_at)}
                 </p>
@@ -331,6 +373,25 @@ export default function PrintablePetReportPage() {
               </div>
             </div>
           )}
+
+        {latestAnalysis && (
+          <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 print:border-gray-300">
+            <h2 className="text-xl font-semibold text-black">
+              Practical Next Steps
+            </h2>
+
+            <div className="mt-4 space-y-3">
+              {getReportNextSteps(latestAnalysis).map((item, index) => (
+                <div
+                  key={`${item}-${index}`}
+                  className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-black print:border-gray-300"
+                >
+                  {index + 1}. {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {pet.analyses && pet.analyses.length > 1 && (
           <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 print:border-gray-300">

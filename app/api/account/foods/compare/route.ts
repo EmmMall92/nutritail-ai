@@ -75,6 +75,28 @@ function getDataConfidence(food: FoodMatchRecord) {
   return "low";
 }
 
+function getFoodLabel(food: FoodMatchRecord) {
+  return [food.brand, food.name].map((value) => String(value ?? "").trim()).filter(Boolean).join(" - ");
+}
+
+function getComparisonCautions(nutrition: ReturnType<typeof getNutrition>) {
+  const cautions: string[] = [];
+
+  if (nutrition.kcal_per_100g === null) {
+    cautions.push("Missing calories, so portion comparison is limited.");
+  }
+
+  if (nutrition.calcium_percent === null || nutrition.phosphorus_percent === null) {
+    cautions.push("Missing calcium/phosphorus, so growth or kidney-sensitive comparisons need caution.");
+  }
+
+  if (nutrition.sodium_percent === null || nutrition.magnesium_percent === null) {
+    cautions.push("Missing sodium or magnesium, so urinary/mineral review is incomplete.");
+  }
+
+  return cautions;
+}
+
 function buildComparisonSummary(
   matches: Array<{
     query: string;
@@ -96,19 +118,19 @@ function buildComparisonSummary(
         (a, b) =>
           (a.nutrition.kcal_per_100g ?? Infinity) -
           (b.nutrition.kcal_per_100g ?? Infinity)
-      )[0]?.query ?? null,
+      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
     highest_protein:
       withProtein.sort(
         (a, b) =>
           (b.nutrition.protein_percent ?? -Infinity) -
           (a.nutrition.protein_percent ?? -Infinity)
-      )[0]?.query ?? null,
+      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
     highest_fiber:
       withFiber.sort(
         (a, b) =>
           (b.nutrition.fiber_percent ?? -Infinity) -
           (a.nutrition.fiber_percent ?? -Infinity)
-      )[0]?.query ?? null,
+      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
     note:
       "Use this as a structured comparison aid; medical-condition recommendations still need pet context and safety checks.",
   };
@@ -188,6 +210,7 @@ export async function POST(request: Request) {
         data_confidence: getDataConfidence(best.food),
         nutrition,
         missing_nutrition_fields: getMissingNutritionFields(nutrition),
+        cautions: getComparisonCautions(nutrition),
         candidates: scored.slice(0, 3).map((item) => ({
           id: item.food.id ?? null,
           brand: item.food.brand ?? null,

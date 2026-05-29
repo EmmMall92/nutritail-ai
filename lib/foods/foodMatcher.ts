@@ -20,7 +20,10 @@ const GENERIC_QUERY_WORDS = new Set([
   "food",
   "formula",
   "recipe",
+  "shop",
+  "store",
   "wet",
+  "zooplus",
 ]);
 
 const QUERY_ALIASES: Array<[RegExp, string]> = [
@@ -30,10 +33,20 @@ const QUERY_ALIASES: Array<[RegExp, string]> = [
   [/\broyal\s+kanin\b/g, "royal canin"],
   [/\broial\s+(canin|kanin)\b/g, "royal canin"],
   [/\broyalcanin\b/g, "royal canin"],
+  [/\broyal\s+mini\b/g, "royal canin mini"],
+  [/\bjoserra\b/g, "josera"],
+  [/\bjossera\b/g, "josera"],
+  [/\bfarmina\s+nd\b/g, "farmina n d"],
   [/\bproplan\b/g, "pro plan"],
+  [/\bpro\s*plan\b/g, "pro plan"],
   [/\bn\s*&\s*d\b/g, "n d"],
   [/\bn\s+and\s+d\b/g, "n d"],
+  [/\bn-d\b/g, "n d"],
   [/\bnd\b/g, "n d"],
+  [/\bmini\b/g, "small mini"],
+  [/\bmaxi\b/g, "large maxi"],
+  [/\bjunior\b/g, "puppy junior"],
+  [/\bpup\b/g, "puppy"],
 ];
 
 export function normalizeFoodSearchText(value: string) {
@@ -60,6 +73,50 @@ export function getFoodSearchWords(query: string) {
     .filter((word) => word.length >= 3 && !GENERIC_QUERY_WORDS.has(word));
 }
 
+function getEditDistance(a: string, b: string) {
+  if (a === b) return 0;
+  if (!a) return b.length;
+  if (!b) return a.length;
+
+  const previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  const current = Array.from({ length: b.length + 1 }, () => 0);
+
+  for (let i = 1; i <= a.length; i += 1) {
+    current[0] = i;
+
+    for (let j = 1; j <= b.length; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      current[j] = Math.min(
+        current[j - 1] + 1,
+        previous[j] + 1,
+        previous[j - 1] + cost
+      );
+    }
+
+    for (let j = 0; j <= b.length; j += 1) {
+      previous[j] = current[j];
+    }
+  }
+
+  return previous[b.length];
+}
+
+function getWordScore(queryWord: string, foodWords: string[]) {
+  if (foodWords.includes(queryWord)) return 12;
+  if (foodWords.some((word) => word.includes(queryWord))) return 10;
+  if (foodWords.some((word) => queryWord.includes(word) && word.length >= 4)) {
+    return 8;
+  }
+
+  const closeWord = foodWords.find((word) => {
+    if (Math.min(word.length, queryWord.length) < 5) return false;
+    const distance = getEditDistance(word, queryWord);
+    return distance <= (Math.max(word.length, queryWord.length) >= 8 ? 2 : 1);
+  });
+
+  return closeWord ? 6 : 0;
+}
+
 export function scoreFoodMatch(food: FoodMatchRecord, query: string) {
   const normalizedQuery = normalizeFoodSearchText(query);
 
@@ -69,6 +126,7 @@ export function scoreFoodMatch(food: FoodMatchRecord, query: string) {
   const brand = normalizeFoodSearchText(String(food.brand ?? ""));
   const name = normalizeFoodSearchText(String(food.name ?? ""));
   const fullName = `${brand} ${name}`.trim();
+  const foodWords = getFoodSearchWords(fullName);
 
   let score = 0;
 
@@ -77,11 +135,14 @@ export function scoreFoodMatch(food: FoodMatchRecord, query: string) {
   if (normalizedQuery.includes(name) && name) score += 50;
 
   for (const word of searchWords) {
-    if (fullName.includes(word)) score += 10;
+    score += getWordScore(word, foodWords);
   }
 
   if (brand && normalizedQuery.startsWith(brand)) score += 10;
   if (name && normalizedQuery.endsWith(name)) score += 10;
+  if (searchWords.length > 0 && searchWords.every((word) => fullName.includes(word))) {
+    score += 12;
+  }
 
   return score;
 }
