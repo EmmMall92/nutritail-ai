@@ -48,6 +48,7 @@ export default function AdminFoodBackfillPage() {
   const [brandFilter, setBrandFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [sourceHint, setSourceHint] = useState("");
+  const [copiedItem, setCopiedItem] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -162,6 +163,39 @@ export default function AdminFoodBackfillPage() {
         .includes(normalizedSearch);
     });
   }, [brandFilter, priorityFilter, queue, searchTerm]);
+
+  async function copyRequestText(item: BackfillQueueItem) {
+    if (!item.requestText) return;
+
+    try {
+      await navigator.clipboard.writeText(item.requestText);
+      setCopiedItem(item.label);
+      window.setTimeout(() => setCopiedItem(""), 2000);
+    } catch (err) {
+      console.error(err);
+      setError("Could not copy request text. Select and copy it manually.");
+    }
+  }
+
+  function photoChecklist(item: BackfillQueueItem) {
+    const checklist = [
+      "front",
+      "barcode",
+      "ingredients",
+      "analysis",
+      "weight",
+      "market",
+    ];
+
+    if (
+      item.missing.includes("kcal_per_100g") ||
+      item.missing.some((field) => field.includes("calorie"))
+    ) {
+      checklist.splice(4, 0, "calories");
+    }
+
+    return checklist;
+  }
 
   return (
     <section className="space-y-6">
@@ -365,14 +399,38 @@ export default function AdminFoodBackfillPage() {
                     )}
                     {item.requestText && (
                       <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50 p-3">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-blue-800">
-                          Request text
-                        </p>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-blue-800">
+                            Request text
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => copyRequestText(item)}
+                            className="rounded-lg border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-800 transition hover:bg-blue-100"
+                          >
+                            {copiedItem === item.label ? "Copied" : "Copy"}
+                          </button>
+                        </div>
                         <p className="mt-1 text-sm text-blue-900">
                           {item.requestText}
                         </p>
                       </div>
                     )}
+                    <div className="mt-3 rounded-lg border border-gray-200 bg-white p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        Photo checklist
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {photoChecklist(item).map((panel) => (
+                          <span
+                            key={panel}
+                            className="rounded-full border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-700"
+                          >
+                            {panel}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   <div className="max-w-xl text-sm text-gray-600">
                     {item.notes}
