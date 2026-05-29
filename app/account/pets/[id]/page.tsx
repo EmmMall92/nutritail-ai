@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type AnalysisHistoryItem = {
@@ -86,6 +86,7 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [data, setData] = useState<PetDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +102,7 @@ export default function AccountPetDetailPage() {
         const { data: sessionData } = await supabase.auth.getSession();
 
         if (!sessionData.session?.user) {
-          router.replace("/login");
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           return;
         }
 
@@ -133,7 +134,7 @@ export default function AccountPetDetailPage() {
     if (params?.id) {
       loadPet();
     }
-  }, [params, router]);
+  }, [params, pathname, router]);
 
   if (isLoading) {
     return (

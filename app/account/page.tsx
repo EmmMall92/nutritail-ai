@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Customer = {
@@ -50,6 +50,7 @@ function hasReadyReport(pet: AccountPet) {
 
 export default function AccountPage() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [pets, setPets] = useState<AccountPet[]>([]);
@@ -64,7 +65,7 @@ export default function AccountPage() {
         const { data } = await supabase.auth.getSession();
 
         if (!data.session?.user) {
-          router.replace("/login");
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           return;
         }
 
@@ -115,7 +116,7 @@ export default function AccountPage() {
     }
 
     loadAccount();
-  }, [router]);
+  }, [pathname, router]);
 
   if (isLoading) {
     return (

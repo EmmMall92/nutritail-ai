@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Customer = {
@@ -19,6 +19,7 @@ type Customer = {
 
 export default function AccountProfilePage() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [authUserId, setAuthUserId] = useState("");
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -45,7 +46,7 @@ export default function AccountProfilePage() {
         const { data } = await supabase.auth.getSession();
 
         if (!data.session?.user) {
-          router.replace("/login");
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           return;
         }
 
@@ -88,7 +89,7 @@ export default function AccountProfilePage() {
     }
 
     loadProfile();
-  }, [router]);
+  }, [pathname, router]);
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

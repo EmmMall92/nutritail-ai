@@ -4,7 +4,7 @@ import { generateIngredientInsights } from "@/lib/nutrition/ingredientInsights";
 import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
 import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFeedingGrams } from "@/lib/feedingCalculator";
 import { buildFoodExplanation } from "@/lib/foodExplanation";
@@ -771,6 +771,7 @@ function getSignalBadgeClasses(
 
 export default function AccountChatbotPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -795,6 +796,7 @@ export default function AccountChatbotPage() {
   const [showSave, setShowSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackStatus, setFeedbackStatus] = useState("");
+  const [savedPetId, setSavedPetId] = useState<string | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
@@ -914,7 +916,7 @@ export default function AccountChatbotPage() {
         const { data } = await supabase.auth.getSession();
 
         if (!data.session?.user) {
-          router.replace("/login");
+          router.replace(`/login?next=${encodeURIComponent(pathname)}`);
           return;
         }
 
@@ -961,7 +963,7 @@ export default function AccountChatbotPage() {
     }
 
     loadSavedPets();
-  }, [router]);
+  }, [pathname, router]);
 
   function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
@@ -1653,7 +1655,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const { data } = await supabase.auth.getSession();
 
       if (!data.session?.user) {
-        router.replace("/login");
+        router.replace(`/login?next=${encodeURIComponent(pathname)}`);
         return;
       }
 
@@ -1694,6 +1696,7 @@ Next actions:
         )
       );
 
+      setSavedPetId(String(result.pet.id));
       setShowSave(false);
     } catch (error) {
       console.error(error);
@@ -1720,6 +1723,7 @@ Next actions:
     setIsSaving(false);
     setAnalysisMetadata(null);
     setFeedbackStatus("");
+    setSavedPetId(null);
 
     setMessages([
       createMessage(
@@ -1960,6 +1964,39 @@ Next actions:
             >
               {isSaving ? "Saving..." : "Save to my account"}
             </button>
+          </div>
+        )}
+
+        {savedPetId && (
+          <div className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4">
+            <div>
+              <p className="font-semibold text-black">Analysis saved</p>
+              <p className="mt-1 text-sm text-gray-700">
+                Your pet profile and report are ready.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <a
+                href={`/account/pets/${savedPetId}`}
+                className="rounded-xl border border-green-300 bg-white px-4 py-3 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+              >
+                Open profile
+              </a>
+              <a
+                href={`/print/pet-report/${savedPetId}`}
+                className="rounded-xl bg-green-600 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-green-700"
+              >
+                Open report
+              </a>
+              <button
+                type="button"
+                onClick={restartChat}
+                className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                New analysis
+              </button>
+            </div>
           </div>
         )}
 
