@@ -41,6 +41,48 @@ function hasValidFoodScore(score?: number | null) {
   return typeof score === "number" && Number.isFinite(score);
 }
 
+function getFoodScoreLabel(score?: number | null) {
+  if (!hasValidFoodScore(score)) return "Not scored";
+  const numericScore = Number(score);
+  if (numericScore >= 80) return "Strong match";
+  if (numericScore >= 60) return "Good match";
+  if (numericScore >= 40) return "Needs review";
+  return "Low match";
+}
+
+function getReportReadiness(item?: AnalysisHistoryItem) {
+  if (!item) return "No report yet";
+  if (item.matched_food_name && item.feeding_grams_per_day) {
+    return "Ready to share";
+  }
+  if (item.matched_food_name || item.feeding_grams_per_day) {
+    return "Useful with notes";
+  }
+  return "General guidance only";
+}
+
+function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
+  const steps = [];
+
+  if (!item?.matched_food_name) {
+    steps.push("Add or confirm the exact food name for formula-specific advice.");
+  }
+
+  if (!item?.feeding_grams_per_day) {
+    steps.push("Confirm kcal per 100g to calculate grams per day.");
+  }
+
+  if (!hasValidFoodScore(item?.food_score) || (item?.food_score ?? 0) < 60) {
+    steps.push("Review the food choice if symptoms, allergies, or weight goals matter.");
+  }
+
+  if (steps.length === 0) {
+    steps.push("Use the printable report for sharing or saving this analysis.");
+  }
+
+  return steps;
+}
+
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -157,7 +199,7 @@ export default function AccountPetDetailPage() {
               <>
                 <Link
                   href={`/print/pet-report/${pet.id}`}
-                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                  className="rounded-xl bg-green-600 px-4 py-2 text-sm text-white transition hover:bg-green-700"
                 >
                   Print Report
                 </Link>
@@ -222,45 +264,96 @@ export default function AccountPetDetailPage() {
 
         {latest && (
           <div className="rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-black">Latest analysis</h2>
-            <p className="mt-3 text-black">
-              RER: <span className="font-semibold">{latest.rer} kcal</span>
-            </p>
-            <p className="mt-1 text-black">
-              MER: <span className="font-semibold">{latest.mer} kcal</span>
-            </p>
-            {hasValidFoodScore(latest.food_score) && (
-          <p className="mt-1 text-black">
-            Food score:{" "}
-            <span className="font-semibold">{latest.food_score}/100</span>
-          </p>
-        )}
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-black">
+                  Latest analysis
+                </h2>
+                <p className="mt-1 text-sm text-gray-700">
+                  {new Date(latest.createdAt).toLocaleString()}
+                </p>
+              </div>
 
-        {latest.feeding_grams_per_day && (
-          <p className="mt-1 text-black">
-            Feeding amount:{" "}
-            <span className="font-semibold">
-              {latest.feeding_grams_per_day}g/day
-            </span>
-          </p>
-        )}
+              <span className="rounded-full border border-green-300 bg-white px-3 py-1 text-sm font-semibold text-green-800">
+                {getReportReadiness(latest)}
+              </span>
+            </div>
 
-        {latest.weight_goal && (
-          <p className="mt-1 text-black">
-            Weight goal:{" "}
-            <span className="font-semibold">{latest.weight_goal}</span>
-          </p>
-        )}
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-sm text-gray-600">RER</p>
+                <p className="mt-1 text-xl font-semibold text-black">
+                  {latest.rer} kcal
+                </p>
+              </div>
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-sm text-gray-600">MER</p>
+                <p className="mt-1 text-xl font-semibold text-black">
+                  {latest.mer} kcal
+                </p>
+              </div>
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-sm text-gray-600">Food score</p>
+                <p className="mt-1 text-xl font-semibold text-black">
+                  {hasValidFoodScore(latest.food_score)
+                    ? `${latest.food_score}/100`
+                    : "-"}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {getFoodScoreLabel(latest.food_score)}
+                </p>
+              </div>
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-sm text-gray-600">Feeding amount</p>
+                <p className="mt-1 text-xl font-semibold text-black">
+                  {latest.feeding_grams_per_day
+                    ? `${latest.feeding_grams_per_day}g/day`
+                    : "-"}
+                </p>
+              </div>
+            </div>
 
-        {latest.matched_food_name && (
-          <p className="mt-1 text-black">
-            Matched food:{" "}
-            <span className="font-semibold">{latest.matched_food_name}</span>
-          </p>
-        )}
-            <p className="mt-1 text-sm text-gray-700">
-              {new Date(latest.createdAt).toLocaleString()}
-            </p>
+            <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="rounded-xl border border-green-200 bg-white p-4">
+                <p className="text-sm font-semibold text-black">Food context</p>
+                <p className="mt-2 text-sm text-gray-700">
+                  Matched food:{" "}
+                  <span className="font-semibold">
+                    {latest.matched_food_name ?? "No matched food"}
+                  </span>
+                </p>
+                <p className="mt-1 text-sm text-gray-700">
+                  Weight goal:{" "}
+                  <span className="font-semibold">
+                    {latest.weight_goal ?? "-"}
+                  </span>
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-green-200 bg-white p-4">
+                <p className="text-sm font-semibold text-black">Next steps</p>
+                <ul className="mt-2 space-y-2 text-sm text-gray-700">
+                  {getLatestAnalysisNextSteps(latest).map((step) => (
+                    <li key={step}>- {step}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <Link
+                href={`/print/pet-report/${pet.id}`}
+                className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
+              >
+                Open printable report
+              </Link>
+              <Link
+                href={`/print/pet-timeline/${pet.id}`}
+                className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+              >
+                Open timeline
+              </Link>
+            </div>
           </div>
         )}
 
