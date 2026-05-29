@@ -18,7 +18,8 @@
     "review:matcher": "node scripts/data/review/review-food-matcher-fixtures.mjs",
     "review:chatbot": "node scripts/data/review/review-chatbot-golden-cases.mjs",
     "review:chatbot:responses": "node scripts/data/review/review-chatbot-response-contracts.mjs",
-    "review:backfill": "node scripts/data/review/review-food-backfill-priorities.mjs"
+    "review:backfill": "node scripts/data/review/review-food-backfill-priorities.mjs",
+    "plan:food-evidence": "node scripts/data/review/plan-food-evidence-collection.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
