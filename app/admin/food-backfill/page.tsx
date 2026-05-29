@@ -18,6 +18,17 @@ type BackfillQueueItem = {
   requestText?: string;
 };
 
+type EvidenceBatch = {
+  priority: "high" | "medium" | "low";
+  brand: string;
+  evidence_needed: string;
+  rows: number;
+  formulas: string[];
+  missing_fields: string[];
+  next_action: string;
+  acceptance_check: string;
+};
+
 function priorityClass(priority: string) {
   if (priority === "high") return "border-red-200 bg-red-50 text-red-700";
   if (priority === "medium") {
@@ -42,6 +53,7 @@ function sortedCounts(counts: Record<string, number>) {
 
 export default function AdminFoodBackfillPage() {
   const [queue, setQueue] = useState<BackfillQueueItem[]>([]);
+  const [evidenceBatches, setEvidenceBatches] = useState<EvidenceBatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -82,6 +94,7 @@ export default function AdminFoodBackfillPage() {
         }
 
         setQueue(result.queue ?? []);
+        setEvidenceBatches(result.evidenceBatches ?? []);
       } catch (err) {
         console.error(err);
         setError(
@@ -296,6 +309,45 @@ export default function AdminFoodBackfillPage() {
             </div>
           </div>
         </div>
+
+        {evidenceBatches.length > 0 && (
+          <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-semibold text-black">
+              Collection batches
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              {evidenceBatches.map((batch) => (
+                <div
+                  key={`${batch.priority}-${batch.brand}-${batch.evidence_needed}`}
+                  className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`rounded-full border px-2 py-1 text-xs font-semibold ${priorityClass(
+                        batch.priority
+                      )}`}
+                    >
+                      {batch.priority}
+                    </span>
+                    <p className="font-semibold text-black">{batch.brand}</p>
+                    <span className="text-sm text-gray-600">
+                      {batch.rows} rows
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-700">
+                    {batch.next_action}
+                  </p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Missing: {batch.missing_fields.join(", ")}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Evidence: {batch.evidence_needed}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-semibold text-black">Review filters</p>
