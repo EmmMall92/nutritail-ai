@@ -38,6 +38,31 @@ function hasValidFoodScore(score?: number | null) {
   return typeof score === "number" && Number.isFinite(score);
 }
 
+function getReportReadiness(pet: AccountPet) {
+  const latest = pet.analysisHistory?.[0];
+
+  if (!latest) return "Needs analysis";
+  if (latest.matched_food_name && latest.feeding_grams_per_day) {
+    return "Report ready";
+  }
+  if (latest.matched_food_name || latest.feeding_grams_per_day) {
+    return "Report with notes";
+  }
+  return "General report";
+}
+
+function getReadinessClass(readiness: string) {
+  if (readiness === "Report ready") {
+    return "border-green-200 bg-green-50 text-green-800";
+  }
+
+  if (readiness === "Needs analysis") {
+    return "border-amber-200 bg-amber-50 text-amber-800";
+  }
+
+  return "border-blue-200 bg-blue-50 text-blue-800";
+}
+
 export default function AccountPetsPage() {
   const router = useRouter();
 
@@ -111,6 +136,46 @@ export default function AccountPetsPage() {
         </div>
       )}
 
+      {!isLoading && pets.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-gray-500">Saved pets</p>
+            <p className="mt-2 text-3xl font-bold text-black">
+              {pets.length}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-gray-500">Reports ready</p>
+            <p className="mt-2 text-3xl font-bold text-black">
+              {
+                pets.filter(
+                  (pet) => getReportReadiness(pet) === "Report ready"
+                ).length
+              }
+            </p>
+          </div>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-gray-500">Need analysis</p>
+            <p className="mt-2 text-3xl font-bold text-black">
+              {
+                pets.filter(
+                  (pet) => getReportReadiness(pet) === "Needs analysis"
+                ).length
+              }
+            </p>
+          </div>
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-gray-500">Total analyses</p>
+            <p className="mt-2 text-3xl font-bold text-black">
+              {pets.reduce(
+                (count, pet) => count + (pet.analysisHistory?.length ?? 0),
+                0
+              )}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {isLoading ? (
           <p className="text-sm text-gray-600">Loading pets...</p>
@@ -142,6 +207,7 @@ export default function AccountPetsPage() {
           <div className="space-y-4">
             {pets.map((pet) => {
               const latest = pet.analysisHistory?.[0];
+              const readiness = getReportReadiness(pet);
 
               return (
                 <div
@@ -150,10 +216,19 @@ export default function AccountPetsPage() {
                 >
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0">
-                      <p className="font-semibold text-black">
-                        {pet.name}
-                        {pet.breed ? ` - ${pet.breed}` : ""}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-semibold text-black">
+                          {pet.name}
+                          {pet.breed ? ` - ${pet.breed}` : ""}
+                        </p>
+                        <span
+                          className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${getReadinessClass(
+                            readiness
+                          )}`}
+                        >
+                          {readiness}
+                        </span>
+                      </div>
 
                       <p className="mt-1 text-sm text-gray-600">
                         {pet.species} - age {pet.age} - weight {pet.weight} kg -{" "}
@@ -173,6 +248,16 @@ export default function AccountPetsPage() {
                                 Score {latest.food_score}/100
                               </span>
                             )}
+                          {latest.feeding_grams_per_day && (
+                            <span className="rounded-full bg-white px-3 py-1">
+                              {latest.feeding_grams_per_day}g/day
+                            </span>
+                          )}
+                          {latest.matched_food_name && (
+                            <span className="max-w-full rounded-full bg-white px-3 py-1">
+                              Food: {latest.matched_food_name}
+                            </span>
+                          )}
                           <span className="rounded-full bg-white px-3 py-1">
                             {formatDate(latest.createdAt)}
                           </span>
