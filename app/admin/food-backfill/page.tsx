@@ -26,6 +26,20 @@ function priorityClass(priority: string) {
   return "border-gray-200 bg-gray-50 text-gray-700";
 }
 
+function countValues(values: string[]) {
+  return values.reduce<Record<string, number>>((counts, value) => {
+    counts[value] = (counts[value] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+function sortedCounts(counts: Record<string, number>) {
+  return Object.entries(counts).sort(
+    ([labelA, countA], [labelB, countB]) =>
+      countB - countA || labelA.localeCompare(labelB)
+  );
+}
+
 export default function AdminFoodBackfillPage() {
   const [queue, setQueue] = useState<BackfillQueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -104,6 +118,20 @@ export default function AdminFoodBackfillPage() {
         }))
         .sort((a, b) => b.high - a.high || b.count - a.count || a.brand.localeCompare(b.brand)),
     [brands, queue]
+  );
+  const missingFieldCounts = useMemo(
+    () =>
+      sortedCounts(
+        countValues(queue.flatMap((item) => item.missing.filter(Boolean)))
+      ),
+    [queue]
+  );
+  const evidenceCounts = useMemo(
+    () =>
+      sortedCounts(
+        countValues(queue.map((item) => item.evidenceNeeded).filter(Boolean))
+      ),
+    [queue]
   );
   const filteredQueue = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -198,6 +226,44 @@ export default function AdminFoodBackfillPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold text-black">What to collect next</p>
+          <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold uppercase text-gray-500">
+                Missing fields
+              </p>
+              <div className="mt-2 space-y-2">
+                {missingFieldCounts.slice(0, 6).map(([field, count]) => (
+                  <div
+                    key={field}
+                    className="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2 text-sm"
+                  >
+                    <span className="font-medium text-black">{field}</span>
+                    <span className="text-gray-600">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase text-gray-500">
+                Evidence needed
+              </p>
+              <div className="mt-2 space-y-2">
+                {evidenceCounts.map(([evidence, count]) => (
+                  <div
+                    key={evidence}
+                    className="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2 text-sm"
+                  >
+                    <span className="font-medium text-black">{evidence}</span>
+                    <span className="text-gray-600">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-semibold text-black">Review filters</p>
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
             <label className="text-sm text-gray-700">
@@ -242,6 +308,7 @@ export default function AdminFoodBackfillPage() {
             Showing {filteredQueue.length} of {queue.length} queued rows.
           </p>
         </div>
+
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
