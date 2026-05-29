@@ -64,6 +64,9 @@ export default function AdminChatFeedbackPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
 
   useEffect(() => {
     async function loadLogs() {
@@ -99,6 +102,46 @@ export default function AdminChatFeedbackPage() {
     () => logs.filter((log) => log.entityType === "chatbot_feedback"),
     [logs]
   );
+  const feedbackTypes = useMemo(
+    () => [...new Set(feedbackLogs.map(getFeedbackType))].sort(),
+    [feedbackLogs]
+  );
+  const feedbackRatings = useMemo(
+    () =>
+      [
+        ...new Set(
+          feedbackLogs.map((log) => String(log.metadata?.rating ?? "unknown"))
+        ),
+      ].sort(),
+    [feedbackLogs]
+  );
+  const filteredFeedbackLogs = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return feedbackLogs.filter((log) => {
+      const type = getFeedbackType(log);
+      const rating = String(log.metadata?.rating ?? "unknown");
+      const context = getFeedbackContext(log);
+      const searchable = [
+        log.message,
+        type,
+        rating,
+        context.currentFoodName,
+        context.weightGoal,
+        context.petSpecies,
+        ...(Array.isArray(context.healthIssues) ? context.healthIssues : []),
+        ...(Array.isArray(context.allergies) ? context.allergies : []),
+      ]
+        .map((value) => String(value ?? "").toLowerCase())
+        .join(" ");
+
+      return (
+        (typeFilter === "all" || type === typeFilter) &&
+        (ratingFilter === "all" || rating === ratingFilter) &&
+        (!normalizedSearch || searchable.includes(normalizedSearch))
+      );
+    });
+  }, [feedbackLogs, ratingFilter, search, typeFilter]);
   const failedMatches = feedbackLogs.filter(
     (log) => getFeedbackType(log) === "failed_food_match"
   );
@@ -326,6 +369,49 @@ export default function AdminChatFeedbackPage() {
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-5">
+          <h3 className="text-lg font-semibold text-black">
+            Feedback Log
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">
+            Search and filter raw chatbot feedback events before deciding what
+            to improve next.
+          </p>
+        </div>
+
+        <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px_180px]">
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search food, goal, message..."
+            className="rounded-xl border border-gray-300 px-3 py-2 text-sm text-black"
+          />
+          <select
+            value={typeFilter}
+            onChange={(event) => setTypeFilter(event.target.value)}
+            className="rounded-xl border border-gray-300 px-3 py-2 text-sm text-black"
+          >
+            <option value="all">All types</option>
+            {feedbackTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+          <select
+            value={ratingFilter}
+            onChange={(event) => setRatingFilter(event.target.value)}
+            className="rounded-xl border border-gray-300 px-3 py-2 text-sm text-black"
+          >
+            <option value="all">All ratings</option>
+            {feedbackRatings.map((rating) => (
+              <option key={rating} value={rating}>
+                {rating}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {error && (
           <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
@@ -338,9 +424,17 @@ export default function AdminChatFeedbackPage() {
           <p className="text-sm text-gray-600">
             No chatbot feedback has been recorded yet.
           </p>
+        ) : filteredFeedbackLogs.length === 0 ? (
+          <p className="text-sm text-gray-600">
+            No feedback matches the current filters.
+          </p>
         ) : (
           <div className="space-y-4">
-            {feedbackLogs.map((log) => (
+            <p className="text-sm text-gray-600">
+              Showing {filteredFeedbackLogs.length} of {feedbackLogs.length}{" "}
+              feedback events.
+            </p>
+            {filteredFeedbackLogs.map((log) => (
               <div
                 key={log.id}
                 className="rounded-xl border border-gray-200 bg-gray-50 p-4"
