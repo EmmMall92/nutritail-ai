@@ -75,6 +75,12 @@ export default function FoodV2GuidePage() {
           >
             Open Review
           </Link>
+          <Link
+            href="/admin/foods/v2-live-qa"
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+          >
+            Live QA Checklist
+          </Link>
         </div>
       </div>
 
