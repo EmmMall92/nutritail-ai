@@ -203,13 +203,13 @@ export function normalizeFoodV2RawRow(
   const medicalTags = [
     ...parseStringList(raw.medical_tags),
     ...normalizeMedicalTags(
-      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""}`
+      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.medical_tags ?? ""} ${raw.commercial_tags ?? ""}`
     ),
   ];
   const commercialTags = [
     ...parseStringList(raw.commercial_tags),
     ...normalizeCommercialTags(
-      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""}`
+      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""} ${raw.ingredient_text ?? ""} ${raw.ingredients ?? ""}`
     ),
   ];
   const formula_key =
