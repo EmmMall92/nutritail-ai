@@ -18,6 +18,7 @@ export type FoodV2SearchResult = {
   life_stage: string;
   dog_size: string | null;
   formula_key: string;
+  ingredients: string[];
   data_quality_status: string;
   source_priority: string;
   data_source_url: string | null;
@@ -212,6 +213,7 @@ export async function searchFoodProductsV2({
       life_stage: product.life_stage,
       dog_size: product.dog_size,
       formula_key: product.formula_key,
+      ingredients: product.ingredients ?? [],
       data_quality_status: product.data_quality_status,
       source_priority: product.source_priority,
       data_source_url: product.data_source_url,
