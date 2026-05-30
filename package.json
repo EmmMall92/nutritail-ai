@@ -31,6 +31,7 @@
     "extract:orijen-document": "node scripts/data/normalize/extract-orijen-document.mjs",
     "extract:purina-pro-plan-dog-document": "node scripts/data/normalize/extract-purina-pro-plan-dog-document.mjs",
     "extract:purina-cat-chow-document": "node scripts/data/normalize/extract-purina-cat-chow-document.mjs",
+    "extract:ambrosia-document": "node scripts/data/normalize/extract-ambrosia-document.mjs",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
   },
