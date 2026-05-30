@@ -1,6 +1,6 @@
 # Unica Classe Document Extract
 
-Generated: 2026-05-30T16:12:47.385Z
+Generated: 2026-05-30T16:17:52.628Z
 
 ## Summary
 
