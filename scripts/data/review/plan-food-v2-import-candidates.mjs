@@ -5,6 +5,7 @@ const inputs = [
   "data/imports/royal_canin_cat_photo_pilot_v2.csv",
   "data/imports/royal_canin_dog_photo_batch_v2.csv",
   "data/imports/wave1_royal_josera_foods_v2.csv",
+  "data/imports/acana_document_extract_v2.csv",
 ];
 
 const paths = {
