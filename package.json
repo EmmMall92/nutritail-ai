@@ -40,6 +40,7 @@
     "extract:schesir-dry-document": "node scripts/data/normalize/extract-schesir-dry-document.mjs",
     "extract:unica-natura-document": "node scripts/data/normalize/extract-unica-natura-document.mjs",
     "extract:cat-dry-analysis-document": "node scripts/data/normalize/extract-cat-dry-analysis-document.mjs",
+    "extract:vet-eshop-document": "node scripts/data/normalize/extract-vet-eshop-document.mjs",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
   },
