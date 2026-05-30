@@ -28,6 +28,7 @@
     "extract:royal-canin-cat-pilot": "node scripts/data/normalize/extract-royal-canin-cat-photo-pilot.mjs",
     "extract:royal-canin-dog-batch": "node scripts/data/normalize/extract-royal-canin-dog-photo-batch.mjs",
     "extract:acana-document": "node scripts/data/normalize/extract-acana-document.mjs",
+    "extract:orijen-document": "node scripts/data/normalize/extract-orijen-document.mjs",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
   },
