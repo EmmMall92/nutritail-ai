@@ -1,0 +1,59 @@
+{
+  "version": "food_intelligence_v1",
+  "row_grain": "formula",
+  "nutrient_basis": "as_fed",
+  "accepted_source_types": {
+    "official_html": {
+      "source_priority": "official",
+      "default_quality": "verified",
+      "notes": "Manufacturer product page or official brand site."
+    },
+    "official_pdf": {
+      "source_priority": "official",
+      "default_quality": "verified",
+      "notes": "Manufacturer PDF, product sheet, vet sheet, or catalogue."
+    },
+    "manufacturer_response": {
+      "source_priority": "official",
+      "default_quality": "verified",
+      "notes": "Email or support response from manufacturer with traceable date."
+    },
+    "authorized_retailer": {
+      "source_priority": "retailer",
+      "default_quality": "needs_review",
+      "notes": "Retailer/distributor evidence; use for gaps but do not outrank official data."
+    },
+    "pack_photo": {
+      "source_priority": "manual_photo",
+      "default_quality": "needs_review",
+      "notes": "Private label photos from store/customer; requires human review."
+    },
+    "unknown": {
+      "source_priority": "unknown",
+      "default_quality": "unknown",
+      "notes": "Placeholder or unverified source."
+    }
+  },
+  "required_evidence_panels": [
+    "front_of_pack",
+    "barcode_or_ean",
+    "ingredients_or_composition",
+    "analytical_constituents",
+    "calorie_or_feeding_panel",
+    "pack_weight",
+    "market_or_language_marker"
+  ],
+  "source_notes_required_tokens": [
+    "market=",
+    "basis=as-fed"
+  ],
+  "review_queue_triggers": [
+    "missing_critical_field",
+    "missing_mineral",
+    "conflicting_values",
+    "retailer_only",
+    "photo_only",
+    "duplicate_formula_key",
+    "unclear_formula_identity"
+  ]
+}

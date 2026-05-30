@@ -1,0 +1,57 @@
+{
+  "version": "ingredient_normalization_v1",
+  "normalization_rules": {
+    "case": "lowercase_for_matching",
+    "preserve_original_order": true,
+    "preserve_original_label_text": true,
+    "dedupe_normalized_tokens": true
+  },
+  "categories": {
+    "named_animal_protein": {
+      "signals": ["protein_source", "higher_specificity"],
+      "examples": ["chicken", "turkey", "salmon", "lamb", "duck", "beef", "venison", "rabbit", "cod", "sardine", "tuna", "egg"]
+    },
+    "broad_animal_protein": {
+      "signals": ["protein_source", "lower_specificity"],
+      "examples": ["poultry", "animal protein", "meat and animal derivatives", "dehydrated animal protein"]
+    },
+    "hydrolysed_protein": {
+      "signals": ["protein_source", "digestive_support", "allergy_trial_relevant"],
+      "examples": ["hydrolysed animal protein", "hydrolyzed animal protein", "hydrolysed poultry protein", "hydrolyzed poultry protein"]
+    },
+    "carbohydrate_source": {
+      "signals": ["energy_source"],
+      "examples": ["rice", "maize", "corn", "wheat", "barley", "oats", "potato", "sweet potato", "tapioca", "manioc", "pea"]
+    },
+    "fiber_or_prebiotic": {
+      "signals": ["fiber_source", "digestive_support"],
+      "examples": ["beet pulp", "chicory", "inulin", "fructo-oligosaccharides", "fos", "mannan-oligosaccharides", "mos", "psyllium"]
+    },
+    "fat_source": {
+      "signals": ["fat_source", "palatability", "fatty_acid_support"],
+      "examples": ["animal fat", "chicken fat", "poultry fat", "fish oil", "salmon oil", "borage oil", "algal oil", "soya oil", "sunflower oil"]
+    },
+    "functional_support": {
+      "signals": ["functional_claim_support"],
+      "examples": ["glucosamine", "chondroitin", "l-carnitine", "taurine", "yucca", "marigold", "cranberry"]
+    },
+    "mineral_or_additive": {
+      "signals": ["complete_diet_expected"],
+      "examples": ["minerals", "vitamins", "trace elements", "zinc", "copper", "manganese", "iodine", "selenium"]
+    }
+  },
+  "aliases": {
+    "corn": "maize",
+    "maize flour": "maize",
+    "corn gluten": "maize gluten",
+    "manioc": "tapioca",
+    "chicory pulp": "chicory",
+    "fos": "fructo-oligosaccharides",
+    "fructooligosaccharides": "fructo-oligosaccharides",
+    "mos": "mannan-oligosaccharides",
+    "hydrolyzed animal proteins": "hydrolysed animal proteins",
+    "hydrolyzed poultry protein": "hydrolysed poultry protein",
+    "oils and fats": "fat source",
+    "meat derivatives": "meat and animal derivatives"
+  }
+}
