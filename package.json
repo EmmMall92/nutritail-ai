@@ -32,6 +32,7 @@
     "extract:orijen-document": "node scripts/data/normalize/extract-orijen-document.mjs",
     "extract:purina-pro-plan-dog-document": "node scripts/data/normalize/extract-purina-pro-plan-dog-document.mjs",
     "extract:purina-cat-chow-document": "node scripts/data/normalize/extract-purina-cat-chow-document.mjs",
+    "extract:purina-official-enrichment": "node scripts/data/normalize/extract-purina-official-enrichment.mjs",
     "extract:ambrosia-document": "node scripts/data/normalize/extract-ambrosia-document.mjs",
     "extract:belcando-document": "node scripts/data/normalize/extract-belcando-document.mjs",
     "extract:sams-field-document": "node scripts/data/normalize/extract-sams-field-document.mjs",
