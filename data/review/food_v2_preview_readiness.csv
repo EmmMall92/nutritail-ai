@@ -1,0 +1,4 @@
+dataset,file,total_rows,preview_ready_rows,blocked_rows,top_blockers,recommendation
+Royal Canin cat photo pilot,data/imports/royal_canin_cat_photo_pilot_v2.csv,5,0,5,kcal_per_100g_or_kcal_per_kg:5,Do not import yet; resolve blockers first.
+Royal Canin dog photo batch,data/imports/royal_canin_dog_photo_batch_v2.csv,29,0,29,fat_percent:29|fiber_percent:29|ingredient_text:29|kcal_per_100g_or_kcal_per_kg:29|protein_percent:29,Do not import yet; resolve blockers first.
+Wave 1 Royal/Josera,data/imports/wave1_royal_josera_foods_v2.csv,47,0,47,data_source_url_or_manual_photo:47|kcal_per_100g_or_kcal_per_kg:39|fat_percent:7|fiber_percent:7|protein_percent:7,Do not import yet; resolve blockers first.
