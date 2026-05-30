@@ -24,7 +24,8 @@
     "review:food-intelligence": "node scripts/data/review/review-food-intelligence-foundation.mjs",
     "review:food-documents": "node scripts/data/review/review-food-document-intake.mjs",
     "normalize:wave1-royal-josera": "node scripts/data/normalize/normalize-wave1-royal-josera.mjs",
-    "register:food-evidence": "node scripts/data/review/register-food-evidence-intake.mjs"
+    "register:food-evidence": "node scripts/data/review/register-food-evidence-intake.mjs",
+    "extract:royal-canin-cat-pilot": "node scripts/data/normalize/extract-royal-canin-cat-photo-pilot.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
