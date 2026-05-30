@@ -23,7 +23,8 @@
     "review:food-v2-sample": "node scripts/data/review/review-food-v2-sample-import.mjs",
     "review:food-intelligence": "node scripts/data/review/review-food-intelligence-foundation.mjs",
     "review:food-documents": "node scripts/data/review/review-food-document-intake.mjs",
-    "normalize:wave1-royal-josera": "node scripts/data/normalize/normalize-wave1-royal-josera.mjs"
+    "normalize:wave1-royal-josera": "node scripts/data/normalize/normalize-wave1-royal-josera.mjs",
+    "register:food-evidence": "node scripts/data/review/register-food-evidence-intake.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
