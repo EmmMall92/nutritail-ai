@@ -76,6 +76,10 @@ function CountList({
   );
 }
 
+function downloadTemplate() {
+  window.location.href = "/api/admin/foods/v2-template";
+}
+
 export default function FoodV2PreviewPage() {
   const [preview, setPreview] = useState<FoodV2PreviewResult>(() =>
     previewFoodV2ManualRows(manualRows as unknown[])
@@ -174,6 +178,13 @@ export default function FoodV2PreviewPage() {
                 className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
               >
                 Load Sample
+              </button>
+              <button
+                type="button"
+                onClick={downloadTemplate}
+                className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Download Template
               </button>
               <Link
                 href="/admin/foods"
