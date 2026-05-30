@@ -198,6 +198,12 @@ export default function FoodV2PreviewPage() {
               >
                 Review V2 Data
               </Link>
+              <Link
+                href="/admin/foods/v2-guide"
+                className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Import Guide
+              </Link>
             </div>
           </div>
 
