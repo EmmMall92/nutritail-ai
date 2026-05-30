@@ -12,7 +12,7 @@ type ImportResult = {
   formula_key: string;
   display_name: string;
   success: boolean;
-  action: "inserted_or_updated" | "blocked" | "failed";
+  action: "inserted" | "updated" | "blocked" | "failed";
   error: string | null;
 };
 
@@ -89,6 +89,27 @@ async function writeAuditRows(rows: FoodImportRowV2[]) {
   if (error) throw error;
 }
 
+async function getExistingFormulaKeys(rows: FoodImportRowV2[]) {
+  const formulaKeys = [
+    ...new Set(rows.map((row) => row.food.formula_key).filter(Boolean)),
+  ];
+
+  if (formulaKeys.length === 0) return new Set<string>();
+
+  const { data, error } = await supabaseAdmin
+    .from("food_products_v2")
+    .select("formula_key")
+    .in("formula_key", formulaKeys);
+
+  if (error) throw error;
+
+  return new Set(
+    ((data ?? []) as unknown as Array<{ formula_key: string }>).map(
+      (row) => row.formula_key
+    )
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -106,6 +127,7 @@ export async function POST(request: Request) {
 
     const preview = previewFoodV2ManualRows(rawRows);
     const results: ImportResult[] = [];
+    const existingKeys = await getExistingFormulaKeys(preview.rows);
 
     await writeAuditRows(preview.rows);
 
@@ -202,7 +224,11 @@ export async function POST(request: Request) {
         formula_key: row.food.formula_key,
         display_name: row.food.display_name,
         success: !sourceError,
-        action: sourceError ? "failed" : "inserted_or_updated",
+        action: sourceError
+          ? "failed"
+          : existingKeys.has(row.food.formula_key)
+            ? "updated"
+            : "inserted",
         error: sourceError?.message ?? null,
       });
     }
@@ -211,6 +237,8 @@ export async function POST(request: Request) {
       success: results.every((result) => result.action !== "failed"),
       totalRows: preview.rows.length,
       importedRows: results.filter((result) => result.success).length,
+      insertedRows: results.filter((result) => result.action === "inserted").length,
+      updatedRows: results.filter((result) => result.action === "updated").length,
       skippedRows: results.filter((result) => result.action === "blocked").length,
       failedRows: results.filter((result) => result.action === "failed").length,
       auditRows: preview.rows.length,

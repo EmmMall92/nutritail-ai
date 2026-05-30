@@ -13,6 +13,8 @@ type ImportCommitResult = {
   success: boolean;
   totalRows: number;
   importedRows: number;
+  insertedRows?: number;
+  updatedRows?: number;
   skippedRows: number;
   failedRows?: number;
   auditRows: number;
@@ -23,6 +25,19 @@ type ImportCommitResult = {
     action: string;
     error: string | null;
   }>;
+};
+
+type ExistingFormulaMatch = {
+  formula_key: string;
+  display_name: string;
+  data_quality_status: string;
+  updated_at: string | null;
+};
+
+type ConflictCheckResult = {
+  existing: ExistingFormulaMatch[];
+  existingCount: number;
+  newCount: number;
 };
 
 function SummaryCard({
@@ -86,9 +101,12 @@ export default function FoodV2PreviewPage() {
   );
   const [error, setError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  const [isCheckingConflicts, setIsCheckingConflicts] = useState(false);
   const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
     null
   );
+  const [conflictResult, setConflictResult] =
+    useState<ConflictCheckResult | null>(null);
 
   const rowLimitNotice = useMemo(() => {
     if (preview.rows.length <= 25) return "";
@@ -101,6 +119,7 @@ export default function FoodV2PreviewPage() {
     try {
       setError("");
       setCommitResult(null);
+      setConflictResult(null);
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
     } catch (err) {
@@ -113,7 +132,40 @@ export default function FoodV2PreviewPage() {
   function loadSample() {
     setError("");
     setCommitResult(null);
+    setConflictResult(null);
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
+  }
+
+  async function checkExistingFormulaKeys() {
+    try {
+      setError("");
+      setConflictResult(null);
+      setIsCheckingConflicts(true);
+
+      const response = await fetch("/api/admin/foods/v2-conflicts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          formula_keys: preview.rows.map((row) => row.food.formula_key),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Food V2 conflict check failed.");
+      }
+
+      setConflictResult(result as ConflictCheckResult);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Food V2 conflict check failed."
+      );
+    } finally {
+      setIsCheckingConflicts(false);
+    }
   }
 
   async function commitImportableRows() {
@@ -143,6 +195,12 @@ export default function FoodV2PreviewPage() {
       setIsImporting(false);
     }
   }
+
+  const existingFormulaKeyMap = useMemo(() => {
+    return new Map(
+      (conflictResult?.existing ?? []).map((row) => [row.formula_key, row])
+    );
+  }, [conflictResult]);
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -178,6 +236,14 @@ export default function FoodV2PreviewPage() {
                 className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
               >
                 Load Sample
+              </button>
+              <button
+                type="button"
+                onClick={checkExistingFormulaKeys}
+                disabled={isCheckingConflicts || preview.rows.length === 0}
+                className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-500"
+              >
+                {isCheckingConflicts ? "Checking..." : "Check Existing"}
               </button>
               <button
                 type="button"
@@ -234,7 +300,9 @@ export default function FoodV2PreviewPage() {
           <div className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900">
             <p className="font-semibold">Food V2 import completed.</p>
             <p className="mt-2">
-              Imported {commitResult.importedRows} rows, skipped{" "}
+              Imported {commitResult.importedRows} rows (
+              {commitResult.insertedRows ?? 0} inserted,{" "}
+              {commitResult.updatedRows ?? 0} updated), skipped{" "}
               {commitResult.skippedRows} blocked rows, failed{" "}
               {commitResult.failedRows ?? 0} rows, and wrote{" "}
               {commitResult.auditRows} audit rows.
@@ -251,6 +319,17 @@ export default function FoodV2PreviewPage() {
                   ))}
               </div>
             )}
+          </div>
+        )}
+
+        {conflictResult && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-sm text-blue-900">
+            <p className="font-semibold">Existing key check complete.</p>
+            <p className="mt-2">
+              {conflictResult.newCount} rows look new and{" "}
+              {conflictResult.existingCount} rows already exist in Food V2.
+              Existing rows will be updated if committed.
+            </p>
           </div>
         )}
 
@@ -329,6 +408,19 @@ export default function FoodV2PreviewPage() {
                       >
                         {row.validation.is_importable ? "importable" : "blocked"}
                       </span>
+                      {conflictResult && (
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            existingFormulaKeyMap.has(row.food.formula_key)
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {existingFormulaKeyMap.has(row.food.formula_key)
+                            ? "will update"
+                            : "new row"}
+                        </span>
+                      )}
                     </div>
 
                     <p className="mt-1 text-sm text-gray-600">
