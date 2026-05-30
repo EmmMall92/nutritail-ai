@@ -19,7 +19,8 @@
     "review:chatbot": "node scripts/data/review/review-chatbot-golden-cases.mjs",
     "review:chatbot:responses": "node scripts/data/review/review-chatbot-response-contracts.mjs",
     "review:backfill": "node scripts/data/review/review-food-backfill-priorities.mjs",
-    "plan:food-evidence": "node scripts/data/review/plan-food-evidence-collection.mjs"
+    "plan:food-evidence": "node scripts/data/review/plan-food-evidence-collection.mjs",
+    "review:food-v2-sample": "node scripts/data/review/review-food-v2-sample-import.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
