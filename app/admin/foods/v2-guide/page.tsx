@@ -47,6 +47,11 @@ const statuses = [
   },
 ];
 
+const retrievalArtifacts = [
+  "lib/food-v2/retrieval.ts",
+  "/api/account/foods/v2-search",
+];
+
 export default function FoodV2GuidePage() {
   return (
     <section className="space-y-6">
@@ -142,6 +147,24 @@ export default function FoodV2GuidePage() {
           needs_review until the label is checked against the product name,
           market, and nutrition panel.
         </p>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">Retrieval Layer</h3>
+        <p className="mt-2 text-sm text-gray-600">
+          Food V2 rows are prepared for chatbot/search retrieval through these
+          server-side artifacts.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          {retrievalArtifacts.map((artifact) => (
+            <div
+              key={artifact}
+              className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm font-medium text-black"
+            >
+              {artifact}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
