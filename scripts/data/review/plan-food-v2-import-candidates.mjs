@@ -8,6 +8,7 @@ const inputs = [
   "data/imports/acana_document_extract_v2.csv",
   "data/imports/orijen_document_extract_v2.csv",
   "data/imports/purina_pro_plan_dog_document_extract_v2.csv",
+  "data/imports/purina_cat_chow_document_extract_v2.csv",
 ];
 
 const paths = {
