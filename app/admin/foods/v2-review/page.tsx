@@ -175,6 +175,12 @@ export default function FoodV2ReviewPage() {
           >
             Open Import Preview
           </Link>
+          <Link
+            href="/admin/foods/v2-guide"
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+          >
+            Import Guide
+          </Link>
         </div>
       </div>
 
