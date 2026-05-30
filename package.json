@@ -38,6 +38,7 @@
     "extract:josera-document": "node scripts/data/normalize/extract-josera-document.mjs",
     "extract:aatu-barking-heads-document": "node scripts/data/normalize/extract-aatu-barking-heads-document.mjs",
     "extract:schesir-dry-document": "node scripts/data/normalize/extract-schesir-dry-document.mjs",
+    "extract:unica-natura-document": "node scripts/data/normalize/extract-unica-natura-document.mjs",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
   },
