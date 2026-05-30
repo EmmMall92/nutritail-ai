@@ -22,29 +22,34 @@ Food data quality comes before chatbot UX. Every imported row should be traceabl
    - Official PDFs: original PDF or extracted text in a private evidence folder.
    - Store photos: private Supabase Storage bucket, never public.
 
-2. Register the source.
+2. Add the evidence to document intake.
+   - Use `data/review/food_document_intake.csv`.
+   - Copy the headers from `data/templates/food-document-intake-template.csv`.
+   - Run `npm.cmd run review:food-documents` before extraction.
+
+3. Register the source.
    - Add or update `data/sources/food_source_registry.csv`.
    - Mark source tier clearly: official, authorized, photo, or unknown.
 
-3. Extract raw fields.
+4. Extract raw fields.
    - Preserve original label wording for ingredients and analytical constituents.
    - Do not invent missing nutrients.
    - Keep market and basis in `source_notes`, for example: `market=GR; basis=as-fed; source_tier=official`.
 
-4. Normalize to Food V2.
+5. Normalize to Food V2.
    - Use `data/dictionaries/ingredient_normalization.json` for ingredient signals.
    - Use `data/dictionaries/nutrient_normalization.json` for nutrient names and unit conversions.
    - Write reviewed rows into `data/imports/foods_master.csv` using the exact Food V2 template headers.
 
-5. Preview before commit.
+6. Preview before commit.
    - Upload/import through `/admin/foods/v2-preview`.
    - Fix missing critical fields, impossible values, and conflicts before commit.
 
-6. Review unresolved rows.
+7. Review unresolved rows.
    - Add incomplete or conflicting rows to `data/review/food_v2_review_queue.csv`.
    - Keep `needs_review` rows out of confident chatbot/recommendation language.
 
-7. Commit only safe rows.
+8. Commit only safe rows.
    - `verified`: official source and complete enough for confident use.
    - `needs_review`: keep in queue until corroborated.
    - `unknown`: do not import as production food intelligence.
@@ -78,6 +83,7 @@ Run:
 
 ```bash
 npm.cmd run review:food-intelligence
+npm.cmd run review:food-documents
 npm.cmd run lint
 npm.cmd run build
 ```

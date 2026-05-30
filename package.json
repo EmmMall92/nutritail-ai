@@ -21,7 +21,8 @@
     "review:backfill": "node scripts/data/review/review-food-backfill-priorities.mjs",
     "plan:food-evidence": "node scripts/data/review/plan-food-evidence-collection.mjs",
     "review:food-v2-sample": "node scripts/data/review/review-food-v2-sample-import.mjs",
-    "review:food-intelligence": "node scripts/data/review/review-food-intelligence-foundation.mjs"
+    "review:food-intelligence": "node scripts/data/review/review-food-intelligence-foundation.mjs",
+    "review:food-documents": "node scripts/data/review/review-food-document-intake.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
