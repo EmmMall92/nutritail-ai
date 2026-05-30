@@ -42,6 +42,7 @@
     "extract:cat-dry-analysis-document": "node scripts/data/normalize/extract-cat-dry-analysis-document.mjs",
     "extract:vet-eshop-document": "node scripts/data/normalize/extract-vet-eshop-document.mjs",
     "extract:gheda-schesir-spreadsheet": "node scripts/data/normalize/extract-gheda-schesir-spreadsheet.mjs",
+    "extract:schesir-gheda-marketplace-ods": "node scripts/data/normalize/extract-schesir-gheda-marketplace-ods.mjs",
     "extract:dog-dry-eshop-spreadsheet": "node scripts/data/normalize/extract-dog-dry-eshop-spreadsheet.mjs",
     "extract:mixed-eshop-spreadsheet": "node scripts/data/normalize/extract-mixed-eshop-spreadsheet.mjs",
     "extract:pareto-food-priority": "node scripts/data/review/extract-pareto-food-priority-sidecar.mjs",
