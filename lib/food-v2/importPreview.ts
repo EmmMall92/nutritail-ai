@@ -1,0 +1,347 @@
+import {
+  createFormulaKey,
+  detectCarbohydrateSources,
+  detectFatSources,
+  detectFiberSources,
+  detectPrimaryAnimalProteins,
+  normalizeBrand,
+  normalizeCommercialTags,
+  normalizeDogSize,
+  normalizeFoodFormat,
+  normalizeFormulaName,
+  normalizeIngredientText,
+  normalizeLifeStage,
+  normalizeMedicalTags,
+  normalizeEnergyToKcalPer100g,
+  normalizePercent,
+  normalizeSpecies,
+  splitIngredients,
+} from "@/lib/food-v2/normalizeFood";
+import { validateFoodImportRow } from "@/lib/food-v2/validateFood";
+import type {
+  DataQualityStatus,
+  FoodImportRowV2,
+  FoodNutrientsV2,
+  FoodProductV2,
+  SourcePriority,
+} from "@/types/food-v2";
+
+export type FoodV2PreviewSummary = {
+  totalRows: number;
+  importableRows: number;
+  blockedRows: number;
+  averageCompleteness: number;
+  missingFieldCounts: Record<string, number>;
+  warningCounts: Record<string, number>;
+  impossibleValueCount: number;
+  conflictCount: number;
+};
+
+export type FoodV2PreviewResult = {
+  rows: FoodImportRowV2[];
+  summary: FoodV2PreviewSummary;
+};
+
+const NUTRIENT_KEYS: Array<keyof FoodNutrientsV2> = [
+  "protein_percent",
+  "fat_percent",
+  "fiber_percent",
+  "ash_percent",
+  "moisture_percent",
+  "calcium_percent",
+  "phosphorus_percent",
+  "sodium_percent",
+  "magnesium_percent",
+  "potassium_percent",
+  "omega3_percent",
+  "omega6_percent",
+  "dha_percent",
+  "epa_percent",
+  "taurine_mgkg",
+  "l_carnitine_mgkg",
+  "glucosamine_mgkg",
+  "chondroitin_mgkg",
+  "vitamin_a_iukg",
+  "vitamin_d3_iukg",
+  "vitamin_e_mgkg",
+  "iron_mgkg",
+  "zinc_mgkg",
+  "copper_mgkg",
+  "manganese_mgkg",
+  "iodine_mgkg",
+  "selenium_mgkg",
+];
+
+function cleanString(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function nullIfEmpty(value: unknown) {
+  const cleaned = cleanString(value);
+  return cleaned || null;
+}
+
+function normalizeDataQualityStatus(value: unknown): DataQualityStatus {
+  const text = cleanString(value).toLowerCase();
+  if (text === "verified") return "verified";
+  if (text === "unknown") return "unknown";
+  return "needs_review";
+}
+
+function normalizeSourcePriority(value: unknown): SourcePriority {
+  const text = cleanString(value).toLowerCase();
+  if (text === "official") return "official";
+  if (text === "retailer") return "retailer";
+  if (text === "manual_photo") return "manual_photo";
+  return "unknown";
+}
+
+function parseStringList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => cleanString(item)).filter(Boolean);
+  }
+
+  const text = cleanString(value);
+  if (!text) return [];
+
+  if (text.startsWith("[") && text.endsWith("]")) {
+    try {
+      const parsed = JSON.parse(text);
+      return Array.isArray(parsed)
+        ? parsed.map((item) => cleanString(item)).filter(Boolean)
+        : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return text
+    .split(/[|,;]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseCsv(text: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      field += '"';
+      i += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      row.push(field);
+      field = "";
+      continue;
+    }
+
+    if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && next === "\n") i += 1;
+      row.push(field);
+      if (row.some((item) => item.trim())) rows.push(row);
+      row = [];
+      field = "";
+      continue;
+    }
+
+    field += char;
+  }
+
+  row.push(field);
+  if (row.some((item) => item.trim())) rows.push(row);
+
+  const [headers = [], ...bodyRows] = rows;
+  return bodyRows.map((values) =>
+    Object.fromEntries(headers.map((header, index) => [header.trim(), values[index] ?? ""]))
+  );
+}
+
+function buildNutrients(data: Record<string, unknown>) {
+  const nutrients: FoodNutrientsV2 = {};
+
+  for (const key of NUTRIENT_KEYS) {
+    const rawValue = data[key];
+    const value = key.endsWith("_percent")
+      ? normalizePercent(rawValue)
+      : rawValue === null || rawValue === undefined || rawValue === ""
+        ? null
+        : Number(String(rawValue).replace(",", "."));
+
+    if (value !== null && Number.isFinite(value)) {
+      nutrients[key] = value;
+    }
+  }
+
+  return nutrients;
+}
+
+export function normalizeFoodV2RawRow(
+  raw: Record<string, unknown>
+): FoodImportRowV2 {
+  const brand = normalizeBrand(raw.brand);
+  const formulaName = normalizeFormulaName(raw.formula_name);
+  const species = normalizeSpecies(raw.species);
+  const format = normalizeFoodFormat(raw.format);
+  const ingredientText = normalizeIngredientText(raw.ingredient_text);
+  const ingredients =
+    parseStringList(raw.ingredients).length > 0
+      ? parseStringList(raw.ingredients)
+      : splitIngredients(ingredientText);
+  const medicalTags = [
+    ...parseStringList(raw.medical_tags),
+    ...normalizeMedicalTags(
+      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""}`
+    ),
+  ];
+  const commercialTags = [
+    ...parseStringList(raw.commercial_tags),
+    ...normalizeCommercialTags(
+      `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""}`
+    ),
+  ];
+  const formula_key =
+    cleanString(raw.formula_key) ||
+    createFormulaKey({
+      brand,
+      formula_name: formulaName,
+      species,
+      format,
+    });
+
+  const food: FoodProductV2 = {
+    brand,
+    formula_name: formulaName,
+    display_name: cleanString(raw.display_name) || `${brand} ${formulaName}`,
+    species,
+    format,
+    life_stage: normalizeLifeStage(raw.life_stage),
+    dog_size: normalizeDogSize(raw.dog_size),
+    breed_target: nullIfEmpty(raw.breed_target),
+    medical_tags: [...new Set(medicalTags)],
+    commercial_tags: [...new Set(commercialTags)],
+    ingredient_text: ingredientText,
+    ingredients,
+    primary_animal_proteins:
+      parseStringList(raw.primary_animal_proteins).length > 0
+        ? parseStringList(raw.primary_animal_proteins)
+        : detectPrimaryAnimalProteins(ingredients),
+    carbohydrate_sources:
+      parseStringList(raw.carbohydrate_sources).length > 0
+        ? parseStringList(raw.carbohydrate_sources)
+        : detectCarbohydrateSources(ingredients),
+    fat_sources:
+      parseStringList(raw.fat_sources).length > 0
+        ? parseStringList(raw.fat_sources)
+        : detectFatSources(ingredients),
+    fiber_sources:
+      parseStringList(raw.fiber_sources).length > 0
+        ? parseStringList(raw.fiber_sources)
+        : detectFiberSources(ingredients),
+    additives_text: nullIfEmpty(raw.additives_text),
+    feeding_guide_text: nullIfEmpty(raw.feeding_guide_text),
+    kcal_per_100g:
+      normalizeEnergyToKcalPer100g(raw.kcal_per_100g, "kcal/100g") ??
+      normalizeEnergyToKcalPer100g(raw.kcal_per_kg, "kcal/kg"),
+    kcal_per_kg: normalizePercent(raw.kcal_per_kg),
+    data_quality_status: normalizeDataQualityStatus(raw.data_quality_status),
+    data_source_url: nullIfEmpty(raw.data_source_url),
+    source_priority: normalizeSourcePriority(raw.source_priority),
+    source_notes: nullIfEmpty(raw.source_notes),
+    formula_key,
+    ean: nullIfEmpty(raw.ean),
+  };
+  const nutrients = buildNutrients(raw);
+  const validation = validateFoodImportRow({ food, nutrients, raw });
+
+  return {
+    food,
+    nutrients,
+    raw,
+    validation,
+  };
+}
+
+export function previewFoodV2Csv(text: string) {
+  return summarizeFoodV2Preview(parseCsv(text).map(normalizeFoodV2RawRow));
+}
+
+export function previewFoodV2ManualRows(rows: unknown[]) {
+  const normalizedRows = rows.map((row) => {
+    const raw = row as Record<string, unknown>;
+    if (raw.food && typeof raw.food === "object") {
+      const food = raw.food as FoodProductV2;
+      const nutrients = (raw.nutrients ?? {}) as FoodNutrientsV2;
+      const validation = validateFoodImportRow({
+        food,
+        nutrients,
+        raw,
+      });
+
+      return {
+        food,
+        nutrients,
+        raw,
+        validation,
+      };
+    }
+
+    return normalizeFoodV2RawRow(raw);
+  });
+
+  return summarizeFoodV2Preview(normalizedRows);
+}
+
+export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewResult {
+  const missingFieldCounts: Record<string, number> = {};
+  const warningCounts: Record<string, number> = {};
+  let impossibleValueCount = 0;
+  let conflictCount = 0;
+
+  for (const row of rows) {
+    for (const field of row.validation.missing_fields) {
+      missingFieldCounts[field] = (missingFieldCounts[field] ?? 0) + 1;
+    }
+    for (const warning of row.validation.warnings) {
+      warningCounts[warning] = (warningCounts[warning] ?? 0) + 1;
+    }
+    impossibleValueCount += row.validation.impossible_values.length;
+    conflictCount += row.validation.conflicts.length;
+  }
+
+  const averageCompleteness =
+    rows.length > 0
+      ? Math.round(
+          rows.reduce(
+            (total, row) => total + row.validation.completeness_score,
+            0
+          ) / rows.length
+        )
+      : 0;
+
+  return {
+    rows,
+    summary: {
+      totalRows: rows.length,
+      importableRows: rows.filter((row) => row.validation.is_importable).length,
+      blockedRows: rows.filter((row) => !row.validation.is_importable).length,
+      averageCompleteness,
+      missingFieldCounts,
+      warningCounts,
+      impossibleValueCount,
+      conflictCount,
+    },
+  };
+}
