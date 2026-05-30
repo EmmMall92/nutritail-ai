@@ -9,6 +9,22 @@ import {
   type FoodV2PreviewResult,
 } from "@/lib/food-v2/importPreview";
 
+type ImportCommitResult = {
+  success: boolean;
+  totalRows: number;
+  importedRows: number;
+  skippedRows: number;
+  failedRows?: number;
+  auditRows: number;
+  results: Array<{
+    formula_key: string;
+    display_name: string;
+    success: boolean;
+    action: string;
+    error: string | null;
+  }>;
+};
+
 function SummaryCard({
   label,
   value,
@@ -65,6 +81,10 @@ export default function FoodV2PreviewPage() {
     previewFoodV2ManualRows(manualRows as unknown[])
   );
   const [error, setError] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+  const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
+    null
+  );
 
   const rowLimitNotice = useMemo(() => {
     if (preview.rows.length <= 25) return "";
@@ -76,6 +96,7 @@ export default function FoodV2PreviewPage() {
 
     try {
       setError("");
+      setCommitResult(null);
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
     } catch (err) {
@@ -87,7 +108,36 @@ export default function FoodV2PreviewPage() {
 
   function loadSample() {
     setError("");
+    setCommitResult(null);
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
+  }
+
+  async function commitImportableRows() {
+    try {
+      setError("");
+      setCommitResult(null);
+      setIsImporting(true);
+
+      const response = await fetch("/api/admin/foods/v2-import", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rows: preview.rows }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Food V2 import failed.");
+      }
+
+      setCommitResult(result as ImportCommitResult);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Food V2 import failed.");
+    } finally {
+      setIsImporting(false);
+    }
   }
 
   return (
@@ -110,6 +160,14 @@ export default function FoodV2PreviewPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={commitImportableRows}
+                disabled={isImporting || preview.summary.importableRows === 0}
+                className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
+              >
+                {isImporting ? "Importing..." : "Commit Importable"}
+              </button>
               <button
                 type="button"
                 onClick={loadSample}
@@ -146,6 +204,30 @@ export default function FoodV2PreviewPage() {
         {error && (
           <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {commitResult && (
+          <div className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900">
+            <p className="font-semibold">Food V2 import completed.</p>
+            <p className="mt-2">
+              Imported {commitResult.importedRows} rows, skipped{" "}
+              {commitResult.skippedRows} blocked rows, failed{" "}
+              {commitResult.failedRows ?? 0} rows, and wrote{" "}
+              {commitResult.auditRows} audit rows.
+            </p>
+            {commitResult.results.some((result) => result.error) && (
+              <div className="mt-3 space-y-1">
+                {commitResult.results
+                  .filter((result) => result.error)
+                  .slice(0, 5)
+                  .map((result) => (
+                    <p key={result.formula_key}>
+                      {result.display_name}: {result.error}
+                    </p>
+                  ))}
+              </div>
+            )}
           </div>
         )}
 
