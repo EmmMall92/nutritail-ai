@@ -12,6 +12,7 @@ const inputs = [
   "data/imports/ambrosia_document_extract_v2.csv",
   "data/imports/belcando_document_extract_v2.csv",
   "data/imports/sams_field_document_extract_v2.csv",
+  "data/imports/unica_classe_document_extract_v2.csv",
 ];
 
 const paths = {
