@@ -1,0 +1,101 @@
+{
+  "version": "nutrient_normalization_v1",
+  "basis": "as_fed",
+  "unit_conversions": {
+    "percent": "value",
+    "g_per_100g": "value",
+    "g_per_kg_to_percent": "value / 10",
+    "mg_per_kg_to_percent": "value / 10000",
+    "kcal_per_kg_to_kcal_per_100g": "value / 10",
+    "kj_per_kg_to_kcal_per_100g": "value / 4.184 / 10"
+  },
+  "fields": {
+    "kcal_per_100g": {
+      "aliases": ["kcal/100g", "kcal per 100g", "metabolizable energy per 100g", "me per 100g"]
+    },
+    "kcal_per_kg": {
+      "aliases": ["kcal/kg", "kcal per kg", "metabolizable energy", "me kcal/kg", "energy kcal/kg"]
+    },
+    "protein_percent": {
+      "aliases": ["protein", "crude protein", "raw protein", "analytical constituents protein", "protein content"]
+    },
+    "fat_percent": {
+      "aliases": ["fat", "crude fat", "raw fat", "fat content", "oils and fats"]
+    },
+    "fiber_percent": {
+      "aliases": ["fiber", "fibre", "crude fiber", "crude fibre", "raw fibre"]
+    },
+    "ash_percent": {
+      "aliases": ["ash", "crude ash", "raw ash", "inorganic matter"]
+    },
+    "moisture_percent": {
+      "aliases": ["moisture", "humidity", "water content"]
+    },
+    "calcium_percent": {
+      "aliases": ["calcium", "ca"]
+    },
+    "phosphorus_percent": {
+      "aliases": ["phosphorus", "phosphorous", "p"]
+    },
+    "sodium_percent": {
+      "aliases": ["sodium", "na"]
+    },
+    "magnesium_percent": {
+      "aliases": ["magnesium", "mg"]
+    },
+    "potassium_percent": {
+      "aliases": ["potassium", "k"]
+    },
+    "omega3_percent": {
+      "aliases": ["omega 3", "omega-3", "omega3"]
+    },
+    "omega6_percent": {
+      "aliases": ["omega 6", "omega-6", "omega6"]
+    },
+    "dha_percent": {
+      "aliases": ["dha"]
+    },
+    "epa_percent": {
+      "aliases": ["epa"]
+    },
+    "taurine_mgkg": {
+      "aliases": ["taurine"]
+    },
+    "l_carnitine_mgkg": {
+      "aliases": ["l-carnitine", "l carnitine", "carnitine"]
+    },
+    "glucosamine_mgkg": {
+      "aliases": ["glucosamine"]
+    },
+    "chondroitin_mgkg": {
+      "aliases": ["chondroitin"]
+    },
+    "vitamin_a_iukg": {
+      "aliases": ["vitamin a", "vitamin a iu/kg"]
+    },
+    "vitamin_d3_iukg": {
+      "aliases": ["vitamin d3", "vitamin d3 iu/kg"]
+    },
+    "vitamin_e_mgkg": {
+      "aliases": ["vitamin e"]
+    },
+    "iron_mgkg": {
+      "aliases": ["iron", "fe"]
+    },
+    "zinc_mgkg": {
+      "aliases": ["zinc", "zn"]
+    },
+    "copper_mgkg": {
+      "aliases": ["copper", "cu"]
+    },
+    "manganese_mgkg": {
+      "aliases": ["manganese", "mn"]
+    },
+    "iodine_mgkg": {
+      "aliases": ["iodine", "i"]
+    },
+    "selenium_mgkg": {
+      "aliases": ["selenium", "se"]
+    }
+  }
+}
