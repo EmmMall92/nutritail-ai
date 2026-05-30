@@ -45,6 +45,7 @@
     "extract:dog-dry-eshop-spreadsheet": "node scripts/data/normalize/extract-dog-dry-eshop-spreadsheet.mjs",
     "extract:mixed-eshop-spreadsheet": "node scripts/data/normalize/extract-mixed-eshop-spreadsheet.mjs",
     "extract:pareto-food-priority": "node scripts/data/review/extract-pareto-food-priority-sidecar.mjs",
+    "audit:louka-products-source": "node scripts/data/review/audit-louka-products-source.mjs",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
   },
