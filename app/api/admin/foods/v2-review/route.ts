@@ -1,9 +1,120 @@
 import { NextResponse } from "next/server";
+import { readFile } from "node:fs/promises";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 const PRODUCT_LIMIT = 100;
 const AUDIT_LIMIT = 50;
+const QUEUE_LIMIT = 500;
+
+function parseCsv(text: string) {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      field += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      row.push(field);
+      field = "";
+      continue;
+    }
+
+    if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(field);
+      if (row.some((value) => value.trim())) rows.push(row);
+      row = [];
+      field = "";
+      continue;
+    }
+
+    field += char;
+  }
+
+  row.push(field);
+  if (row.some((value) => value.trim())) rows.push(row);
+
+  const headers = (rows[0] ?? []).map((header) =>
+    header.replace(/^\uFEFF/, "").trim()
+  );
+
+  return rows.slice(1).map((values) =>
+    Object.fromEntries(
+      headers.map((header, index) => [header, values[index] ?? ""])
+    )
+  );
+}
+
+async function readImportQueue() {
+  try {
+    const csv = await readFile(
+      "data/review/food_v2_import_candidate_queue.csv",
+      "utf8"
+    );
+    const rows = parseCsv(csv);
+
+    const decisionCounts = rows.reduce<Record<string, number>>((acc, row) => {
+      const decision = row.decision || "unknown";
+      acc[decision] = (acc[decision] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const brandCounts = rows.reduce<Record<string, number>>((acc, row) => {
+      const brand = row.brand || "Unknown";
+      acc[brand] = (acc[brand] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const missingFieldCounts = rows.reduce<Record<string, number>>(
+      (acc, row) => {
+        String(row.missing_blockers ?? "")
+          .split("|")
+          .map((field) => field.trim())
+          .filter(Boolean)
+          .forEach((field) => {
+            acc[field] = (acc[field] ?? 0) + 1;
+          });
+        return acc;
+      },
+      {}
+    );
+
+    return {
+      summary: {
+        totalRows: rows.length,
+        decisionCounts,
+        brandCounts,
+        missingFieldCounts,
+      },
+      rows: rows.slice(0, QUEUE_LIMIT),
+    };
+  } catch {
+    return {
+      summary: {
+        totalRows: 0,
+        decisionCounts: {},
+        brandCounts: {},
+        missingFieldCounts: {},
+      },
+      rows: [],
+    };
+  }
+}
 
 export async function GET() {
   try {
@@ -19,6 +130,7 @@ export async function GET() {
       blockedAuditRowsResult,
       { data: products, error: productsError },
       { data: auditRows, error: auditError },
+      importQueue,
     ] = await Promise.all([
       supabaseAdmin
         .from("food_products_v2")
@@ -56,6 +168,7 @@ export async function GET() {
         )
         .order("created_at", { ascending: false })
         .limit(AUDIT_LIMIT),
+      readImportQueue(),
     ]);
 
     if (totalProductsResult.error) throw totalProductsResult.error;
@@ -78,6 +191,7 @@ export async function GET() {
       },
       products: products ?? [],
       auditRows: auditRows ?? [],
+      importQueue,
     });
   } catch (error) {
     return NextResponse.json(

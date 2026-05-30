@@ -29,6 +29,7 @@ type AdminFood = {
 
   data_source_url?: string | null;
   data_notes?: string | null;
+  is_recommendable?: boolean | null;
 };
 
 const DATA_STATUS_OPTIONS = [
@@ -54,6 +55,8 @@ export default function AdminFoodsPage() {
     | "verified"
     | "unknown"
   >("all");
+  const [recommendableFilter, setRecommendableFilter] = useState("all");
+  const [visibilityMessage, setVisibilityMessage] = useState("");
 
   useEffect(() => {
     loadFoods();
@@ -97,10 +100,77 @@ export default function AdminFoodsPage() {
       const matchesQuality =
         qualityFilter === "all" ||
         food.data_quality_status === qualityFilter;
+      const isRecommendable = food.is_recommendable !== false;
+      const matchesRecommendable =
+        recommendableFilter === "all" ||
+        (recommendableFilter === "yes" && isRecommendable) ||
+        (recommendableFilter === "no" && !isRecommendable);
 
-      return matchesSearch && matchesSpecies && matchesQuality;
+      return matchesSearch && matchesSpecies && matchesQuality && matchesRecommendable;
     });
-  }, [foods, qualityFilter, search, speciesFilter]);
+  }, [foods, qualityFilter, recommendableFilter, search, speciesFilter]);
+
+  const brandControls = useMemo(() => {
+    const byBrand = new Map<string, AdminFood[]>();
+    foods.forEach((food) => {
+      byBrand.set(food.brand, [...(byBrand.get(food.brand) ?? []), food]);
+    });
+
+    return [...byBrand.entries()]
+      .map(([brand, brandFoods]) => ({
+        brand,
+        total: brandFoods.length,
+        enabled: brandFoods.filter((food) => food.is_recommendable !== false)
+          .length,
+      }))
+      .sort((a, b) => a.brand.localeCompare(b.brand));
+  }, [foods]);
+
+  async function updateRecommendationVisibility({
+    brand,
+    foodIds,
+    isRecommendable,
+  }: {
+    brand?: string;
+    foodIds?: string[];
+    isRecommendable: boolean;
+  }) {
+    try {
+      setError("");
+      setVisibilityMessage("");
+
+      const response = await fetch(
+        "/api/admin/foods/recommendation-visibility",
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            brand,
+            food_ids: foodIds,
+            is_recommendable: isRecommendable,
+          }),
+        }
+      );
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Failed to update recommendation visibility."
+        );
+      }
+
+      setVisibilityMessage(
+        `${result.updatedRows ?? 0} food rows updated for recommendations.`
+      );
+      await loadFoods();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to update recommendation visibility."
+      );
+    }
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -149,7 +219,7 @@ export default function AdminFoodsPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
             <div className="lg:col-span-2">
               <label className="mb-2 block text-sm font-medium text-black">
                 Search
@@ -205,14 +275,85 @@ export default function AdminFoodsPage() {
                 ))}
               </select>
             </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Recommendations
+              </label>
+
+              <select
+                value={recommendableFilter}
+                onChange={(e) => setRecommendableFilter(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              >
+                <option value="all">All</option>
+                <option value="yes">Allowed</option>
+                <option value="no">Hidden</option>
+              </select>
+            </div>
           </div>
         </div>
+
+        {visibilityMessage && (
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            {visibilityMessage}
+          </div>
+        )}
 
         {error && (
           <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-black">
+                Brand recommendation controls
+              </h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Turn a brand on or off for recommendations without deleting its
+                foods from the database.
+              </p>
+            </div>
+            <p className="text-sm text-gray-500">
+              {brandControls.length} brands
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {brandControls.map((item) => {
+              const allEnabled = item.enabled === item.total;
+              return (
+                <label
+                  key={item.brand}
+                  className="flex items-start gap-3 rounded-xl border border-gray-200 p-3"
+                >
+                  <input
+                    type="checkbox"
+                    checked={allEnabled}
+                    onChange={(event) =>
+                      updateRecommendationVisibility({
+                        brand: item.brand,
+                        isRecommendable: event.target.checked,
+                      })
+                    }
+                    className="mt-1 h-4 w-4"
+                  />
+                  <span>
+                    <span className="block font-semibold text-black">
+                      {item.brand}
+                    </span>
+                    <span className="mt-1 block text-xs text-gray-600">
+                      {item.enabled}/{item.total} allowed
+                    </span>
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
           {isLoading ? (
@@ -273,6 +414,29 @@ export default function AdminFoodsPage() {
                       Edit
                     </Link>
                   </div>
+
+                  <label className="mt-4 flex items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={food.is_recommendable !== false}
+                      onChange={(event) =>
+                        updateRecommendationVisibility({
+                          foodIds: [food.id],
+                          isRecommendable: event.target.checked,
+                        })
+                      }
+                      className="mt-1 h-4 w-4"
+                    />
+                    <span>
+                      <span className="font-semibold text-black">
+                        Allow in recommended foods
+                      </span>
+                      <span className="mt-1 block text-gray-600">
+                        Hidden foods stay in admin data but are excluded from
+                        customer recommendations.
+                      </span>
+                    </span>
+                  </label>
 
                   <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
                     <div className="flex items-center justify-between gap-3">

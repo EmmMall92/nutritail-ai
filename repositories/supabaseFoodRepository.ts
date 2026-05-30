@@ -34,7 +34,9 @@ export const supabaseFoodRepository = {
       throw toReadableError(error, "Failed to fetch foods from Supabase.");
     }
 
-    return (data as DbFood[]).map(mapDbFoodToFood);
+    return (data as DbFood[])
+      .filter((food) => food.is_recommendable !== false)
+      .map(mapDbFoodToFood);
   },
 
   async getBySpecies(species: "dog" | "cat"): Promise<Food[]> {
@@ -51,7 +53,9 @@ export const supabaseFoodRepository = {
       throw toReadableError(error, "Failed to fetch foods by species.");
     }
 
-    return (data as DbFood[]).map(mapDbFoodToFood);
+    return (data as DbFood[])
+      .filter((food) => food.is_recommendable !== false)
+      .map(mapDbFoodToFood);
   },
 
   async getById(foodId: string): Promise<Food | null> {

@@ -81,6 +81,14 @@ function nullIfEmpty(value: unknown) {
   return cleaned || null;
 }
 
+function normalizeBoolean(value: unknown, fallback = true) {
+  const text = cleanString(value).toLowerCase();
+  if (!text) return fallback;
+  if (["true", "yes", "1", "y"].includes(text)) return true;
+  if (["false", "no", "0", "n"].includes(text)) return false;
+  return fallback;
+}
+
 function normalizeDataQualityStatus(value: unknown): DataQualityStatus {
   const text = cleanString(value).toLowerCase();
   if (text === "verified") return "verified";
@@ -262,6 +270,7 @@ export function normalizeFoodV2RawRow(
     source_notes: nullIfEmpty(raw.source_notes),
     formula_key,
     ean: nullIfEmpty(raw.ean),
+    is_recommendable: normalizeBoolean(raw.is_recommendable),
   };
   const nutrients = buildNutrients(raw);
   const validation = validateFoodImportRow({ food, nutrients, raw });

@@ -28,6 +28,7 @@ type AdminFood = {
   data_quality_status?: DataQualityStatus;
   data_source_url?: string | null;
   data_notes?: string | null;
+  is_recommendable?: boolean | null;
 
   created_at?: string;
   updated_at?: string;
@@ -160,6 +161,7 @@ export default function AdminFoodDetailPage() {
         data_quality_status: "needs_review",
         data_source_url: null,
         data_notes: null,
+        is_recommendable: true,
       };
 
       setFood(emptyFood);
@@ -215,6 +217,7 @@ export default function AdminFoodDetailPage() {
         data_quality_status: food.data_quality_status ?? "needs_review",
         data_source_url: food.data_source_url || null,
         data_notes: food.data_notes || null,
+        is_recommendable: food.is_recommendable !== false,
       };
 
       const response = await fetch(
@@ -582,6 +585,30 @@ export default function AdminFoodDetailPage() {
           <h2 className="text-lg font-semibold text-black">Data Quality</h2>
 
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <label className="md:col-span-2 flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-3 text-sm">
+              <input
+                type="checkbox"
+                checked={food.is_recommendable !== false}
+                onChange={(e) =>
+                  setFood((prev) =>
+                    prev
+                      ? { ...prev, is_recommendable: e.target.checked }
+                      : prev
+                  )
+                }
+                className="mt-1 h-4 w-4"
+              />
+              <span>
+                <span className="font-semibold text-black">
+                  Allow in recommended foods
+                </span>
+                <span className="mt-1 block text-gray-600">
+                  Disable this when a formula should remain in the database but
+                  not appear in customer recommendations.
+                </span>
+              </span>
+            </label>
+
             <div>
               <label className="mb-2 block text-sm font-medium text-black">
                 Status

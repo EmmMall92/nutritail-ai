@@ -43,12 +43,42 @@ const PRODUCT_COLUMNS: Array<keyof FoodProductV2> = [
   "source_notes",
   "formula_key",
   "ean",
+  "is_recommendable",
 ];
 
 function toProductPayload(food: FoodProductV2) {
   return Object.fromEntries(
-    PRODUCT_COLUMNS.map((key) => [key, food[key] ?? null])
+    PRODUCT_COLUMNS.map((key) => [
+      key,
+      key === "is_recommendable"
+        ? food.is_recommendable !== false
+        : food[key] ?? null,
+    ])
   );
+}
+
+async function upsertProduct(food: FoodProductV2) {
+  const payload = toProductPayload(food);
+  const result = await supabaseAdmin
+    .from("food_products_v2")
+    .upsert(payload, { onConflict: "formula_key" })
+    .select("id")
+    .single();
+
+  if (
+    result.error?.message?.toLowerCase().includes("is_recommendable") &&
+    "is_recommendable" in payload
+  ) {
+    const { is_recommendable: ignoredVisibility, ...legacyPayload } = payload;
+    void ignoredVisibility;
+    return supabaseAdmin
+      .from("food_products_v2")
+      .upsert(legacyPayload, { onConflict: "formula_key" })
+      .select("id")
+      .single();
+  }
+
+  return result;
 }
 
 function toNutrientsPayload(
@@ -143,11 +173,9 @@ export async function POST(request: Request) {
         continue;
       }
 
-      const { data: product, error: productError } = await supabaseAdmin
-        .from("food_products_v2")
-        .upsert(toProductPayload(row.food), { onConflict: "formula_key" })
-        .select("id")
-        .single();
+      const { data: product, error: productError } = await upsertProduct(
+        row.food
+      );
 
       if (productError || !product?.id) {
         results.push({
