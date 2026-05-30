@@ -131,14 +131,31 @@ export async function PATCH(request: Request, context: Context) {
         ? String(body.data_source_url).trim()
         : null,
       data_notes: body.data_notes ? String(body.data_notes).trim() : null,
+      is_recommendable: body.is_recommendable !== false,
     };
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("foods")
       .update(payload)
       .eq("id", id)
       .select("*")
       .single();
+
+    if (
+      error?.message?.toLowerCase().includes("is_recommendable") &&
+      "is_recommendable" in payload
+    ) {
+      const { is_recommendable: ignoredVisibility, ...legacyPayload } = payload;
+      void ignoredVisibility;
+      const retry = await supabase
+        .from("foods")
+        .update(legacyPayload)
+        .eq("id", id)
+        .select("*")
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

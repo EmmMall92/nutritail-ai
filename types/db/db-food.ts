@@ -29,4 +29,5 @@ export interface DbFood {
   data_quality_status?: "needs_review" | "partial" | "verified" | "unknown" | null;
   data_source_url?: string | null;
   data_notes?: string | null;
+  is_recommendable?: boolean | null;
 }

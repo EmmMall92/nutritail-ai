@@ -36,6 +36,7 @@ export function mapDbFoodToFood(dbFood: DbFood): Food {
     dataQualityStatus: dbFood.data_quality_status ?? null,
     dataSourceUrl: dbFood.data_source_url ?? null,
     dataNotes: dbFood.data_notes ?? null,
+    isRecommendable: dbFood.is_recommendable ?? true,
   };
 }
 
@@ -70,6 +71,7 @@ export function mapFoodToDbFood(food: Food): DbFood {
     data_quality_status: food.dataQualityStatus ?? null,
     data_source_url: food.dataSourceUrl ?? null,
     data_notes: food.dataNotes ?? null,
+    is_recommendable: food.isRecommendable ?? true,
     created_at: now,
     updated_at: now,
   };

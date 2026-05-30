@@ -30,6 +30,19 @@ type FoodV2AuditRow = {
   created_at: string | null;
 };
 
+type FoodV2QueueRow = {
+  decision: string;
+  dataset_file: string;
+  formula_key: string;
+  brand: string;
+  formula_name: string;
+  species: string;
+  quality_status: string;
+  source_priority: string;
+  missing_blockers: string;
+  next_action: string;
+};
+
 type FoodV2ReviewResponse = {
   summary: {
     totalProducts: number;
@@ -41,6 +54,15 @@ type FoodV2ReviewResponse = {
   };
   products: FoodV2Product[];
   auditRows: FoodV2AuditRow[];
+  importQueue: {
+    summary: {
+      totalRows: number;
+      decisionCounts: Record<string, number>;
+      brandCounts: Record<string, number>;
+      missingFieldCounts: Record<string, number>;
+    };
+    rows: FoodV2QueueRow[];
+  };
 };
 
 function StatCard({
@@ -89,6 +111,9 @@ export default function FoodV2ReviewPage() {
   const [error, setError] = useState("");
   const [qualityFilter, setQualityFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [queueSearch, setQueueSearch] = useState("");
+  const [queueDecisionFilter, setQueueDecisionFilter] = useState("all");
+  const [queueBlockerFilter, setQueueBlockerFilter] = useState("all");
 
   async function loadReview() {
     try {
@@ -135,6 +160,32 @@ export default function FoodV2ReviewPage() {
       return matchesQuality && matchesSearch;
     });
   }, [data?.products, qualityFilter, search]);
+
+  const queueSummary = data?.importQueue?.summary;
+  const topMissingFields = useMemo(() => {
+    return Object.entries(queueSummary?.missingFieldCounts ?? {})
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8);
+  }, [queueSummary?.missingFieldCounts]);
+  const visibleQueueRows = useMemo(() => {
+    const queueRows = data?.importQueue?.rows ?? [];
+    const searchText = queueSearch.trim().toLowerCase();
+
+    return queueRows.filter((row) => {
+      const matchesSearch =
+        !searchText ||
+        `${row.brand} ${row.formula_name} ${row.formula_key} ${row.dataset_file}`
+          .toLowerCase()
+          .includes(searchText);
+      const matchesDecision =
+        queueDecisionFilter === "all" || row.decision === queueDecisionFilter;
+      const matchesBlocker =
+        queueBlockerFilter === "all" ||
+        row.missing_blockers.split("|").includes(queueBlockerFilter);
+
+      return matchesSearch && matchesDecision && matchesBlocker;
+    });
+  }, [data?.importQueue?.rows, queueBlockerFilter, queueDecisionFilter, queueSearch]);
 
   return (
     <section className="space-y-6">
@@ -261,6 +312,177 @@ export default function FoodV2ReviewPage() {
                   <option value="needs_review">Needs review</option>
                   <option value="unknown">Unknown</option>
                 </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-black">
+                  Import Candidate Queue
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  Review extracted Food V2 rows before they move to admin
+                  preview. This list is generated from the local review queue.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-black">
+                  {queueSummary?.totalRows ?? 0} queued
+                </span>
+                {Object.entries(queueSummary?.decisionCounts ?? {}).map(
+                  ([decision, count]) => (
+                    <span
+                      key={decision}
+                      className="rounded-full bg-gray-100 px-3 py-1 text-black"
+                    >
+                      {decision}: {count}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
+              <div className="lg:col-span-2">
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Queue search
+                </label>
+                <input
+                  value={queueSearch}
+                  onChange={(event) => setQueueSearch(event.target.value)}
+                  placeholder="Search queued brand, formula, source file..."
+                  className="w-full rounded-xl border border-gray-300 p-3 text-black"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Decision
+                </label>
+                <select
+                  value={queueDecisionFilter}
+                  onChange={(event) =>
+                    setQueueDecisionFilter(event.target.value)
+                  }
+                  className="w-full rounded-xl border border-gray-300 p-3 text-black"
+                >
+                  <option value="all">All</option>
+                  <option value="candidate">Candidate</option>
+                  <option value="hold">Hold</option>
+                  <option value="reject">Reject</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Missing blocker
+                </label>
+                <select
+                  value={queueBlockerFilter}
+                  onChange={(event) =>
+                    setQueueBlockerFilter(event.target.value)
+                  }
+                  className="w-full rounded-xl border border-gray-300 p-3 text-black"
+                >
+                  <option value="all">All</option>
+                  {topMissingFields.map(([field, count]) => (
+                    <option key={field} value={field}>
+                      {field} ({count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {topMissingFields.map(([field, count]) => (
+                <button
+                  key={field}
+                  type="button"
+                  onClick={() => setQueueBlockerFilter(field)}
+                  className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-left text-sm transition hover:bg-gray-100"
+                >
+                  <span className="block font-semibold text-black">
+                    {count}
+                  </span>
+                  <span className="mt-1 block break-all text-xs text-gray-600">
+                    {field}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-5 space-y-3">
+              {visibleQueueRows.length === 0 ? (
+                <p className="text-sm text-gray-600">
+                  No queued rows match this filter.
+                </p>
+              ) : (
+                visibleQueueRows.slice(0, 80).map((row) => (
+                  <div
+                    key={`${row.dataset_file}-${row.formula_key}`}
+                    className="rounded-xl border border-gray-200 p-4"
+                  >
+                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                      <div>
+                        <p className="font-semibold text-black">
+                          {row.formula_name}
+                        </p>
+                        <p className="mt-1 text-sm text-gray-600">
+                          {row.brand} - {row.species} - {row.quality_status}
+                        </p>
+                        <p className="mt-2 break-all text-xs text-gray-500">
+                          {row.dataset_file}
+                        </p>
+                      </div>
+                      <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs text-black">
+                        {row.decision}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 text-xs text-gray-600">
+                      Missing: {row.missing_blockers || "-"}
+                    </p>
+                    <p className="mt-2 text-xs text-gray-600">
+                      Next: {row.next_action}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-lg font-semibold text-black">
+              Manual Evidence Workflow
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              Use this when a queued food needs calories, minerals, ingredient
+              panel photos, a barcode, or an official PDF before import.
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p className="font-semibold text-black">1. Collect evidence</p>
+                <p className="mt-1 text-sm text-gray-600">
+                  Front, barcode, ingredients, analysis, calories and pack size.
+                </p>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p className="font-semibold text-black">2. Fill manifest</p>
+                <p className="mt-1 break-all text-sm text-gray-600">
+                  data/templates/food-evidence-manifest-template.csv
+                </p>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p className="font-semibold text-black">3. Preview first</p>
+                <p className="mt-1 text-sm text-gray-600">
+                  Backfilled rows still go through Food V2 Preview before
+                  commit.
+                </p>
               </div>
             </div>
           </div>

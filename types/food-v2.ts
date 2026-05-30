@@ -53,6 +53,7 @@ export interface FoodProductV2 {
   source_notes?: string | null;
   formula_key: string;
   ean?: string | null;
+  is_recommendable?: boolean | null;
   created_at?: string;
   updated_at?: string;
 }

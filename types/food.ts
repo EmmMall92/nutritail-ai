@@ -37,4 +37,5 @@ export interface Food {
   dataQualityStatus?: "needs_review" | "partial" | "verified" | "unknown" | null;
   dataSourceUrl?: string | null;
   dataNotes?: string | null;
+  isRecommendable?: boolean | null;
 }

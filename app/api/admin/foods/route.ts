@@ -131,13 +131,29 @@ export async function POST(request: Request) {
       data_quality_status: normalizeStatus(body.data_quality_status),
       data_source_url: body.data_source_url || null,
       data_notes: body.data_notes || null,
+      is_recommendable: body.is_recommendable !== false,
     };
 
-    const { data, error } = await supabaseAdmin
+    let { data, error } = await supabaseAdmin
       .from("foods")
       .insert(payload)
       .select()
       .single();
+
+    if (
+      error?.message?.toLowerCase().includes("is_recommendable") &&
+      "is_recommendable" in payload
+    ) {
+      const { is_recommendable: ignoredVisibility, ...legacyPayload } = payload;
+      void ignoredVisibility;
+      const retry = await supabaseAdmin
+        .from("foods")
+        .insert(legacyPayload)
+        .select()
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
 
     if (error) {
       throw error;
