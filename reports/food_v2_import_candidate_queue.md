@@ -1,21 +1,22 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-05-30T16:55:02.704Z
+Generated: 2026-05-30T17:01:10.758Z
 
 ## Summary
 
-- Queue rows: 520
+- Queue rows: 699
 - Candidate rows: 0
-- Hold rows: 520
+- Hold rows: 699
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 520
+- hold: 699
 
 ## By Dataset
 
+- data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv: 179
 - data/imports/vet_eshop_document_extract_v2.csv: 154
 - data/imports/gheda_schesir_spreadsheet_extract_v2.csv: 140
 - data/imports/wave1_royal_josera_foods_v2.csv: 47

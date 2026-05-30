@@ -20,6 +20,7 @@ const inputs = [
   "data/imports/cat_dry_analysis_document_extract_v2.csv",
   "data/imports/vet_eshop_document_extract_v2.csv",
   "data/imports/gheda_schesir_spreadsheet_extract_v2.csv",
+  "data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv",
 ];
 
 const paths = {
