@@ -148,6 +148,11 @@ export default function AdminLayout({
             pathname={pathname}
           />
           <AdminNavLink
+            href="/admin/foods/v2-live-qa"
+            label="Food V2 Live QA"
+            pathname={pathname}
+          />
+          <AdminNavLink
             href="/admin/duplicates"
             label="Duplicates"
             pathname={pathname}
