@@ -229,6 +229,20 @@ export default function AdminDashboardPage() {
                   manufacturer evidence, or label photos.
                 </p>
               </Link>
+
+              <Link
+                href="/admin/foods/v2-preview"
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+              >
+                <h3 className="text-xl font-semibold text-black">
+                  Food V2 Preview
+                </h3>
+
+                <p className="mt-2 text-gray-600">
+                  Preview normalized v2 food imports, validation issues, and
+                  completeness before any database write.
+                </p>
+              </Link>
             </div>
           </>
         )}
