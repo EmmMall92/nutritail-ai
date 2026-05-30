@@ -9,9 +9,23 @@ const inputs = [
   "data/imports/orijen_document_extract_v2.csv",
   "data/imports/purina_pro_plan_dog_document_extract_v2.csv",
   "data/imports/purina_cat_chow_document_extract_v2.csv",
+  "data/imports/purina_official_enrichment_extract_v2.csv",
   "data/imports/ambrosia_document_extract_v2.csv",
   "data/imports/belcando_document_extract_v2.csv",
   "data/imports/sams_field_document_extract_v2.csv",
+  "data/imports/unica_classe_document_extract_v2.csv",
+  "data/imports/josera_document_extract_v2.csv",
+  "data/imports/aatu_barking_heads_document_extract_v2.csv",
+  "data/imports/schesir_dry_document_extract_v2.csv",
+  "data/imports/unica_natura_document_extract_v2.csv",
+  "data/imports/cat_dry_analysis_document_extract_v2.csv",
+  "data/imports/vet_eshop_document_extract_v2.csv",
+  "data/imports/gheda_schesir_spreadsheet_extract_v2.csv",
+  "data/imports/schesir_gheda_marketplace_ods_extract_v2.csv",
+  "data/imports/dog_dog_wild_pdf_extract_v2.csv",
+  "data/imports/prochoice_pdf_extract_v2.csv",
+  "data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv",
+  "data/imports/mixed_eshop_spreadsheet_extract_v2.csv",
 ];
 
 const paths = {
