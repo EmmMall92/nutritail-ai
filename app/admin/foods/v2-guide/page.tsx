@@ -47,6 +47,11 @@ const statuses = [
   },
 ];
 
+const sampleArtifacts = [
+  "data/samples/food-v2-sample-import.csv",
+  "npm.cmd run review:food-v2-sample",
+];
+
 export default function FoodV2GuidePage() {
   return (
     <section className="space-y-6">
@@ -117,6 +122,26 @@ export default function FoodV2GuidePage() {
               className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm font-medium text-black"
             >
               {panel}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Sample Import Fixture
+        </h3>
+        <p className="mt-2 text-sm text-gray-600">
+          Use the checked sample CSV to test the preview and commit flow before
+          importing a real store batch.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          {sampleArtifacts.map((artifact) => (
+            <div
+              key={artifact}
+              className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm font-medium text-black"
+            >
+              {artifact}
             </div>
           ))}
         </div>
