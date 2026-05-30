@@ -1,18 +1,18 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-05-30T17:31:15.304Z
+Generated: 2026-05-30T17:36:08.916Z
 
 ## Summary
 
-- Queue rows: 1330
+- Queue rows: 1335
 - Candidate rows: 0
-- Hold rows: 1330
+- Hold rows: 1335
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 1330
+- hold: 1335
 
 ## By Dataset
 
@@ -33,6 +33,7 @@ Generated: 2026-05-30T17:31:15.304Z
 - data/imports/purina_cat_chow_document_extract_v2.csv: 7
 - data/imports/ambrosia_document_extract_v2.csv: 6
 - data/imports/unica_natura_document_extract_v2.csv: 6
+- data/imports/dog_dog_wild_pdf_extract_v2.csv: 5
 - data/imports/prochoice_pdf_extract_v2.csv: 5
 - data/imports/royal_canin_cat_photo_pilot_v2.csv: 5
 - data/imports/schesir_dry_document_extract_v2.csv: 5
