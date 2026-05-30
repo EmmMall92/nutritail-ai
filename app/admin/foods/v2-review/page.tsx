@@ -79,6 +79,10 @@ function issueList(row: FoodV2AuditRow) {
   ];
 }
 
+function downloadExport(type: "products" | "audit") {
+  window.location.href = `/api/admin/foods/v2-export?type=${type}`;
+}
+
 export default function FoodV2ReviewPage() {
   const [data, setData] = useState<FoodV2ReviewResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -150,6 +154,20 @@ export default function FoodV2ReviewPage() {
             className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
           >
             Refresh
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadExport("products")}
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+          >
+            Export Products CSV
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadExport("audit")}
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+          >
+            Export Audit CSV
           </button>
           <Link
             href="/admin/foods/v2-preview"
