@@ -90,16 +90,23 @@ export function generateCompletenessScore(row: FoodRowLike) {
   let score = 0;
 
   if (hasText(food.ingredient_text) || hasArrayValues(food.ingredients)) {
-    score += 20;
+    score += 15;
   }
 
-  const coreAnalytics: Array<keyof FoodNutrientsV2> = [
-    "protein_percent",
-    "fat_percent",
-    "fiber_percent",
-    "ash_percent",
-    "moisture_percent",
-  ];
+  const coreAnalytics: Array<keyof FoodNutrientsV2> = food.format === "wet"
+    ? [
+        "protein_percent",
+        "fat_percent",
+        "fiber_percent",
+        "ash_percent",
+        "moisture_percent",
+      ]
+    : [
+        "protein_percent",
+        "fat_percent",
+        "fiber_percent",
+        "ash_percent",
+      ];
   score +=
     (coreAnalytics.filter((key) => hasNumber(nutrients[key])).length /
       coreAnalytics.length) *
@@ -117,9 +124,9 @@ export function generateCompletenessScore(row: FoodRowLike) {
   ];
   score +=
     (minerals.filter((key) => hasNumber(nutrients[key])).length / minerals.length) *
-    20;
+    25;
 
-  const additives: Array<keyof FoodNutrientsV2> = [
+  const functionalNutrients: Array<keyof FoodNutrientsV2> = [
     "omega3_percent",
     "omega6_percent",
     "dha_percent",
@@ -128,6 +135,13 @@ export function generateCompletenessScore(row: FoodRowLike) {
     "l_carnitine_mgkg",
     "glucosamine_mgkg",
     "chondroitin_mgkg",
+  ];
+  score +=
+    (functionalNutrients.filter((key) => hasNumber(nutrients[key])).length /
+      functionalNutrients.length) *
+    5;
+
+  const micronutrients: Array<keyof FoodNutrientsV2> = [
     "vitamin_a_iukg",
     "vitamin_d3_iukg",
     "vitamin_e_mgkg",
@@ -138,8 +152,8 @@ export function generateCompletenessScore(row: FoodRowLike) {
     "iodine_mgkg",
     "selenium_mgkg",
   ];
-  if (hasText(food.additives_text) || hasAnyNutrient(nutrients, additives)) {
-    score += 10;
+  if (hasText(food.additives_text) || hasAnyNutrient(nutrients, micronutrients)) {
+    score += 5;
   }
 
   if (food.source_priority === "official") score += 10;

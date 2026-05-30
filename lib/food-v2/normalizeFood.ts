@@ -224,7 +224,8 @@ export function normalizeMedicalTags(text: unknown) {
   const value = normalizeSearchText(text);
   const tags: string[] = [];
 
-  if (value.includes("urinary")) tags.push("urinary");
+  tags.push(...generateMedicalTags(text));
+  if (value.includes("obese") || value.includes("obesity")) tags.push("obesity");
   if (value.includes("renal") || value.includes("kidney")) tags.push("renal");
   if (value.includes("light") || value.includes("weight")) {
     tags.push("weight_management");
@@ -242,6 +243,8 @@ export function normalizeCommercialTags(text: unknown) {
   const value = normalizeSearchText(text);
   const tags: string[] = [];
 
+  tags.push(...generateHealthTags(text));
+  tags.push(...generateIngredientTags(text));
   if (value.includes("grain free") || value.includes("grain-free")) {
     tags.push("grain_free");
   }
@@ -250,6 +253,80 @@ export function normalizeCommercialTags(text: unknown) {
   if (value.includes("indoor")) tags.push("indoor");
   if (value.includes("sterilised") || value.includes("sterilized")) {
     tags.push("sterilised");
+  }
+
+  return [...new Set(tags)];
+}
+
+export function generateHealthTags(text: unknown) {
+  const value = normalizeSearchText(text);
+  const tags: string[] = [];
+
+  if (value.includes("sterilised") || value.includes("sterilized") || value.includes("neutered")) {
+    tags.push("sterilised");
+  }
+  if (value.includes("urinary")) tags.push("urinary");
+  if (value.includes("hairball")) tags.push("hairball");
+  if (value.includes("sensitive") && value.includes("digest")) {
+    tags.push("sensitive_digestion");
+  }
+  if (
+    value.includes("weight") ||
+    value.includes("light") ||
+    value.includes("satiety") ||
+    value.includes("obesity")
+  ) {
+    tags.push("weight_control");
+  }
+  if (value.includes("large") || value.includes("maxi") || value.includes("giant")) {
+    tags.push("large_breed");
+  }
+  if (value.includes("small") || value.includes("mini")) {
+    tags.push("small_breed");
+  }
+  if (value.includes("puppy") || value.includes("junior")) tags.push("puppy");
+  if (value.includes("kitten")) tags.push("kitten");
+  if (value.includes("senior") || value.includes("mature") || value.includes("8+")) {
+    tags.push("senior");
+  }
+
+  return [...new Set(tags)];
+}
+
+export function generateIngredientTags(text: unknown) {
+  const value = normalizeSearchText(text);
+  const tags: string[] = [];
+
+  if (value.includes("chicken")) tags.push("chicken");
+  if (value.includes("duck")) tags.push("duck");
+  if (value.includes("lamb")) tags.push("lamb");
+  if (value.includes("salmon")) tags.push("salmon");
+  if (value.includes("fish") || value.includes("herring") || value.includes("cod") || value.includes("sardine") || value.includes("tuna")) {
+    tags.push("fish");
+  }
+  if (value.includes("grain free") || value.includes("grain-free")) {
+    tags.push("grain_free");
+  }
+  if (value.includes("rice")) tags.push("rice");
+  if (value.includes("corn") || value.includes("maize")) tags.push("corn");
+  if (value.includes("pea")) tags.push("pea");
+  if (value.includes("potato")) tags.push("potato");
+
+  return [...new Set(tags)];
+}
+
+export function generateMedicalTags(text: unknown) {
+  const value = normalizeSearchText(text);
+  const tags: string[] = [];
+
+  if (value.includes("obesity") || value.includes("weight") || value.includes("satiety")) {
+    tags.push("obesity");
+  }
+  if (value.includes("urinary") || value.includes("struvite")) tags.push("urinary");
+  if (value.includes("renal") || value.includes("kidney")) tags.push("renal");
+  if (value.includes("allergy") || value.includes("hypoallergenic")) tags.push("allergy");
+  if (value.includes("gastro") || value.includes("digest") || value.includes("intestinal")) {
+    tags.push("gi_support");
   }
 
   return [...new Set(tags)];

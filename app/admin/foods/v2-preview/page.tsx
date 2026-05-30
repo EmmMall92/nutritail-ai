@@ -95,6 +95,11 @@ function downloadTemplate() {
   window.location.href = "/api/admin/foods/v2-template";
 }
 
+function formatNutrient(value: number | null | undefined, suffix = "%") {
+  if (value === null || value === undefined) return "-";
+  return `${value}${suffix}`;
+}
+
 export default function FoodV2PreviewPage() {
   const [preview, setPreview] = useState<FoodV2PreviewResult>(() =>
     previewFoodV2ManualRows(manualRows as unknown[])
@@ -517,6 +522,81 @@ export default function FoodV2PreviewPage() {
                     </p>
                   </div>
                 </div>
+
+                <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <p className="text-sm font-semibold text-black">
+                    Extracted nutrients
+                  </p>
+                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 xl:grid-cols-8">
+                    <div>
+                      <p className="text-gray-500">Fat</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.fat_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Fiber</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.fiber_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Ash</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.ash_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Moisture</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.moisture_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Calcium</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.calcium_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Phosphorus</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.phosphorus_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Omega 3</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.omega3_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Omega 6</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.omega6_percent)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {(row.food.medical_tags.length > 0 ||
+                  row.food.commercial_tags.length > 0) && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {[
+                      ...new Set([
+                        ...row.food.medical_tags,
+                        ...row.food.commercial_tags,
+                      ]),
+                    ].map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                  </div>
+                )}
 
                 {row.validation.missing_fields.length > 0 && (
                   <p className="mt-4 text-sm text-red-700">
