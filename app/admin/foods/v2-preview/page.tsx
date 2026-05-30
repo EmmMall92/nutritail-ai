@@ -102,6 +102,7 @@ export default function FoodV2PreviewPage() {
   const [error, setError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const [isCheckingConflicts, setIsCheckingConflicts] = useState(false);
+  const [showCommitConfirm, setShowCommitConfirm] = useState(false);
   const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
     null
   );
@@ -120,6 +121,7 @@ export default function FoodV2PreviewPage() {
       setError("");
       setCommitResult(null);
       setConflictResult(null);
+      setShowCommitConfirm(false);
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
     } catch (err) {
@@ -133,6 +135,7 @@ export default function FoodV2PreviewPage() {
     setError("");
     setCommitResult(null);
     setConflictResult(null);
+    setShowCommitConfirm(false);
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
   }
 
@@ -172,6 +175,7 @@ export default function FoodV2PreviewPage() {
     try {
       setError("");
       setCommitResult(null);
+      setShowCommitConfirm(false);
       setIsImporting(true);
 
       const response = await fetch("/api/admin/foods/v2-import", {
@@ -224,7 +228,7 @@ export default function FoodV2PreviewPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={commitImportableRows}
+                onClick={() => setShowCommitConfirm(true)}
                 disabled={isImporting || preview.summary.importableRows === 0}
                 className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
               >
@@ -293,6 +297,46 @@ export default function FoodV2PreviewPage() {
         {error && (
           <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {showCommitConfirm && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="font-semibold">Confirm Food V2 commit</p>
+                <p className="mt-2">
+                  This will write {preview.summary.importableRows} importable
+                  rows to Food V2 tables and audit all {preview.summary.totalRows}{" "}
+                  preview rows. Blocked rows will not be imported.
+                </p>
+                {conflictResult && (
+                  <p className="mt-2">
+                    Existing-key check: {conflictResult.newCount} new rows and{" "}
+                    {conflictResult.existingCount} rows that will update
+                    existing Food V2 records.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCommitConfirm(false)}
+                  className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-amber-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={commitImportableRows}
+                  disabled={isImporting}
+                  className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300"
+                >
+                  Confirm Commit
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
