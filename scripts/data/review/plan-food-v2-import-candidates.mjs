@@ -17,6 +17,7 @@ const inputs = [
   "data/imports/aatu_barking_heads_document_extract_v2.csv",
   "data/imports/schesir_dry_document_extract_v2.csv",
   "data/imports/unica_natura_document_extract_v2.csv",
+  "data/imports/cat_dry_analysis_document_extract_v2.csv",
 ];
 
 const paths = {
