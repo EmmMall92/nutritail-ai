@@ -13,6 +13,7 @@
     "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs",
     "collect:gatoskilo-products": "node scripts/data/collect/collect-gatoskilo-products.mjs",
     "collect:petshop88-products": "node scripts/data/collect/collect-petshop88-products.mjs",
+    "collect:external-product-sources": "node scripts/data/collect/collect-external-product-sources.mjs",
     "collect:purina-official-links": "node scripts/data/collect/collect-purina-official-links.mjs",
     "collect:schesir-royal-links": "node scripts/data/collect/collect-schesir-royal-links.mjs",
     "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs",

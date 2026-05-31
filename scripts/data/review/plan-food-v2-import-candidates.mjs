@@ -26,6 +26,7 @@ const inputs = [
   "data/imports/retailer_source_backfill_v2.csv",
   "data/imports/gatoskilo_product_extract_v2.csv",
   "data/imports/petshop88_product_extract_v2.csv",
+  "data/imports/external_product_sources_extract_v2.csv",
   "data/imports/dog_dog_wild_pdf_extract_v2.csv",
   "data/imports/prochoice_pdf_extract_v2.csv",
   "data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv",
