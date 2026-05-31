@@ -1,4 +1,9 @@
 import {
+  createCanonicalFoodIdentity,
+  groupByCanonicalFormula,
+  normalizeCanonicalFormulaName,
+} from "@/lib/food-v2/canonicalFood";
+import {
   createFormulaKey,
   detectCarbohydrateSources,
   detectFatSources,
@@ -37,6 +42,8 @@ export type FoodV2PreviewSummary = {
   warningCounts: Record<string, number>;
   impossibleValueCount: number;
   conflictCount: number;
+  canonicalDuplicateGroups: number;
+  canonicalDuplicateRows: number;
 };
 
 export type FoodV2PreviewResult = {
@@ -239,7 +246,9 @@ export function normalizeFoodV2RawRow(
   raw: Record<string, unknown>
 ): FoodImportRowV2 {
   const brand = normalizeBrand(raw.brand);
-  const formulaName = normalizeFormulaName(raw.formula_name);
+  const formulaName = normalizeCanonicalFormulaName(
+    normalizeFormulaName(raw.formula_name)
+  );
   const species = normalizeSpecies(raw.species);
   const format = normalizeFoodFormat(raw.format);
   const ingredientText = normalizeIngredientText(raw.ingredient_text);
@@ -259,25 +268,41 @@ export function normalizeFoodV2RawRow(
       `${raw.formula_name ?? ""} ${raw.display_name ?? ""} ${raw.commercial_tags ?? ""} ${raw.ingredient_text ?? ""} ${raw.ingredients ?? ""}`
     ),
   ];
-  const formula_key =
-    cleanString(raw.formula_key) ||
-    createFormulaKey({
-      brand,
-      formula_name: formulaName,
-      species,
-      format,
-    });
   const nutrients = buildNutrients(raw);
   const energy = resolveFoodEnergy(raw, nutrients, format);
+
+  const lifeStage = normalizeLifeStage(raw.life_stage);
+  const dogSize = normalizeDogSize(raw.dog_size);
+  const identity = createCanonicalFoodIdentity({
+    brand,
+    formula_name: formulaName,
+    species,
+    format,
+    life_stage: lifeStage,
+    dog_size: dogSize,
+  });
+  const formula_key =
+    normalizeBoolean(raw.preserve_formula_key, false) &&
+    cleanString(raw.formula_key)
+      ? cleanString(raw.formula_key)
+      : identity.canonical_formula_key ||
+        createFormulaKey({
+          brand,
+          formula_name: formulaName,
+          species,
+          format,
+        });
 
   const food: FoodProductV2 = {
     brand,
     formula_name: formulaName,
-    display_name: cleanString(raw.display_name) || `${brand} ${formulaName}`,
+    display_name:
+      normalizeCanonicalFormulaName(raw.display_name) ||
+      identity.standard_display_name,
     species,
     format,
-    life_stage: normalizeLifeStage(raw.life_stage),
-    dog_size: normalizeDogSize(raw.dog_size),
+    life_stage: lifeStage,
+    dog_size: dogSize,
     breed_target: nullIfEmpty(raw.breed_target),
     medical_tags: [...new Set(medicalTags)],
     commercial_tags: [...new Set(commercialTags)],
@@ -318,6 +343,7 @@ export function normalizeFoodV2RawRow(
     nutrients,
     raw,
     validation,
+    canonical: identity,
   };
 }
 
@@ -342,6 +368,7 @@ export function previewFoodV2ManualRows(rows: unknown[]) {
         nutrients,
         raw,
         validation,
+        canonical: createCanonicalFoodIdentity(food),
       };
     }
 
@@ -356,6 +383,10 @@ export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewRe
   const warningCounts: Record<string, number> = {};
   let impossibleValueCount = 0;
   let conflictCount = 0;
+  const canonicalDuplicateGroups = groupByCanonicalFormula(
+    rows,
+    (row) => row.food
+  );
 
   for (const row of rows) {
     for (const field of row.validation.missing_fields) {
@@ -364,8 +395,33 @@ export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewRe
     for (const warning of row.validation.warnings) {
       warningCounts[warning] = (warningCounts[warning] ?? 0) + 1;
     }
+    for (const conflict of row.validation.conflicts) {
+      warningCounts[conflict] = (warningCounts[conflict] ?? 0) + 1;
+    }
     impossibleValueCount += row.validation.impossible_values.length;
     conflictCount += row.validation.conflicts.length;
+  }
+
+  const canonicalDuplicateKeys = new Set(
+    canonicalDuplicateGroups.flatMap((group) =>
+      group.rows.map((row) => row.food.formula_key)
+    )
+  );
+
+  for (const row of rows) {
+    if (!row.canonical) {
+      row.canonical = createCanonicalFoodIdentity(row.food);
+    }
+    if (
+      canonicalDuplicateKeys.has(row.food.formula_key) &&
+      !row.validation.conflicts.includes("possible_canonical_duplicate")
+    ) {
+      row.validation.conflicts.push("possible_canonical_duplicate");
+      row.validation.warnings.push("possible_canonical_duplicate");
+      conflictCount += 1;
+      warningCounts.possible_canonical_duplicate =
+        (warningCounts.possible_canonical_duplicate ?? 0) + 1;
+    }
   }
 
   const averageCompleteness =
@@ -389,6 +445,8 @@ export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewRe
       warningCounts,
       impossibleValueCount,
       conflictCount,
+      canonicalDuplicateGroups: canonicalDuplicateGroups.length,
+      canonicalDuplicateRows: canonicalDuplicateKeys.size,
     },
   };
 }
