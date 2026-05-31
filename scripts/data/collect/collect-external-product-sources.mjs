@@ -5,6 +5,7 @@ const defaultUrls = [
   "https://www.zooplus.com/shop/dogs/dry_dog_food/briantos/grain_free/997870?activeVariant=997870.2",
   "https://josera.com/en/product/active-nature",
   "https://www.petsamolis.gr/skylos/trofes-skylon/xira-trofi-skylou/super-premium-skylon/akvateranaturesprot-supercarespecialneedsd-fsensitiveskinandstomachadultsmallbreeds1-5kg2040828",
+  "https://www.royalcanin.com/gr/dogs/products/retail-products/yorkshire-terrier-adult-3051",
 ];
 
 const paths = {
@@ -289,6 +290,11 @@ function mgField(text, labels) {
   return null;
 }
 
+function gPerKgToPercent(value) {
+  const parsed = numberValue(value);
+  return parsed === null ? "" : String(Math.round((parsed / 10) * 1000) / 1000);
+}
+
 function baseFoodRow(headers) {
   return Object.fromEntries(headers.map((header) => [header, ""]));
 }
@@ -506,10 +512,70 @@ function parsePetsamolis(html, url, headers) {
   });
 }
 
+function compositionValue(product, key) {
+  return cleanText(product.composition?.find((item) => item[key])?.[key] ?? "");
+}
+
+function parseRoyalCaninGr(html, url, headers) {
+  const product = nextData(html)?.props?.pageProps?.productData?.response?.original_product;
+  if (!product) throw new Error("Could not find Royal Canin product data");
+
+  const composition = compositionValue(product, "composition").replace(/^Σύνθεση\s*:?\s*/iu, "");
+  const additives = compositionValue(product, "additives").replace(/^Πρόσθετες ύλες\s*:?\s*/iu, "");
+  const analytical = compositionValue(product, "analytical_constituants");
+  const feedingInstructions = compositionValue(product, "feeding_instructions");
+  const kcalPerKg = numberValue(product.reference_energy_value_per_weight?.amount);
+
+  const row = {
+    ...baseFoodRow(headers),
+    brand: "Royal Canin",
+    formula_name: "Yorkshire Terrier Adult",
+    display_name: "Royal Canin Yorkshire Terrier Adult",
+    species: "dog",
+    format: "dry",
+    life_stage: "adult",
+    dog_size: "small",
+    breed_target: "Yorkshire Terrier",
+    ingredient_text: composition,
+    additives_text: additives,
+    feeding_guide_text: stripTags(`${product.feeding_guideline_html ?? ""} ${feedingInstructions}`),
+    kcal_per_kg: kcalPerKg ? String(kcalPerKg) : "",
+    kcal_per_100g: kcalPerKg ? String(round1(kcalPerKg / 10)) : "",
+    protein_percent: percentString(percentField(analytical, ["Πρωτεΐνη", "protein"])),
+    fat_percent: percentString(percentField(analytical, ["Περιεκτικότητα σε λιπαρά", "λιπαρά", "fat"])),
+    fiber_percent: percentString(percentField(analytical, ["Ακατέργαστες ίνες", "ίνες", "fiber"])),
+    ash_percent: percentString(percentField(analytical, ["Ακατέργαστη τέφρα", "τέφρα", "ash"])),
+    omega6_percent: gPerKgToPercent(analytical.match(/Omega\s*6[^:]*:\s*(\d+(?:[,.]\d+)?)\s*g/iu)?.[1]),
+    omega3_percent: gPerKgToPercent(analytical.match(/Omega\s*3[^:]*:\s*(\d+(?:[,.]\d+)?)\s*g/iu)?.[1]),
+    vitamin_a_iukg: String(numberValue(additives.match(/Βιταμίνη\s*Α\s*:?\s*(\d+(?:[,.]\d+)?)/iu)?.[1]) ?? ""),
+    vitamin_d3_iukg: String(numberValue(additives.match(/Βιταμίνη\s*D3\s*:?\s*(\d+(?:[,.]\d+)?)/iu)?.[1]) ?? ""),
+    iron_mgkg: String(mgField(additives, ["Σίδηρος", "Iron"]) ?? ""),
+    zinc_mgkg: String(mgField(additives, ["ψευδάργυρος", "Zinc"]) ?? ""),
+    manganese_mgkg: String(mgField(additives, ["Μαγγάνιο", "Manganese"]) ?? ""),
+    selenium_mgkg: String(mgField(additives, ["Σελήνιο", "Selenium"]) ?? ""),
+    data_quality_status: "needs_review",
+    data_source_url: url,
+    source_priority: "official",
+  };
+
+  return finishRow(row, {
+    market: "GR",
+    locale: "el",
+    sourceTier: "official",
+    sourceKind: "product_page",
+    notes: [
+      "official_structured_product_resource=true",
+      "breed_target=Yorkshire Terrier",
+      "missing_calcium_phosphorus_on_source=true",
+    ],
+  });
+}
+
 function parseRowForUrl(url, html, headers) {
   if (url.includes("zooplus.com")) return parseZooplus(html, url, headers);
   if (url.includes("josera.com")) return parseJosera(html, url, headers);
   if (url.includes("petsamolis.gr")) return parsePetsamolis(html, url, headers);
+  if (url.includes("royalcanin.com/gr")) return parseRoyalCaninGr(html, url, headers);
   throw new Error(`Unsupported source URL: ${url}`);
 }
 
