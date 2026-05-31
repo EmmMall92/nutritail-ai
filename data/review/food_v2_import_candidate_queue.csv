@@ -1,4 +1,5 @@
 decision,dataset_file,formula_key,brand,formula_name,species,quality_status,source_priority,missing_blockers,next_action
+candidate,data/imports/petshop88_product_extract_v2.csv,acana-classic-red-meat-dog-dry-gr-retailer,ACANA,Classic Red Meat,dog,needs_review,retailer,,Preview in admin and commit only after human QA.
 candidate,data/imports/gatoskilo_product_extract_v2.csv,happy-dog-naturcroq-duck-rice-sterilised-dog-dry-gr-retailer,Happy Dog,NaturCroq Duck & Rice Sterilised,dog,needs_review,retailer,,Preview in admin and commit only after human QA.
 candidate,data/imports/retailer_source_backfill_v2.csv,schesir-cat-sterilized-light-cat-dry-gr-document,Schesir,Cat Sterilized & Light με κοτόπουλο,cat,needs_review,official,,Preview in admin and commit only after human QA.
 candidate,data/imports/retailer_source_backfill_v2.csv,schesir-dry-kitten-cat-dry-gr-document,Schesir,Dry Kitten με κοτόπουλο,cat,needs_review,official,,Preview in admin and commit only after human QA.
