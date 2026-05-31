@@ -1,18 +1,18 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-05-31T16:26:16.877Z
+Generated: 2026-05-31T16:44:22.693Z
 
 ## Summary
 
-- Queue rows: 1466
+- Queue rows: 1467
 - Candidate rows: 13
-- Hold rows: 1453
+- Hold rows: 1454
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 1453
+- hold: 1454
 - candidate: 13
 
 ## By Dataset
@@ -23,7 +23,7 @@ Generated: 2026-05-31T16:26:16.877Z
 - data/imports/schesir_gheda_marketplace_ods_extract_v2.csv: 151
 - data/imports/gheda_schesir_spreadsheet_extract_v2.csv: 140
 - data/imports/purina_official_enrichment_extract_v2.csv: 75
-- data/imports/retailer_source_backfill_v2.csv: 50
+- data/imports/retailer_source_backfill_v2.csv: 51
 - data/imports/wave1_royal_josera_foods_v2.csv: 47
 - data/imports/royal_canin_dog_photo_batch_v2.csv: 29
 - data/imports/purina_pro_plan_dog_document_extract_v2.csv: 28
