@@ -35,6 +35,7 @@
     "extract:purina-cat-chow-document": "node scripts/data/normalize/extract-purina-cat-chow-document.mjs",
     "extract:purina-official-enrichment": "node scripts/data/normalize/extract-purina-official-enrichment.mjs",
     "extract:schesir-official-enrichment": "node scripts/data/normalize/extract-schesir-official-enrichment.mjs",
+    "backfill:retailer-sources": "node scripts/data/normalize/build-retailer-source-backfill.mjs",
     "extract:ambrosia-document": "node scripts/data/normalize/extract-ambrosia-document.mjs",
     "extract:belcando-document": "node scripts/data/normalize/extract-belcando-document.mjs",
     "extract:sams-field-document": "node scripts/data/normalize/extract-sams-field-document.mjs",

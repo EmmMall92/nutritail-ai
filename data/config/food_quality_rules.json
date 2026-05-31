@@ -30,7 +30,17 @@
       "allows_missing": ["sodium_percent", "magnesium_percent"]
     },
     "needs_review": {
-      "source_tiers": ["authorized", "photo"],
+      "source_tiers": ["authorized", "retailer", "distributor", "photo"],
+      "accepted_retailer_domains": [
+        "gatoskilo.gr",
+        "petshop88.gr",
+        "pet-it.gr",
+        "petcity.gr",
+        "petsamolis.gr",
+        "aigan.gr",
+        "kompa.gr",
+        "zooplus."
+      ],
       "merge_to_production": false
     },
     "unknown": {

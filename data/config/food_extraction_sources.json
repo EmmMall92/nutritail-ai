@@ -21,7 +21,7 @@
     "authorized_retailer": {
       "source_priority": "retailer",
       "default_quality": "needs_review",
-      "notes": "Retailer/distributor evidence; use for gaps but do not outrank official data."
+      "notes": "Retailer/distributor evidence; valid for needs_review rows and gap backfills, but do not outrank official data."
     },
     "pack_photo": {
       "source_priority": "manual_photo",
