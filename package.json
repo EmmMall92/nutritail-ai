@@ -14,6 +14,7 @@
     "collect:gatoskilo-products": "node scripts/data/collect/collect-gatoskilo-products.mjs",
     "collect:petshop88-products": "node scripts/data/collect/collect-petshop88-products.mjs",
     "collect:external-product-sources": "node scripts/data/collect/collect-external-product-sources.mjs",
+    "collect:category-product-sources": "node scripts/data/collect/collect-category-product-sources.mjs",
     "collect:purina-official-links": "node scripts/data/collect/collect-purina-official-links.mjs",
     "collect:schesir-royal-links": "node scripts/data/collect/collect-schesir-royal-links.mjs",
     "normalize:ambrosia": "node scripts/data/normalize/normalize-ambrosia-import.mjs",
