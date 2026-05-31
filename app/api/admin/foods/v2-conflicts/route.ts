@@ -1,12 +1,29 @@
 import { NextResponse } from "next/server";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import {
+  createCanonicalFoodIdentity,
+} from "@/lib/food-v2/canonicalFood";
+import type { FoodImportRowV2, FoodProductV2 } from "@/types/food-v2";
 
 type ExistingFoodV2Row = {
   formula_key: string;
   display_name: string;
+  brand?: string;
+  formula_name?: string;
+  species?: string;
+  format?: string;
+  life_stage?: string | null;
+  dog_size?: string | null;
   data_quality_status: string;
   updated_at: string | null;
+};
+
+type IncomingFoodV2Row = {
+  formula_key: string;
+  display_name: string;
+  brand: string;
+  canonical_formula_key: string;
 };
 
 function normalizeKeys(value: unknown) {
@@ -21,6 +38,27 @@ function normalizeKeys(value: unknown) {
   ];
 }
 
+function normalizeIncomingRows(value: unknown): IncomingFoodV2Row[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => item as Partial<FoodImportRowV2>)
+    .map((row) => {
+      const food = row.food;
+      if (!food?.formula_key) return null;
+
+      return {
+        formula_key: food.formula_key,
+        display_name: food.display_name,
+        brand: food.brand,
+        canonical_formula_key:
+          row.canonical?.canonical_formula_key ??
+          createCanonicalFoodIdentity(food).canonical_formula_key,
+      };
+    })
+    .filter((row): row is IncomingFoodV2Row => Boolean(row));
+}
+
 export async function POST(request: Request) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -28,29 +66,105 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const formulaKeys = normalizeKeys(body.formula_keys);
+    const incomingRows = normalizeIncomingRows(body.rows);
 
     if (formulaKeys.length === 0) {
       return NextResponse.json({
         existing: [],
         existingCount: 0,
         newCount: 0,
+        likelyDuplicates: [],
       });
     }
 
     const { data, error } = await supabaseAdmin
       .from("food_products_v2")
-      .select("formula_key, display_name, data_quality_status, updated_at")
+      .select(
+        "formula_key, display_name, brand, formula_name, species, format, life_stage, dog_size, data_quality_status, updated_at"
+      )
       .in("formula_key", formulaKeys);
 
     if (error) throw error;
 
     const existing = (data ?? []) as unknown as ExistingFoodV2Row[];
     const existingKeys = new Set(existing.map((row) => row.formula_key));
+    const incomingCanonicalKeys = [
+      ...new Set(incomingRows.map((row) => row.canonical_formula_key)),
+    ];
+    const likelyDuplicates: Array<{
+      canonical_formula_key: string;
+      incoming: IncomingFoodV2Row[];
+      existing: Array<
+        ExistingFoodV2Row & {
+          canonical_formula_key: string;
+        }
+      >;
+    }> = [];
+
+    if (incomingRows.length > 0) {
+      const brands = [
+        ...new Set(
+          incomingRows
+            .map((row) => row.brand)
+            .filter(Boolean)
+        ),
+      ];
+      const existingQuery = supabaseAdmin
+        .from("food_products_v2")
+        .select(
+          "formula_key, display_name, brand, formula_name, species, format, life_stage, dog_size, data_quality_status, updated_at"
+        );
+      const { data: allExistingData, error: allExistingError } =
+        brands.length > 0
+          ? await existingQuery.in("brand", brands)
+          : await existingQuery.limit(1000);
+
+      if (allExistingError) throw allExistingError;
+
+      const existingByCanonical = new Map<
+        string,
+        Array<ExistingFoodV2Row & { canonical_formula_key: string }>
+      >();
+
+      for (const row of (allExistingData ?? []) as unknown as ExistingFoodV2Row[]) {
+        const canonical_formula_key = createCanonicalFoodIdentity(
+          row as unknown as FoodProductV2
+        ).canonical_formula_key;
+        if (!incomingCanonicalKeys.includes(canonical_formula_key)) continue;
+        const group = existingByCanonical.get(canonical_formula_key) ?? [];
+        group.push({ ...row, canonical_formula_key });
+        existingByCanonical.set(canonical_formula_key, group);
+      }
+
+      const incomingByCanonical = new Map<string, IncomingFoodV2Row[]>();
+      for (const row of incomingRows) {
+        const group = incomingByCanonical.get(row.canonical_formula_key) ?? [];
+        group.push(row);
+        incomingByCanonical.set(row.canonical_formula_key, group);
+      }
+
+      const candidateKeys = new Set([
+        ...incomingCanonicalKeys.filter(
+          (key) =>
+            (incomingByCanonical.get(key)?.length ?? 0) > 1 ||
+            (existingByCanonical.get(key)?.length ?? 0) > 0
+        ),
+      ]);
+
+      for (const key of candidateKeys) {
+        likelyDuplicates.push({
+          canonical_formula_key: key,
+          incoming: incomingByCanonical.get(key) ?? [],
+          existing: existingByCanonical.get(key) ?? [],
+        });
+      }
+    }
 
     return NextResponse.json({
       existing,
       existingCount: existing.length,
       newCount: formulaKeys.filter((key) => !existingKeys.has(key)).length,
+      likelyDuplicates,
     });
   } catch (error) {
     return NextResponse.json(

@@ -102,4 +102,8 @@ export interface FoodImportRowV2 {
   nutrients: FoodNutrientsV2;
   raw: Record<string, unknown>;
   validation: FoodValidationV2;
+  canonical?: {
+    canonical_formula_key: string;
+    standard_display_name: string;
+  };
 }

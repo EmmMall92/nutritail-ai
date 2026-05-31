@@ -38,6 +38,15 @@ type ConflictCheckResult = {
   existing: ExistingFormulaMatch[];
   existingCount: number;
   newCount: number;
+  likelyDuplicates?: Array<{
+    canonical_formula_key: string;
+    incoming: Array<{
+      formula_key: string;
+      display_name: string;
+      canonical_formula_key: string;
+    }>;
+    existing: ExistingFormulaMatch[];
+  }>;
 };
 
 type RowFilter = "all" | "importable" | "blocked" | "new" | "update";
@@ -116,6 +125,8 @@ function downloadRowsCsv(
 ) {
   const headers = [
     "formula_key",
+    "canonical_formula_key",
+    "standard_display_name",
     "brand",
     "formula_name",
     "display_name",
@@ -138,6 +149,8 @@ function downloadRowsCsv(
     ...rows.map((row) =>
       [
         row.food.formula_key,
+        row.canonical?.canonical_formula_key ?? "",
+        row.canonical?.standard_display_name ?? row.food.display_name,
         row.food.brand,
         row.food.formula_name,
         row.food.display_name,
@@ -207,7 +220,7 @@ export default function FoodV2PreviewPage() {
         (rowFilter === "update" && conflictResult && exists);
       const matchesSearch =
         !searchText ||
-        `${row.food.brand} ${row.food.display_name} ${row.food.formula_key}`
+        `${row.food.brand} ${row.food.display_name} ${row.food.formula_key} ${row.canonical?.canonical_formula_key ?? ""} ${row.canonical?.standard_display_name ?? ""}`
           .toLowerCase()
           .includes(searchText);
 
@@ -276,6 +289,7 @@ export default function FoodV2PreviewPage() {
         },
         body: JSON.stringify({
           formula_keys: rowsForCommit.map((row) => row.food.formula_key),
+          rows: rowsForCommit,
         }),
       });
 
@@ -518,6 +532,36 @@ export default function FoodV2PreviewPage() {
               {conflictResult.existingCount} rows already exist in Food V2.
               Existing rows will be updated if committed.
             </p>
+            {(conflictResult.likelyDuplicates?.length ?? 0) > 0 && (
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900">
+                <p className="font-semibold">
+                  {conflictResult.likelyDuplicates?.length} possible canonical
+                  duplicate groups found.
+                </p>
+                <p className="mt-1">
+                  These may be the same formula from another site, PDF, or pack
+                  size. Review before committing.
+                </p>
+                <div className="mt-3 space-y-2">
+                  {conflictResult.likelyDuplicates?.slice(0, 5).map((group) => (
+                    <div
+                      key={group.canonical_formula_key}
+                      className="rounded-lg bg-white/70 p-3"
+                    >
+                      <p className="break-all text-xs font-semibold">
+                        {group.canonical_formula_key}
+                      </p>
+                      <p className="mt-1 text-xs">
+                        Incoming: {group.incoming.length}
+                        {group.existing.length > 0
+                          ? ` - Existing DB matches: ${group.existing.length}`
+                          : ""}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -723,6 +767,22 @@ export default function FoodV2PreviewPage() {
                     <p className="mt-2 break-all text-xs text-gray-500">
                       {row.food.formula_key}
                     </p>
+                    {row.canonical && (
+                      <div className="mt-3 rounded-xl bg-gray-50 p-3 text-xs text-gray-600">
+                        <p>
+                          <span className="font-semibold text-black">
+                            Standard:
+                          </span>{" "}
+                          {row.canonical.standard_display_name}
+                        </p>
+                        <p className="mt-1 break-all">
+                          <span className="font-semibold text-black">
+                            Canonical:
+                          </span>{" "}
+                          {row.canonical.canonical_formula_key}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap items-start gap-3">
