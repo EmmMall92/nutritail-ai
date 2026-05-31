@@ -5,7 +5,7 @@ import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 const PRODUCT_LIMIT = 100;
 const AUDIT_LIMIT = 50;
-const QUEUE_LIMIT = 500;
+const QUEUE_LIMIT = 1600;
 
 function parseCsv(text: string) {
   const rows: string[][] = [];
@@ -94,12 +94,36 @@ async function readImportQueue() {
       {}
     );
 
+    const datasetCounts = rows.reduce<Record<string, number>>((acc, row) => {
+      const dataset = row.dataset_file || "Unknown";
+      acc[dataset] = (acc[dataset] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const speciesCounts = rows.reduce<Record<string, number>>((acc, row) => {
+      const species = row.species || "unknown";
+      acc[species] = (acc[species] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const qualityStatusCounts = rows.reduce<Record<string, number>>(
+      (acc, row) => {
+        const status = row.quality_status || "unknown";
+        acc[status] = (acc[status] ?? 0) + 1;
+        return acc;
+      },
+      {}
+    );
+
     return {
       summary: {
         totalRows: rows.length,
         decisionCounts,
         brandCounts,
         missingFieldCounts,
+        datasetCounts,
+        speciesCounts,
+        qualityStatusCounts,
       },
       rows: rows.slice(0, QUEUE_LIMIT),
     };
@@ -110,6 +134,9 @@ async function readImportQueue() {
         decisionCounts: {},
         brandCounts: {},
         missingFieldCounts: {},
+        datasetCounts: {},
+        speciesCounts: {},
+        qualityStatusCounts: {},
       },
       rows: [],
     };
