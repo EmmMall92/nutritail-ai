@@ -143,9 +143,32 @@ function brandForUrl(url, title = "") {
 }
 
 function speciesForUrl(url, title = "") {
-  const text = `${url} ${title}`.toLowerCase();
-  if (text.includes("/cats/") || text.includes("/cat") || text.includes("gatas") || text.includes("gata")) return "cat";
-  if (text.includes("/dogs/") || text.includes("/dog") || text.includes("skyloy") || text.includes("skylou")) return "dog";
+  const parsed = new URL(url);
+  const pathSegments = parsed.pathname
+    .toLowerCase()
+    .split("/")
+    .filter(Boolean);
+  const text = `${parsed.pathname} ${title}`.toLowerCase();
+  if (
+    pathSegments.includes("cats") ||
+    pathSegments.includes("cat") ||
+    text.includes("dry-food-cat") ||
+    text.includes("ksira-trofi-gatas") ||
+    text.includes("gatas") ||
+    text.includes("gata")
+  ) {
+    return "cat";
+  }
+  if (
+    pathSegments.includes("dogs") ||
+    pathSegments.includes("dog") ||
+    text.includes("dry-food-dog") ||
+    text.includes("ksira-trofi-skyloy") ||
+    text.includes("skyloy") ||
+    text.includes("skylou")
+  ) {
+    return "dog";
+  }
   return "";
 }
 
