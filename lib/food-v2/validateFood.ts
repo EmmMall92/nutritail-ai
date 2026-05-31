@@ -185,6 +185,9 @@ export function validateFoodImportRow(
   if (row.food.source_priority === "manual_photo") {
     warnings.push("manual photo rows require human verification before publish");
   }
+  if (row.food.source_notes?.includes("kcal_estimated=true")) {
+    warnings.push("kcal_per_100g is estimated from modified Atwater factors");
+  }
 
   const completenessScore = generateCompletenessScore(row);
 
