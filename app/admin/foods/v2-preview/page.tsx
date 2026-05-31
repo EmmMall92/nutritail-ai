@@ -40,6 +40,8 @@ type ConflictCheckResult = {
   newCount: number;
 };
 
+type RowFilter = "all" | "importable" | "blocked" | "new" | "update";
+
 function SummaryCard({
   label,
   value,
@@ -100,24 +102,134 @@ function formatNutrient(value: number | null | undefined, suffix = "%") {
   return `${value}${suffix}`;
 }
 
+function csvCell(value: unknown) {
+  if (Array.isArray(value)) return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+  if (value && typeof value === "object") {
+    return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+  }
+  return `"${String(value ?? "").replace(/"/g, '""')}"`;
+}
+
+function downloadRowsCsv(
+  filename: string,
+  rows: FoodV2PreviewResult["rows"]
+) {
+  const headers = [
+    "formula_key",
+    "brand",
+    "formula_name",
+    "display_name",
+    "species",
+    "format",
+    "life_stage",
+    "dog_size",
+    "data_quality_status",
+    "source_priority",
+    "data_source_url",
+    "completeness_score",
+    "is_importable",
+    "missing_fields",
+    "warnings",
+    "impossible_values",
+    "conflicts",
+  ];
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) =>
+      [
+        row.food.formula_key,
+        row.food.brand,
+        row.food.formula_name,
+        row.food.display_name,
+        row.food.species,
+        row.food.format,
+        row.food.life_stage,
+        row.food.dog_size ?? "",
+        row.food.data_quality_status,
+        row.food.source_priority,
+        row.food.data_source_url ?? "",
+        row.validation.completeness_score,
+        row.validation.is_importable ? "true" : "false",
+        row.validation.missing_fields,
+        row.validation.warnings,
+        row.validation.impossible_values,
+        row.validation.conflicts,
+      ]
+        .map(csvCell)
+        .join(",")
+    ),
+  ].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 export default function FoodV2PreviewPage() {
   const [preview, setPreview] = useState<FoodV2PreviewResult>(() =>
     previewFoodV2ManualRows(manualRows as unknown[])
   );
+  const [sourceLabel, setSourceLabel] = useState("Manual sample");
   const [error, setError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const [isCheckingConflicts, setIsCheckingConflicts] = useState(false);
   const [showCommitConfirm, setShowCommitConfirm] = useState(false);
+  const [rowFilter, setRowFilter] = useState<RowFilter>("all");
+  const [rowSearch, setRowSearch] = useState("");
+  const [selectedFormulaKeys, setSelectedFormulaKeys] = useState<string[]>([]);
   const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
     null
   );
   const [conflictResult, setConflictResult] =
     useState<ConflictCheckResult | null>(null);
 
+  const existingFormulaKeyMap = useMemo(() => {
+    return new Map(
+      (conflictResult?.existing ?? []).map((row) => [row.formula_key, row])
+    );
+  }, [conflictResult]);
+
+  const visibleRows = useMemo(() => {
+    const searchText = rowSearch.trim().toLowerCase();
+
+    return preview.rows.filter((row) => {
+      const exists = existingFormulaKeyMap.has(row.food.formula_key);
+      const matchesFilter =
+        rowFilter === "all" ||
+        (rowFilter === "importable" && row.validation.is_importable) ||
+        (rowFilter === "blocked" && !row.validation.is_importable) ||
+        (rowFilter === "new" && conflictResult && !exists) ||
+        (rowFilter === "update" && conflictResult && exists);
+      const matchesSearch =
+        !searchText ||
+        `${row.food.brand} ${row.food.display_name} ${row.food.formula_key}`
+          .toLowerCase()
+          .includes(searchText);
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [conflictResult, existingFormulaKeyMap, preview.rows, rowFilter, rowSearch]);
+
+  const selectedRows = useMemo(() => {
+    const selected = new Set(selectedFormulaKeys);
+    return preview.rows.filter((row) => selected.has(row.food.formula_key));
+  }, [preview.rows, selectedFormulaKeys]);
+
+  const rowsForCommit =
+    selectedRows.length > 0 ? selectedRows : preview.rows;
+  const importableRowsForCommit = rowsForCommit.filter(
+    (row) => row.validation.is_importable
+  );
+
   const rowLimitNotice = useMemo(() => {
-    if (preview.rows.length <= 25) return "";
-    return `Showing first 25 of ${preview.rows.length} rows.`;
-  }, [preview.rows.length]);
+    if (visibleRows.length <= 50) return "Showing all matching preview rows.";
+    return `Showing first 50 of ${visibleRows.length} matching rows.`;
+  }, [visibleRows.length]);
 
   async function handleCsvFile(file: File | null) {
     if (!file) return;
@@ -127,8 +239,11 @@ export default function FoodV2PreviewPage() {
       setCommitResult(null);
       setConflictResult(null);
       setShowCommitConfirm(false);
+      setSelectedFormulaKeys([]);
+      setRowFilter("all");
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
+      setSourceLabel(file.name);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not parse this CSV file."
@@ -141,6 +256,10 @@ export default function FoodV2PreviewPage() {
     setCommitResult(null);
     setConflictResult(null);
     setShowCommitConfirm(false);
+    setSelectedFormulaKeys([]);
+    setRowFilter("all");
+    setRowSearch("");
+    setSourceLabel("Manual sample");
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
   }
 
@@ -156,7 +275,7 @@ export default function FoodV2PreviewPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          formula_keys: preview.rows.map((row) => row.food.formula_key),
+          formula_keys: rowsForCommit.map((row) => row.food.formula_key),
         }),
       });
 
@@ -188,7 +307,7 @@ export default function FoodV2PreviewPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ rows: preview.rows }),
+        body: JSON.stringify({ rows: rowsForCommit }),
       });
 
       const result = await response.json();
@@ -205,11 +324,23 @@ export default function FoodV2PreviewPage() {
     }
   }
 
-  const existingFormulaKeyMap = useMemo(() => {
-    return new Map(
-      (conflictResult?.existing ?? []).map((row) => [row.formula_key, row])
+  function toggleRowSelection(formulaKey: string) {
+    setSelectedFormulaKeys((current) =>
+      current.includes(formulaKey)
+        ? current.filter((key) => key !== formulaKey)
+        : [...current, formulaKey]
     );
-  }, [conflictResult]);
+  }
+
+  function selectVisibleImportableRows() {
+    setSelectedFormulaKeys([
+      ...new Set(
+        visibleRows
+          .filter((row) => row.validation.is_importable)
+          .map((row) => row.food.formula_key)
+      ),
+    ]);
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -234,10 +365,14 @@ export default function FoodV2PreviewPage() {
               <button
                 type="button"
                 onClick={() => setShowCommitConfirm(true)}
-                disabled={isImporting || preview.summary.importableRows === 0}
+                disabled={isImporting || importableRowsForCommit.length === 0}
                 className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
               >
-                {isImporting ? "Importing..." : "Commit Importable"}
+                {isImporting
+                  ? "Importing..."
+                  : selectedRows.length > 0
+                    ? "Commit Selected"
+                    : "Commit Importable"}
               </button>
               <button
                 type="button"
@@ -249,7 +384,7 @@ export default function FoodV2PreviewPage() {
               <button
                 type="button"
                 onClick={checkExistingFormulaKeys}
-                disabled={isCheckingConflicts || preview.rows.length === 0}
+                disabled={isCheckingConflicts || rowsForCommit.length === 0}
                 className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-500"
               >
                 {isCheckingConflicts ? "Checking..." : "Check Existing"}
@@ -296,6 +431,9 @@ export default function FoodV2PreviewPage() {
               This page does not write to Supabase. It only parses, normalizes,
               and validates the import rows in your browser session.
             </p>
+            <p className="mt-2 text-xs text-gray-500">
+              Current source: {sourceLabel}
+            </p>
           </div>
         </div>
 
@@ -311,9 +449,10 @@ export default function FoodV2PreviewPage() {
               <div>
                 <p className="font-semibold">Confirm Food V2 commit</p>
                 <p className="mt-2">
-                  This will write {preview.summary.importableRows} importable
-                  rows to Food V2 tables and audit all {preview.summary.totalRows}{" "}
-                  preview rows. Blocked rows will not be imported.
+                  This will write {importableRowsForCommit.length} importable
+                  rows to Food V2 tables and audit {rowsForCommit.length}{" "}
+                  selected preview rows. Blocked selected rows will not be
+                  imported.
                 </p>
                 {conflictResult && (
                   <p className="mt-2">
@@ -382,6 +521,106 @@ export default function FoodV2PreviewPage() {
           </div>
         )}
 
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-black">
+                Import Decision Controls
+              </h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Filter rows, select only the formulas you want, then run
+                conflict check and commit that exact selection.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full bg-gray-100 px-3 py-1 text-black">
+                {visibleRows.length} visible
+              </span>
+              <span className="rounded-full bg-gray-100 px-3 py-1 text-black">
+                {selectedRows.length} selected
+              </span>
+              <span className="rounded-full bg-green-50 px-3 py-1 text-green-800">
+                {importableRowsForCommit.length} commit-ready
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Row search
+              </label>
+              <input
+                value={rowSearch}
+                onChange={(event) => setRowSearch(event.target.value)}
+                placeholder="Search brand, formula, key..."
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Row filter
+              </label>
+              <select
+                value={rowFilter}
+                onChange={(event) => setRowFilter(event.target.value as RowFilter)}
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              >
+                <option value="all">All rows</option>
+                <option value="importable">Importable only</option>
+                <option value="blocked">Blocked only</option>
+                <option value="new">New after conflict check</option>
+                <option value="update">Will update after conflict check</option>
+              </select>
+            </div>
+            <div className="flex flex-wrap items-end gap-2">
+              <button
+                type="button"
+                onClick={selectVisibleImportableRows}
+                className="rounded-xl border border-black px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Select Visible Importable
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedFormulaKeys([])}
+                className="rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Clear Selection
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                downloadRowsCsv(
+                  "nutritail-food-v2-visible-preview-review.csv",
+                  visibleRows
+                )
+              }
+              disabled={visibleRows.length === 0}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-xs text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+            >
+              Export visible review CSV
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                downloadRowsCsv(
+                  "nutritail-food-v2-blocked-preview-review.csv",
+                  preview.rows.filter((row) => !row.validation.is_importable)
+                )
+              }
+              disabled={preview.summary.blockedRows === 0}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-xs text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+            >
+              Export blocked rows
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
           <SummaryCard
             label="Total Rows"
@@ -437,10 +676,14 @@ export default function FoodV2PreviewPage() {
           </div>
 
           <div className="mt-5 space-y-4">
-            {preview.rows.slice(0, 25).map((row, index) => (
+            {visibleRows.slice(0, 50).map((row, index) => (
               <div
                 key={`${row.food.formula_key}-${index}`}
-                className="rounded-2xl border border-gray-200 p-5"
+                className={`rounded-2xl border p-5 ${
+                  selectedFormulaKeys.includes(row.food.formula_key)
+                    ? "border-blue-300 bg-blue-50"
+                    : "border-gray-200 bg-white"
+                }`}
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>
@@ -482,11 +725,24 @@ export default function FoodV2PreviewPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-gray-200 px-4 py-3 text-center">
-                    <p className="text-xs text-gray-500">Score</p>
-                    <p className="text-2xl font-bold text-black">
-                      {row.validation.completeness_score}%
-                    </p>
+                  <div className="flex flex-wrap items-start gap-3">
+                    <label className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black">
+                      <input
+                        type="checkbox"
+                        checked={selectedFormulaKeys.includes(
+                          row.food.formula_key
+                        )}
+                        onChange={() => toggleRowSelection(row.food.formula_key)}
+                        className="h-4 w-4"
+                      />
+                      Select
+                    </label>
+                    <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-center">
+                      <p className="text-xs text-gray-500">Score</p>
+                      <p className="text-2xl font-bold text-black">
+                        {row.validation.completeness_score}%
+                      </p>
+                    </div>
                   </div>
                 </div>
 
