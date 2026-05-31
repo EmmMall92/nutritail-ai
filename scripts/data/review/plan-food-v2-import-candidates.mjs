@@ -23,6 +23,7 @@ const inputs = [
   "data/imports/gheda_schesir_spreadsheet_extract_v2.csv",
   "data/imports/schesir_gheda_marketplace_ods_extract_v2.csv",
   "data/imports/schesir_official_enrichment_extract_v2.csv",
+  "data/imports/retailer_source_backfill_v2.csv",
   "data/imports/dog_dog_wild_pdf_extract_v2.csv",
   "data/imports/prochoice_pdf_extract_v2.csv",
   "data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv",
