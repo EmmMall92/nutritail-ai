@@ -57,6 +57,7 @@
     "extract:mixed-eshop-spreadsheet": "node scripts/data/normalize/extract-mixed-eshop-spreadsheet.mjs",
     "extract:dog-dog-wild-pdf": "C:/Users/NIOstb/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe scripts/data/normalize/extract-dog-dog-wild-pdf.py",
     "extract:prochoice-pdf": "C:/Users/NIOstb/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe scripts/data/normalize/extract-prochoice-pdf.py",
+    "extract:monge-family-pdfs": "C:/Users/NIOstb/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe scripts/data/normalize/extract-monge-family-pdfs.py",
     "extract:pareto-food-priority": "node scripts/data/review/extract-pareto-food-priority-sidecar.mjs",
     "audit:louka-products-source": "node scripts/data/review/audit-louka-products-source.mjs",
     "audit:remaining-pdf-sources": "C:/Users/NIOstb/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe scripts/data/review/audit-remaining-pdf-sources.py",
