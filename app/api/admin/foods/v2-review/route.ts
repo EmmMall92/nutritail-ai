@@ -34,6 +34,16 @@ type QueueCsvRow = {
   next_action?: string;
 };
 
+type ParsedCsv = {
+  headers: string[];
+  rows: Array<Record<string, string>>;
+};
+
+type DatasetIndex = {
+  headers: string[];
+  rowsByFormulaKey: Map<string, Record<string, string>>;
+};
+
 type EnrichedQueueRow = QueueCsvRow & {
   display_brand: string;
   display_formula_name: string;
@@ -121,9 +131,9 @@ function classifyReviewBucket(row: QueueCsvRow, textIssue: boolean) {
   return "needs_manual_review";
 }
 
-function buildPreviewRow(row: QueueCsvRow, displayFormulaName: string) {
-  const format = inferFormat(row);
-  const sourceNotes = [
+function buildSourceNotes(row: QueueCsvRow, fullRow?: Record<string, string>) {
+  const existingNotes = String(fullRow?.source_notes ?? "").trim();
+  const queueNotes = [
     `source_file=${row.dataset_file ?? ""}`,
     `queue_decision=${row.decision ?? ""}`,
     `missing_blockers=${row.missing_blockers ?? "none"}`,
@@ -132,12 +142,45 @@ function buildPreviewRow(row: QueueCsvRow, displayFormulaName: string) {
     .filter(Boolean)
     .join("; ");
 
+  return [existingNotes, queueNotes].filter(Boolean).join("; ");
+}
+
+function buildPreviewRow(
+  row: QueueCsvRow,
+  displayBrand: string,
+  displayFormulaName: string,
+  fullRow?: Record<string, string>
+) {
+  const sourceNotes = buildSourceNotes(row, fullRow);
+
+  if (fullRow) {
+    const brand = displayBrand || fullRow.brand || row.brand || "";
+    const formulaName =
+      displayFormulaName || fullRow.formula_name || row.formula_name || "";
+
+    return {
+      ...fullRow,
+      brand,
+      formula_name: formulaName,
+      display_name: fullRow.display_name || `${brand} ${formulaName}`.trim(),
+      species: fullRow.species || row.species || "dog",
+      format: fullRow.format || inferFormat(row),
+      data_quality_status:
+        fullRow.data_quality_status || row.quality_status || "needs_review",
+      source_priority: fullRow.source_priority || row.source_priority || "unknown",
+      source_notes: sourceNotes,
+      formula_key: fullRow.formula_key || row.formula_key || "",
+    };
+  }
+
+  const format = inferFormat(row);
+
   return Object.fromEntries(
     FOOD_V2_PREVIEW_HEADERS.map((header) => {
       const values: Record<(typeof FOOD_V2_PREVIEW_HEADERS)[number], string> = {
-        brand: row.brand ?? "",
+        brand: displayBrand || row.brand || "",
         formula_name: displayFormulaName,
-        display_name: `${row.brand ?? ""} ${displayFormulaName}`.trim(),
+        display_name: `${displayBrand || row.brand || ""} ${displayFormulaName}`.trim(),
         species: row.species || "dog",
         format,
         life_stage: "unknown",
@@ -154,7 +197,7 @@ function buildPreviewRow(row: QueueCsvRow, displayFormulaName: string) {
   );
 }
 
-function parseCsv(text: string): Array<Record<string, string>> {
+function parseCsvWithHeaders(text: string): ParsedCsv {
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
@@ -200,11 +243,53 @@ function parseCsv(text: string): Array<Record<string, string>> {
     header.replace(/^\uFEFF/, "").trim()
   );
 
-  return rows.slice(1).map((values) =>
-    Object.fromEntries(
-      headers.map((header, index) => [header, values[index] ?? ""])
-    ) as Record<string, string>
-  );
+  return {
+    headers,
+    rows: rows.slice(1).map((values) =>
+      Object.fromEntries(
+        headers.map((header, index) => [header, values[index] ?? ""])
+      ) as Record<string, string>
+    ),
+  };
+}
+
+function parseCsv(text: string): Array<Record<string, string>> {
+  return parseCsvWithHeaders(text).rows;
+}
+
+function appendUniqueHeaders(target: string[], headers: string[]) {
+  headers.forEach((header) => {
+    if (header && !target.includes(header)) target.push(header);
+  });
+}
+
+async function readDatasetIndexes(datasetFiles: string[]) {
+  const indexes = new Map<string, DatasetIndex>();
+  const previewHeaders: string[] = [];
+
+  for (const datasetFile of datasetFiles) {
+    try {
+      const parsed = parseCsvWithHeaders(await readFile(datasetFile, "utf8"));
+      indexes.set(datasetFile, {
+        headers: parsed.headers,
+        rowsByFormulaKey: new Map(
+          parsed.rows
+            .filter((row) => row.formula_key)
+            .map((row) => [row.formula_key, row])
+        ),
+      });
+      appendUniqueHeaders(previewHeaders, parsed.headers);
+    } catch {
+      // Missing source files should not hide the queue; those rows fall back to
+      // the minimal preview shape and stay blocked until the source is restored.
+    }
+  }
+
+  if (previewHeaders.length === 0) {
+    appendUniqueHeaders(previewHeaders, [...FOOD_V2_PREVIEW_HEADERS]);
+  }
+
+  return { indexes, previewHeaders };
 }
 
 async function readImportQueue() {
@@ -214,6 +299,10 @@ async function readImportQueue() {
       "utf8"
     );
     const rows = parseCsv(csv) as QueueCsvRow[];
+    const datasetFiles = Array.from(
+      new Set(rows.map((row) => row.dataset_file).filter(Boolean))
+    ) as string[];
+    const { indexes, previewHeaders } = await readDatasetIndexes(datasetFiles);
 
     const enrichedRows: EnrichedQueueRow[] = rows.map((row) => {
       const formulaRepair = repairGreekMojibake(String(row.formula_name ?? ""));
@@ -223,6 +312,10 @@ async function readImportQueue() {
         brandRepair.repaired ? "brand_encoding_repaired" : "",
       ].filter(Boolean);
       const reviewBucket = classifyReviewBucket(row, textIssues.length > 0);
+      const fullRow =
+        row.dataset_file && row.formula_key
+          ? indexes.get(row.dataset_file)?.rowsByFormulaKey.get(row.formula_key)
+          : undefined;
 
       return {
         ...row,
@@ -230,7 +323,12 @@ async function readImportQueue() {
         display_formula_name: formulaRepair.value,
         text_issues: textIssues.join("|"),
         review_bucket: reviewBucket,
-        preview_row: buildPreviewRow(row, formulaRepair.value),
+        preview_row: buildPreviewRow(
+          row,
+          brandRepair.value,
+          formulaRepair.value,
+          fullRow
+        ),
       };
     });
 
@@ -315,7 +413,7 @@ async function readImportQueue() {
         qualityStatusCounts,
         reviewBucketCounts,
         textIssueCounts,
-        previewHeaders: [...FOOD_V2_PREVIEW_HEADERS],
+        previewHeaders,
       },
       rows: enrichedRows.slice(0, QUEUE_LIMIT),
     };
