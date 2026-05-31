@@ -1,9 +1,10 @@
 # Petshop88 Product Extract
 
-- Product rows extracted: 1
-- Registry links queued: 0
-- Importable after QA: 1
-- Needs backfill/errors: 0
+- Product rows extracted: 33
+- Registry links queued: 48
+- Importable after QA: 2
+- Duplicate pack variants skipped: 15
+- Needs backfill/errors: 31
 
 Outputs:
 - data/imports/petshop88_product_extract_v2.csv
