@@ -36,11 +36,16 @@ type FoodV2QueueRow = {
   formula_key: string;
   brand: string;
   formula_name: string;
+  display_brand: string;
+  display_formula_name: string;
   species: string;
   quality_status: string;
   source_priority: string;
   missing_blockers: string;
   next_action: string;
+  text_issues: string;
+  review_bucket: string;
+  preview_row: Record<string, string>;
 };
 
 type FoodV2ReviewResponse = {
@@ -63,6 +68,9 @@ type FoodV2ReviewResponse = {
       datasetCounts: Record<string, number>;
       speciesCounts: Record<string, number>;
       qualityStatusCounts: Record<string, number>;
+      reviewBucketCounts: Record<string, number>;
+      textIssueCounts: Record<string, number>;
+      previewHeaders: string[];
     };
     rows: FoodV2QueueRow[];
   };
@@ -122,12 +130,35 @@ async function copyText(value: string) {
 function queueReviewNote(row: FoodV2QueueRow) {
   return [
     `formula_key=${row.formula_key}`,
-    `brand=${row.brand}`,
-    `formula=${row.formula_name}`,
+    `brand=${row.display_brand || row.brand}`,
+    `formula=${row.display_formula_name || row.formula_name}`,
+    `review_bucket=${row.review_bucket}`,
     `source_file=${row.dataset_file}`,
     `missing=${row.missing_blockers || "none"}`,
     `next=${row.next_action || "manual review"}`,
   ].join("\n");
+}
+
+function csvCell(value: unknown) {
+  return `"${String(value ?? "").replace(/"/g, '""')}"`;
+}
+
+function downloadCsv(filename: string, headers: string[], rows: FoodV2QueueRow[]) {
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) =>
+      headers.map((header) => csvCell(row.preview_row?.[header] ?? "")).join(",")
+    ),
+  ].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 export default function FoodV2ReviewPage() {
@@ -142,7 +173,9 @@ export default function FoodV2ReviewPage() {
   const [queueBrandFilter, setQueueBrandFilter] = useState("all");
   const [queueSpeciesFilter, setQueueSpeciesFilter] = useState("all");
   const [queueDatasetFilter, setQueueDatasetFilter] = useState("all");
+  const [queueBucketFilter, setQueueBucketFilter] = useState("all");
   const [selectedQueueKey, setSelectedQueueKey] = useState<string | null>(null);
+  const [selectedQueueKeys, setSelectedQueueKeys] = useState<string[]>([]);
 
   async function loadReview() {
     try {
@@ -207,6 +240,10 @@ export default function FoodV2ReviewPage() {
     return sortCounts(queueSummary?.speciesCounts ?? {});
   }, [queueSummary?.speciesCounts]);
 
+  const reviewBucketOptions = useMemo(() => {
+    return sortCounts(queueSummary?.reviewBucketCounts ?? {});
+  }, [queueSummary?.reviewBucketCounts]);
+
   const visibleQueueRows = useMemo(() => {
     const queueRows = data?.importQueue?.rows ?? [];
     const searchText = queueSearch.trim().toLowerCase();
@@ -223,11 +260,14 @@ export default function FoodV2ReviewPage() {
         queueBlockerFilter === "all" ||
         row.missing_blockers.split("|").includes(queueBlockerFilter);
       const matchesBrand =
-        queueBrandFilter === "all" || row.brand === queueBrandFilter;
+        queueBrandFilter === "all" ||
+        (row.display_brand || row.brand) === queueBrandFilter;
       const matchesSpecies =
         queueSpeciesFilter === "all" || row.species === queueSpeciesFilter;
       const matchesDataset =
         queueDatasetFilter === "all" || row.dataset_file === queueDatasetFilter;
+      const matchesBucket =
+        queueBucketFilter === "all" || row.review_bucket === queueBucketFilter;
 
       return (
         matchesSearch &&
@@ -235,13 +275,15 @@ export default function FoodV2ReviewPage() {
         matchesBlocker &&
         matchesBrand &&
         matchesSpecies &&
-        matchesDataset
+        matchesDataset &&
+        matchesBucket
       );
     });
   }, [
     data?.importQueue?.rows,
     queueBlockerFilter,
     queueBrandFilter,
+    queueBucketFilter,
     queueDatasetFilter,
     queueDecisionFilter,
     queueSearch,
@@ -261,6 +303,28 @@ export default function FoodV2ReviewPage() {
     visibleQueueRows.length > 120
       ? `Showing first 120 of ${visibleQueueRows.length} matching rows.`
       : `Showing ${visibleQueueRows.length} matching rows.`;
+
+  const selectedQueueRows = useMemo(() => {
+    const selected = new Set(selectedQueueKeys);
+    return (data?.importQueue?.rows ?? []).filter((row) =>
+      selected.has(`${row.dataset_file}-${row.formula_key}`)
+    );
+  }, [data?.importQueue?.rows, selectedQueueKeys]);
+
+  function toggleQueueSelection(row: FoodV2QueueRow) {
+    const key = `${row.dataset_file}-${row.formula_key}`;
+    setSelectedQueueKeys((current) =>
+      current.includes(key)
+        ? current.filter((item) => item !== key)
+        : [...current, key]
+    );
+  }
+
+  function downloadPreviewCsv(rows: FoodV2QueueRow[], filename: string) {
+    const headers = data?.importQueue?.summary.previewHeaders ?? [];
+    if (headers.length === 0 || rows.length === 0) return;
+    downloadCsv(filename, headers, rows);
+  }
 
   return (
     <section className="space-y-6">
@@ -453,19 +517,19 @@ export default function FoodV2ReviewPage() {
 
               <div>
                 <label className="mb-2 block text-sm font-medium text-black">
-                  Species
+                  Review bucket
                 </label>
                 <select
-                  value={queueSpeciesFilter}
+                  value={queueBucketFilter}
                   onChange={(event) =>
-                    setQueueSpeciesFilter(event.target.value)
+                    setQueueBucketFilter(event.target.value)
                   }
                   className="w-full rounded-xl border border-gray-300 p-3 text-black"
                 >
                   <option value="all">All</option>
-                  {speciesOptions.map(([species, count]) => (
-                    <option key={species} value={species}>
-                      {species} ({count})
+                  {reviewBucketOptions.map(([bucket, count]) => (
+                    <option key={bucket} value={bucket}>
+                      {bucket} ({count})
                     </option>
                   ))}
                 </select>
@@ -486,6 +550,26 @@ export default function FoodV2ReviewPage() {
                   {topBrands.map(([brand, count]) => (
                     <option key={brand} value={brand}>
                       {brand} ({count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Species
+                </label>
+                <select
+                  value={queueSpeciesFilter}
+                  onChange={(event) =>
+                    setQueueSpeciesFilter(event.target.value)
+                  }
+                  className="w-full rounded-xl border border-gray-300 p-3 text-black"
+                >
+                  <option value="all">All</option>
+                  {speciesOptions.map(([species, count]) => (
+                    <option key={species} value={species}>
+                      {species} ({count})
                     </option>
                   ))}
                 </select>
@@ -536,6 +620,33 @@ export default function FoodV2ReviewPage() {
               <p className="text-sm text-gray-600">{queueLimitNotice}</p>
               <button
                 type="button"
+                onClick={() =>
+                  downloadPreviewCsv(
+                    selectedQueueRows.length > 0
+                      ? selectedQueueRows
+                      : visibleQueueRows,
+                    selectedQueueRows.length > 0
+                      ? "nutritail-selected-food-v2-preview.csv"
+                      : "nutritail-filtered-food-v2-preview.csv"
+                  )
+                }
+                disabled={
+                  (selectedQueueRows.length > 0
+                    ? selectedQueueRows.length
+                    : visibleQueueRows.length) === 0
+                }
+                className="rounded-lg bg-black px-3 py-2 text-xs text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300"
+              >
+                Download preview CSV
+              </button>
+              <Link
+                href="/admin/foods/v2-preview"
+                className="rounded-lg border border-black px-3 py-2 text-xs text-black transition hover:bg-gray-100"
+              >
+                Open preview
+              </Link>
+              <button
+                type="button"
                 onClick={() => {
                   setQueueSearch("");
                   setQueueDecisionFilter("all");
@@ -543,12 +654,37 @@ export default function FoodV2ReviewPage() {
                   setQueueBrandFilter("all");
                   setQueueSpeciesFilter("all");
                   setQueueDatasetFilter("all");
+                  setQueueBucketFilter("all");
                   setSelectedQueueKey(null);
+                  setSelectedQueueKeys([]);
                 }}
                 className="rounded-lg border border-gray-300 px-3 py-2 text-xs text-black transition hover:bg-gray-100"
               >
                 Clear queue filters
               </button>
+              {selectedQueueRows.length > 0 && (
+                <span className="rounded-lg bg-gray-100 px-3 py-2 text-xs text-black">
+                  {selectedQueueRows.length} selected
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {reviewBucketOptions.slice(0, 8).map(([bucket, count]) => (
+                <button
+                  key={bucket}
+                  type="button"
+                  onClick={() => setQueueBucketFilter(bucket)}
+                  className="rounded-xl border border-gray-200 bg-white p-3 text-left text-sm transition hover:bg-gray-50"
+                >
+                  <span className="block font-semibold text-black">
+                    {count}
+                  </span>
+                  <span className="mt-1 block break-all text-xs text-gray-600">
+                    {bucket}
+                  </span>
+                </button>
+              ))}
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -577,7 +713,10 @@ export default function FoodV2ReviewPage() {
                       Selected review row
                     </p>
                     <p className="mt-1 text-sm text-blue-900">
-                      {selectedQueueRow.brand} - {selectedQueueRow.formula_name}
+                      {selectedQueueRow.display_brand || selectedQueueRow.brand}{" "}
+                      -{" "}
+                      {selectedQueueRow.display_formula_name ||
+                        selectedQueueRow.formula_name}
                     </p>
                     <p className="mt-2 break-all text-xs text-blue-800">
                       {selectedQueueRow.formula_key}
@@ -620,6 +759,11 @@ export default function FoodV2ReviewPage() {
                     </p>
                   </div>
                 </div>
+                {selectedQueueRow.text_issues && (
+                  <p className="mt-3 text-xs text-blue-900">
+                    Text cleanup: {selectedQueueRow.text_issues}
+                  </p>
+                )}
               </div>
             )}
 
@@ -641,18 +785,24 @@ export default function FoodV2ReviewPage() {
                     <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div>
                         <p className="font-semibold text-black">
-                          {row.formula_name}
+                          {row.display_formula_name || row.formula_name}
                         </p>
                         <p className="mt-1 text-sm text-gray-600">
-                          {row.brand} - {row.species} - {row.quality_status}
+                          {row.display_brand || row.brand} - {row.species} -{" "}
+                          {row.quality_status}
                         </p>
                         <p className="mt-2 break-all text-xs text-gray-500">
                           {row.dataset_file}
                         </p>
                       </div>
-                      <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs text-black">
-                        {row.decision}
-                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs text-black">
+                          {row.decision}
+                        </span>
+                        <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs text-blue-800">
+                          {row.review_bucket}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -674,11 +824,27 @@ export default function FoodV2ReviewPage() {
                           no blockers
                         </span>
                       )}
+                      {row.text_issues && (
+                        <span className="rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-700">
+                          text cleanup
+                        </span>
+                      )}
                     </div>
                     <p className="mt-2 text-xs text-gray-600">
                       Next: {row.next_action}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
+                      <label className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-xs text-black">
+                        <input
+                          type="checkbox"
+                          checked={selectedQueueKeys.includes(
+                            `${row.dataset_file}-${row.formula_key}`
+                          )}
+                          onChange={() => toggleQueueSelection(row)}
+                          className="h-4 w-4"
+                        />
+                        Select
+                      </label>
                       <button
                         type="button"
                         onClick={() =>

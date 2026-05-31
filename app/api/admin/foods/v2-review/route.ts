@@ -6,8 +6,155 @@ import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 const PRODUCT_LIMIT = 100;
 const AUDIT_LIMIT = 50;
 const QUEUE_LIMIT = 1600;
+const FOOD_V2_PREVIEW_HEADERS = [
+  "brand",
+  "formula_name",
+  "display_name",
+  "species",
+  "format",
+  "life_stage",
+  "dog_size",
+  "data_quality_status",
+  "data_source_url",
+  "source_priority",
+  "source_notes",
+  "formula_key",
+] as const;
 
-function parseCsv(text: string) {
+type QueueCsvRow = {
+  decision?: string;
+  dataset_file?: string;
+  formula_key?: string;
+  brand?: string;
+  formula_name?: string;
+  species?: string;
+  quality_status?: string;
+  source_priority?: string;
+  missing_blockers?: string;
+  next_action?: string;
+};
+
+type EnrichedQueueRow = QueueCsvRow & {
+  display_brand: string;
+  display_formula_name: string;
+  text_issues: string;
+  review_bucket: string;
+  preview_row: Record<string, string>;
+};
+
+let iso88597ByteMap: Map<string, number> | null = null;
+
+function getIso88597ByteMap() {
+  if (iso88597ByteMap) return iso88597ByteMap;
+
+  const decoder = new TextDecoder("iso-8859-7");
+  iso88597ByteMap = new Map();
+  for (let byte = 0; byte <= 255; byte += 1) {
+    iso88597ByteMap.set(decoder.decode(new Uint8Array([byte])), byte);
+  }
+
+  return iso88597ByteMap;
+}
+
+function countGreekLetters(value: string) {
+  return (value.match(/[\u0370-\u03ff]/g) ?? []).length;
+}
+
+function countMojibakeMarkers(value: string) {
+  return (value.match(/[ΞΟ][\u0380-\u03ffA-Za-zΆΈΉΊΌΎΏάέήίόύώ΅µ]/g) ?? [])
+    .length;
+}
+
+function repairGreekMojibake(value: string) {
+  const text = String(value ?? "");
+  if (!text || !/[ΞΟ][\u0380-\u03ffA-Za-zΆΈΉΊΌΎΏάέήίόύώ΅µ]/.test(text)) {
+    return { value: text, repaired: false };
+  }
+
+  const byteMap = getIso88597ByteMap();
+  const bytes: number[] = [];
+
+  for (const char of text) {
+    const byte = byteMap.get(char);
+    if (byte === undefined) {
+      return { value: text, repaired: false };
+    }
+    bytes.push(byte);
+  }
+
+  const repaired = new TextDecoder("utf-8", { fatal: false }).decode(
+    new Uint8Array(bytes)
+  );
+  const originalMarkerCount = countMojibakeMarkers(text);
+  const repairedMarkerCount = countMojibakeMarkers(repaired);
+  const isBetter =
+    repaired &&
+    !repaired.includes("\uFFFD") &&
+    repairedMarkerCount < originalMarkerCount &&
+    countGreekLetters(repaired) >= countGreekLetters(text) / 2;
+
+  return { value: isBetter ? repaired : text, repaired: isBetter };
+}
+
+function inferFormat(row: QueueCsvRow) {
+  const source = `${row.formula_key ?? ""} ${row.formula_name ?? ""}`.toLowerCase();
+  if (source.includes("-wet-") || source.includes(" wet ")) return "wet";
+  if (source.includes("-treat-") || source.includes(" treat ")) return "treat";
+  if (source.includes("-supplement-") || source.includes(" supplement ")) {
+    return "supplement";
+  }
+  return "dry";
+}
+
+function classifyReviewBucket(row: QueueCsvRow, textIssue: boolean) {
+  const blockers = String(row.missing_blockers ?? "");
+  const decision = String(row.decision ?? "");
+
+  if (decision === "reject") return "rejected";
+  if (textIssue) return "fix_text_encoding";
+  if (decision === "candidate") return "ready_for_preview";
+  if (blockers.includes("data_source_url_or_manual_photo")) {
+    return "needs_source_or_photo";
+  }
+  if (blockers.includes("kcal_per_100g_or_kcal_per_kg")) return "needs_energy";
+  if (blockers) return "needs_missing_fields";
+  return "needs_manual_review";
+}
+
+function buildPreviewRow(row: QueueCsvRow, displayFormulaName: string) {
+  const format = inferFormat(row);
+  const sourceNotes = [
+    `source_file=${row.dataset_file ?? ""}`,
+    `queue_decision=${row.decision ?? ""}`,
+    `missing_blockers=${row.missing_blockers ?? "none"}`,
+    `next_action=${row.next_action ?? ""}`,
+  ]
+    .filter(Boolean)
+    .join("; ");
+
+  return Object.fromEntries(
+    FOOD_V2_PREVIEW_HEADERS.map((header) => {
+      const values: Record<(typeof FOOD_V2_PREVIEW_HEADERS)[number], string> = {
+        brand: row.brand ?? "",
+        formula_name: displayFormulaName,
+        display_name: `${row.brand ?? ""} ${displayFormulaName}`.trim(),
+        species: row.species || "dog",
+        format,
+        life_stage: "unknown",
+        dog_size: "unknown",
+        data_quality_status: row.quality_status || "needs_review",
+        data_source_url: "",
+        source_priority: row.source_priority || "unknown",
+        source_notes: sourceNotes,
+        formula_key: row.formula_key ?? "",
+      };
+
+      return [header, values[header]];
+    })
+  );
+}
+
+function parseCsv(text: string): Array<Record<string, string>> {
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
@@ -56,7 +203,7 @@ function parseCsv(text: string) {
   return rows.slice(1).map((values) =>
     Object.fromEntries(
       headers.map((header, index) => [header, values[index] ?? ""])
-    )
+    ) as Record<string, string>
   );
 }
 
@@ -66,21 +213,40 @@ async function readImportQueue() {
       "data/review/food_v2_import_candidate_queue.csv",
       "utf8"
     );
-    const rows = parseCsv(csv);
+    const rows = parseCsv(csv) as QueueCsvRow[];
 
-    const decisionCounts = rows.reduce<Record<string, number>>((acc, row) => {
+    const enrichedRows: EnrichedQueueRow[] = rows.map((row) => {
+      const formulaRepair = repairGreekMojibake(String(row.formula_name ?? ""));
+      const brandRepair = repairGreekMojibake(String(row.brand ?? ""));
+      const textIssues = [
+        formulaRepair.repaired ? "formula_name_encoding_repaired" : "",
+        brandRepair.repaired ? "brand_encoding_repaired" : "",
+      ].filter(Boolean);
+      const reviewBucket = classifyReviewBucket(row, textIssues.length > 0);
+
+      return {
+        ...row,
+        display_brand: brandRepair.value,
+        display_formula_name: formulaRepair.value,
+        text_issues: textIssues.join("|"),
+        review_bucket: reviewBucket,
+        preview_row: buildPreviewRow(row, formulaRepair.value),
+      };
+    });
+
+    const decisionCounts = enrichedRows.reduce<Record<string, number>>((acc, row) => {
       const decision = row.decision || "unknown";
       acc[decision] = (acc[decision] ?? 0) + 1;
       return acc;
     }, {});
 
-    const brandCounts = rows.reduce<Record<string, number>>((acc, row) => {
-      const brand = row.brand || "Unknown";
+    const brandCounts = enrichedRows.reduce<Record<string, number>>((acc, row) => {
+      const brand = row.display_brand || row.brand || "Unknown";
       acc[brand] = (acc[brand] ?? 0) + 1;
       return acc;
     }, {});
 
-    const missingFieldCounts = rows.reduce<Record<string, number>>(
+    const missingFieldCounts = enrichedRows.reduce<Record<string, number>>(
       (acc, row) => {
         String(row.missing_blockers ?? "")
           .split("|")
@@ -94,19 +260,19 @@ async function readImportQueue() {
       {}
     );
 
-    const datasetCounts = rows.reduce<Record<string, number>>((acc, row) => {
+    const datasetCounts = enrichedRows.reduce<Record<string, number>>((acc, row) => {
       const dataset = row.dataset_file || "Unknown";
       acc[dataset] = (acc[dataset] ?? 0) + 1;
       return acc;
     }, {});
 
-    const speciesCounts = rows.reduce<Record<string, number>>((acc, row) => {
+    const speciesCounts = enrichedRows.reduce<Record<string, number>>((acc, row) => {
       const species = row.species || "unknown";
       acc[species] = (acc[species] ?? 0) + 1;
       return acc;
     }, {});
 
-    const qualityStatusCounts = rows.reduce<Record<string, number>>(
+    const qualityStatusCounts = enrichedRows.reduce<Record<string, number>>(
       (acc, row) => {
         const status = row.quality_status || "unknown";
         acc[status] = (acc[status] ?? 0) + 1;
@@ -115,17 +281,43 @@ async function readImportQueue() {
       {}
     );
 
+    const reviewBucketCounts = enrichedRows.reduce<Record<string, number>>(
+      (acc, row) => {
+        const bucket = row.review_bucket || "needs_manual_review";
+        acc[bucket] = (acc[bucket] ?? 0) + 1;
+        return acc;
+      },
+      {}
+    );
+
+    const textIssueCounts = enrichedRows.reduce<Record<string, number>>(
+      (acc, row) => {
+        String(row.text_issues ?? "")
+          .split("|")
+          .map((issue) => issue.trim())
+          .filter(Boolean)
+          .forEach((issue) => {
+            acc[issue] = (acc[issue] ?? 0) + 1;
+          });
+        return acc;
+      },
+      {}
+    );
+
     return {
       summary: {
-        totalRows: rows.length,
+        totalRows: enrichedRows.length,
         decisionCounts,
         brandCounts,
         missingFieldCounts,
         datasetCounts,
         speciesCounts,
         qualityStatusCounts,
+        reviewBucketCounts,
+        textIssueCounts,
+        previewHeaders: [...FOOD_V2_PREVIEW_HEADERS],
       },
-      rows: rows.slice(0, QUEUE_LIMIT),
+      rows: enrichedRows.slice(0, QUEUE_LIMIT),
     };
   } catch {
     return {
@@ -137,6 +329,9 @@ async function readImportQueue() {
         datasetCounts: {},
         speciesCounts: {},
         qualityStatusCounts: {},
+        reviewBucketCounts: {},
+        textIssueCounts: {},
+        previewHeaders: [...FOOD_V2_PREVIEW_HEADERS],
       },
       rows: [],
     };
