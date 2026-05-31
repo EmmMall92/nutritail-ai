@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const defaultLocalProductPath =
@@ -38,6 +38,8 @@ const registryHeaders = [
   "status",
   "notes",
 ];
+
+const LOCAL_HTML_EXTENSIONS = new Set([".html", ".htm", ".mhtml", ".mht"]);
 
 function csvEscape(value) {
   const text = String(value ?? "");
@@ -151,6 +153,41 @@ async function readSource(source) {
     text.match(/Content-Location:\s*(https?:\/\/\S+)/i)?.[1] ??
     "";
   return { html: htmlFromSourceText(text), sourceUrl: snapshotUrl, sourcePath: source };
+}
+
+async function collectLocalHtmlFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...(await collectLocalHtmlFiles(fullPath)));
+      continue;
+    }
+
+    if (entry.isFile() && LOCAL_HTML_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+      files.push(fullPath);
+    }
+  }
+
+  return files.sort((a, b) => a.localeCompare(b));
+}
+
+async function resolveLocalSources({ dir, local }) {
+  const sources = [];
+
+  if (dir) {
+    const info = await stat(dir);
+    if (!info.isDirectory()) {
+      throw new Error(`--dir must point to a directory: ${dir}`);
+    }
+    sources.push(...(await collectLocalHtmlFiles(dir)));
+  }
+
+  if (local) sources.push(local);
+
+  return [...new Set(sources)];
 }
 
 function titleFromHtml(html) {
@@ -475,6 +512,39 @@ function extractedFields(row) {
     .join("|");
 }
 
+function rowCompleteness(row) {
+  return extractedFields(row).split("|").filter(Boolean).length;
+}
+
+function dedupeProductRows(rows) {
+  const byKey = new Map();
+  const duplicateCounts = new Map();
+
+  for (const row of rows) {
+    const key = row.formula_key;
+    const existing = byKey.get(key);
+    if (!existing || rowCompleteness(row) > rowCompleteness(existing)) {
+      byKey.set(key, row);
+    }
+    duplicateCounts.set(key, (duplicateCounts.get(key) ?? 0) + (existing ? 1 : 0));
+  }
+
+  return {
+    rows: [...byKey.values()].map((row) => ({
+      ...row,
+      source_notes: [
+        row.source_notes,
+        (duplicateCounts.get(row.formula_key) ?? 0) > 0
+          ? `duplicate_local_or_pack_rows_skipped=${duplicateCounts.get(row.formula_key)}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("; "),
+    })),
+    duplicateCount: rows.length - byKey.size,
+  };
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const valueAfter = (flag, fallback = "") => {
@@ -482,6 +552,7 @@ function parseArgs() {
     return index >= 0 ? args[index + 1] ?? fallback : fallback;
   };
   return {
+    dir: valueAfter("--dir", ""),
     local: valueAfter("--local", ""),
     category: valueAfter("--category", ""),
     url: valueAfter("--url", ""),
@@ -513,34 +584,24 @@ async function main() {
   const headers = await foodV2Headers();
   const categoryUrl = args.category || "";
   const registryRows = categoryUrl ? await collectProductUrls(categoryUrl, args.limit) : [];
+  const localSources = await resolveLocalSources(args);
   const sources = [
-    args.local || (!args.url && !categoryUrl ? defaultLocalProductPath : ""),
+    ...localSources,
+    !args.dir && !args.local && !args.url && !categoryUrl ? defaultLocalProductPath : "",
     args.url,
     ...registryRows.map((row) => row.product_url),
   ].filter(Boolean);
 
-  const rows = [];
-  const reviewRows = [];
+  const rawRows = [];
+  const failedReviewRows = [];
   for (const source of sources) {
     try {
       const { html, sourceUrl, sourcePath } = await readSource(source);
       const row = productRowFromHtml(html, sourceUrl || source, sourcePath, headers);
       if (!row.brand && !row.formula_name) continue;
-      rows.push(row);
-      const missing = missingFields(row);
-      reviewRows.push({
-        formula_key: row.formula_key,
-        brand: row.brand,
-        formula_name: row.formula_name,
-        species: row.species,
-        status: missing.length ? "needs_backfill" : "importable_after_qa",
-        source_url: row.data_source_url,
-        extracted_fields: extractedFields(row),
-        missing_fields: missing.join("|"),
-        notes: row.source_notes,
-      });
+      rawRows.push(row);
     } catch (error) {
-      reviewRows.push({
+      failedReviewRows.push({
         formula_key: "",
         brand: "",
         formula_name: "",
@@ -553,6 +614,25 @@ async function main() {
       });
     }
   }
+
+  const { rows, duplicateCount } = dedupeProductRows(rawRows);
+  const reviewRows = [
+    ...rows.map((row) => {
+      const missing = missingFields(row);
+      return {
+        formula_key: row.formula_key,
+        brand: row.brand,
+        formula_name: row.formula_name,
+        species: row.species,
+        status: missing.length ? "needs_backfill" : "importable_after_qa",
+        source_url: row.data_source_url,
+        extracted_fields: extractedFields(row),
+        missing_fields: missing.join("|"),
+        notes: row.source_notes,
+      };
+    }),
+    ...failedReviewRows,
+  ];
 
   await mkdir(path.dirname(paths.importCsv), { recursive: true });
   await mkdir(path.dirname(paths.reviewCsv), { recursive: true });
@@ -567,7 +647,10 @@ async function main() {
       "# Gatoskilo Product Extract",
       "",
       `- Product rows extracted: ${rows.length}`,
+      `- Raw local/category pages parsed: ${rawRows.length}`,
+      `- Duplicate local/pack rows skipped: ${duplicateCount}`,
       `- Registry links queued: ${registryRows.length}`,
+      `- Local HTML/MHTML files scanned: ${localSources.length}`,
       `- Importable after QA: ${reviewRows.filter((row) => row.status === "importable_after_qa").length}`,
       `- Needs backfill/errors: ${reviewRows.filter((row) => row.status !== "importable_after_qa").length}`,
       "",
@@ -577,6 +660,11 @@ async function main() {
       `- ${paths.registryCsv}`,
       "",
       "Retailer rows are marked `needs_review` and `is_recommendable=false` by default. Kcal may be estimated from proximate analysis for dry foods and is recorded in `source_notes`.",
+      "",
+      "Usage:",
+      "- Single saved page: `npm run collect:gatoskilo-products -- --local \"C:/path/product.html\"`",
+      "- Folder of saved pages: `npm run collect:gatoskilo-products -- --dir \"C:/Users/NIOstb/Desktop/photo_foods_nutritail/gatoskilo\"`",
+      "- Live category crawl: `npm run collect:gatoskilo-products -- --category \"https://www.gatoskilo.gr/981-ksira-trofi-skyloy\" --limit 100`",
     ].join("\n"),
     "utf8",
   );
