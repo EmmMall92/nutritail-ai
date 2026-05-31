@@ -1,11 +1,11 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-05-31T16:44:22.693Z
+Generated: 2026-05-31T17:34:54.319Z
 
 ## Summary
 
-- Queue rows: 1467
-- Candidate rows: 13
+- Queue rows: 1468
+- Candidate rows: 14
 - Hold rows: 1454
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
@@ -13,7 +13,7 @@ Generated: 2026-05-31T16:44:22.693Z
 ## By Decision
 
 - hold: 1454
-- candidate: 13
+- candidate: 14
 
 ## By Dataset
 
@@ -43,6 +43,7 @@ Generated: 2026-05-31T16:44:22.693Z
 - data/imports/schesir_dry_document_extract_v2.csv: 5
 - data/imports/acana_document_extract_v2.csv: 4
 - data/imports/orijen_document_extract_v2.csv: 4
+- data/imports/gatoskilo_product_extract_v2.csv: 1
 
 ## Operating Rule
 
