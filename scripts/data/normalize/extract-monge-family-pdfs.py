@@ -75,6 +75,17 @@ CARB_TERMS = [
 FAT_TERMS = ["fat", "oil", "linseed"]
 FIBER_TERMS = ["beet pulp", "citrus pulp", "fos", "mos", "xos", "yucca"]
 
+MODIFIED_ATWATER = {
+    "protein": 3.5,
+    "fat": 8.5,
+    "carbohydrate": 3.5,
+}
+
+DRY_FOOD_DEFAULTS = {
+    "ash_percent": 7.0,
+    "moisture_percent": 10.0,
+}
+
 
 def clean_text(value: str) -> str:
     normalized = re.sub(r"([A-Za-z])-[\s\r\n]+([A-Za-z])", r"\1\2", value or "")
@@ -191,6 +202,67 @@ def kcal_kg_value(text: str) -> str:
     if not match:
         return ""
     return str(int(round(float(match.group(1).replace(",", "")))))
+
+
+def float_or_none(value: str) -> float | None:
+    if value in (None, ""):
+        return None
+    try:
+        return float(str(value).replace(",", "."))
+    except ValueError:
+        return None
+
+
+def format_number(value: float) -> str:
+    return str(round(value, 1)).rstrip("0").rstrip(".")
+
+
+def estimate_kcal_modified_atwater(row: dict[str, str]) -> tuple[str, str, list[str]]:
+    if row.get("kcal_per_100g") or row.get("kcal_per_kg"):
+        return row.get("kcal_per_100g", ""), row.get("kcal_per_kg", ""), []
+
+    if row.get("format") != "dry":
+        return "", "", ["kcal_estimate_skipped=non_dry_or_missing_moisture"]
+
+    protein = float_or_none(row.get("protein_percent", ""))
+    fat = float_or_none(row.get("fat_percent", ""))
+    fiber = float_or_none(row.get("fiber_percent", ""))
+    ash = float_or_none(row.get("ash_percent", ""))
+    moisture = float_or_none(row.get("moisture_percent", ""))
+    notes = []
+
+    if protein is None or fat is None or fiber is None:
+        return "", "", ["kcal_estimate_skipped=missing_protein_fat_or_fiber"]
+
+    if ash is None:
+        ash = DRY_FOOD_DEFAULTS["ash_percent"]
+        notes.append(f"default_ash_percent={format_number(ash)}")
+    if moisture is None:
+        moisture = DRY_FOOD_DEFAULTS["moisture_percent"]
+        notes.append(f"default_moisture_percent={format_number(moisture)}")
+
+    carbohydrate = round(100 - protein - fat - fiber - ash - moisture, 1)
+    if carbohydrate < 0 or carbohydrate > 100:
+        return "", "", [f"kcal_estimate_skipped=impossible_carbohydrate_percent_{format_number(carbohydrate)}"]
+
+    kcal_per_100g = (
+        protein * MODIFIED_ATWATER["protein"]
+        + fat * MODIFIED_ATWATER["fat"]
+        + carbohydrate * MODIFIED_ATWATER["carbohydrate"]
+    )
+    kcal_per_100g = round(kcal_per_100g, 1)
+    confidence = "medium" if notes else "high"
+    return (
+        format_number(kcal_per_100g),
+        format_number(kcal_per_100g * 10),
+        [
+            "kcal_estimated=true",
+            "kcal_estimation_method=modified_atwater",
+            f"estimated_carbohydrate_percent={format_number(carbohydrate)}",
+            *notes,
+            f"kcal_estimation_confidence={confidence}",
+        ],
+    )
 
 
 def infer_brand(path: Path, text: str) -> str:
@@ -452,6 +524,7 @@ def row_for_pdf(path: Path, headers: list[str]) -> dict[str, str]:
                     "basis=as-fed",
                     "source_tier=official_pdf",
                     "source_group=monge_family_pdf",
+                    "label_energy_used=true" if kcal_per_kg else "label_energy_missing=true",
                     f"source_document={path.as_posix()}",
                     "human_qa_required_before_recommendation=true",
                 ]
@@ -461,6 +534,12 @@ def row_for_pdf(path: Path, headers: list[str]) -> dict[str, str]:
             "is_recommendable": "false",
         }
     )
+    estimated_kcal_per_100g, estimated_kcal_per_kg, energy_notes = estimate_kcal_modified_atwater(row)
+    if estimated_kcal_per_100g and estimated_kcal_per_kg:
+        row["kcal_per_100g"] = estimated_kcal_per_100g
+        row["kcal_per_kg"] = estimated_kcal_per_kg
+    if energy_notes:
+        row["source_notes"] = "; ".join([row["source_notes"], *energy_notes])
     return row
 
 
@@ -532,6 +611,17 @@ def main() -> None:
         writer.writerows(review_rows)
 
     complete = [row for row in review_rows if row["status"] == "importable_after_qa"]
+    official_energy_rows = [
+        row for row in rows if "label_energy_used=true" in row.get("source_notes", "")
+    ]
+    estimated_energy_rows = [
+        row for row in rows if "kcal_estimated=true" in row.get("source_notes", "")
+    ]
+    skipped_energy_rows = [
+        row
+        for row in rows
+        if "kcal_estimate_skipped=" in row.get("source_notes", "")
+    ]
     report = [
         "# Monge Family PDF Extract",
         "",
@@ -543,6 +633,9 @@ def main() -> None:
         f"- Food V2 rows extracted: {len(rows)}",
         f"- Importable after QA: {len(complete)}",
         f"- Needs backfill/errors: {len(review_rows) - len(complete)}",
+        f"- Official kcal rows: {len(official_energy_rows)}",
+        f"- Estimated kcal rows: {len(estimated_energy_rows)}",
+        f"- Kcal still unavailable: {len(skipped_energy_rows)}",
         f"- Output CSV: {OUTPUT}",
         f"- Review CSV: {REVIEW}",
         "",
