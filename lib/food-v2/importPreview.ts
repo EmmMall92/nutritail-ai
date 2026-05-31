@@ -18,8 +18,10 @@ import {
   splitIngredients,
 } from "@/lib/food-v2/normalizeFood";
 import { validateFoodImportRow } from "@/lib/food-v2/validateFood";
+import { estimateKcalPer100gModifiedAtwater } from "@/lib/nutrition-v2/energyRules";
 import type {
   DataQualityStatus,
+  FoodFormat,
   FoodImportRowV2,
   FoodNutrientsV2,
   FoodProductV2,
@@ -196,6 +198,43 @@ function buildNutrients(data: Record<string, unknown>) {
   return nutrients;
 }
 
+function mergeSourceNotes(
+  existingNotes: string | null | undefined,
+  additionalNote: string | null
+) {
+  return [existingNotes, additionalNote].filter(Boolean).join("; ") || null;
+}
+
+function resolveFoodEnergy(
+  raw: Record<string, unknown>,
+  nutrients: FoodNutrientsV2,
+  format: FoodFormat
+) {
+  const providedKcalPer100g =
+    normalizeEnergyToKcalPer100g(raw.kcal_per_100g, "kcal/100g") ??
+    normalizeEnergyToKcalPer100g(raw.kcal_per_kg, "kcal/kg");
+  const providedKcalPerKg = normalizePercent(raw.kcal_per_kg);
+
+  if (providedKcalPer100g !== null) {
+    return {
+      kcal_per_100g: providedKcalPer100g,
+      kcal_per_kg: providedKcalPerKg,
+      source_note: null,
+    };
+  }
+
+  const estimate = estimateKcalPer100gModifiedAtwater({
+    ...nutrients,
+    format,
+  });
+
+  return {
+    kcal_per_100g: estimate.kcal_per_100g,
+    kcal_per_kg: estimate.kcal_per_kg,
+    source_note: estimate.source_note,
+  };
+}
+
 export function normalizeFoodV2RawRow(
   raw: Record<string, unknown>
 ): FoodImportRowV2 {
@@ -228,6 +267,8 @@ export function normalizeFoodV2RawRow(
       species,
       format,
     });
+  const nutrients = buildNutrients(raw);
+  const energy = resolveFoodEnergy(raw, nutrients, format);
 
   const food: FoodProductV2 = {
     brand,
@@ -260,19 +301,16 @@ export function normalizeFoodV2RawRow(
         : detectFiberSources(ingredients),
     additives_text: nullIfEmpty(raw.additives_text),
     feeding_guide_text: nullIfEmpty(raw.feeding_guide_text),
-    kcal_per_100g:
-      normalizeEnergyToKcalPer100g(raw.kcal_per_100g, "kcal/100g") ??
-      normalizeEnergyToKcalPer100g(raw.kcal_per_kg, "kcal/kg"),
-    kcal_per_kg: normalizePercent(raw.kcal_per_kg),
+    kcal_per_100g: energy.kcal_per_100g,
+    kcal_per_kg: energy.kcal_per_kg,
     data_quality_status: normalizeDataQualityStatus(raw.data_quality_status),
     data_source_url: nullIfEmpty(raw.data_source_url),
     source_priority: normalizeSourcePriority(raw.source_priority),
-    source_notes: nullIfEmpty(raw.source_notes),
+    source_notes: mergeSourceNotes(nullIfEmpty(raw.source_notes), energy.source_note),
     formula_key,
     ean: nullIfEmpty(raw.ean),
     is_recommendable: normalizeBoolean(raw.is_recommendable),
   };
-  const nutrients = buildNutrients(raw);
   const validation = validateFoodImportRow({ food, nutrients, raw });
 
   return {
