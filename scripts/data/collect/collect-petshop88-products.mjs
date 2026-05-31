@@ -163,8 +163,28 @@ function canonicalUrlFromHtml(html, fallback) {
 }
 
 function knownBrand(title) {
-  const brands = ["ACANA", "ORIJEN", "Royal Canin", "Brit", "Purina", "Hill's", "Farmina", "Monge", "Josera"];
-  return brands.find((brand) => title.toLowerCase().startsWith(brand.toLowerCase())) ?? "";
+  const brands = [
+    "ACANA",
+    "ORIJEN",
+    "Royal Canin",
+    "Brit",
+    "Purina",
+    "Hill's",
+    "Farmina",
+    "Monge",
+    "Josera",
+    "Ambrosia",
+    "Trovet",
+    "Naturea",
+    "Primal Instinct",
+    "Wellmax",
+    "Carnilove",
+    "N&D",
+  ];
+  const normalized = title.toLowerCase();
+  const brand = brands.find((candidate) => normalized.includes(candidate.toLowerCase()));
+  if (brand === "N&D") return "Farmina";
+  return brand ?? "";
 }
 
 function formulaNameFromTitle(title, brand) {
@@ -280,10 +300,18 @@ function productRowFromHtml(html, sourceUrl, sourcePath, headers) {
   const text = stripTags(html);
   const brand = knownBrand(title);
   const formulaName = formulaNameFromTitle(title, brand);
-  const ingredientText = textBetween(text, /Συστατικά\s*:/iu, /ΠΡΟΣΘΕΤΑ|Θρεπτικά πρόσθετα|ΑΝΑΛΥΣΗ/iu);
+  const ingredientText = textBetween(
+    text,
+    /ΣΥΣΤΑΤΙΚΑ\s*:|Συστατικά\s*:|Σύνθεση\s*:|ΣΥΝΘΕΣΗ\s*:/u,
+    /ΠΡΟΣΘΕΤΑ|Θρεπτικά πρόσθετα|ΑΝΑΛΥΣΗ|Αναλυτικά Συστατικά|Εγγυημένη Ανάλυση/iu,
+  );
   const ingredients = splitIngredients(ingredientText);
   const additivesText = textBetween(text, /ΠΡΟΣΘΕΤΑ/iu, /ΑΝΑΛΥΣΗ/iu);
-  const analysisText = textBetween(text, /ΑΝΑΛΥΣΗ/iu, /ΘΕΡΜΙΔΙΚΗ|Το petshop88|Τρόποι Αποστολής/iu);
+  const analysisText = textBetween(
+    text,
+    /ΑΝΑΛΥΣΗ|Αναλυτικά Συστατικά|Εγγυημένη Ανάλυση/u,
+    /ΘΕΡΜΙΔΙΚΗ|Το petshop88|Τρόποι Αποστολής|Οδηγίες|Συστατικά/iu,
+  );
   const kcalKg = numberValue(text.match(/(\d+(?:[,.]\d+)?)\s*kcal\s*\/\s*kg/iu)?.[1]);
 
   const row = Object.fromEntries(headers.map((header) => [header, ""]));
@@ -304,9 +332,9 @@ function productRowFromHtml(html, sourceUrl, sourcePath, headers) {
   row.additives_text = additivesText;
   row.kcal_per_kg = kcalKg ?? "";
   row.kcal_per_100g = kcalKg ? Math.round(kcalKg / 10 * 10) / 10 : "";
-  row.protein_percent = percentAfter(analysisText, ["Πρωτεΐνη", "Protein"]) ?? "";
-  row.fat_percent = percentAfter(analysisText, ["Ολικές\\s+Λιπαρές\\s+Ουσίες", "Λιπαρές\\s+Ουσίες", "Fat"]) ?? "";
-  row.fiber_percent = percentAfter(analysisText, ["Ολικές\\s+Ινώδεις\\s+Ουσίες", "Ινώδεις\\s+Ουσίες", "Fiber"]) ?? "";
+  row.protein_percent = percentAfter(analysisText, ["Πρωτεΐνη", "Πρωτεΐνες", "Protein"]) ?? "";
+  row.fat_percent = percentAfter(analysisText, ["Ολικές\\s+Λιπαρές\\s+Ουσίες", "Λιπαρές\\s+Ουσίες", "Λιπαρά", "Fat"]) ?? "";
+  row.fiber_percent = percentAfter(analysisText, ["Ολικές\\s+Ινώδεις\\s+Ουσίες", "Ινώδεις\\s+Ουσίες", "Φυτικές\\s+ίνες", "Ίνες", "Fiber"]) ?? "";
   row.ash_percent = percentAfter(analysisText, ["Ολική\\s+Τέφρα", "Τέφρα", "Ash"]) ?? "";
   row.moisture_percent = percentAfter(analysisText, ["Υγρασία", "Moisture"]) ?? "";
   row.calcium_percent = percentAfter(analysisText, ["Ασβέστιο", "Calcium"]) ?? "";
@@ -359,7 +387,8 @@ function productLinksFromCategoryHtml(html, categoryUrl) {
             !parsed.pathname.includes("index.php") &&
             !parsed.pathname.includes("account") &&
             !parsed.pathname.includes("cart") &&
-            parsed.pathname.split("/").filter(Boolean).length === 1
+            parsed.pathname.split("/").filter(Boolean).length === 1 &&
+            /(?:\d+(?:-\d+)?kg|\d+gr|\d+g)\b/iu.test(parsed.pathname)
           );
         }),
     ),
@@ -412,11 +441,27 @@ async function main() {
 
   const rows = [];
   const reviewRows = [];
+  const seenFormulaKeys = new Set();
   for (const source of sources) {
     try {
       const { html, sourceUrl, sourcePath } = await readSource(source);
       const row = productRowFromHtml(html, sourceUrl || source, sourcePath, headers);
       if (!row.brand && !row.formula_name) continue;
+      if (seenFormulaKeys.has(row.formula_key)) {
+        reviewRows.push({
+          formula_key: row.formula_key,
+          brand: row.brand,
+          formula_name: row.formula_name,
+          species: row.species,
+          status: "duplicate_pack_variant",
+          source_url: row.data_source_url,
+          extracted_fields: extractedFields(row),
+          missing_fields: "",
+          notes: "Skipped from import CSV because Food V2 is formula-level; keep pack-size evidence in source registry.",
+        });
+        continue;
+      }
+      seenFormulaKeys.add(row.formula_key);
       rows.push(row);
       const missing = missingFields(row);
       reviewRows.push({
@@ -460,7 +505,8 @@ async function main() {
       `- Product rows extracted: ${rows.length}`,
       `- Registry links queued: ${registryRows.length}`,
       `- Importable after QA: ${reviewRows.filter((row) => row.status === "importable_after_qa").length}`,
-      `- Needs backfill/errors: ${reviewRows.filter((row) => row.status !== "importable_after_qa").length}`,
+      `- Duplicate pack variants skipped: ${reviewRows.filter((row) => row.status === "duplicate_pack_variant").length}`,
+      `- Needs backfill/errors: ${reviewRows.filter((row) => !["importable_after_qa", "duplicate_pack_variant"].includes(row.status)).length}`,
       "",
       "Outputs:",
       `- ${paths.importCsv}`,
