@@ -65,7 +65,8 @@
     "audit:louka-products-source": "node scripts/data/review/audit-louka-products-source.mjs",
     "audit:remaining-pdf-sources": "C:/Users/NIOstb/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe scripts/data/review/audit-remaining-pdf-sources.py",
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
-    "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs"
+    "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs",
+    "audit:gatoskilo-canonical": "node scripts/data/review/audit-gatoskilo-canonical-readiness.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
