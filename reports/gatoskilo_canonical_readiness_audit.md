@@ -1,6 +1,6 @@
 # Gatoskilo Canonical Readiness Audit
 
-Generated: 2026-06-01T20:06:21.274Z
+Generated: 2026-06-01T20:13:21.633Z
 
 ## Summary
 
