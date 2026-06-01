@@ -1,16 +1,16 @@
 # Gatoskilo Canonical Readiness Audit
 
-Generated: 2026-06-01T18:05:49.328Z
+Generated: 2026-06-01T20:06:21.274Z
 
 ## Summary
 
-- Gatoskilo formula rows: 391
-- Potential duplicate matches: 50
-- Exact canonical duplicate matches: 16
-- Fuzzy duplicate matches: 34
-- Label kcal rows: 164
-- Estimated kcal rows: 227
-- Backfill rows: 21
+- Gatoskilo formula rows: 564
+- Potential duplicate matches: 44
+- Exact canonical duplicate matches: 11
+- Fuzzy duplicate matches: 33
+- Label kcal rows: 297
+- Estimated kcal rows: 267
+- Backfill rows: 24
 
 ## Outputs
 

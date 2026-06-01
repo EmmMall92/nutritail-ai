@@ -1,25 +1,25 @@
 # Gatoskilo Local HTML Batch Extract
 
-Generated: 2026-06-01T17:47:07.590Z
+Generated: 2026-06-01T20:06:15.689Z
 
 ## Summary
 
-- htmlFilesScanned: 504
-- rawRowsParsed: 504
-- formulaRowsExported: 391
-- duplicateLocalOrPackRowsSkipped: 113
+- htmlFilesScanned: 752
+- rawRowsParsed: 752
+- formulaRowsExported: 564
+- duplicateLocalOrPackRowsSkipped: 188
 - parseFailures: 0
-- importableAfterQa: 370
+- importableAfterQa: 540
 - needsEnergyOrMinorBackfill: 0
-- needsBackfillOrFailed: 21
-- labelKcalRows: 164
-- estimatedKcalRows: 227
-- labelAshRows: 384
-- calciumRows: 283
-- phosphorusRows: 312
-- sodiumRows: 119
-- magnesiumRows: 55
-- feedingGuideRows: 380
+- needsBackfillOrFailed: 24
+- labelKcalRows: 297
+- estimatedKcalRows: 267
+- labelAshRows: 555
+- calciumRows: 423
+- phosphorusRows: 460
+- sodiumRows: 225
+- magnesiumRows: 188
+- feedingGuideRows: 546
 
 ## Notes
 

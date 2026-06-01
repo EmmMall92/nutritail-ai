@@ -1,26 +1,25 @@
 # Local HTML Import Priority Plan
 
-Generated: 2026-06-01T19:36:48.120Z
+Generated: 2026-06-01T20:06:21.896Z
 
 ## Summary
 
-- Source import rows: 391
-- Duplicate-reviewed formula keys: 33
-- Output rows: 391
+- Source import rows: 564
+- Duplicate-reviewed formula keys: 32
+- Output rows: 564
 
 ## Priority Buckets
 
-- commit_first_after_qa: 137
-- commit_after_kcal_review: 211
-- commit_after_basic_review: 7
-- possible_duplicate_review: 22
-- duplicate_review_first: 11
-- review_later: 3
+- commit_first_after_qa: 271
+- commit_after_kcal_review: 245
+- commit_after_basic_review: 16
+- possible_duplicate_review: 23
+- duplicate_review_first: 9
 
 ## Kcal Status
 
-- label: 164
-- estimated: 227
+- label: 297
+- estimated: 267
 
 ## Recommended Workflow
 
