@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 import { previewFoodV2ManualRows } from "@/lib/food-v2/importPreview";
+import { validateFoodImportRow } from "@/lib/food-v2/validateFood";
 import type {
   FoodImportRowV2,
   FoodNutrientsV2,
@@ -14,6 +15,21 @@ type ImportResult = {
   success: boolean;
   action: "inserted" | "updated" | "blocked" | "failed";
   error: string | null;
+  merge_notes?: string[];
+};
+
+type ExistingFoodV2Row = {
+  id: string;
+  formula_key: string;
+  kcal_per_100g: number | null;
+  kcal_per_kg: number | null;
+  source_priority: string | null;
+  source_notes: string | null;
+};
+
+type ExistingFoodV2State = {
+  product: ExistingFoodV2Row;
+  nutrients: FoodNutrientsV2;
 };
 
 const PRODUCT_COLUMNS: Array<keyof FoodProductV2> = [
@@ -140,6 +156,170 @@ async function getExistingFormulaKeys(rows: FoodImportRowV2[]) {
   );
 }
 
+function sourceRank(priority: string | null | undefined) {
+  if (priority === "official") return 4;
+  if (priority === "manual_photo") return 3;
+  if (priority === "retailer") return 2;
+  return 1;
+}
+
+function hasNote(notes: string | null | undefined, token: string) {
+  return String(notes ?? "").includes(token);
+}
+
+function mergeNotes(...notes: Array<string | null | undefined>) {
+  return [
+    ...new Set(
+      notes
+        .flatMap((note) => String(note ?? "").split(";"))
+        .map((note) => note.trim())
+        .filter(Boolean)
+    ),
+  ].join("; ");
+}
+
+function hasEnergy(food: FoodImportRowV2["food"]) {
+  return food.kcal_per_100g !== null || food.kcal_per_kg !== null;
+}
+
+function isEstimatedEnergy(food: FoodImportRowV2["food"]) {
+  return hasNote(food.source_notes, "kcal_estimated=true");
+}
+
+function isLabelEnergy(food: FoodImportRowV2["food"]) {
+  return hasEnergy(food) && !isEstimatedEnergy(food);
+}
+
+function isExistingLabelEnergy(existing: ExistingFoodV2Row) {
+  const hasExistingEnergy =
+    existing.kcal_per_100g !== null || existing.kcal_per_kg !== null;
+  return hasExistingEnergy && !hasNote(existing.source_notes, "kcal_estimated=true");
+}
+
+async function getExistingFoodStates(rows: FoodImportRowV2[]) {
+  const formulaKeys = [
+    ...new Set(rows.map((row) => row.food.formula_key).filter(Boolean)),
+  ];
+
+  if (formulaKeys.length === 0) return new Map<string, ExistingFoodV2State>();
+
+  const { data: products, error: productsError } = await supabaseAdmin
+    .from("food_products_v2")
+    .select(
+      "id, formula_key, kcal_per_100g, kcal_per_kg, source_priority, source_notes"
+    )
+    .in("formula_key", formulaKeys);
+
+  if (productsError) throw productsError;
+
+  const typedProducts = (products ?? []) as unknown as ExistingFoodV2Row[];
+  const productIds = typedProducts.map((product) => product.id);
+
+  const nutrientsByProductId = new Map<string, FoodNutrientsV2>();
+  if (productIds.length > 0) {
+    const { data: nutrients, error: nutrientsError } = await supabaseAdmin
+      .from("food_product_nutrients_v2")
+      .select("*")
+      .in("food_product_id", productIds);
+
+    if (nutrientsError) throw nutrientsError;
+
+    for (const nutrientRow of (nutrients ?? []) as Array<
+      FoodNutrientsV2 & { food_product_id: string }
+    >) {
+      nutrientsByProductId.set(nutrientRow.food_product_id, nutrientRow);
+    }
+  }
+
+  return new Map(
+    typedProducts.map((product) => [
+      product.formula_key,
+      {
+        product,
+        nutrients: nutrientsByProductId.get(product.id) ?? {},
+      },
+    ])
+  );
+}
+
+function applyExistingMergePolicy(
+  row: FoodImportRowV2,
+  existing: ExistingFoodV2State | undefined
+) {
+  const mergeNotesForResult: string[] = [];
+  if (!existing) return mergeNotesForResult;
+
+  const existingRank = sourceRank(existing.product.source_priority);
+  const incomingRank = sourceRank(row.food.source_priority);
+
+  if (isEstimatedEnergy(row.food) && isExistingLabelEnergy(existing.product)) {
+    row.food.kcal_per_100g = existing.product.kcal_per_100g;
+    row.food.kcal_per_kg = existing.product.kcal_per_kg;
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      "preserved_existing_label_energy_over_incoming_estimate=true"
+    );
+    mergeNotesForResult.push("preserved existing label kcal over incoming estimate");
+  }
+
+  if (
+    isLabelEnergy(row.food) &&
+    hasNote(existing.product.source_notes, "kcal_estimated=true")
+  ) {
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      "replaced_existing_estimated_energy_with_label_energy=true"
+    );
+    mergeNotesForResult.push("replaced existing estimated kcal with label kcal");
+  }
+
+  if (
+    incomingRank < existingRank &&
+    !isLabelEnergy(row.food) &&
+    isExistingLabelEnergy(existing.product)
+  ) {
+    row.food.kcal_per_100g = existing.product.kcal_per_100g;
+    row.food.kcal_per_kg = existing.product.kcal_per_kg;
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      "preserved_higher_priority_existing_energy=true"
+    );
+    mergeNotesForResult.push("preserved higher-priority existing kcal");
+  }
+
+  const existingAsh = existing.nutrients.ash_percent;
+  const incomingAsh = row.nutrients.ash_percent;
+  const existingHasLabelAsh =
+    existingAsh !== null &&
+    existingAsh !== undefined &&
+    hasNote(existing.product.source_notes, "label_ash_used=true");
+  const incomingHasLabelAsh =
+    incomingAsh !== null &&
+    incomingAsh !== undefined &&
+    hasNote(row.food.source_notes, "label_ash_used=true");
+
+  if (
+    (incomingAsh === null || incomingAsh === undefined || !incomingHasLabelAsh) &&
+    existingHasLabelAsh
+  ) {
+    row.nutrients.ash_percent = existingAsh;
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      "preserved_existing_label_ash=true"
+    );
+    mergeNotesForResult.push("preserved existing label ash");
+  }
+
+  if (incomingHasLabelAsh && existingAsh !== null && existingAsh !== undefined) {
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      "incoming_label_ash_allowed_to_update_existing_value=true"
+    );
+  }
+
+  return mergeNotesForResult;
+}
+
 export async function POST(request: Request) {
   try {
     const forbidden = await requireAdminApiAccess();
@@ -158,10 +338,17 @@ export async function POST(request: Request) {
     const preview = previewFoodV2ManualRows(rawRows);
     const results: ImportResult[] = [];
     const existingKeys = await getExistingFormulaKeys(preview.rows);
+    const existingStates = await getExistingFoodStates(preview.rows);
 
     await writeAuditRows(preview.rows);
 
     for (const row of preview.rows) {
+      const mergeNotesForResult = applyExistingMergePolicy(
+        row,
+        existingStates.get(row.food.formula_key)
+      );
+      row.validation = validateFoodImportRow(row);
+
       if (!row.validation.is_importable) {
         results.push({
           formula_key: row.food.formula_key,
@@ -169,6 +356,7 @@ export async function POST(request: Request) {
           success: false,
           action: "blocked",
           error: "Row is not importable.",
+          merge_notes: mergeNotesForResult,
         });
         continue;
       }
@@ -184,6 +372,7 @@ export async function POST(request: Request) {
           success: false,
           action: "failed",
           error: productError?.message ?? "Could not save product row.",
+          merge_notes: mergeNotesForResult,
         });
         continue;
       }
@@ -202,6 +391,7 @@ export async function POST(request: Request) {
           success: false,
           action: "failed",
           error: deleteNutrientsError.message,
+          merge_notes: mergeNotesForResult,
         });
         continue;
       }
@@ -217,6 +407,7 @@ export async function POST(request: Request) {
           success: false,
           action: "failed",
           error: nutrientsError.message,
+          merge_notes: mergeNotesForResult,
         });
         continue;
       }
@@ -233,6 +424,7 @@ export async function POST(request: Request) {
           success: false,
           action: "failed",
           error: deleteSourcesError.message,
+          merge_notes: mergeNotesForResult,
         });
         continue;
       }
@@ -258,6 +450,7 @@ export async function POST(request: Request) {
             ? "updated"
             : "inserted",
         error: sourceError?.message ?? null,
+        merge_notes: mergeNotesForResult,
       });
     }
 

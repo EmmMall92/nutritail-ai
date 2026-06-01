@@ -38,6 +38,11 @@ export type FoodV2PreviewSummary = {
   importableRows: number;
   blockedRows: number;
   averageCompleteness: number;
+  labelEnergyRows: number;
+  estimatedEnergyRows: number;
+  labelAshRows: number;
+  retailerRows: number;
+  officialRows: number;
   missingFieldCounts: Record<string, number>;
   warningCounts: Record<string, number>;
   impossibleValueCount: number;
@@ -209,7 +214,20 @@ function mergeSourceNotes(
   existingNotes: string | null | undefined,
   additionalNote: string | null
 ) {
-  return [existingNotes, additionalNote].filter(Boolean).join("; ") || null;
+  const notes = [existingNotes, additionalNote]
+    .filter(Boolean)
+    .flatMap((note) => String(note).split(";"))
+    .map((note) => note.trim())
+    .filter(Boolean);
+
+  return [...new Set(notes)].join("; ") || null;
+}
+
+function sourceNotesInclude(
+  raw: Record<string, unknown>,
+  token: string
+) {
+  return cleanString(raw.source_notes).includes(token);
 }
 
 function resolveFoodEnergy(
@@ -223,10 +241,12 @@ function resolveFoodEnergy(
   const providedKcalPerKg = normalizePercent(raw.kcal_per_kg);
 
   if (providedKcalPer100g !== null) {
+    const estimated = sourceNotesInclude(raw, "kcal_estimated=true");
+    const hasLabelNote = sourceNotesInclude(raw, "label_energy_used=true");
     return {
       kcal_per_100g: providedKcalPer100g,
       kcal_per_kg: providedKcalPerKg,
-      source_note: null,
+      source_note: estimated || hasLabelNote ? null : "label_energy_used=true",
     };
   }
 
@@ -383,12 +403,24 @@ export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewRe
   const warningCounts: Record<string, number> = {};
   let impossibleValueCount = 0;
   let conflictCount = 0;
+  let labelEnergyRows = 0;
+  let estimatedEnergyRows = 0;
+  let labelAshRows = 0;
+  let retailerRows = 0;
+  let officialRows = 0;
   const canonicalDuplicateGroups = groupByCanonicalFormula(
     rows,
     (row) => row.food
   );
 
   for (const row of rows) {
+    const sourceNotes = row.food.source_notes ?? "";
+    if (sourceNotes.includes("label_energy_used=true")) labelEnergyRows += 1;
+    if (sourceNotes.includes("kcal_estimated=true")) estimatedEnergyRows += 1;
+    if (sourceNotes.includes("label_ash_used=true")) labelAshRows += 1;
+    if (row.food.source_priority === "retailer") retailerRows += 1;
+    if (row.food.source_priority === "official") officialRows += 1;
+
     for (const field of row.validation.missing_fields) {
       missingFieldCounts[field] = (missingFieldCounts[field] ?? 0) + 1;
     }
@@ -441,6 +473,11 @@ export function summarizeFoodV2Preview(rows: FoodImportRowV2[]): FoodV2PreviewRe
       importableRows: rows.filter((row) => row.validation.is_importable).length,
       blockedRows: rows.filter((row) => !row.validation.is_importable).length,
       averageCompleteness,
+      labelEnergyRows,
+      estimatedEnergyRows,
+      labelAshRows,
+      retailerRows,
+      officialRows,
       missingFieldCounts,
       warningCounts,
       impossibleValueCount,
