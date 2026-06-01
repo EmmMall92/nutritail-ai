@@ -112,6 +112,17 @@ function issueList(row: FoodV2AuditRow) {
   ];
 }
 
+function reviewRowTitle(row: FoodV2QueueRow) {
+  return (
+    row.preview_row?.display_name ||
+    [row.display_brand || row.brand, row.display_formula_name || row.formula_name]
+      .filter(Boolean)
+      .join(" ")
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function downloadExport(type: "products" | "audit") {
   window.location.href = `/api/admin/foods/v2-export?type=${type}`;
 }
@@ -131,7 +142,7 @@ function queueReviewNote(row: FoodV2QueueRow) {
   return [
     `formula_key=${row.formula_key}`,
     `brand=${row.display_brand || row.brand}`,
-    `formula=${row.display_formula_name || row.formula_name}`,
+    `formula=${reviewRowTitle(row)}`,
     `review_bucket=${row.review_bucket}`,
     `source_file=${row.dataset_file}`,
     `missing=${row.missing_blockers || "none"}`,
@@ -713,10 +724,7 @@ export default function FoodV2ReviewPage() {
                       Selected review row
                     </p>
                     <p className="mt-1 text-sm text-blue-900">
-                      {selectedQueueRow.display_brand || selectedQueueRow.brand}{" "}
-                      -{" "}
-                      {selectedQueueRow.display_formula_name ||
-                        selectedQueueRow.formula_name}
+                      {reviewRowTitle(selectedQueueRow)}
                     </p>
                     <p className="mt-2 break-all text-xs text-blue-800">
                       {selectedQueueRow.formula_key}
@@ -785,7 +793,7 @@ export default function FoodV2ReviewPage() {
                     <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div>
                         <p className="font-semibold text-black">
-                          {row.display_formula_name || row.formula_name}
+                          {reviewRowTitle(row)}
                         </p>
                         <p className="mt-1 text-sm text-gray-600">
                           {row.display_brand || row.brand} - {row.species} -{" "}
