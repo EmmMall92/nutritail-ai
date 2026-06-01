@@ -49,6 +49,7 @@ const headers = [
   "species",
   "quality_status",
   "source_priority",
+  "title_source_priority",
   "missing_blockers",
   "next_action",
 ];
@@ -111,6 +112,52 @@ function hasValue(value) {
   return String(value ?? "").trim().length > 0;
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function titleSourceRank(row) {
+  const sourceUrl = normalizeSearchText(row.data_source_url);
+  const notes = normalizeSearchText(row.source_notes);
+  const dataset = normalizeSearchText(row.dataset_file);
+  const combined = `${sourceUrl} ${notes} ${dataset}`;
+
+  if (combined.includes("gatoskilo")) return 60;
+  if (
+    combined.includes(".pdf") ||
+    combined.includes("source_tier=uploaded_document") ||
+    combined.includes("source_tier=uploaded_pdf") ||
+    combined.includes("source_kind=pdf") ||
+    combined.includes("document_extract") ||
+    combined.includes("pdf_extract")
+  ) {
+    return 50;
+  }
+  if (row.source_priority === "official") return 40;
+  if (combined.includes("zooplus")) return 30;
+  if (
+    combined.includes("petshop88") ||
+    combined.includes("pet-it") ||
+    combined.includes("petcity")
+  ) {
+    return 25;
+  }
+  if (combined.includes("petsamolis")) return 10;
+  if (row.source_priority === "retailer") return 20;
+  if (row.source_priority === "manual_photo") return 5;
+  return 0;
+}
+
+function decisionRank(decision) {
+  if (decision === "candidate") return 0;
+  if (decision === "hold") return 1;
+  if (decision === "reject") return 2;
+  return 3;
+}
+
 function blockers(row) {
   const required = [
     "brand",
@@ -168,6 +215,7 @@ async function rowsForFile(file) {
       species: row.species,
       quality_status: row.data_quality_status,
       source_priority: row.source_priority,
+      title_source_priority: titleSourceRank({ ...row, dataset_file: file }),
       missing_blockers: missing.join("|"),
       next_action: nextActionFor(missing),
     };
@@ -213,6 +261,8 @@ ${renderCounts(countBy(rows, "dataset_file"))}
 ## Operating Rule
 
 Only candidate rows may move to admin preview for commit. Hold rows stay in review until missing blockers are resolved.
+
+Title priority is Gatoskilo first, uploaded PDF/document extracts second, official product pages third, other retailer pages after that, and Petsamolis last. Food display names should include the brand, e.g. "Ambrosia Mediterranean Diet Grain Free Puppy Fresh Sardine & Herring".
 `;
 }
 
@@ -223,7 +273,8 @@ async function main() {
   }
   const sorted = rows.sort(
     (a, b) =>
-      a.decision.localeCompare(b.decision) ||
+      decisionRank(a.decision) - decisionRank(b.decision) ||
+      Number(b.title_source_priority || 0) - Number(a.title_source_priority || 0) ||
       a.brand.localeCompare(b.brand) ||
       a.formula_name.localeCompare(b.formula_name)
   );

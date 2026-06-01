@@ -1,5 +1,6 @@
 import {
   createCanonicalFoodIdentity,
+  ensureBrandInDisplayName,
   groupByCanonicalFormula,
   normalizeCanonicalFormulaName,
 } from "@/lib/food-v2/canonicalFood";
@@ -317,8 +318,13 @@ export function normalizeFoodV2RawRow(
     brand,
     formula_name: formulaName,
     display_name:
-      normalizeCanonicalFormulaName(raw.display_name) ||
-      identity.standard_display_name,
+      ensureBrandInDisplayName({
+        brand,
+        display_name: cleanString(raw.display_name),
+        formula_name: formulaName,
+        life_stage: lifeStage,
+        dog_size: dogSize,
+      }) || identity.standard_display_name,
     species,
     format,
     life_stage: lifeStage,

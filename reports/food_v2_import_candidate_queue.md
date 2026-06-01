@@ -1,6 +1,6 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-06-01T20:27:10.423Z
+Generated: 2026-06-01T20:37:52.329Z
 
 ## Summary
 
@@ -52,3 +52,5 @@ Generated: 2026-06-01T20:27:10.423Z
 ## Operating Rule
 
 Only candidate rows may move to admin preview for commit. Hold rows stay in review until missing blockers are resolved.
+
+Title priority is Gatoskilo first, uploaded PDF/document extracts second, official product pages third, other retailer pages after that, and Petsamolis last. Food display names should include the brand, e.g. "Ambrosia Mediterranean Diet Grain Free Puppy Fresh Sardine & Herring".

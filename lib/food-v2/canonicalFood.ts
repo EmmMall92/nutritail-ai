@@ -159,6 +159,83 @@ export function createStandardDisplayName(food: {
     .trim();
 }
 
+export function ensureBrandInDisplayName({
+  brand,
+  display_name,
+  formula_name,
+  life_stage,
+  dog_size,
+}: {
+  brand: string;
+  display_name?: string | null;
+  formula_name: string;
+  life_stage?: LifeStage | null;
+  dog_size?: DogSize | null;
+}) {
+  const cleanedBrand = cleanText(brand);
+  const cleanedDisplay = normalizeCanonicalFormulaName(display_name);
+  const fallback = createStandardDisplayName({
+    brand: cleanedBrand,
+    formula_name,
+    life_stage,
+    dog_size,
+  });
+
+  if (!cleanedDisplay) return fallback;
+
+  const normalizedBrand = normalizeSearchText(cleanedBrand);
+  const normalizedDisplay = normalizeSearchText(cleanedDisplay);
+
+  if (
+    normalizedBrand &&
+    (normalizedDisplay === normalizedBrand ||
+      normalizedDisplay.startsWith(`${normalizedBrand} `))
+  ) {
+    return cleanedDisplay;
+  }
+
+  return [cleanedBrand, cleanedDisplay]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function canonicalTitleSourceRank(source: {
+  data_source_url?: string | null;
+  source_notes?: string | null;
+  source_priority?: string | null;
+}) {
+  const url = normalizeSearchText(source.data_source_url);
+  const notes = normalizeSearchText(source.source_notes);
+  const combined = `${url} ${notes}`;
+
+  if (combined.includes("gatoskilo")) return 60;
+  if (
+    combined.includes(".pdf") ||
+    combined.includes("source_tier=uploaded_document") ||
+    combined.includes("source_tier=uploaded_pdf") ||
+    combined.includes("source_kind=pdf") ||
+    combined.includes("document_extract") ||
+    combined.includes("pdf_extract")
+  ) {
+    return 50;
+  }
+  if (source.source_priority === "official") return 40;
+  if (combined.includes("zooplus")) return 30;
+  if (
+    combined.includes("petshop88") ||
+    combined.includes("pet-it") ||
+    combined.includes("petcity")
+  ) {
+    return 25;
+  }
+  if (combined.includes("petsamolis")) return 10;
+  if (source.source_priority === "retailer") return 20;
+  if (source.source_priority === "manual_photo") return 5;
+  return 0;
+}
+
 export function createCanonicalFoodIdentity(food: Pick<
   FoodProductV2,
   "brand" | "formula_name" | "species" | "format" | "life_stage" | "dog_size"
