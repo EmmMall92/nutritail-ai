@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
@@ -69,6 +70,23 @@ type EnrichedQueueRow = QueueCsvRow & {
   review_bucket: string;
   preview_row: Record<string, string>;
 };
+
+function normalizeCsvFileName(filePath: string) {
+  const fileName = path.basename(String(filePath ?? ""));
+  if (!fileName.endsWith(".csv")) {
+    throw new Error(`Unsupported review file: ${filePath}`);
+  }
+
+  return fileName;
+}
+
+function reviewCsvPath(filePath: string) {
+  return path.join(process.cwd(), "data", "review", normalizeCsvFileName(filePath));
+}
+
+function importCsvPath(filePath: string) {
+  return path.join(process.cwd(), "data", "imports", normalizeCsvFileName(filePath));
+}
 
 let iso88597ByteMap: Map<string, number> | null = null;
 
@@ -281,7 +299,7 @@ async function readSupplementalReviewQueueRows() {
   for (const source of SUPPLEMENTAL_REVIEW_FILES) {
     try {
       const parsed = parseCsv(
-        await readFile(source.reviewFile, "utf8")
+        await readFile(reviewCsvPath(source.reviewFile), "utf8")
       ) as SupplementalReviewRow[];
 
       for (const row of parsed) {
@@ -324,7 +342,9 @@ async function readDatasetIndexes(datasetFiles: string[]) {
 
   for (const datasetFile of datasetFiles) {
     try {
-      const parsed = parseCsvWithHeaders(await readFile(datasetFile, "utf8"));
+      const parsed = parseCsvWithHeaders(
+        await readFile(importCsvPath(datasetFile), "utf8")
+      );
       indexes.set(datasetFile, {
         headers: parsed.headers,
         rowsByFormulaKey: new Map(
@@ -350,7 +370,7 @@ async function readDatasetIndexes(datasetFiles: string[]) {
 async function readImportQueue() {
   try {
     const csv = await readFile(
-      "data/review/food_v2_import_candidate_queue.csv",
+      reviewCsvPath("food_v2_import_candidate_queue.csv"),
       "utf8"
     );
     const rows = [
