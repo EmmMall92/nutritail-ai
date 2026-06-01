@@ -299,6 +299,7 @@ function brandFromTitle(title) {
     "ACANA",
     "Josera",
     "JosiDog",
+    "Black Olympus",
     "Amity",
     "Anima",
     "Brit",
@@ -309,6 +310,21 @@ function brandFromTitle(title) {
   ];
   const match = brands.find((brand) => title.toLowerCase().includes(brand.toLowerCase()));
   return match ?? cleanText(title).split(/\s+/u)[0] ?? "";
+}
+
+function productTitleFromPageText(text, fallbackTitle) {
+  const candidates = [
+    /Ambrosia\s+Mediterranean\s+Diet\s+[^.!?]{8,160}?\s+\d+(?:[,.]\d+)?\s*(?:kg|gr|g)\b/iu,
+    /Black\s+Olympus\s+[^.!?]{8,160}?\s+\d+(?:[,.]\d+)?\s*(?:kg|gr|g)\b/iu,
+    /Belcando\s+Mastercraft\s+[^.!?]{8,160}?\s+\d+(?:[,.]\d+)?\s*(?:kg|gr|g)\b/iu,
+  ];
+
+  for (const pattern of candidates) {
+    const match = cleanText(text).match(pattern)?.[0];
+    if (match) return cleanText(match);
+  }
+
+  return fallbackTitle;
 }
 
 function lifeStageFromText(text) {
@@ -509,7 +525,8 @@ function parsePetsamolis(html, url, headers) {
       html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ??
       "",
   ).replace(/\s*(\||-)\s*Petsamolis.*$/iu, "");
-  const brand = brandFromTitle(rawTitle);
+  const title = productTitleFromPageText(text, rawTitle);
+  const brand = brandFromTitle(title);
   const ingredientSection =
     sectionAfterText(text, "Σύσταση", ["Πρόσθετα", "Αναλυτικά", "Οδηγίες", "Περιγραφή"]) ||
     sectionAfterText(text, "Συστατικά", ["Πρόσθετα", "Αναλυτικά", "Οδηγίες", "Περιγραφή"]);
@@ -524,12 +541,12 @@ function parsePetsamolis(html, url, headers) {
   const row = {
     ...baseFoodRow(headers),
     brand,
-    formula_name: rawTitle.replace(new RegExp(`^${brand}\\s*`, "iu"), "").replace(/\b\d+(?:[,.]\d+)?\s*(?:kg|gr|g)\b/giu, "").trim(),
-    display_name: rawTitle,
+    formula_name: title.replace(new RegExp(`^${brand}\\s*`, "iu"), "").replace(/\b\d+(?:[,.]\d+)?\s*(?:kg|gr|g)\b/giu, "").trim(),
+    display_name: title,
     species: "dog",
     format: "dry",
-    life_stage: lifeStageFromText(rawTitle) || "adult",
-    dog_size: dogSizeFromText(rawTitle),
+    life_stage: lifeStageFromText(title) || "adult",
+    dog_size: dogSizeFromText(title),
     ingredient_text: ingredientSection.replace(/^(Σύσταση|Συστατικά)\s*:?\s*/iu, ""),
     additives_text: additives.replace(/^Πρόσθετα\s*:?\s*/iu, ""),
     feeding_guide_text: sectionAfterText(text, "Οδηγίες", ["Σύσταση", "Πρόσθετα", "Αναλυτικά", "Περιγραφή"]),
@@ -589,10 +606,28 @@ function missingFields(row) {
   const missing = ["brand", "formula_name", "ingredient_text", "protein_percent", "fat_percent", "fiber_percent"].filter(
     (field) => !String(row[field] ?? "").trim(),
   );
+  if (isDescriptiveFormulaName(row.formula_name)) {
+    missing.push("formula_name_canonical_review");
+  }
   if (!String(row.kcal_per_100g ?? "").trim() && !String(row.kcal_per_kg ?? "").trim()) {
     missing.push("kcal_per_100g_or_kcal_per_kg");
   }
   return missing;
+}
+
+function isDescriptiveFormulaName(value) {
+  const text = cleanText(value).toLowerCase();
+  return [
+    "τροφή για",
+    "ξηρή τροφή",
+    "ξηρα τροφη",
+    "ολιστική τροφή",
+    "ολιστικη τροφη",
+    "πλήρης τροφή",
+    "πληρης τροφη",
+    "ολοκληρωμένη τροφή",
+    "ολοκληρωμενη τροφη",
+  ].some((pattern) => text.includes(pattern));
 }
 
 function rowStatus(row) {

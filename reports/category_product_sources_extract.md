@@ -1,13 +1,13 @@
 # Category Product Sources Extract
 
-Generated: 2026-05-31T18:29:11.744Z
+Generated: 2026-06-01T20:27:09.950Z
 
 ## Summary
 
 - Product URLs discovered: 323
 - Rows extracted: 203
-- Candidate rows: 144
-- Hold rows: 59
+- Candidate rows: 133
+- Hold rows: 70
 - Failed product pages: 118
 - Per-source limit: 80 for retailer categories; Josera scans all English product sitemap URLs and filters dry dog products
 - Output CSV: data/imports/category_product_sources_extract_v2.csv
