@@ -5,7 +5,14 @@ import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 const PRODUCT_LIMIT = 100;
 const AUDIT_LIMIT = 50;
-const QUEUE_LIMIT = 1600;
+const QUEUE_LIMIT = 2600;
+const SUPPLEMENTAL_REVIEW_FILES = [
+  {
+    reviewFile: "data/review/gatoskilo_local_html_batch_review.csv",
+    datasetFile: "data/imports/gatoskilo_local_html_batch_v2.csv",
+    sourceLabel: "gatoskilo_local_html_batch",
+  },
+] as const;
 const FOOD_V2_PREVIEW_HEADERS = [
   "brand",
   "formula_name",
@@ -32,6 +39,17 @@ type QueueCsvRow = {
   source_priority?: string;
   missing_blockers?: string;
   next_action?: string;
+};
+
+type SupplementalReviewRow = {
+  formula_key?: string;
+  brand?: string;
+  formula_name?: string;
+  species?: string;
+  format?: string;
+  status?: string;
+  missing_fields?: string;
+  notes?: string;
 };
 
 type ParsedCsv = {
@@ -257,6 +275,43 @@ function parseCsv(text: string): Array<Record<string, string>> {
   return parseCsvWithHeaders(text).rows;
 }
 
+async function readSupplementalReviewQueueRows() {
+  const rows: QueueCsvRow[] = [];
+
+  for (const source of SUPPLEMENTAL_REVIEW_FILES) {
+    try {
+      const parsed = parseCsv(
+        await readFile(source.reviewFile, "utf8")
+      ) as SupplementalReviewRow[];
+
+      for (const row of parsed) {
+        if (!row.formula_key) continue;
+
+        const isCandidate = row.status === "importable_after_qa";
+        rows.push({
+          decision: isCandidate ? "candidate" : "hold",
+          dataset_file: source.datasetFile,
+          formula_key: row.formula_key,
+          brand: row.brand ?? "",
+          formula_name: row.formula_name ?? "",
+          species: row.species ?? "",
+          quality_status: "needs_review",
+          source_priority: "retailer",
+          missing_blockers: row.missing_fields ?? "",
+          next_action: isCandidate
+            ? "Preview in admin and commit only after human QA."
+            : "Backfill missing fields before Food V2 commit.",
+        });
+      }
+    } catch {
+      // Supplemental review files are generated artifacts. If one is missing,
+      // keep the main queue available and let the report reveal the gap.
+    }
+  }
+
+  return rows;
+}
+
 function appendUniqueHeaders(target: string[], headers: string[]) {
   headers.forEach((header) => {
     if (header && !target.includes(header)) target.push(header);
@@ -298,7 +353,10 @@ async function readImportQueue() {
       "data/review/food_v2_import_candidate_queue.csv",
       "utf8"
     );
-    const rows = parseCsv(csv) as QueueCsvRow[];
+    const rows = [
+      ...(parseCsv(csv) as QueueCsvRow[]),
+      ...(await readSupplementalReviewQueueRows()),
+    ];
     const datasetFiles = Array.from(
       new Set(rows.map((row) => row.dataset_file).filter(Boolean))
     ) as string[];
