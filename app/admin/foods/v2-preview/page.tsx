@@ -24,6 +24,7 @@ type ImportCommitResult = {
     success: boolean;
     action: string;
     error: string | null;
+    merge_notes?: string[];
   }>;
 };
 
@@ -693,6 +694,34 @@ export default function FoodV2PreviewPage() {
               preview.summary.conflictCount
             }
             helper="Impossible values and conflicts"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
+          <SummaryCard
+            label="Label kcal"
+            value={preview.summary.labelEnergyRows}
+            helper="Energy from label/source"
+          />
+          <SummaryCard
+            label="Estimated kcal"
+            value={preview.summary.estimatedEnergyRows}
+            helper="Calculated fallback energy"
+          />
+          <SummaryCard
+            label="Label ash"
+            value={preview.summary.labelAshRows}
+            helper="Ash declared by source"
+          />
+          <SummaryCard
+            label="Retailer rows"
+            value={preview.summary.retailerRows}
+            helper="QA required before publish"
+          />
+          <SummaryCard
+            label="Official rows"
+            value={preview.summary.officialRows}
+            helper="Manufacturer-backed rows"
           />
         </div>
 
