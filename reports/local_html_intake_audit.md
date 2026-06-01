@@ -1,28 +1,28 @@
 # Local HTML Intake Audit
 
-Generated: 2026-06-01T19:24:53.669Z
+Generated: 2026-06-01T20:05:31.723Z
 
 ## Summary
 
-- Source folder: C:/Users/NIOstb/Desktop/photo_foods_nutritail/nutrital links
-- HTML/MHTML files scanned: 504
-- Probable food pages: 504
-- With ingredients/composition signals: 461
-- With analysis signals: 504
-- With kcal/energy signals: 244
-- With ash signals: 496
-- With mineral signals: 472
-- With feeding guide signals: 490
+- Source folder: C:\Users\NIOstb\Desktop\photo_foods_nutritail\gatoskilo htmls part 1
+- HTML/MHTML files scanned: 752
+- Probable food pages: 752
+- With ingredients/composition signals: 715
+- With analysis signals: 752
+- With kcal/energy signals: 431
+- With ash signals: 741
+- With mineral signals: 722
+- With feeding guide signals: 731
 
 ## Readiness
 
-- import_candidate_needs_kcal_or_estimate: 250
-- strong_import_candidate: 211
-- partial_review: 43
+- strong_import_candidate: 414
+- import_candidate_needs_kcal_or_estimate: 301
+- partial_review: 37
 
 ## Domains
 
-- gatoskilo.gr: 504
+- gatoskilo.gr: 752
 
 ## Outputs
 

@@ -1,8 +1,9 @@
 import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const sourceDir =
+const defaultSourceDir =
   "C:/Users/NIOstb/Desktop/photo_foods_nutritail/nutrital links";
+const sourceDir = process.argv[2] || defaultSourceDir;
 
 const paths = {
   template: "data/templates/nutritail-food-v2-template.csv",
