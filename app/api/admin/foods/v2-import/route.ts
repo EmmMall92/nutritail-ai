@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
+import { canonicalTitleSourceRank } from "@/lib/food-v2/canonicalFood";
 import { previewFoodV2ManualRows } from "@/lib/food-v2/importPreview";
 import { validateFoodImportRow } from "@/lib/food-v2/validateFood";
 import type {
@@ -21,8 +22,11 @@ type ImportResult = {
 type ExistingFoodV2Row = {
   id: string;
   formula_key: string;
+  formula_name: string | null;
+  display_name: string | null;
   kcal_per_100g: number | null;
   kcal_per_kg: number | null;
+  data_source_url: string | null;
   source_priority: string | null;
   source_notes: string | null;
 };
@@ -206,7 +210,7 @@ async function getExistingFoodStates(rows: FoodImportRowV2[]) {
   const { data: products, error: productsError } = await supabaseAdmin
     .from("food_products_v2")
     .select(
-      "id, formula_key, kcal_per_100g, kcal_per_kg, source_priority, source_notes"
+      "id, formula_key, formula_name, display_name, kcal_per_100g, kcal_per_kg, data_source_url, source_priority, source_notes"
     )
     .in("formula_key", formulaKeys);
 
@@ -251,6 +255,20 @@ function applyExistingMergePolicy(
 
   const existingRank = sourceRank(existing.product.source_priority);
   const incomingRank = sourceRank(row.food.source_priority);
+  const existingTitleRank = canonicalTitleSourceRank(existing.product);
+  const incomingTitleRank = canonicalTitleSourceRank(row.food);
+
+  if (incomingTitleRank < existingTitleRank) {
+    row.food.formula_name = existing.product.formula_name ?? row.food.formula_name;
+    row.food.display_name = existing.product.display_name ?? row.food.display_name;
+    row.food.source_notes = mergeNotes(
+      row.food.source_notes,
+      `preserved_higher_priority_existing_title=true`,
+      `existing_title_rank=${existingTitleRank}`,
+      `incoming_title_rank=${incomingTitleRank}`
+    );
+    mergeNotesForResult.push("preserved higher-priority existing title");
+  }
 
   if (isEstimatedEnergy(row.food) && isExistingLabelEnergy(existing.product)) {
     row.food.kcal_per_100g = existing.product.kcal_per_100g;

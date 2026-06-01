@@ -181,6 +181,25 @@ function buildSourceNotes(row: QueueCsvRow, fullRow?: Record<string, string>) {
   return [existingNotes, queueNotes].filter(Boolean).join("; ");
 }
 
+function withBrandDisplayName(brand: string, displayName: string, formulaName: string) {
+  const cleanedBrand = String(brand ?? "").trim();
+  const cleanedDisplay = String(displayName ?? "").trim();
+  const cleanedFormula = String(formulaName ?? "").trim();
+  const candidate = cleanedDisplay || [cleanedBrand, cleanedFormula].filter(Boolean).join(" ");
+  const normalizedBrand = cleanedBrand.toLowerCase();
+  const normalizedCandidate = candidate.toLowerCase();
+
+  if (
+    !cleanedBrand ||
+    normalizedCandidate === normalizedBrand ||
+    normalizedCandidate.startsWith(`${normalizedBrand} `)
+  ) {
+    return candidate.trim();
+  }
+
+  return `${cleanedBrand} ${candidate}`.replace(/\s+/g, " ").trim();
+}
+
 function buildPreviewRow(
   row: QueueCsvRow,
   displayBrand: string,
@@ -198,7 +217,11 @@ function buildPreviewRow(
       ...fullRow,
       brand,
       formula_name: formulaName,
-      display_name: fullRow.display_name || `${brand} ${formulaName}`.trim(),
+      display_name: withBrandDisplayName(
+        brand,
+        fullRow.display_name || "",
+        formulaName
+      ),
       species: fullRow.species || row.species || "dog",
       format: fullRow.format || inferFormat(row),
       data_quality_status:
@@ -216,7 +239,11 @@ function buildPreviewRow(
       const values: Record<(typeof FOOD_V2_PREVIEW_HEADERS)[number], string> = {
         brand: displayBrand || row.brand || "",
         formula_name: displayFormulaName,
-        display_name: `${displayBrand || row.brand || ""} ${displayFormulaName}`.trim(),
+        display_name: withBrandDisplayName(
+          displayBrand || row.brand || "",
+          "",
+          displayFormulaName
+        ),
         species: row.species || "dog",
         format,
         life_stage: "unknown",
