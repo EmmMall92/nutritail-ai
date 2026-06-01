@@ -12,6 +12,7 @@
     "validate:foods": "node scripts/data/validate-food-import.mjs",
     "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs",
     "collect:gatoskilo-products": "node scripts/data/collect/collect-gatoskilo-products.mjs",
+    "extract:gatoskilo-local-html-batch": "node scripts/data/normalize/extract-gatoskilo-local-html-batch.mjs",
     "collect:petshop88-products": "node scripts/data/collect/collect-petshop88-products.mjs",
     "collect:external-product-sources": "node scripts/data/collect/collect-external-product-sources.mjs",
     "collect:category-product-sources": "node scripts/data/collect/collect-category-product-sources.mjs",
