@@ -200,6 +200,76 @@ function withBrandDisplayName(brand: string, displayName: string, formulaName: s
   return `${cleanedBrand} ${candidate}`.replace(/\s+/g, " ").trim();
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function stripPackSize(value: string) {
+  return value
+    .replace(/\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/giu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripLeadingBrand(value: string, brand: string) {
+  if (!brand) return value.trim();
+  return value
+    .replace(new RegExp(`^${escapeRegex(brand)}\\s+`, "iu"), "")
+    .replace(/^Natures?\s+Protection\s+/iu, "Nature's Protection ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function titleLooksUsable(value: string) {
+  const text = value.toLowerCase();
+  return (
+    value.length >= 8 &&
+    value.length <= 190 &&
+    !text.includes("cookie") &&
+    !text.includes("privacy") &&
+    !text.includes("terms") &&
+    !text.includes("return") &&
+    !text.includes("delivery")
+  );
+}
+
+function canonicalTitleFromFullRow(
+  brand: string,
+  fullRow?: Record<string, string>
+) {
+  if (!fullRow || !brand) return null;
+
+  const text = [
+    fullRow.display_name,
+    fullRow.formula_name,
+    fullRow.feeding_guide_text,
+    fullRow.additives_text,
+    fullRow.ingredient_text,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ");
+
+  const brandPattern = escapeRegex(brand).replace(/\\ /g, "\\s+");
+  const matches = text.match(
+    new RegExp(
+      `${brandPattern}\\s+[^.!?\\n]{6,170}?\\s+\\d+(?:[,.]\\d+)?\\s*(?:kg|g|gr|grams?)\\b`,
+      "giu"
+    )
+  );
+
+  const candidate = matches
+    ?.map((match) => stripPackSize(match))
+    .find(titleLooksUsable);
+
+  if (!candidate) return null;
+
+  return {
+    displayName: withBrandDisplayName(brand, candidate, candidate),
+    formulaName: stripLeadingBrand(candidate, brand),
+  };
+}
+
 function buildPreviewRow(
   row: QueueCsvRow,
   displayBrand: string,
@@ -207,11 +277,19 @@ function buildPreviewRow(
   fullRow?: Record<string, string>
 ) {
   const sourceNotes = buildSourceNotes(row, fullRow);
+  const titleRepair = canonicalTitleFromFullRow(
+    displayBrand || fullRow?.brand || row.brand || "",
+    fullRow
+  );
 
   if (fullRow) {
     const brand = displayBrand || fullRow.brand || row.brand || "";
     const formulaName =
-      displayFormulaName || fullRow.formula_name || row.formula_name || "";
+      titleRepair?.formulaName ||
+      displayFormulaName ||
+      fullRow.formula_name ||
+      row.formula_name ||
+      "";
 
     return {
       ...fullRow,
@@ -219,7 +297,7 @@ function buildPreviewRow(
       formula_name: formulaName,
       display_name: withBrandDisplayName(
         brand,
-        fullRow.display_name || "",
+        titleRepair?.displayName || fullRow.display_name || "",
         formulaName
       ),
       species: fullRow.species || row.species || "dog",
@@ -227,7 +305,9 @@ function buildPreviewRow(
       data_quality_status:
         fullRow.data_quality_status || row.quality_status || "needs_review",
       source_priority: fullRow.source_priority || row.source_priority || "unknown",
-      source_notes: sourceNotes,
+      source_notes: titleRepair
+        ? `${sourceNotes}; canonical_title_repaired_from_source_text=true`
+        : sourceNotes,
       formula_key: fullRow.formula_key || row.formula_key || "",
     };
   }
