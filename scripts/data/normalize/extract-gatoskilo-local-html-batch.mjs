@@ -423,6 +423,22 @@ function formatNumber(value, decimals = 4) {
 }
 
 function speciesFromText(url, title, text) {
+  const normalizedUrl = normalizeForMatch(url);
+  if (
+    normalizedUrl.includes("skyloy") ||
+    normalizedUrl.includes("skylou") ||
+    normalizedUrl.includes("dog")
+  ) {
+    return "dog";
+  }
+  if (
+    normalizedUrl.includes("gatas") ||
+    normalizedUrl.includes("gaton") ||
+    normalizedUrl.includes("cat")
+  ) {
+    return "cat";
+  }
+
   const haystack = normalizeForMatch(`${url} ${title} ${text}`);
   if (haystack.includes("gatas") || haystack.includes("cat") || haystack.includes("γατα")) return "cat";
   if (haystack.includes("skyloy") || haystack.includes("dog") || haystack.includes("σκυλ")) return "dog";
