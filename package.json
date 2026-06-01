@@ -67,7 +67,8 @@
     "review:royal-canin-photos": "node scripts/data/review/consolidate-royal-canin-photo-review.mjs",
     "plan:royal-canin-photo-gaps": "node scripts/data/review/plan-royal-canin-photo-gaps.mjs",
     "audit:gatoskilo-canonical": "node scripts/data/review/audit-gatoskilo-canonical-readiness.mjs",
-    "audit:local-html-intake": "node scripts/data/review/audit-local-html-intake.mjs"
+    "audit:local-html-intake": "node scripts/data/review/audit-local-html-intake.mjs",
+    "plan:local-html-import-priority": "node scripts/data/review/plan-local-html-import-priority.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
