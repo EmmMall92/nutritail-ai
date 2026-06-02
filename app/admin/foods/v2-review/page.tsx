@@ -243,8 +243,8 @@ export default function FoodV2ReviewPage() {
     return sortCounts(queueSummary?.brandCounts ?? {}).slice(0, 10);
   }, [queueSummary?.brandCounts]);
 
-  const topDatasets = useMemo(() => {
-    return sortCounts(queueSummary?.datasetCounts ?? {}).slice(0, 12);
+  const datasetOptions = useMemo(() => {
+    return sortCounts(queueSummary?.datasetCounts ?? {});
   }, [queueSummary?.datasetCounts]);
 
   const speciesOptions = useMemo(() => {
@@ -315,6 +315,36 @@ export default function FoodV2ReviewPage() {
       ? `Showing first 120 of ${visibleQueueRows.length} matching rows.`
       : `Showing ${visibleQueueRows.length} matching rows.`;
 
+  const visibleDecisionCounts = useMemo(() => {
+    return visibleQueueRows.reduce<Record<string, number>>((acc, row) => {
+      const decision = row.decision || "unknown";
+      acc[decision] = (acc[decision] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [visibleQueueRows]);
+
+  const visibleTopMissingFields = useMemo(() => {
+    return sortCounts(
+      visibleQueueRows.reduce<Record<string, number>>((acc, row) => {
+        String(row.missing_blockers ?? "")
+          .split("|")
+          .map((field) => field.trim())
+          .filter(Boolean)
+          .forEach((field) => {
+            acc[field] = (acc[field] ?? 0) + 1;
+          });
+        return acc;
+      }, {})
+    ).slice(0, 6);
+  }, [visibleQueueRows]);
+
+  const visibleCandidateRows = useMemo(() => {
+    return visibleQueueRows.filter((row) => row.decision === "candidate");
+  }, [visibleQueueRows]);
+
+  const activeDatasetLabel =
+    queueDatasetFilter === "all" ? "All source files" : queueDatasetFilter;
+
   const selectedQueueRows = useMemo(() => {
     const selected = new Set(selectedQueueKeys);
     return (data?.importQueue?.rows ?? []).filter((row) =>
@@ -328,6 +358,15 @@ export default function FoodV2ReviewPage() {
       current.includes(key)
         ? current.filter((item) => item !== key)
         : [...current, key]
+    );
+  }
+
+  function selectVisibleCandidates() {
+    const candidateKeys = visibleCandidateRows.map(
+      (row) => `${row.dataset_file}-${row.formula_key}`
+    );
+    setSelectedQueueKeys((current) =>
+      Array.from(new Set([...current, ...candidateKeys]))
     );
   }
 
@@ -618,12 +657,67 @@ export default function FoodV2ReviewPage() {
                   className="w-full rounded-xl border border-gray-300 p-3 text-black"
                 >
                   <option value="all">All</option>
-                  {topDatasets.map(([dataset, count]) => (
+                  {datasetOptions.map(([dataset, count]) => (
                     <option key={dataset} value={dataset}>
                       {dataset} ({count})
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+                <div>
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Active source
+                  </p>
+                  <p className="mt-1 break-all text-sm font-semibold text-black">
+                    {activeDatasetLabel}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Visible rows
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-black">
+                    {visibleQueueRows.length}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Importable candidates
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-green-700">
+                    {visibleDecisionCounts.candidate ?? 0}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Hold / blocked
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-amber-700">
+                    {visibleDecisionCounts.hold ?? 0}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {visibleTopMissingFields.length === 0 ? (
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs text-green-800">
+                    no visible blockers
+                  </span>
+                ) : (
+                  visibleTopMissingFields.map(([field, count]) => (
+                    <button
+                      key={field}
+                      type="button"
+                      onClick={() => setQueueBlockerFilter(field)}
+                      className="rounded-full bg-white px-3 py-1 text-xs text-gray-700 ring-1 ring-gray-200 transition hover:bg-gray-100"
+                    >
+                      {field}: {count}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
 
@@ -649,6 +743,27 @@ export default function FoodV2ReviewPage() {
                 className="rounded-lg bg-black px-3 py-2 text-xs text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300"
               >
                 Download preview CSV
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  downloadPreviewCsv(
+                    visibleCandidateRows,
+                    "nutritail-visible-candidate-food-v2-preview.csv"
+                  )
+                }
+                disabled={visibleCandidateRows.length === 0}
+                className="rounded-lg border border-green-700 px-3 py-2 text-xs text-green-800 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400"
+              >
+                Download candidates only
+              </button>
+              <button
+                type="button"
+                onClick={selectVisibleCandidates}
+                disabled={visibleCandidateRows.length === 0}
+                className="rounded-lg border border-gray-300 px-3 py-2 text-xs text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+              >
+                Select visible candidates
               </button>
               <Link
                 href="/admin/foods/v2-preview"
