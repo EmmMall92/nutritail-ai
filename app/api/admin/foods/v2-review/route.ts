@@ -183,8 +183,8 @@ function buildSourceNotes(row: QueueCsvRow, fullRow?: Record<string, string>) {
 
 function withBrandDisplayName(brand: string, displayName: string, formulaName: string) {
   const cleanedBrand = String(brand ?? "").trim();
-  const cleanedDisplay = String(displayName ?? "").trim();
-  const cleanedFormula = String(formulaName ?? "").trim();
+  const cleanedDisplay = normalizeReviewTitleCasing(String(displayName ?? "").trim());
+  const cleanedFormula = normalizeReviewTitleCasing(String(formulaName ?? "").trim());
   const candidate = cleanedDisplay || [cleanedBrand, cleanedFormula].filter(Boolean).join(" ");
   const normalizedBrand = cleanedBrand.toLowerCase();
   const normalizedCandidate = candidate.toLowerCase();
@@ -198,6 +198,19 @@ function withBrandDisplayName(brand: string, displayName: string, formulaName: s
   }
 
   return `${cleanedBrand} ${candidate}`.replace(/\s+/g, " ").trim();
+}
+
+function normalizeReviewTitleCasing(value: string) {
+  const cleaned = value.replace(/\s+/g, " ").trim();
+  if (!cleaned || !/[A-Z]/.test(cleaned) || /[a-z]/.test(cleaned)) return cleaned;
+
+  return cleaned
+    .split(" ")
+    .map((token) => {
+      if (/^[A-Z0-9+&/-]{2,}$/.test(token) && token.length <= 4) return token;
+      return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
+    })
+    .join(" ");
 }
 
 function escapeRegex(value: string) {
@@ -225,11 +238,38 @@ function titleLooksUsable(value: string) {
   return (
     value.length >= 8 &&
     value.length <= 190 &&
+    !text.includes(" weight ") &&
+    !text.includes("activity / day") &&
+    !text.includes("feed amount") &&
+    !text.includes("recommended food") &&
+    !text.includes("recommended feeding") &&
+    !text.includes("please make sure") &&
+    !text.includes("please note") &&
     !text.includes("cookie") &&
     !text.includes("privacy") &&
     !text.includes("terms") &&
     !text.includes("return") &&
     !text.includes("delivery")
+  );
+}
+
+function titleNeedsRepair(brand: string, formulaName: string, displayName: string) {
+  const title = `${formulaName} ${displayName}`.toLowerCase();
+  const brandText = brand.toLowerCase();
+  const displayText = displayName.toLowerCase();
+
+  return (
+    !displayName ||
+    (brandText && !displayText.startsWith(`${brandText} `)) ||
+    title.includes("τροφή για") ||
+    title.includes("ξηρή τροφή") ||
+    title.includes("ξηρα τροφη") ||
+    title.includes("ολιστική τροφή") ||
+    title.includes("πλήρης τροφή") ||
+    title.includes("activity / day") ||
+    title.includes("feed amount") ||
+    title.includes("recommended food") ||
+    /[ΞΟ][\u0080-\uFFFF]|[ÎÏ][\u0080-\uFFFF]|Â|�/.test(title)
   );
 }
 
@@ -277,18 +317,18 @@ function buildPreviewRow(
   fullRow?: Record<string, string>
 ) {
   const sourceNotes = buildSourceNotes(row, fullRow);
-  const titleRepair = canonicalTitleFromFullRow(
-    displayBrand || fullRow?.brand || row.brand || "",
-    fullRow
-  );
 
   if (fullRow) {
     const brand = displayBrand || fullRow.brand || row.brand || "";
+    const rawFormulaName =
+      displayFormulaName || fullRow.formula_name || row.formula_name || "";
+    const rawDisplayName = fullRow.display_name || "";
+    const titleRepair = titleNeedsRepair(brand, rawFormulaName, rawDisplayName)
+      ? canonicalTitleFromFullRow(brand, fullRow)
+      : null;
     const formulaName =
       titleRepair?.formulaName ||
-      displayFormulaName ||
-      fullRow.formula_name ||
-      row.formula_name ||
+      normalizeReviewTitleCasing(rawFormulaName) ||
       "";
 
     return {
