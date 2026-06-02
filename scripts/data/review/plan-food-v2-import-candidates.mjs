@@ -28,6 +28,7 @@ const inputs = [
   "data/imports/petshop88_product_extract_v2.csv",
   "data/imports/external_product_sources_extract_v2.csv",
   "data/imports/category_product_sources_extract_v2.csv",
+  "data/imports/gatoskilo_royal_canin_dog_html_batch_v2.csv",
   "data/imports/royal_canin_gr_product_extract_v2.csv",
   "data/imports/dog_dog_wild_pdf_extract_v2.csv",
   "data/imports/prochoice_pdf_extract_v2.csv",

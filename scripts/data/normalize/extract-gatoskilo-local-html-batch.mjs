@@ -3,13 +3,19 @@ import path from "node:path";
 
 const defaultSourceDir =
   "C:/Users/NIOstb/Desktop/photo_foods_nutritail/nutrital links";
-const sourceDir = process.argv[2] || defaultSourceDir;
+const args = process.argv.slice(2);
+const sourceDir = args.find((arg) => !arg.startsWith("--")) || defaultSourceDir;
+const outputName =
+  args
+    .find((arg) => arg.startsWith("--output="))
+    ?.replace(/^--output=/, "")
+    .replace(/[^a-z0-9_-]/gi, "_") || "gatoskilo_local_html_batch";
 
 const paths = {
   template: "data/templates/nutritail-food-v2-template.csv",
-  importCsv: "data/imports/gatoskilo_local_html_batch_v2.csv",
-  reviewCsv: "data/review/gatoskilo_local_html_batch_review.csv",
-  report: "reports/gatoskilo_local_html_batch.md",
+  importCsv: `data/imports/${outputName}_v2.csv`,
+  reviewCsv: `data/review/${outputName}_review.csv`,
+  report: `reports/${outputName}.md`,
 };
 
 const reviewHeaders = [
@@ -205,6 +211,16 @@ function cleanText(value) {
     .trim();
 }
 
+function normalizeProductTitle(value) {
+  return cleanText(value)
+    .replace(/Μini/gu, "Mini")
+    .replace(/Χsmall/giu, "Xsmall")
+    .replace(/\bXSmall\b/g, "Xsmall")
+    .replace(/\bS_O\b/giu, "S/O")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function stripTags(value) {
   return cleanText(
     String(value ?? "")
@@ -244,12 +260,14 @@ async function collectHtmlFiles(directory) {
 
 function titleFromHtml(html, filePath) {
   const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
-  if (h1) return stripTags(h1).replace(/\s*-\s*Gatoskilo$/i, "");
+  if (h1) return normalizeProductTitle(stripTags(h1).replace(/\s*-\s*Gatoskilo$/i, ""));
   const meta = html.match(/<meta\b[^>]*(?:property|name)=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1];
-  if (meta) return cleanText(meta).replace(/\s*-\s*Gatoskilo$/i, "");
+  if (meta) return normalizeProductTitle(cleanText(meta).replace(/\s*-\s*Gatoskilo$/i, ""));
   const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1];
-  if (title) return cleanText(title).replace(/\s*-\s*Gatoskilo$/i, "");
-  return path.basename(filePath).replace(/\.(?:html?|mhtml?|mht)$/i, "").replace(/\s*-\s*Gatoskilo$/i, "");
+  if (title) return normalizeProductTitle(cleanText(title).replace(/\s*-\s*Gatoskilo$/i, ""));
+  return normalizeProductTitle(
+    path.basename(filePath).replace(/\.(?:html?|mhtml?|mht)$/i, "").replace(/\s*-\s*Gatoskilo$/i, "")
+  );
 }
 
 function canonicalUrlFromHtml(html) {
