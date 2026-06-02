@@ -608,6 +608,14 @@ function buildProductRow(html, filePath, headers) {
     ]),
   );
   row.fat_percent = formatNumber(percentAfter(analysisText, ["Ακατέργαστα Λιπαρά", "Λιπαρά", "Λίπος", "Fat"]));
+  if (!row.fat_percent) {
+    row.fat_percent = formatNumber(
+      percentAfter(analysisText, [
+        "Περιεκτικότητα σε λιπαρές ουσίες",
+        "λιπαρές ουσίες",
+      ])
+    );
+  }
   row.fiber_percent = formatNumber(
     percentAfter(analysisText, [
       "Ακατέργαστες Φυτικές Ίνες",
