@@ -1,19 +1,19 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-06-02T10:21:10.507Z
+Generated: 2026-06-02T10:52:30.892Z
 
 ## Summary
 
 - Queue rows: 1884
-- Candidate rows: 322
-- Hold rows: 1562
+- Candidate rows: 323
+- Hold rows: 1561
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 1562
-- candidate: 322
+- hold: 1561
+- candidate: 323
 
 ## By Dataset
 
