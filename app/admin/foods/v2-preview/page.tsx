@@ -107,6 +107,10 @@ function downloadTemplate() {
   window.location.href = "/api/admin/foods/v2-template";
 }
 
+function downloadBestCandidates() {
+  window.location.href = "/api/admin/foods/v2-best-candidates";
+}
+
 function formatNutrient(value: number | null | undefined, suffix = "%") {
   if (value === null || value === undefined) return "-";
   return `${value}${suffix}`;
@@ -192,6 +196,7 @@ export default function FoodV2PreviewPage() {
   const [error, setError] = useState("");
   const [isImporting, setIsImporting] = useState(false);
   const [isCheckingConflicts, setIsCheckingConflicts] = useState(false);
+  const [isLoadingBestCandidates, setIsLoadingBestCandidates] = useState(false);
   const [showCommitConfirm, setShowCommitConfirm] = useState(false);
   const [rowFilter, setRowFilter] = useState<RowFilter>("all");
   const [rowSearch, setRowSearch] = useState("");
@@ -275,6 +280,36 @@ export default function FoodV2PreviewPage() {
     setRowSearch("");
     setSourceLabel("Manual sample");
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
+  }
+
+  async function loadBestCandidates() {
+    try {
+      setError("");
+      setCommitResult(null);
+      setConflictResult(null);
+      setShowCommitConfirm(false);
+      setSelectedFormulaKeys([]);
+      setRowFilter("importable");
+      setRowSearch("");
+      setIsLoadingBestCandidates(true);
+
+      const response = await fetch("/api/admin/foods/v2-best-candidates");
+      if (!response.ok) {
+        throw new Error("Could not load the Food V2 best-candidate CSV.");
+      }
+
+      const text = await response.text();
+      setPreview(previewFoodV2Csv(text));
+      setSourceLabel("Food V2 best candidate preview");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not load the Food V2 best-candidate CSV."
+      );
+    } finally {
+      setIsLoadingBestCandidates(false);
+    }
   }
 
   async function checkExistingFormulaKeys() {
@@ -398,6 +433,16 @@ export default function FoodV2PreviewPage() {
               </button>
               <button
                 type="button"
+                onClick={loadBestCandidates}
+                disabled={isLoadingBestCandidates}
+                className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-500"
+              >
+                {isLoadingBestCandidates
+                  ? "Loading..."
+                  : "Load Best Candidates"}
+              </button>
+              <button
+                type="button"
                 onClick={checkExistingFormulaKeys}
                 disabled={isCheckingConflicts || rowsForCommit.length === 0}
                 className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-500"
@@ -410,6 +455,13 @@ export default function FoodV2PreviewPage() {
                 className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
               >
                 Download Template
+              </button>
+              <button
+                type="button"
+                onClick={downloadBestCandidates}
+                className="rounded-xl border border-black px-5 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Download Best CSV
               </button>
               <Link
                 href="/admin/foods"
