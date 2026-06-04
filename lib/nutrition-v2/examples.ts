@@ -50,9 +50,10 @@ export const nutritionV2Examples: NutritionV2Example[] = [
     expectedRecommendationBehavior: [
       "Prefer puppy or growth formulas suitable for large breed growth.",
       "Check calcium/phosphorus ratio before confident recommendation.",
+      "Mention DHA when declared as a growth-development signal.",
     ],
     expectedWarnings: ["Large breed puppies require extra mineral caution."],
-    requiredFields: ["calcium_percent", "phosphorus_percent", "kcal_per_100g"],
+    requiredFields: ["calcium_percent", "phosphorus_percent", "kcal_per_100g", "dha_percent"],
   },
   {
     id: "senior-dog",
@@ -63,10 +64,10 @@ export const nutritionV2Examples: NutritionV2Example[] = [
     },
     expectedRecommendationBehavior: [
       "Prefer moderate calories and digestibility support.",
-      "Mention joint-support ingredients when present.",
+      "Mention EPA or joint-support ingredients when present.",
     ],
     expectedWarnings: ["Do not assume senior pets always need weight loss."],
-    requiredFields: ["kcal_per_100g", "protein_percent", "fat_percent"],
+    requiredFields: ["kcal_per_100g", "protein_percent", "fat_percent", "epa_percent"],
   },
   {
     id: "cat-urinary-sensitivity",

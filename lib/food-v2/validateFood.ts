@@ -65,6 +65,10 @@ export function detectImpossibleNutritionValues(
     ["phosphorus_percent", 0, 3],
     ["sodium_percent", 0, 2],
     ["magnesium_percent", 0, 0.5],
+    ["omega3_percent", 0, 5],
+    ["omega6_percent", 0, 8],
+    ["dha_percent", 0, 3],
+    ["epa_percent", 0, 3],
   ];
 
   for (const [key, min, max] of checks) {

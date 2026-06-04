@@ -11,6 +11,11 @@ export const GROWTH_SCIENTIFIC_PRINCIPLES = [
     principle:
       "Large and giant-breed puppies need careful energy and calcium/phosphorus review.",
   },
+  {
+    id: "dha_supports_growth_development",
+    principle:
+      "Declared DHA is a useful growth-stage signal for brain, learning and visual development context.",
+  },
 ] as const;
 
 export const GROWTH_DECISION_RULES = [
@@ -24,10 +29,16 @@ export const GROWTH_DECISION_RULES = [
     when: ["large/giant puppy", "calcium or phosphorus missing"],
     then: "Ask for label/official data before confident recommendation.",
   },
+  {
+    id: "dha_boosts_growth_explanation",
+    when: ["puppy or kitten formula", "dha_percent exists"],
+    then: "Add a growth-development explanation without making medical claims.",
+  },
 ] as const;
 
 export const GROWTH_RECOMMENDATION_LOGIC = [
   "Prioritize life-stage match, controlled kcal density and mineral completeness.",
+  "Use declared DHA as a positive growth-stage signal when available.",
   "Avoid encouraging overfeeding for faster growth.",
 ] as const;
 
@@ -53,13 +64,23 @@ function hasNumber(value: unknown): value is number {
 
 export function evaluateGrowthRules(
   food: Pick<FoodProductV2, "species" | "life_stage" | "dog_size" | "kcal_per_100g">,
-  nutrients: Pick<FoodNutrientsV2, "calcium_percent" | "phosphorus_percent">
+  nutrients: Pick<
+    FoodNutrientsV2,
+    "calcium_percent" | "phosphorus_percent" | "dha_percent" | "epa_percent"
+  >
 ) {
   const findings: string[] = [];
   const cautions: string[] = [];
 
   if (["puppy", "kitten", "all_life_stages"].includes(food.life_stage)) {
     findings.push("growth_life_stage_signal");
+  }
+
+  if (
+    ["puppy", "kitten", "all_life_stages"].includes(food.life_stage) &&
+    hasNumber(nutrients.dha_percent)
+  ) {
+    findings.push("dha_growth_development_signal");
   }
 
   if (

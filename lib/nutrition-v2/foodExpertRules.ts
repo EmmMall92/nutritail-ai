@@ -44,6 +44,18 @@ function hasNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+function hasDha(nutrients: FoodNutrientsV2) {
+  return hasNumber(nutrients.dha_percent);
+}
+
+function hasEpa(nutrients: FoodNutrientsV2) {
+  return hasNumber(nutrients.epa_percent);
+}
+
+function hasLongChainOmega3(nutrients: FoodNutrientsV2) {
+  return hasEpa(nutrients) || hasDha(nutrients);
+}
+
 export function calculateRER(weightKg: number) {
   if (!Number.isFinite(weightKg) || weightKg <= 0) return null;
   return Math.round(70 * Math.pow(weightKg, 0.75));
@@ -177,6 +189,9 @@ export function evaluateFoodForPet(
 
   if (normalizedIncludes(pet.healthIssues, ["renal", "kidney"])) {
     warnings.push("Do not use this as prescription renal advice; veterinary supervision is required.");
+    if (hasLongChainOmega3(nutrients)) {
+      reasons.push("EPA/DHA are declared, which can support renal fatty-acid context.");
+    }
   }
 
   if (
@@ -199,11 +214,18 @@ export function evaluateFoodForPet(
     if (pet.dogSize === "large" || pet.dogSize === "giant") {
       warnings.push("Large breed puppy growth requires extra calcium/phosphorus caution.");
     }
+    if (hasDha(nutrients)) {
+      reasons.push("DHA is declared, which supports growth-stage brain and vision context.");
+    }
   }
 
   if (pet.lifeStage === "senior" || food.life_stage === "senior") {
     reasons.push("Senior pets may benefit from digestibility and moderate calorie review.");
-    if (hasNumber(nutrients.glucosamine_mgkg) || hasNumber(nutrients.chondroitin_mgkg)) {
+    if (
+      hasEpa(nutrients) ||
+      hasNumber(nutrients.glucosamine_mgkg) ||
+      hasNumber(nutrients.chondroitin_mgkg)
+    ) {
       reasons.push("Joint-support nutrients are present.");
     }
   }

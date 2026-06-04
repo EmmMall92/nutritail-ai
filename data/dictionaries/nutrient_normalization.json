@@ -53,10 +53,10 @@
       "aliases": ["omega 6", "omega-6", "omega6"]
     },
     "dha_percent": {
-      "aliases": ["dha"]
+      "aliases": ["dha", "docosahexaenoic acid", "docosahexaenoic", "ω-3 λιπαρό οξύ dha"]
     },
     "epa_percent": {
-      "aliases": ["epa"]
+      "aliases": ["epa", "eicosapentaenoic acid", "eicosapentaenoic", "ω-3 λιπαρό οξύ epa"]
     },
     "taurine_mgkg": {
       "aliases": ["taurine"]
