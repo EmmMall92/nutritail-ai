@@ -37,7 +37,7 @@ export const FAT_DECISION_RULES = [
   },
   {
     id: "epa_dha_do_not_require_total_omega3",
-    when: ["epa_percent or dha_percent exists", "omega3_percent is missing"],
+    when: ["epa_percent, dha_percent, or epa_dha_percent exists", "omega3_percent is missing"],
     then: "Treat EPA/DHA as usable long-chain omega-3 evidence and explain that total omega-3 is not declared.",
   },
 ] as const;
@@ -81,26 +81,39 @@ function hasNumber(value: unknown): value is number {
 }
 
 export function hasDeclaredOmega3Signal(
-  nutrients: Pick<FoodNutrientsV2, "omega3_percent" | "epa_percent" | "dha_percent">
+  nutrients: Pick<
+    FoodNutrientsV2,
+    "omega3_percent" | "epa_percent" | "dha_percent" | "epa_dha_percent"
+  >
 ): boolean {
   return (
     hasNumber(nutrients.omega3_percent) ||
     hasNumber(nutrients.epa_percent) ||
-    hasNumber(nutrients.dha_percent)
+    hasNumber(nutrients.dha_percent) ||
+    hasNumber(nutrients.epa_dha_percent)
   );
 }
 
 export function hasLongChainOmega3Signal(
-  nutrients: Pick<FoodNutrientsV2, "epa_percent" | "dha_percent">
+  nutrients: Pick<FoodNutrientsV2, "epa_percent" | "dha_percent" | "epa_dha_percent">
 ): boolean {
-  return hasNumber(nutrients.epa_percent) || hasNumber(nutrients.dha_percent);
+  return (
+    hasNumber(nutrients.epa_percent) ||
+    hasNumber(nutrients.dha_percent) ||
+    hasNumber(nutrients.epa_dha_percent)
+  );
 }
 
 export function evaluateFatRules(
   food: Pick<FoodProductV2, "fat_sources" | "commercial_tags" | "medical_tags">,
   nutrients: Pick<
     FoodNutrientsV2,
-    "fat_percent" | "omega3_percent" | "omega6_percent" | "epa_percent" | "dha_percent"
+    | "fat_percent"
+    | "omega3_percent"
+    | "omega6_percent"
+    | "epa_percent"
+    | "dha_percent"
+    | "epa_dha_percent"
   >
 ): FatRuleFinding[] {
   const findings: FatRuleFinding[] = [];
@@ -146,7 +159,21 @@ export function evaluateFatRules(
     findings.push({
       type: "strength",
       code: "epa_dha_long_chain_omega3_signal",
-      message: "EPA/DHA values give a more specific omega-3 signal than total omega-3 alone.",
+      message:
+        "Declared EPA/DHA gives a more specific omega-3 signal than total omega-3 alone.",
+    });
+  }
+
+  if (
+    hasNumber(nutrients.epa_dha_percent) &&
+    !hasNumber(nutrients.epa_percent) &&
+    !hasNumber(nutrients.dha_percent)
+  ) {
+    findings.push({
+      type: "missing",
+      code: "epa_dha_combined_not_split",
+      message:
+        "EPA+DHA is declared only as a combined value, so EPA-specific and DHA-specific reasoning should stay cautious.",
     });
   }
 

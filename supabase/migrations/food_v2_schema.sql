@@ -50,6 +50,7 @@ create table if not exists food_product_nutrients_v2 (
   omega6_percent numeric,
   dha_percent numeric,
   epa_percent numeric,
+  epa_dha_percent numeric,
   taurine_mgkg numeric,
   l_carnitine_mgkg numeric,
   glucosamine_mgkg numeric,

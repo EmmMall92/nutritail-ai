@@ -73,6 +73,7 @@ export interface FoodNutrientsV2 {
   omega6_percent?: number | null;
   dha_percent?: number | null;
   epa_percent?: number | null;
+  epa_dha_percent?: number | null;
   taurine_mgkg?: number | null;
   l_carnitine_mgkg?: number | null;
   glucosamine_mgkg?: number | null;

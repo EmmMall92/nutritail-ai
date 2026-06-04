@@ -872,7 +872,7 @@ export default function FoodV2PreviewPage() {
                   <p className="text-sm font-semibold text-black">
                     Extracted nutrients
                   </p>
-                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 xl:grid-cols-8">
+                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm md:grid-cols-4 xl:grid-cols-11">
                     <div>
                       <p className="text-gray-500">Fat</p>
                       <p className="font-semibold text-black">
@@ -919,6 +919,24 @@ export default function FoodV2PreviewPage() {
                       <p className="text-gray-500">Omega 6</p>
                       <p className="font-semibold text-black">
                         {formatNutrient(row.nutrients.omega6_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">DHA</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.dha_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">EPA</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.epa_percent)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">EPA+DHA</p>
+                      <p className="font-semibold text-black">
+                        {formatNutrient(row.nutrients.epa_dha_percent)}
                       </p>
                     </div>
                   </div>

@@ -111,6 +111,29 @@ function toNutrientsPayload(
   };
 }
 
+async function insertNutrientsWithCompatibility(
+  foodProductId: string,
+  nutrients: FoodNutrientsV2
+) {
+  const payload = toNutrientsPayload(foodProductId, nutrients);
+  const result = await supabaseAdmin
+    .from("food_product_nutrients_v2")
+    .insert(payload);
+
+  if (
+    result.error?.message?.toLowerCase().includes("epa_dha_percent") &&
+    "epa_dha_percent" in payload
+  ) {
+    const { epa_dha_percent: ignoredCombinedValue, ...legacyPayload } = payload;
+    void ignoredCombinedValue;
+    return supabaseAdmin
+      .from("food_product_nutrients_v2")
+      .insert(legacyPayload);
+  }
+
+  return result;
+}
+
 function sourceTypeFor(row: FoodImportRowV2) {
   if (row.food.source_priority === "manual_photo") return "manual_photo";
   if (row.food.source_priority === "retailer") return "retailer";
@@ -414,9 +437,10 @@ export async function POST(request: Request) {
         continue;
       }
 
-      const { error: nutrientsError } = await supabaseAdmin
-        .from("food_product_nutrients_v2")
-        .insert(toNutrientsPayload(foodProductId, row.nutrients));
+      const { error: nutrientsError } = await insertNutrientsWithCompatibility(
+        foodProductId,
+        row.nutrients
+      );
 
       if (nutrientsError) {
         results.push({
