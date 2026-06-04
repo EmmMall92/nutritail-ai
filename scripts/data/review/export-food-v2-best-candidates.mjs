@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createClient } from "@supabase/supabase-js";
 
 const paths = {
   template: "data/templates/nutritail-food-v2-template.csv",
@@ -100,7 +101,29 @@ function renderCounts(counts) {
     .join("\n");
 }
 
-function renderReport({ groups, exportedRows, missingRows }) {
+async function loadEnvFile() {
+  const envPath = path.join(process.cwd(), ".env.local");
+  try {
+    const text = await readFile(envPath, "utf8");
+    for (const line of text.split(/\r?\n/u)) {
+      const match = line.match(/^([^#=]+)=(.*)$/u);
+      if (!match) continue;
+      const key = match[1].trim();
+      let value = match[2].trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      process.env[key] = process.env[key] || value;
+    }
+  } catch {
+    // Local CI can provide env vars directly.
+  }
+}
+
+function renderReport({ groups, exportedRows, missingRows, skippedExistingRows, dbCheckEnabled }) {
   return `# Food V2 Best Candidate Preview Export
 
 Generated: ${new Date().toISOString()}
@@ -109,7 +132,9 @@ Generated: ${new Date().toISOString()}
 
 - Importable best candidate rows exported: ${exportedRows.length}
 - Candidate groups considered: ${groups.length}
+- Already-imported canonical rows skipped: ${skippedExistingRows.length}
 - Missing source rows skipped: ${missingRows.length}
+- Existing DB canonical check: ${dbCheckEnabled ? "enabled" : "skipped"}
 - Output CSV: ${paths.output}
 
 ## By Source Priority
@@ -123,6 +148,8 @@ ${renderCounts(countBy(exportedRows, "_dataset_file")) || "- none"}
 ## Operating Rule
 
 This file contains one best candidate row per canonical formula identity. It is intended for Admin Food V2 preview before commit. Alternative rows remain in the dedupe review files as evidence/backfill references.
+
+Rows are skipped from this export when the same canonical food identity already exists in Food V2, even if the old source formula_key is different. This prevents re-importing the same formula from another site, PDF, or pack-size source.
 `;
 }
 
@@ -134,6 +161,115 @@ function normalizeText(value) {
     .replace(/&/g, " and ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function normalizeIdentityText(value) {
+  return normalizeText(value)
+    .replace(/\+/g, " plus ")
+    .replace(/&/g, " and ")
+    .replace(/\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/giu, " ")
+    .replace(/[^a-z0-9\u0370-\u03ff]+/giu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeFoodTokenAliases(value) {
+  return String(value ?? "")
+    .replace(/\u03bc\u03b5/gu, " ")
+    .replace(/\u03ba\u03b1\u03b9/gu, " and ")
+    .replace(/\u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf/gu, " chicken ")
+    .replace(/\u03c7\u03bf\u03b9\u03c1\u03b9\u03bd\u03bf/gu, " pork ")
+    .replace(/\u03c0\u03c1\u03bf\u03c3\u03bf\u03c5\u03c4\u03bf/gu, " ham ")
+    .replace(/\u03c8\u03b1\u03c1\u03b9/gu, " fish ")
+    .replace(/\u03c1\u03c5\u03b6\u03b9/gu, " rice ")
+    .replace(/\u03c4\u03bf\u03bd\u03bf\u03c2/gu, " tuna ")
+    .replace(/\u03c4\u03bf\u03bd\u03bf/gu, " tuna ")
+    .replace(/\u03b1\u03c1\u03bd\u03b9/gu, " lamb ")
+    .replace(/\u03c3\u03bf\u03bb\u03bf\u03bc\u03bf\u03c2/gu, " salmon ")
+    .replace(/\u03c3\u03bf\u03bb\u03bf\u03bc\u03bf/gu, " salmon ")
+    .replace(/\u03bc\u03bf\u03c3\u03c7\u03b1\u03c1\u03b9/gu, " beef ")
+    .replace(/\u03b2\u03bf\u03b4\u03b9\u03bd\u03bf/gu, " beef ")
+    .replace(/\u03c0\u03b1\u03c0\u03b9\u03b1/gu, " duck ")
+    .replace(/\u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03c5\u03bb\u03b1/gu, " turkey ")
+    .replace(/\u03b3\u03b1\u03c1\u03b9\u03b4\u03b5\u03c2/gu, " shrimp ")
+    .replace(/\u03b3\u03b1\u03c1\u03b9\u03b4\u03b1/gu, " shrimp ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function applyBrandFormulaAlias(brand, formula) {
+  const brandText = normalizeIdentityText(brand);
+  let formulaText = normalizeFoodTokenAliases(normalizeIdentityText(formula));
+
+  if (formulaText.startsWith(`${brandText} `)) {
+    formulaText = formulaText.slice(brandText.length + 1).trim();
+  }
+
+  if (brandText !== "schesir") return formulaText;
+
+  const aliases = [
+    [/^dry medium maintenance(?: chicken)?$/u, "adult medium chicken"],
+    [/^adult medium chicken$/u, "adult medium chicken"],
+    [/^dry small maintenance(?: dog| chicken)?$/u, "adult small chicken rice"],
+    [/^adult small(?: chicken and rice| chicken rice)$/u, "adult small chicken rice"],
+    [/^dry kitten(?: chicken)?$/u, "kitten chicken"],
+    [/^kitten chicken$/u, "kitten chicken"],
+    [/^cat sterilized and light(?: chicken)?$/u, "sterilized light chicken"],
+    [/^sterili[sz]ed cat chicken$/u, "sterilized light chicken"],
+    [/^sterili[sz]ed light(?: chicken)?$/u, "sterilized light chicken"],
+  ];
+
+  for (const [pattern, replacement] of aliases) {
+    if (pattern.test(formulaText)) return replacement;
+  }
+
+  return formulaText;
+}
+
+function canonicalIdentityKey({ brand, formula_name, species, format }) {
+  const brandText = normalizeIdentityText(brand);
+  const formulaText = applyBrandFormulaAlias(brand, formula_name);
+
+  return [brandText, formulaText, normalizeIdentityText(species), normalizeIdentityText(format)]
+    .filter(Boolean)
+    .join("|");
+}
+
+function normalizeGroupIdentityKey(value) {
+  const parts = String(value ?? "").split("|");
+  if (parts.length !== 4) return normalizeIdentityText(value);
+  return [
+    normalizeIdentityText(parts[0]),
+    normalizeFoodTokenAliases(normalizeIdentityText(parts[1])),
+    normalizeIdentityText(parts[2]),
+    normalizeIdentityText(parts[3]),
+  ]
+    .filter(Boolean)
+    .join("|");
+}
+
+async function loadExistingCanonicalKeys() {
+  await loadEnvFile();
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey) {
+    return { enabled: false, keys: new Set() };
+  }
+
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false },
+  });
+  const { data, error } = await supabase
+    .from("food_products_v2")
+    .select("brand, formula_name, species, format");
+
+  if (error) throw error;
+
+  return {
+    enabled: true,
+    keys: new Set((data ?? []).map((row) => canonicalIdentityKey(row))),
+  };
 }
 
 function applyPreviewTitleAliases(row, group) {
@@ -180,6 +316,7 @@ async function main() {
   const headers = templateHeaders(await readFile(paths.template, "utf8"));
   const dedupeGroups = parseCsv(await readFile(paths.dedupeGroups, "utf8"));
   const candidateGroups = dedupeGroups.filter((row) => row.best_decision === "candidate");
+  const existingCanonical = await loadExistingCanonicalKeys();
   const datasetFiles = [...new Set(candidateGroups.map((row) => row.best_dataset_file))];
   const rowsByDataset = new Map();
 
@@ -188,9 +325,16 @@ async function main() {
   }
 
   const missingRows = [];
+  const skippedExistingRows = [];
   const exportedRows = [];
 
   for (const group of candidateGroups) {
+    const groupCanonicalKey = normalizeGroupIdentityKey(group.canonical_identity_key);
+    if (existingCanonical.keys.has(groupCanonicalKey)) {
+      skippedExistingRows.push(group);
+      continue;
+    }
+
     const sourceRows = rowsByDataset.get(group.best_dataset_file);
     const sourceRow = sourceRows?.get(group.best_formula_key);
     if (!sourceRow) {
@@ -211,11 +355,18 @@ async function main() {
   await writeFile(paths.output, writeCsv(headers, exportedRows), "utf8");
   await writeFile(
     paths.report,
-    renderReport({ groups: candidateGroups, exportedRows, missingRows }),
+    renderReport({
+      groups: candidateGroups,
+      exportedRows,
+      missingRows,
+      skippedExistingRows,
+      dbCheckEnabled: existingCanonical.enabled,
+    }),
     "utf8"
   );
 
   console.log(`Food V2 best candidate rows exported: ${exportedRows.length}`);
+  console.log(`Already-imported canonical rows skipped: ${skippedExistingRows.length}`);
   console.log(`Missing source rows skipped: ${missingRows.length}`);
   console.log(`Wrote ${paths.output}`);
   console.log(`Wrote ${paths.report}`);
