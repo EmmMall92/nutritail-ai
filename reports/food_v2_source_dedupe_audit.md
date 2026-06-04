@@ -1,11 +1,11 @@
 # Food V2 Source Dedupe Audit
 
-Generated: 2026-06-04T18:21:40.645Z
+Generated: 2026-06-04T18:43:54.688Z
 
 ## Summary
 
-- Formula identity groups: 1502
-- Duplicate source groups: 324
+- Formula identity groups: 1498
+- Duplicate source groups: 325
 - Groups with an importable best row: 284
 - Source rows analyzed: 1884
 - Group CSV: data/review/food_v2_source_dedupe_groups.csv
