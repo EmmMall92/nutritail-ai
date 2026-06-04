@@ -69,7 +69,8 @@
     "audit:gatoskilo-canonical": "node scripts/data/review/audit-gatoskilo-canonical-readiness.mjs",
     "audit:local-html-intake": "node scripts/data/review/audit-local-html-intake.mjs",
     "plan:local-html-import-priority": "node scripts/data/review/plan-local-html-import-priority.mjs",
-    "audit:gatoskilo-title-quality": "node scripts/data/review/audit-gatoskilo-title-quality.mjs"
+    "audit:gatoskilo-title-quality": "node scripts/data/review/audit-gatoskilo-title-quality.mjs",
+    "audit:food-v2-source-dedupe": "node scripts/data/review/audit-food-v2-source-dedupe.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
