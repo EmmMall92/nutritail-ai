@@ -78,11 +78,60 @@ function titleCase(value: string) {
 }
 
 function slugify(value: string) {
-  return normalizeSearchText(value)
+  return normalizeFoodTokenAliases(normalizeSearchText(value))
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .replace(/-{2,}/g, "-");
+}
+
+function normalizeFoodTokenAliases(value: string) {
+  return value
+    .replace(/\u03bc\u03b5/gu, " ")
+    .replace(/\u03ba\u03b1\u03b9/gu, " and ")
+    .replace(/\u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf/gu, " chicken ")
+    .replace(/\u03c7\u03bf\u03b9\u03c1\u03b9\u03bd\u03bf/gu, " pork ")
+    .replace(/\u03c0\u03c1\u03bf\u03c3\u03bf\u03c5\u03c4\u03bf/gu, " ham ")
+    .replace(/\u03c8\u03b1\u03c1\u03b9/gu, " fish ")
+    .replace(/\u03c1\u03c5\u03b6\u03b9/gu, " rice ")
+    .replace(/\u03c4\u03bf\u03bd\u03bf\u03c2/gu, " tuna ")
+    .replace(/\u03c4\u03bf\u03bd\u03bf/gu, " tuna ")
+    .replace(/\u03b1\u03c1\u03bd\u03b9/gu, " lamb ")
+    .replace(/\u03c3\u03bf\u03bb\u03bf\u03bc\u03bf\u03c2/gu, " salmon ")
+    .replace(/\u03c3\u03bf\u03bb\u03bf\u03bc\u03bf/gu, " salmon ")
+    .replace(/\u03bc\u03bf\u03c3\u03c7\u03b1\u03c1\u03b9/gu, " beef ")
+    .replace(/\u03b2\u03bf\u03b4\u03b9\u03bd\u03bf/gu, " beef ")
+    .replace(/\u03c0\u03b1\u03c0\u03b9\u03b1/gu, " duck ")
+    .replace(/\u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03c5\u03bb\u03b1/gu, " turkey ")
+    .replace(/\u03b3\u03b1\u03c1\u03b9\u03b4\u03b5\u03c2/gu, " shrimp ")
+    .replace(/\u03b3\u03b1\u03c1\u03b9\u03b4\u03b1/gu, " shrimp ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function normalizeGreekFoodTokens(value: string) {
+  return value
+    .replace(/\bμε\b/gu, " ")
+    .replace(/\bκαι\b/gu, " and ")
+    .replace(/\bκοτοπουλο\b/gu, " chicken ")
+    .replace(/\bχοιρινο\b/gu, " pork ")
+    .replace(/\bπροσουτο\b/gu, " ham ")
+    .replace(/\bψαρι\b/gu, " fish ")
+    .replace(/\bρυζι\b/gu, " rice ")
+    .replace(/\bτονος\b/gu, " tuna ")
+    .replace(/\bτονο\b/gu, " tuna ")
+    .replace(/\bαρνι\b/gu, " lamb ")
+    .replace(/\bσολομος\b/gu, " salmon ")
+    .replace(/\bσολομο\b/gu, " salmon ")
+    .replace(/\bμοσχαρι\b/gu, " beef ")
+    .replace(/\bβοδινο\b/gu, " beef ")
+    .replace(/\bπαπια\b/gu, " duck ")
+    .replace(/\bγαλοπουλα\b/gu, " turkey ")
+    .replace(/\bγαριδα\b/gu, " shrimp ")
+    .replace(/\bγαριδες\b/gu, " shrimp ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function removeNoiseWords(value: string) {
@@ -141,7 +190,7 @@ export function createCanonicalFormulaKey({
 
 function applyBrandFormulaAlias(brand: unknown, formulaName: unknown) {
   const normalizedBrand = normalizeSearchText(brand);
-  let normalizedFormula = normalizeSearchText(formulaName)
+  let normalizedFormula = normalizeFoodTokenAliases(normalizeSearchText(formulaName))
     .replace(/&/g, " and ")
     .replace(/\s+/g, " ")
     .trim();
@@ -149,6 +198,21 @@ function applyBrandFormulaAlias(brand: unknown, formulaName: unknown) {
   if (normalizedBrand !== "schesir") return formulaName;
   if (normalizedFormula.startsWith(`${normalizedBrand} `)) {
     normalizedFormula = normalizedFormula.slice(normalizedBrand.length + 1).trim();
+  }
+
+  const normalizedAliases: Array<[RegExp, string]> = [
+    [/^dry medium maintenance(?: chicken)?$/u, "Adult Medium Chicken"],
+    [/^adult medium chicken$/u, "Adult Medium Chicken"],
+    [/^dry small maintenance(?: dog| chicken)?$/u, "Adult Small Chicken Rice"],
+    [/^adult small(?: chicken and rice| chicken rice)$/u, "Adult Small Chicken Rice"],
+    [/^dry kitten(?: chicken)?$/u, "Kitten Chicken"],
+    [/^kitten chicken$/u, "Kitten Chicken"],
+    [/^cat sterilized and light(?: chicken)?$/u, "Sterilized Light Chicken"],
+    [/^sterili[sz]ed cat chicken$/u, "Sterilized Light Chicken"],
+  ];
+
+  for (const [pattern, replacement] of normalizedAliases) {
+    if (pattern.test(normalizedFormula)) return replacement;
   }
 
   const schesirAliases: Array<[RegExp, string]> = [
