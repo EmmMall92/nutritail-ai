@@ -186,11 +186,38 @@ function normalizeToken(value) {
 
 function stripBrandFromFormula(brand, formula) {
   const brandText = normalizeToken(brand);
-  let formulaText = normalizeToken(formula);
+  let formulaText = normalizeToken(applyBrandFormulaAlias(brand, formula));
   if (brandText && formulaText.startsWith(`${brandText} `)) {
     formulaText = formulaText.slice(brandText.length + 1).trim();
   }
   return formulaText;
+}
+
+function applyBrandFormulaAlias(brand, formula) {
+  const brandText = normalizeToken(brand);
+  let formulaText = normalizeToken(formula);
+
+  if (brandText !== "schesir") return formula;
+  if (formulaText.startsWith(`${brandText} `)) {
+    formulaText = formulaText.slice(brandText.length + 1).trim();
+  }
+
+  const schesirAliases = [
+    [/^dry medium maintenance(?: chicken| με κοτοπουλο)?$/u, "Adult Medium Chicken"],
+    [/^adult medium(?: με κοτοπουλο| chicken)$/u, "Adult Medium Chicken"],
+    [/^dry small maintenance(?: dog| με κοτοπουλο)?$/u, "Adult Small Chicken Rice"],
+    [/^adult small(?: με κοτοπουλο and ρυζι| chicken rice)$/u, "Adult Small Chicken Rice"],
+    [/^dry kitten(?: με κοτοπουλο| chicken)?$/u, "Kitten Chicken"],
+    [/^kitten(?: με κοτοπουλο| chicken)$/u, "Kitten Chicken"],
+    [/^cat sterilized and light(?: με κοτοπουλο| chicken)?$/u, "Sterilized Light Chicken"],
+    [/^sterili[sz]ed cat(?: με κοτοπουλο| chicken)$/u, "Sterilized Light Chicken"],
+  ];
+
+  for (const [pattern, replacement] of schesirAliases) {
+    if (pattern.test(formulaText)) return replacement;
+  }
+
+  return formula;
 }
 
 function canonicalIdentityKey(row) {

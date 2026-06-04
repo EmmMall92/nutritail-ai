@@ -126,6 +126,56 @@ This file contains one best candidate row per canonical formula identity. It is 
 `;
 }
 
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/gu, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function applyPreviewTitleAliases(row, group) {
+  if (normalizeText(row.brand) !== "schesir") return row;
+
+  const key = group.canonical_identity_key;
+  const aliases = {
+    "schesir|adult medium chicken|dog|dry": {
+      formula_name: "Adult Medium Chicken",
+      display_name: "Schesir Adult Medium Chicken",
+      dog_size: "medium",
+    },
+    "schesir|adult small chicken rice|dog|dry": {
+      formula_name: "Adult Small Chicken & Rice",
+      display_name: "Schesir Adult Small Chicken & Rice",
+      dog_size: "small",
+    },
+    "schesir|kitten chicken|cat|dry": {
+      formula_name: "Kitten Chicken",
+      display_name: "Schesir Kitten Chicken",
+    },
+    "schesir|sterilized light chicken|cat|dry": {
+      formula_name: "Sterilized Light Chicken",
+      display_name: "Schesir Sterilized Light Chicken",
+    },
+  };
+
+  const alias = aliases[key];
+  if (!alias) return row;
+
+  return {
+    ...row,
+    ...alias,
+    source_notes: [
+      row.source_notes,
+      `preview_title_alias_applied=${alias.display_name}`,
+    ]
+      .filter(Boolean)
+      .join("; "),
+  };
+}
+
 async function main() {
   const headers = templateHeaders(await readFile(paths.template, "utf8"));
   const dedupeGroups = parseCsv(await readFile(paths.dedupeGroups, "utf8"));
@@ -148,8 +198,9 @@ async function main() {
       continue;
     }
 
+    const aliasedSourceRow = applyPreviewTitleAliases(sourceRow, group);
     const exportedRow = Object.fromEntries(
-      headers.map((header) => [header, sourceRow[header] ?? ""])
+      headers.map((header) => [header, aliasedSourceRow[header] ?? ""])
     );
     exportedRow._dataset_file = group.best_dataset_file;
     exportedRows.push(exportedRow);

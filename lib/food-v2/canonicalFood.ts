@@ -127,14 +127,46 @@ export function createCanonicalFormulaKey({
   species: Species | string;
   format: FoodFormat | string;
 }) {
+  const aliasedFormulaName = applyBrandFormulaAlias(brand, formula_name);
+
   return [
     slugify(brand),
-    normalizeCanonicalFormulaKeyPart(formula_name),
+    normalizeCanonicalFormulaKeyPart(aliasedFormulaName),
     slugify(String(species)),
     slugify(String(format)),
   ]
     .filter(Boolean)
     .join("|");
+}
+
+function applyBrandFormulaAlias(brand: unknown, formulaName: unknown) {
+  const normalizedBrand = normalizeSearchText(brand);
+  let normalizedFormula = normalizeSearchText(formulaName)
+    .replace(/&/g, " and ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (normalizedBrand !== "schesir") return formulaName;
+  if (normalizedFormula.startsWith(`${normalizedBrand} `)) {
+    normalizedFormula = normalizedFormula.slice(normalizedBrand.length + 1).trim();
+  }
+
+  const schesirAliases: Array<[RegExp, string]> = [
+    [/^dry medium maintenance(?: chicken| με κοτοπουλο)?$/u, "Adult Medium Chicken"],
+    [/^adult medium(?: με κοτοπουλο| chicken)$/u, "Adult Medium Chicken"],
+    [/^dry small maintenance(?: dog| με κοτοπουλο)?$/u, "Adult Small Chicken Rice"],
+    [/^adult small(?: με κοτοπουλο and ρυζι| chicken rice)$/u, "Adult Small Chicken Rice"],
+    [/^dry kitten(?: με κοτοπουλο| chicken)?$/u, "Kitten Chicken"],
+    [/^kitten(?: με κοτοπουλο| chicken)$/u, "Kitten Chicken"],
+    [/^cat sterilized and light(?: με κοτοπουλο| chicken)?$/u, "Sterilized Light Chicken"],
+    [/^sterili[sz]ed cat(?: με κοτοπουλο| chicken)$/u, "Sterilized Light Chicken"],
+  ];
+
+  for (const [pattern, replacement] of schesirAliases) {
+    if (pattern.test(normalizedFormula)) return replacement;
+  }
+
+  return formulaName;
 }
 
 export function createStandardDisplayName(food: {
