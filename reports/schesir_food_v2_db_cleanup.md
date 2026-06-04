@@ -1,11 +1,11 @@
 # Schesir Food V2 DB Cleanup Audit
 
-Generated: 2026-06-04T18:43:55.995Z
+Generated: 2026-06-04T19:11:39.090Z
 
 ## Summary
 
-- Schesir Food V2 rows reviewed: 12
-- Duplicate canonical groups: 3
+- Schesir Food V2 rows reviewed: 9
+- Duplicate canonical groups: 0
 - Cleanup CSV: data/review/schesir_food_v2_db_cleanup.csv
 
 ## Recommended Handling
@@ -14,6 +14,4 @@ This is a read-only audit. Do not delete rows blindly. For each duplicate canoni
 
 ## Duplicate Groups
 
-- schesir|kitten-chicken|cat|dry: 2 rows, keep=schesir|kitten-chicken|cat|dry
-- schesir|sterilized-light-chicken|cat|dry: 2 rows, keep=schesir|sterilized-light-chicken|cat|dry
-- schesir|adult-medium-chicken|dog|dry: 2 rows, keep=schesir|adult-medium-chicken|dog|dry
+
