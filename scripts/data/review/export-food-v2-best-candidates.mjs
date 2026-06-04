@@ -101,6 +101,17 @@ function renderCounts(counts) {
     .join("\n");
 }
 
+function renderLimitedRows(rows, renderer, limit = 40) {
+  const visibleRows = rows.slice(0, limit);
+  const overflow = rows.length - visibleRows.length;
+  return [
+    ...visibleRows.map(renderer),
+    overflow > 0 ? `- ...and ${overflow} more` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 async function loadEnvFile() {
   const envPath = path.join(process.cwd(), ".env.local");
   try {
@@ -141,9 +152,21 @@ Generated: ${new Date().toISOString()}
 
 ${renderCounts(countBy(exportedRows, "source_priority")) || "- none"}
 
+## By Brand
+
+${renderCounts(countBy(exportedRows, "brand")) || "- none"}
+
 ## By Dataset
 
 ${renderCounts(countBy(exportedRows, "_dataset_file")) || "- none"}
+
+## Already Imported Canonical Rows Skipped
+
+${renderLimitedRows(
+  skippedExistingRows,
+  (row) => `- ${row.canonical_identity_key}: ${row.best_display_name}`,
+  30
+) || "- none"}
 
 ## Operating Rule
 
