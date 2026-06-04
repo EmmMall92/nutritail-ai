@@ -31,8 +31,8 @@ export const SENIOR_DECISION_RULES = [
   },
   {
     id: "epa_joint_context",
-    when: ["senior or joint-support context", "epa_percent exists"],
-    then: "Add a cautious mobility/joint-support explanation without claiming treatment.",
+    when: ["senior or joint-support context", "epa_percent or epa_dha_percent exists"],
+    then: "Add a cautious mobility/joint-support explanation without claiming treatment; use lower precision when only combined EPA+DHA is available.",
   },
 ] as const;
 
@@ -62,7 +62,12 @@ export function evaluateSeniorRules(
   food: Pick<FoodProductV2, "life_stage" | "commercial_tags" | "medical_tags">,
   nutrients: Pick<
     FoodNutrientsV2,
-    "protein_percent" | "fat_percent" | "epa_percent" | "glucosamine_mgkg" | "chondroitin_mgkg"
+    | "protein_percent"
+    | "fat_percent"
+    | "epa_percent"
+    | "epa_dha_percent"
+    | "glucosamine_mgkg"
+    | "chondroitin_mgkg"
   >
 ) {
   const boosts: string[] = [];
@@ -73,6 +78,7 @@ export function evaluateSeniorRules(
   }
   if (
     typeof nutrients.epa_percent === "number" ||
+    typeof nutrients.epa_dha_percent === "number" ||
     typeof nutrients.glucosamine_mgkg === "number" ||
     typeof nutrients.chondroitin_mgkg === "number"
   ) {

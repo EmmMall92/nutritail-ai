@@ -69,6 +69,7 @@ export function detectImpossibleNutritionValues(
     ["omega6_percent", 0, 8],
     ["dha_percent", 0, 3],
     ["epa_percent", 0, 3],
+    ["epa_dha_percent", 0, 5],
   ];
 
   for (const [key, min, max] of checks) {
@@ -135,6 +136,7 @@ export function generateCompletenessScore(row: FoodRowLike) {
     "omega6_percent",
     "dha_percent",
     "epa_percent",
+    "epa_dha_percent",
     "taurine_mgkg",
     "l_carnitine_mgkg",
     "glucosamine_mgkg",

@@ -32,7 +32,7 @@ export const RENAL_DECISION_RULES = [
   },
   {
     id: "epa_dha_supports_renal_context",
-    when: ["renal formula or renal question", "epa_percent or dha_percent exists"],
+    when: ["renal formula or renal question", "epa_percent, dha_percent, or epa_dha_percent exists"],
     then: "Mention EPA/DHA as supportive fatty-acid evidence while keeping veterinary supervision language.",
   },
 ] as const;
@@ -67,7 +67,12 @@ export function evaluateRenalRules(
   food: Pick<FoodProductV2, "medical_tags" | "source_priority">,
   nutrients: Pick<
     FoodNutrientsV2,
-    "phosphorus_percent" | "protein_percent" | "sodium_percent" | "epa_percent" | "dha_percent"
+    | "phosphorus_percent"
+    | "protein_percent"
+    | "sodium_percent"
+    | "epa_percent"
+    | "dha_percent"
+    | "epa_dha_percent"
   >
 ) {
   const boosts: string[] = [];

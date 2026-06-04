@@ -72,6 +72,7 @@ const NUTRIENT_KEYS: Array<keyof FoodNutrientsV2> = [
   "omega6_percent",
   "dha_percent",
   "epa_percent",
+  "epa_dha_percent",
   "taurine_mgkg",
   "l_carnitine_mgkg",
   "glucosamine_mgkg",
