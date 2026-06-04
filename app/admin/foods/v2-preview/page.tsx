@@ -680,6 +680,16 @@ export default function FoodV2PreviewPage() {
               </button>
               <button
                 type="button"
+                onClick={() => setShowCommitConfirm(true)}
+                disabled={isImporting || importableRowsForCommit.length === 0}
+                className="rounded-xl bg-black px-4 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
+              >
+                {selectedRows.length > 0
+                  ? "Commit Selected"
+                  : "Commit Importable"}
+              </button>
+              <button
+                type="button"
                 onClick={() => setSelectedFormulaKeys([])}
                 className="rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
               >
@@ -716,6 +726,10 @@ export default function FoodV2PreviewPage() {
               Export blocked rows
             </button>
           </div>
+          <p className="mt-3 text-xs text-gray-500">
+            Export buttons only download review CSV files. Commit buttons are
+            the only actions that write importable rows to Food V2.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
