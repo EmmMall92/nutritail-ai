@@ -71,6 +71,7 @@
     "plan:local-html-import-priority": "node scripts/data/review/plan-local-html-import-priority.mjs",
     "audit:gatoskilo-title-quality": "node scripts/data/review/audit-gatoskilo-title-quality.mjs",
     "audit:food-v2-title-quality": "node scripts/data/review/audit-food-v2-title-quality.mjs",
+    "canonicalize:food-v2-titles": "node scripts/data/review/canonicalize-food-v2-titles.mjs",
     "audit:food-v2-brand-readiness": "node scripts/data/review/audit-food-v2-brand-readiness.mjs",
     "plan:food-v2-brand-import-batches": "node scripts/data/review/plan-food-v2-brand-import-batches.mjs",
     "audit:food-v2-source-dedupe": "node scripts/data/review/audit-food-v2-source-dedupe.mjs",
