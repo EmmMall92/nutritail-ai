@@ -63,6 +63,26 @@ type BestCandidateSummary = {
   topBrands: Array<{ label: string; count: number }>;
 };
 
+type BrandBatchPlan = {
+  totalBatches: number;
+  firstWaveCount: number;
+  secondWaveCount: number;
+  batches: Array<{
+    batch_number: number;
+    brand: string;
+    rows_to_review: number;
+    readiness_status: string;
+    avg_core_score: number;
+    label_kcal_rows: number;
+    estimated_kcal_rows: number;
+    admin_brand_filter: string;
+    admin_row_filter: RowFilter;
+    admin_source_filter: string;
+    admin_quality_filter: string;
+    recommended_action: string;
+  }>;
+};
+
 type RowFilter = "all" | "importable" | "blocked" | "new" | "update";
 
 function SummaryCard({
@@ -219,6 +239,9 @@ export default function FoodV2PreviewPage() {
   const [selectedFormulaKeys, setSelectedFormulaKeys] = useState<string[]>([]);
   const [bestCandidateSummary, setBestCandidateSummary] =
     useState<BestCandidateSummary | null>(null);
+  const [brandBatchPlan, setBrandBatchPlan] = useState<BrandBatchPlan | null>(
+    null
+  );
   const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
     null
   );
@@ -318,6 +341,7 @@ export default function FoodV2PreviewPage() {
       setShowCommitConfirm(false);
       setSelectedFormulaKeys([]);
       setBestCandidateSummary(null);
+      setBrandBatchPlan(null);
       setRowFilter("all");
       setBrandFilter("");
       setSourceFilter("");
@@ -339,6 +363,7 @@ export default function FoodV2PreviewPage() {
     setShowCommitConfirm(false);
     setSelectedFormulaKeys([]);
     setBestCandidateSummary(null);
+    setBrandBatchPlan(null);
     setRowFilter("all");
     setRowSearch("");
     setBrandFilter("");
@@ -356,6 +381,7 @@ export default function FoodV2PreviewPage() {
       setShowCommitConfirm(false);
       setSelectedFormulaKeys([]);
       setBestCandidateSummary(null);
+      setBrandBatchPlan(null);
       setRowFilter("importable");
       setRowSearch("");
       setBrandFilter("");
@@ -363,9 +389,10 @@ export default function FoodV2PreviewPage() {
       setQualityFilter("");
       setIsLoadingBestCandidates(true);
 
-      const [response, summaryResponse] = await Promise.all([
+      const [response, summaryResponse, batchPlanResponse] = await Promise.all([
         fetch("/api/admin/foods/v2-best-candidates"),
         fetch("/api/admin/foods/v2-best-candidates/summary"),
+        fetch("/api/admin/foods/v2-brand-batches"),
       ]);
       if (!response.ok) {
         throw new Error("Could not load the Food V2 best-candidate CSV.");
@@ -373,12 +400,16 @@ export default function FoodV2PreviewPage() {
       if (!summaryResponse.ok) {
         throw new Error("Could not load the Food V2 best-candidate summary.");
       }
+      if (!batchPlanResponse.ok) {
+        throw new Error("Could not load the Food V2 brand batch plan.");
+      }
 
       const text = await response.text();
       setPreview(previewFoodV2Csv(text));
       setBestCandidateSummary(
         (await summaryResponse.json()) as BestCandidateSummary
       );
+      setBrandBatchPlan((await batchPlanResponse.json()) as BrandBatchPlan);
       setSourceLabel("Food V2 best candidate preview");
     } catch (err) {
       setError(
@@ -469,6 +500,17 @@ export default function FoodV2PreviewPage() {
           .map((row) => row.food.formula_key)
       ),
     ]);
+  }
+
+  function applyBrandBatchFilters(batch: BrandBatchPlan["batches"][number]) {
+    setRowSearch("");
+    setRowFilter(batch.admin_row_filter || "importable");
+    setBrandFilter(batch.admin_brand_filter);
+    setSourceFilter(batch.admin_source_filter);
+    setQualityFilter(batch.admin_quality_filter);
+    setSelectedFormulaKeys([]);
+    setConflictResult(null);
+    setShowCommitConfirm(false);
   }
 
   return (
@@ -637,6 +679,67 @@ export default function FoodV2PreviewPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {brandBatchPlan && (
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-black">
+                  Brand import batch plan
+                </h2>
+                <p className="mt-1 text-sm text-gray-600">
+                  Use this plan to review one brand batch at a time before
+                  running Check Existing and Commit Selected.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full bg-green-50 px-3 py-1 font-medium text-green-800">
+                  {brandBatchPlan.firstWaveCount} first wave
+                </span>
+                <span className="rounded-full bg-amber-50 px-3 py-1 font-medium text-amber-800">
+                  {brandBatchPlan.secondWaveCount} second wave
+                </span>
+                <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-black">
+                  {brandBatchPlan.totalBatches} total
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+              {brandBatchPlan.batches.slice(0, 10).map((batch) => (
+                <div
+                  key={`${batch.batch_number}-${batch.brand}`}
+                  className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase text-gray-500">
+                        Batch #{batch.batch_number}
+                      </p>
+                      <p className="mt-1 text-base font-semibold text-black">
+                        {batch.brand}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-600">
+                        {batch.rows_to_review} rows - score{" "}
+                        {batch.avg_core_score} - {batch.readiness_status}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => applyBrandBatchFilters(batch)}
+                      className="rounded-lg border border-black bg-white px-3 py-2 text-xs font-medium text-black transition hover:bg-gray-100"
+                    >
+                      Apply filters
+                    </button>
+                  </div>
+                  <p className="mt-3 text-xs text-gray-600">
+                    {batch.recommended_action}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
