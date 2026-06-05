@@ -50,6 +50,19 @@ type ConflictCheckResult = {
   }>;
 };
 
+type BestCandidateSummary = {
+  generatedAt: string;
+  importableRows: number;
+  candidateGroups: number;
+  skippedExistingRows: number;
+  skippedTitleRiskRows: number;
+  missingSourceRows: number;
+  existingDbCanonicalCheck: string;
+  outputCsv: string;
+  bySourcePriority: Array<{ label: string; count: number }>;
+  topBrands: Array<{ label: string; count: number }>;
+};
+
 type RowFilter = "all" | "importable" | "blocked" | "new" | "update";
 
 function SummaryCard({
@@ -201,6 +214,8 @@ export default function FoodV2PreviewPage() {
   const [rowFilter, setRowFilter] = useState<RowFilter>("all");
   const [rowSearch, setRowSearch] = useState("");
   const [selectedFormulaKeys, setSelectedFormulaKeys] = useState<string[]>([]);
+  const [bestCandidateSummary, setBestCandidateSummary] =
+    useState<BestCandidateSummary | null>(null);
   const [commitResult, setCommitResult] = useState<ImportCommitResult | null>(
     null
   );
@@ -259,6 +274,7 @@ export default function FoodV2PreviewPage() {
       setConflictResult(null);
       setShowCommitConfirm(false);
       setSelectedFormulaKeys([]);
+      setBestCandidateSummary(null);
       setRowFilter("all");
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
@@ -276,6 +292,7 @@ export default function FoodV2PreviewPage() {
     setConflictResult(null);
     setShowCommitConfirm(false);
     setSelectedFormulaKeys([]);
+    setBestCandidateSummary(null);
     setRowFilter("all");
     setRowSearch("");
     setSourceLabel("Manual sample");
@@ -289,17 +306,27 @@ export default function FoodV2PreviewPage() {
       setConflictResult(null);
       setShowCommitConfirm(false);
       setSelectedFormulaKeys([]);
+      setBestCandidateSummary(null);
       setRowFilter("importable");
       setRowSearch("");
       setIsLoadingBestCandidates(true);
 
-      const response = await fetch("/api/admin/foods/v2-best-candidates");
+      const [response, summaryResponse] = await Promise.all([
+        fetch("/api/admin/foods/v2-best-candidates"),
+        fetch("/api/admin/foods/v2-best-candidates/summary"),
+      ]);
       if (!response.ok) {
         throw new Error("Could not load the Food V2 best-candidate CSV.");
+      }
+      if (!summaryResponse.ok) {
+        throw new Error("Could not load the Food V2 best-candidate summary.");
       }
 
       const text = await response.text();
       setPreview(previewFoodV2Csv(text));
+      setBestCandidateSummary(
+        (await summaryResponse.json()) as BestCandidateSummary
+      );
       setSourceLabel("Food V2 best candidate preview");
     } catch (err) {
       setError(
@@ -507,6 +534,57 @@ export default function FoodV2PreviewPage() {
         {error && (
           <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {bestCandidateSummary && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-sm text-blue-950">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="font-semibold">Best candidate QA summary</p>
+                <p className="mt-2 max-w-3xl">
+                  The loaded CSV contains {bestCandidateSummary.importableRows}{" "}
+                  import-ready rows from {bestCandidateSummary.candidateGroups}{" "}
+                  candidate groups.{" "}
+                  {bestCandidateSummary.skippedTitleRiskRows} rows were held
+                  back because their titles look like descriptions, and{" "}
+                  {bestCandidateSummary.skippedExistingRows} canonical matches
+                  were skipped because they already exist in Food V2.
+                </p>
+                <p className="mt-2 text-xs text-blue-800">
+                  Generated {bestCandidateSummary.generatedAt || "unknown"} -
+                  canonical DB check:{" "}
+                  {bestCandidateSummary.existingDbCanonicalCheck || "unknown"}
+                </p>
+              </div>
+              <div className="grid min-w-full grid-cols-2 gap-2 lg:min-w-96">
+                {bestCandidateSummary.bySourcePriority.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-xl bg-white/80 px-4 py-3"
+                  >
+                    <p className="text-xs uppercase text-blue-700">
+                      {item.label}
+                    </p>
+                    <p className="text-2xl font-bold text-black">
+                      {item.count}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {bestCandidateSummary.topBrands.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {bestCandidateSummary.topBrands.map((item) => (
+                  <span
+                    key={item.label}
+                    className="rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-blue-950"
+                  >
+                    {item.label}: {item.count}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
