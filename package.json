@@ -73,6 +73,7 @@
     "audit:food-v2-title-quality": "node scripts/data/review/audit-food-v2-title-quality.mjs",
     "audit:food-v2-brand-readiness": "node scripts/data/review/audit-food-v2-brand-readiness.mjs",
     "plan:food-v2-brand-import-batches": "node scripts/data/review/plan-food-v2-brand-import-batches.mjs",
+    "plan:food-v2-controlled-import-round1": "node scripts/data/review/plan-food-v2-controlled-import-round1.mjs",
     "audit:food-v2-source-dedupe": "node scripts/data/review/audit-food-v2-source-dedupe.mjs",
     "audit:schesir-food-v2-db": "node scripts/data/review/audit-schesir-food-v2-db-cleanup.mjs",
     "cleanup:schesir-food-v2-db": "node scripts/data/review/merge-schesir-food-v2-duplicates.mjs",
