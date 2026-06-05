@@ -1,0 +1,85 @@
+batch_number,brand,rows_to_review,readiness_status,avg_core_score,label_kcal_rows,estimated_kcal_rows,admin_brand_filter,admin_row_filter,admin_source_filter,admin_quality_filter,recommended_action
+1,Brit,49,ready_for_controlled_import,100,49,0,Brit,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+2,N&D,36,ready_for_controlled_import,100,36,0,N&D,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+3,Club 4 Paws,18,ready_for_controlled_import,100,18,0,Club 4 Paws,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+4,Farmina,12,ready_for_controlled_import,100,12,0,Farmina,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+5,Harper & Bone,11,ready_for_controlled_import,100,11,0,Harper & Bone,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+6,Acana,7,ready_for_controlled_import,100,7,0,Acana,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+7,Hi,6,ready_for_controlled_import,100,6,0,Hi,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+8,Carnilove,10,ready_for_controlled_import,99,10,0,Carnilove,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+9,Naturea,11,ready_for_controlled_import,98,11,0,Naturea,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+10,Orijen,8,ready_for_controlled_import,98,8,0,Orijen,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+11,Pro-Nutrition (Flatazor),6,ready_for_controlled_import,98,6,0,Pro-Nutrition (Flatazor),importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+12,Ambrosia,11,ready_for_controlled_import,96,6,5,Ambrosia,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+13,Ownat,9,ready_for_controlled_import,96,9,0,Ownat,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+14,Matisse,5,ready_for_controlled_import,95,5,0,Matisse,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+15,Cennamo,13,ready_for_controlled_import,94,11,2,Cennamo,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+16,Gemon,10,ready_for_controlled_import,93,7,3,Gemon,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+17,Josera,97,ready_for_controlled_import,91,69,28,Josera,importable,,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+18,JosiDog,24,ready_for_controlled_import,90,24,0,JosiDog,importable,official,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+19,Purina Pro Plan,13,ready_for_controlled_import,90,7,6,Purina Pro Plan,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+20,Wellness Core,5,ready_for_controlled_import,90,5,0,Wellness Core,importable,retailer,needs_review,"Load Best Candidates, filter this brand, run Check Existing, export selected review CSV, then commit selected rows if duplicates look safe."
+21,Canagan,6,review_before_import,100,0,6,Canagan,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+22,Happy Dog,18,review_before_import,99,0,18,Happy Dog,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+23,Happy Cat,14,review_before_import,98,4,10,Happy Cat,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+24,Belcando,20,review_before_import,95,0,20,Belcando,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+25,Leonardo,10,review_before_import,95,0,10,Leonardo,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+26,Hill's Prescription Diet,8,review_before_import,95,0,8,Hill's Prescription Diet,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+27,Equilibrio,7,review_before_import,95,0,7,Equilibrio,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+28,Kudo,7,review_before_import,95,1,6,Kudo,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+29,Dr. Clauder,6,review_before_import,95,0,6,Dr. Clauder,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+30,Hills,37,review_before_import,94,12,25,Hills,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+31,Brekkies,5,review_before_import,91,0,5,Brekkies,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+32,Trainer,5,review_before_import,90,0,5,Trainer,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+33,Friskies,5,review_before_import,89,0,5,Friskies,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+34,Pedigree,5,review_before_import,89,0,5,Pedigree,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+35,Reflex,19,review_before_import,88,0,19,Reflex,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+36,Royal Canin Veterinary Diet,5,review_before_import,87,0,5,Royal Canin Veterinary Diet,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+37,Tonus Dog Chow,5,review_before_import,87,0,5,Tonus Dog Chow,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+38,Amanova,10,review_before_import,86,10,0,Amanova,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+39,Royal Canin,159,review_before_import,85,81,78,Royal Canin,importable,,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+40,Taste of the Wild,7,review_before_import,85,7,0,Taste of the Wild,importable,retailer,needs_review,"Filter this brand, export selected review CSV, spot-check title/kcal/source notes, then import only confirmed rows."
+41,Nature,2,small_batch_review,100,0,2,Nature,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+42,Profine,2,small_batch_review,100,2,0,Profine,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+43,Vet Expert,2,small_batch_review,100,1,1,Vet Expert,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+44,ACANA,1,small_batch_review,100,1,0,ACANA,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+45,Akvatera,1,small_batch_review,100,0,1,Akvatera,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+46,Banters,1,small_batch_review,100,0,1,Banters,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+47,Prince,1,small_batch_review,100,0,1,Prince,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+48,Bozita,2,small_batch_review,95,0,2,Bozita,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+49,Briantos,2,small_batch_review,95,1,1,Briantos,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+50,Cibau,2,small_batch_review,95,2,0,Cibau,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+51,Trovet,2,small_batch_review,95,2,0,Trovet,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+52,Wellfed,2,small_batch_review,95,0,2,Wellfed,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+53,Belcando Mastercraft,1,small_batch_review,95,0,1,Belcando Mastercraft,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+54,Black Olympus,1,small_batch_review,95,1,0,Black Olympus,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+55,Burns,1,small_batch_review,95,0,1,Burns,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+56,Cat Vital,1,small_batch_review,95,1,0,Cat Vital,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+57,Markus Mühle,1,small_batch_review,95,0,1,Markus Mühle,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+58,Meradog,1,small_batch_review,95,0,1,Meradog,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+59,Whiskas,1,small_batch_review,95,0,1,Whiskas,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+60,Fish4Dogs,1,small_batch_review,90,0,1,Fish4Dogs,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+61,Meowing Heads,1,small_batch_review,90,0,1,Meowing Heads,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+62,Royal Canin Breed,1,small_batch_review,90,0,1,Royal Canin Breed,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+63,Enjoy,2,small_batch_review,85,0,2,Enjoy,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+64,ProChoice,2,small_batch_review,85,0,2,ProChoice,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+65,Schesir,2,small_batch_review,85,2,0,Schesir,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+66,Trendline,2,small_batch_review,85,0,2,Trendline,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+67,AdPet,1,small_batch_review,85,0,1,AdPet,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+68,Frolic,1,small_batch_review,85,0,1,Frolic,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+69,Greca Cat,1,small_batch_review,85,0,1,Greca Cat,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+70,Purina Pro Plan Veterinary Diets,1,small_batch_review,85,0,1,Purina Pro Plan Veterinary Diets,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+71,Vidok,1,small_batch_review,85,0,1,Vidok,importable,retailer,needs_review,Review manually as a small batch; import only if title and source evidence are clear.
+72,Calibra,3,needs_data_cleanup,100,3,0,Calibra,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+73,Optima Nova,3,needs_data_cleanup,100,0,3,Optima Nova,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+74,Anima,3,needs_data_cleanup,95,3,0,Anima,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+75,Eukanuba,3,needs_data_cleanup,95,0,3,Eukanuba,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+76,GranataPet,3,needs_data_cleanup,95,0,3,GranataPet,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+77,Hill's Science Plan,3,needs_data_cleanup,95,0,3,Hill's Science Plan,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+78,Bedog,3,needs_data_cleanup,92,0,3,Bedog,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+79,Wolf of Wilderness,3,needs_data_cleanup,92,0,3,Wolf of Wilderness,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+80,Barking Heads,3,needs_data_cleanup,90,0,3,Barking Heads,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+81,BEWI,3,needs_data_cleanup,85,0,3,BEWI,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+82,Ecopet Natural,3,needs_data_cleanup,85,3,0,Ecopet Natural,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+83,Monge,3,needs_data_cleanup,85,3,0,Monge,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
+84,Royal Canin Size,3,needs_data_cleanup,85,0,3,Royal Canin Size,importable,retailer,,Do not import yet; use source backfill or title cleanup before this brand enters the import batch.
