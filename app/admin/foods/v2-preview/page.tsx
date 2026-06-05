@@ -213,6 +213,9 @@ export default function FoodV2PreviewPage() {
   const [showCommitConfirm, setShowCommitConfirm] = useState(false);
   const [rowFilter, setRowFilter] = useState<RowFilter>("all");
   const [rowSearch, setRowSearch] = useState("");
+  const [brandFilter, setBrandFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const [qualityFilter, setQualityFilter] = useState("");
   const [selectedFormulaKeys, setSelectedFormulaKeys] = useState<string[]>([]);
   const [bestCandidateSummary, setBestCandidateSummary] =
     useState<BestCandidateSummary | null>(null);
@@ -227,6 +230,26 @@ export default function FoodV2PreviewPage() {
       (conflictResult?.existing ?? []).map((row) => [row.formula_key, row])
     );
   }, [conflictResult]);
+
+  const filterOptions = useMemo(() => {
+    const brands = new Set<string>();
+    const sources = new Set<string>();
+    const qualities = new Set<string>();
+
+    for (const row of preview.rows) {
+      if (row.food.brand) brands.add(row.food.brand);
+      if (row.food.source_priority) sources.add(row.food.source_priority);
+      if (row.food.data_quality_status) {
+        qualities.add(row.food.data_quality_status);
+      }
+    }
+
+    return {
+      brands: [...brands].sort((a, b) => a.localeCompare(b)),
+      sources: [...sources].sort((a, b) => a.localeCompare(b)),
+      qualities: [...qualities].sort((a, b) => a.localeCompare(b)),
+    };
+  }, [preview.rows]);
 
   const visibleRows = useMemo(() => {
     const searchText = rowSearch.trim().toLowerCase();
@@ -244,10 +267,30 @@ export default function FoodV2PreviewPage() {
         `${row.food.brand} ${row.food.display_name} ${row.food.formula_key} ${row.canonical?.canonical_formula_key ?? ""} ${row.canonical?.standard_display_name ?? ""}`
           .toLowerCase()
           .includes(searchText);
+      const matchesBrand = !brandFilter || row.food.brand === brandFilter;
+      const matchesSource =
+        !sourceFilter || row.food.source_priority === sourceFilter;
+      const matchesQuality =
+        !qualityFilter || row.food.data_quality_status === qualityFilter;
 
-      return matchesFilter && matchesSearch;
+      return (
+        matchesFilter &&
+        matchesSearch &&
+        matchesBrand &&
+        matchesSource &&
+        matchesQuality
+      );
     });
-  }, [conflictResult, existingFormulaKeyMap, preview.rows, rowFilter, rowSearch]);
+  }, [
+    brandFilter,
+    conflictResult,
+    existingFormulaKeyMap,
+    preview.rows,
+    qualityFilter,
+    rowFilter,
+    rowSearch,
+    sourceFilter,
+  ]);
 
   const selectedRows = useMemo(() => {
     const selected = new Set(selectedFormulaKeys);
@@ -276,6 +319,9 @@ export default function FoodV2PreviewPage() {
       setSelectedFormulaKeys([]);
       setBestCandidateSummary(null);
       setRowFilter("all");
+      setBrandFilter("");
+      setSourceFilter("");
+      setQualityFilter("");
       const text = await file.text();
       setPreview(previewFoodV2Csv(text));
       setSourceLabel(file.name);
@@ -295,6 +341,9 @@ export default function FoodV2PreviewPage() {
     setBestCandidateSummary(null);
     setRowFilter("all");
     setRowSearch("");
+    setBrandFilter("");
+    setSourceFilter("");
+    setQualityFilter("");
     setSourceLabel("Manual sample");
     setPreview(previewFoodV2ManualRows(manualRows as unknown[]));
   }
@@ -309,6 +358,9 @@ export default function FoodV2PreviewPage() {
       setBestCandidateSummary(null);
       setRowFilter("importable");
       setRowSearch("");
+      setBrandFilter("");
+      setSourceFilter("");
+      setQualityFilter("");
       setIsLoadingBestCandidates(true);
 
       const [response, summaryResponse] = await Promise.all([
@@ -720,7 +772,7 @@ export default function FoodV2PreviewPage() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-5">
             <div>
               <label className="mb-2 block text-sm font-medium text-black">
                 Row search
@@ -748,32 +800,97 @@ export default function FoodV2PreviewPage() {
                 <option value="update">Will update after conflict check</option>
               </select>
             </div>
-            <div className="flex flex-wrap items-end gap-2">
-              <button
-                type="button"
-                onClick={selectVisibleImportableRows}
-                className="rounded-xl border border-black px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Brand
+              </label>
+              <select
+                value={brandFilter}
+                onChange={(event) => setBrandFilter(event.target.value)}
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
               >
-                Select Visible Importable
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowCommitConfirm(true)}
-                disabled={isImporting || importableRowsForCommit.length === 0}
-                className="rounded-xl bg-black px-4 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
-              >
-                {selectedRows.length > 0
-                  ? "Commit Selected"
-                  : "Commit Importable"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedFormulaKeys([])}
-                className="rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
-              >
-                Clear Selection
-              </button>
+                <option value="">All brands</option>
+                {filterOptions.brands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
             </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Source
+              </label>
+              <select
+                value={sourceFilter}
+                onChange={(event) => setSourceFilter(event.target.value)}
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              >
+                <option value="">All sources</option>
+                {filterOptions.sources.map((source) => (
+                  <option key={source} value={source}>
+                    {source}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-black">
+                Quality
+              </label>
+              <select
+                value={qualityFilter}
+                onChange={(event) => setQualityFilter(event.target.value)}
+                className="w-full rounded-xl border border-gray-300 p-3 text-black"
+              >
+                <option value="">All quality statuses</option>
+                {filterOptions.qualities.map((quality) => (
+                  <option key={quality} value={quality}>
+                    {quality}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-end gap-2">
+            <button
+              type="button"
+              onClick={selectVisibleImportableRows}
+              className="rounded-xl border border-black px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              Select Visible Importable
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCommitConfirm(true)}
+              disabled={isImporting || importableRowsForCommit.length === 0}
+              className="rounded-xl bg-black px-4 py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600"
+            >
+              {selectedRows.length > 0
+                ? "Commit Selected"
+                : "Commit Importable"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedFormulaKeys([])}
+              className="rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              Clear Selection
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setRowSearch("");
+                setRowFilter("all");
+                setBrandFilter("");
+                setSourceFilter("");
+                setQualityFilter("");
+              }}
+              className="rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              Clear Filters
+            </button>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
