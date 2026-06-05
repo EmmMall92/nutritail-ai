@@ -11,6 +11,18 @@ type VisibilityFood = {
   data_quality_status: string;
   source_priority: string | null;
   is_recommendable: boolean;
+  formula_key: string | null;
+  safety: {
+    recommendation_status: string;
+    risk_level: string;
+    gap_priority: string;
+    gap_score: number | null;
+    missing_blockers: string[];
+    estimated_fields_to_replace: string[];
+    health_context: string[];
+    recommendation_reason: string;
+    required_before_enable: string;
+  } | null;
 };
 
 type VisibilityBrand = {
@@ -29,9 +41,22 @@ type VisibilityResponse = {
   hiddenRows: number;
   brands: VisibilityBrand[];
   foods: VisibilityFood[];
+  safety?: {
+    auditRows: number;
+    doNotEnableRows: number;
+    cautiousRows: number;
+    eligibleRows: number;
+  };
 };
 
 type VisibilityFilter = "all" | "enabled" | "hidden";
+type SafetyFilter =
+  | "all"
+  | "do_not_enable"
+  | "hold_until_backfill"
+  | "cautious_enable_only"
+  | "review_before_enable"
+  | "eligible_after_admin_choice";
 
 function SummaryCard({
   label,
@@ -51,6 +76,20 @@ function SummaryCard({
   );
 }
 
+function safetyClasses(status: string) {
+  if (status === "do_not_enable") return "border-red-200 bg-red-50 text-red-700";
+  if (status === "hold_until_backfill") {
+    return "border-orange-200 bg-orange-50 text-orange-700";
+  }
+  if (status === "cautious_enable_only" || status === "review_before_enable") {
+    return "border-amber-200 bg-amber-50 text-amber-700";
+  }
+  if (status === "eligible_after_admin_choice") {
+    return "border-green-200 bg-green-50 text-green-700";
+  }
+  return "border-gray-200 bg-white text-gray-600";
+}
+
 export default function FoodV2RecommendationVisibilityPage() {
   const [report, setReport] = useState<VisibilityResponse | null>(null);
   const [error, setError] = useState("");
@@ -61,6 +100,7 @@ export default function FoodV2RecommendationVisibilityPage() {
   const [brandFilter, setBrandFilter] = useState("");
   const [visibilityFilter, setVisibilityFilter] =
     useState<VisibilityFilter>("all");
+  const [safetyFilter, setSafetyFilter] = useState<SafetyFilter>("all");
 
   async function loadVisibility() {
     try {
@@ -110,10 +150,13 @@ export default function FoodV2RecommendationVisibilityPage() {
         visibilityFilter === "all" ||
         (visibilityFilter === "enabled" && food.is_recommendable) ||
         (visibilityFilter === "hidden" && !food.is_recommendable);
+      const matchesSafety =
+        safetyFilter === "all" ||
+        food.safety?.recommendation_status === safetyFilter;
 
-      return matchesSearch && matchesBrand && matchesVisibility;
+      return matchesSearch && matchesBrand && matchesVisibility && matchesSafety;
     });
-  }, [brandFilter, report, search, visibilityFilter]);
+  }, [brandFilter, report, safetyFilter, search, visibilityFilter]);
 
   async function updateVisibility({
     brand,
@@ -218,7 +261,7 @@ export default function FoodV2RecommendationVisibilityPage() {
 
         {report && (
           <>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3 xl:grid-cols-6">
               <SummaryCard
                 label="Food V2 Rows"
                 value={report.totalRows}
@@ -234,10 +277,25 @@ export default function FoodV2RecommendationVisibilityPage() {
                 value={report.hiddenRows}
                 helper="Kept out of recommendations"
               />
+              <SummaryCard
+                label="Do Not Enable"
+                value={report.safety?.doNotEnableRows ?? 0}
+                helper="Safety audit blocks"
+              />
+              <SummaryCard
+                label="Cautious"
+                value={report.safety?.cautiousRows ?? 0}
+                helper="Needs careful wording"
+              />
+              <SummaryCard
+                label="Eligible"
+                value={report.safety?.eligibleRows ?? 0}
+                helper="Admin can choose"
+              />
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-black">
                     Search
@@ -280,6 +338,27 @@ export default function FoodV2RecommendationVisibilityPage() {
                     <option value="all">All</option>
                     <option value="enabled">Allowed</option>
                     <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-black">
+                    Safety
+                  </label>
+                  <select
+                    value={safetyFilter}
+                    onChange={(event) =>
+                      setSafetyFilter(event.target.value as SafetyFilter)
+                    }
+                    className="w-full rounded-xl border border-gray-300 p-3 text-black"
+                  >
+                    <option value="all">All safety statuses</option>
+                    <option value="do_not_enable">Do not enable</option>
+                    <option value="hold_until_backfill">Hold until backfill</option>
+                    <option value="cautious_enable_only">Cautious only</option>
+                    <option value="review_before_enable">Review before enable</option>
+                    <option value="eligible_after_admin_choice">
+                      Eligible after admin choice
+                    </option>
                   </select>
                 </div>
               </div>
@@ -375,7 +454,39 @@ export default function FoodV2RecommendationVisibilityPage() {
                               {food.source_priority}
                             </span>
                           )}
+                          {food.safety && (
+                            <span
+                              className={`rounded-full border px-3 py-1 font-semibold ${safetyClasses(
+                                food.safety.recommendation_status
+                              )}`}
+                            >
+                              {food.safety.recommendation_status.replaceAll(
+                                "_",
+                                " "
+                              )}
+                            </span>
+                          )}
                         </div>
+                        {food.safety && (
+                          <div className="mt-3 rounded-lg border border-gray-200 bg-white p-3 text-xs text-gray-700">
+                            <p>
+                              <span className="font-semibold">Safety:</span>{" "}
+                              {food.safety.recommendation_reason}
+                            </p>
+                            {food.safety.missing_blockers.length > 0 && (
+                              <p className="mt-1">
+                                <span className="font-semibold">Blockers:</span>{" "}
+                                {food.safety.missing_blockers.join(", ")}
+                              </p>
+                            )}
+                            {food.safety.required_before_enable && (
+                              <p className="mt-1">
+                                <span className="font-semibold">Before enable:</span>{" "}
+                                {food.safety.required_before_enable}
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm text-black">
                         <input
