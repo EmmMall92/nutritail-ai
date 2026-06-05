@@ -9,6 +9,19 @@ const paths = {
   report: "reports/food_v2_best_candidate_preview.md",
 };
 
+const descriptiveTitlePatterns = [
+  /\b(?:dietetic|dietary|complete|complementary)\s+(?:food|feed)\b/i,
+  /\b(?:food|feed)\s+for\b/i,
+  /\b(?:support|management|treatment|reduction)\s+of\b/i,
+  /διαιτητικ[ηή]\s+τροφ[ηή]/iu,
+  /κτηνιατρικ[ηή]\s*τροφ[ηή]/iu,
+  /τροφ[ηή]\s+για/iu,
+  /αντιμετ[ωώ]πιση/iu,
+  /υποστ[ηή]ριξη/iu,
+  /θεραπε[ιί]α/iu,
+  /εν[ηή]λικ[αα]\s+και\s+ηλικιωμ[εέ]να/iu,
+];
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -134,7 +147,14 @@ async function loadEnvFile() {
   }
 }
 
-function renderReport({ groups, exportedRows, missingRows, skippedExistingRows, dbCheckEnabled }) {
+function renderReport({
+  groups,
+  exportedRows,
+  missingRows,
+  skippedExistingRows,
+  skippedTitleRiskRows,
+  dbCheckEnabled,
+}) {
   return `# Food V2 Best Candidate Preview Export
 
 Generated: ${new Date().toISOString()}
@@ -144,6 +164,7 @@ Generated: ${new Date().toISOString()}
 - Importable best candidate rows exported: ${exportedRows.length}
 - Candidate groups considered: ${groups.length}
 - Already-imported canonical rows skipped: ${skippedExistingRows.length}
+- High title-risk rows skipped: ${skippedTitleRiskRows.length}
 - Missing source rows skipped: ${missingRows.length}
 - Existing DB canonical check: ${dbCheckEnabled ? "enabled" : "skipped"}
 - Output CSV: ${paths.output}
@@ -168,11 +189,21 @@ ${renderLimitedRows(
   30
 ) || "- none"}
 
+## High Title-Risk Rows Skipped
+
+${renderLimitedRows(
+  skippedTitleRiskRows,
+  (item) => `- ${item.group.canonical_identity_key}: ${item.row.display_name} (${item.reason})`,
+  30
+) || "- none"}
+
 ## Operating Rule
 
 This file contains one best candidate row per canonical formula identity. It is intended for Admin Food V2 preview before commit. Alternative rows remain in the dedupe review files as evidence/backfill references.
 
 Rows are skipped from this export when the same canonical food identity already exists in Food V2, even if the old source formula_key is different. This prevents re-importing the same formula from another site, PDF, or pack-size source.
+
+Rows with high title risk are also kept out of this preview. They stay in the review/dedupe reports until their formula_name is replaced with a concise canonical product name.
 `;
 }
 
@@ -184,6 +215,33 @@ function normalizeText(value) {
     .replace(/&/g, " and ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function normalizedDisplayText(value) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function wordCount(value) {
+  return normalizedDisplayText(value).split(/\s+/u).filter(Boolean).length;
+}
+
+function titleRiskReason(row) {
+  const formulaName = normalizedDisplayText(row.formula_name);
+  const displayName = normalizedDisplayText(row.display_name);
+
+  if (!formulaName) return "missing_formula_name";
+  if (wordCount(formulaName) > 10 || formulaName.length > 80) {
+    return "formula_name_too_long";
+  }
+  if (displayName.length > 100) return "display_name_too_long";
+  if (descriptiveTitlePatterns.some((pattern) => pattern.test(formulaName))) {
+    return "formula_name_looks_like_description";
+  }
+
+  return "";
 }
 
 function normalizeIdentityText(value) {
@@ -349,6 +407,7 @@ async function main() {
 
   const missingRows = [];
   const skippedExistingRows = [];
+  const skippedTitleRiskRows = [];
   const exportedRows = [];
 
   for (const group of candidateGroups) {
@@ -366,6 +425,12 @@ async function main() {
     }
 
     const aliasedSourceRow = applyPreviewTitleAliases(sourceRow, group);
+    const riskReason = titleRiskReason(aliasedSourceRow);
+    if (riskReason) {
+      skippedTitleRiskRows.push({ group, row: aliasedSourceRow, reason: riskReason });
+      continue;
+    }
+
     const exportedRow = Object.fromEntries(
       headers.map((header) => [header, aliasedSourceRow[header] ?? ""])
     );
@@ -383,6 +448,7 @@ async function main() {
       exportedRows,
       missingRows,
       skippedExistingRows,
+      skippedTitleRiskRows,
       dbCheckEnabled: existingCanonical.enabled,
     }),
     "utf8"
@@ -390,6 +456,7 @@ async function main() {
 
   console.log(`Food V2 best candidate rows exported: ${exportedRows.length}`);
   console.log(`Already-imported canonical rows skipped: ${skippedExistingRows.length}`);
+  console.log(`High title-risk rows skipped: ${skippedTitleRiskRows.length}`);
   console.log(`Missing source rows skipped: ${missingRows.length}`);
   console.log(`Wrote ${paths.output}`);
   console.log(`Wrote ${paths.report}`);

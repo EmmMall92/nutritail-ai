@@ -1,22 +1,23 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-06-04T16:46:49.151Z
+Generated: 2026-06-05T16:28:40.625Z
 
 ## Summary
 
-- Queue rows: 1884
-- Candidate rows: 323
-- Hold rows: 1561
+- Queue rows: 2448
+- Candidate rows: 872
+- Hold rows: 1576
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 1561
-- candidate: 323
+- hold: 1576
+- candidate: 872
 
 ## By Dataset
 
+- data/imports/gatoskilo_local_html_batch_v2.csv: 564
 - data/imports/mixed_eshop_spreadsheet_extract_v2.csv: 475
 - data/imports/category_product_sources_extract_v2.csv: 203
 - data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv: 179

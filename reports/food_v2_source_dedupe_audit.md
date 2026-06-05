@@ -1,13 +1,13 @@
 # Food V2 Source Dedupe Audit
 
-Generated: 2026-06-04T18:43:54.688Z
+Generated: 2026-06-05T16:28:49.198Z
 
 ## Summary
 
-- Formula identity groups: 1498
-- Duplicate source groups: 325
-- Groups with an importable best row: 284
-- Source rows analyzed: 1884
+- Formula identity groups: 2046
+- Duplicate source groups: 337
+- Groups with an importable best row: 831
+- Source rows analyzed: 2448
 - Group CSV: data/review/food_v2_source_dedupe_groups.csv
 - Row CSV: data/review/food_v2_source_dedupe_rows.csv
 
@@ -23,6 +23,10 @@ Use the best row for admin preview, then keep alternative rows as evidence/backf
 - Schesir Dry Kitten με κοτόπουλο (4 rows): best=schesir-dry-kitten-cat-dry-gr-document; alternatives=schesir-dry-kitten-cat-dry-gr-document|schesir-schesir-kitten-με-κοτοπουλο-cat-dry-gr-ods|schesir-schesir-kitten-chicken-cat-dry-gr-spreadsheet
 - Royal Canin Maxi Ageing 8+ 15kg (4 rows): best=royal-canin-maxi-ageing-8-dog-dry-gr-gatoskilo; alternatives=royal-canin-maxi-ageing-8-dog-dry-gr-official|royal-canin-royal-canin-maxi-ageing-8-dog-dry-gr-spreadsheet|royal-canin-royal-canin-maxi-ageing-8-dog-dry-gr-spreadsheet
 - Hill's SP Puppy Small & Mini με Κοτόπουλο (4 rows): best=hill-s-hill-s-sp-puppy-small-mini-με-κοτοπουλο-dog-dry-gr-spreadsheet; alternatives=hill-s-hill-s-sp-puppy-small-mini-chicken-dog-dry-gr-spreadsheet|hill-s-hill-s-sp-puppy-small-mini-με-κοτοπουλο-dog-dry-gr-spreadsheet|hill-s-hill-s-sp-puppy-small-mini-chicken-dog-dry-gr-spreadsheet
+- Belcando Junior Lamb & Rice 12.5kg (3 rows): best=belcando-junior-lamb-and-rice-dog-dry-gr-gatoskilo; alternatives=belcando-belcando-junior-lamb-rice-dog-dry-gr-spreadsheet|belcando-belcando-junior-με-αρνι-ρυζι-dog-dry-gr-spreadsheet
+- Orijen Tundra 1.8kg (3 rows): best=orijen-tundra-cat-dry-gr-gatoskilo; alternatives=orijen-tundra-cat-dry-gr-document|orijen-tundra-cat-dry-gr-document
+- Orijen Regional Red 1.8kg (3 rows): best=orijen-regional-red-cat-dry-gr-gatoskilo; alternatives=orijen-regional-red-cat-dry-gr-document|orijen-regional-red-cat-dry-gr-document
+- Josera JosiCat Classic Sterilised 1.9kg (3 rows): best=josera-josicat-classic-sterilised-cat-dry-gr-gatoskilo; alternatives=josera-josera-josicat-classic-sterilised-cat-dry-gr-document|josera-josera-josicat-classic-sterilised-cat-dry
 - Royal Canin Bulldog Puppy (3 rows): best=royal-canin-bulldog-puppy-dog-dry-gr-official; alternatives=royal-canin-bulldog-puppy-dog-dry-gr-gatoskilo|royal-canin-bulldog-puppy-dog-dry-gr-photo
 - Royal Canin Chihuahua Adult (3 rows): best=royal-canin-chihuahua-adult-dog-dry-gr-official; alternatives=royal-canin-chihuahua-adult-dog-dry-gr-gatoskilo|royal-canin-chihuahua-adult-dog-dry-gr-photo
 - Royal Canin French Bulldog Adult (3 rows): best=royal-canin-french-bulldog-adult-dog-dry-gr-official; alternatives=royal-canin-french-bulldog-adult-dog-dry-gr-gatoskilo|royal-canin-french-bulldog-adult-dog-dry-gr-photo
@@ -33,7 +37,3 @@ Use the best row for admin preview, then keep alternative rows as evidence/backf
 - Royal Canin Giant Adult 4kg (3 rows): best=royal-canin-giant-adult-dog-dry-gr-gatoskilo; alternatives=royal-canin-giant-adult-dog-dry-gr-official|royal-canin-giant-adult-dog-dry-gr-photo
 - Royal Canin Maxi Adult 3kg (3 rows): best=royal-canin-maxi-adult-dog-dry-gr-gatoskilo; alternatives=royal-canin-maxi-adult-dog-dry-gr-official|royal-canin-maxi-adult-dog-dry-gr-photo
 - Royal Canin Medium Adult 3kg (3 rows): best=royal-canin-medium-adult-dog-dry-gr-gatoskilo; alternatives=royal-canin-medium-adult-dog-dry-gr-official|royal-canin-medium-adult-dog-dry-gr-photo
-- Royal Canin Yorkshire Junior 1.5kg (3 rows): best=royal-canin-yorkshire-junior-dog-dry-gr-gatoskilo; alternatives=royal-canin-royal-canin-yorkshire-junior-dog-dry-gr-spreadsheet|royal-canin-royal-canin-yorkshire-junior-dog-dry-gr-spreadsheet
-- Schesir Adult Medium με Χοιρινό Προσούτο (3 rows): best=schesir-schesir-adult-medium-με-χοιρινο-προσουτο-dog-dry-gr-ods; alternatives=schesir-schesir-adult-medium-με-χοιρινο-προσουτο-dog-dry-gr-ods|schesir-schesir-adult-medium-pork-ham-dog-dry-gr-spreadsheet
-- Schesir Adult Medium με Ψάρι (3 rows): best=schesir-schesir-adult-medium-με-ψαρι-dog-dry-gr-ods; alternatives=schesir-schesir-adult-medium-με-ψαρι-dog-dry-gr-ods|schesir-schesir-adult-medium-fish-dog-dry-gr-spreadsheet
-- Schesir Adult Small με Χοιρινό Προσούτο (3 rows): best=schesir-schesir-adult-small-με-χοιρινο-προσουτο-dog-dry-gr-ods; alternatives=schesir-schesir-adult-small-με-χοιρινο-προσουτο-dog-dry-gr-ods|schesir-schesir-adult-small-pork-ham-dog-dry-gr-spreadsheet
