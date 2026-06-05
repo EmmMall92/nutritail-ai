@@ -1,0 +1,4 @@
+round_order,brand,rows_to_review,avg_core_score,label_kcal_rows,estimated_kcal_rows,admin_brand_filter,admin_row_filter,admin_source_filter,admin_quality_filter,recommended_action
+1,Farmina,12,100,12,0,Farmina,importable,retailer,needs_review,"Load Best Candidates, apply this brand filter, run Check Existing, export selected review CSV, then Commit Selected if duplicates look safe."
+2,Harper & Bone,11,100,11,0,Harper & Bone,importable,retailer,needs_review,"Load Best Candidates, apply this brand filter, run Check Existing, export selected review CSV, then Commit Selected if duplicates look safe."
+3,Acana,7,100,7,0,Acana,importable,retailer,needs_review,"Load Best Candidates, apply this brand filter, run Check Existing, export selected review CSV, then Commit Selected if duplicates look safe."
