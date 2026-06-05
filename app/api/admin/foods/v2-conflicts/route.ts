@@ -26,6 +26,91 @@ type IncomingFoodV2Row = {
   canonical_formula_key: string;
 };
 
+type DuplicateRisk = {
+  duplicate_risk_level: "none" | "low" | "medium" | "high";
+  duplicate_risk_reason: string;
+  recommended_action: string;
+};
+
+function normalizeRiskText(value: string | null | undefined) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/gu, "")
+    .replace(/[^a-z0-9]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isPackSizeOnlyDifference(rows: Array<{ display_name: string }>) {
+  const normalized = rows.map((row) =>
+    normalizeRiskText(row.display_name).replace(
+      /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/gu,
+      ""
+    )
+  );
+  return new Set(normalized).size <= 1;
+}
+
+function assessDuplicateRisk({
+  incoming,
+  existing,
+}: {
+  incoming: IncomingFoodV2Row[];
+  existing: ExistingFoodV2Row[];
+}): DuplicateRisk {
+  const totalRows = incoming.length + existing.length;
+  if (totalRows <= 1) {
+    return {
+      duplicate_risk_level: "none",
+      duplicate_risk_reason: "single_row",
+      recommended_action: "No duplicate action needed.",
+    };
+  }
+
+  if (incoming.length > 1 && existing.length > 0) {
+    return {
+      duplicate_risk_level: "high",
+      duplicate_risk_reason: "multiple_incoming_rows_match_existing_canonical",
+      recommended_action:
+        "Stop before commit. Pick one survivor and avoid importing multiple rows for the same canonical formula.",
+    };
+  }
+
+  if (incoming.length > 1) {
+    return {
+      duplicate_risk_level: "medium",
+      duplicate_risk_reason: "multiple_incoming_rows_same_canonical",
+      recommended_action:
+        "Review incoming rows and select only one survivor for this canonical formula.",
+    };
+  }
+
+  if (existing.length > 0) {
+    return {
+      duplicate_risk_level: "medium",
+      duplicate_risk_reason: "incoming_matches_existing_canonical",
+      recommended_action:
+        "Review existing row before commit. This should update/merge evidence, not create a duplicate formula.",
+    };
+  }
+
+  if (isPackSizeOnlyDifference(incoming)) {
+    return {
+      duplicate_risk_level: "low",
+      duplicate_risk_reason: "pack_size_variant",
+      recommended_action:
+        "Keep one formula-level row; pack sizes should not create separate Food V2 formulas.",
+    };
+  }
+
+  return {
+    duplicate_risk_level: "low",
+    duplicate_risk_reason: "same_canonical_formula",
+    recommended_action: "Use one survivor row and keep alternatives as evidence.",
+  };
+}
+
 function normalizeKeys(value: unknown) {
   if (!Array.isArray(value)) return [];
 
@@ -99,7 +184,7 @@ export async function POST(request: Request) {
           canonical_formula_key: string;
         }
       >;
-    }> = [];
+    } & DuplicateRisk> = [];
 
     if (incomingRows.length > 0) {
       const brands = [
@@ -152,10 +237,13 @@ export async function POST(request: Request) {
       ]);
 
       for (const key of candidateKeys) {
+        const incoming = incomingByCanonical.get(key) ?? [];
+        const existing = existingByCanonical.get(key) ?? [];
         likelyDuplicates.push({
           canonical_formula_key: key,
-          incoming: incomingByCanonical.get(key) ?? [],
-          existing: existingByCanonical.get(key) ?? [],
+          incoming,
+          existing,
+          ...assessDuplicateRisk({ incoming, existing }),
         });
       }
     }
