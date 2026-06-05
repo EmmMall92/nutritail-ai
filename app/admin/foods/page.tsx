@@ -209,6 +209,13 @@ export default function AdminFoodsPage() {
             </Link>
 
             <Link
+              href="/admin/foods/v2-nutrient-gaps"
+              className="rounded-xl border border-black px-5 py-3 text-center text-black transition hover:bg-gray-100"
+            >
+              V2 Gaps
+            </Link>
+
+            <Link
               href="/admin/foods/enrichment-import"
               className="rounded-xl border border-black px-5 py-3 text-center text-black transition hover:bg-gray-100"
             >
