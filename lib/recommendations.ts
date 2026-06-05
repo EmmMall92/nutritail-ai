@@ -84,6 +84,14 @@ function buildReasons(food: Food, pet: Pet): string[] {
     reasons.push(`Suitable for ${pet.species}s.`);
   }
 
+  if (food.dataNotes?.includes("source=food_v2")) {
+    reasons.push(
+      food.dataQualityStatus === "verified"
+        ? "Uses the normalized Food V2 nutrition dataset."
+        : "Uses Food V2 data; keep confidence cautious until fully verified."
+    );
+  }
+
   if (matchesLifeStage(food, petLifeStage)) {
     reasons.push(`Matches life stage: ${petLifeStage}.`);
   }
