@@ -911,6 +911,19 @@ export default function FoodV2PreviewPage() {
               type="button"
               onClick={() =>
                 downloadRowsCsv(
+                  "nutritail-food-v2-selected-preview-review.csv",
+                  selectedRows
+                )
+              }
+              disabled={selectedRows.length === 0}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-xs text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+            >
+              Export selected review CSV
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                downloadRowsCsv(
                   "nutritail-food-v2-blocked-preview-review.csv",
                   preview.rows.filter((row) => !row.validation.is_importable)
                 )
