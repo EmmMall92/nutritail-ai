@@ -179,10 +179,12 @@ export default function FoodV2RecommendationVisibilityPage() {
     brand,
     foodIds,
     isRecommendable,
+    all,
   }: {
     brand?: string;
     foodIds?: string[];
     isRecommendable: boolean;
+    all?: boolean;
   }) {
     try {
       setError("");
@@ -196,6 +198,7 @@ export default function FoodV2RecommendationVisibilityPage() {
           catalog: "food_v2",
           brand,
           food_ids: foodIds,
+          all,
           is_recommendable: isRecommendable,
         }),
       });
@@ -234,12 +237,22 @@ export default function FoodV2RecommendationVisibilityPage() {
               </h1>
               <p className="mt-2 max-w-3xl text-gray-600">
                 Decide which Food V2 brands and formulas are allowed to appear
-                in recommendation flows. Imported rows can stay hidden until QA
-                is complete.
+                in recommendation flows. Safety and nutrient gaps stay visible
+                as advisory QA signals while products can still be enabled.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  updateVisibility({ all: true, isRecommendable: true })
+                }
+                disabled={isLoading || isSaving}
+                className="rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+              >
+                Allow all Food V2
+              </button>
               <button
                 type="button"
                 onClick={loadVisibility}
@@ -297,7 +310,7 @@ export default function FoodV2RecommendationVisibilityPage() {
               <SummaryCard
                 label="Do Not Enable"
                 value={report.safety?.doNotEnableRows ?? 0}
-                helper="Safety audit blocks"
+                helper="Advisory QA warnings"
               />
               <SummaryCard
                 label="Cautious"
