@@ -80,6 +80,49 @@ const ALLERGEN_TERMS: Record<string, string[]> = {
   egg: ["egg", "αυγο", "avgo"],
 };
 
+const INGREDIENT_ALIAS_TERMS: Record<string, string[]> = {
+  chicken: ["chicken", "poultry", "κοτοπουλο", "κότοπουλο", "kotopoulo"],
+  poultry: ["poultry", "chicken", "turkey", "πουλερικα", "poulerika"],
+  beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
+  lamb: ["lamb", "αρνι", "αρνί", "arni"],
+  pork: ["pork", "χοιρινο", "χοιρινό", "xoirino", "hoirino"],
+  duck: ["duck", "παπια", "πάπια", "papia"],
+  turkey: ["turkey", "γαλοπουλα", "γαλοπούλα", "galopoula"],
+  rabbit: ["rabbit", "κουνελι", "κουνέλι", "kouneli"],
+  venison: ["venison", "deer", "ελαφι", "ελάφι", "elafi"],
+  boar: ["boar", "wild boar", "αγριογουρουνο", "agriogourouno"],
+  insect: ["insect", "εντομο", "έντομο", "entomo"],
+  fish: [
+    "fish",
+    "salmon",
+    "tuna",
+    "cod",
+    "codfish",
+    "sardine",
+    "herring",
+    "anchovy",
+    "trout",
+    "whitefish",
+    "ψαρι",
+    "ψάρι",
+    "psari",
+  ],
+  salmon: ["salmon", "σολομος", "σολομός", "solomos"],
+  tuna: ["tuna", "τονος", "τόνος", "tonos"],
+  cod: ["cod", "codfish", "μπακαλιαρος", "bakaliaros"],
+  sardine: ["sardine", "σαρδελα", "σαρδέλα", "sardela"],
+  herring: ["herring", "ρεγγα", "ρέγγα", "rega"],
+  trout: ["trout", "πεστροφα", "πέστροφα", "pestrofa"],
+  wheat: ["wheat", "σιταρι", "σιτάρι", "sitar", "sitari"],
+  corn: ["corn", "maize", "καλαμποκι", "καλαμπόκι", "kalampoki"],
+  rice: ["rice", "ρυζι", "ρύζι", "ryzi", "rizi"],
+  pea: ["pea", "peas", "αρακα", "αρακά", "araka"],
+  potato: ["potato", "potatoes", "πατατα", "πατάτα", "patata"],
+  soy: ["soy", "soya", "σογια", "σόγια", "sogia"],
+  dairy: ["milk", "dairy", "γαλα", "γάλα", "gala"],
+  egg: ["egg", "αυγο", "αυγό", "avgo"],
+};
+
 const VALUE_MARKERS = [
   "classic",
   "regular",
@@ -207,11 +250,15 @@ function addSignal(
   signals.push({ type, code, points, message });
 }
 
+function ingredientAliasesFor(value: string) {
+  return INGREDIENT_ALIAS_TERMS[value] ?? ALLERGEN_TERMS[value] ?? [value];
+}
+
 function containsAllergen(food: FoodProductV2, allergies: string[]) {
   const foodText = textFor(food);
   return allergies.some((allergy) => {
     const normalized = normalizeText(allergy);
-    const terms = ALLERGEN_TERMS[normalized] ?? [normalized];
+    const terms = ingredientAliasesFor(normalized);
     return terms.some((term) => foodText.includes(normalizeText(term)));
   });
 }
@@ -221,7 +268,7 @@ function containsIngredientTerm(food: FoodProductV2, values: string[]) {
 
   return values.some((value) => {
     const normalized = normalizeText(value);
-    const terms = ALLERGEN_TERMS[normalized] ?? [normalized];
+    const terms = ingredientAliasesFor(normalized);
 
     return terms.some((term) => foodText.includes(normalizeText(term)));
   });
