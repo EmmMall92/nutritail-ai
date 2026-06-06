@@ -257,50 +257,16 @@ export async function PATCH(request: Request) {
     const nameColumn = nameColumnForCatalog(catalog);
     const isRecommendable = body.is_recommendable !== false;
     const brand = String(body.brand ?? "").trim();
+    const updateAll = body.all === true;
     const foodIds = Array.isArray(body.food_ids)
       ? body.food_ids.map((id: unknown) => String(id).trim()).filter(Boolean)
       : [];
 
-    if (!brand && foodIds.length === 0) {
+    if (!updateAll && !brand && foodIds.length === 0) {
       return NextResponse.json(
         { error: "Provide a brand or food_ids to update." },
         { status: 400 }
       );
-    }
-
-    if (catalog === "food_v2" && isRecommendable) {
-      const safetyByFormulaKey = await readSafetyAuditRows();
-      let safetyQuery = supabaseAdmin
-        .from(table)
-        .select(`id, brand, ${nameColumn}, formula_key`);
-
-      if (foodIds.length > 0) {
-        safetyQuery = safetyQuery.in("id", foodIds);
-      } else {
-        safetyQuery = safetyQuery.eq("brand", brand);
-      }
-
-      const { data: requestedRows, error: safetyError } = await safetyQuery;
-      if (safetyError) throw safetyError;
-
-      const blockedRows = ((requestedRows ?? []) as Array<Record<string, unknown>>)
-        .map((row) => ({
-          name: String(row[nameColumn] ?? ""),
-          safety: safetyByFormulaKey.get(String(row.formula_key ?? "")),
-        }))
-        .filter((row) => row.safety?.recommendation_status === "do_not_enable");
-
-      if (blockedRows.length > 0) {
-        return NextResponse.json(
-          {
-            error:
-              "Safety audit blocks enabling one or more Food V2 rows. Resolve blocker nutrients or enable only non-blocked formulas.",
-            blockedRows: blockedRows.slice(0, 10).map((row) => row.name),
-            blockedCount: blockedRows.length,
-          },
-          { status: 400 }
-        );
-      }
     }
 
     let query = supabaseAdmin
@@ -316,7 +282,7 @@ export async function PATCH(request: Request) {
 
     if (foodIds.length > 0) {
       query = query.in("id", foodIds);
-    } else {
+    } else if (!updateAll) {
       query = query.eq("brand", brand);
     }
 
