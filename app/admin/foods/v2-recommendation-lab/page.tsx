@@ -28,6 +28,11 @@ type RecommendationItem = {
   data_quality_status: string;
   source_priority: string;
   data_source_url: string | null;
+  guard_flags: Array<{
+    code: string;
+    severity: "block" | "warning" | "info";
+    message: string;
+  }>;
   ranking: {
     total_score: number;
     fit_score: number;
@@ -79,6 +84,170 @@ const goalOptions: Array<{ value: RecommendationGoal; label: string }> = [
   { value: "senior", label: "Senior" },
 ];
 
+type LabPreset = {
+  label: string;
+  helper: string;
+  species: "dog" | "cat";
+  breed: string;
+  age: string;
+  weight: string;
+  activityLevel: "low" | "normal" | "high";
+  neutered: boolean;
+  goal: RecommendationGoal;
+  allergies: string;
+  excludedIngredients: string;
+  preferredProteins: string;
+  healthIssues: string;
+  brand: string;
+};
+
+const labPresets: LabPreset[] = [
+  {
+    label: "Large dog 30kg",
+    helper: "Catches small/mini size mismatches.",
+    species: "dog",
+    breed: "Labrador",
+    age: "4",
+    weight: "30",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "weight control",
+    brand: "",
+  },
+  {
+    label: "Small dog 7kg",
+    helper: "Checks small-breed positioning.",
+    species: "dog",
+    breed: "Maltese",
+    age: "5",
+    weight: "7",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Avoid chicken",
+    helper: "Taste dislike or non-medical preference.",
+    species: "dog",
+    breed: "Labrador",
+    age: "4",
+    weight: "30",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "general",
+    allergies: "",
+    excludedIngredients: "chicken",
+    preferredProteins: "lamb, salmon",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Chicken allergy",
+    helper: "Medical-style hard exclusion.",
+    species: "dog",
+    breed: "Mixed breed",
+    age: "3",
+    weight: "18",
+    activityLevel: "normal",
+    neutered: false,
+    goal: "allergy",
+    allergies: "chicken",
+    excludedIngredients: "",
+    preferredProteins: "lamb, duck, salmon",
+    healthIssues: "skin allergy",
+    brand: "",
+  },
+  {
+    label: "Large puppy",
+    helper: "Growth plus calcium/phosphorus confidence.",
+    species: "dog",
+    breed: "German Shepherd",
+    age: "0.6",
+    weight: "22",
+    activityLevel: "normal",
+    neutered: false,
+    goal: "growth",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Sterilised cat 5kg",
+    helper: "Weight-aware cat ranking.",
+    species: "cat",
+    breed: "European shorthair",
+    age: "5",
+    weight: "5",
+    activityLevel: "low",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "weight control",
+    brand: "",
+  },
+  {
+    label: "Urinary cat",
+    helper: "Urinary positioning and mineral cautions.",
+    species: "cat",
+    breed: "European shorthair",
+    age: "5",
+    weight: "5",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "urinary",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "urinary",
+    brand: "",
+  },
+  {
+    label: "Senior dog",
+    helper: "Senior positioning with cautious minerals.",
+    species: "dog",
+    breed: "Mixed breed",
+    age: "10",
+    weight: "18",
+    activityLevel: "low",
+    neutered: true,
+    goal: "senior",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "joint support",
+    brand: "",
+  },
+  {
+    label: "Sensitive digestion",
+    helper: "GI terms, fibers and sensitive formulas.",
+    species: "dog",
+    breed: "French Bulldog",
+    age: "3",
+    weight: "12",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sensitive_digestion",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "sensitive digestion, gas",
+    brand: "",
+  },
+];
+
 function splitText(value: string) {
   return value
     .split(",")
@@ -104,6 +273,14 @@ function scoreClass(score: number) {
   if (score >= 80) return "bg-green-50 text-green-700";
   if (score >= 60) return "bg-amber-50 text-amber-700";
   return "bg-gray-100 text-gray-700";
+}
+
+function guardClass(severity: "block" | "warning" | "info") {
+  if (severity === "block") return "border-red-200 bg-red-50 text-red-800";
+  if (severity === "warning") {
+    return "border-amber-200 bg-amber-50 text-amber-900";
+  }
+  return "border-gray-200 bg-gray-50 text-gray-700";
 }
 
 function ResultCard({ item }: { item: RecommendationItem }) {
@@ -143,6 +320,25 @@ function ResultCard({ item }: { item: RecommendationItem }) {
       </div>
 
       <p className="mt-3 text-sm text-gray-700">{nutritionText(item) || "Nutrition values are limited."}</p>
+
+      {item.guard_flags.length > 0 && (
+        <div className="mt-4 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Guard flags
+          </p>
+          {item.guard_flags.map((flag) => (
+            <div
+              key={flag.code}
+              className={`rounded-lg border px-3 py-2 text-sm ${guardClass(
+                flag.severity
+              )}`}
+            >
+              <span className="font-semibold">{flag.severity}:</span>{" "}
+              {flag.message}
+            </div>
+          ))}
+        </div>
+      )}
 
       {item.ranking.reasons.length > 0 && (
         <div className="mt-4">
@@ -232,29 +428,51 @@ export default function FoodV2RecommendationLabPage() {
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+  const [copiedMessage, setCopiedMessage] = useState("");
 
-  function loadPreset(nextSpecies: "dog" | "cat") {
-    setSpecies(nextSpecies);
-    if (nextSpecies === "dog") {
-      setBreed("Labrador");
-      setAge("4");
-      setWeight("30");
-      setGoal("sterilised");
-      setHealthIssues("weight control");
-      setAllergies("");
-      setExcludedIngredients("");
-      setPreferredProteins("");
-      return;
-    }
+  function requestPayload() {
+    return {
+      pet: {
+        species,
+        breed,
+        age: Number(age),
+        weight: Number(weight),
+        activityLevel,
+        neutered,
+        allergies: splitText(allergies),
+        excludedIngredients: splitText(excludedIngredients),
+        preferredProteins: splitText(preferredProteins),
+        healthIssues: splitText(healthIssues),
+      },
+      goal,
+      format: "dry",
+      brand: brand.trim() || undefined,
+      limit_per_bucket: 3,
+    };
+  }
 
-    setBreed("European shorthair");
-    setAge("5");
-    setWeight("5");
-    setGoal("urinary");
-    setHealthIssues("urinary");
-    setAllergies("");
-    setExcludedIngredients("");
-    setPreferredProteins("");
+  async function copyJson(label: string, value: unknown) {
+    await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
+    setCopiedMessage(`${label} copied.`);
+    window.setTimeout(() => setCopiedMessage(""), 2500);
+  }
+
+  function loadPreset(preset: LabPreset) {
+    setSpecies(preset.species);
+    setBreed(preset.breed);
+    setAge(preset.age);
+    setWeight(preset.weight);
+    setActivityLevel(preset.activityLevel);
+    setNeutered(preset.neutered);
+    setGoal(preset.goal);
+    setAllergies(preset.allergies);
+    setExcludedIngredients(preset.excludedIngredients);
+    setPreferredProteins(preset.preferredProteins);
+    setHealthIssues(preset.healthIssues);
+    setBrand(preset.brand);
+    setResult(null);
+    setError("");
   }
 
   async function runRanking() {
@@ -266,22 +484,7 @@ export default function FoodV2RecommendationLabPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          pet: {
-            species,
-            breed,
-            age: Number(age),
-            weight: Number(weight),
-            activityLevel,
-            neutered,
-            allergies: splitText(allergies),
-            excludedIngredients: splitText(excludedIngredients),
-            preferredProteins: splitText(preferredProteins),
-            healthIssues: splitText(healthIssues),
-          },
-          goal,
-          format: "dry",
-          brand: brand.trim() || undefined,
-          limit_per_bucket: 3,
+          ...requestPayload(),
         }),
       });
       const data = await response.json();
@@ -333,21 +536,25 @@ export default function FoodV2RecommendationLabPage() {
       </section>
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => loadPreset("dog")}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-50"
-          >
-            Dog preset
-          </button>
-          <button
-            type="button"
-            onClick={() => loadPreset("cat")}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-50"
-          >
-            Cat preset
-          </button>
+        <div className="mb-5">
+          <p className="text-sm font-semibold text-black">Quick scenarios</p>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {labPresets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => loadPreset(preset)}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-left transition hover:border-gray-400 hover:bg-white"
+              >
+                <span className="block text-sm font-semibold text-black">
+                  {preset.label}
+                </span>
+                <span className="mt-1 block text-xs text-gray-600">
+                  {preset.helper}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -484,6 +691,18 @@ export default function FoodV2RecommendationLabPage() {
         >
           {isLoading ? "Ranking..." : "Run ranking"}
         </button>
+        <button
+          type="button"
+          onClick={() => copyJson("Request", requestPayload())}
+          className="ml-3 mt-5 rounded-xl border border-black px-6 py-3 text-sm font-semibold text-black transition hover:bg-gray-100"
+        >
+          Copy request
+        </button>
+        {copiedMessage && (
+          <span className="ml-3 text-sm font-medium text-green-700">
+            {copiedMessage}
+          </span>
+        )}
       </section>
 
       {error && (
@@ -495,16 +714,45 @@ export default function FoodV2RecommendationLabPage() {
       {result && (
         <section className="space-y-7">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">
-              Ranked {result.total_candidates} candidates for goal{" "}
-              <span className="font-semibold text-black">{result.goal}</span>.
-            </p>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="text-sm text-gray-600">
+                  Ranked {result.total_candidates} candidates for goal{" "}
+                  <span className="font-semibold text-black">{result.goal}</span>.
+                </p>
+                <p className="mt-1 text-sm text-gray-600">
+                  Premium {result.premium.length} · Value {result.value.length} ·
+                  Hold {result.hold.length}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => copyJson("Result", result)}
+                  className="rounded-lg border border-black px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-100"
+                >
+                  Copy result
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDebug((current) => !current)}
+                  className="rounded-lg border border-black px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-100"
+                >
+                  {showDebug ? "Hide JSON" : "Show JSON"}
+                </button>
+              </div>
+            </div>
             {result.notes.length > 0 && (
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-600">
                 {result.notes.map((note) => (
                   <li key={note}>{note}</li>
                 ))}
               </ul>
+            )}
+            {showDebug && (
+              <pre className="mt-4 max-h-96 overflow-auto rounded-xl bg-gray-950 p-4 text-xs text-gray-100">
+                {JSON.stringify({ request: requestPayload(), result }, null, 2)}
+              </pre>
             )}
           </div>
 

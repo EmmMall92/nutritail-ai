@@ -57,12 +57,74 @@ export type FoodV2RankingResult = {
 };
 
 const DOG_SIZE_TERMS = {
-  mini: ["mini", "x-small", "extra small", "toy"],
-  small: ["small", "mini"],
-  medium: ["medium"],
-  large: ["large", "maxi"],
-  giant: ["giant"],
+  mini: ["mini", "x-small", "extra small", "toy", "very small", "yorkshire", "chihuahua"],
+  small: ["small", "mini", "μικροσωμ", "mikrosom", "small breed"],
+  medium: ["medium", "μεσαίο", "μεσαίων", "mesaio", "medium breed"],
+  large: ["large", "maxi", "large breed", "μεγαλοσωμ", "megalosom"],
+  giant: ["giant", "extra large", "x-large", "giant breed", "γιγαντοσωμ"],
 } as const;
+
+const BREED_SIZE_TERMS = {
+  mini: [
+    "chihuahua",
+    "pomeranian",
+    "yorkshire",
+    "yorkie",
+    "toy poodle",
+    "maltese",
+    "μαλτεζ",
+  ],
+  small: [
+    "bichon",
+    "cavalier",
+    "dachshund",
+    "jack russell",
+    "shih tzu",
+    "westie",
+    "beagle",
+  ],
+  medium: [
+    "border collie",
+    "cocker",
+    "english cocker",
+    "french bulldog",
+    "bulldog",
+    "pointer",
+    "setter",
+    "shar pei",
+  ],
+  large: [
+    "akita",
+    "boxer",
+    "dalmatian",
+    "doberman",
+    "german shepherd",
+    "golden retriever",
+    "husky",
+    "labrador",
+    "retriever",
+    "rottweiler",
+    "weimaraner",
+  ],
+  giant: [
+    "bernese",
+    "cane corso",
+    "great dane",
+    "mastiff",
+    "newfoundland",
+    "saint bernard",
+  ],
+} as const;
+
+const ALL_BREED_TERMS = [
+  "all breeds",
+  "all breed",
+  "all sizes",
+  "all size",
+  "ολων των φυλων",
+  "ολες τις φυλες",
+  "ολων των μεγεθων",
+];
 
 const ALLERGEN_TERMS: Record<string, string[]> = {
   chicken: ["chicken", "poultry", "κοτοπουλο", "kotopoulo"],
@@ -80,14 +142,61 @@ const ALLERGEN_TERMS: Record<string, string[]> = {
   egg: ["egg", "αυγο", "avgo"],
 };
 
+const INGREDIENT_ALIAS_TERMS: Record<string, string[]> = {
+  chicken: ["chicken", "poultry", "κοτοπουλο", "κότοπουλο", "kotopoulo"],
+  poultry: ["poultry", "chicken", "turkey", "πουλερικα", "poulerika"],
+  beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
+  lamb: ["lamb", "αρνι", "αρνί", "arni"],
+  pork: ["pork", "χοιρινο", "χοιρινό", "xoirino", "hoirino"],
+  duck: ["duck", "παπια", "πάπια", "papia"],
+  turkey: ["turkey", "γαλοπουλα", "γαλοπούλα", "galopoula"],
+  rabbit: ["rabbit", "κουνελι", "κουνέλι", "kouneli"],
+  venison: ["venison", "deer", "ελαφι", "ελάφι", "elafi"],
+  boar: ["boar", "wild boar", "αγριογουρουνο", "agriogourouno"],
+  insect: ["insect", "εντομο", "έντομο", "entomo"],
+  fish: [
+    "fish",
+    "salmon",
+    "tuna",
+    "cod",
+    "codfish",
+    "sardine",
+    "herring",
+    "anchovy",
+    "trout",
+    "whitefish",
+    "ψαρι",
+    "ψάρι",
+    "psari",
+  ],
+  salmon: ["salmon", "σολομος", "σολομός", "solomos"],
+  tuna: ["tuna", "τονος", "τόνος", "tonos"],
+  cod: ["cod", "codfish", "μπακαλιαρος", "bakaliaros"],
+  sardine: ["sardine", "σαρδελα", "σαρδέλα", "sardela"],
+  herring: ["herring", "ρεγγα", "ρέγγα", "rega"],
+  trout: ["trout", "πεστροφα", "πέστροφα", "pestrofa"],
+  wheat: ["wheat", "σιταρι", "σιτάρι", "sitar", "sitari"],
+  corn: ["corn", "maize", "καλαμποκι", "καλαμπόκι", "kalampoki"],
+  rice: ["rice", "ρυζι", "ρύζι", "ryzi", "rizi"],
+  pea: ["pea", "peas", "αρακα", "αρακά", "araka"],
+  potato: ["potato", "potatoes", "πατατα", "πατάτα", "patata"],
+  soy: ["soy", "soya", "σογια", "σόγια", "sogia"],
+  dairy: ["milk", "dairy", "γαλα", "γάλα", "gala"],
+  egg: ["egg", "αυγο", "αυγό", "avgo"],
+};
+
 const VALUE_MARKERS = [
   "classic",
   "regular",
   "basic",
   "daily",
+  "everyday",
+  "essential",
   "maintenance",
   "adult",
-  "premium",
+  "standard",
+  "complete",
+  "balance",
 ];
 
 const PREMIUM_MARKERS = [
@@ -104,6 +213,30 @@ const PREMIUM_MARKERS = [
   "kitten",
   "sterilised",
   "breed",
+];
+
+const VALUE_PENALTY_MARKERS = [
+  "veterinary",
+  "vet ",
+  "vet-",
+  "prescription",
+  "renal",
+  "urinary",
+  "hepatic",
+  "diabetic",
+  "gastrointestinal",
+  "hypoallergenic",
+  "hydrolysed",
+  "hydrolyzed",
+  "dermatosis",
+  "cardiac",
+  "mobility",
+  "monoprotein",
+  "grain free",
+  "breed specific",
+  "puppy",
+  "kitten",
+  "junior",
 ];
 
 function normalizeText(value: unknown) {
@@ -151,18 +284,25 @@ function petLifeStage(pet: FoodV2RankingInput["pet"]) {
 }
 
 function isLargeBreedDog(pet: FoodV2RankingInput["pet"]) {
-  const breed = normalizeText(pet.breed);
   return (
     pet.species === "dog" &&
-    (pet.weight >= 25 ||
-      ["large", "giant", "maxi", "labrador", "retriever", "rottweiler"].some(
-        (term) => breed.includes(term)
-      ))
+    (pet.weight >= 25 || ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? ""))
   );
+}
+
+function breedSizeFromText(value: unknown) {
+  const text = normalizeText(value);
+  for (const [size, terms] of Object.entries(BREED_SIZE_TERMS)) {
+    if (hasAny(text, terms)) return size;
+  }
+  return null;
 }
 
 function expectedDogSize(pet: FoodV2RankingInput["pet"]) {
   if (pet.species !== "dog") return null;
+  const breedSize = breedSizeFromText(pet.breed);
+
+  if (!hasNumber(pet.weight) || pet.weight <= 0) return breedSize;
   if (pet.weight <= 5) return "mini";
   if (pet.weight <= 10) return "small";
   if (pet.weight <= 25) return "medium";
@@ -182,6 +322,7 @@ function dogSizeDistance(expected: string, foodSize: string) {
 function inferDogSizeFromFoodText(food: FoodProductV2) {
   const text = textFor(food);
 
+  if (hasAny(text, ALL_BREED_TERMS)) return "all";
   if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
   if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"])) {
     return "large";
@@ -193,6 +334,8 @@ function inferDogSizeFromFoodText(food: FoodProductV2) {
   if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"])) {
     return "mini";
   }
+  const breedSize = breedSizeFromText(text);
+  if (breedSize) return breedSize;
 
   return null;
 }
@@ -207,11 +350,15 @@ function addSignal(
   signals.push({ type, code, points, message });
 }
 
+function ingredientAliasesFor(value: string) {
+  return INGREDIENT_ALIAS_TERMS[value] ?? ALLERGEN_TERMS[value] ?? [value];
+}
+
 function containsAllergen(food: FoodProductV2, allergies: string[]) {
   const foodText = textFor(food);
   return allergies.some((allergy) => {
     const normalized = normalizeText(allergy);
-    const terms = ALLERGEN_TERMS[normalized] ?? [normalized];
+    const terms = ingredientAliasesFor(normalized);
     return terms.some((term) => foodText.includes(normalizeText(term)));
   });
 }
@@ -221,13 +368,13 @@ function containsIngredientTerm(food: FoodProductV2, values: string[]) {
 
   return values.some((value) => {
     const normalized = normalizeText(value);
-    const terms = ALLERGEN_TERMS[normalized] ?? [normalized];
+    const terms = ingredientAliasesFor(normalized);
 
     return terms.some((term) => foodText.includes(normalizeText(term)));
   });
 }
 
-function hasAny(text: string, terms: string[]) {
+function hasAny(text: string, terms: readonly string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
 
@@ -330,6 +477,7 @@ function scoreFit(input: FoodV2RankingInput) {
       expectedSize && declaredSize ? dogSizeDistance(expectedSize, declaredSize) : 0;
     const sizeMatches =
       food.dog_size === "all" ||
+      declaredSize === "all" ||
       !declaredSize ||
       (isLargeBreedDog(pet) && ["large", "giant"].includes(declaredSize)) ||
       hasAny(normalizeText(pet.breed), [...sizeTerms, declaredSize]) ||
@@ -500,10 +648,16 @@ function scoreValue(food: FoodProductV2, fitScore: number, qualityScore: number)
   const haystack = textFor(food);
   let score = Math.round(fitScore * 0.55 + qualityScore * 0.35);
 
-  if (hasAny(haystack, VALUE_MARKERS)) score += 8;
-  if (hasAny(haystack, PREMIUM_MARKERS)) score -= 5;
-  if (food.source_priority === "retailer") score += 3;
+  if (hasAny(haystack, VALUE_MARKERS)) score += 10;
+  if (hasAny(haystack, PREMIUM_MARKERS)) score -= 6;
+  if (hasAny(haystack, VALUE_PENALTY_MARKERS)) score -= 14;
+  if (food.source_priority === "retailer") score += 2;
+  if (food.source_priority === "official") score += 2;
   if (food.data_quality_status === "verified") score += 5;
+  if (food.data_quality_status === "needs_review") score -= 4;
+  if (food.life_stage === "adult" && !hasAny(haystack, ["senior", "puppy", "junior", "kitten"])) {
+    score += 4;
+  }
 
   return Math.max(0, Math.min(100, score));
 }
@@ -523,10 +677,13 @@ function confidenceFor(result: {
 
 function valueTier(food: FoodProductV2, valueScore: number): FoodV2ValueTier {
   const haystack = textFor(food);
+  if (hasAny(haystack, VALUE_PENALTY_MARKERS)) {
+    return "premium_candidate";
+  }
   if (hasAny(haystack, PREMIUM_MARKERS) && valueScore < 82) {
     return "premium_candidate";
   }
-  if (valueScore >= 70 && hasAny(haystack, VALUE_MARKERS)) {
+  if (valueScore >= 72 && hasAny(haystack, VALUE_MARKERS)) {
     return "value_candidate";
   }
   return "standard";
