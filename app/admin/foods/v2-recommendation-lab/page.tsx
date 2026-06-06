@@ -28,6 +28,19 @@ type RecommendationItem = {
   data_quality_status: string;
   source_priority: string;
   data_source_url: string | null;
+  nutrition_confidence: {
+    level:
+      | "strong_data"
+      | "usable_incomplete"
+      | "caution_missing_core"
+      | "limited_data";
+    label: string;
+    score: number;
+    missing_core_fields: string[];
+    missing_mineral_fields: string[];
+    missing_optional_fields: string[];
+    notes: string[];
+  };
   guard_flags: Array<{
     code: string;
     severity: "block" | "warning" | "info";
@@ -275,6 +288,17 @@ function scoreClass(score: number) {
   return "bg-gray-100 text-gray-700";
 }
 
+function confidenceClass(level: RecommendationItem["nutrition_confidence"]["level"]) {
+  if (level === "strong_data") return "border-green-200 bg-green-50 text-green-700";
+  if (level === "usable_incomplete") {
+    return "border-amber-200 bg-amber-50 text-amber-800";
+  }
+  if (level === "caution_missing_core") {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+  return "border-gray-200 bg-gray-50 text-gray-700";
+}
+
 function guardClass(severity: "block" | "warning" | "info") {
   if (severity === "block") return "border-red-200 bg-red-50 text-red-800";
   if (severity === "warning") {
@@ -319,7 +343,26 @@ function ResultCard({ item }: { item: RecommendationItem }) {
         </span>
       </div>
 
+      <span
+        className={`mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${confidenceClass(
+          item.nutrition_confidence.level
+        )}`}
+      >
+        {item.nutrition_confidence.label} ({item.nutrition_confidence.score})
+      </span>
+
       <p className="mt-3 text-sm text-gray-700">{nutritionText(item) || "Nutrition values are limited."}</p>
+
+      {(item.nutrition_confidence.missing_core_fields.length > 0 ||
+        item.nutrition_confidence.missing_mineral_fields.length > 0) && (
+        <p className="mt-2 text-xs text-gray-500">
+          Missing:{" "}
+          {[
+            ...item.nutrition_confidence.missing_core_fields,
+            ...item.nutrition_confidence.missing_mineral_fields,
+          ].join(", ")}
+        </p>
+      )}
 
       {item.guard_flags.length > 0 && (
         <div className="mt-4 space-y-2">
