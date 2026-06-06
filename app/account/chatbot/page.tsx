@@ -23,6 +23,11 @@ import {
   buildFoodScoreExplanation,
   getFoodScoreLabel,
 } from "@/lib/foodScoreExplanation";
+import {
+  formatFoodV2ChatbotRecommendationSummary,
+  goalFromPetContext,
+  type FoodV2ChatbotRecommendationResponse,
+} from "@/lib/food-v2/chatbotRecommendationSummary";
 
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
@@ -610,6 +615,49 @@ What this means:
 ${rows.join("\n\n")}${summary}${followUp}`;
 }
 
+async function getFoodV2RecommendationMessage(pet: PetIntake) {
+  if (!pet.species) return "";
+
+  const goal = goalFromPetContext({
+    species: pet.species,
+    age: pet.age,
+    neutered: pet.neutered,
+    healthIssues: pet.healthIssues,
+    allergies: pet.allergies,
+    weightGoal: pet.weightGoal,
+  });
+
+  const response = await fetch("/api/account/foods/v2-recommendations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      pet: {
+        species: pet.species,
+        breed: "unknown",
+        age: pet.age,
+        weight: pet.weight,
+        activityLevel: pet.activityLevel,
+        neutered: pet.neutered,
+        allergies: pet.allergies,
+        healthIssues: pet.healthIssues,
+      },
+      goal,
+      format: "dry",
+      limit_per_bucket: 3,
+    }),
+  });
+
+  const result = (await response.json()) as FoodV2ChatbotRecommendationResponse & {
+    error?: string;
+  };
+
+  if (!response.ok) {
+    throw new Error(result.error || "Could not load Food V2 recommendations.");
+  }
+
+  return formatFoodV2ChatbotRecommendationSummary(result);
+}
+
 function formatPetIntakeSummary(pet: PetIntake) {
   const details = [
     `Pet: ${pet.name ?? "pet"} (${pet.species ?? "unknown species"})`,
@@ -1070,6 +1118,16 @@ Main food calories: about ${treats.mainFoodCalories} kcal/day`
 ${guardrailText}`
           )
         );
+      }
+
+      try {
+        const foodV2Message = await getFoodV2RecommendationMessage(nextPet);
+
+        if (foodV2Message) {
+          addMessages(createMessage("bot", foodV2Message));
+        }
+      } catch (error) {
+        console.error(error);
       }
 
       if (nextPet.currentFoodName) {
