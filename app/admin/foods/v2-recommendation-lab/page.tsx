@@ -225,6 +225,8 @@ export default function FoodV2RecommendationLabPage() {
   const [neutered, setNeutered] = useState(true);
   const [goal, setGoal] = useState<RecommendationGoal>("sterilised");
   const [allergies, setAllergies] = useState("");
+  const [excludedIngredients, setExcludedIngredients] = useState("");
+  const [preferredProteins, setPreferredProteins] = useState("");
   const [healthIssues, setHealthIssues] = useState("weight control");
   const [brand, setBrand] = useState("");
   const [result, setResult] = useState<RecommendationResponse | null>(null);
@@ -240,6 +242,8 @@ export default function FoodV2RecommendationLabPage() {
       setGoal("sterilised");
       setHealthIssues("weight control");
       setAllergies("");
+      setExcludedIngredients("");
+      setPreferredProteins("");
       return;
     }
 
@@ -249,6 +253,8 @@ export default function FoodV2RecommendationLabPage() {
     setGoal("urinary");
     setHealthIssues("urinary");
     setAllergies("");
+    setExcludedIngredients("");
+    setPreferredProteins("");
   }
 
   async function runRanking() {
@@ -268,6 +274,8 @@ export default function FoodV2RecommendationLabPage() {
             activityLevel,
             neutered,
             allergies: splitText(allergies),
+            excludedIngredients: splitText(excludedIngredients),
+            preferredProteins: splitText(preferredProteins),
             healthIssues: splitText(healthIssues),
           },
           goal,
@@ -414,6 +422,28 @@ export default function FoodV2RecommendationLabPage() {
               value={allergies}
               onChange={(event) => setAllergies(event.target.value)}
               placeholder="chicken, wheat"
+              className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            />
+          </label>
+          <label className="space-y-2">
+            <span className="text-sm font-medium text-black">
+              Avoid ingredients / flavors
+            </span>
+            <input
+              value={excludedIngredients}
+              onChange={(event) => setExcludedIngredients(event.target.value)}
+              placeholder="chicken, beef"
+              className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            />
+          </label>
+          <label className="space-y-2">
+            <span className="text-sm font-medium text-black">
+              Preferred proteins / flavors
+            </span>
+            <input
+              value={preferredProteins}
+              onChange={(event) => setPreferredProteins(event.target.value)}
+              placeholder="lamb, salmon"
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
             />
           </label>
