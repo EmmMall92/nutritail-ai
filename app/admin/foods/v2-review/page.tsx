@@ -216,6 +216,16 @@ export default function FoodV2ReviewPage() {
     loadReview();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedSearch = params.get("search");
+
+    if (requestedSearch) {
+      setSearch(requestedSearch);
+      setQueueSearch(requestedSearch);
+    }
+  }, []);
+
   const visibleProducts = useMemo(() => {
     const products = data?.products ?? [];
     const searchText = search.trim().toLowerCase();

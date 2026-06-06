@@ -134,6 +134,23 @@ export default function FoodV2RecommendationVisibilityPage() {
     void loadVisibility();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedSearch = params.get("search");
+    const requestedSafety = params.get("safety");
+
+    if (requestedSearch) setSearch(requestedSearch);
+    if (
+      requestedSafety === "do_not_enable" ||
+      requestedSafety === "hold_until_backfill" ||
+      requestedSafety === "cautious_enable_only" ||
+      requestedSafety === "review_before_enable" ||
+      requestedSafety === "eligible_after_admin_choice"
+    ) {
+      setSafetyFilter(requestedSafety);
+    }
+  }, []);
+
   const brandOptions = useMemo(
     () => report?.brands.map((brand) => brand.brand) ?? [],
     [report]

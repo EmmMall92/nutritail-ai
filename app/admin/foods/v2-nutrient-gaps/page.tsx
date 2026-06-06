@@ -98,6 +98,14 @@ function CountList({ title, items }: { title: string; items: CountItem[] }) {
   );
 }
 
+function visibilityHref(row: NutrientGapRow) {
+  const params = new URLSearchParams({
+    search: row.formula_key || `${row.brand} ${row.display_name}`,
+  });
+
+  return `/admin/foods/v2-recommendation-visibility?${params.toString()}`;
+}
+
 export default function FoodV2NutrientGapsPage() {
   const [report, setReport] = useState<NutrientGapResponse | null>(null);
   const [error, setError] = useState("");
@@ -320,6 +328,7 @@ export default function FoodV2NutrientGapsPage() {
                       <th className="px-4 py-3">Estimated</th>
                       <th className="px-4 py-3">Helpful Gaps</th>
                       <th className="px-4 py-3">Next Action</th>
+                      <th className="px-4 py-3">Admin Links</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -347,6 +356,9 @@ export default function FoodV2NutrientGapsPage() {
                               Context: {row.health_context.join(", ")}
                             </p>
                           )}
+                          <p className="mt-1 font-mono text-xs text-gray-400">
+                            {row.formula_key}
+                          </p>
                         </td>
                         <td className="px-4 py-4 text-gray-700">
                           <ListText items={row.missing_blockers} />
@@ -362,6 +374,34 @@ export default function FoodV2NutrientGapsPage() {
                           <p className="mt-2 text-xs text-gray-500">
                             Evidence: {row.recommended_evidence}
                           </p>
+                        </td>
+                        <td className="min-w-44 px-4 py-4">
+                          <div className="flex flex-col gap-2 text-xs font-semibold">
+                            <Link
+                              href={visibilityHref(row)}
+                              className="rounded-lg border border-gray-300 px-3 py-2 text-center text-black transition hover:bg-gray-50"
+                            >
+                              Visibility
+                            </Link>
+                            <Link
+                              href={`/admin/foods/v2-review?search=${encodeURIComponent(
+                                row.formula_key || row.display_name
+                              )}`}
+                              className="rounded-lg border border-gray-300 px-3 py-2 text-center text-black transition hover:bg-gray-50"
+                            >
+                              Review
+                            </Link>
+                            {row.data_source_url && (
+                              <a
+                                href={row.data_source_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="rounded-lg bg-black px-3 py-2 text-center text-white transition hover:opacity-90"
+                              >
+                                Source
+                              </a>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
