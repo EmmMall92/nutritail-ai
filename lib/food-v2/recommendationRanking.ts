@@ -85,9 +85,13 @@ const VALUE_MARKERS = [
   "regular",
   "basic",
   "daily",
+  "everyday",
+  "essential",
   "maintenance",
   "adult",
-  "premium",
+  "standard",
+  "complete",
+  "balance",
 ];
 
 const PREMIUM_MARKERS = [
@@ -104,6 +108,30 @@ const PREMIUM_MARKERS = [
   "kitten",
   "sterilised",
   "breed",
+];
+
+const VALUE_PENALTY_MARKERS = [
+  "veterinary",
+  "vet ",
+  "vet-",
+  "prescription",
+  "renal",
+  "urinary",
+  "hepatic",
+  "diabetic",
+  "gastrointestinal",
+  "hypoallergenic",
+  "hydrolysed",
+  "hydrolyzed",
+  "dermatosis",
+  "cardiac",
+  "mobility",
+  "monoprotein",
+  "grain free",
+  "breed specific",
+  "puppy",
+  "kitten",
+  "junior",
 ];
 
 function normalizeText(value: unknown) {
@@ -500,10 +528,16 @@ function scoreValue(food: FoodProductV2, fitScore: number, qualityScore: number)
   const haystack = textFor(food);
   let score = Math.round(fitScore * 0.55 + qualityScore * 0.35);
 
-  if (hasAny(haystack, VALUE_MARKERS)) score += 8;
-  if (hasAny(haystack, PREMIUM_MARKERS)) score -= 5;
-  if (food.source_priority === "retailer") score += 3;
+  if (hasAny(haystack, VALUE_MARKERS)) score += 10;
+  if (hasAny(haystack, PREMIUM_MARKERS)) score -= 6;
+  if (hasAny(haystack, VALUE_PENALTY_MARKERS)) score -= 14;
+  if (food.source_priority === "retailer") score += 2;
+  if (food.source_priority === "official") score += 2;
   if (food.data_quality_status === "verified") score += 5;
+  if (food.data_quality_status === "needs_review") score -= 4;
+  if (food.life_stage === "adult" && !hasAny(haystack, ["senior", "puppy", "junior", "kitten"])) {
+    score += 4;
+  }
 
   return Math.max(0, Math.min(100, score));
 }
@@ -523,10 +557,13 @@ function confidenceFor(result: {
 
 function valueTier(food: FoodProductV2, valueScore: number): FoodV2ValueTier {
   const haystack = textFor(food);
+  if (hasAny(haystack, VALUE_PENALTY_MARKERS)) {
+    return "premium_candidate";
+  }
   if (hasAny(haystack, PREMIUM_MARKERS) && valueScore < 82) {
     return "premium_candidate";
   }
-  if (valueScore >= 70 && hasAny(haystack, VALUE_MARKERS)) {
+  if (valueScore >= 72 && hasAny(haystack, VALUE_MARKERS)) {
     return "value_candidate";
   }
   return "standard";
