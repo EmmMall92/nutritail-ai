@@ -28,6 +28,11 @@ type RecommendationItem = {
   data_quality_status: string;
   source_priority: string;
   data_source_url: string | null;
+  guard_flags: Array<{
+    code: string;
+    severity: "block" | "warning" | "info";
+    message: string;
+  }>;
   ranking: {
     total_score: number;
     fit_score: number;
@@ -270,6 +275,14 @@ function scoreClass(score: number) {
   return "bg-gray-100 text-gray-700";
 }
 
+function guardClass(severity: "block" | "warning" | "info") {
+  if (severity === "block") return "border-red-200 bg-red-50 text-red-800";
+  if (severity === "warning") {
+    return "border-amber-200 bg-amber-50 text-amber-900";
+  }
+  return "border-gray-200 bg-gray-50 text-gray-700";
+}
+
 function ResultCard({ item }: { item: RecommendationItem }) {
   return (
     <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -307,6 +320,25 @@ function ResultCard({ item }: { item: RecommendationItem }) {
       </div>
 
       <p className="mt-3 text-sm text-gray-700">{nutritionText(item) || "Nutrition values are limited."}</p>
+
+      {item.guard_flags.length > 0 && (
+        <div className="mt-4 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Guard flags
+          </p>
+          {item.guard_flags.map((flag) => (
+            <div
+              key={flag.code}
+              className={`rounded-lg border px-3 py-2 text-sm ${guardClass(
+                flag.severity
+              )}`}
+            >
+              <span className="font-semibold">{flag.severity}:</span>{" "}
+              {flag.message}
+            </div>
+          ))}
+        </div>
+      )}
 
       {item.ranking.reasons.length > 0 && (
         <div className="mt-4">
