@@ -79,6 +79,170 @@ const goalOptions: Array<{ value: RecommendationGoal; label: string }> = [
   { value: "senior", label: "Senior" },
 ];
 
+type LabPreset = {
+  label: string;
+  helper: string;
+  species: "dog" | "cat";
+  breed: string;
+  age: string;
+  weight: string;
+  activityLevel: "low" | "normal" | "high";
+  neutered: boolean;
+  goal: RecommendationGoal;
+  allergies: string;
+  excludedIngredients: string;
+  preferredProteins: string;
+  healthIssues: string;
+  brand: string;
+};
+
+const labPresets: LabPreset[] = [
+  {
+    label: "Large dog 30kg",
+    helper: "Catches small/mini size mismatches.",
+    species: "dog",
+    breed: "Labrador",
+    age: "4",
+    weight: "30",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "weight control",
+    brand: "",
+  },
+  {
+    label: "Small dog 7kg",
+    helper: "Checks small-breed positioning.",
+    species: "dog",
+    breed: "Maltese",
+    age: "5",
+    weight: "7",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Avoid chicken",
+    helper: "Taste dislike or non-medical preference.",
+    species: "dog",
+    breed: "Labrador",
+    age: "4",
+    weight: "30",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "general",
+    allergies: "",
+    excludedIngredients: "chicken",
+    preferredProteins: "lamb, salmon",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Chicken allergy",
+    helper: "Medical-style hard exclusion.",
+    species: "dog",
+    breed: "Mixed breed",
+    age: "3",
+    weight: "18",
+    activityLevel: "normal",
+    neutered: false,
+    goal: "allergy",
+    allergies: "chicken",
+    excludedIngredients: "",
+    preferredProteins: "lamb, duck, salmon",
+    healthIssues: "skin allergy",
+    brand: "",
+  },
+  {
+    label: "Large puppy",
+    helper: "Growth plus calcium/phosphorus confidence.",
+    species: "dog",
+    breed: "German Shepherd",
+    age: "0.6",
+    weight: "22",
+    activityLevel: "normal",
+    neutered: false,
+    goal: "growth",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "",
+    brand: "",
+  },
+  {
+    label: "Sterilised cat 5kg",
+    helper: "Weight-aware cat ranking.",
+    species: "cat",
+    breed: "European shorthair",
+    age: "5",
+    weight: "5",
+    activityLevel: "low",
+    neutered: true,
+    goal: "sterilised",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "weight control",
+    brand: "",
+  },
+  {
+    label: "Urinary cat",
+    helper: "Urinary positioning and mineral cautions.",
+    species: "cat",
+    breed: "European shorthair",
+    age: "5",
+    weight: "5",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "urinary",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "urinary",
+    brand: "",
+  },
+  {
+    label: "Senior dog",
+    helper: "Senior positioning with cautious minerals.",
+    species: "dog",
+    breed: "Mixed breed",
+    age: "10",
+    weight: "18",
+    activityLevel: "low",
+    neutered: true,
+    goal: "senior",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "joint support",
+    brand: "",
+  },
+  {
+    label: "Sensitive digestion",
+    helper: "GI terms, fibers and sensitive formulas.",
+    species: "dog",
+    breed: "French Bulldog",
+    age: "3",
+    weight: "12",
+    activityLevel: "normal",
+    neutered: true,
+    goal: "sensitive_digestion",
+    allergies: "",
+    excludedIngredients: "",
+    preferredProteins: "",
+    healthIssues: "sensitive digestion, gas",
+    brand: "",
+  },
+];
+
 function splitText(value: string) {
   return value
     .split(",")
@@ -233,28 +397,21 @@ export default function FoodV2RecommendationLabPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  function loadPreset(nextSpecies: "dog" | "cat") {
-    setSpecies(nextSpecies);
-    if (nextSpecies === "dog") {
-      setBreed("Labrador");
-      setAge("4");
-      setWeight("30");
-      setGoal("sterilised");
-      setHealthIssues("weight control");
-      setAllergies("");
-      setExcludedIngredients("");
-      setPreferredProteins("");
-      return;
-    }
-
-    setBreed("European shorthair");
-    setAge("5");
-    setWeight("5");
-    setGoal("urinary");
-    setHealthIssues("urinary");
-    setAllergies("");
-    setExcludedIngredients("");
-    setPreferredProteins("");
+  function loadPreset(preset: LabPreset) {
+    setSpecies(preset.species);
+    setBreed(preset.breed);
+    setAge(preset.age);
+    setWeight(preset.weight);
+    setActivityLevel(preset.activityLevel);
+    setNeutered(preset.neutered);
+    setGoal(preset.goal);
+    setAllergies(preset.allergies);
+    setExcludedIngredients(preset.excludedIngredients);
+    setPreferredProteins(preset.preferredProteins);
+    setHealthIssues(preset.healthIssues);
+    setBrand(preset.brand);
+    setResult(null);
+    setError("");
   }
 
   async function runRanking() {
@@ -333,21 +490,25 @@ export default function FoodV2RecommendationLabPage() {
       </section>
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => loadPreset("dog")}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-50"
-          >
-            Dog preset
-          </button>
-          <button
-            type="button"
-            onClick={() => loadPreset("cat")}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-50"
-          >
-            Cat preset
-          </button>
+        <div className="mb-5">
+          <p className="text-sm font-semibold text-black">Quick scenarios</p>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {labPresets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => loadPreset(preset)}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-left transition hover:border-gray-400 hover:bg-white"
+              >
+                <span className="block text-sm font-semibold text-black">
+                  {preset.label}
+                </span>
+                <span className="mt-1 block text-xs text-gray-600">
+                  {preset.helper}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
