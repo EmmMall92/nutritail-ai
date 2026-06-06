@@ -57,12 +57,74 @@ export type FoodV2RankingResult = {
 };
 
 const DOG_SIZE_TERMS = {
-  mini: ["mini", "x-small", "extra small", "toy"],
-  small: ["small", "mini"],
-  medium: ["medium"],
-  large: ["large", "maxi"],
-  giant: ["giant"],
+  mini: ["mini", "x-small", "extra small", "toy", "very small", "yorkshire", "chihuahua"],
+  small: ["small", "mini", "μικροσωμ", "mikrosom", "small breed"],
+  medium: ["medium", "μεσαίο", "μεσαίων", "mesaio", "medium breed"],
+  large: ["large", "maxi", "large breed", "μεγαλοσωμ", "megalosom"],
+  giant: ["giant", "extra large", "x-large", "giant breed", "γιγαντοσωμ"],
 } as const;
+
+const BREED_SIZE_TERMS = {
+  mini: [
+    "chihuahua",
+    "pomeranian",
+    "yorkshire",
+    "yorkie",
+    "toy poodle",
+    "maltese",
+    "μαλτεζ",
+  ],
+  small: [
+    "bichon",
+    "cavalier",
+    "dachshund",
+    "jack russell",
+    "shih tzu",
+    "westie",
+    "beagle",
+  ],
+  medium: [
+    "border collie",
+    "cocker",
+    "english cocker",
+    "french bulldog",
+    "bulldog",
+    "pointer",
+    "setter",
+    "shar pei",
+  ],
+  large: [
+    "akita",
+    "boxer",
+    "dalmatian",
+    "doberman",
+    "german shepherd",
+    "golden retriever",
+    "husky",
+    "labrador",
+    "retriever",
+    "rottweiler",
+    "weimaraner",
+  ],
+  giant: [
+    "bernese",
+    "cane corso",
+    "great dane",
+    "mastiff",
+    "newfoundland",
+    "saint bernard",
+  ],
+} as const;
+
+const ALL_BREED_TERMS = [
+  "all breeds",
+  "all breed",
+  "all sizes",
+  "all size",
+  "ολων των φυλων",
+  "ολες τις φυλες",
+  "ολων των μεγεθων",
+];
 
 const ALLERGEN_TERMS: Record<string, string[]> = {
   chicken: ["chicken", "poultry", "κοτοπουλο", "kotopoulo"],
@@ -151,18 +213,25 @@ function petLifeStage(pet: FoodV2RankingInput["pet"]) {
 }
 
 function isLargeBreedDog(pet: FoodV2RankingInput["pet"]) {
-  const breed = normalizeText(pet.breed);
   return (
     pet.species === "dog" &&
-    (pet.weight >= 25 ||
-      ["large", "giant", "maxi", "labrador", "retriever", "rottweiler"].some(
-        (term) => breed.includes(term)
-      ))
+    (pet.weight >= 25 || ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? ""))
   );
+}
+
+function breedSizeFromText(value: unknown) {
+  const text = normalizeText(value);
+  for (const [size, terms] of Object.entries(BREED_SIZE_TERMS)) {
+    if (hasAny(text, terms)) return size;
+  }
+  return null;
 }
 
 function expectedDogSize(pet: FoodV2RankingInput["pet"]) {
   if (pet.species !== "dog") return null;
+  const breedSize = breedSizeFromText(pet.breed);
+
+  if (!hasNumber(pet.weight) || pet.weight <= 0) return breedSize;
   if (pet.weight <= 5) return "mini";
   if (pet.weight <= 10) return "small";
   if (pet.weight <= 25) return "medium";
@@ -182,6 +251,7 @@ function dogSizeDistance(expected: string, foodSize: string) {
 function inferDogSizeFromFoodText(food: FoodProductV2) {
   const text = textFor(food);
 
+  if (hasAny(text, ALL_BREED_TERMS)) return "all";
   if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
   if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"])) {
     return "large";
@@ -193,6 +263,8 @@ function inferDogSizeFromFoodText(food: FoodProductV2) {
   if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"])) {
     return "mini";
   }
+  const breedSize = breedSizeFromText(text);
+  if (breedSize) return breedSize;
 
   return null;
 }
@@ -227,7 +299,7 @@ function containsIngredientTerm(food: FoodProductV2, values: string[]) {
   });
 }
 
-function hasAny(text: string, terms: string[]) {
+function hasAny(text: string, terms: readonly string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
 
@@ -330,6 +402,7 @@ function scoreFit(input: FoodV2RankingInput) {
       expectedSize && declaredSize ? dogSizeDistance(expectedSize, declaredSize) : 0;
     const sizeMatches =
       food.dog_size === "all" ||
+      declaredSize === "all" ||
       !declaredSize ||
       (isLargeBreedDog(pet) && ["large", "giant"].includes(declaredSize)) ||
       hasAny(normalizeText(pet.breed), [...sizeTerms, declaredSize]) ||
