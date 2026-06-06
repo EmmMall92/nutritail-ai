@@ -232,6 +232,35 @@ export default function FoodV2RecommendationLabPage() {
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+  const [copiedMessage, setCopiedMessage] = useState("");
+
+  function requestPayload() {
+    return {
+      pet: {
+        species,
+        breed,
+        age: Number(age),
+        weight: Number(weight),
+        activityLevel,
+        neutered,
+        allergies: splitText(allergies),
+        excludedIngredients: splitText(excludedIngredients),
+        preferredProteins: splitText(preferredProteins),
+        healthIssues: splitText(healthIssues),
+      },
+      goal,
+      format: "dry",
+      brand: brand.trim() || undefined,
+      limit_per_bucket: 3,
+    };
+  }
+
+  async function copyJson(label: string, value: unknown) {
+    await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
+    setCopiedMessage(`${label} copied.`);
+    window.setTimeout(() => setCopiedMessage(""), 2500);
+  }
 
   function loadPreset(nextSpecies: "dog" | "cat") {
     setSpecies(nextSpecies);
@@ -266,22 +295,7 @@ export default function FoodV2RecommendationLabPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          pet: {
-            species,
-            breed,
-            age: Number(age),
-            weight: Number(weight),
-            activityLevel,
-            neutered,
-            allergies: splitText(allergies),
-            excludedIngredients: splitText(excludedIngredients),
-            preferredProteins: splitText(preferredProteins),
-            healthIssues: splitText(healthIssues),
-          },
-          goal,
-          format: "dry",
-          brand: brand.trim() || undefined,
-          limit_per_bucket: 3,
+          ...requestPayload(),
         }),
       });
       const data = await response.json();
@@ -484,6 +498,18 @@ export default function FoodV2RecommendationLabPage() {
         >
           {isLoading ? "Ranking..." : "Run ranking"}
         </button>
+        <button
+          type="button"
+          onClick={() => copyJson("Request", requestPayload())}
+          className="ml-3 mt-5 rounded-xl border border-black px-6 py-3 text-sm font-semibold text-black transition hover:bg-gray-100"
+        >
+          Copy request
+        </button>
+        {copiedMessage && (
+          <span className="ml-3 text-sm font-medium text-green-700">
+            {copiedMessage}
+          </span>
+        )}
       </section>
 
       {error && (
@@ -495,16 +521,45 @@ export default function FoodV2RecommendationLabPage() {
       {result && (
         <section className="space-y-7">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">
-              Ranked {result.total_candidates} candidates for goal{" "}
-              <span className="font-semibold text-black">{result.goal}</span>.
-            </p>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="text-sm text-gray-600">
+                  Ranked {result.total_candidates} candidates for goal{" "}
+                  <span className="font-semibold text-black">{result.goal}</span>.
+                </p>
+                <p className="mt-1 text-sm text-gray-600">
+                  Premium {result.premium.length} · Value {result.value.length} ·
+                  Hold {result.hold.length}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => copyJson("Result", result)}
+                  className="rounded-lg border border-black px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-100"
+                >
+                  Copy result
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDebug((current) => !current)}
+                  className="rounded-lg border border-black px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-100"
+                >
+                  {showDebug ? "Hide JSON" : "Show JSON"}
+                </button>
+              </div>
+            </div>
             {result.notes.length > 0 && (
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-600">
                 {result.notes.map((note) => (
                   <li key={note}>{note}</li>
                 ))}
               </ul>
+            )}
+            {showDebug && (
+              <pre className="mt-4 max-h-96 overflow-auto rounded-xl bg-gray-950 p-4 text-xs text-gray-100">
+                {JSON.stringify({ request: requestPayload(), result }, null, 2)}
+              </pre>
             )}
           </div>
 
