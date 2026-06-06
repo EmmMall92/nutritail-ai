@@ -201,6 +201,10 @@ export async function POST(request: Request) {
       neutered: Boolean(pet.neutered),
       allergies: stringArray(pet.allergies),
       healthIssues: stringArray(pet.healthIssues),
+      excludedIngredients: stringArray(
+        pet.excludedIngredients ?? pet.dislikedIngredients
+      ),
+      preferredProteins: stringArray(pet.preferredProteins ?? pet.preferredFlavors),
     };
 
     const rankedRows = productRows.map((product) => {

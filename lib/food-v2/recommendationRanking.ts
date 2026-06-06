@@ -23,6 +23,8 @@ export type FoodV2RankingInput = {
   > & {
     allergies?: string[];
     healthIssues?: string[];
+    excludedIngredients?: string[];
+    preferredProteins?: string[];
   };
   goal?: FoodV2RecommendationGoal;
 };
@@ -214,6 +216,17 @@ function containsAllergen(food: FoodProductV2, allergies: string[]) {
   });
 }
 
+function containsIngredientTerm(food: FoodProductV2, values: string[]) {
+  const foodText = textFor(food);
+
+  return values.some((value) => {
+    const normalized = normalizeText(value);
+    const terms = ALLERGEN_TERMS[normalized] ?? [normalized];
+
+    return terms.some((term) => foodText.includes(normalizeText(term)));
+  });
+}
+
 function hasAny(text: string, terms: string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
@@ -392,6 +405,48 @@ function scoreFit(input: FoodV2RankingInput) {
     if (hasAny(haystack, ["monoprotein", "hypoallergenic", "hydrolysed", "hydrolyzed"])) {
       score += 10;
       addSignal(signals, "boost", "allergy_positioning", 10, "Has allergy-friendly positioning.");
+    }
+  }
+
+  if ((pet.excludedIngredients ?? []).length > 0) {
+    if (containsIngredientTerm(food, pet.excludedIngredients ?? [])) {
+      addSignal(
+        signals,
+        "exclude",
+        "excluded_ingredient_preference",
+        -100,
+        "Excluded because it contains an ingredient or flavor the pet should avoid."
+      );
+    } else {
+      score += 8;
+      addSignal(
+        signals,
+        "boost",
+        "excluded_ingredients_not_detected",
+        8,
+        "Avoided the pet's excluded ingredients or flavors."
+      );
+    }
+  }
+
+  if ((pet.preferredProteins ?? []).length > 0) {
+    if (containsIngredientTerm(food, pet.preferredProteins ?? [])) {
+      score += 8;
+      addSignal(
+        signals,
+        "boost",
+        "preferred_protein_match",
+        8,
+        "Matches a preferred protein or flavor."
+      );
+    } else {
+      addSignal(
+        signals,
+        "caution",
+        "preferred_protein_missing",
+        -4,
+        "Does not clearly match the pet's preferred protein or flavor."
+      );
     }
   }
 
