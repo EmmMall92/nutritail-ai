@@ -5,6 +5,7 @@ import {
   splitFoodV2Recommendations,
   type FoodV2RecommendationGoal,
 } from "@/lib/food-v2/recommendationRanking";
+import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 import type { PetActivityLevel, PetSpecies } from "@/types/pet";
@@ -110,6 +111,7 @@ function compactRanking(
     source_priority: product.source_priority,
     data_source_url: product.data_source_url,
     ranking,
+    guard_flags: detectFoodV2RecommendationGuardFlags(ranking),
     nutrition_confidence: getFoodV2NutritionConfidence(product, nutrients),
     nutrition: {
       kcal_per_100g: product.kcal_per_100g,

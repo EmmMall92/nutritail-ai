@@ -84,7 +84,8 @@
     "export:food-v2-best-candidates": "node scripts/data/review/export-food-v2-best-candidates.mjs",
     "backfill:epa-dha": "node scripts/data/normalize/backfill-epa-dha-from-text.mjs",
     "normalize:epa-dha-combined": "node scripts/data/normalize/normalize-epa-dha-combined.mjs",
-    "qa:food-v2-live-routes": "node scripts/qa/check-food-v2-live-routes.mjs"
+    "qa:food-v2-live-routes": "node scripts/qa/check-food-v2-live-routes.mjs",
+    "qa:food-v2-recommendations": "node scripts/qa/check-food-v2-recommendations.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
