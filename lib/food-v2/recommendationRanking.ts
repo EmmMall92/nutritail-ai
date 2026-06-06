@@ -159,6 +159,42 @@ function isLargeBreedDog(pet: FoodV2RankingInput["pet"]) {
   );
 }
 
+function expectedDogSize(pet: FoodV2RankingInput["pet"]) {
+  if (pet.species !== "dog") return null;
+  if (pet.weight <= 5) return "mini";
+  if (pet.weight <= 10) return "small";
+  if (pet.weight <= 25) return "medium";
+  if (pet.weight <= 45) return "large";
+  return "giant";
+}
+
+function dogSizeDistance(expected: string, foodSize: string) {
+  const order = ["mini", "small", "medium", "large", "giant"];
+  const expectedIndex = order.indexOf(expected);
+  const foodIndex = order.indexOf(foodSize);
+
+  if (expectedIndex === -1 || foodIndex === -1) return 0;
+  return Math.abs(expectedIndex - foodIndex);
+}
+
+function inferDogSizeFromFoodText(food: FoodProductV2) {
+  const text = textFor(food);
+
+  if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
+  if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"])) {
+    return "large";
+  }
+  if (hasAny(text, ["medium breed", "medium dog", "medium adult"])) {
+    return "medium";
+  }
+  if (hasAny(text, ["small breed", "small dog", "small adult"])) return "small";
+  if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"])) {
+    return "mini";
+  }
+
+  return null;
+}
+
 function addSignal(
   signals: FoodV2RankingSignal[],
   type: FoodV2RankingSignal["type"],
@@ -269,15 +305,46 @@ function scoreFit(input: FoodV2RankingInput) {
     addSignal(signals, "caution", "life_stage_mismatch", -15, `Not an exact ${stage} life-stage match.`);
   }
 
-  if (pet.species === "dog" && food.dog_size && food.dog_size !== "unknown") {
-    const sizeTerms = DOG_SIZE_TERMS[food.dog_size as keyof typeof DOG_SIZE_TERMS] ?? [];
-    if (
+  if (pet.species === "dog") {
+    const expectedSize = expectedDogSize(pet);
+    const declaredSize =
+      food.dog_size && food.dog_size !== "unknown" && food.dog_size !== "all"
+        ? food.dog_size
+        : inferDogSizeFromFoodText(food);
+    const sizeTerms =
+      DOG_SIZE_TERMS[declaredSize as keyof typeof DOG_SIZE_TERMS] ?? [];
+    const sizeDistance =
+      expectedSize && declaredSize ? dogSizeDistance(expectedSize, declaredSize) : 0;
+    const sizeMatches =
       food.dog_size === "all" ||
-      (isLargeBreedDog(pet) && ["large", "giant"].includes(food.dog_size)) ||
-      hasAny(normalizeText(pet.breed), [...sizeTerms, food.dog_size])
-    ) {
-      score += 7;
-      addSignal(signals, "boost", "size_match", 7, "Matches size or breed-size positioning.");
+      !declaredSize ||
+      (isLargeBreedDog(pet) && ["large", "giant"].includes(declaredSize)) ||
+      hasAny(normalizeText(pet.breed), [...sizeTerms, declaredSize]) ||
+      declaredSize === expectedSize;
+
+    if (sizeMatches) {
+      if (declaredSize || food.dog_size === "all") {
+        score += 7;
+        addSignal(signals, "boost", "size_match", 7, "Matches size or breed-size positioning.");
+      }
+    } else if (expectedSize && sizeDistance >= 2) {
+      score -= 35;
+      addSignal(
+        signals,
+        "exclude",
+        "dog_size_mismatch",
+        -100,
+        `Excluded because ${declaredSize} food does not fit a ${expectedSize} dog.`
+      );
+    } else if (expectedSize && sizeDistance === 1) {
+      score -= 12;
+      addSignal(
+        signals,
+        "caution",
+        "adjacent_dog_size_mismatch",
+        -12,
+        `Breed-size positioning is ${declaredSize}, while this dog looks ${expectedSize}.`
+      );
     }
   }
 
