@@ -7,6 +7,7 @@ const liveChecks = [
       "Open /admin and confirm the admin nav loads.",
       "Open /admin/foods/v2-preview and confirm the page does not redirect after login.",
       "Open /admin/foods/v2-review and confirm summary cards render.",
+      "Open /admin/foods/v2-recommendation-lab and confirm the ranking form renders.",
     ],
   },
   {
@@ -42,6 +43,7 @@ const liveUrls = [
   "/admin/foods/v2-guide",
   "/admin/foods/v2-preview",
   "/admin/foods/v2-review",
+  "/admin/foods/v2-recommendation-lab",
   "/api/admin/foods/v2-template",
   "/api/admin/foods/v2-export?type=products",
   "/api/admin/foods/v2-export?type=audit",
