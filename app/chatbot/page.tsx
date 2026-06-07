@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
+import {
+  formatFoodV2ChatbotRecommendationSummary,
+  goalFromPetContext,
+  type FoodV2ChatbotRecommendationResponse,
+} from "@/lib/food-v2/chatbotRecommendationSummary";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -211,6 +216,48 @@ ${
 Σημείωση: Η πρόταση είναι βοηθητική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
 }
 
+async function getFoodV2RecommendationMessage(pet: PetIntake) {
+  if (!pet.species) return "";
+
+  const goal = goalFromPetContext({
+    species: pet.species,
+    age: pet.age,
+    neutered: pet.neutered,
+    healthIssues: pet.healthIssues,
+    allergies: pet.allergies,
+  });
+
+  const response = await fetch("/api/account/foods/v2-recommendations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      pet: {
+        species: pet.species,
+        breed: "unknown",
+        age: pet.age,
+        weight: pet.weight,
+        activityLevel: pet.activityLevel,
+        neutered: pet.neutered,
+        allergies: pet.allergies,
+        healthIssues: pet.healthIssues,
+      },
+      goal,
+      format: "dry",
+      limit_per_bucket: 3,
+    }),
+  });
+
+  const result = (await response.json()) as FoodV2ChatbotRecommendationResponse & {
+    error?: string;
+  };
+
+  if (!response.ok) {
+    throw new Error(result.error || "Could not load Food V2 recommendations.");
+  }
+
+  return formatFoodV2ChatbotRecommendationSummary(result);
+}
+
 export default function ChatbotPage() {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -295,6 +342,16 @@ export default function ChatbotPage() {
       setLatestAnalysis(analysis);
 
       addMessages(createMessage("bot", formatAnalysisResult(analysis)));
+
+      try {
+        const foodV2Message = await getFoodV2RecommendationMessage(nextPet);
+
+        if (foodV2Message) {
+          addMessages(createMessage("bot", foodV2Message));
+        }
+      } catch (error) {
+        console.error(error);
+      }
 
       setShowSave(true);
       setStep("done");
