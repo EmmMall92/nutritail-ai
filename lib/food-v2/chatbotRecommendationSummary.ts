@@ -33,6 +33,20 @@ export type FoodV2ChatbotPetContext = {
   weightGoal?: "maintain" | "loss" | "gain";
 };
 
+const GOAL_LABELS: Record<FoodV2RecommendationGoal, string> = {
+  general: "general fit",
+  premium: "premium fit",
+  value: "value fit",
+  weight_control: "weight control",
+  sensitive_digestion: "sensitive digestion",
+  allergy: "allergy or ingredient avoidance",
+  urinary: "urinary support",
+  renal: "renal support",
+  growth: "growth",
+  sterilised: "sterilised pet",
+  senior: "senior pet",
+};
+
 function normalizeText(value: string) {
   return value
     .toLowerCase()
@@ -86,14 +100,23 @@ export function goalFromPetContext(
 }
 
 function foodName(food: FoodV2ChatbotRecommendationItem) {
-  return [food.brand, food.display_name].filter(Boolean).join(" - ");
+  const brand = String(food.brand ?? "").trim();
+  const displayName = String(food.display_name ?? "").trim();
+
+  if (brand && displayName.toLowerCase().startsWith(brand.toLowerCase())) {
+    return displayName;
+  }
+
+  return [brand, displayName].filter(Boolean).join(" - ");
 }
 
 function formatFood(food: FoodV2ChatbotRecommendationItem, index: number) {
   const score = food.ranking?.total_score;
   const confidence = food.ranking?.confidence ?? "medium";
   const nutritionConfidence = food.nutrition_confidence?.label;
-  const reasons = (food.ranking?.reasons ?? []).slice(0, 2);
+  const reasons = (food.ranking?.reasons ?? [])
+    .filter((reason) => !reason.toLowerCase().includes("matches the pet species"))
+    .slice(0, 2);
 
   return `${index}. ${foodName(food) || "Unnamed food"}${
     typeof score === "number" ? ` (${score}/100, ${confidence} confidence)` : ""
@@ -102,21 +125,59 @@ function formatFood(food: FoodV2ChatbotRecommendationItem, index: number) {
   }`;
 }
 
+function formatTopPick(food: FoodV2ChatbotRecommendationItem | undefined) {
+  if (!food) return "";
+
+  const score = food.ranking?.total_score;
+  const firstReason = food.ranking?.reasons?.find(
+    (reason) => !reason.toLowerCase().includes("matches the pet species")
+  );
+
+  return [
+    `Top pick: ${foodName(food) || "Unnamed food"}${
+      typeof score === "number" ? ` (${score}/100)` : ""
+    }.`,
+    firstReason ? `Why: ${firstReason}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function uniqueShortCautions(values: string[]) {
+  const seen = new Set<string>();
+  const ignored = new Set([
+    "Value ranking is a proxy until price data is available.",
+    "Medical-condition matches are ranking support, not diagnosis or treatment.",
+  ]);
+
+  return values
+    .map((value) => value.trim())
+    .filter((value) => value && !ignored.has(value))
+    .filter((value) => {
+      const key = normalizeText(value);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 3);
+}
+
 export function formatFoodV2ChatbotRecommendationSummary(
   response: FoodV2ChatbotRecommendationResponse
 ) {
   const premium = response.premium ?? [];
   const value = response.value ?? [];
+  const goal = response.goal ?? "general";
 
   if (premium.length === 0 && value.length === 0) {
     return "";
   }
 
   const blocks = [
-    "Food V2 recommendations from the nutrition database:",
+    "Food shortlist from the NutriTail nutrition database:",
     "",
-    `Goal detected: ${response.goal ?? "general"}`,
-    `Candidates checked: ${response.total_candidates ?? 0}`,
+    `Goal: ${GOAL_LABELS[goal] ?? goal}`,
+    formatTopPick(premium[0] ?? value[0]),
   ];
 
   if (premium.length > 0) {
@@ -140,7 +201,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     ...value.flatMap((food) => food.ranking?.cautions ?? []),
     ...(response.notes ?? []),
   ];
-  const uniqueCautions = [...new Set(cautions)].slice(0, 4);
+  const uniqueCautions = uniqueShortCautions(cautions);
 
   if (uniqueCautions.length > 0) {
     blocks.push(
@@ -152,7 +213,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
 
   blocks.push(
     "",
-    "This is a ranked shortlist, not a diagnosis or treatment plan. For urinary, kidney, diabetes, pancreatitis, severe allergy, vomiting, diarrhea, blood, or not eating, use veterinarian guidance first."
+    "Use this as a shopping shortlist, not a diagnosis or treatment plan. For urinary, kidney, diabetes, pancreatitis, severe allergy, vomiting, diarrhea, blood, or not eating, speak with a veterinarian first."
   );
 
   return blocks.join("\n");
