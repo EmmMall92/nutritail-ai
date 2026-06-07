@@ -4,6 +4,8 @@ export type FoodV2ChatbotRecommendationItem = {
   brand?: string | null;
   display_name?: string | null;
   data_quality_status?: string | null;
+  source_priority?: string | null;
+  missing_nutrition_fields?: string[];
   ranking?: {
     total_score?: number | null;
     confidence?: "high" | "medium" | "low";
@@ -13,7 +15,11 @@ export type FoodV2ChatbotRecommendationItem = {
   nutrition_confidence?: {
     label?: string;
     score?: number;
+    missing_core_fields?: string[];
+    missing_mineral_fields?: string[];
+    missing_optional_fields?: string[];
   } | null;
+  nutrition?: Record<string, number | null | undefined> | null;
 };
 
 export type FoodV2ChatbotRecommendationResponse = {
@@ -110,19 +116,69 @@ function foodName(food: FoodV2ChatbotRecommendationItem) {
   return [brand, displayName].filter(Boolean).join(" - ");
 }
 
+function sourceLabel(food: FoodV2ChatbotRecommendationItem) {
+  const parts = ["source: Food V2"];
+  const quality = String(food.data_quality_status ?? "").trim();
+  const source = String(food.source_priority ?? "").trim();
+
+  if (quality) parts.push(`quality: ${quality}`);
+  if (source) parts.push(`source tier: ${source}`);
+
+  return parts.join("; ");
+}
+
+function missingNutritionFields(food: FoodV2ChatbotRecommendationItem) {
+  const explicit = food.missing_nutrition_fields ?? [];
+  const confidenceMissing = [
+    ...(food.nutrition_confidence?.missing_core_fields ?? []),
+    ...(food.nutrition_confidence?.missing_mineral_fields ?? []),
+  ];
+
+  if (explicit.length > 0 || confidenceMissing.length > 0) {
+    return [...new Set([...explicit, ...confidenceMissing])].slice(0, 6);
+  }
+
+  const nutrition = food.nutrition;
+  if (!nutrition) return [];
+
+  return [
+    "kcal_per_100g",
+    "protein_percent",
+    "fat_percent",
+    "fiber_percent",
+    "calcium_percent",
+    "phosphorus_percent",
+    "sodium_percent",
+    "magnesium_percent",
+  ].filter((field) => nutrition[field] === null || nutrition[field] === undefined);
+}
+
+function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem) {
+  if (food.data_quality_status !== "needs_review") return "";
+
+  return "   Note: this row still needs review, so treat it as a candidate rather than a final answer.";
+}
+
 function formatFood(food: FoodV2ChatbotRecommendationItem, index: number) {
   const score = food.ranking?.total_score;
   const confidence = food.ranking?.confidence ?? "medium";
   const nutritionConfidence = food.nutrition_confidence?.label;
+  const missing = missingNutritionFields(food);
   const reasons = (food.ranking?.reasons ?? [])
     .filter((reason) => !reason.toLowerCase().includes("matches the pet species"))
     .slice(0, 2);
 
-  return `${index}. ${foodName(food) || "Unnamed food"}${
-    typeof score === "number" ? ` (${score}/100, ${confidence} confidence)` : ""
-  }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}${
-    reasons.length > 0 ? `\n   Why: ${reasons.join("; ")}` : ""
-  }`;
+  return [
+    `${index}. ${foodName(food) || "Unnamed food"}${
+      typeof score === "number" ? ` (${score}/100, ${confidence} confidence)` : ""
+    }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
+    `   ${sourceLabel(food)}`,
+    missing.length > 0 ? `   Missing nutrition: ${missing.join(", ")}` : "",
+    reasons.length > 0 ? `   Why: ${reasons.join("; ")}` : "",
+    cautiousDataQualityNote(food),
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function formatTopPick(food: FoodV2ChatbotRecommendationItem | undefined) {
@@ -137,6 +193,8 @@ function formatTopPick(food: FoodV2ChatbotRecommendationItem | undefined) {
     `Top pick: ${foodName(food) || "Unnamed food"}${
       typeof score === "number" ? ` (${score}/100)` : ""
     }.`,
+    sourceLabel(food),
+    cautiousDataQualityNote(food).trim(),
     firstReason ? `Why: ${firstReason}` : "",
   ]
     .filter(Boolean)
