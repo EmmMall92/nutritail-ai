@@ -126,6 +126,39 @@ const ALL_BREED_TERMS = [
   "ολων των μεγεθων",
 ];
 
+const THERAPEUTIC_TERMS = [
+  "vet",
+  "veterinary",
+  "vetsolution",
+  "renal",
+  "urinary",
+  "struvite",
+  "oxalate",
+  "diabetic",
+  "diabetes",
+  "hepatic",
+  "cardiac",
+  "obesity",
+  "gastrointestinal",
+  "hypoallergenic",
+  "anallergenic",
+  "dermatosis",
+];
+
+const GOAL_THERAPEUTIC_TERMS: Record<FoodV2RecommendationGoal, string[]> = {
+  general: [],
+  premium: [],
+  value: [],
+  sterilised: [],
+  senior: [],
+  growth: [],
+  weight_control: ["obesity", "satiety", "weight"],
+  sensitive_digestion: ["gastrointestinal", "gastro", "digestive", "sensitivity"],
+  allergy: ["hypoallergenic", "anallergenic", "sensitivity", "dermatosis", "skin"],
+  urinary: ["urinary", "struvite", "oxalate"],
+  renal: ["renal", "kidney", "oxalate"],
+};
+
 const ALLERGEN_TERMS: Record<string, string[]> = {
   chicken: ["chicken", "poultry", "κοτοπουλο", "kotopoulo"],
   beef: ["beef", "μοσχαρι", "moschari", "moshari"],
@@ -413,6 +446,23 @@ function hasWord(text: string, word: string) {
   return text.split(" ").includes(normalizeText(word));
 }
 
+function hasTherapeuticPositioning(foodText: string) {
+  return hasAny(foodText, THERAPEUTIC_TERMS);
+}
+
+function therapeuticPositioningFitsGoal(
+  foodText: string,
+  goal: FoodV2RecommendationGoal,
+  healthIssues: string[]
+) {
+  const allowedTerms = [
+    ...(GOAL_THERAPEUTIC_TERMS[goal] ?? []),
+    ...healthIssues,
+  ];
+
+  return allowedTerms.length > 0 && hasAny(foodText, allowedTerms);
+}
+
 function lifeStageMatches(food: FoodProductV2, stage: string) {
   if (food.life_stage === "all_life_stages") return true;
   if (stage === "puppy") return food.life_stage === "puppy";
@@ -550,6 +600,19 @@ function scoreFit(input: FoodV2RankingInput) {
         `Breed-size positioning is ${declaredSize}, while this dog looks ${expectedSize}.`
       );
     }
+  }
+
+  if (
+    hasTherapeuticPositioning(haystack) &&
+    !therapeuticPositioningFitsGoal(haystack, goal, pet.healthIssues ?? [])
+  ) {
+    addSignal(
+      signals,
+      "exclude",
+      "therapeutic_food_without_matching_condition",
+      -100,
+      "Excluded because veterinary/therapeutic positioning does not match the pet's stated goal or health context."
+    );
   }
 
   if (pet.neutered || goal === "sterilised") {
