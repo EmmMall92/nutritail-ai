@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { findFoodMatches, type FoodMatchRecord } from "@/lib/foods/foodMatcher";
+import {
+  searchFoodProductsV2,
+  type FoodV2SearchResult,
+} from "@/lib/food-v2/retrieval";
 
 const MAX_COMPARE_ITEMS = 5;
 
@@ -75,10 +79,6 @@ function getDataConfidence(food: FoodMatchRecord) {
   return "low";
 }
 
-function getFoodLabel(food: FoodMatchRecord) {
-  return [food.brand, food.name].map((value) => String(value ?? "").trim()).filter(Boolean).join(" - ");
-}
-
 function getComparisonCautions(nutrition: ReturnType<typeof getNutrition>) {
   const cautions: string[] = [];
 
@@ -97,10 +97,33 @@ function getComparisonCautions(nutrition: ReturnType<typeof getNutrition>) {
   return cautions;
 }
 
+function getFoodV2Nutrition(food: FoodV2SearchResult) {
+  return {
+    kcal_per_100g: food.nutrition.kcal_per_100g ?? null,
+    protein_percent: food.nutrition.protein_percent ?? null,
+    fat_percent: food.nutrition.fat_percent ?? null,
+    fiber_percent: food.nutrition.fiber_percent ?? null,
+    calcium_percent: food.nutrition.calcium_percent ?? null,
+    phosphorus_percent: food.nutrition.phosphorus_percent ?? null,
+    sodium_percent: food.nutrition.sodium_percent ?? null,
+    magnesium_percent: food.nutrition.magnesium_percent ?? null,
+  };
+}
+
+function getFoodV2Confidence(food: FoodV2SearchResult) {
+  if (food.data_quality_status === "verified" && food.match_confidence === "high") {
+    return "high";
+  }
+  if (food.match_confidence === "low" || food.data_quality_status === "needs_review") {
+    return "low";
+  }
+  return "moderate";
+}
+
 function buildComparisonSummary(
   matches: Array<{
     query: string;
-    match: FoodMatchRecord;
+    label: string;
     nutrition: ReturnType<typeof getNutrition>;
   }>
 ) {
@@ -118,19 +141,19 @@ function buildComparisonSummary(
         (a, b) =>
           (a.nutrition.kcal_per_100g ?? Infinity) -
           (b.nutrition.kcal_per_100g ?? Infinity)
-      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
+      ).map((item) => item.label || item.query)[0] ?? null,
     highest_protein:
       withProtein.sort(
         (a, b) =>
           (b.nutrition.protein_percent ?? -Infinity) -
           (a.nutrition.protein_percent ?? -Infinity)
-      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
+      ).map((item) => item.label || item.query)[0] ?? null,
     highest_fiber:
       withFiber.sort(
         (a, b) =>
           (b.nutrition.fiber_percent ?? -Infinity) -
           (a.nutrition.fiber_percent ?? -Infinity)
-      ).map((item) => getFoodLabel(item.match) || item.query)[0] ?? null,
+      ).map((item) => item.label || item.query)[0] ?? null,
     note:
       "Use this as a structured comparison aid; medical-condition recommendations still need pet context and safety checks.",
   };
@@ -177,15 +200,76 @@ export async function POST(request: Request) {
     }
 
     const foods = data ?? [];
-    const comparisons = queries.map((query: string) => {
+    const foodV2Matches = await Promise.all(
+      queries.map((query) =>
+        searchFoodProductsV2({
+          query,
+          species: species === "dog" || species === "cat" ? species : null,
+          format: "dry",
+          limit: 3,
+        })
+      )
+    );
+
+    const comparisons = queries.map((query: string, index) => {
       const scored = findFoodMatches(foods, query);
       const best = scored[0];
+      const bestV2 = foodV2Matches[index]?.[0] ?? null;
+      const shouldUseV2 =
+        bestV2 &&
+        (bestV2.match_score >= (best?.score ?? 0) ||
+          bestV2.match_confidence === "high");
+
+      if (shouldUseV2 && bestV2) {
+        const nutrition = getFoodV2Nutrition(bestV2);
+
+        return {
+          query,
+          source: "food_v2",
+          match: {
+            id: bestV2.id,
+            brand: bestV2.brand,
+            name: bestV2.display_name,
+            species: bestV2.species,
+            life_stage: bestV2.life_stage,
+            size: bestV2.dog_size,
+            tags: [],
+            ingredients: bestV2.ingredients,
+            data_quality_status: bestV2.data_quality_status,
+            data_source_url: bestV2.data_source_url,
+            source_priority: bestV2.source_priority,
+            formula_key: bestV2.formula_key,
+          },
+          match_score: bestV2.match_score,
+          match_confidence: bestV2.match_confidence,
+          data_confidence: getFoodV2Confidence(bestV2),
+          nutrition,
+          missing_nutrition_fields: [
+            ...new Set([
+              ...bestV2.missing_nutrition_fields,
+              ...getMissingNutritionFields(nutrition),
+            ]),
+          ],
+          cautions: getComparisonCautions(nutrition),
+          candidates: bestV2
+            ? foodV2Matches[index].slice(0, 3).map((item) => ({
+                id: item.id,
+                brand: item.brand,
+                name: item.display_name,
+                score: item.match_score,
+                source: "food_v2",
+              }))
+            : [],
+        };
+      }
 
       if (!best) {
         return {
           query,
+          source: bestV2 ? "food_v2" : "legacy_foods",
           match: null,
           match_score: 0,
+          match_confidence: "none",
           candidates: [],
         };
       }
@@ -194,6 +278,7 @@ export async function POST(request: Request) {
 
       return {
         query,
+        source: "legacy_foods",
         match: {
           id: best.food.id ?? null,
           brand: best.food.brand ?? null,
@@ -207,16 +292,28 @@ export async function POST(request: Request) {
           data_source_url: best.food.data_source_url ?? null,
         },
         match_score: best.score,
+        match_confidence:
+          best.score >= 90 ? "high" : best.score >= 45 ? "moderate" : "low",
         data_confidence: getDataConfidence(best.food),
         nutrition,
         missing_nutrition_fields: getMissingNutritionFields(nutrition),
         cautions: getComparisonCautions(nutrition),
-        candidates: scored.slice(0, 3).map((item) => ({
-          id: item.food.id ?? null,
-          brand: item.food.brand ?? null,
-          name: item.food.name ?? null,
-          score: item.score,
-        })),
+        candidates: [
+          ...scored.slice(0, 3).map((item) => ({
+            id: item.food.id ?? null,
+            brand: item.food.brand ?? null,
+            name: item.food.name ?? null,
+            score: item.score,
+            source: "legacy_foods",
+          })),
+          ...foodV2Matches[index].slice(0, 3).map((item) => ({
+            id: item.id,
+            brand: item.brand,
+            name: item.display_name,
+            score: item.match_score,
+            source: "food_v2",
+          })),
+        ].slice(0, 5),
       };
     });
 
@@ -224,7 +321,11 @@ export async function POST(request: Request) {
       .filter((item) => item.match && "nutrition" in item)
       .map((item) => ({
         query: item.query,
-        match: item.match as FoodMatchRecord,
+        label:
+          [item.match?.brand, item.match?.name]
+            .map((value) => String(value ?? "").trim())
+            .filter(Boolean)
+            .join(" - ") || item.query,
         nutrition: item.nutrition as ReturnType<typeof getNutrition>,
       }));
 
