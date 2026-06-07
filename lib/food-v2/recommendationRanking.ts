@@ -353,7 +353,6 @@ function isHardDogSizeMismatch(
 function inferDogSizeFromFoodText(food: FoodProductV2) {
   const text = textFor(food);
 
-  if (hasAny(text, ALL_BREED_TERMS)) return "all";
   if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
   if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"])) {
     return "large";
@@ -367,6 +366,7 @@ function inferDogSizeFromFoodText(food: FoodProductV2) {
   }
   const breedSize = breedSizeFromText(text);
   if (breedSize) return breedSize;
+  if (hasAny(text, ALL_BREED_TERMS)) return "all";
 
   return null;
 }
