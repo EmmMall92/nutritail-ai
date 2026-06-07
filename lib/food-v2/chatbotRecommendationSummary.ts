@@ -27,6 +27,7 @@ export type FoodV2ChatbotRecommendationResponse = {
   total_candidates?: number;
   premium?: FoodV2ChatbotRecommendationItem[];
   value?: FoodV2ChatbotRecommendationItem[];
+  hold?: FoodV2ChatbotRecommendationItem[];
   notes?: string[];
 };
 
@@ -225,10 +226,31 @@ export function formatFoodV2ChatbotRecommendationSummary(
 ) {
   const premium = response.premium ?? [];
   const value = response.value ?? [];
+  const hold = response.hold ?? [];
   const goal = response.goal ?? "general";
 
   if (premium.length === 0 && value.length === 0) {
-    return "";
+    const holdCautions = uniqueShortCautions(
+      hold.flatMap((food) => food.ranking?.cautions ?? [])
+    );
+
+    return [
+      "Food shortlist from the NutriTail nutrition database:",
+      "",
+      `Goal: ${GOAL_LABELS[goal] ?? goal}`,
+      "Δεν βρήκα αρκετά ασφαλή ή κατάλληλη Food V2 πρόταση για αυτό το κατοικίδιο με τα τωρινά δεδομένα.",
+      "Δεν θα προτείνω τροφές που δεν ταιριάζουν στο μέγεθος ή στο life stage του ζώου.",
+      hold.length > 0
+        ? `Έλεγξα ${hold.length} candidate${hold.length === 1 ? "" : "s"} και τα κράτησα εκτός shortlist.`
+        : "",
+      holdCautions.length > 0
+        ? ["Βασικοί λόγοι απόρριψης:", ...holdCautions.map((caution) => `- ${caution}`)].join("\n")
+        : "",
+      "",
+      "Καλύτερο επόμενο βήμα: πρόσθεσε ή έλεγξε adult/large/all-breed τροφές με αξιόπιστα θρεπτικά δεδομένα πριν βασιστούμε σε συγκεκριμένη πρόταση.",
+    ]
+      .filter(Boolean)
+      .join("\n");
   }
 
   const blocks = [
