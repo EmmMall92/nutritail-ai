@@ -319,6 +319,37 @@ function dogSizeDistance(expected: string, foodSize: string) {
   return Math.abs(expectedIndex - foodIndex);
 }
 
+function isHardDogSizeMismatch(
+  pet: FoodV2RankingInput["pet"],
+  expectedSize: string | null,
+  declaredSize: string | null
+) {
+  if (!expectedSize || !declaredSize || declaredSize === "all") return false;
+
+  const distance = dogSizeDistance(expectedSize, declaredSize);
+  if (distance >= 2) return true;
+
+  if (
+    pet.species === "dog" &&
+    hasNumber(pet.weight) &&
+    pet.weight >= 35 &&
+    expectedSize === "large" &&
+    declaredSize === "medium"
+  ) {
+    return true;
+  }
+
+  if (
+    pet.species === "dog" &&
+    expectedSize === "giant" &&
+    ["small", "medium"].includes(declaredSize)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 function inferDogSizeFromFoodText(food: FoodProductV2) {
   const text = textFor(food);
 
@@ -476,7 +507,6 @@ function scoreFit(input: FoodV2RankingInput) {
     const sizeDistance =
       expectedSize && declaredSize ? dogSizeDistance(expectedSize, declaredSize) : 0;
     const sizeMatches =
-      food.dog_size === "all" ||
       declaredSize === "all" ||
       !declaredSize ||
       (isLargeBreedDog(pet) && ["large", "giant"].includes(declaredSize)) ||
@@ -488,7 +518,7 @@ function scoreFit(input: FoodV2RankingInput) {
         score += 7;
         addSignal(signals, "boost", "size_match", 7, "Matches size or breed-size positioning.");
       }
-    } else if (expectedSize && sizeDistance >= 2) {
+    } else if (isHardDogSizeMismatch(pet, expectedSize, declaredSize)) {
       score -= 35;
       addSignal(
         signals,
