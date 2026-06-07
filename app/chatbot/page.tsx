@@ -186,8 +186,7 @@ function createPetFromIntake(intake: PetIntake): Pet {
 }
 
 function formatAnalysisResult(analysis: PetAnalysis) {
-  const { nutrition, advice, recommendedFoods } = analysis;
-  const topFoods = recommendedFoods.slice(0, 3);
+  const { nutrition, advice } = analysis;
 
   return `Έτοιμη η πρώτη διατροφική ανάλυση:
 
@@ -201,17 +200,8 @@ ${
     : "• Δεν υπάρχουν ειδικές παρατηρήσεις."
 }
 
-Προτεινόμενες τροφές:
-${
-  topFoods.length > 0
-    ? topFoods
-        .map(
-          (item, index) =>
-            `${index + 1}. ${item.food.brand} — ${item.food.name}`
-        )
-        .join("\n")
-    : "Δεν βρέθηκαν κατάλληλες τροφές."
-}
+Food shortlist:
+Θα εμφανιστεί αμέσως μετά από τη Food V2 βάση, με έλεγχο μεγέθους, ποιότητας δεδομένων και ελλείψεων.
 
 Σημείωση: Η πρόταση είναι βοηθητική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
 }
