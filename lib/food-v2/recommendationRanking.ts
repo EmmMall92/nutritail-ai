@@ -354,14 +354,14 @@ function inferDogSizeFromFoodText(food: FoodProductV2) {
   const text = textFor(food);
 
   if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
-  if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"])) {
+  if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"]) || hasWord(text, "large")) {
     return "large";
   }
-  if (hasAny(text, ["medium breed", "medium dog", "medium adult"])) {
+  if (hasAny(text, ["medium breed", "medium dog", "medium adult"]) || hasWord(text, "medium")) {
     return "medium";
   }
-  if (hasAny(text, ["small breed", "small dog", "small adult"])) return "small";
-  if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"])) {
+  if (hasAny(text, ["small breed", "small dog", "small adult"]) || hasWord(text, "small")) return "small";
+  if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"]) || hasWord(text, "mini")) {
     return "mini";
   }
   const breedSize = breedSizeFromText(text);
@@ -407,6 +407,10 @@ function containsIngredientTerm(food: FoodProductV2, values: string[]) {
 
 function hasAny(text: string, terms: readonly string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
+}
+
+function hasWord(text: string, word: string) {
+  return text.split(" ").includes(normalizeText(word));
 }
 
 function lifeStageMatches(food: FoodProductV2, stage: string) {
@@ -494,6 +498,15 @@ function scoreFit(input: FoodV2RankingInput) {
     addSignal(signals, "boost", "life_stage_match", 18, `Matches ${stage} life stage.`);
   } else {
     addSignal(signals, "caution", "life_stage_mismatch", -15, `Not an exact ${stage} life-stage match.`);
+    if (["adult", "senior"].includes(stage) && ["puppy", "kitten"].includes(food.life_stage)) {
+      addSignal(
+        signals,
+        "exclude",
+        "growth_food_for_adult_pet",
+        -100,
+        `Excluded because ${food.life_stage} food does not fit a ${stage} pet.`
+      );
+    }
   }
 
   if (pet.species === "dog") {
