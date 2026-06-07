@@ -73,6 +73,9 @@ export function goalFromPetContext(
     return "urinary";
   }
   if (hasAny(pet.healthIssues, ["renal", "kidney", "ckd"])) return "renal";
+  if (pet.weightGoal === "loss" || hasAny(pet.healthIssues, ["weight", "obesity"])) {
+    return "weight_control";
+  }
   if (
     hasAny(pet.healthIssues, [
       "digest",
@@ -84,9 +87,6 @@ export function goalFromPetContext(
     ])
   ) {
     return "sensitive_digestion";
-  }
-  if (pet.weightGoal === "loss" || hasAny(pet.healthIssues, ["weight", "obesity"])) {
-    return "weight_control";
   }
   if (
     (pet.species === "dog" && typeof pet.age === "number" && pet.age < 1) ||
@@ -242,7 +242,10 @@ export function formatFoodV2ChatbotRecommendationSummary(
     blocks.push(
       "",
       "Best nutrition fits:",
-      premium.slice(0, 3).map(formatFood).join("\n")
+      premium
+        .slice(0, 3)
+        .map((food, index) => formatFood(food, index + 1))
+        .join("\n")
     );
   }
 
@@ -250,7 +253,10 @@ export function formatFoodV2ChatbotRecommendationSummary(
     blocks.push(
       "",
       "Value-style options:",
-      value.slice(0, 3).map(formatFood).join("\n")
+      value
+        .slice(0, 3)
+        .map((food, index) => formatFood(food, index + 1))
+        .join("\n")
     );
   }
 
