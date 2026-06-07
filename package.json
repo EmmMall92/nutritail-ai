@@ -86,7 +86,8 @@
     "normalize:epa-dha-combined": "node scripts/data/normalize/normalize-epa-dha-combined.mjs",
     "qa:food-v2-live-routes": "node scripts/qa/check-food-v2-live-routes.mjs",
     "qa:food-v2-recommendations": "node scripts/qa/check-food-v2-recommendations.mjs",
-    "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs"
+    "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
+    "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
