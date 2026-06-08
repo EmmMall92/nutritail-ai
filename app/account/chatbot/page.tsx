@@ -1827,6 +1827,28 @@ Next actions:
           </div>
         )}
 
+        {!showSave && messages.length <= 1 && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <p className="font-semibold text-amber-950">
+              How Nutritail keeps recommendations careful
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-amber-900 sm:grid-cols-3">
+              <p className="rounded-xl bg-white p-3">
+                Food facts come from the Nutritail database when a product is
+                matched.
+              </p>
+              <p className="rounded-xl bg-white p-3">
+                Missing nutrition data lowers confidence and should be treated
+                cautiously.
+              </p>
+              <p className="rounded-xl bg-white p-3">
+                Urinary blockage, renal disease, pancreatitis, blood, not
+                eating, vomiting, or diarrhea need veterinary care.
+              </p>
+            </div>
+          </div>
+        )}
+
         {messages.map((message) => (
           <div
             key={message.id}
