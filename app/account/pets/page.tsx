@@ -63,6 +63,18 @@ function getReadinessClass(readiness: string) {
   return "border-blue-200 bg-blue-50 text-blue-800";
 }
 
+function getReadinessHelper(readiness: string) {
+  if (readiness === "Report ready") {
+    return "This pet has food match and daily grams saved.";
+  }
+
+  if (readiness === "Needs analysis") {
+    return "Run the chatbot once to create calories, shortlist, and report.";
+  }
+
+  return "A report exists, but formula-specific details may be incomplete.";
+}
+
 export default function AccountPetsPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -119,16 +131,24 @@ export default function AccountPetsPage() {
         <div>
           <h1 className="text-3xl font-bold text-black">My Pets</h1>
           <p className="mt-2 text-gray-600">
-            Your saved pets and their nutrition analysis history.
+            Your saved pets, nutrition reports, timelines, and refresh actions.
           </p>
         </div>
 
-        <Link
-          href="/account/chatbot"
-          className="rounded-xl bg-black px-4 py-2 text-center text-sm text-white"
-        >
-          New Analysis
-        </Link>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Link
+            href="/account"
+            className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100"
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/account/chatbot"
+            className="rounded-xl bg-black px-4 py-2 text-center text-sm text-white"
+          >
+            New Analysis
+          </Link>
+        </div>
       </div>
 
       {error && (
@@ -235,6 +255,9 @@ export default function AccountPetsPage() {
                         {pet.species} - age {pet.age} - weight {pet.weight} kg -{" "}
                         {pet.activity_level}
                       </p>
+                      <p className="mt-2 text-sm text-gray-500">
+                        {getReadinessHelper(readiness)}
+                      </p>
 
                       {latest ? (
                         <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-700">
@@ -279,6 +302,12 @@ export default function AccountPetsPage() {
                       </Link>
                       {latest ? (
                         <>
+                          <Link
+                            href="/account/chatbot"
+                            className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
+                          >
+                            Update analysis
+                          </Link>
                           <Link
                             href={`/print/pet-report/${pet.id}`}
                             className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
