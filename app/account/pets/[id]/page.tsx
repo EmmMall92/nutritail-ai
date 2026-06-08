@@ -83,6 +83,28 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
   return steps;
 }
 
+function getCareNotes(pet: AccountPet) {
+  const notes = [];
+
+  if (pet.allergies?.length) {
+    notes.push(`Avoid known allergens: ${pet.allergies.join(", ")}.`);
+  }
+
+  if (pet.health_issues?.length) {
+    notes.push(`Health notes to consider: ${pet.health_issues.join(", ")}.`);
+  }
+
+  if (pet.neutered) {
+    notes.push("Neutered pets often need careful calorie control.");
+  }
+
+  if (notes.length === 0) {
+    notes.push("No allergies or health notes saved yet.");
+  }
+
+  return notes;
+}
+
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -193,7 +215,7 @@ export default function AccountPetDetailPage() {
               href="/account/chatbot"
               className="rounded-xl bg-black px-4 py-2 text-sm text-white"
             >
-              New Analysis
+              Update Analysis
             </Link>
 
             {latest && (
@@ -213,6 +235,31 @@ export default function AccountPetDetailPage() {
                 </Link>
               </>
             )}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                Care notes
+              </p>
+              <h2 className="mt-2 text-xl font-bold text-amber-950">
+                Food choices should account for this profile
+              </h2>
+              <ul className="mt-3 space-y-2 text-sm text-amber-900">
+                {getCareNotes(pet).map((note) => (
+                  <li key={note}>- {note}</li>
+                ))}
+              </ul>
+            </div>
+
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl bg-amber-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-amber-800"
+            >
+              Recheck food fit
+            </Link>
           </div>
         </div>
 
@@ -342,6 +389,12 @@ export default function AccountPetDetailPage() {
             </div>
 
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <Link
+                href="/account/chatbot"
+                className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+              >
+                Update analysis
+              </Link>
               <Link
                 href={`/print/pet-report/${pet.id}`}
                 className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
