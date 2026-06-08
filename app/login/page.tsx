@@ -127,6 +127,15 @@ export default function LoginPage() {
       title="Sign in"
       description="Continue to your saved pets, nutrition reports, and food recommendations."
     >
+      <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
+        <p className="font-semibold text-green-950">After login you can:</p>
+        <ul className="mt-2 space-y-1">
+          <li>- Continue a pet nutrition analysis.</li>
+          <li>- Open saved reports and feeding notes.</li>
+          <li>- Refresh recommendations when weight, food, or symptoms change.</li>
+        </ul>
+      </div>
+
       <form onSubmit={handleLogin} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
@@ -164,6 +173,10 @@ export default function LoginPage() {
         {error && (
           <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
             {error}
+            <p className="mt-1 text-xs text-red-600">
+              Check the email/password, or reset your password if you are not
+              sure.
+            </p>
           </div>
         )}
 

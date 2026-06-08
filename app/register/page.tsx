@@ -119,6 +119,17 @@ export default function RegisterPage() {
       title="Create account"
       description="Save your pets, keep nutrition analyses, and return to reports whenever you need them."
     >
+      <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
+        <p className="font-semibold text-green-950">
+          Your account keeps Nutritail useful over time.
+        </p>
+        <ul className="mt-2 space-y-1">
+          <li>- Save pet profiles and health notes.</li>
+          <li>- Keep printable reports in one place.</li>
+          <li>- Re-run recommendations when food or weight changes.</li>
+        </ul>
+      </div>
+
       <form onSubmit={handleRegister} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Full name</span>
@@ -164,6 +175,10 @@ export default function RegisterPage() {
         {success && (
           <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
             {success}
+            <p className="mt-1 text-xs text-green-700">
+              If confirmation is required, open the email on the same device
+              and then return to Nutritail.
+            </p>
           </div>
         )}
 
