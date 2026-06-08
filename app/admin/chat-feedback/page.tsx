@@ -69,6 +69,32 @@ function getQualityGroupKey(log: AdminActivityLog) {
   return `${type} | ${food} | ${goal}`;
 }
 
+function TriageButton({
+  label,
+  value,
+  helper,
+  onClick,
+}: {
+  label: string;
+  value: number | string;
+  helper: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-black hover:shadow-md"
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-bold text-black">{value}</p>
+      <p className="mt-2 text-sm leading-6 text-gray-600">{helper}</p>
+    </button>
+  );
+}
+
 export default function AdminChatFeedbackPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -186,6 +212,9 @@ export default function AdminChatFeedbackPage() {
       String(getCleanupMetadata(item.latestLog).reason ?? "").trim() ||
       "Repeated failed food match should be reviewed.",
   }));
+  const highPriorityCleanupCount = cleanupBatches.filter(
+    (batch) => batch.priority === "high"
+  ).length;
   const responseQualityPriorities = notHelpful
     .slice()
     .sort((a, b) => {
@@ -244,6 +273,72 @@ export default function AdminChatFeedbackPage() {
           <p className="mt-2 text-3xl font-bold text-black">
             {helpfulnessTotal > 0 ? `${helpfulRate}%` : "-"}
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-black">Triage shortcuts</h3>
+            <p className="mt-1 text-sm text-gray-600">
+              Jump straight to the feedback signals that can improve customer
+              chatbot answers fastest.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              setTypeFilter("all");
+              setRatingFilter("all");
+            }}
+            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-white"
+          >
+            Clear filters
+          </button>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+          <TriageButton
+            label="Failed matches"
+            value={failedMatches.length}
+            helper="Food names the database or matcher could not resolve"
+            onClick={() => {
+              setTypeFilter("failed_food_match");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="Not helpful"
+            value={notHelpful.length}
+            helper="Answers that need wording, safety, or recommendation polish"
+            onClick={() => {
+              setTypeFilter("all");
+              setRatingFilter("not_helpful");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="High cleanup"
+            value={highPriorityCleanupCount}
+            helper="Repeated failed food matches worth fixing first"
+            onClick={() => {
+              setTypeFilter("failed_food_match");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="Helpful rate"
+            value={helpfulnessTotal > 0 ? `${helpfulRate}%` : "-"}
+            helper="Quick signal for chatbot answer quality"
+            onClick={() => {
+              setTypeFilter("all");
+              setRatingFilter("helpful");
+              setSearch("");
+            }}
+          />
         </div>
       </div>
 
