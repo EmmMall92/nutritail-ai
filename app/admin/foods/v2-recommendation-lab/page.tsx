@@ -279,7 +279,92 @@ function nutritionText(item: RecommendationItem) {
     nutrition.phosphorus_percent !== null ? `${nutrition.phosphorus_percent}% P` : null,
   ]
     .filter(Boolean)
-    .join(" · ");
+    .join(" | ");
+}
+
+function itemText(item: RecommendationItem | undefined) {
+  if (!item) return "";
+
+  return [
+    item.brand,
+    item.display_name,
+    item.formula_key,
+    item.life_stage,
+    item.dog_size,
+    item.ranking.reasons.join(" "),
+    item.ranking.cautions.join(" "),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function qaVerdict(input: {
+  result: RecommendationResponse;
+  species: "dog" | "cat";
+  weight: string;
+  goal: RecommendationGoal;
+  allergies: string;
+  excludedIngredients: string;
+}) {
+  const picks = [...input.result.premium, ...input.result.value].slice(0, 3);
+  const topText = itemText(picks[0]);
+  const allPickText = picks.map(itemText).join(" ");
+  const warnings: string[] = [];
+  const passes: string[] = [];
+  const weightKg = Number(input.weight);
+
+  if (picks.length === 0) {
+    warnings.push("No usable premium/value recommendations returned.");
+  } else {
+    passes.push("Recommendation buckets returned usable picks.");
+  }
+
+  if (input.species === "dog" && weightKg >= 25) {
+    if (topText.includes("small") || topText.includes("mini")) {
+      warnings.push("Top pick appears small/mini positioned for a large dog.");
+    } else {
+      passes.push("Top pick does not look small/mini positioned for a large dog.");
+    }
+  }
+
+  const excluded = [...splitText(input.allergies), ...splitText(input.excludedIngredients)]
+    .map((term) => term.toLowerCase())
+    .filter(Boolean);
+
+  if (excluded.some((term) => term.includes("chicken"))) {
+    if (allPickText.includes("chicken") || allPickText.includes("poultry")) {
+      warnings.push("Chicken/poultry appears in top picks despite allergy or exclusion.");
+    } else {
+      passes.push("Top picks avoid obvious chicken/poultry terms.");
+    }
+  }
+
+  if (input.goal === "urinary") {
+    if (!topText.includes("urinary") && !topText.includes("struvite")) {
+      warnings.push("Urinary goal did not return an obviously urinary top pick.");
+    } else {
+      passes.push("Urinary goal returned urinary-positioned top pick.");
+    }
+  }
+
+  if (input.goal === "growth") {
+    if (
+      !topText.includes("puppy") &&
+      !topText.includes("junior") &&
+      !topText.includes("kitten")
+    ) {
+      warnings.push("Growth goal did not return puppy/junior/kitten positioning at the top.");
+    } else {
+      passes.push("Growth goal returned growth-positioned top pick.");
+    }
+  }
+
+  return {
+    status: warnings.length > 0 ? "review" : "pass",
+    warnings,
+    passes,
+  };
 }
 
 function scoreClass(score: number) {
@@ -339,7 +424,7 @@ function ResultCard({ item }: { item: RecommendationItem }) {
           {item.ranking.confidence} confidence
         </span>
         <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-700">
-          {item.data_quality_status} · {item.source_priority}
+          {item.data_quality_status} | {item.source_priority}
         </span>
       </div>
 
@@ -450,6 +535,58 @@ function ResultSection({
         </div>
       )}
     </section>
+  );
+}
+
+function QAVerdictPanel({
+  verdict,
+}: {
+  verdict: ReturnType<typeof qaVerdict>;
+}) {
+  const isPass = verdict.status === "pass";
+
+  return (
+    <div
+      className={`rounded-2xl border p-5 shadow-sm ${
+        isPass ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"
+      }`}
+    >
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-gray-600">
+            QA verdict
+          </p>
+          <h2 className="mt-2 text-xl font-bold text-black">
+            {isPass
+              ? "Looks safe for this smoke scenario"
+              : "Needs review before trusting this scenario"}
+          </h2>
+        </div>
+        <span
+          className={`rounded-full px-3 py-1 text-sm font-semibold ${
+            isPass ? "bg-green-700 text-white" : "bg-amber-700 text-white"
+          }`}
+        >
+          {isPass ? "Pass" : "Review"}
+        </span>
+      </div>
+
+      {verdict.warnings.length > 0 && (
+        <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-amber-950">
+          {verdict.warnings.map((warning) => (
+            <li key={warning}>{warning}</li>
+          ))}
+        </ul>
+      )}
+
+      {verdict.passes.length > 0 && (
+        <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-green-950">
+          {verdict.passes.map((pass) => (
+            <li key={pass}>{pass}</li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -756,6 +893,17 @@ export default function FoodV2RecommendationLabPage() {
 
       {result && (
         <section className="space-y-7">
+          <QAVerdictPanel
+            verdict={qaVerdict({
+              result,
+              species,
+              weight,
+              goal,
+              allergies,
+              excludedIngredients,
+            })}
+          />
+
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
               <div>
@@ -764,7 +912,7 @@ export default function FoodV2RecommendationLabPage() {
                   <span className="font-semibold text-black">{result.goal}</span>.
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
-                  Premium {result.premium.length} · Value {result.value.length} ·
+                  Premium {result.premium.length} | Value {result.value.length} ·
                   Hold {result.hold.length}
                 </p>
               </div>
