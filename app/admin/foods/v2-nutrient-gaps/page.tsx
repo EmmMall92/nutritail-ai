@@ -43,6 +43,7 @@ type NutrientGapResponse = {
 };
 
 type PriorityFilter = "all" | "high" | "medium" | "low";
+type FocusFilter = "all" | "energy" | "estimated" | "health";
 
 function SummaryCard({
   label,
@@ -98,6 +99,32 @@ function CountList({ title, items }: { title: string; items: CountItem[] }) {
   );
 }
 
+function ActionSummaryCard({
+  label,
+  value,
+  helper,
+  onClick,
+}: {
+  label: string;
+  value: number;
+  helper: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-black hover:shadow-md"
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-bold text-black">{value}</p>
+      <p className="mt-2 text-sm leading-6 text-gray-600">{helper}</p>
+    </button>
+  );
+}
+
 function visibilityHref(row: NutrientGapRow) {
   const params = new URLSearchParams({
     search: row.formula_key || `${row.brand} ${row.display_name}`,
@@ -112,6 +139,7 @@ export default function FoodV2NutrientGapsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("high");
+  const [focusFilter, setFocusFilter] = useState<FocusFilter>("all");
   const [brandFilter, setBrandFilter] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("");
 
@@ -158,15 +186,45 @@ export default function FoodV2NutrientGapsPage() {
         priorityFilter === "all" || row.priority === priorityFilter;
       const matchesBrand = !brandFilter || row.brand === brandFilter;
       const matchesSpecies = !speciesFilter || row.species === speciesFilter;
+      const matchesFocus =
+        focusFilter === "all" ||
+        (focusFilter === "energy" &&
+          row.missing_blockers.some((field) => field.includes("kcal"))) ||
+        (focusFilter === "estimated" &&
+          row.estimated_fields_to_replace.length > 0) ||
+        (focusFilter === "health" && row.health_context.length > 0);
       const matchesSearch =
         !normalizedSearch ||
-        `${row.brand} ${row.display_name} ${row.formula_key}`
+        `${row.brand} ${row.display_name} ${row.formula_key} ${row.missing_blockers.join(
+          " "
+        )} ${row.estimated_fields_to_replace.join(" ")} ${row.missing_helpful_fields.join(
+          " "
+        )} ${row.health_context.join(" ")} ${row.next_action}`
           .toLowerCase()
           .includes(normalizedSearch);
 
-      return matchesPriority && matchesBrand && matchesSpecies && matchesSearch;
+      return (
+        matchesPriority &&
+        matchesBrand &&
+        matchesSpecies &&
+        matchesFocus &&
+        matchesSearch
+      );
     });
-  }, [brandFilter, priorityFilter, report, search, speciesFilter]);
+  }, [brandFilter, focusFilter, priorityFilter, report, search, speciesFilter]);
+
+  const actionCounts = useMemo(() => {
+    const rows = report?.rows ?? [];
+    return {
+      high: rows.filter((row) => row.priority === "high").length,
+      energy: rows.filter((row) =>
+        row.missing_blockers.some((field) => field.includes("kcal"))
+      ).length,
+      estimated: rows.filter((row) => row.estimated_fields_to_replace.length > 0)
+        .length,
+      healthSensitive: rows.filter((row) => row.health_context.length > 0).length,
+    };
+  }, [report?.rows]);
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -247,6 +305,76 @@ export default function FoodV2NutrientGapsPage() {
                 value={report.summary.by_priority.low ?? 0}
                 helper="Nice-to-have cleanup"
               />
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+              <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-black">
+                    Best next cleanup actions
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Use these shortcuts to focus on gaps that most affect
+                    customer recommendations and confidence wording.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPriorityFilter("all");
+                    setFocusFilter("all");
+                    setSearch("");
+                    setBrandFilter("");
+                    setSpeciesFilter("");
+                  }}
+                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-white"
+                >
+                  Clear filters
+                </button>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+                <ActionSummaryCard
+                  label="High priority"
+                  value={actionCounts.high}
+                  helper="Blockers or condition-sensitive formula gaps"
+                  onClick={() => {
+                    setPriorityFilter("high");
+                    setFocusFilter("all");
+                    setSearch("");
+                  }}
+                />
+                <ActionSummaryCard
+                  label="Needs kcal"
+                  value={actionCounts.energy}
+                  helper="Rows where official or calculated energy should be confirmed"
+                  onClick={() => {
+                    setPriorityFilter("all");
+                    setFocusFilter("energy");
+                    setSearch("");
+                  }}
+                />
+                <ActionSummaryCard
+                  label="Replace estimates"
+                  value={actionCounts.estimated}
+                  helper="Rows using calculated values that should be replaced by source data"
+                  onClick={() => {
+                    setPriorityFilter("all");
+                    setFocusFilter("estimated");
+                    setSearch("");
+                  }}
+                />
+                <ActionSummaryCard
+                  label="Health context"
+                  value={actionCounts.healthSensitive}
+                  helper="Rows tied to urinary, renal, weight, growth, GI, or allergy logic"
+                  onClick={() => {
+                    setPriorityFilter("all");
+                    setFocusFilter("health");
+                    setSearch("");
+                  }}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
