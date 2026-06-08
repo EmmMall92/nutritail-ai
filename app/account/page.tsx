@@ -48,6 +48,12 @@ function hasReadyReport(pet: AccountPet) {
   return Boolean(latest?.matched_food_name && latest?.feeding_grams_per_day);
 }
 
+function getPetLabel(pet: AccountPet) {
+  const species = pet.species ? ` - ${pet.species}` : "";
+  const weight = pet.weight ? ` - ${pet.weight} kg` : "";
+  return `${pet.name ?? "Unnamed pet"}${species}${weight}`;
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -147,8 +153,11 @@ export default function AccountPage() {
   );
   const petsNeedingAnalysis = pets.filter(
     (pet) => (pet.analysisHistory?.length ?? 0) === 0
-  ).length;
+  );
+  const petsNeedingAnalysisCount = petsNeedingAnalysis.length;
   const readyReports = pets.filter(hasReadyReport).length;
+  const profileProgress =
+    pets.length === 0 ? 0 : Math.round((readyReports / pets.length) * 100);
   const latestAnalysisEntry = pets
     .flatMap((pet) =>
       (pet.analysisHistory ?? []).map((analysis) => ({ analysis, pet }))
@@ -160,17 +169,48 @@ export default function AccountPage() {
     )[0];
   const latestAnalysis = latestAnalysisEntry?.analysis;
   const latestPet = latestAnalysisEntry?.pet;
+  const nextPetToAnalyze = petsNeedingAnalysis[0];
 
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">
-          Welcome, {customer.fullName}
-        </h1>
-        <p className="mt-2 text-gray-600">
-          Your Nutritail AI dashboard for pet nutrition guidance, saved pets,
-          and account details.
-        </p>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-black">
+              Welcome, {customer.fullName}
+            </h1>
+            <p className="mt-2 max-w-3xl text-gray-600">
+              Your Nutritail AI dashboard for pet nutrition guidance, saved
+              pets, reports, and next steps.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">
+              <span className="rounded-full bg-gray-100 px-3 py-1">
+                {profileProgress}% report coverage
+              </span>
+              <span className="rounded-full bg-gray-100 px-3 py-1">
+                {readyReports} ready reports
+              </span>
+              <span className="rounded-full bg-gray-100 px-3 py-1">
+                {petsNeedingAnalysisCount} need analysis
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl bg-black px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+            >
+              Start nutrition analysis
+            </Link>
+            <Link
+              href="/account/pets"
+              className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              View my pets
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -192,8 +232,45 @@ export default function AccountPage() {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Need analysis</p>
           <p className="mt-2 text-3xl font-bold text-black">
-            {petsNeedingAnalysis}
+            {petsNeedingAnalysisCount}
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+              Next best action
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-emerald-950">
+              {pets.length === 0
+                ? "Create your first pet profile"
+                : nextPetToAnalyze
+                  ? `Analyze ${nextPetToAnalyze.name ?? "your pet"}`
+                  : "Review your latest report"}
+            </h2>
+            <p className="mt-2 text-sm text-emerald-900">
+              {pets.length === 0
+                ? "Start the guided chatbot flow to create a profile, calorie target, and first report."
+                : nextPetToAnalyze
+                  ? `${getPetLabel(
+                      nextPetToAnalyze
+                    )} does not have a saved nutrition analysis yet.`
+                  : "All saved pets have report history. Open the latest report or run a fresh analysis if anything changed."}
+            </p>
+          </div>
+
+          <Link
+            href={
+              nextPetToAnalyze
+                ? `/account/pets/${nextPetToAnalyze.id}`
+                : "/account/chatbot"
+            }
+            className="rounded-xl bg-emerald-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-emerald-800"
+          >
+            {nextPetToAnalyze ? "Open pet" : "Open chatbot"}
+          </Link>
         </div>
       </div>
 
@@ -264,14 +341,14 @@ export default function AccountPage() {
           <p className="mt-2 text-lg font-semibold text-black">
             {pets.length === 0
               ? "Create your first pet"
-              : petsNeedingAnalysis > 0
+              : petsNeedingAnalysisCount > 0
                 ? "Run missing analyses"
                 : "Review latest report"}
           </p>
           <p className="mt-2 text-sm text-gray-600">
             {pets.length === 0
               ? "Start with the chatbot to save a profile and report."
-              : petsNeedingAnalysis > 0
+              : petsNeedingAnalysisCount > 0
                 ? "Some saved pets do not have an analysis yet."
                 : "Your pets have saved analysis history."}
           </p>
@@ -309,6 +386,45 @@ export default function AccountPage() {
           </p>
         </Link>
       </div>
+
+      {petsNeedingAnalysis.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-black">
+                Pets needing analysis
+              </h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Start here to make every saved pet useful inside Nutritail.
+              </p>
+            </div>
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl border border-black px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              Run analysis
+            </Link>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {petsNeedingAnalysis.slice(0, 3).map((pet) => (
+              <Link
+                key={pet.id}
+                href={`/account/pets/${pet.id}`}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-black"
+              >
+                <p className="font-semibold text-black">
+                  {pet.name ?? "Unnamed pet"}
+                </p>
+                <p className="mt-1 text-sm text-gray-600">
+                  {pet.species ?? "pet"}
+                  {pet.weight ? ` - ${pet.weight} kg` : ""}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
