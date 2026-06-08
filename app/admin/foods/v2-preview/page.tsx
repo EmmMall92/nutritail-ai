@@ -325,6 +325,49 @@ export default function FoodV2PreviewPage() {
   const importableRowsForCommit = rowsForCommit.filter(
     (row) => row.validation.is_importable
   );
+  const blockedRowsForCommit = rowsForCommit.length - importableRowsForCommit.length;
+  const commitGuardrails = [
+    {
+      label: "Selection",
+      status: rowsForCommit.length > 0 ? "ready" : "blocked",
+      message:
+        rowsForCommit.length > 0
+          ? `${rowsForCommit.length} row(s) selected for commit scope.`
+          : "Select or load rows before committing.",
+    },
+    {
+      label: "Importable rows",
+      status: importableRowsForCommit.length > 0 ? "ready" : "blocked",
+      message:
+        importableRowsForCommit.length > 0
+          ? `${importableRowsForCommit.length} row(s) can be imported.`
+          : "No importable rows are available in the current scope.",
+    },
+    {
+      label: "Blocked rows",
+      status: blockedRowsForCommit > 0 ? "warning" : "ready",
+      message:
+        blockedRowsForCommit > 0
+          ? `${blockedRowsForCommit} blocked row(s) will be audited but not imported.`
+          : "No blocked rows in the commit scope.",
+    },
+    {
+      label: "Existing check",
+      status: conflictResult ? "ready" : "warning",
+      message: conflictResult
+        ? `${conflictResult.newCount} new, ${conflictResult.existingCount} update(s).`
+        : "Run Check Existing before committing a production batch.",
+    },
+    {
+      label: "Canonical duplicates",
+      status:
+        (conflictResult?.likelyDuplicates?.length ?? 0) > 0 ? "warning" : "ready",
+      message:
+        (conflictResult?.likelyDuplicates?.length ?? 0) > 0
+          ? `${conflictResult?.likelyDuplicates?.length} possible duplicate group(s) need review.`
+          : "No canonical duplicate groups detected in the latest check.",
+    },
+  ];
 
   const rowLimitNotice = useMemo(() => {
     if (visibleRows.length <= 50) return "Showing all matching preview rows.";
@@ -850,6 +893,49 @@ export default function FoodV2PreviewPage() {
             )}
           </div>
         )}
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-black">
+                Pre-commit guardrails
+              </h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Check these signals before writing Food V2 rows to the database.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={checkExistingFormulaKeys}
+              disabled={isCheckingConflicts || rowsForCommit.length === 0}
+              className="rounded-xl border border-black px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-500"
+            >
+              {isCheckingConflicts ? "Checking..." : "Run existing check"}
+            </button>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-5">
+            {commitGuardrails.map((item) => (
+              <div
+                key={item.label}
+                className={`rounded-xl border p-4 ${
+                  item.status === "blocked"
+                    ? "border-red-200 bg-red-50"
+                    : item.status === "warning"
+                      ? "border-amber-200 bg-amber-50"
+                      : "border-green-200 bg-green-50"
+                }`}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-sm font-medium text-black">
+                  {item.message}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
