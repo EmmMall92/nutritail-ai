@@ -75,9 +75,13 @@ type PetIntake = {
 type AccountPetAnalysisHistoryItem = {
   id: string;
   createdAt?: string;
+  matchedFoodName?: string | null;
   matched_food_name?: string | null;
+  feedingGramsPerDay?: number | null;
   feeding_grams_per_day?: number | null;
+  foodScore?: number | null;
   food_score?: number | null;
+  weightGoal?: string | null;
   weight_goal?: string | null;
 };
 
@@ -141,6 +145,8 @@ type FollowUpAction =
   | "change_food"
   | "timeline"
   | "new_analysis";
+
+type FollowUpMode = "progress" | "no_result" | null;
 
 const starterCards = [
   {
@@ -793,12 +799,28 @@ function createIntakeFromSavedPet(savedPet: AccountPet): PetIntake {
     neutered: savedPet.neutered ?? false,
     healthIssues: savedPet.health_issues ?? [],
     allergies: savedPet.allergies ?? [],
-    weightGoal: parseSavedWeightGoal(latest?.weight_goal),
+    weightGoal: parseSavedWeightGoal(getHistoryWeightGoal(latest)),
   };
 }
 
 function getLatestSavedPetAnalysis(savedPet: AccountPet) {
   return savedPet.analysisHistory?.[0] ?? null;
+}
+
+function getHistoryWeightGoal(item?: AccountPetAnalysisHistoryItem | null) {
+  return item?.weightGoal ?? item?.weight_goal ?? null;
+}
+
+function getHistoryFoodName(item?: AccountPetAnalysisHistoryItem | null) {
+  return item?.matchedFoodName ?? item?.matched_food_name ?? null;
+}
+
+function getHistoryFeedingGrams(item?: AccountPetAnalysisHistoryItem | null) {
+  return item?.feedingGramsPerDay ?? item?.feeding_grams_per_day ?? null;
+}
+
+function getHistoryFoodScore(item?: AccountPetAnalysisHistoryItem | null) {
+  return item?.foodScore ?? item?.food_score ?? null;
 }
 
 function parseSavedWeightGoal(value?: string | null): WeightGoal | undefined {
@@ -819,17 +841,79 @@ function formatLatestAnalysisSummary(savedPet: AccountPet) {
   if (!latest) return "No previous analysis found.";
 
   const parts = [
-    latest.weight_goal ? `Goal: ${getWeightGoalLabel(parseSavedWeightGoal(latest.weight_goal))}` : null,
-    latest.matched_food_name ? `Food: ${latest.matched_food_name}` : null,
-    latest.feeding_grams_per_day
-      ? `Feeding: ${latest.feeding_grams_per_day}g/day`
+    getHistoryWeightGoal(latest)
+      ? `Goal: ${getWeightGoalLabel(
+          parseSavedWeightGoal(getHistoryWeightGoal(latest))
+        )}`
       : null,
-    typeof latest.food_score === "number"
-      ? `Score: ${latest.food_score}/100`
+    getHistoryFoodName(latest) ? `Food: ${getHistoryFoodName(latest)}` : null,
+    getHistoryFeedingGrams(latest)
+      ? `Feeding: ${getHistoryFeedingGrams(latest)}g/day`
+      : null,
+    typeof getHistoryFoodScore(latest) === "number"
+      ? `Score: ${getHistoryFoodScore(latest)}/100`
       : null,
   ].filter(Boolean);
 
-  return parts.length ? parts.join("\n") : "Previous analysis exists, but it has limited saved details.";
+  return parts.length
+    ? parts.join("\n")
+    : "Previous analysis exists, but it has limited saved details.";
+}
+
+function buildFollowUpProgressReply({
+  text,
+  savedPet,
+  mode,
+}: {
+  text: string;
+  savedPet: AccountPet;
+  mode: Exclude<FollowUpMode, null>;
+}) {
+  const currentWeight = parseNumber(text);
+  const previousWeight = Number(savedPet.weight);
+  const weightLine =
+    currentWeight && Number.isFinite(previousWeight)
+      ? currentWeight < previousWeight
+        ? `Current weight looks lower than the saved profile (${previousWeight} kg -> ${currentWeight} kg). That suggests progress, but keep checking body condition and energy.`
+        : currentWeight > previousWeight
+          ? `Current weight looks higher than the saved profile (${previousWeight} kg -> ${currentWeight} kg). We should review portions, treats, and food density.`
+          : `Current weight looks unchanged from the saved profile (${previousWeight} kg). That does not always mean failure, but we should check consistency and timing.`
+      : "I could not read a clear current weight yet. Send weight in kg, daily grams, treats, and any visible changes.";
+
+  const latest = getLatestSavedPetAnalysis(savedPet);
+  const grams = getHistoryFeedingGrams(latest);
+  const foodName = getHistoryFoodName(latest);
+
+  if (mode === "no_result") {
+    return `${weightLine}
+
+For no visible result, I would check this order:
+1. Measure the food with a kitchen scale, not a cup.
+2. Keep treats within the daily allowance.
+3. Confirm everyone at home is feeding the same plan.
+4. Weigh once weekly on the same scale.
+5. If nothing changes after 2-3 weeks, re-run the analysis with the current weight and exact food.
+
+Saved context:
+- Food: ${foodName ?? "not confirmed"}
+- Previous feeding amount: ${grams ? `${grams}g/day` : "not confirmed"}
+
+Send the exact daily grams and treats per day and I can help decide whether to adjust the plan or suggest a different food.`;
+  }
+
+  return `${weightLine}
+
+To judge progress fairly, send me:
+1. Current daily grams
+2. Treats/snacks per day
+3. Whether appetite is normal, hungry, or picky
+4. Stool quality and energy
+
+Saved context:
+- Food: ${foodName ?? "not confirmed"}
+- Previous feeding amount: ${grams ? `${grams}g/day` : "not confirmed"}
+
+If the food is no longer accepted or the taste/brand is the issue, choose "Try another food" and I will keep the same pet context.`;
 }
 
 function formatAnalysisResult(analysis: PetAnalysis) {
@@ -893,6 +977,7 @@ export default function AccountChatbotPage() {
   const [savedPets, setSavedPets] = useState<AccountPet[]>([]);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [followUpPet, setFollowUpPet] = useState<AccountPet | null>(null);
+  const [followUpMode, setFollowUpMode] = useState<FollowUpMode>(null);
   const [isLoadingPets, setIsLoadingPets] = useState(true);
 
   const [pet, setPet] = useState<PetIntake>({
@@ -1157,6 +1242,7 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
     }
 
     if (action === "progress") {
+      setFollowUpMode("progress");
       addMessages(
         createMessage("user", "Progress check"),
         createMessage(
@@ -1176,6 +1262,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
     }
 
     if (action === "no_result") {
+      setFollowUpMode("no_result");
       addMessages(
         createMessage("user", "No visible result"),
         createMessage(
@@ -1196,6 +1283,7 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
 
     if (action === "change_food") {
       setFollowUpPet(null);
+      setFollowUpMode(null);
       setStep("currentFood");
       addMessages(
         createMessage("user", "Try another food"),
@@ -1211,6 +1299,7 @@ What food is ${followUpPet.name} eating now? Write the exact brand and formula i
 
     if (action === "new_analysis") {
       setFollowUpPet(null);
+      setFollowUpMode(null);
       startSavedPetAnalysis(followUpPet);
     }
   }
@@ -1218,6 +1307,7 @@ What food is ${followUpPet.name} eating now? Write the exact brand and formula i
   function startNewPetAnalysis() {
     setSelectedPetId(null);
     setFollowUpPet(null);
+    setFollowUpMode(null);
     setPet({ healthIssues: [], allergies: [] });
     setStep("species");
 
@@ -1601,6 +1691,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   async function handleStep(text: string) {
+    if (followUpPet && followUpMode) {
+      addMessages(
+        createMessage(
+          "bot",
+          buildFollowUpProgressReply({
+            text,
+            savedPet: followUpPet,
+            mode: followUpMode,
+          })
+        )
+      );
+      return;
+    }
+
     const compareQueries = parseCompareQueries(text);
 
     if (compareQueries.length >= 2 && step !== "analysis") {
@@ -1962,6 +2066,7 @@ Next actions:
     setPet({ healthIssues: [], allergies: [] });
     setSelectedPetId(null);
     setFollowUpPet(null);
+    setFollowUpMode(null);
     setInput("");
     setLatestAnalysis(null);
     setIsAnalyzing(false);
