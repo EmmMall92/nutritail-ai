@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AuthShell } from "@/components/AuthShell";
 import { createClient } from "@/lib/supabase/client";
 
 function getSafeRedirectPath() {
@@ -113,69 +114,77 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <section className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">Create account</h1>
-
-        <p className="mt-2 text-sm text-gray-600">
-          Create your Nutritail AI account to save pet nutrition history.
-        </p>
-
-        <form onSubmit={handleRegister} className="mt-6 space-y-4">
+    <AuthShell
+      eyebrow="Start free"
+      title="Create account"
+      description="Save your pets, keep nutrition analyses, and return to reports whenever you need them."
+    >
+      <form onSubmit={handleRegister} className="space-y-4">
+        <label className="block">
+          <span className="text-sm font-medium text-gray-800">Full name</span>
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Full name"
             autoComplete="name"
-            className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
           />
+        </label>
 
+        <label className="block">
+          <span className="text-sm font-medium text-gray-800">Email</span>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder="you@example.com"
             type="email"
             autoComplete="email"
-            className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
           />
+        </label>
 
+        <label className="block">
+          <span className="text-sm font-medium text-gray-800">Password</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="At least 6 characters"
             type="password"
             autoComplete="new-password"
-            className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
           />
+        </label>
 
-          {error && (
-            <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
-          {success && (
-            <div className="rounded-xl bg-green-50 p-3 text-sm text-green-700">
-              {success}
-            </div>
-          )}
+        {success && (
+          <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
+            {success}
+          </div>
+        )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
-          >
-            {isLoading ? "Creating..." : "Create account"}
-          </button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isLoading ? "Creating account..." : "Create account"}
+        </button>
 
+        <p className="text-center text-sm text-gray-600">
+          Already have an account?{" "}
           <Link
             href={loginHref}
-            className="block text-center text-sm text-gray-600 underline"
+            className="font-semibold text-black underline decoration-gray-300 underline-offset-4"
           >
-            Already have an account? Login.
+            Sign in
           </Link>
-        </form>
-      </section>
-    </main>
+        </p>
+      </form>
+    </AuthShell>
   );
 }
