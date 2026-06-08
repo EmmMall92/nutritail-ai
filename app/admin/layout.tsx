@@ -15,12 +15,15 @@ function AdminNavLink({
   label: string;
   pathname: string;
 }) {
-  const isActive = pathname === href;
+  const isActive =
+    href === "/admin"
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link
       href={href}
-      className={`rounded-lg px-4 py-2 text-sm transition ${
+      className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
         isActive ? "bg-black text-white" : "text-black hover:bg-gray-100"
       }`}
     >
@@ -28,6 +31,49 @@ function AdminNavLink({
     </Link>
   );
 }
+
+const ADMIN_NAV_GROUPS = [
+  {
+    label: "Core",
+    links: [
+      { href: "/admin", label: "Dashboard" },
+      { href: "/admin/customers", label: "Customers" },
+      { href: "/admin/pets", label: "Pets" },
+      { href: "/admin/activity", label: "Activity" },
+    ],
+  },
+  {
+    label: "Food V2",
+    links: [
+      { href: "/admin/foods", label: "Foods" },
+      { href: "/admin/foods/v2-preview", label: "Preview" },
+      { href: "/admin/foods/v2-review", label: "Review" },
+      { href: "/admin/foods/v2-guide", label: "Guide" },
+      { href: "/admin/foods/v2-nutrient-gaps", label: "Gaps" },
+      { href: "/admin/foods/v2-recommendation-lab", label: "Lab" },
+    ],
+  },
+  {
+    label: "Quality",
+    links: [
+      { href: "/admin/duplicates", label: "Duplicates" },
+      { href: "/admin/validation", label: "Validation" },
+      { href: "/admin/food-backfill", label: "Backfill" },
+      { href: "/admin/chat-feedback", label: "Feedback" },
+      { href: "/admin/foods/v2-live-qa", label: "Live QA" },
+      { href: "/admin/trash", label: "Trash" },
+    ],
+  },
+] as const;
+
+const ADMIN_ONLY_NAV_GROUP = {
+  label: "Operations",
+  links: [
+    { href: "/admin/export", label: "Export" },
+    { href: "/admin/restore", label: "Restore" },
+    { href: "/admin/settings", label: "Settings" },
+  ],
+} as const;
 
 function isAdminOnlyPath(pathname: string) {
   return ["/admin/export", "/admin/restore", "/admin/settings"].some(
@@ -109,7 +155,7 @@ export default function AdminLayout({
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-lg font-semibold text-black">Admin Panel</h1>
             <p className="text-xs text-gray-600">
@@ -128,81 +174,25 @@ export default function AdminLayout({
       </header>
 
       <nav className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap gap-2 px-6 py-3">
-          <AdminNavLink href="/admin" label="Dashboard" pathname={pathname} />
-          <AdminNavLink href="/admin/pets" label="Pets" pathname={pathname} />
-          <AdminNavLink href="/admin/foods" label="Foods" pathname={pathname} />
-          <AdminNavLink
-            href="/admin/foods/v2-preview"
-            label="Food V2 Preview"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/foods/v2-review"
-            label="Food V2 Review"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/foods/v2-guide"
-            label="Food V2 Guide"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/foods/v2-live-qa"
-            label="Food V2 Live QA"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/foods/v2-recommendation-lab"
-            label="Food V2 Lab"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/duplicates"
-            label="Duplicates"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/validation"
-            label="Validation"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/food-backfill"
-            label="Food Backfill"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/activity"
-            label="Activity"
-            pathname={pathname}
-          />
-          <AdminNavLink
-            href="/admin/chat-feedback"
-            label="Chat Feedback"
-            pathname={pathname}
-          />
-          <AdminNavLink href="/admin/trash" label="Trash" pathname={pathname} />
-          <AdminNavLink href="/admin/customers" label="Customers" pathname={pathname} />
-
-          {isAdmin && (
-            <>
-              <AdminNavLink
-                href="/admin/export"
-                label="Export"
-                pathname={pathname}
-              />
-              <AdminNavLink
-                href="/admin/restore"
-                label="Restore"
-                pathname={pathname}
-              />
-              <AdminNavLink
-                href="/admin/settings"
-                label="Settings"
-                pathname={pathname}
-              />
-            </>
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3">
+          {[...ADMIN_NAV_GROUPS, ...(isAdmin ? [ADMIN_ONLY_NAV_GROUP] : [])].map(
+            (group) => (
+              <div key={group.label} className="flex flex-col gap-2 lg:flex-row lg:items-center">
+                <p className="w-24 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                  {group.label}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {group.links.map((link) => (
+                    <AdminNavLink
+                      key={link.href}
+                      href={link.href}
+                      label={link.label}
+                      pathname={pathname}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
           )}
         </div>
       </nav>
