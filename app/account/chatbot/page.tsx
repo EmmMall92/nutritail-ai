@@ -125,6 +125,29 @@ type FoodCompareResponse = {
   error?: string;
 };
 
+const starterCards = [
+  {
+    title: "Find the right food",
+    helper: "Best first step for allergies, weight control, sterilised pets, or sensitive digestion.",
+    prompt: "I want a food recommendation for my pet.",
+  },
+  {
+    title: "Compare formulas",
+    helper: "Useful when you are choosing between two brands or two specific foods.",
+    prompt: "Compare Royal Canin and Acana for my pet.",
+  },
+  {
+    title: "Daily grams",
+    helper: "Estimate calories, portions, and treat allowance from the pet profile.",
+    prompt: "How many grams should I feed per day?",
+  },
+  {
+    title: "Health caution",
+    helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the bot stays careful.",
+    prompt: "My pet has a health concern and I need safe food guidance.",
+  },
+];
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -1757,7 +1780,8 @@ Next actions:
           </h1>
 
           <p className="mt-1 text-sm text-gray-600">
-            Personalized nutrition guidance for your pet.
+            Start with a saved pet or a new profile, then get a grounded food
+            shortlist, calories, and safety notes.
           </p>
         </div>
 
@@ -1780,6 +1804,43 @@ Next actions:
       </div>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-4 sm:p-5">
+        {!showSave && messages.length <= 1 && (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="font-semibold text-emerald-950">
+                  What can I help with?
+                </p>
+                <p className="mt-1 text-sm text-emerald-900">
+                  Choose a pet first, then use one of these goals or write your
+                  own question.
+                </p>
+              </div>
+              <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
+                Food V2 powered
+              </span>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {starterCards.map((card) => (
+                <button
+                  key={card.title}
+                  type="button"
+                  onClick={() => setInput(card.prompt)}
+                  className="rounded-xl border border-emerald-200 bg-white p-4 text-left transition hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                >
+                  <span className="block font-semibold text-black">
+                    {card.title}
+                  </span>
+                  <span className="mt-1 block text-sm text-gray-600">
+                    {card.helper}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {step === "petChoice" && (
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
             <p className="font-semibold text-black">Choose a pet</p>
