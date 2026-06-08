@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 type AnalysisHistoryItem = {
   id: string;
@@ -92,6 +93,18 @@ function getReportNextSteps(analysis?: AnalysisHistoryItem | null) {
   }
 
   return steps;
+}
+
+function getReportSummary(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) {
+    return "This report needs a saved nutrition analysis before it can show calories, feeding amount, and food fit.";
+  }
+
+  if (analysis.matched_food_name && analysis.feeding_grams_per_day) {
+    return "This report has enough saved information for a practical feeding summary.";
+  }
+
+  return "This report is useful, but some food-specific details are still missing.";
 }
 
 function ReportCard({
@@ -223,13 +236,21 @@ export default function PrintablePetReportPage() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="rounded-xl bg-black px-5 py-3 text-white transition hover:opacity-90 print:hidden"
-          >
-            Print / Save PDF
-          </button>
+          <div className="flex flex-col gap-2 sm:flex-row print:hidden">
+            <Link
+              href={`/account/pets/${pet.id}`}
+              className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+            >
+              Back to pet
+            </Link>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="rounded-xl bg-black px-5 py-3 text-white transition hover:opacity-90"
+            >
+              Print / Save PDF
+            </button>
+          </div>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -250,6 +271,20 @@ export default function PrintablePetReportPage() {
             }
             detail={getFoodScoreLabel(latestAnalysis?.food_score)}
           />
+        </div>
+
+        <div className="mt-8 break-inside-avoid rounded-xl border border-emerald-200 bg-emerald-50 p-6 print:border-gray-300">
+          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            Client summary
+          </p>
+          <h2 className="mt-2 text-2xl font-bold text-emerald-950">
+            {getReportSummary(latestAnalysis)}
+          </h2>
+          <p className="mt-3 text-sm text-emerald-900">
+            Use this as a practical nutrition summary for portions, transition,
+            and food-fit discussion. It is not a medical diagnosis or treatment
+            plan.
+          </p>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.15fr]">
