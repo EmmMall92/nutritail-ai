@@ -1842,6 +1842,17 @@ Next actions:
 
         {showSave && (
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <p className="font-semibold text-blue-950">
+                Review before saving
+              </p>
+              <p className="mt-1 text-sm text-blue-900">
+                Save when the pet details, calorie target, and food context look
+                right. You can run a new analysis later if weight, symptoms, or
+                food choice changes.
+              </p>
+            </div>
+
             {latestAnalysis && (
               <div className="rounded-xl border border-gray-200 bg-white p-4">
                 <p className="font-semibold text-black">Analysis summary</p>
@@ -1879,8 +1890,20 @@ Next actions:
               <p className="font-semibold text-black">Save to my account</p>
 
               <p className="mt-1 text-sm text-gray-700">
-                Save this pet and nutrition analysis to your personal profile.
+                This will save the pet profile, latest nutrition analysis, and
+                report entry in your account.
               </p>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-green-900 sm:grid-cols-3">
+                <span className="rounded-full bg-white px-3 py-1 text-center">
+                  Pet profile
+                </span>
+                <span className="rounded-full bg-white px-3 py-1 text-center">
+                  Nutrition report
+                </span>
+                <span className="rounded-full bg-white px-3 py-1 text-center">
+                  Analysis history
+                </span>
+              </div>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-4">
@@ -1936,7 +1959,7 @@ Next actions:
             <div>
               <p className="font-semibold text-black">Analysis saved</p>
               <p className="mt-1 text-sm text-gray-700">
-                Your pet profile and report are ready.
+                Your pet profile, report, and analysis history are ready.
               </p>
             </div>
 
