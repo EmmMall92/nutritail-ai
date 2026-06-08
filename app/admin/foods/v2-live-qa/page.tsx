@@ -2,6 +2,15 @@ import Link from "next/link";
 
 const liveChecks = [
   {
+    title: "Deploy sanity",
+    checks: [
+      "Open https://nutritail.ai and confirm the homepage loads.",
+      "Open /login and confirm auth pages render with the current design.",
+      "Open /account/chatbot after login and confirm the guided intake starts.",
+      "Confirm /sitemap.xml, /robots.txt, /manifest.webmanifest, and /opengraph-image respond.",
+    ],
+  },
+  {
     title: "Admin access",
     checks: [
       "Open /admin and confirm the admin nav loads.",
@@ -37,13 +46,24 @@ const liveChecks = [
       "Confirm blocked rows stay visible in audit exports.",
     ],
   },
+  {
+    title: "Recommendation smoke",
+    checks: [
+      "Run a 30kg adult dog scenario in Recommendation Lab.",
+      "Confirm the top pick is not small/mini positioned.",
+      "Run a chicken allergy scenario and confirm chicken/poultry is not recommended.",
+      "Run urinary cat and growth puppy scenarios and review the QA verdict.",
+    ],
+  },
 ];
 
 const liveUrls = [
   "/admin/foods/v2-guide",
   "/admin/foods/v2-preview",
   "/admin/foods/v2-review",
+  "/admin/foods/v2-nutrient-gaps",
   "/admin/foods/v2-recommendation-lab",
+  "/admin/chat-feedback",
   "/api/admin/foods/v2-template",
   "/api/admin/foods/v2-export?type=products",
   "/api/admin/foods/v2-export?type=audit",
@@ -78,11 +98,48 @@ export default function FoodV2LiveQaPage() {
             Open Review
           </Link>
           <Link
+            href="/admin/foods/v2-recommendation-lab"
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+          >
+            Open Lab
+          </Link>
+          <Link
             href="/admin/foods/v2-guide"
             className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
           >
             Open Guide
           </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-gray-500">Order</p>
+          <p className="mt-2 text-3xl font-bold text-black">1-4</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Deploy, admin access, import flow, recommendation smoke.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-gray-500">Critical routes</p>
+          <p className="mt-2 text-3xl font-bold text-black">{liveUrls.length}</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Routes and API exports that should work after deploy.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm">
+          <p className="text-sm font-medium text-green-700">Pass signal</p>
+          <p className="mt-2 text-3xl font-bold text-green-900">0</p>
+          <p className="mt-2 text-sm text-green-800">
+            No redirects, no blocked imports committed, no obvious bad top pick.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+          <p className="text-sm font-medium text-amber-700">Review signal</p>
+          <p className="mt-2 text-3xl font-bold text-amber-900">1+</p>
+          <p className="mt-2 text-sm text-amber-800">
+            Any QA verdict warning should become a follow-up task.
+          </p>
         </div>
       </div>
 
@@ -119,9 +176,10 @@ export default function FoodV2LiveQaPage() {
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
         <p className="font-semibold">Pass condition</p>
         <p className="mt-2">
-          The flow passes when an admin can download the template, preview rows,
-          check existing formula keys, commit importable rows, see them in
-          review, and export both products and audit CSVs from the live site.
+          The flow passes when the live site loads, an admin can preview rows,
+          check existing formula keys, commit only importable rows, see them in
+          review, export products/audit CSVs, and run Recommendation Lab
+          scenarios without obvious size, allergy, urinary, or growth mistakes.
         </p>
       </div>
     </section>
