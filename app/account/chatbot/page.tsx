@@ -72,6 +72,15 @@ type PetIntake = {
   weightGoal?: WeightGoal;
 };
 
+type AccountPetAnalysisHistoryItem = {
+  id: string;
+  createdAt?: string;
+  matched_food_name?: string | null;
+  feeding_grams_per_day?: number | null;
+  food_score?: number | null;
+  weight_goal?: string | null;
+};
+
 type AccountPet = {
   id: string;
   name: string;
@@ -83,6 +92,7 @@ type AccountPet = {
   neutered?: boolean | null;
   allergies?: string[] | null;
   health_issues?: string[] | null;
+  analysisHistory?: AccountPetAnalysisHistoryItem[];
 };
 
 type AnalysisMetadata = {
@@ -125,6 +135,13 @@ type FoodCompareResponse = {
   error?: string;
 };
 
+type FollowUpAction =
+  | "progress"
+  | "no_result"
+  | "change_food"
+  | "timeline"
+  | "new_analysis";
+
 const starterCards = [
   {
     title: "Find the right food",
@@ -145,6 +162,38 @@ const starterCards = [
     title: "Health caution",
     helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the bot stays careful.",
     prompt: "My pet has a health concern and I need safe food guidance.",
+  },
+];
+
+const followUpActions: {
+  id: FollowUpAction;
+  title: string;
+  helper: string;
+}[] = [
+  {
+    id: "progress",
+    title: "Progress check",
+    helper: "Talk through weight, appetite, stool, treats, and visible changes.",
+  },
+  {
+    id: "no_result",
+    title: "No visible result",
+    helper: "Review calories, treats, grams per day, activity, and food fit.",
+  },
+  {
+    id: "change_food",
+    title: "Try another food",
+    helper: "Get a new shortlist if taste, brand, or formula is not working.",
+  },
+  {
+    id: "timeline",
+    title: "Open timeline",
+    helper: "Review previous analyses and progress history.",
+  },
+  {
+    id: "new_analysis",
+    title: "Fresh analysis",
+    helper: "Run the full guided flow again for this pet.",
   },
 ];
 
@@ -733,6 +782,8 @@ function createPetFromIntake(intake: PetIntake): Pet {
 }
 
 function createIntakeFromSavedPet(savedPet: AccountPet): PetIntake {
+  const latest = getLatestSavedPetAnalysis(savedPet);
+
   return {
     species: savedPet.species,
     name: savedPet.name,
@@ -742,7 +793,43 @@ function createIntakeFromSavedPet(savedPet: AccountPet): PetIntake {
     neutered: savedPet.neutered ?? false,
     healthIssues: savedPet.health_issues ?? [],
     allergies: savedPet.allergies ?? [],
+    weightGoal: parseSavedWeightGoal(latest?.weight_goal),
   };
+}
+
+function getLatestSavedPetAnalysis(savedPet: AccountPet) {
+  return savedPet.analysisHistory?.[0] ?? null;
+}
+
+function parseSavedWeightGoal(value?: string | null): WeightGoal | undefined {
+  if (!value) return undefined;
+
+  const normalized = value.toLowerCase();
+
+  if (normalized.includes("loss") || normalized.includes("lose")) return "loss";
+  if (normalized.includes("gain")) return "gain";
+  if (normalized.includes("maintain")) return "maintain";
+
+  return undefined;
+}
+
+function formatLatestAnalysisSummary(savedPet: AccountPet) {
+  const latest = getLatestSavedPetAnalysis(savedPet);
+
+  if (!latest) return "No previous analysis found.";
+
+  const parts = [
+    latest.weight_goal ? `Goal: ${getWeightGoalLabel(parseSavedWeightGoal(latest.weight_goal))}` : null,
+    latest.matched_food_name ? `Food: ${latest.matched_food_name}` : null,
+    latest.feeding_grams_per_day
+      ? `Feeding: ${latest.feeding_grams_per_day}g/day`
+      : null,
+    typeof latest.food_score === "number"
+      ? `Score: ${latest.food_score}/100`
+      : null,
+  ].filter(Boolean);
+
+  return parts.length ? parts.join("\n") : "Previous analysis exists, but it has limited saved details.";
 }
 
 function formatAnalysisResult(analysis: PetAnalysis) {
@@ -805,6 +892,7 @@ export default function AccountChatbotPage() {
   const [input, setInput] = useState("");
   const [savedPets, setSavedPets] = useState<AccountPet[]>([]);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const [followUpPet, setFollowUpPet] = useState<AccountPet | null>(null);
   const [isLoadingPets, setIsLoadingPets] = useState(true);
 
   const [pet, setPet] = useState<PetIntake>({
@@ -993,9 +1081,32 @@ export default function AccountChatbotPage() {
 
   function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
+    const hasHistory = (savedPet.analysisHistory?.length ?? 0) > 0;
 
     setSelectedPetId(savedPet.id);
     setPet(nextPet);
+
+    if (hasHistory) {
+      setFollowUpPet(savedPet);
+      setStep("petChoice");
+
+      addMessages(
+        createMessage("user", `Use ${savedPet.name}`),
+        createMessage(
+          "bot",
+          `I found previous nutrition history for ${savedPet.name}.
+
+Latest saved context:
+${formatLatestAnalysisSummary(savedPet)}
+
+What would you like to do next?`
+        )
+      );
+
+      return;
+    }
+
+    setFollowUpPet(null);
     setStep("currentFood");
 
     addMessages(
@@ -1007,8 +1118,106 @@ export default function AccountChatbotPage() {
     );
   }
 
+  function startSavedPetAnalysis(savedPet: AccountPet) {
+    const nextPet = createIntakeFromSavedPet(savedPet);
+
+    setSelectedPetId(savedPet.id);
+    setFollowUpPet(null);
+    setPet(nextPet);
+    setStep("currentFood");
+
+    addMessages(
+      createMessage(
+        "bot",
+        `Great. I will run a fresh analysis for ${savedPet.name}. What food is ${savedPet.name} eating now? If you are not sure, type "I don't know".`
+      )
+    );
+  }
+
+  function handleFollowUpAction(action: FollowUpAction) {
+    if (!followUpPet) return;
+
+    const nextPet = createIntakeFromSavedPet(followUpPet);
+    setPet(nextPet);
+
+    if (action === "timeline") {
+      addMessages(
+        createMessage("user", "Open timeline"),
+        createMessage(
+          "bot",
+          `You can review ${followUpPet.name}'s previous nutrition history here:
+
+- Pet profile: ${siteUrl}/account/pets/${followUpPet.id}
+- Printable timeline: ${siteUrl}/print/pet-timeline/${followUpPet.id}
+
+After checking it, come back and tell me what changed: weight, appetite, stool quality, treats, or whether the food was accepted.`
+        )
+      );
+      return;
+    }
+
+    if (action === "progress") {
+      addMessages(
+        createMessage("user", "Progress check"),
+        createMessage(
+          "bot",
+          `Let's check ${followUpPet.name}'s progress without starting from zero.
+
+Tell me:
+1. Current weight now
+2. How many grams per day you are feeding
+3. Treats/snacks per day
+4. Any visible change in body shape, appetite, stool, or energy
+
+Then I can help decide whether the plan is working or needs adjustment.`
+        )
+      );
+      return;
+    }
+
+    if (action === "no_result") {
+      addMessages(
+        createMessage("user", "No visible result"),
+        createMessage(
+          "bot",
+          `If there was no weight-loss progress, I would first check the practical blockers:
+
+- Are the grams measured with a scale?
+- Are treats included in the daily calories?
+- Did anyone else feed extra food?
+- Has weight been checked on the same scale?
+- Has the food changed since the last analysis?
+
+Send me the current weight, daily grams, food name, and treats per day. I can then suggest whether to reduce portions carefully, change food type, or re-run the full analysis.`
+        )
+      );
+      return;
+    }
+
+    if (action === "change_food") {
+      setFollowUpPet(null);
+      setStep("currentFood");
+      addMessages(
+        createMessage("user", "Try another food"),
+        createMessage(
+          "bot",
+          `No problem. If ${followUpPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
+
+What food is ${followUpPet.name} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
+        )
+      );
+      return;
+    }
+
+    if (action === "new_analysis") {
+      setFollowUpPet(null);
+      startSavedPetAnalysis(followUpPet);
+    }
+  }
+
   function startNewPetAnalysis() {
     setSelectedPetId(null);
+    setFollowUpPet(null);
     setPet({ healthIssues: [], allergies: [] });
     setStep("species");
 
@@ -1752,6 +1961,7 @@ Next actions:
     setStep(savedPets.length > 0 ? "petChoice" : "species");
     setPet({ healthIssues: [], allergies: [] });
     setSelectedPetId(null);
+    setFollowUpPet(null);
     setInput("");
     setLatestAnalysis(null);
     setIsAnalyzing(false);
@@ -1884,6 +2094,53 @@ Next actions:
                   </span>
                 </button>
               )}
+            </div>
+          </div>
+        )}
+
+        {followUpPet && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="font-semibold text-blue-950">
+                  Continue {followUpPet.name}&apos;s plan
+                </p>
+                <p className="mt-1 whitespace-pre-line text-sm text-blue-900">
+                  {formatLatestAnalysisSummary(followUpPet)}
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <a
+                  href={`/account/pets/${followUpPet.id}`}
+                  className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-100"
+                >
+                  Profile
+                </a>
+                <a
+                  href={`/print/pet-timeline/${followUpPet.id}`}
+                  className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-100"
+                >
+                  Timeline
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {followUpActions.map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  onClick={() => handleFollowUpAction(action.id)}
+                  className="rounded-xl border border-blue-200 bg-white p-4 text-left transition hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <span className="block font-semibold text-black">
+                    {action.title}
+                  </span>
+                  <span className="mt-1 block text-sm text-gray-600">
+                    {action.helper}
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
         )}
