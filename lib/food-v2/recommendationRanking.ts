@@ -1,5 +1,9 @@
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 import type { Pet } from "@/types/pet";
+import {
+  scoringWeightsForScenario,
+  type RecommendationScenario,
+} from "@/lib/nutrition-rules/rulesRegistry";
 
 export type FoodV2RecommendationGoal =
   | "general"
@@ -795,6 +799,40 @@ function valueTier(food: FoodProductV2, valueScore: number): FoodV2ValueTier {
   return "standard";
 }
 
+function scenarioForGoal(goal: FoodV2RecommendationGoal | undefined): RecommendationScenario {
+  if (goal === "growth") return "growth";
+  if (goal === "sterilised") return "sterilised";
+  if (goal === "weight_control") return "weight_control";
+  if (goal === "sensitive_digestion") return "sensitive_digestion";
+  if (goal === "allergy") return "allergy";
+  if (goal === "urinary") return "urinary";
+  if (goal === "renal") return "renal";
+  if (goal === "senior") return "senior";
+  return "general";
+}
+
+function weightedTotalScore(input: {
+  goal?: FoodV2RecommendationGoal;
+  fitScore: number;
+  qualityScore: number;
+  valueScore: number;
+}) {
+  const weights = scoringWeightsForScenario(scenarioForGoal(input.goal));
+  const fitWeight = weights.clinical_fit + weights.life_stage_size_fit;
+  const qualityWeight = weights.nutrient_fit + weights.data_quality;
+  const valueWeight = weights.feeding_method_flavor_fit + weights.owner_constraint_fit;
+  const totalWeight = fitWeight + qualityWeight + valueWeight;
+
+  if (totalWeight <= 0) return 0;
+
+  return Math.round(
+    (input.fitScore * fitWeight +
+      input.qualityScore * qualityWeight +
+      input.valueScore * valueWeight) /
+      totalWeight
+  );
+}
+
 export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult {
   const quality = scoreQuality(input.food, input.nutrients);
   const fit = scoreFit(input);
@@ -805,7 +843,12 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
   const excludes = signals.some((signal) => signal.type === "exclude");
   const totalScore = excludes
     ? 0
-    : Math.round(fitScore * 0.55 + qualityScore * 0.35 + valueScore * 0.1);
+    : weightedTotalScore({
+        goal: input.goal,
+        fitScore,
+        qualityScore,
+        valueScore,
+      });
   const tier = valueTier(input.food, valueScore);
   const confidence = confidenceFor({ fitScore, qualityScore, signals });
 
