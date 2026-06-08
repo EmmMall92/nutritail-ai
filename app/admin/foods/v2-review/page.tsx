@@ -94,6 +94,32 @@ function StatCard({
   );
 }
 
+function FocusButton({
+  label,
+  value,
+  helper,
+  onClick,
+}: {
+  label: string;
+  value: number;
+  helper: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:border-black hover:shadow-md"
+    >
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+        {label}
+      </p>
+      <p className="mt-2 text-2xl font-bold text-black">{value}</p>
+      <p className="mt-1 text-xs leading-5 text-gray-600">{helper}</p>
+    </button>
+  );
+}
+
 function formatDate(value: string | null) {
   if (!value) return "-";
 
@@ -264,6 +290,44 @@ export default function FoodV2ReviewPage() {
   const reviewBucketOptions = useMemo(() => {
     return sortCounts(queueSummary?.reviewBucketCounts ?? {});
   }, [queueSummary?.reviewBucketCounts]);
+
+  const reviewFocusItems = useMemo(() => {
+    const buckets = queueSummary?.reviewBucketCounts ?? {};
+    const decisions = queueSummary?.decisionCounts ?? {};
+
+    return [
+      {
+        label: "Ready",
+        value: buckets.ready_for_preview ?? 0,
+        helper: "Candidate rows that can move to preview",
+        bucket: "ready_for_preview",
+      },
+      {
+        label: "Needs kcal",
+        value: buckets.needs_energy ?? 0,
+        helper: "Rows blocked mostly by missing energy",
+        bucket: "needs_energy",
+      },
+      {
+        label: "Needs source",
+        value: buckets.needs_source_or_photo ?? 0,
+        helper: "Rows needing source URL or photo evidence",
+        bucket: "needs_source_or_photo",
+      },
+      {
+        label: "Fix text",
+        value: buckets.fix_text_encoding ?? 0,
+        helper: "Rows with Greek/text encoding issues",
+        bucket: "fix_text_encoding",
+      },
+      {
+        label: "Hold",
+        value: decisions.hold ?? 0,
+        helper: "Rows intentionally held from import",
+        decision: "hold",
+      },
+    ];
+  }, [queueSummary?.decisionCounts, queueSummary?.reviewBucketCounts]);
 
   const visibleQueueRows = useMemo(() => {
     const queueRows = data?.importQueue?.rows ?? [];
@@ -481,6 +545,51 @@ export default function FoodV2ReviewPage() {
               value={data.summary.blockedAuditRows}
               helper="Rows not importable"
             />
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-black">
+                  Review focus
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  Start with the bucket that moves the catalog forward fastest.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setQueueBucketFilter("all");
+                  setQueueDecisionFilter("all");
+                  setQueueBlockerFilter("all");
+                }}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-white"
+              >
+                Clear focus
+              </button>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-5">
+              {reviewFocusItems.map((item) => (
+                <FocusButton
+                  key={item.label}
+                  label={item.label}
+                  value={item.value}
+                  helper={item.helper}
+                  onClick={() => {
+                    setQueueBlockerFilter("all");
+                    if (item.bucket) {
+                      setQueueBucketFilter(item.bucket);
+                      setQueueDecisionFilter("all");
+                    } else {
+                      setQueueDecisionFilter(item.decision ?? "all");
+                      setQueueBucketFilter("all");
+                    }
+                  }}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
