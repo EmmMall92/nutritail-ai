@@ -21,6 +21,8 @@ type DuplicateResponse = {
   groups: DuplicateGroup[];
 };
 
+type DuplicateTypeFilter = "all" | "food" | "pet";
+
 const REVIEW_STATUS_OPTIONS = [
   { value: "open", label: "Open" },
   { value: "reviewed", label: "Reviewed" },
@@ -85,6 +87,10 @@ export default function AdminDuplicatesPage() {
   const [mergePreview, setMergePreview] = useState<MergePreviewState | null>(
     null
   );
+  const [statusFilter, setStatusFilter] = useState<DuplicateReviewStatus | "all">(
+    "open"
+  );
+  const [typeFilter, setTypeFilter] = useState<DuplicateTypeFilter>("food");
 
   const loadDuplicates = useCallback(async () => {
     try {
@@ -298,6 +304,45 @@ export default function AdminDuplicatesPage() {
     [mergePreview]
   );
 
+  const duplicateStats = useMemo(() => {
+    const groups = data?.groups ?? [];
+    const byStatus = REVIEW_STATUS_OPTIONS.reduce<Record<string, number>>(
+      (acc, option) => ({ ...acc, [option.value]: 0 }),
+      {}
+    );
+    let foodGroups = 0;
+    let petGroups = 0;
+    let openFoodGroups = 0;
+
+    for (const group of groups) {
+      const review = reviews[getReviewKey(group)];
+      const status = review?.status ?? "open";
+      byStatus[status] = (byStatus[status] ?? 0) + 1;
+      if (group.type === "food") foodGroups += 1;
+      if (group.type === "pet") petGroups += 1;
+      if (group.type === "food" && status === "open") openFoodGroups += 1;
+    }
+
+    return {
+      byStatus,
+      foodGroups,
+      petGroups,
+      openFoodGroups,
+      totalRecords: groups.reduce((count, group) => count + group.count, 0),
+    };
+  }, [data?.groups, reviews]);
+
+  const visibleGroups = useMemo(() => {
+    return (data?.groups ?? []).filter((group) => {
+      const review = reviews[getReviewKey(group)];
+      const status = review?.status ?? "open";
+      const matchesStatus = statusFilter === "all" || status === statusFilter;
+      const matchesType = typeFilter === "all" || group.type === typeFilter;
+
+      return matchesStatus && matchesType;
+    });
+  }, [data?.groups, reviews, statusFilter, typeFilter]);
+
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -411,12 +456,118 @@ export default function AdminDuplicatesPage() {
           <p className="text-sm text-gray-600">No duplicate groups found.</p>
         ) : (
           <>
+            <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setTypeFilter("food");
+                  setStatusFilter("open");
+                }}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left transition hover:border-black"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Open food groups
+                </p>
+                <p className="mt-2 text-2xl font-bold text-black">
+                  {duplicateStats.openFoodGroups}
+                </p>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTypeFilter("pet");
+                  setStatusFilter("open");
+                }}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left transition hover:border-black"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Pet groups
+                </p>
+                <p className="mt-2 text-2xl font-bold text-black">
+                  {duplicateStats.petGroups}
+                </p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatusFilter("merge-later")}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left transition hover:border-black"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Merge later
+                </p>
+                <p className="mt-2 text-2xl font-bold text-black">
+                  {duplicateStats.byStatus["merge-later"] ?? 0}
+                </p>
+              </button>
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Duplicate records
+                </p>
+                <p className="mt-2 text-2xl font-bold text-black">
+                  {duplicateStats.totalRecords}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-5 grid grid-cols-1 gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 md:grid-cols-3">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Type
+                </label>
+                <select
+                  value={typeFilter}
+                  onChange={(event) =>
+                    setTypeFilter(event.target.value as DuplicateTypeFilter)
+                  }
+                  className="w-full rounded-lg border border-gray-300 p-3 text-black"
+                >
+                  <option value="all">All types</option>
+                  <option value="food">Food only</option>
+                  <option value="pet">Pet only</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-medium text-black">
+                  Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(event) =>
+                    setStatusFilter(
+                      event.target.value as DuplicateReviewStatus | "all"
+                    )
+                  }
+                  className="w-full rounded-lg border border-gray-300 p-3 text-black"
+                >
+                  <option value="all">All statuses</option>
+                  {REVIEW_STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label} ({duplicateStats.byStatus[option.value] ?? 0})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTypeFilter("all");
+                    setStatusFilter("all");
+                  }}
+                  className="w-full rounded-lg border border-black px-4 py-3 text-sm font-medium text-black transition hover:bg-white"
+                >
+                  Show all duplicate groups
+                </button>
+              </div>
+            </div>
+
             <p className="mb-4 text-sm text-gray-600">
-              Found {data.totalGroups} duplicate group(s).
+              Showing {visibleGroups.length} of {data.totalGroups} duplicate
+              group(s).
             </p>
 
             <div className="space-y-4">
-              {data.groups.map((group, index) => {
+              {visibleGroups.map((group, index) => {
                 const reviewKey = getReviewKey(group);
                 const review = reviews[reviewKey] ?? {
                   status: "open",
