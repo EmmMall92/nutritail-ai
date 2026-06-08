@@ -12,5 +12,10 @@ export type PetAnalysisHistory = {
   neutered?: boolean;
   allergies: string[];
   healthIssues: string[];
+  foodScore?: number | null;
+  matchedFoodId?: string | null;
+  matchedFoodName?: string | null;
+  feedingGramsPerDay?: number | null;
+  weightGoal?: string | null;
   createdAt: string;
 };

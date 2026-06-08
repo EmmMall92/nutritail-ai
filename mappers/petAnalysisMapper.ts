@@ -24,6 +24,11 @@ export function mapDbPetAnalysisToPetAnalysisHistory(
     neutered: db.neutered ?? undefined,
     allergies: normalizeStringArray(db.allergies),
     healthIssues: normalizeStringArray(db.health_issues),
+    foodScore: db.food_score ?? null,
+    matchedFoodId: db.matched_food_id ?? null,
+    matchedFoodName: db.matched_food_name ?? null,
+    feedingGramsPerDay: db.feeding_grams_per_day ?? null,
+    weightGoal: db.weight_goal ?? null,
     createdAt: db.created_at,
   };
 }
