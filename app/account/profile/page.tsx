@@ -174,9 +174,28 @@ export default function AccountProfilePage() {
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">Profile</h1>
-        <p className="mt-2 text-gray-600">
-          Manage the account details connected to your Nutritail AI profile.
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-black">Profile</h1>
+            <p className="mt-2 text-gray-600">
+              Manage the account details connected to your Nutritail AI profile.
+            </p>
+          </div>
+          <Link
+            href="/account"
+            className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+          >
+            Back to dashboard
+          </Link>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+        <p className="font-semibold text-blue-950">How this information is used</p>
+        <p className="mt-2 text-sm text-blue-900">
+          Your profile helps connect saved pets, reports, and customer details.
+          Nutrition recommendations are based on pet data and food data, not on
+          optional profile notes alone.
         </p>
       </div>
 
@@ -222,6 +241,9 @@ export default function AccountProfilePage() {
               disabled
               className="w-full rounded-xl border border-gray-300 bg-gray-100 p-3 text-gray-600"
             />
+            <p className="mt-2 text-xs text-gray-500">
+              Email comes from your login account and cannot be edited here.
+            </p>
           </div>
 
           <div>
@@ -268,6 +290,10 @@ export default function AccountProfilePage() {
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
               placeholder="Optional notes..."
             />
+            <p className="mt-2 text-xs text-gray-500">
+              Keep medical details in pet profiles whenever possible, so the
+              chatbot can use them in context.
+            </p>
           </div>
 
           <div className="md:col-span-2">
