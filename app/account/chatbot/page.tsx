@@ -1386,6 +1386,20 @@ What would you like to do next?`
     if (!followUpPet) return;
 
     const echoUser = options.echoUser ?? true;
+
+    void submitChatFeedback({
+      eventType: "chat_followup_action",
+      rating: "unknown",
+      message: `User selected saved-pet follow-up action: ${action}.`,
+      context: {
+        action,
+        petId: followUpPet.id,
+        petName: followUpPet.name,
+        hasAnalysisHistory: (followUpPet.analysisHistory?.length ?? 0) > 0,
+        latestAnalysisSummary: formatLatestAnalysisSummary(followUpPet),
+      },
+    });
+
     const nextPet = createIntakeFromSavedPet(followUpPet);
     setPet(nextPet);
 
