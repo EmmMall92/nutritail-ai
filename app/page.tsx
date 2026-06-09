@@ -39,6 +39,21 @@ const steps = [
   "Get practical nutrition guidance",
 ];
 
+const trustPillars = [
+  {
+    title: "Food database first",
+    text: "Recommendations are grounded in the saved food catalog instead of brand memory or generic guesses.",
+  },
+  {
+    title: "Confidence stays visible",
+    text: "Missing calories, minerals, or retailer-only sources lower confidence, so the answer stays cautious.",
+  },
+  {
+    title: "Vet-safe boundaries",
+    text: "Medical red flags move out of shopping mode and toward veterinarian guidance.",
+  },
+];
+
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -230,6 +245,38 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Built for careful answers
+            </p>
+            <h2 className="mt-3 text-3xl font-black md:text-5xl">
+              Clear recommendations, with confidence you can understand.
+            </h2>
+            <p className="mt-4 max-w-2xl text-gray-600">
+              Nutritail AI separates food facts, pet context, nutrition rules,
+              and human explanation. That makes the final answer easier to
+              trust and easier to review.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            {trustPillars.map((pillar) => (
+              <div
+                key={pillar.title}
+                className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm"
+              >
+                <h3 className="text-lg font-bold">{pillar.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-700">
+                  {pillar.text}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -54,6 +54,34 @@ function getPetLabel(pet: AccountPet) {
   return `${pet.name ?? "Unnamed pet"}${species}${weight}`;
 }
 
+function getRecommendationConfidenceCopy(score?: number | null) {
+  if (typeof score !== "number") {
+    return {
+      label: "General guidance",
+      text: "No food score is saved yet. Run an analysis with the exact food name or label details for more specific guidance.",
+    };
+  }
+
+  if (score >= 80) {
+    return {
+      label: "Strong food fit",
+      text: "The latest saved recommendation looks strong. Recheck only if weight, appetite, stool, allergies, or the current food changed.",
+    };
+  }
+
+  if (score >= 60) {
+    return {
+      label: "Useful shortlist",
+      text: "The latest food fit is usable, but it is worth reviewing missing nutrition fields or exact formula details before relying on it fully.",
+    };
+  }
+
+  return {
+    label: "Review recommended",
+    text: "The latest match is cautious. Use the chatbot again with the exact bag name, label photo, or updated pet context.",
+  };
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -170,6 +198,9 @@ export default function AccountPage() {
   const latestAnalysis = latestAnalysisEntry?.analysis;
   const latestPet = latestAnalysisEntry?.pet;
   const nextPetToAnalyze = petsNeedingAnalysis[0];
+  const confidenceCopy = getRecommendationConfidenceCopy(
+    latestAnalysis?.food_score
+  );
 
   return (
     <section className="space-y-6">
@@ -333,6 +364,40 @@ export default function AccountPage() {
             )}
           </div>
         )}
+      </div>
+
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              Recommendation confidence
+            </p>
+            <h2 className="mt-2 text-xl font-bold text-blue-950">
+              {confidenceCopy.label}
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-blue-900">
+              {confidenceCopy.text}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-blue-900">
+              <span className="rounded-full bg-white px-3 py-1">
+                Food data comes from the catalog
+              </span>
+              <span className="rounded-full bg-white px-3 py-1">
+                Missing nutrients lower confidence
+              </span>
+              <span className="rounded-full bg-white px-3 py-1">
+                Medical issues need vet-safe wording
+              </span>
+            </div>
+          </div>
+
+          <Link
+            href={latestPet ? `/account/pets/${latestPet.id}` : "/account/chatbot"}
+            className="rounded-xl bg-blue-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-blue-800"
+          >
+            {latestPet ? "Review pet context" : "Start analysis"}
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
