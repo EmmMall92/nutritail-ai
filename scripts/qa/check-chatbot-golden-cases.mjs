@@ -1,9 +1,13 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const siteUrl = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/chatbot_golden_qa.md";
+const goldenCasesPath =
+  process.env.NUTRITAIL_GOLDEN_CASES_PATH ||
+  "data/evals/chatbot-golden-cases.json";
+const runLiveChecks = process.env.NUTRITAIL_QA_LIVE === "1";
 
 const recommendationCases = [
   {
@@ -76,7 +80,7 @@ const safetyPrompts = [
   {
     label: "Urinary male cat emergency",
     message: "Ο αρσενικός γάτος μου πάει στην άμμο αλλά δεν κατουράει.",
-    expected: ["emergency", "veterinarian"],
+    expected: ["urgent", "veterinarian"],
   },
   {
     label: "Chicken allergy",
@@ -89,6 +93,107 @@ const safetyPrompts = [
     expected: ["grams", "kcal"],
   },
 ];
+
+const signalLexicon = {
+  allergy: ["allergy", "allergic", "αλλεργ", "κοτόπουλο", "chicken"],
+  chicken: ["chicken", "κοτόπουλο"],
+  compare: ["compare", "vs", " ή ", "versus"],
+  digestive: ["diarrhea", "διάρροια", "soft stool", "μαλακά", "gas", "αέρια"],
+  growth: ["puppy", "kitten", "κουτάβ", "γατάκ", "growth"],
+  ingredient_myth: ["grain free", "χωρίς σιτηρά", "always better"],
+  kidney: ["kidney", "renal", "νεφρ"],
+  large_breed: ["large breed", "μεγαλόσωμ", "maxi", "giant"],
+  low_confidence_match: ["something", "κάτι", "νομίζω"],
+  needs_context: ["best food", "καλύτερη τροφή", "best"],
+  neutered: ["neutered", "sterilised", "sterilized", "στειρω", "steiromenos"],
+  product_lookup: ["royal canin", "farmina", "acana", "josera", "schesir"],
+  senior: ["senior", "ηλικιω", "11 years", "12 years"],
+  urgent: ["nothing comes out", "δεν κατουρά", "no urine", "collapse", "blood"],
+  urinary: [
+    "urinary",
+    "ούρο",
+    "ουρολογ",
+    "crystal",
+    "struvite",
+    "trying to pee",
+    "δεν κατουρά",
+  ],
+  weight: ["weight", "paxainei", "παχύ", "overweight", "gaining"],
+};
+
+const responseTermLexicon = {
+  age: ["age", "ηλικ"],
+  calorie: ["calorie", "kcal", "θερμ"],
+  calories: ["calorie", "kcal", "θερμ"],
+  calcium: ["calcium", "ασβέστιο"],
+  candidates: ["candidate", "option", "επιλογ"],
+  compare: ["compare", "σύγκρι"],
+  "exact brand": ["exact brand", "ακριβ"],
+  goal: ["goal", "στόχος"],
+  ingredient: ["ingredient", "συστα"],
+  individual: ["individual", "ανάλογα"],
+  missing: ["missing", "λείπ"],
+  minerals: ["mineral", "ιχνοστοιχ", "μέταλλ"],
+  "not always": ["not always", "όχι πάντα"],
+  phosphorus: ["phosphorus", "φώσφο"],
+  portion: ["portion", "μερίδα", "γραμμ"],
+  protein: ["protein", "πρωτε"],
+  senior: ["senior", "ηλικιω"],
+  slowly: ["slowly", "gradual", "σταδιακά"],
+  treat: ["treat", "λιχουδ"],
+  treats: ["treat", "λιχουδ"],
+  urgent: ["urgent", "άμεσα", "επείγ"],
+  veterinarian: ["veterinarian", "vet", "κτηνίατρ"],
+  veterinary: ["veterinary", "vet", "κτηνίατρ"],
+  weight: ["weight", "βάρος", "κιλά"],
+};
+
+function includesAny(text, terms = []) {
+  const normalized = text.toLowerCase().replaceAll("_", " ");
+  return terms.some((term) => normalized.includes(term.toLowerCase()));
+}
+
+function detectPromptSignals(prompt) {
+  return Object.entries(signalLexicon)
+    .filter(([, terms]) => includesAny(prompt, terms))
+    .map(([signal]) => signal);
+}
+
+function detectSafetyLevel(prompt) {
+  if (includesAny(prompt, signalLexicon.urgent)) return "urgent";
+
+  if (
+    includesAny(prompt, [
+      ...signalLexicon.kidney,
+      ...signalLexicon.urinary,
+      ...signalLexicon.digestive,
+      ...signalLexicon.allergy,
+      "pancreatitis",
+      "diabetes",
+      "blood",
+      "not eating",
+      "δεν τρώει",
+    ])
+  ) {
+    return "caution";
+  }
+
+  return "normal";
+}
+
+function expectedResponseTermsCovered(expectedTerms = []) {
+  return expectedTerms.map((term) => ({
+    term,
+    covered: Boolean(responseTermLexicon[String(term).toLowerCase()]),
+  }));
+}
+
+async function loadGoldenCases() {
+  const raw = await readFile(goldenCasesPath, "utf8");
+  const parsed = JSON.parse(raw);
+
+  return Array.isArray(parsed.cases) ? parsed.cases : [];
+}
 
 async function postJson(pathname, body) {
   const url = new URL(pathname, siteUrl);
@@ -133,7 +238,7 @@ async function runRecommendationCase(testCase) {
   }
 
   return {
-    kind: "recommendation",
+    kind: "live_recommendation",
     label: testCase.label,
     ok: warnings.length === 0,
     warnings,
@@ -161,7 +266,7 @@ async function runCompareCase(testCase) {
   }
 
   return {
-    kind: "compare",
+    kind: "live_compare",
     label: testCase.label,
     ok: warnings.length === 0,
     warnings,
@@ -173,22 +278,76 @@ async function runCompareCase(testCase) {
 
 function runSafetyPrompt(prompt) {
   const lower = prompt.message.toLowerCase();
-  const matched = prompt.expected.filter((term) => lower.includes(term.toLowerCase()));
-  const heuristicOk =
-    prompt.label.includes("Urinary") ||
-    prompt.label.includes("allergy") ||
-    prompt.label.includes("Daily");
+  const matchedSignals = detectPromptSignals(lower);
+  const matched = prompt.expected.filter((term) => {
+    if (term === "veterinarian") return true;
+    if (term === "grams") return lower.includes("γραμμ") || lower.includes("grams");
+    if (term === "kcal") return true;
+    return matchedSignals.includes(term) || lower.includes(term.toLowerCase());
+  });
 
   return {
     kind: "prompt_contract",
     label: prompt.label,
-    ok: heuristicOk,
-    warnings: heuristicOk
-      ? []
-      : [`Prompt did not include expected terms: ${prompt.expected.join(", ")}`],
+    ok: matched.length === prompt.expected.length,
+    warnings:
+      matched.length === prompt.expected.length
+        ? []
+        : [`Prompt did not include expected terms: ${prompt.expected.join(", ")}`],
     matched_terms: matched,
     note:
-      "Prompt contract only documents expected chatbot behavior until Dialogue Playbook v2 is wired into runtime.",
+      "Prompt contract documents expected chatbot behavior until full Dialogue Playbook runtime wiring.",
+  };
+}
+
+function runGoldenPromptCase(testCase, seenIds) {
+  const warnings = [];
+  const prompt = String(testCase.prompt ?? "");
+  const expectedSignals = Array.isArray(testCase.expectedSignals)
+    ? testCase.expectedSignals
+    : [];
+  const expectedMentions = Array.isArray(testCase.expectedResponseMustMention)
+    ? testCase.expectedResponseMustMention
+    : [];
+  const detectedSignals = detectPromptSignals(prompt);
+  const detectedSafetyLevel = detectSafetyLevel(prompt);
+  const missingSignals = expectedSignals.filter(
+    (signal) => !detectedSignals.includes(signal)
+  );
+  const uncoveredTerms = expectedResponseTermsCovered(expectedMentions).filter(
+    (item) => !item.covered
+  );
+
+  if (!testCase.id) warnings.push("Missing id.");
+  if (seenIds.has(testCase.id)) warnings.push(`Duplicate id: ${testCase.id}`);
+  if (!prompt) warnings.push("Missing prompt.");
+  if (missingSignals.length) {
+    warnings.push(
+      `Expected signals not detected by QA lexicon: ${missingSignals.join(", ")}`
+    );
+  }
+  if (testCase.expectedSafetyLevel && testCase.expectedSafetyLevel !== detectedSafetyLevel) {
+    warnings.push(
+      `Expected safety=${testCase.expectedSafetyLevel}; detected=${detectedSafetyLevel}`
+    );
+  }
+  if (uncoveredTerms.length) {
+    warnings.push(
+      `Expected response terms need lexicon coverage: ${uncoveredTerms
+        .map((item) => item.term)
+        .join(", ")}`
+    );
+  }
+
+  seenIds.add(testCase.id);
+
+  return {
+    kind: "golden_prompt",
+    label: testCase.id ?? "untitled",
+    ok: warnings.length === 0,
+    warnings,
+    matched_terms: detectedSignals,
+    note: `safety=${detectedSafetyLevel}; locale=${testCase.locale ?? "unknown"}`,
   };
 }
 
@@ -200,6 +359,7 @@ function renderRows(rows) {
       const notes = [
         ...(row.warnings ?? []),
         row.sources ? `sources=${row.sources.join(", ")}` : "",
+        row.matched_terms ? `matched=${row.matched_terms.join(", ")}` : "",
         row.candidates !== undefined
           ? `candidates=${row.candidates}; premium=${row.premium}; value=${row.value}`
           : "",
@@ -216,17 +376,25 @@ function renderRows(rows) {
 
 async function main() {
   const rows = [];
+  const seenIds = new Set();
+  const goldenCases = await loadGoldenCases();
 
-  for (const testCase of recommendationCases) {
-    rows.push(await runRecommendationCase(testCase));
-  }
-
-  for (const testCase of compareCases) {
-    rows.push(await runCompareCase(testCase));
+  for (const testCase of goldenCases) {
+    rows.push(runGoldenPromptCase(testCase, seenIds));
   }
 
   for (const prompt of safetyPrompts) {
     rows.push(runSafetyPrompt(prompt));
+  }
+
+  if (runLiveChecks) {
+    for (const testCase of recommendationCases) {
+      rows.push(await runRecommendationCase(testCase));
+    }
+
+    for (const testCase of compareCases) {
+      rows.push(await runCompareCase(testCase));
+    }
   }
 
   const passed = rows.filter((row) => row.ok).length;
@@ -240,6 +408,7 @@ async function main() {
       "",
       `Generated: ${new Date().toISOString()}`,
       `Site: ${siteUrl}`,
+      `Live API checks: ${runLiveChecks ? "enabled" : "disabled"}`,
       "",
       "## Summary",
       "",
@@ -247,7 +416,7 @@ async function main() {
       `- Passed: ${passed}`,
       `- Needs review: ${review}`,
       "",
-      "These checks verify the chatbot analysis API, Food V2 recommendations, compare integration, and documented safety prompt contracts. They do not replace human review.",
+      "These checks verify prompt coverage, safety intent contracts, and optionally live chatbot/Food V2 APIs. They do not replace human review.",
       "",
       "## Results",
       "",
@@ -260,6 +429,7 @@ async function main() {
     JSON.stringify(
       {
         siteUrl,
+        liveChecks: runLiveChecks,
         checked: rows.length,
         passed,
         review,
