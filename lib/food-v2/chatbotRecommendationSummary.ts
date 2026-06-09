@@ -40,6 +40,11 @@ export type FoodV2ChatbotPetContext = {
   weightGoal?: "maintain" | "loss" | "gain";
 };
 
+type RecommendationSummaryOptions = {
+  mode?: "default" | "alternative";
+  excludedBrands?: string[];
+};
+
 const GOAL_LABELS: Record<FoodV2RecommendationGoal, string> = {
   general: "general fit",
   premium: "premium fit",
@@ -170,12 +175,12 @@ function formatFood(food: FoodV2ChatbotRecommendationItem, index: number) {
     .slice(0, 2);
 
   return [
-    `${index}. ${foodName(food) || "Unnamed food"}${
+    `Option ${index}: ${foodName(food) || "Unnamed food"}${
       typeof score === "number" ? ` (${score}/100, ${confidence} confidence)` : ""
     }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
-    `   ${sourceLabel(food)}`,
-    missing.length > 0 ? `   Missing nutrition: ${missing.join(", ")}` : "",
-    reasons.length > 0 ? `   Why: ${reasons.join("; ")}` : "",
+    `- ${sourceLabel(food)}`,
+    missing.length > 0 ? `- Missing nutrition: ${missing.join(", ")}` : "",
+    reasons.length > 0 ? `- Why it fits: ${reasons.join("; ")}` : "",
     cautiousDataQualityNote(food),
   ]
     .filter(Boolean)
@@ -222,12 +227,18 @@ function uniqueShortCautions(values: string[]) {
 }
 
 export function formatFoodV2ChatbotRecommendationSummary(
-  response: FoodV2ChatbotRecommendationResponse
+  response: FoodV2ChatbotRecommendationResponse,
+  options: RecommendationSummaryOptions = {}
 ) {
   const premium = response.premium ?? [];
   const value = response.value ?? [];
   const hold = response.hold ?? [];
   const goal = response.goal ?? "general";
+  const excludedBrands = options.excludedBrands ?? [];
+  const intro =
+    options.mode === "alternative"
+      ? "Alternative food shortlist from the NutriTail nutrition database:"
+      : "Food shortlist from the NutriTail nutrition database:";
 
   if (premium.length === 0 && value.length === 0) {
     const holdCautions = uniqueShortCautions(
@@ -235,9 +246,12 @@ export function formatFoodV2ChatbotRecommendationSummary(
     );
 
     return [
-      "Food shortlist from the NutriTail nutrition database:",
+      intro,
       "",
       `Goal: ${GOAL_LABELS[goal] ?? goal}`,
+      excludedBrands.length > 0
+        ? `Avoiding current brand: ${excludedBrands.join(", ")}`
+        : "",
       "Δεν βρήκα αρκετά ασφαλή ή κατάλληλη Food V2 πρόταση για αυτό το κατοικίδιο με τα τωρινά δεδομένα.",
       "Δεν θα προτείνω τροφές που δεν ταιριάζουν στο μέγεθος ή στο life stage του ζώου.",
       hold.length > 0
@@ -254,16 +268,19 @@ export function formatFoodV2ChatbotRecommendationSummary(
   }
 
   const blocks = [
-    "Food shortlist from the NutriTail nutrition database:",
+    intro,
     "",
     `Goal: ${GOAL_LABELS[goal] ?? goal}`,
+    excludedBrands.length > 0
+      ? `Avoiding current brand: ${excludedBrands.join(", ")}`
+      : "",
     formatTopPick(premium[0] ?? value[0]),
   ];
 
   if (premium.length > 0) {
     blocks.push(
       "",
-      "Best nutrition fits:",
+      "Premium / strongest nutrition fits:",
       premium
         .slice(0, 3)
         .map((food, index) => formatFood(food, index + 1))
@@ -274,7 +291,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (value.length > 0) {
     blocks.push(
       "",
-      "Value-style options:",
+      "Value-style alternatives:",
       value
         .slice(0, 3)
         .map((food, index) => formatFood(food, index + 1))

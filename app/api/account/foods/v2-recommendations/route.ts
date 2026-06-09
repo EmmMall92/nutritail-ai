@@ -78,6 +78,10 @@ function stringArray(value: unknown) {
   return [];
 }
 
+function normalizedText(value: unknown) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
 function numberValue(value: unknown, fallback = 0) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -169,7 +173,11 @@ export async function POST(request: Request) {
     const { data: products, error: productsError } = await productsQuery;
     if (productsError) throw productsError;
 
-    const productRows = (products ?? []) as unknown as FoodProductV2Row[];
+    const excludedBrands = new Set(
+      stringArray(body.excluded_brands ?? body.excludedBrands).map(normalizedText)
+    );
+    const productRows = ((products ?? []) as unknown as FoodProductV2Row[])
+      .filter((product) => !excludedBrands.has(normalizedText(product.brand)));
     const productIds = productRows.map((product) => product.id).filter(Boolean);
 
     if (productIds.length === 0) {

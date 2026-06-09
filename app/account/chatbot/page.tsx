@@ -147,6 +147,7 @@ type FollowUpAction =
   | "new_analysis";
 
 type FollowUpMode = "progress" | "no_result" | null;
+type RecommendationMode = "default" | "alternative";
 
 const starterCards = [
   {
@@ -201,6 +202,21 @@ const followUpActions: {
     title: "Fresh analysis",
     helper: "Run the full guided flow again for this pet.",
   },
+];
+
+const KNOWN_FOOD_BRANDS = [
+  "royal canin",
+  "ambrosia",
+  "josera",
+  "schesir",
+  "monge",
+  "farmina",
+  "acana",
+  "orijen",
+  "purina",
+  "pro plan",
+  "brit",
+  "happy dog",
 ];
 
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
@@ -289,6 +305,14 @@ function normalizeUserText(text: string) {
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "");
+}
+
+function getExcludedBrandsForAlternative(currentFoodName?: string) {
+  const normalized = normalizeUserText(currentFoodName ?? "");
+
+  return KNOWN_FOOD_BRANDS.filter((brand) =>
+    normalized.includes(normalizeUserText(brand))
+  );
 }
 
 function parseListOrEmpty(text: string) {
@@ -693,7 +717,10 @@ What this means:
 ${rows.join("\n\n")}${summary}${followUp}`;
 }
 
-async function getFoodV2RecommendationMessage(pet: PetIntake) {
+async function getFoodV2RecommendationMessage(
+  pet: PetIntake,
+  options: { mode?: RecommendationMode } = {}
+) {
   if (!pet.species) return "";
 
   const goal = goalFromPetContext({
@@ -722,6 +749,10 @@ async function getFoodV2RecommendationMessage(pet: PetIntake) {
       goal,
       format: "dry",
       limit_per_bucket: 3,
+      excluded_brands:
+        options.mode === "alternative"
+          ? getExcludedBrandsForAlternative(pet.currentFoodName)
+          : [],
     }),
   });
 
@@ -733,7 +764,13 @@ async function getFoodV2RecommendationMessage(pet: PetIntake) {
     throw new Error(result.error || "Could not load Food V2 recommendations.");
   }
 
-  return formatFoodV2ChatbotRecommendationSummary(result);
+  return formatFoodV2ChatbotRecommendationSummary(result, {
+    mode: options.mode ?? "default",
+    excludedBrands:
+      options.mode === "alternative"
+        ? getExcludedBrandsForAlternative(pet.currentFoodName)
+        : [],
+  });
 }
 
 function formatPetIntakeSummary(pet: PetIntake) {
@@ -978,6 +1015,8 @@ export default function AccountChatbotPage() {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [followUpPet, setFollowUpPet] = useState<AccountPet | null>(null);
   const [followUpMode, setFollowUpMode] = useState<FollowUpMode>(null);
+  const [recommendationMode, setRecommendationMode] =
+    useState<RecommendationMode>("default");
   const [isLoadingPets, setIsLoadingPets] = useState(true);
 
   const [pet, setPet] = useState<PetIntake>({
@@ -1208,6 +1247,7 @@ What would you like to do next?`
 
     setSelectedPetId(savedPet.id);
     setFollowUpPet(null);
+    setRecommendationMode("default");
     setPet(nextPet);
     setStep("currentFood");
 
@@ -1284,6 +1324,7 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
     if (action === "change_food") {
       setFollowUpPet(null);
       setFollowUpMode(null);
+      setRecommendationMode("alternative");
       setStep("currentFood");
       addMessages(
         createMessage("user", "Try another food"),
@@ -1308,6 +1349,7 @@ What food is ${followUpPet.name} eating now? Write the exact brand and formula i
     setSelectedPetId(null);
     setFollowUpPet(null);
     setFollowUpMode(null);
+    setRecommendationMode("default");
     setPet({ healthIssues: [], allergies: [] });
     setStep("species");
 
@@ -1398,7 +1440,9 @@ ${guardrailText}`
       }
 
       try {
-        const foodV2Message = await getFoodV2RecommendationMessage(nextPet);
+        const foodV2Message = await getFoodV2RecommendationMessage(nextPet, {
+          mode: recommendationMode,
+        });
 
         if (foodV2Message) {
           addMessages(createMessage("bot", foodV2Message));
@@ -2067,6 +2111,7 @@ Next actions:
     setSelectedPetId(null);
     setFollowUpPet(null);
     setFollowUpMode(null);
+    setRecommendationMode("default");
     setInput("");
     setLatestAnalysis(null);
     setIsAnalyzing(false);
