@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -36,6 +36,39 @@ type PetDetailResponse = {
   pet: AccountPet;
   analysisHistory: AnalysisHistoryItem[];
 };
+
+type PetContextForm = {
+  breed: string;
+  age: string;
+  weight: string;
+  activity_level: string;
+  neutered: string;
+  allergies: string;
+  health_issues: string;
+};
+
+function toCommaText(value?: string[]) {
+  return value?.length ? value.join(", ") : "";
+}
+
+function toStringList(value: string) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toPetContextForm(pet: AccountPet): PetContextForm {
+  return {
+    breed: pet.breed ?? "",
+    age: String(pet.age ?? ""),
+    weight: String(pet.weight ?? ""),
+    activity_level: pet.activity_level || "normal",
+    neutered: pet.neutered ? "yes" : "no",
+    allergies: toCommaText(pet.allergies),
+    health_issues: toCommaText(pet.health_issues),
+  };
+}
 
 function hasValidFoodScore(score?: number | null) {
   return typeof score === "number" && Number.isFinite(score);
@@ -111,8 +144,11 @@ export default function AccountPetDetailPage() {
   const pathname = usePathname();
 
   const [data, setData] = useState<PetDetailResponse | null>(null);
+  const [editForm, setEditForm] = useState<PetContextForm | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSavingContext, setIsSavingContext] = useState(false);
   const [error, setError] = useState("");
+  const [contextMessage, setContextMessage] = useState("");
 
   useEffect(() => {
     async function loadPet() {
@@ -144,7 +180,9 @@ export default function AccountPetDetailPage() {
           throw new Error(result.error || "Failed to load pet.");
         }
 
-        setData(result as PetDetailResponse);
+        const petDetail = result as PetDetailResponse;
+        setData(petDetail);
+        setEditForm(toPetContextForm(petDetail.pet));
       } catch (err) {
         console.error(err);
         setError(err instanceof Error ? err.message : "Failed to load pet.");
@@ -157,6 +195,68 @@ export default function AccountPetDetailPage() {
       loadPet();
     }
   }, [params, pathname, router]);
+
+  async function handleContextSave(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!editForm || !data) return;
+
+    try {
+      setIsSavingContext(true);
+      setContextMessage("");
+
+      const supabase = createClient();
+      const { data: sessionData } = await supabase.auth.getSession();
+
+      if (!sessionData.session?.user) {
+        router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+        return;
+      }
+
+      const response = await fetch(`/api/account/pets/${params.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          authUserId: sessionData.session.user.id,
+          breed: editForm.breed,
+          age: Number(editForm.age),
+          weight: Number(editForm.weight),
+          activity_level: editForm.activity_level,
+          neutered: editForm.neutered === "yes",
+          allergies: toStringList(editForm.allergies),
+          health_issues: toStringList(editForm.health_issues),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to update pet context.");
+      }
+
+      setData((current) =>
+        current
+          ? {
+              ...current,
+              pet: result.pet as AccountPet,
+            }
+          : current
+      );
+      setEditForm(toPetContextForm(result.pet as AccountPet));
+      setContextMessage(
+        "Pet context updated. Run a new analysis when you want fresh recommendations."
+      );
+    } catch (err) {
+      console.error(err);
+      setContextMessage(
+        err instanceof Error ? err.message : "Failed to update pet context."
+      );
+    } finally {
+      setIsSavingContext(false);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -309,6 +409,148 @@ export default function AccountPetDetailPage() {
             </p>
           </div>
         </div>
+
+        {editForm && (
+          <form
+            onSubmit={handleContextSave}
+            className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-black">
+                  Update pet context
+                </h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  Keep weight, activity, allergies, and health notes current so
+                  the next chatbot analysis starts from the right context.
+                </p>
+              </div>
+              <Link
+                href="/account/chatbot"
+                className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+              >
+                Re-run analysis
+              </Link>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <label className="text-sm font-medium text-black">
+                Breed
+                <input
+                  value={editForm.breed}
+                  onChange={(event) =>
+                    setEditForm({ ...editForm, breed: event.target.value })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                  placeholder="e.g. Labrador"
+                />
+              </label>
+
+              <label className="text-sm font-medium text-black">
+                Age
+                <input
+                  type="number"
+                  min="0"
+                  max="40"
+                  step="0.1"
+                  value={editForm.age}
+                  onChange={(event) =>
+                    setEditForm({ ...editForm, age: event.target.value })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                />
+              </label>
+
+              <label className="text-sm font-medium text-black">
+                Weight kg
+                <input
+                  type="number"
+                  min="0.1"
+                  max="150"
+                  step="0.1"
+                  value={editForm.weight}
+                  onChange={(event) =>
+                    setEditForm({ ...editForm, weight: event.target.value })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                />
+              </label>
+
+              <label className="text-sm font-medium text-black">
+                Activity
+                <select
+                  value={editForm.activity_level}
+                  onChange={(event) =>
+                    setEditForm({
+                      ...editForm,
+                      activity_level: event.target.value,
+                    })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                >
+                  <option value="low">Low</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+
+              <label className="text-sm font-medium text-black">
+                Neutered
+                <select
+                  value={editForm.neutered}
+                  onChange={(event) =>
+                    setEditForm({ ...editForm, neutered: event.target.value })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+
+              <label className="text-sm font-medium text-black">
+                Allergies
+                <input
+                  value={editForm.allergies}
+                  onChange={(event) =>
+                    setEditForm({ ...editForm, allergies: event.target.value })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                  placeholder="chicken, wheat"
+                />
+              </label>
+
+              <label className="text-sm font-medium text-black md:col-span-2">
+                Health notes
+                <input
+                  value={editForm.health_issues}
+                  onChange={(event) =>
+                    setEditForm({
+                      ...editForm,
+                      health_issues: event.target.value,
+                    })
+                  }
+                  className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
+                  placeholder="sensitive digestion, weight loss"
+                />
+              </label>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button
+                type="submit"
+                disabled={isSavingContext}
+                className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+              >
+                {isSavingContext ? "Saving..." : "Save context"}
+              </button>
+
+              {contextMessage && (
+                <p className="text-sm text-gray-700">{contextMessage}</p>
+              )}
+            </div>
+          </form>
+        )}
 
         {latest && (
           <div className="rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm">
