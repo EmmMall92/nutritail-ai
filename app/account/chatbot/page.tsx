@@ -916,6 +916,17 @@ Saved context:
 If the food is no longer accepted or the taste/brand is the issue, choose "Try another food" and I will keep the same pet context.`;
 }
 
+function extractProgressDetails(text: string) {
+  const normalized = text.toLowerCase().replace(",", ".");
+  const weightMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:kg|κιλ|κιλα|κιλά)/);
+  const gramsMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:g|gr|γρ|γραμμαρια|γραμμάρια)/);
+
+  return {
+    currentWeightKg: weightMatch ? Number(weightMatch[1]) : parseNumber(text),
+    feedingGramsPerDay: gramsMatch ? Number(gramsMatch[1]) : null,
+  };
+}
+
 function formatAnalysisResult(analysis: PetAnalysis) {
   const { nutrition, advice } = analysis;
 
@@ -1094,6 +1105,42 @@ export default function AccountChatbotPage() {
       if (showConfirmation) {
         setFeedbackStatus("I could not record feedback right now.");
       }
+    }
+  }
+
+  async function saveFollowUpProgressLog({
+    savedPet,
+    mode,
+    text,
+  }: {
+    savedPet: AccountPet;
+    mode: Exclude<FollowUpMode, null>;
+    text: string;
+  }) {
+    try {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getSession();
+      const authUserId = data.session?.user?.id;
+
+      if (!authUserId) return;
+
+      const details = extractProgressDetails(text);
+
+      await fetch(`/api/account/pets/${savedPet.id}/progress`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          authUserId,
+          mode,
+          note: text,
+          currentWeightKg: details.currentWeightKg,
+          feedingGramsPerDay: details.feedingGramsPerDay,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to save follow-up progress log:", error);
     }
   }
 
@@ -1692,6 +1739,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   async function handleStep(text: string) {
     if (followUpPet && followUpMode) {
+      void saveFollowUpProgressLog({
+        savedPet: followUpPet,
+        mode: followUpMode,
+        text,
+      });
+
       addMessages(
         createMessage(
           "bot",

@@ -32,9 +32,24 @@ type AccountPet = {
   created_at: string;
 };
 
+type ProgressLog = {
+  id: string;
+  message: string;
+  created_at: string;
+  metadata?: {
+    mode?: string;
+    currentWeightKg?: number | null;
+    previousWeightKg?: number | null;
+    feedingGramsPerDay?: number | null;
+    treatsPerDay?: string | null;
+    note?: string | null;
+  };
+};
+
 type PetDetailResponse = {
   pet: AccountPet;
   analysisHistory: AnalysisHistoryItem[];
+  progressLogs?: ProgressLog[];
 };
 
 function hasValidFoodScore(score?: number | null) {
@@ -103,6 +118,12 @@ function getCareNotes(pet: AccountPet) {
   }
 
   return notes;
+}
+
+function formatProgressMode(value?: string) {
+  if (value === "no_result") return "No visible result";
+  if (value === "progress") return "Progress check";
+  return "Progress note";
 }
 
 export default function AccountPetDetailPage() {
@@ -190,7 +211,7 @@ export default function AccountPetDetailPage() {
     );
   }
 
-  const { pet, analysisHistory } = data;
+  const { pet, analysisHistory, progressLogs = [] } = data;
   const latest = analysisHistory[0];
 
   return (
@@ -410,6 +431,82 @@ export default function AccountPetDetailPage() {
             </div>
           </div>
         )}
+
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-blue-950">
+                Progress timeline
+              </h2>
+              <p className="mt-1 text-sm text-blue-900">
+                Follow-up notes from chatbot check-ins, useful for weight-loss
+                and food acceptance tracking.
+              </p>
+            </div>
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
+            >
+              Add check-in
+            </Link>
+          </div>
+
+          {progressLogs.length === 0 ? (
+            <div className="mt-4 rounded-xl border border-dashed border-blue-300 bg-white p-5 text-sm text-blue-900">
+              No progress check-ins yet. Open the chatbot, choose this pet, and
+              use Progress check or No visible result.
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {progressLogs.map((log) => (
+                <div
+                  key={log.id}
+                  className="rounded-xl border border-blue-200 bg-white p-4"
+                >
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-semibold text-black">
+                        {formatProgressMode(log.metadata?.mode)}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {new Date(log.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    {log.metadata?.currentWeightKg && (
+                      <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-900">
+                        {log.metadata.currentWeightKg} kg
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-700">
+                    {log.metadata?.previousWeightKg && (
+                      <span className="rounded-full bg-gray-100 px-3 py-1">
+                        Previous {log.metadata.previousWeightKg} kg
+                      </span>
+                    )}
+                    {log.metadata?.feedingGramsPerDay && (
+                      <span className="rounded-full bg-gray-100 px-3 py-1">
+                        {log.metadata.feedingGramsPerDay}g/day
+                      </span>
+                    )}
+                    {log.metadata?.treatsPerDay && (
+                      <span className="rounded-full bg-gray-100 px-3 py-1">
+                        Treats: {log.metadata.treatsPerDay}
+                      </span>
+                    )}
+                  </div>
+
+                  {log.metadata?.note && (
+                    <p className="mt-3 text-sm text-gray-700">
+                      {log.metadata.note}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-black">Analysis history</h2>
