@@ -300,6 +300,69 @@ function parseNumber(text: string): number | null {
   return Number.isFinite(value) ? value : null;
 }
 
+function detectFollowUpAction(text: string): FollowUpAction | null {
+  const value = normalizeUserText(text);
+  const hasWeightNumber = parseNumber(text) !== null;
+
+  if (
+    value.includes("timeline") ||
+    value.includes("ιστορ") ||
+    value.includes("προηγουμεν")
+  ) {
+    return "timeline";
+  }
+
+  if (
+    value.includes("fresh") ||
+    value.includes("new analysis") ||
+    value.includes("full analysis") ||
+    value.includes("καινουρια αναλυ") ||
+    value.includes("νεα αναλυ")
+  ) {
+    return "new_analysis";
+  }
+
+  if (
+    value.includes("no result") ||
+    value.includes("not working") ||
+    value.includes("nothing changed") ||
+    value.includes("δεν ειδα") ||
+    value.includes("δεν αλλαξε") ||
+    value.includes("χωρις αποτελεσμα")
+  ) {
+    return "no_result";
+  }
+
+  if (
+    value.includes("another food") ||
+    value.includes("different food") ||
+    value.includes("change food") ||
+    value.includes("try another") ||
+    value.includes("βαρεθηκε") ||
+    value.includes("αλλη τροφη") ||
+    value.includes("αλλη γευση") ||
+    value.includes("αλλη εταιρια") ||
+    value.includes("δεν την τρωει")
+  ) {
+    return "change_food";
+  }
+
+  if (
+    hasWeightNumber ||
+    value.includes("progress") ||
+    value.includes("προοδο") ||
+    value.includes("κιλ") ||
+    value.includes("grams") ||
+    value.includes("γραμμα") ||
+    value.includes("treat") ||
+    value.includes("λιχουδ")
+  ) {
+    return "progress";
+  }
+
+  return null;
+}
+
 function normalizeUserText(text: string) {
   return text
     .toLowerCase()
@@ -1306,15 +1369,19 @@ What would you like to do next?`
     );
   }
 
-  function handleFollowUpAction(action: FollowUpAction) {
+  function handleFollowUpAction(
+    action: FollowUpAction,
+    options: { echoUser?: boolean } = {}
+  ) {
     if (!followUpPet) return;
 
+    const echoUser = options.echoUser ?? true;
     const nextPet = createIntakeFromSavedPet(followUpPet);
     setPet(nextPet);
 
     if (action === "timeline") {
       addMessages(
-        createMessage("user", "Open timeline"),
+        ...(echoUser ? [createMessage("user", "Open timeline")] : []),
         createMessage(
           "bot",
           `You can review ${followUpPet.name}'s previous nutrition history here:
@@ -1331,7 +1398,7 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
     if (action === "progress") {
       setFollowUpMode("progress");
       addMessages(
-        createMessage("user", "Progress check"),
+        ...(echoUser ? [createMessage("user", "Progress check")] : []),
         createMessage(
           "bot",
           `Let's check ${followUpPet.name}'s progress without starting from zero.
@@ -1351,7 +1418,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
     if (action === "no_result") {
       setFollowUpMode("no_result");
       addMessages(
-        createMessage("user", "No visible result"),
+        ...(echoUser ? [createMessage("user", "No visible result")] : []),
         createMessage(
           "bot",
           `If there was no weight-loss progress, I would first check the practical blockers:
@@ -1374,7 +1441,7 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
       setRecommendationMode("alternative");
       setStep("currentFood");
       addMessages(
-        createMessage("user", "Try another food"),
+        ...(echoUser ? [createMessage("user", "Try another food")] : []),
         createMessage(
           "bot",
           `No problem. If ${followUpPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
@@ -1800,6 +1867,45 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )
       );
       return;
+    }
+
+    if (followUpPet && step === "petChoice") {
+      const followUpAction = detectFollowUpAction(text);
+
+      if (followUpAction) {
+        if (followUpAction === "progress" && parseNumber(text) !== null) {
+          setFollowUpMode("progress");
+          addMessages(
+            createMessage(
+              "bot",
+              buildFollowUpProgressReply({
+                text,
+                savedPet: followUpPet,
+                mode: "progress",
+              })
+            )
+          );
+          return;
+        }
+
+        if (followUpAction === "no_result" && parseNumber(text) !== null) {
+          setFollowUpMode("no_result");
+          addMessages(
+            createMessage(
+              "bot",
+              buildFollowUpProgressReply({
+                text,
+                savedPet: followUpPet,
+                mode: "no_result",
+              })
+            )
+          );
+          return;
+        }
+
+        handleFollowUpAction(followUpAction, { echoUser: false });
+        return;
+      }
     }
 
     const compareQueries = parseCompareQueries(text);
