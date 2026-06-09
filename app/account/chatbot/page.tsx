@@ -1004,6 +1004,16 @@ export default function AccountChatbotPage() {
     ),
   ]);
   const quickReplies = getQuickReplies(step);
+  const inputHelper =
+    followUpPet && step === "petChoice" && !followUpMode
+      ? "Tip: write current weight, daily grams, no result, or another food."
+      : followUpMode === "progress"
+        ? "Send weight, daily grams, treats, appetite, stool, or energy changes."
+        : followUpMode === "no_result"
+          ? "Send current weight, grams per day, treats, and current food."
+          : showSave
+            ? "Save when the details look right, or write what needs changing."
+            : "";
 
   function addMessages(...nextMessages: ChatMessage[]) {
     setMessages((prev) => [...prev, ...nextMessages]);
@@ -2436,6 +2446,25 @@ Next actions:
       </div>
 
       <div className="sticky bottom-0 shrink-0 border-t border-gray-200 bg-white p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] sm:p-5">
+        {followUpPet && step === "petChoice" && !followUpMode && (
+          <div className="mb-3 grid grid-cols-2 gap-2 sm:hidden">
+            <button
+              type="button"
+              onClick={() => handleFollowUpAction("progress")}
+              className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
+            >
+              Progress
+            </button>
+            <button
+              type="button"
+              onClick={() => handleFollowUpAction("change_food")}
+              className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
+            >
+              Another food
+            </button>
+          </div>
+        )}
+
         {quickReplies.length > 0 && !isAnalyzing && !isSaving && (
           <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
             {quickReplies.map((reply) => (
@@ -2449,6 +2478,10 @@ Next actions:
               </button>
             ))}
           </div>
+        )}
+
+        {inputHelper && (
+          <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
         )}
 
         <div className="flex gap-3">
