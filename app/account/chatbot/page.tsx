@@ -1044,9 +1044,6 @@ ${
     : "- No special notes for this analysis."
 }
 
-Food shortlist:
-I will show the Food V2 shortlist next, using the nutrition database, data-quality checks, and any missing-field warnings.
-
 Note: This guidance is educational and does not replace veterinary advice.`;
 }
 
