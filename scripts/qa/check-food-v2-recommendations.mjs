@@ -1,117 +1,17 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const siteUrl = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const reportPath = "reports/food_v2_recommendation_smoke_qa.md";
+const scenariosPath =
+  process.env.NUTRITAIL_RECOMMENDATION_SCENARIOS_PATH ||
+  "data/evals/food-v2-recommendation-scenarios.json";
 
-const scenarios = [
-  {
-    label: "Large sterilised dog",
-    goal: "sterilised",
-    pet: {
-      species: "dog",
-      breed: "Labrador",
-      age: 4,
-      weight: 30,
-      activityLevel: "normal",
-      neutered: true,
-      healthIssues: ["weight control"],
-    },
-  },
-  {
-    label: "Large dog avoiding chicken",
-    goal: "general",
-    pet: {
-      species: "dog",
-      breed: "Labrador",
-      age: 4,
-      weight: 30,
-      activityLevel: "normal",
-      neutered: true,
-      excludedIngredients: ["chicken"],
-      preferredProteins: ["lamb", "salmon"],
-    },
-  },
-  {
-    label: "Chicken allergy dog",
-    goal: "allergy",
-    pet: {
-      species: "dog",
-      breed: "Mixed breed",
-      age: 3,
-      weight: 18,
-      activityLevel: "normal",
-      neutered: false,
-      allergies: ["chicken"],
-      healthIssues: ["skin allergy"],
-      preferredProteins: ["lamb", "duck", "salmon"],
-    },
-  },
-  {
-    label: "Large breed puppy",
-    goal: "growth",
-    pet: {
-      species: "dog",
-      breed: "German Shepherd",
-      age: 0.6,
-      weight: 22,
-      activityLevel: "normal",
-      neutered: false,
-    },
-  },
-  {
-    label: "Sensitive digestion dog",
-    goal: "sensitive_digestion",
-    pet: {
-      species: "dog",
-      breed: "French Bulldog",
-      age: 3,
-      weight: 12,
-      activityLevel: "normal",
-      neutered: true,
-      healthIssues: ["sensitive digestion", "gas"],
-    },
-  },
-  {
-    label: "Sterilised cat",
-    goal: "sterilised",
-    pet: {
-      species: "cat",
-      breed: "European shorthair",
-      age: 5,
-      weight: 5,
-      activityLevel: "low",
-      neutered: true,
-      healthIssues: ["weight control"],
-    },
-  },
-  {
-    label: "Urinary cat",
-    goal: "urinary",
-    pet: {
-      species: "cat",
-      breed: "European shorthair",
-      age: 5,
-      weight: 5,
-      activityLevel: "normal",
-      neutered: true,
-      healthIssues: ["urinary"],
-    },
-  },
-  {
-    label: "Senior dog",
-    goal: "senior",
-    pet: {
-      species: "dog",
-      breed: "Mixed breed",
-      age: 10,
-      weight: 18,
-      activityLevel: "low",
-      neutered: true,
-      healthIssues: ["joint support"],
-    },
-  },
-];
+async function loadScenarios() {
+  const raw = await readFile(scenariosPath, "utf8");
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed.scenarios) ? parsed.scenarios : [];
+}
 
 function isValidBucket(value) {
   return Array.isArray(value);
@@ -204,6 +104,7 @@ function renderTable(rows) {
 }
 
 async function main() {
+  const scenarios = await loadScenarios();
   const rows = [];
   for (const scenario of scenarios) {
     rows.push(await checkScenario(scenario));
@@ -220,6 +121,7 @@ async function main() {
       "",
       `Generated: ${new Date().toISOString()}`,
       `Site: ${siteUrl}`,
+      `Scenario source: ${scenariosPath}`,
       "",
       "## Summary",
       "",
