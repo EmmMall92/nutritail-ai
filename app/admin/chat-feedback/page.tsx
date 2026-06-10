@@ -180,6 +180,9 @@ export default function AdminChatFeedbackPage() {
   const failedMatches = feedbackLogs.filter(
     (log) => getFeedbackType(log) === "failed_food_match"
   );
+  const followUpActions = feedbackLogs.filter(
+    (log) => getFeedbackType(log) === "chat_followup_action"
+  );
   const helpful = feedbackLogs.filter(
     (log) => String(log.metadata?.rating ?? "") === "helpful"
   );
@@ -249,7 +252,7 @@ export default function AdminChatFeedbackPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total feedback</p>
           <p className="mt-2 text-3xl font-bold text-black">
@@ -260,6 +263,12 @@ export default function AdminChatFeedbackPage() {
           <p className="text-sm text-gray-500">Failed matches</p>
           <p className="mt-2 text-3xl font-bold text-black">
             {failedMatches.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">Follow-ups</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {followUpActions.length}
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -298,13 +307,23 @@ export default function AdminChatFeedbackPage() {
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
           <TriageButton
             label="Failed matches"
             value={failedMatches.length}
             helper="Food names the database or matcher could not resolve"
             onClick={() => {
               setTypeFilter("failed_food_match");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="Follow-ups"
+            value={followUpActions.length}
+            helper="Progress, no-result, timeline, or alternative-food actions"
+            onClick={() => {
+              setTypeFilter("chat_followup_action");
               setRatingFilter("all");
               setSearch("");
             }}

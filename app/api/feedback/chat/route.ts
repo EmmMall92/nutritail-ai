@@ -6,6 +6,7 @@ const MAX_TEXT_LENGTH = 500;
 const MAX_CONTEXT_LENGTH = 4000;
 const ALLOWED_EVENT_TYPES = new Set([
   "chat_helpfulness",
+  "chat_followup_action",
   "failed_food_match",
 ]);
 const ALLOWED_RATINGS = new Set([
