@@ -262,8 +262,8 @@ export default function DashboardPage() {
       </SectionCard>
 
       <SectionCard
-        title="Recommended Foods"
-        description="Foods ranked by profile fit, nutritional support, and practical matching."
+        title="Legacy Food Analysis Signals"
+        description="Historical analysis signals from the legacy food matcher. Use the chatbot Food V2 shortlist for current shopping recommendations."
       >
         <FoodRecommendations foods={analysis.recommendedFoods} />
       </SectionCard>

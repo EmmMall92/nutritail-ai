@@ -11,7 +11,7 @@ export default function FoodRecommendations({
     <div>
       {foods.length === 0 ? (
         <p className="text-sm text-black">
-          No suitable foods found yet for this pet profile.
+          No legacy food analysis signals were saved for this pet profile.
         </p>
       ) : (
         <div className="space-y-4">
@@ -76,7 +76,7 @@ export default function FoodRecommendations({
 
               <div className="mt-4">
                 <p className="mb-2 font-semibold text-black">
-                  Recommendation Reasons
+                  Legacy Analysis Reasons
                 </p>
                 <ul className="list-disc pl-5 text-sm text-black">
                   {item.reasons.map((reason, index) => (

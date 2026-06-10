@@ -53,9 +53,9 @@ function buildSummary(params: {
   }
 
   if (params.addedFoodIds.length > 0 || params.removedFoodIds.length > 0) {
-    summary.push("Recommended foods changed.");
+    summary.push("Legacy food analysis signals changed.");
   } else {
-    summary.push("Recommended foods remained the same.");
+    summary.push("Legacy food analysis signals remained the same.");
   }
 
   return summary;

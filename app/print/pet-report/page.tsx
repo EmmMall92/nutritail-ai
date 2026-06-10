@@ -237,7 +237,12 @@ export default function PetReportPage() {
         </div>
       </Section>
 
-      <Section title="Recommended Foods">
+      <Section title="Legacy Food Analysis Signals">
+        <p className="mb-4 text-sm text-gray-600">
+          These are legacy analysis signals saved with this report. Use the
+          Food V2 shortlist in the chatbot for current shopping
+          recommendations.
+        </p>
         <div className="space-y-4">
           {recommendedFoods.map((item) => (
             <div
@@ -252,7 +257,7 @@ export default function PetReportPage() {
                 {item.food.protein}% / fat {item.food.fat}%
               </p>
               <p className="mt-2 text-sm">
-                <span className="font-semibold">Recommendation reasons:</span>{" "}
+                <span className="font-semibold">Analysis reasons:</span>{" "}
                 {item.reasons.join(", ")}
               </p>
             </div>
