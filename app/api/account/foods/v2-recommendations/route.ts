@@ -5,6 +5,7 @@ import {
   splitFoodV2Recommendations,
   type FoodV2RecommendationGoal,
 } from "@/lib/food-v2/recommendationRanking";
+import { normalizeCanonicalFormulaName } from "@/lib/food-v2/canonicalFood";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
@@ -102,10 +103,12 @@ function compactRanking(
   product: FoodProductV2Row,
   nutrients: FoodNutrientsV2
 ) {
+  const displayName = normalizeCanonicalFormulaName(product.display_name);
+
   return {
     id: product.id,
     brand: product.brand,
-    display_name: product.display_name,
+    display_name: displayName,
     formula_key: product.formula_key,
     species: product.species,
     format: product.format,
@@ -114,7 +117,10 @@ function compactRanking(
     data_quality_status: product.data_quality_status,
     source_priority: product.source_priority,
     data_source_url: product.data_source_url,
-    ranking,
+    ranking: {
+      ...ranking,
+      display_name: displayName,
+    },
     guard_flags: detectFoodV2RecommendationGuardFlags(ranking),
     nutrition_confidence: getFoodV2NutritionConfidence(product, nutrients),
     nutrition: {

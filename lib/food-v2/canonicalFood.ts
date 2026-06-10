@@ -77,6 +77,15 @@ function titleCase(value: string) {
     .join(" ");
 }
 
+function dedupeRepeatedDisplayTerms(value: string) {
+  return value
+    .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
+    .replace(/\b(veterinary)(?:\s+\1)+\b/gi, "$1")
+    .replace(/\b(urinary|renal|senior|puppy|kitten|adult)(?:\s+\1)+\b/gi, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function slugify(value: string) {
   return normalizeFoodTokenAliases(normalizeSearchText(value))
     .replace(/&/g, " and ")
@@ -146,7 +155,7 @@ function removeNoiseWords(value: string) {
 
 export function normalizeCanonicalFormulaName(value: unknown) {
   return titleCase(
-    removeNoiseWords(cleanText(value))
+    dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
       .replace(PACK_SIZE_PATTERN, " ")
       .replace(/\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr)\b/gi, " ")
       .replace(/\b\d+(?:[.,]\d+)?\s*(?:\+?\s*free|pack|bags?)\b/gi, " ")

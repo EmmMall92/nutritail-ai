@@ -160,7 +160,7 @@ const GOAL_THERAPEUTIC_TERMS: Record<FoodV2RecommendationGoal, string[]> = {
   sensitive_digestion: ["gastrointestinal", "gastro", "digestive", "sensitivity"],
   allergy: ["hypoallergenic", "anallergenic", "sensitivity", "dermatosis", "skin"],
   urinary: ["urinary", "struvite", "oxalate"],
-  renal: ["renal", "kidney", "oxalate"],
+  renal: ["renal", "kidney"],
 };
 
 const ALLERGEN_TERMS: Record<string, string[]> = {
@@ -624,9 +624,24 @@ function scoreFit(input: FoodV2RankingInput) {
       score += 10;
       addSignal(signals, "boost", "sterilised_fit", 10, "Useful positioning for a sterilised pet.");
     }
-    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 410) {
-      score -= 8;
-      addSignal(signals, "caution", "energy_dense_neutered", -8, "Energy density may be high for a sterilised pet.");
+    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 380) {
+      score += 6;
+      addSignal(signals, "boost", "moderate_energy_neutered", 6, "Moderate calories fit a sterilised pet better.");
+    }
+    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 390) {
+      score -= 12;
+      addSignal(signals, "caution", "energy_dense_neutered", -12, "Energy density may be high for a sterilised pet.");
+    }
+    if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 17) {
+      score -= 10;
+      addSignal(signals, "caution", "fat_dense_neutered", -10, "Fat looks high for a sterilised or weight-prone pet.");
+    }
+    if (
+      hasAny(haystack, ["active", "performance", "energy", "sport", "working"]) &&
+      pet.activityLevel !== "high"
+    ) {
+      score -= 12;
+      addSignal(signals, "caution", "active_formula_for_neutered_pet", -12, "Active/performance positioning is not ideal for a sterilised low-to-normal activity pet.");
     }
   }
 
@@ -719,11 +734,24 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "renal" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["renal", "kidney", "ckd"])) {
-    if (hasAny(haystack, ["renal", "kidney", "oxalate"])) {
-      score += 20;
-      addSignal(signals, "boost", "renal_positioning", 20, "Positioned for renal support.");
+    const hasRenalPositioning = hasAny(haystack, ["renal", "kidney"]);
+    const hasUrinaryOnlyPositioning =
+      hasAny(haystack, ["urinary", "struvite", "oxalate"]) && !hasRenalPositioning;
+
+    if (hasRenalPositioning) {
+      score += 24;
+      addSignal(signals, "boost", "renal_positioning", 24, "Positioned for renal support.");
     } else {
       addSignal(signals, "caution", "renal_needs_vet_food", -20, "Renal cases need veterinarian-directed diet selection.");
+    }
+    if (hasUrinaryOnlyPositioning) {
+      addSignal(
+        signals,
+        "exclude",
+        "renal_urinary_mismatch",
+        -100,
+        "Excluded because urinary/oxalate positioning does not replace renal diet support."
+      );
     }
     if (!hasNumber(nutrients.phosphorus_percent)) {
       addSignal(signals, "caution", "missing_phosphorus_renal", -12, "Renal recommendations need phosphorus data.");
@@ -732,6 +760,15 @@ function scoreFit(input: FoodV2RankingInput) {
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
     if (lifeStageMatches(food, stage)) score += 10;
+    if (stage === "puppy" && isLargeBreedDog(pet)) {
+      if (hasAny(haystack, ["large breed", "maxi", "giant", "large puppy", "puppy large"])) {
+        score += 18;
+        addSignal(signals, "boost", "large_breed_puppy_fit", 18, "Large-breed puppy positioning fits this growth case.");
+      } else if (hasAny(haystack, ["puppy", "junior"])) {
+        score -= 8;
+        addSignal(signals, "caution", "generic_puppy_for_large_breed", -8, "Generic puppy food is less specific than a large-breed puppy formula.");
+      }
+    }
     if (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent)) {
       score += 6;
       addSignal(signals, "boost", "growth_dha", 6, "DHA/EPA-DHA data supports growth reasoning.");
@@ -742,9 +779,12 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "senior" || stage === "senior") {
-    if (food.life_stage === "senior" || hasAny(haystack, ["senior", "mature", "7+"])) {
-      score += 12;
-      addSignal(signals, "boost", "senior_positioning", 12, "Positioned for senior pets.");
+    if (food.life_stage === "senior" || hasAny(haystack, ["senior", "mature", "7+", "8+", "10+", "12+"])) {
+      score += 20;
+      addSignal(signals, "boost", "senior_positioning", 20, "Positioned for senior pets.");
+    } else if (stage === "senior") {
+      score -= 10;
+      addSignal(signals, "caution", "adult_formula_for_senior_pet", -10, "Adult food is less specific than a senior-positioned formula.");
     }
   }
 
