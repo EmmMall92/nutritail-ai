@@ -11,6 +11,19 @@ import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 import type { PetAnalysisHistory } from "@/types/pet-analysis-history";
 
+type ProgressLog = {
+  id: string;
+  created_at: string;
+  metadata?: {
+    mode?: string;
+    currentWeightKg?: number | null;
+    previousWeightKg?: number | null;
+    feedingGramsPerDay?: number | null;
+    treatsPerDay?: string | null;
+    note?: string | null;
+  };
+};
+
 function InfoCard({
   label,
   value,
@@ -56,12 +69,19 @@ function formatDate(value?: string) {
   return date.toLocaleString();
 }
 
+function formatProgressMode(value?: string) {
+  if (value === "no_result") return "No visible result";
+  if (value === "progress") return "Progress check";
+  return "Progress note";
+}
+
 export default function PetTimelineReportPage() {
   const params = useParams<{ id: string }>();
   const petId = params?.id ?? "";
   const [pet, setPet] = useState<Pet | null>(null);
   const [analysis, setAnalysis] = useState<PetAnalysis | null>(null);
   const [history, setHistory] = useState<PetAnalysisHistory[]>([]);
+  const [progressLogs, setProgressLogs] = useState<ProgressLog[]>([]);
   const [brandSettings, setBrandSettings] = useState<BrandSettings | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -91,6 +111,15 @@ export default function PetTimelineReportPage() {
 
       setAnalysis(analysisResult);
       setHistory(historyResult);
+
+      const progressResponse = await fetch(`/api/print/pet-report/${petId}`, {
+        cache: "no-store",
+      });
+
+      if (progressResponse.ok) {
+        const progressResult = await progressResponse.json();
+        setProgressLogs(progressResult.pet?.progressLogs ?? []);
+      }
     } catch (error) {
       console.error("Failed to load pet timeline report:", error);
     } finally {
@@ -258,6 +287,62 @@ export default function PetTimelineReportPage() {
           </div>
         </Section>
       )}
+
+      <Section title="Progress Check-ins">
+        {progressLogs.length === 0 ? (
+          <p className="text-sm text-gray-600">
+            No chatbot progress check-ins have been saved yet.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {progressLogs.map((log) => (
+              <div
+                key={log.id}
+                className="break-inside-avoid rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm print:border-gray-300"
+              >
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="font-semibold text-black">
+                      {formatProgressMode(log.metadata?.mode)}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {formatDate(log.created_at)}
+                    </p>
+                  </div>
+                  {log.metadata?.currentWeightKg && (
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-900">
+                      Current {log.metadata.currentWeightKg} kg
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <p>
+                    <span className="font-semibold">Previous weight:</span>{" "}
+                    {log.metadata?.previousWeightKg
+                      ? `${log.metadata.previousWeightKg} kg`
+                      : "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Feeding:</span>{" "}
+                    {log.metadata?.feedingGramsPerDay
+                      ? `${log.metadata.feedingGramsPerDay}g/day`
+                      : "-"}
+                  </p>
+                  <p className="md:col-span-2">
+                    <span className="font-semibold">Treats:</span>{" "}
+                    {log.metadata?.treatsPerDay || "-"}
+                  </p>
+                </div>
+
+                {log.metadata?.note && (
+                  <p className="mt-3 text-gray-700">{log.metadata.note}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
 
       <Section title="Analysis Timeline">
         {history.length === 0 ? (
