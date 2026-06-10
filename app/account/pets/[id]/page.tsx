@@ -159,6 +159,37 @@ function formatProgressMode(value?: string) {
   return "Progress note";
 }
 
+function formatWeightDelta(currentWeight?: number | null, previousWeight?: number | null) {
+  if (
+    typeof currentWeight !== "number" ||
+    !Number.isFinite(currentWeight) ||
+    typeof previousWeight !== "number" ||
+    !Number.isFinite(previousWeight)
+  ) {
+    return "No weight comparison yet";
+  }
+
+  const delta = Number((currentWeight - previousWeight).toFixed(1));
+  if (delta === 0) return "No weight change from saved profile";
+  if (delta < 0) return `${Math.abs(delta)} kg lower than saved profile`;
+  return `${delta} kg higher than saved profile`;
+}
+
+function getLatestProgressSummary(progressLogs: ProgressLog[], pet: AccountPet) {
+  const latestLog = progressLogs[0];
+  const metadata = latestLog?.metadata;
+  const currentWeight = metadata?.currentWeightKg ?? null;
+  const previousWeight = metadata?.previousWeightKg ?? pet.weight ?? null;
+
+  return {
+    latestLog,
+    currentWeight,
+    feedingGramsPerDay: metadata?.feedingGramsPerDay ?? null,
+    mode: formatProgressMode(metadata?.mode),
+    deltaText: formatWeightDelta(currentWeight, previousWeight),
+  };
+}
+
 export default function AccountPetDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -313,6 +344,7 @@ export default function AccountPetDetailPage() {
 
   const { pet, analysisHistory, progressLogs = [] } = data;
   const latest = analysisHistory[0];
+  const progressSummary = getLatestProgressSummary(progressLogs, pet);
 
   return (
       <section className="mx-auto max-w-4xl space-y-6">
@@ -400,6 +432,58 @@ export default function AccountPetDetailPage() {
             <p className="mt-2 text-xl font-semibold text-black">
               {analysisHistory.length}
             </p>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                Latest progress
+              </p>
+              {progressSummary.latestLog ? (
+                <>
+                  <h2 className="mt-2 text-xl font-bold text-blue-950">
+                    {progressSummary.mode}
+                  </h2>
+                  <p className="mt-2 text-sm text-blue-900">
+                    {progressSummary.deltaText}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-blue-950">
+                    {progressSummary.currentWeight && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Current {progressSummary.currentWeight} kg
+                      </span>
+                    )}
+                    {progressSummary.feedingGramsPerDay && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        {progressSummary.feedingGramsPerDay}g/day
+                      </span>
+                    )}
+                    <span className="rounded-full bg-white px-3 py-1">
+                      {new Date(progressSummary.latestLog.created_at).toLocaleString()}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="mt-2 text-xl font-bold text-blue-950">
+                    No check-ins yet
+                  </h2>
+                  <p className="mt-2 text-sm text-blue-900">
+                    Add a progress check when weight, appetite, stool, treats,
+                    or food acceptance changes.
+                  </p>
+                </>
+              )}
+            </div>
+
+            <Link
+              href="/account/chatbot"
+              className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
+            >
+              Add progress check
+            </Link>
           </div>
         </div>
 
