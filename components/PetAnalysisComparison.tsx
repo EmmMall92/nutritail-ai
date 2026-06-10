@@ -122,7 +122,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
           <p className="mb-2 font-semibold text-black">
-            Added Recommended Foods
+            Added Legacy Food Signals
           </p>
           {comparison.addedFoodIds.length === 0 ? (
             <p className="text-sm text-gray-600">No newly added foods.</p>
@@ -137,7 +137,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
           <p className="mb-2 font-semibold text-black">
-            Removed Recommended Foods
+            Removed Legacy Food Signals
           </p>
           {comparison.removedFoodIds.length === 0 ? (
             <p className="text-sm text-gray-600">No removed foods.</p>

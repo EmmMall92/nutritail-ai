@@ -798,7 +798,7 @@ export default function AccountPetDetailPage() {
                   </p>
                 )}
                   <p className="mt-1 text-xs text-gray-500">
-                    Recommended foods:{" "}
+                    Legacy food signal ids:{" "}
                     {item.recommendedFoodIds?.length
                       ? item.recommendedFoodIds.join(", ")
                       : "-"}
