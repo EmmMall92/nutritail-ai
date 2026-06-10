@@ -1,0 +1,188 @@
+{
+  "scenarios": [
+    {
+      "label": "Large adult dog",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Labrador",
+        "age": 4,
+        "weight": 30,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "healthIssues": []
+      },
+      "expectations": ["premium_or_value", "no_small_dog_top_pick"]
+    },
+    {
+      "label": "Large sterilised dog weight control",
+      "goal": "sterilised",
+      "pet": {
+        "species": "dog",
+        "breed": "Labrador",
+        "age": 4,
+        "weight": 30,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["weight control"]
+      },
+      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit"]
+    },
+    {
+      "label": "Small sterilised dog",
+      "goal": "sterilised",
+      "pet": {
+        "species": "dog",
+        "breed": "Maltese",
+        "age": 5,
+        "weight": 6,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["sterilised"]
+      },
+      "expectations": ["premium_or_value"]
+    },
+    {
+      "label": "Avoid chicken by preference",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Labrador",
+        "age": 4,
+        "weight": 30,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "excludedIngredients": ["chicken"],
+        "preferredProteins": ["lamb", "salmon"],
+        "healthIssues": []
+      },
+      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_small_dog_top_pick"]
+    },
+    {
+      "label": "Chicken allergy dog",
+      "goal": "allergy",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 3,
+        "weight": 18,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": ["chicken"],
+        "excludedIngredients": ["chicken"],
+        "healthIssues": ["skin allergy"],
+        "preferredProteins": ["lamb", "duck", "salmon"]
+      },
+      "expectations": ["premium_or_value", "no_chicken_top_pick"]
+    },
+    {
+      "label": "Large breed puppy",
+      "goal": "growth",
+      "pet": {
+        "species": "dog",
+        "breed": "German Shepherd",
+        "age": 0.6,
+        "weight": 22,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "healthIssues": ["puppy"]
+      },
+      "expectations": ["premium_or_value", "puppy_top_pick", "mineral_caution_or_data"]
+    },
+    {
+      "label": "Sensitive digestion dog",
+      "goal": "sensitive_digestion",
+      "pet": {
+        "species": "dog",
+        "breed": "French Bulldog",
+        "age": 3,
+        "weight": 12,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["sensitive digestion", "gas"]
+      },
+      "expectations": ["premium_or_value", "sensitive_fit"]
+    },
+    {
+      "label": "Senior dog joint support",
+      "goal": "senior",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 10,
+        "weight": 18,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["joint support"]
+      },
+      "expectations": ["premium_or_value", "senior_or_joint_fit"]
+    },
+    {
+      "label": "Sterilised cat",
+      "goal": "sterilised",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 5,
+        "weight": 5,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["weight control", "sterilised"]
+      },
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit"]
+    },
+    {
+      "label": "Overweight cat",
+      "goal": "weight_control",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 6,
+        "weight": 6.5,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["overweight", "weight control"]
+      },
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit"]
+    },
+    {
+      "label": "Urinary cat",
+      "goal": "urinary",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 5,
+        "weight": 5,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["urinary"]
+      },
+      "expectations": ["premium_or_value", "urinary_top_pick"]
+    },
+    {
+      "label": "Renal senior cat",
+      "goal": "renal",
+      "pet": {
+        "species": "cat",
+        "breed": "Domestic shorthair",
+        "age": 12,
+        "weight": 4.2,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["renal", "kidney disease"]
+      },
+      "expectations": ["premium_or_value", "renal_top_pick", "phosphorus_caution_or_data"]
+    }
+  ]
+}
