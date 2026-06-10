@@ -7,6 +7,7 @@ const liveChecks = [
       "Open https://nutritail.ai and confirm the homepage loads.",
       "Open /login and confirm auth pages render with the current design.",
       "Open /account/chatbot after login and confirm the guided intake starts.",
+      "Open /account and confirm the customer dashboard renders after login.",
       "Confirm /sitemap.xml, /robots.txt, /manifest.webmanifest, and /opengraph-image respond.",
     ],
   },
@@ -55,9 +56,23 @@ const liveChecks = [
       "Run urinary cat and growth puppy scenarios and review the QA verdict.",
     ],
   },
+  {
+    title: "Account progress smoke",
+    checks: [
+      "Open /account/chatbot after login and choose a saved pet.",
+      "Click Progress check and send a metric-only update such as 7 κιλά.",
+      "Open /account/pets/[id] and confirm Latest progress and Progress timeline render.",
+      "Open /print/pet-timeline/[id] and confirm progress check-ins appear in the printable timeline.",
+    ],
+  },
 ];
 
 const liveUrls = [
+  "/account",
+  "/account/chatbot",
+  "/account/pets",
+  "/print/pet-report/test-id",
+  "/print/pet-timeline/test-id",
   "/admin/foods/v2-guide",
   "/admin/foods/v2-preview",
   "/admin/foods/v2-review",
@@ -81,7 +96,8 @@ export default function FoodV2LiveQaPage() {
         </h2>
         <p className="mt-2 max-w-3xl text-gray-600">
           Run this checklist after each merge/deploy that touches the Food V2
-          importer. It keeps the live check focused and repeatable.
+          importer, recommendation flow, or customer progress experience. It
+          keeps the live check focused and repeatable.
         </p>
 
         <div className="mt-5 flex flex-wrap gap-3">
@@ -117,7 +133,7 @@ export default function FoodV2LiveQaPage() {
           <p className="text-sm font-medium text-gray-500">Order</p>
           <p className="mt-2 text-3xl font-bold text-black">1-4</p>
           <p className="mt-2 text-sm text-gray-600">
-            Deploy, admin access, import flow, recommendation smoke.
+            Deploy, admin access, import flow, recommendations, account progress.
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -180,6 +196,9 @@ export default function FoodV2LiveQaPage() {
           check existing formula keys, commit only importable rows, see them in
           review, export products/audit CSVs, and run Recommendation Lab
           scenarios without obvious size, allergy, urinary, or growth mistakes.
+          Customer account progress also passes when a saved pet can continue
+          from history, record a progress check, and show that progress in the
+          pet profile and printable timeline.
         </p>
       </div>
     </section>
