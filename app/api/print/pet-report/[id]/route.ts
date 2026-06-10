@@ -36,11 +36,26 @@ export async function GET(_: Request, context: Context) {
     }
 
     const history = await petAnalysisHistoryService.getPetHistory(String(pet.id));
+    const { data: progressLogs, error: progressError } = await supabaseAdmin
+      .from("admin_activity_logs")
+      .select("*")
+      .eq("entity_type", "pet_progress")
+      .eq("entity_id", String(pet.id))
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (progressError) {
+      return NextResponse.json(
+        { error: progressError.message },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       pet: {
         ...pet,
         analyses: history,
+        progressLogs: progressLogs ?? [],
       },
     });
   } catch (error) {
