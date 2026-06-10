@@ -108,6 +108,35 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "moderate_calorie_fat_top_pick") {
+      const kcal = first?.nutrition?.kcal_per_100g;
+      const fat = first?.nutrition?.fat_percent;
+      const positionedForControl = hasAnyTerm(firstText, [
+        "weight",
+        "light",
+        "sterilised",
+        "sterilized",
+        "satiety",
+      ]);
+      const activeFormula = hasAnyTerm(firstText, [
+        "active",
+        "performance",
+        "energy",
+        "sport",
+        "working",
+      ]);
+
+      if (activeFormula && !positionedForControl) {
+        warnings.push("Top pick looks active/performance-oriented for a sterilised pet.");
+      }
+      if (typeof kcal === "number" && kcal > 390 && !positionedForControl) {
+        warnings.push("Top pick calories look high for a sterilised pet.");
+      }
+      if (typeof fat === "number" && fat >= 17 && !positionedForControl) {
+        warnings.push("Top pick fat looks high for a sterilised pet.");
+      }
+    }
+
     if (expectation === "sensitive_fit") {
       if (
         !hasAnyTerm(firstText, [
@@ -126,6 +155,27 @@ function checkExpectations(scenario, data) {
         !hasAnyTerm(firstText, ["senior", "mature", "joint", "mobility"])
       ) {
         warnings.push("Top pick does not show clear senior/joint fit.");
+      }
+    }
+
+    if (expectation === "senior_top_pick") {
+      if (!hasAnyTerm(firstText, ["senior", "mature", "7+", "8+", "10+", "12+"])) {
+        warnings.push("Top pick is not clearly senior-positioned.");
+      }
+    }
+
+    if (expectation === "large_breed_growth_fit") {
+      if (!hasAnyTerm(firstText, ["large breed", "large puppy", "puppy large", "maxi", "giant"])) {
+        warnings.push("Top pick is not clearly large-breed puppy positioned.");
+      }
+    }
+
+    if (expectation === "no_urinary_only_for_renal") {
+      if (
+        hasAnyTerm(firstText, ["urinary", "struvite", "oxalate"]) &&
+        !hasAnyTerm(firstText, ["renal", "kidney"])
+      ) {
+        warnings.push("Renal scenario returned urinary/oxalate positioning without renal/kidney positioning.");
       }
     }
 

@@ -43,7 +43,7 @@
         "allergies": [],
         "healthIssues": ["sterilised"]
       },
-      "expectations": ["premium_or_value"]
+      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick"]
     },
     {
       "label": "Avoid chicken by preference",
@@ -92,7 +92,7 @@
         "allergies": [],
         "healthIssues": ["puppy"]
       },
-      "expectations": ["premium_or_value", "puppy_top_pick", "mineral_caution_or_data"]
+      "expectations": ["premium_or_value", "puppy_top_pick", "large_breed_growth_fit", "mineral_caution_or_data"]
     },
     {
       "label": "Sensitive digestion dog",
@@ -122,7 +122,7 @@
         "allergies": [],
         "healthIssues": ["joint support"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick"]
     },
     {
       "label": "Sterilised cat",
@@ -182,7 +182,7 @@
         "allergies": [],
         "healthIssues": ["renal", "kidney disease"]
       },
-      "expectations": ["premium_or_value", "renal_top_pick", "phosphorus_caution_or_data"]
+      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
     }
   ]
 }
