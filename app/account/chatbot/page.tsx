@@ -1027,6 +1027,38 @@ function extractProgressDetails(text: string) {
   };
 }
 
+function hasProgressMetric(text: string) {
+  const details = extractReadableProgressDetails(text);
+  return (
+    (typeof details.currentWeightKg === "number" &&
+      Number.isFinite(details.currentWeightKg)) ||
+    (typeof details.feedingGramsPerDay === "number" &&
+      Number.isFinite(details.feedingGramsPerDay))
+  );
+}
+
+function extractReadableProgressDetails(text: string) {
+  const normalized = text.toLowerCase().replace(",", ".");
+  const legacyDetails = extractProgressDetails(text);
+  const weightMatch = normalized.match(
+    /(\d+(?:\.\d+)?)\s*(?:kg|kgs|κιλ|κιλα|κιλά|κιλο|κιλό|κιλογραμμα|κιλογραμμο|κιλογραμμάριο|kilo)\b/i
+  );
+  const gramsMatch = normalized.match(
+    /(\d+(?:\.\d+)?)\s*(?:g|gr|gram|grams|γρ|γρ\.|γραμμαρια|γραμμάρια|γραμμαριο|γραμμάριο)\b/i
+  );
+  const plainNumber = parseNumber(text);
+
+  return {
+    currentWeightKg: weightMatch
+      ? Number(weightMatch[1])
+      : gramsMatch
+        ? null
+        : legacyDetails.currentWeightKg ?? plainNumber,
+    feedingGramsPerDay:
+      gramsMatch ? Number(gramsMatch[1]) : legacyDetails.feedingGramsPerDay,
+  };
+}
+
 function formatAnalysisResult(analysis: PetAnalysis) {
   const { nutrition, advice } = analysis;
 
@@ -1233,7 +1265,7 @@ export default function AccountChatbotPage() {
 
       if (!authUserId) return;
 
-      const details = extractProgressDetails(text);
+      const details = extractReadableProgressDetails(text);
 
       await fetch(`/api/account/pets/${savedPet.id}/progress`, {
         method: "POST",
@@ -1896,6 +1928,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       if (followUpAction) {
         if (followUpAction === "progress" && parseNumber(text) !== null) {
           setFollowUpMode("progress");
+          void saveFollowUpProgressLog({
+            savedPet: followUpPet,
+            mode: "progress",
+            text,
+          });
           addMessages(
             createMessage(
               "bot",
@@ -1911,6 +1948,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
         if (followUpAction === "no_result" && parseNumber(text) !== null) {
           setFollowUpMode("no_result");
+          void saveFollowUpProgressLog({
+            savedPet: followUpPet,
+            mode: "no_result",
+            text,
+          });
           addMessages(
             createMessage(
               "bot",
@@ -1925,6 +1967,26 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         }
 
         handleFollowUpAction(followUpAction, { echoUser: false });
+        return;
+      }
+
+      if (hasProgressMetric(text)) {
+        setFollowUpMode("progress");
+        void saveFollowUpProgressLog({
+          savedPet: followUpPet,
+          mode: "progress",
+          text,
+        });
+        addMessages(
+          createMessage(
+            "bot",
+            buildFollowUpProgressReply({
+              text,
+              savedPet: followUpPet,
+              mode: "progress",
+            })
+          )
+        );
         return;
       }
     }
