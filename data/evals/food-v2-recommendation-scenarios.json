@@ -110,6 +110,37 @@
       "expectations": ["premium_or_value", "sensitive_fit"]
     },
     {
+      "label": "Budget adult dog",
+      "goal": "value",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 4,
+        "weight": 16,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": [],
+        "healthIssues": []
+      },
+      "expectations": ["premium_or_value"]
+    },
+    {
+      "label": "Low activity weight-loss dog",
+      "goal": "weight_control",
+      "pet": {
+        "species": "dog",
+        "breed": "Beagle",
+        "age": 6,
+        "weight": 14,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["overweight", "weight control"]
+      },
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+    },
+    {
       "label": "Senior dog joint support",
       "goal": "senior",
       "pet": {
@@ -138,6 +169,36 @@
         "healthIssues": ["weight control", "sterilised"]
       },
       "expectations": ["premium_or_value", "weight_or_sterilised_fit"]
+    },
+    {
+      "label": "Kitten growth",
+      "goal": "growth",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 0.4,
+        "weight": 2,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "healthIssues": ["kitten"]
+      },
+      "expectations": ["premium_or_value", "puppy_top_pick"]
+    },
+    {
+      "label": "Sensitive digestion cat",
+      "goal": "sensitive_digestion",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 4,
+        "weight": 4.5,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["sensitive digestion", "soft stool"]
+      },
+      "expectations": ["premium_or_value"]
     },
     {
       "label": "Overweight cat",
