@@ -141,6 +141,36 @@ function compactRanking(
   };
 }
 
+function enforceUserVisibleRecommendationEligibility(
+  ranking: ReturnType<typeof rankFoodV2ForPet>
+) {
+  const shouldHold =
+    ranking.confidence === "low" ||
+    ranking.total_score < 45 ||
+    ranking.quality_score < 35;
+
+  if (!shouldHold || ranking.bucket === "hold") return ranking;
+
+  return {
+    ...ranking,
+    bucket: "hold" as const,
+    cautions: [
+      "Candidate kept out of user shortlist because recommendation confidence is too low.",
+      ...ranking.cautions,
+    ].slice(0, 6),
+    signals: [
+      ...ranking.signals,
+      {
+        type: "exclude" as const,
+        code: "user_visible_confidence_hold",
+        points: -25,
+        message:
+          "Candidate kept out of user shortlist because recommendation confidence is too low.",
+      },
+    ],
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -234,12 +264,14 @@ export async function POST(request: Request) {
       return {
         product,
         nutrients,
-        ranking: rankFoodV2ForPet({
-          food: product,
-          nutrients,
-          pet: petContext,
-          goal,
-        }),
+        ranking: enforceUserVisibleRecommendationEligibility(
+          rankFoodV2ForPet({
+            food: product,
+            nutrients,
+            pet: petContext,
+            goal,
+          })
+        ),
       };
     });
 
