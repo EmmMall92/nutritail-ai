@@ -1143,6 +1143,7 @@ function getFoodKcalPer100g(food: Record<string, unknown>): number | null {
 export default function AccountChatbotPage() {
   const router = useRouter();
   const pathname = usePathname();
+  const handledDeepLinkRef = useRef<string | null>(null);
   const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -1437,12 +1438,11 @@ export default function AccountChatbotPage() {
     );
   }
 
-  function handleFollowUpAction(
+  function runFollowUpAction(
+    targetPet: AccountPet,
     action: FollowUpAction,
     options: { echoUser?: boolean } = {}
   ) {
-    if (!followUpPet) return;
-
     const echoUser = options.echoUser ?? true;
 
     void submitChatFeedback({
@@ -1451,14 +1451,16 @@ export default function AccountChatbotPage() {
       message: `User selected saved-pet follow-up action: ${action}.`,
       context: {
         action,
-        petId: followUpPet.id,
-        petName: followUpPet.name,
-        hasAnalysisHistory: (followUpPet.analysisHistory?.length ?? 0) > 0,
-        latestAnalysisSummary: formatLatestAnalysisSummary(followUpPet),
+        petId: targetPet.id,
+        petName: targetPet.name,
+        hasAnalysisHistory: (targetPet.analysisHistory?.length ?? 0) > 0,
+        latestAnalysisSummary: formatLatestAnalysisSummary(targetPet),
       },
     });
 
-    const nextPet = createIntakeFromSavedPet(followUpPet);
+    const nextPet = createIntakeFromSavedPet(targetPet);
+    setSelectedPetId(targetPet.id);
+    setFollowUpPet(targetPet);
     setPet(nextPet);
 
     if (action === "timeline") {
@@ -1466,10 +1468,10 @@ export default function AccountChatbotPage() {
         ...(echoUser ? [createMessage("user", "Open timeline")] : []),
         createMessage(
           "bot",
-          `You can review ${followUpPet.name}'s previous nutrition history here:
+          `You can review ${targetPet.name}'s previous nutrition history here:
 
-- Pet profile: ${siteUrl}/account/pets/${followUpPet.id}
-- Printable timeline: ${siteUrl}/print/pet-timeline/${followUpPet.id}
+- Pet profile: ${siteUrl}/account/pets/${targetPet.id}
+- Printable timeline: ${siteUrl}/print/pet-timeline/${targetPet.id}
 
 After checking it, come back and tell me what changed: weight, appetite, stool quality, treats, or whether the food was accepted.`
         )
@@ -1478,12 +1480,13 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
     }
 
     if (action === "progress") {
+      setStep("petChoice");
       setFollowUpMode("progress");
       addMessages(
         ...(echoUser ? [createMessage("user", "Progress check")] : []),
         createMessage(
           "bot",
-          `Let's check ${followUpPet.name}'s progress without starting from zero.
+          `Let's check ${targetPet.name}'s progress without starting from zero.
 
 Tell me:
 1. Current weight now
@@ -1498,6 +1501,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
     }
 
     if (action === "no_result") {
+      setStep("petChoice");
       setFollowUpMode("no_result");
       addMessages(
         ...(echoUser ? [createMessage("user", "No visible result")] : []),
@@ -1526,9 +1530,9 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
         ...(echoUser ? [createMessage("user", "Try another food")] : []),
         createMessage(
           "bot",
-          `No problem. If ${followUpPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
+          `No problem. If ${targetPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
 
-What food is ${followUpPet.name} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
+What food is ${targetPet.name} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
         )
       );
       return;
@@ -1537,9 +1541,83 @@ What food is ${followUpPet.name} eating now? Write the exact brand and formula i
     if (action === "new_analysis") {
       setFollowUpPet(null);
       setFollowUpMode(null);
-      startSavedPetAnalysis(followUpPet);
+      startSavedPetAnalysis(targetPet);
     }
   }
+
+  function handleFollowUpAction(
+    action: FollowUpAction,
+    options: { echoUser?: boolean } = {}
+  ) {
+    if (!followUpPet) return;
+
+    runFollowUpAction(followUpPet, action, options);
+  }
+
+  useEffect(() => {
+    if (isLoadingPets) return;
+
+    const query = new URLSearchParams(window.location.search);
+    const targetPetId = query.get("petId");
+    if (!targetPetId) return;
+
+    const mode = query.get("mode");
+    const deepLinkKey = `${targetPetId}:${mode ?? "default"}`;
+
+    if (handledDeepLinkRef.current === deepLinkKey) return;
+
+    const targetPet = savedPets.find((savedPet) => savedPet.id === targetPetId);
+    if (!targetPet) return;
+
+    handledDeepLinkRef.current = deepLinkKey;
+
+    if (mode === "progress" && (targetPet.analysisHistory?.length ?? 0) > 0) {
+      setSelectedPetId(targetPet.id);
+      setFollowUpPet(targetPet);
+      setPet(createIntakeFromSavedPet(targetPet));
+      setStep("petChoice");
+      setFollowUpMode("progress");
+      addMessages(
+        createMessage("user", "Progress check"),
+        createMessage(
+          "bot",
+          `Let's check ${targetPet.name}'s progress without starting from zero.
+
+Tell me:
+1. Current weight now
+2. How many grams per day you are feeding
+3. Treats/snacks per day
+4. Any visible change in body shape, appetite, stool, or energy
+
+Then I can help decide whether the plan is working or needs adjustment.`
+        )
+      );
+      return;
+    }
+
+    setSelectedPetId(targetPet.id);
+    setPet(createIntakeFromSavedPet(targetPet));
+
+    if ((targetPet.analysisHistory?.length ?? 0) > 0) {
+      setFollowUpPet(targetPet);
+      setStep("petChoice");
+      addMessages(
+        createMessage("user", `Use ${targetPet.name}`),
+        createMessage("bot", formatSavedPetContinuityIntro(targetPet))
+      );
+      return;
+    }
+
+    setFollowUpPet(null);
+    setStep("currentFood");
+    addMessages(
+      createMessage("user", `Use ${targetPet.name}`),
+      createMessage(
+        "bot",
+        `Great. I will use ${targetPet.name}'s saved profile. What food is ${targetPet.name} eating now? If you are not sure, type "I don't know".`
+      )
+    );
+  }, [isLoadingPets, savedPets]);
 
   function startNewPetAnalysis() {
     setSelectedPetId(null);
