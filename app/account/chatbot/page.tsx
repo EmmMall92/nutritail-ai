@@ -960,6 +960,40 @@ function formatLatestAnalysisSummary(savedPet: AccountPet) {
     : "Previous analysis exists, but it has limited saved details.";
 }
 
+function formatSavedPetProfileSummary(savedPet: AccountPet) {
+  const details = [
+    `Profile: ${savedPet.species}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} years`,
+    `Activity: ${savedPet.activity_level ?? "unknown"}`,
+    `Neutered: ${savedPet.neutered ? "yes" : "no"}`,
+  ];
+
+  if ((savedPet.health_issues ?? []).length > 0) {
+    details.push(`Health notes: ${(savedPet.health_issues ?? []).join(", ")}`);
+  }
+
+  if ((savedPet.allergies ?? []).length > 0) {
+    details.push(`Avoid: ${(savedPet.allergies ?? []).join(", ")}`);
+  }
+
+  return details.join("\n");
+}
+
+function formatSavedPetContinuityIntro(savedPet: AccountPet) {
+  return `I found previous nutrition history for ${savedPet.name}.
+
+Saved profile:
+${formatSavedPetProfileSummary(savedPet)}
+
+Latest saved analysis:
+${formatLatestAnalysisSummary(savedPet)}
+
+What would you like to do next?
+- Progress check: tell me current weight, grams/day, treats, and visible changes.
+- No visible result: we review calories, treats, consistency, and whether the food fits.
+- Try another food: I keep this pet context and suggest different options.
+- Open timeline: review previous reports and progress.`;
+}
+
 function buildFollowUpProgressReply({
   text,
   savedPet,
@@ -1367,12 +1401,7 @@ export default function AccountChatbotPage() {
         createMessage("user", `Use ${savedPet.name}`),
         createMessage(
           "bot",
-          `I found previous nutrition history for ${savedPet.name}.
-
-Latest saved context:
-${formatLatestAnalysisSummary(savedPet)}
-
-What would you like to do next?`
+          formatSavedPetContinuityIntro(savedPet)
         )
       );
 
