@@ -95,6 +95,15 @@ function getTimelineUseNotes(
   return notes;
 }
 
+function getLatestProgressLog(progressLogs: ProgressLog[]) {
+  return [...progressLogs].sort((a, b) => {
+    const aDate = new Date(a.created_at).getTime();
+    const bDate = new Date(b.created_at).getTime();
+
+    return bDate - aDate;
+  })[0];
+}
+
 export default function PetTimelineReportPage() {
   const params = useParams<{ id: string }>();
   const petId = params?.id ?? "";
@@ -169,6 +178,11 @@ export default function PetTimelineReportPage() {
     if (history.length < 2) return null;
     return comparePetAnalyses(history[1], history[0]);
   }, [history]);
+
+  const latestProgressLog = useMemo(
+    () => getLatestProgressLog(progressLogs),
+    [progressLogs]
+  );
 
   if (!isLoaded) {
     return (
@@ -307,6 +321,43 @@ export default function PetTimelineReportPage() {
           </div>
         </Section>
       )}
+
+      <Section title="Progress at a Glance">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <InfoCard
+            label="Saved analyses"
+            value={history.length}
+            detail="Nutrition snapshots"
+          />
+          <InfoCard
+            label="Progress checks"
+            value={progressLogs.length}
+            detail="Chatbot follow-ups"
+          />
+          <InfoCard
+            label="Latest check weight"
+            value={
+              latestProgressLog?.metadata?.currentWeightKg
+                ? `${latestProgressLog.metadata.currentWeightKg} kg`
+                : "-"
+            }
+            detail={
+              latestProgressLog
+                ? formatDate(latestProgressLog.created_at)
+                : "No saved check-in yet"
+            }
+          />
+          <InfoCard
+            label="Latest daily grams"
+            value={
+              latestProgressLog?.metadata?.feedingGramsPerDay
+                ? `${latestProgressLog.metadata.feedingGramsPerDay}g`
+                : "-"
+            }
+            detail="From latest progress check"
+          />
+        </div>
+      </Section>
 
       <Section title="Progress Check-ins">
         <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950">
