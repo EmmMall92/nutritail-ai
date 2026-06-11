@@ -44,6 +44,7 @@ type RecommendationSummaryOptions = {
   mode?: "default" | "alternative";
   excludedBrands?: string[];
   locale?: "el" | "en";
+  maxItemsPerSection?: number;
 };
 
 const GOAL_LABELS: Record<FoodV2RecommendationGoal, string> = {
@@ -375,6 +376,10 @@ export function formatFoodV2ChatbotRecommendationSummary(
   const goal = response.goal ?? "general";
   const excludedBrands = options.excludedBrands ?? [];
   const locale = options.locale ?? "el";
+  const maxItemsPerSection = Math.min(
+    Math.max(options.maxItemsPerSection ?? 3, 1),
+    3
+  );
   const goalLabel = locale === "el" ? GOAL_LABELS_EL[goal] : GOAL_LABELS[goal];
   const intro =
     options.mode === "alternative"
@@ -442,7 +447,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       "",
       locale === "el" ? "Καλύτερες ποιοτικά επιλογές:" : "Premium / strongest nutrition fits:",
       premium
-        .slice(0, 3)
+        .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale))
         .join("\n")
     );
@@ -453,7 +458,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       "",
       locale === "el" ? "Πιο οικονομικές / value εναλλακτικές:" : "Value-style alternatives:",
       value
-        .slice(0, 3)
+        .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale))
         .join("\n")
     );

@@ -125,6 +125,24 @@ function getReportSummary(analysis?: AnalysisHistoryItem | null) {
   return "This report is useful, but some food-specific details are still missing.";
 }
 
+function getFormulaStatus(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) return "No saved analysis";
+  if (analysis.matched_food_name && analysis.feeding_grams_per_day) {
+    return "Formula and feeding amount saved";
+  }
+  if (analysis.matched_food_name) return "Formula saved, grams need confirmation";
+  return "Exact formula still missing";
+}
+
+function getRecheckWindow(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) return "After the first saved analysis";
+  if (!analysis.matched_food_name || !analysis.feeding_grams_per_day) {
+    return "After exact food details are confirmed";
+  }
+  if (analysis.weight_goal === "loss") return "In 2-4 weeks";
+  return "When weight, appetite, stool, or food acceptance changes";
+}
+
 function ReportCard({
   label,
   value,
@@ -303,6 +321,33 @@ export default function PrintablePetReportPage() {
             and food-fit discussion. It is not a medical diagnosis or treatment
             plan.
           </p>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-emerald-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Confidence
+              </p>
+              <p className="mt-2 text-sm font-bold text-emerald-950">
+                {getReportConfidence(latestAnalysis?.food_score)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-emerald-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Food status
+              </p>
+              <p className="mt-2 text-sm font-bold text-emerald-950">
+                {getFormulaStatus(latestAnalysis)}
+              </p>
+            </div>
+            <div className="rounded-xl border border-emerald-100 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Recheck
+              </p>
+              <p className="mt-2 text-sm font-bold text-emerald-950">
+                {getRecheckWindow(latestAnalysis)}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.15fr]">
