@@ -338,13 +338,19 @@ export default function AccountPage() {
                 >
                   Open report
                 </Link>
+                <Link
+                  href={`/print/pet-timeline/${latestPet.id}`}
+                  className="rounded-xl border border-green-300 px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-50"
+                >
+                  Timeline
+                </Link>
               </>
             )}
             <Link
               href="/account/chatbot"
               className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
             >
-              New analysis
+              {latestPet ? "Progress check" : "New analysis"}
             </Link>
           </div>
         </div>
