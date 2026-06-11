@@ -833,6 +833,7 @@ async function getFoodV2RecommendationMessage(
       options.mode === "alternative"
         ? getExcludedBrandsForAlternative(pet.currentFoodName)
         : [],
+    maxItemsPerSection: 2,
   });
 }
 
