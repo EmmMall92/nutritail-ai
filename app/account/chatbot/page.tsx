@@ -2829,20 +2829,20 @@ Next actions:
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="sticky bottom-0 shrink-0 border-t border-gray-200 bg-white p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] sm:p-5">
+      <div className="sticky bottom-0 z-20 shrink-0 border-t border-gray-200 bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sm:p-5">
         {followUpPet && step === "petChoice" && !followUpMode && (
           <div className="mb-3 grid grid-cols-2 gap-2 sm:hidden">
             <button
               type="button"
               onClick={() => handleFollowUpAction("progress")}
-              className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
+              className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
             >
               Progress
             </button>
             <button
               type="button"
               onClick={() => handleFollowUpAction("change_food")}
-              className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
+              className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
             >
               Another food
             </button>
@@ -2850,13 +2850,13 @@ Next actions:
         )}
 
         {quickReplies.length > 0 && !isAnalyzing && !isSaving && (
-          <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+          <div className="mb-3 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
               <button
                 key={reply}
                 type="button"
                 onClick={() => sendQuickReply(reply)}
-                className="shrink-0 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
+                className="min-h-10 shrink-0 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
               >
                 {reply}
               </button>
@@ -2868,10 +2868,12 @@ Next actions:
           <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex items-end gap-2 sm:gap-3">
           <input
             value={input}
             disabled={isAnalyzing || isSaving}
+            aria-label="Chat message"
+            autoComplete="off"
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -2879,14 +2881,14 @@ Next actions:
               }
             }}
             placeholder={isAnalyzing ? "Analyzing..." : "Write a message..."}
-            className="min-w-0 flex-1 rounded-xl border border-gray-300 p-3 text-black disabled:bg-gray-100"
+            className="min-h-12 min-w-0 flex-1 rounded-xl border border-gray-300 px-3 py-3 text-base text-black disabled:bg-gray-100 sm:text-sm"
           />
 
           <button
             type="button"
             onClick={sendMessage}
             disabled={isAnalyzing || isSaving}
-            className="rounded-xl bg-black px-4 py-3 text-white disabled:opacity-50 sm:px-5"
+            className="min-h-12 shrink-0 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50 sm:px-5"
           >
             {isAnalyzing ? "..." : "Send"}
           </button>
