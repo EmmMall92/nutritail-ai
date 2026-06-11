@@ -45,6 +45,15 @@ type NutrientGapResponse = {
 type PriorityFilter = "all" | "high" | "medium" | "low";
 type FocusFilter = "all" | "energy" | "estimated" | "health";
 
+type BrandFocusRow = {
+  brand: string;
+  total: number;
+  high: number;
+  energy: number;
+  estimated: number;
+  health: number;
+};
+
 function SummaryCard({
   label,
   value,
@@ -121,6 +130,54 @@ function ActionSummaryCard({
       </p>
       <p className="mt-2 text-3xl font-bold text-black">{value}</p>
       <p className="mt-2 text-sm leading-6 text-gray-600">{helper}</p>
+    </button>
+  );
+}
+
+function BrandFocusCard({
+  row,
+  isActive,
+  onClick,
+}: {
+  row: BrandFocusRow;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-2xl border p-4 text-left shadow-sm transition hover:border-black hover:shadow-md ${
+        isActive ? "border-black bg-gray-50" : "border-gray-200 bg-white"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-black">{row.brand}</p>
+          <p className="mt-1 text-xs text-gray-500">
+            {row.total} rows need review
+          </p>
+        </div>
+        {row.high > 0 && (
+          <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
+            {row.high} high
+          </span>
+        )}
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+        <div className="rounded-xl bg-gray-50 px-2 py-2">
+          <p className="font-bold text-black">{row.energy}</p>
+          <p className="text-gray-500">kcal</p>
+        </div>
+        <div className="rounded-xl bg-gray-50 px-2 py-2">
+          <p className="font-bold text-black">{row.estimated}</p>
+          <p className="text-gray-500">est.</p>
+        </div>
+        <div className="rounded-xl bg-gray-50 px-2 py-2">
+          <p className="font-bold text-black">{row.health}</p>
+          <p className="text-gray-500">health</p>
+        </div>
+      </div>
     </button>
   );
 }
@@ -224,6 +281,44 @@ export default function FoodV2NutrientGapsPage() {
         .length,
       healthSensitive: rows.filter((row) => row.health_context.length > 0).length,
     };
+  }, [report?.rows]);
+
+  const brandFocusRows = useMemo(() => {
+    const rowsByBrand = new Map<string, BrandFocusRow>();
+
+    for (const row of report?.rows ?? []) {
+      const brand = row.brand || "Unknown";
+      const current =
+        rowsByBrand.get(brand) ??
+        {
+          brand,
+          total: 0,
+          high: 0,
+          energy: 0,
+          estimated: 0,
+          health: 0,
+        };
+
+      current.total += 1;
+      if (row.priority === "high") current.high += 1;
+      if (row.missing_blockers.some((field) => field.includes("kcal"))) {
+        current.energy += 1;
+      }
+      if (row.estimated_fields_to_replace.length > 0) current.estimated += 1;
+      if (row.health_context.length > 0) current.health += 1;
+
+      rowsByBrand.set(brand, current);
+    }
+
+    return Array.from(rowsByBrand.values())
+      .sort(
+        (a, b) =>
+          b.high - a.high ||
+          b.health - a.health ||
+          b.total - a.total ||
+          a.brand.localeCompare(b.brand)
+      )
+      .slice(0, 12);
   }, [report?.rows]);
 
   return (
@@ -390,6 +485,45 @@ export default function FoodV2NutrientGapsPage() {
                 title="Health context"
                 items={report.summary.top_health_context}
               />
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-black">
+                    Brand focus queue
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Prioritize cleanup brand by brand, with high-impact kcal,
+                    estimated-value, and health-context gaps surfaced first.
+                  </p>
+                </div>
+                {brandFilter && (
+                  <button
+                    type="button"
+                    onClick={() => setBrandFilter("")}
+                    className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-50"
+                  >
+                    Clear brand
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                {brandFocusRows.map((row) => (
+                  <BrandFocusCard
+                    key={row.brand}
+                    row={row}
+                    isActive={brandFilter === row.brand}
+                    onClick={() => {
+                      setBrandFilter(row.brand);
+                      setPriorityFilter("all");
+                      setFocusFilter("all");
+                      setSearch("");
+                    }}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
