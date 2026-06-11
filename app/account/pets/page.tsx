@@ -306,7 +306,7 @@ export default function AccountPetsPage() {
                             href="/account/chatbot"
                             className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
                           >
-                            Update analysis
+                            Progress check
                           </Link>
                           <Link
                             href={`/print/pet-report/${pet.id}`}
