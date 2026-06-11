@@ -170,7 +170,7 @@ export async function POST(request: Request) {
       .neq("is_recommendable", false)
       .order("brand", { ascending: true })
       .order("display_name", { ascending: true })
-      .limit(300);
+      .limit(1000);
 
     if (typeof body.brand === "string" && body.brand.trim()) {
       productsQuery = productsQuery.eq("brand", body.brand.trim());
