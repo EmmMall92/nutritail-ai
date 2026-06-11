@@ -365,10 +365,14 @@ export default function AccountPetDetailPage() {
             </Link>
 
             <Link
-              href="/account/chatbot"
+              href={
+                latest
+                  ? `/account/chatbot?petId=${pet.id}&mode=progress`
+                  : `/account/chatbot?petId=${pet.id}`
+              }
               className="rounded-xl bg-black px-4 py-2 text-sm text-white"
             >
-              Update Analysis
+              {latest ? "Progress check" : "Run analysis"}
             </Link>
 
             {latest && (
@@ -408,7 +412,11 @@ export default function AccountPetDetailPage() {
             </div>
 
             <Link
-              href="/account/chatbot"
+              href={
+                latest
+                  ? `/account/chatbot?petId=${pet.id}&mode=progress`
+                  : `/account/chatbot?petId=${pet.id}`
+              }
               className="rounded-xl bg-amber-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-amber-800"
             >
               Recheck food fit
@@ -479,7 +487,7 @@ export default function AccountPetDetailPage() {
             </div>
 
             <Link
-              href="/account/chatbot"
+              href={`/account/chatbot?petId=${pet.id}&mode=progress`}
               className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
             >
               Add progress check
@@ -531,7 +539,7 @@ export default function AccountPetDetailPage() {
                 </p>
               </div>
               <Link
-                href="/account/chatbot"
+                href={`/account/chatbot?petId=${pet.id}`}
                 className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
               >
                 Re-run analysis
@@ -737,10 +745,10 @@ export default function AccountPetDetailPage() {
 
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
               <Link
-                href="/account/chatbot"
+                href={`/account/chatbot?petId=${pet.id}&mode=progress`}
                 className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
               >
-                Update analysis
+                Progress check
               </Link>
               <Link
                 href={`/print/pet-report/${pet.id}`}
@@ -770,7 +778,7 @@ export default function AccountPetDetailPage() {
               </p>
             </div>
             <Link
-              href="/account/chatbot"
+              href={`/account/chatbot?petId=${pet.id}&mode=progress`}
               className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
             >
               Add check-in
@@ -845,7 +853,7 @@ export default function AccountPetDetailPage() {
                 report and timeline entry.
               </p>
               <Link
-                href="/account/chatbot"
+                href={`/account/chatbot?petId=${pet.id}`}
                 className="mt-4 inline-block rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
               >
                 Run analysis
