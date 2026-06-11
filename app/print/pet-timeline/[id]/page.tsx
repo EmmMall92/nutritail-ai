@@ -75,6 +75,26 @@ function formatProgressMode(value?: string) {
   return "Progress note";
 }
 
+function getTimelineUseNotes(
+  progressLogs: ProgressLog[],
+  history: PetAnalysisHistory[]
+) {
+  const notes = [
+    "Compare weight, appetite, stool, treats, and energy between check-ins instead of judging from one day.",
+    "Use the same scale and similar weighing conditions whenever possible.",
+  ];
+
+  if (progressLogs.length === 0) {
+    notes.push("Add the first chatbot Progress check after 2-4 weeks on a new plan.");
+  }
+
+  if (history.length <= 1) {
+    notes.push("A second saved analysis will make trend comparison more useful.");
+  }
+
+  return notes;
+}
+
 export default function PetTimelineReportPage() {
   const params = useParams<{ id: string }>();
   const petId = params?.id ?? "";
@@ -289,6 +309,15 @@ export default function PetTimelineReportPage() {
       )}
 
       <Section title="Progress Check-ins">
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950">
+          <p className="font-semibold">How to use this timeline</p>
+          <ul className="mt-2 space-y-1">
+            {getTimelineUseNotes(progressLogs, history).map((note) => (
+              <li key={note}>- {note}</li>
+            ))}
+          </ul>
+        </div>
+
         {progressLogs.length === 0 ? (
           <p className="text-sm text-gray-600">
             No chatbot progress check-ins have been saved yet.
