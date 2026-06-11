@@ -424,6 +424,146 @@ function guardClass(severity: "block" | "warning" | "info") {
   return "border-gray-200 bg-gray-50 text-gray-700";
 }
 
+function countBy(values: string[]) {
+  return values.reduce<Record<string, number>>((counts, value) => {
+    counts[value] = (counts[value] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+function topCounts(values: string[], limit = 5) {
+  return Object.entries(countBy(values))
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([label, count]) => ({ label, count }));
+}
+
+function labDiagnostics(result: RecommendationResponse) {
+  const shortlist = [...result.premium, ...result.value];
+  const topPick = shortlist[0] ?? null;
+  const holdReasons = topCounts(
+    result.hold.flatMap((item) => [
+      ...item.ranking.cautions,
+      ...item.guard_flags.map((flag) => flag.message),
+    ])
+  );
+  const missingFields = topCounts(
+    [...shortlist, ...result.hold].flatMap((item) => [
+      ...item.nutrition_confidence.missing_core_fields,
+      ...item.nutrition_confidence.missing_mineral_fields,
+    ])
+  );
+  const qualityCounts = topCounts(
+    [...shortlist, ...result.hold].map((item) => item.data_quality_status)
+  );
+  const confidenceCounts = topCounts(
+    shortlist.map((item) => item.ranking.confidence)
+  );
+
+  return {
+    topPick,
+    holdReasons,
+    missingFields,
+    qualityCounts,
+    confidenceCounts,
+  };
+}
+
+function DiagnosticsList({
+  title,
+  empty,
+  items,
+}: {
+  title: string;
+  empty: string;
+  items: Array<{ label: string; count: number }>;
+}) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <p className="text-sm font-semibold text-black">{title}</p>
+      {items.length === 0 ? (
+        <p className="mt-2 text-sm text-gray-600">{empty}</p>
+      ) : (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {items.map((item) => (
+            <span
+              key={item.label}
+              className="rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-700"
+            >
+              {item.label} ({item.count})
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ScenarioDiagnosticsPanel({
+  result,
+}: {
+  result: RecommendationResponse;
+}) {
+  const diagnostics = labDiagnostics(result);
+  const topPick = diagnostics.topPick;
+
+  return (
+    <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-blue-700">
+            Scenario diagnostics
+          </p>
+          <h2 className="mt-2 text-xl font-bold text-blue-950">
+            {topPick
+              ? `${topPick.brand} - ${topPick.display_name}`
+              : "No user-facing top pick"}
+          </h2>
+          <p className="mt-2 text-sm text-blue-900">
+            Premium {result.premium.length} | Value {result.value.length} | Hold{" "}
+            {result.hold.length} from {result.total_candidates} candidates.
+          </p>
+        </div>
+        {topPick && (
+          <div className="rounded-xl bg-white p-4 text-sm text-blue-950">
+            <p className="font-semibold">Top pick score</p>
+            <p className="mt-1 text-2xl font-bold">
+              {topPick.ranking.total_score}/100
+            </p>
+            <p className="mt-1">
+              {topPick.ranking.confidence} confidence |{" "}
+              {topPick.nutrition_confidence.label}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-4">
+        <DiagnosticsList
+          title="Hold reasons"
+          empty="No common hold reasons."
+          items={diagnostics.holdReasons}
+        />
+        <DiagnosticsList
+          title="Missing data hotspots"
+          empty="No repeated missing fields."
+          items={diagnostics.missingFields}
+        />
+        <DiagnosticsList
+          title="Data quality mix"
+          empty="No data quality stats."
+          items={diagnostics.qualityCounts}
+        />
+        <DiagnosticsList
+          title="Shortlist confidence"
+          empty="No shortlist confidence stats."
+          items={diagnostics.confidenceCounts}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ResultCard({ item }: { item: RecommendationItem }) {
   return (
     <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -935,6 +1075,7 @@ export default function FoodV2RecommendationLabPage() {
               excludedIngredients,
             })}
           />
+          <ScenarioDiagnosticsPanel result={result} />
 
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
