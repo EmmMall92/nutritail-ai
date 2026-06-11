@@ -229,6 +229,63 @@ function missingNutritionFields(food: FoodV2ChatbotRecommendationItem) {
   ].filter((field) => nutrition[field] === null || nutrition[field] === undefined);
 }
 
+function formatNumber(value: number | null | undefined, digits = 1) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return Number(value.toFixed(digits));
+}
+
+function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
+  const nutrition = food.nutrition;
+  if (!nutrition) return "";
+
+  const kcal = formatNumber(nutrition.kcal_per_100g, 1);
+  const protein = formatNumber(nutrition.protein_percent, 1);
+  const fat = formatNumber(nutrition.fat_percent, 1);
+  const fiber = formatNumber(nutrition.fiber_percent, 1);
+  const calcium = formatNumber(nutrition.calcium_percent, 2);
+  const phosphorus = formatNumber(nutrition.phosphorus_percent, 2);
+
+  const core = [
+    kcal !== null ? `kcal ${kcal}/100g` : "",
+    protein !== null ? `protein ${protein}%` : "",
+    fat !== null ? `fat ${fat}%` : "",
+    fiber !== null ? `fiber ${fiber}%` : "",
+  ].filter(Boolean);
+
+  const minerals = [
+    calcium !== null ? `Ca ${calcium}%` : "",
+    phosphorus !== null ? `P ${phosphorus}%` : "",
+  ].filter(Boolean);
+
+  const values = [...core, ...(minerals.length === 2 ? [minerals.join(" / ")] : [])];
+  if (values.length === 0) return "";
+
+  const label = locale === "el" ? "Nutrition snapshot" : "Nutrition snapshot";
+  return `- ${label}: ${values.join("; ")}`;
+}
+
+function fitSummary(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
+  const ranking = food.ranking;
+  if (!ranking) return "";
+
+  const score = typeof ranking.total_score === "number" ? ranking.total_score : null;
+  const confidence = ranking.confidence ?? "medium";
+  const label = locale === "el" ? "Fit summary" : "Fit summary";
+  const source =
+    food.data_quality_status === "verified"
+      ? "verified data"
+      : food.data_quality_status === "partial"
+        ? "partial data"
+        : food.data_quality_status === "needs_review"
+          ? "needs review"
+          : "limited data";
+
+  return `- ${label}: ${score !== null ? `${score}/100, ` : ""}${localizedConfidence(
+    confidence,
+    locale
+  )}, ${source}`;
+}
+
 function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
   if (food.data_quality_status !== "needs_review") return "";
 
@@ -257,6 +314,8 @@ function formatFood(food: FoodV2ChatbotRecommendationItem, index: number, locale
       typeof score === "number" ? ` (${score}/100, ${localizedConfidence(confidence, locale)})` : ""
     }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
     `- ${localizedSourceLabel(food, locale)}`,
+    fitSummary(food, locale),
+    nutritionSnapshot(food, locale),
     missing.length > 0 ? `- ${missingLabel}: ${missing.join(", ")}` : "",
     reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
     cautiousDataQualityNote(food, locale),
