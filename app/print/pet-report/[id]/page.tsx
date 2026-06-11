@@ -95,6 +95,24 @@ function getReportNextSteps(analysis?: AnalysisHistoryItem | null) {
   return steps;
 }
 
+function getMonitoringChecklist(analysis?: AnalysisHistoryItem | null) {
+  const checklist = [
+    "Weigh the pet on the same scale every 2-4 weeks.",
+    "Track appetite, stool quality, energy, and whether the food is accepted.",
+    "Keep treats near 10% of daily calories and include them in the total.",
+  ];
+
+  if (analysis?.weight_goal === "loss") {
+    checklist.push("If weight does not move after 2-3 weeks, run a Progress check before cutting food further.");
+  }
+
+  if (!analysis?.matched_food_name || !analysis?.feeding_grams_per_day) {
+    checklist.push("Send the exact bag name or label photo to improve formula-specific confidence.");
+  }
+
+  return checklist;
+}
+
 function getReportSummary(analysis?: AnalysisHistoryItem | null) {
   if (!analysis) {
     return "This report needs a saved nutrition analysis before it can show calories, feeding amount, and food fit.";
@@ -420,6 +438,29 @@ export default function PrintablePetReportPage() {
                 <div
                   key={`${item}-${index}`}
                   className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-black print:border-gray-300"
+                >
+                  {index + 1}. {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {latestAnalysis && (
+          <div className="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-6 print:border-gray-300">
+            <h2 className="text-xl font-semibold text-blue-950">
+              Monitoring Checklist
+            </h2>
+            <p className="mt-2 text-sm text-blue-900">
+              Use this section between reports so the next chatbot check-in has
+              real progress data, not guesswork.
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {getMonitoringChecklist(latestAnalysis).map((item, index) => (
+                <div
+                  key={`${item}-${index}`}
+                  className="break-inside-avoid rounded-xl border border-blue-100 bg-white p-4 text-sm text-blue-950 print:border-gray-300"
                 >
                   {index + 1}. {item}
                 </div>
