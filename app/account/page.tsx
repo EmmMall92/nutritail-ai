@@ -347,7 +347,11 @@ export default function AccountPage() {
               </>
             )}
             <Link
-              href="/account/chatbot"
+              href={
+                latestPet
+                  ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
+                  : "/account/chatbot"
+              }
               className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
             >
               {latestPet ? "Progress check" : "New analysis"}

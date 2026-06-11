@@ -303,7 +303,7 @@ export default function AccountPetsPage() {
                       {latest ? (
                         <>
                           <Link
-                            href="/account/chatbot"
+                            href={`/account/chatbot?petId=${pet.id}&mode=progress`}
                             className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
                           >
                             Progress check
@@ -323,7 +323,7 @@ export default function AccountPetsPage() {
                         </>
                       ) : (
                         <Link
-                          href="/account/chatbot"
+                          href={`/account/chatbot?petId=${pet.id}`}
                           className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
                         >
                           Run analysis
