@@ -65,12 +65,25 @@ const liveChecks = [
       "Open /print/pet-timeline/[id] and confirm progress check-ins appear in the printable timeline.",
     ],
   },
+  {
+    title: "Mobile customer journey",
+    checks: [
+      "Test on a phone-sized viewport from /login through /account without horizontal scrolling.",
+      "Open /account/chatbot and confirm saved-pet cards, starter cards, quick replies, and sticky input fit the screen.",
+      "Run chatbot intake until recommendations appear and confirm long food names wrap without covering buttons.",
+      "Save an analysis and confirm Open profile, Open report, and New analysis actions are easy to tap.",
+      "Open /account/pets/[id] and confirm Latest result, progress, report, and timeline actions stack cleanly.",
+      "Open printable report and timeline on mobile and confirm headings, cards, and tables remain readable.",
+    ],
+  },
 ];
 
 const liveUrls = [
   "/account",
   "/account/chatbot",
   "/account/pets",
+  "/login",
+  "/register",
   "/print/pet-report/test-id",
   "/print/pet-timeline/test-id",
   "/admin/foods/v2-guide",
@@ -131,9 +144,12 @@ export default function FoodV2LiveQaPage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-medium text-gray-500">Order</p>
-          <p className="mt-2 text-3xl font-bold text-black">1-4</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {liveChecks.length}
+          </p>
           <p className="mt-2 text-sm text-gray-600">
-            Deploy, admin access, import flow, recommendations, account progress.
+            Deploy, admin access, import flow, recommendations, account progress,
+            and mobile customer journey.
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
