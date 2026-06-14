@@ -1,14 +1,14 @@
 # Food V2 Title Canonicalization Pass
 
-Generated: 2026-06-05T17:34:33.271Z
+Generated: 2026-06-14T15:12:54.003Z
 
 ## Summary
 
 - Candidate rows reviewed: 801
-- Title repair candidates: 642
-- High priority repairs: 6
-- Medium priority repairs: 610
-- Low priority repairs: 26
+- Title repair candidates: 648
+- High priority repairs: 0
+- Medium priority repairs: 616
+- Low priority repairs: 32
 - Output CSV: data/review/food_v2_title_canonicalization_queue.csv
 
 ## Source Priority Policy
@@ -22,9 +22,8 @@ Generated: 2026-06-05T17:34:33.271Z
 
 ## Repair Candidates By Priority
 
-- medium: 610
-- low: 26
-- high: 6
+- medium: 616
+- low: 32
 
 ## Repair Candidates By Brand
 
@@ -32,7 +31,7 @@ Generated: 2026-06-05T17:34:33.271Z
 - Brit: 49
 - Hills: 37
 - N&D: 36
-- Josera: 29
+- Josera: 35
 - Belcando: 20
 - Reflex: 19
 - Club 4 Paws: 18
@@ -111,11 +110,10 @@ Generated: 2026-06-05T17:34:33.271Z
 
 ## Most Common Reasons
 
-- display_name_can_be_standardized: 639
+- display_name_can_be_standardized: 645
 - display_name_contains_pack_size: 612
+- formula_name_can_be_canonicalized: 139
 - display_name_missing_brand: 67
-- formula_name_can_be_canonicalized: 49
-- formula_looks_like_description: 6
 - formula_starts_with_brand: 4
 - formula_contains_pack_size: 1
 

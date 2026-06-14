@@ -36,7 +36,7 @@ const sourceSuffixPattern =
   /\b(?:gatoskilo|petshop88|pet-it|petcity|petsamolis|zooplus|official|retailer|html|mhtml|pdf|document|spreadsheet|eshop)\b/giu;
 
 const titleNoisePatterns = [
-  /\b(?:dry dog food|dog dry food|dry cat food|cat dry food|dry food|xira trofi skylou|ksira trofi skylou|trofi skylou|trofes skylon|for dogs|for cats|eshop)\b/giu,
+  /\b(?:dry dog food|dog dry food|dry cat food|cat dry food|dry food|xira trofi skylou|ksira trofi skylou|xira trofi gatas|ksira trofi gatas|trofi skylou|trofes skylon|trofi gatas|trofes gaton|for dogs|for cats|dogs|dog|skylou|skylos|gatas|gata|eshop)\b/giu,
   /\b(?:activity\s*\/\s*day|feed amount|recommended food|feeding guide|feeding table)\b.*$/iu,
   /\b(?:complete|complementary|dietetic|dietary)\s+(?:food|feed)\b/iu,
   /\b(?:food|feed)\s+for\b/iu,
@@ -44,6 +44,8 @@ const titleNoisePatterns = [
   /ολιστικ[ηή]\s+τροφ[ηή]/iu,
   /πλ[ηή]ρης\s+τροφ[ηή]/iu,
 ];
+
+const hardDescriptionPatterns = titleNoisePatterns.slice(1);
 
 const displayOnlyPatterns = [
   /\b(?:with|rich in|fresh|and)\b/iu,
@@ -201,7 +203,7 @@ function looksLikeDescription(value) {
   return (
     wordCount(text) > 14 ||
     text.length > 110 ||
-    titleNoisePatterns.some((pattern) => pattern.test(text))
+    hardDescriptionPatterns.some((pattern) => pattern.test(text))
   );
 }
 
