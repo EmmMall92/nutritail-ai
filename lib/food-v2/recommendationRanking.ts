@@ -477,6 +477,20 @@ function isWeightSensitiveContext(input: {
   );
 }
 
+function isStrictWeightControlContext(input: {
+  goal: FoodV2RecommendationGoal;
+  pet: FoodV2RankingInput["pet"];
+}) {
+  const healthText = normalizeText((input.pet.healthIssues ?? []).join(" "));
+
+  return (
+    input.goal === "weight_control" ||
+    hasAny(healthText, ["weight", "obesity", "overweight", "loss"]) ||
+    (input.goal === "sterilised" &&
+      (input.pet.neutered || input.pet.activityLevel === "low"))
+  );
+}
+
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -645,6 +659,7 @@ function scoreFit(input: FoodV2RankingInput) {
   if (isWeightSensitiveContext({ goal, pet })) {
     const weightPositioned = hasWeightControlPositioning(haystack);
     const activePositioned = hasActivePositioning(haystack);
+    const strictWeightContext = isStrictWeightControlContext({ goal, pet });
 
     if (weightPositioned) {
       score += 14;
@@ -666,14 +681,35 @@ function scoreFit(input: FoodV2RankingInput) {
       const penalty = nutrients.fat_percent >= 18 ? -18 : -12;
       score += penalty;
       addSignal(signals, "caution", "fat_dense_neutered", penalty, "Fat looks high for a sterilised or weight-prone pet.");
+    } else if (
+      strictWeightContext &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 14.5 &&
+      !weightPositioned
+    ) {
+      score -= 8;
+      addSignal(
+        signals,
+        "caution",
+        "moderately_fatty_weight_sensitive",
+        -8,
+        "Fat is not low enough to be a first pick for a sterilised or weight-control case."
+      );
     }
     if (activePositioned && pet.activityLevel !== "high") {
-      score -= 24;
-      addSignal(signals, "caution", "active_formula_for_neutered_pet", -24, "Active/performance positioning is not ideal for a sterilised low-to-normal activity pet.");
+      const activePenalty = strictWeightContext ? -34 : -24;
+      score += activePenalty;
+      addSignal(
+        signals,
+        "caution",
+        "active_formula_for_neutered_pet",
+        activePenalty,
+        "Active/performance positioning is not ideal for a sterilised low-to-normal activity pet."
+      );
       if (
         !weightPositioned &&
-        (goal === "sterilised" || goal === "weight_control") &&
-        (food.kcal_per_100g == null || food.kcal_per_100g > 385 || (nutrients.fat_percent ?? 0) >= 16)
+        strictWeightContext &&
+        (food.kcal_per_100g == null || food.kcal_per_100g > 370 || (nutrients.fat_percent ?? 0) >= 14.5)
       ) {
         addSignal(
           signals,
