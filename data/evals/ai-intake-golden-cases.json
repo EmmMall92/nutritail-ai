@@ -52,5 +52,13 @@
       "neutered": true,
       "healthIssues": ["urinary"]
     }
+  },
+  {
+    "id": "greek_like_chicken_avoid_salmon",
+    "message": "Της αρέσει το κοτόπουλο και δεν της αρέσει καθόλου ο σολομός",
+    "expect": {
+      "preferredProteins": ["chicken"],
+      "excludedIngredients": ["salmon"]
+    }
   }
 ]

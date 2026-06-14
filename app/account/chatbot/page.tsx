@@ -463,6 +463,13 @@ function normalizeExtractedList(values: unknown) {
   return uniqueTerms(values.map((value) => String(value ?? "").trim()));
 }
 
+function removeExcludedFromPreferred(preferred: string[], excluded: string[]) {
+  const excludedSet = new Set(excluded.map((value) => normalizeUserText(value)));
+  return uniqueTerms(preferred).filter(
+    (value) => !excludedSet.has(normalizeUserText(value))
+  );
+}
+
 function shouldExtractIntakeFacts(step: IntakeStep, text: string) {
   if (step === "analysis" || step === "done" || step === "petChoice") {
     return false;
@@ -506,10 +513,13 @@ function mergeExtractedPetFacts(
     ...(next.excludedIngredients ?? []),
     ...normalizeExtractedList(extracted.excludedIngredients),
   ]);
-  next.preferredProteins = uniqueTerms([
-    ...(next.preferredProteins ?? []),
-    ...normalizeExtractedList(extracted.preferredProteins),
-  ]);
+  next.preferredProteins = removeExcludedFromPreferred(
+    [
+      ...(next.preferredProteins ?? []),
+      ...normalizeExtractedList(extracted.preferredProteins),
+    ],
+    next.excludedIngredients ?? []
+  );
 
   return next;
 }
@@ -2953,17 +2963,22 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "preferences") {
       const preferences = parseTastePreferences(text);
+      const excludedIngredients = uniqueTerms([
+        ...(workingPet.excludedIngredients ?? []),
+        ...preferences.excludedIngredients,
+      ]);
+      const preferredProteins = removeExcludedFromPreferred(
+        [
+          ...(workingPet.preferredProteins ?? []),
+          ...preferences.preferredProteins,
+        ],
+        excludedIngredients
+      );
 
       const nextPet: PetIntake = {
         ...workingPet,
-        excludedIngredients: uniqueTerms([
-          ...(workingPet.excludedIngredients ?? []),
-          ...preferences.excludedIngredients,
-        ]),
-        preferredProteins: uniqueTerms([
-          ...(workingPet.preferredProteins ?? []),
-          ...preferences.preferredProteins,
-        ]),
+        excludedIngredients,
+        preferredProteins,
       };
 
       setPet(nextPet);
