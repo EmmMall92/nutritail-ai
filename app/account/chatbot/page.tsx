@@ -805,8 +805,11 @@ function parseCompareQueries(text: string) {
     .replace(/\bcompare\b/gi, "")
     .replace(/\bversus\b/gi, " vs ")
     .replace(/\bvs\.?\b/gi, " vs ")
+    .replace(/\bfor my pet\b/gi, "")
+    .replace(/\bfor this pet\b/gi, "")
+    .replace(/\bfor the pet\b/gi, "")
     .replace(/σύγκρινε|συγκρινε|σύγκριση|συγκριση/gi, "")
-    .split(/\s+vs\s+|[,;\n]+/i)
+    .split(/\s+vs\s+|\s+and\s+|\s+or\s+|[,;\n]+/i)
     .map((item) => item.trim())
     .filter((item) => item.length >= 3)
     .slice(0, 5);
@@ -856,11 +859,17 @@ function formatNutritionValue(value: number | null | undefined, suffix: string) 
   return `${value}${suffix}`;
 }
 
-function formatFoodComparison(result: FoodCompareResponse) {
+function formatFoodComparison(
+  result: FoodCompareResponse,
+  language: ChatLanguage = "en"
+) {
+  const greek = language === "el";
   const comparisons = result.comparisons ?? [];
 
   if (comparisons.length === 0) {
-    return "I could not compare those foods yet. Try brand + formula names, separated with vs. Example: Royal Canin Mini Adult vs Farmina N&D Pumpkin Lamb.";
+    return greek
+      ? "Δεν μπόρεσα να συγκρίνω αυτές τις τροφές ακόμα. Δοκίμασε εταιρεία + ακριβή φόρμουλα, χωρισμένα με vs. Παράδειγμα: Royal Canin Mini Adult vs Farmina N&D Pumpkin Lamb."
+      : "I could not compare those foods yet. Try brand + formula names, separated with vs. Example: Royal Canin Mini Adult vs Farmina N&D Pumpkin Lamb.";
   }
 
   const missedMatches = comparisons.filter((item) => !item.match);
@@ -873,7 +882,10 @@ function formatFoodComparison(result: FoodCompareResponse) {
 
   const rows = comparisons.map((item, index) => {
     if (!item.match) {
-      return `${index + 1}. ${item.query}: no confident database match.
+      return greek
+        ? `${index + 1}. ${item.query}: δεν βρήκα αρκετά σίγουρο match στη βάση.
+Επόμενο βήμα: στείλε την ακριβή εταιρεία και φόρμουλα από τη συσκευασία ή δοκίμασε πιο σύντομο όνομα με brand + σειρά.`
+        : `${index + 1}. ${item.query}: no confident database match.
 Next step: send the exact brand and formula from the bag, or try a shorter query with brand + line name.`;
     }
 
@@ -881,9 +893,31 @@ Next step: send the exact brand and formula from the bag, or try a shorter query
     const missing = item.missing_nutrition_fields ?? [];
     const cautions = item.cautions ?? [];
 
-    return `${index + 1}. ${item.match.brand ?? "Unknown brand"} - ${
-      item.match.name ?? item.query
+    const title = `${index + 1}. ${
+      item.match.brand ?? (greek ? "Άγνωστη εταιρεία" : "Unknown brand")
+    } - ${item.match.name ?? item.query}`;
+
+    if (greek) {
+      return `${title}
+Match: ${item.match_score ?? 0}; σιγουριά δεδομένων: ${
+        item.data_confidence ?? "χαμηλή"
+      }
+Kcal/100g: ${formatNutritionValue(nutrition.kcal_per_100g, "")}
+Πρωτεΐνη: ${formatNutritionValue(nutrition.protein_percent, "%")}
+Λιπαρά: ${formatNutritionValue(nutrition.fat_percent, "%")}
+Ίνες: ${formatNutritionValue(nutrition.fiber_percent, "%")}
+Ασβέστιο/Φώσφορος: ${formatNutritionValue(
+        nutrition.calcium_percent,
+        "%"
+      )} / ${formatNutritionValue(nutrition.phosphorus_percent, "%")}
+Λείπουν στοιχεία: ${missing.length > 0 ? missing.join(", ") : "κανένα"}${
+        cautions.length > 0
+          ? `\nΠροσοχή:\n${cautions.map((item) => `- ${item}`).join("\n")}`
+          : ""
+      }`;
     }
+
+    return `${title}
 Match score: ${item.match_score ?? 0}; data confidence: ${
       item.data_confidence ?? "low"
     }
@@ -903,7 +937,15 @@ Missing fields: ${missing.length > 0 ? missing.join(", ") : "none"}${
   });
 
   const summary = result.summary
-    ? `
+    ? greek
+      ? `
+
+Γρήγορη εικόνα:
+- Πιο χαμηλές θερμίδες: ${result.summary.lowest_calorie ?? "δεν υπάρχουν αρκετά δεδομένα"}
+- Περισσότερη πρωτεΐνη: ${result.summary.highest_protein ?? "δεν υπάρχουν αρκετά δεδομένα"}
+- Περισσότερες ίνες: ${result.summary.highest_fiber ?? "δεν υπάρχουν αρκετά δεδομένα"}
+- ${result.summary.note ?? "Χρησιμοποίησέ το σαν δομημένη βοήθεια σύγκρισης."}`
+      : `
 
 Quick read:
 - Lowest calorie: ${result.summary.lowest_calorie ?? "not enough data"}
@@ -914,19 +956,32 @@ Quick read:
 
   const followUp =
     missedMatches.length > 0 || partialMatches.length > 0
-      ? `
+      ? greek
+        ? `
+
+Τι σημαίνει αυτό:
+- ${missedMatches.length} επιλογή/ές χρειάζονται πιο ακριβές όνομα προϊόντος για σίγουρη σύγκριση.
+- ${partialMatches.length} matched επιλογή/ές έχουν ελλιπή θρεπτικά δεδομένα, άρα η σύγκριση είναι κατευθυντική.
+- Για υγεία, απώλεια βάρους, κουτάβια, νεφρικό ή ουρολογικό θέμα, επιβεβαίωσε τα στοιχεία της ετικέτας πριν επιλέξεις.`
+        : `
 
 What this means:
 - ${missedMatches.length} item(s) need a more exact product name before I can compare them confidently.
 - ${partialMatches.length} matched item(s) have missing nutrition fields, so use the comparison as directional rather than final.
 - For health issues, weight loss, puppies, kidney, or urinary concerns, confirm the label data before choosing.`
-      : `
+      : greek
+        ? `
+
+Τι σημαίνει αυτό:
+- Τα προϊόντα ταιριάζουν αρκετά καλά με τη βάση για δομημένη σύγκριση.
+- Πριν διαλέξεις, μετράνε πάντα ηλικία, βάρος, στόχος, στείρωση και θέματα υγείας.`
+        : `
 
 What this means:
 - These products matched the database well enough for a structured comparison.
 - Still use pet context before choosing: age, weight goal, neuter status, and health issues matter.`;
 
-  return `Food comparison:
+  return `${greek ? "Σύγκριση τροφών" : "Food comparison"}:
 
 ${rows.join("\n\n")}${summary}${followUp}`;
 }
@@ -1092,7 +1147,45 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
   return details.join("\n");
 }
 
-function buildGuardrailText(pet: PetIntake) {
+function localizeGuardrailText(text: string, language: ChatLanguage) {
+  if (language !== "el") return text;
+
+  return text
+    .replace(
+      "Safety notes:",
+      "Σημειώσεις ασφάλειας:"
+    )
+    .replace(
+      "Confidence notes:",
+      "Σημειώσεις σιγουριάς:"
+    )
+    .replace(
+      "Useful follow-up questions:",
+      "Χρήσιμες ερωτήσεις:"
+    )
+    .replace(
+      /For suspected food allergy, ingredient history matters; an elimination trial or hydrolysed diet plan is more reliable than guessing from one symptom\./g,
+      "Για πιθανή τροφική αλλεργία, το ιστορικό συστατικών έχει σημασία. Ένα σωστό elimination trial ή υδρολυμένη τροφή με καθοδήγηση είναι πιο αξιόπιστα από το να μαντέψουμε από ένα σύμπτωμα."
+    )
+    .replace(
+      /I can flag possible ingredient exposures, but I should not diagnose allergy from chat alone\./g,
+      "Μπορώ να εντοπίσω πιθανές εκθέσεις σε συστατικά, αλλά δεν γίνεται διάγνωση αλλεργίας μόνο από το chat."
+    )
+    .replace(
+      /For vomiting, diarrhea, or strong digestive discomfort, switch foods slowly and speak with a veterinarian if symptoms are severe, persistent, or paired with weight loss\./g,
+      "Για εμετό, διάρροια ή έντονη πεπτική ενόχληση, η αλλαγή τροφής πρέπει να γίνεται αργά και χρειάζεται κτηνίατρος αν τα συμπτώματα είναι έντονα, επίμονα ή συνοδεύονται από απώλεια βάρους."
+    )
+    .replace(
+      /How long have the digestive symptoms been happening, and did they start after a food change\?/g,
+      "Πόσο καιρό υπάρχουν τα πεπτικά συμπτώματα και ξεκίνησαν μετά από αλλαγή τροφής;"
+    )
+    .replace(
+      /For weight loss, calorie control and treat calories matter as much as the formula choice\./g,
+      "Για απώλεια βάρους, οι θερμίδες και οι λιχουδιές μετράνε όσο και η επιλογή φόρμουλας."
+    );
+}
+
+function buildGuardrailText(pet: PetIntake, language: ChatLanguage) {
   const guardrails = generateChatGuardrails({
     species: pet.species,
     age: pet.age,
@@ -1101,7 +1194,7 @@ function buildGuardrailText(pet: PetIntake) {
     allergies: pet.allergies,
   });
 
-  return formatChatGuardrails(guardrails);
+  return localizeGuardrailText(formatChatGuardrails(guardrails), language);
 }
 
 function createPetFromIntake(intake: PetIntake): Pet {
@@ -1333,10 +1426,18 @@ function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "e
     if (title === "Weight Control") return "Έλεγχος βάρους";
     if (title === "Senior Nutrition") return "Διατροφή senior";
     if (title === "Puppy/Kitten Growth") return "Ανάπτυξη κουταβιού/γατιού";
+    if (title === "High Activity") return "Υψηλή δραστηριότητα";
     return title;
   };
   const translateAdviceDescription = (description: string) => {
     if (language !== "el") return description;
+    if (
+      /Highly active pets may require increased calories and protein levels\./i.test(
+        description
+      )
+    ) {
+      return "Τα πολύ δραστήρια ζώα μπορεί να χρειάζονται περισσότερες θερμίδες και επαρκή πρωτεΐνη.";
+    }
     return description
       .replace(
         /Neutered or weight-prone pets often need calorie control, measured portions, and treat calories kept within the daily target\./gi,
@@ -1456,6 +1557,9 @@ export default function AccountChatbotPage() {
   const [recommendedFoodChoices, setRecommendedFoodChoices] = useState<
     RecommendedFoodChoice[]
   >([]);
+  const [pendingCompareQueries, setPendingCompareQueries] = useState<string[]>(
+    []
+  );
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
@@ -1495,12 +1599,18 @@ export default function AccountChatbotPage() {
     return chatLanguage === "el" ? el : en;
   }
 
-  async function runFoodComparison(queries: string[]) {
+  async function runFoodComparison(
+    queries: string[],
+    options: { species?: Species } = {}
+  ) {
     try {
       addMessages(
         createMessage(
           "bot",
-          `I will compare these foods: ${queries.join(" vs ")}`
+          botText(
+            `Θα συγκρίνω αυτές τις επιλογές: ${queries.join(" vs ")}`,
+            `I will compare these foods: ${queries.join(" vs ")}`
+          )
         )
       );
 
@@ -1511,7 +1621,7 @@ export default function AccountChatbotPage() {
         },
         body: JSON.stringify({
           queries,
-          species: pet.species ?? "dog",
+          species: options.species ?? pet.species ?? "dog",
         }),
       });
 
@@ -1521,13 +1631,16 @@ export default function AccountChatbotPage() {
         throw new Error(result.error || "Failed to compare foods.");
       }
 
-      addMessages(createMessage("bot", formatFoodComparison(result)));
+      addMessages(createMessage("bot", formatFoodComparison(result, chatLanguage)));
     } catch (error) {
       console.error(error);
       addMessages(
         createMessage(
           "bot",
-          "I could not complete the comparison. Try using exact brand and formula names."
+          botText(
+            "Δεν μπόρεσα να ολοκληρώσω τη σύγκριση. Δοκίμασε με πιο ακριβές όνομα εταιρείας και φόρμουλας.",
+            "I could not complete the comparison. Try using exact brand and formula names."
+          )
         )
       );
     }
@@ -2037,15 +2150,20 @@ Main food calories: about ${treats.mainFoodCalories} kcal/day`
         );
       }
 
-      const guardrailText = buildGuardrailText(nextPet);
+      const guardrailText = buildGuardrailText(nextPet, chatLanguage);
 
       if (guardrailText) {
         addMessages(
           createMessage(
             "bot",
-            `Before food-specific advice, here are the guardrails I would keep in mind:
+            botText(
+              `Πριν από τις συγκεκριμένες προτάσεις τροφών, κρατάμε αυτά τα όρια ασφάλειας:
+
+${guardrailText}`,
+              `Before food-specific advice, here are the guardrails I would keep in mind:
 
 ${guardrailText}`
+            )
           )
         );
       }
@@ -2062,6 +2180,12 @@ ${guardrailText}`
         }
       } catch (error) {
         console.error(error);
+      }
+
+      if (pendingCompareQueries.length >= 2) {
+        const queries = [...pendingCompareQueries];
+        setPendingCompareQueries([]);
+        await runFoodComparison(queries, { species: nextPet.species });
       }
 
       if (nextPet.currentFoodName) {
@@ -2443,6 +2567,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     const compareQueries = parseCompareQueries(text);
 
     if (compareQueries.length >= 2 && step !== "analysis") {
+      if (step === "petChoice") {
+        setPendingCompareQueries(compareQueries);
+        addMessages(
+          createMessage(
+            "bot",
+            botText(
+              `Το κρατάω: θα συγκρίνω ${compareQueries.join(" vs ")} μόλις έχω τα στοιχεία του κατοικιδίου. Διάλεξε αποθηκευμένο κατοικίδιο ή πάτα Νέο κατοικίδιο.`,
+              `Got it: I will compare ${compareQueries.join(" vs ")} once I have the pet details. Choose a saved pet or start with a new pet.`
+            )
+          )
+        );
+        return;
+      }
+
       await runFoodComparison(compareQueries);
       return;
     }

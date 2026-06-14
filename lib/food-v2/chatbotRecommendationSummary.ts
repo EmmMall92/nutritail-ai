@@ -92,6 +92,20 @@ export function goalFromPetContext(
   pet: FoodV2ChatbotPetContext
 ): FoodV2RecommendationGoal {
   if ((pet.allergies ?? []).length > 0) return "allergy";
+  if (
+    hasAny(pet.healthIssues, [
+      "allergy",
+      "allergic",
+      "itch",
+      "skin",
+      "derma",
+      "fagour",
+      "\u03c6\u03b1\u03b3\u03bf\u03c5\u03c1",
+      "\u03b4\u03b5\u03c1\u03bc",
+    ])
+  ) {
+    return "allergy";
+  }
   if (hasAny(pet.healthIssues, ["urinary", "struvite", "crystal", "pee", "ουρολογ"])) {
     return "urinary";
   }
