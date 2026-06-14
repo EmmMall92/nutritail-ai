@@ -7,6 +7,7 @@ import {
   goalFromPetContext,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { formatPetDisplayName } from "@/lib/petName";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -173,7 +174,7 @@ function createPetFromIntake(intake: PetIntake): Pet {
   return {
     id: crypto.randomUUID(),
     ownerId: "11111111-1111-1111-1111-111111111111",
-    name: intake.name ?? "Pet",
+    name: formatPetDisplayName(intake.name),
     species: intake.species ?? "dog",
     breed: "unknown",
     age: intake.age ?? 1,
