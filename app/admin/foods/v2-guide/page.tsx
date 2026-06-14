@@ -57,6 +57,45 @@ const sampleArtifacts = [
   "npm.cmd run review:food-v2-sample",
 ];
 
+const brandCleanupSteps = [
+  {
+    title: "1. Pick one brand",
+    text: "Work one brand at a time so title cleanup, nutrient gaps, duplicates, and visibility decisions stay consistent.",
+    href: "/admin/foods/v2-post-import-qa",
+    cta: "Brand QA summary",
+  },
+  {
+    title: "2. Fix nutrient blockers",
+    text: "Use the brand work plan to prioritize kcal, estimated values, minerals, and health-sensitive rows first.",
+    href: "/admin/foods/v2-nutrient-gaps",
+    cta: "Nutrient gaps",
+  },
+  {
+    title: "3. Review names and source notes",
+    text: "Clean titles, formula keys, source priority, review buckets, and rows that came from retailer or photo evidence.",
+    href: "/admin/foods/v2-review",
+    cta: "Review queue",
+  },
+  {
+    title: "4. Check duplicates",
+    text: "Look for same formula across PDFs, retailer pages, official pages, or different pack sizes before enabling broadly.",
+    href: "/admin/duplicates",
+    cta: "Duplicates",
+  },
+  {
+    title: "5. Decide recommendation visibility",
+    text: "Keep every formula recommendable by default unless a brand, formula, or review state should be hidden from users.",
+    href: "/admin/foods/v2-recommendation-visibility",
+    cta: "Visibility",
+  },
+  {
+    title: "6. Test real scenarios",
+    text: "Run weight, allergy, growth, urinary, renal, senior, premium, and value examples before calling the brand customer-ready.",
+    href: "/admin/foods/v2-recommendation-lab",
+    cta: "Recommendation lab",
+  },
+];
+
 export default function FoodV2GuidePage() {
   return (
     <section className="space-y-6">
@@ -91,6 +130,45 @@ export default function FoodV2GuidePage() {
           >
             Live QA Checklist
           </Link>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+              Brand-by-brand cleanup
+            </p>
+            <h3 className="mt-2 text-xl font-bold text-emerald-950">
+              Repeat this loop for each important brand
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm text-emerald-900">
+              Use this sequence after a brand import or when a brand starts
+              appearing in customer recommendations. It keeps product names,
+              nutrient confidence, visibility, and duplicate handling aligned.
+            </p>
+          </div>
+          <Link
+            href="/admin/foods/v2-post-import-qa"
+            className="rounded-xl bg-emerald-700 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
+          >
+            Start brand QA
+          </Link>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {brandCleanupSteps.map((step) => (
+            <div key={step.title} className="rounded-xl bg-white p-4 shadow-sm">
+              <p className="font-semibold text-black">{step.title}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-700">{step.text}</p>
+              <Link
+                href={step.href}
+                className="mt-4 inline-flex rounded-lg border border-emerald-300 px-3 py-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50"
+              >
+                {step.cta}
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
 
