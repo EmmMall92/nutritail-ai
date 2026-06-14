@@ -188,92 +188,6 @@ function translateRankingText(value: string, locale: "el" | "en") {
     .replace(/Urinary reasoning is weaker without magnesium and phosphorus\./gi, "Η ουρολογική αξιολόγηση είναι πιο αδύναμη χωρίς μαγνήσιο και φώσφορο.");
 }
 
-function localizedSourceLabel(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
-  const quality = String(food.data_quality_status ?? "").trim();
-  const source = String(food.source_priority ?? "").trim();
-
-  if (locale === "en") {
-    return [
-      "source: Food V2",
-      quality ? `quality: ${quality}` : "",
-      source ? `source tier: ${source}` : "",
-    ]
-      .filter(Boolean)
-      .join("; ");
-  }
-
-  return [
-    "Πηγή: Food V2",
-    quality ? `ποιότητα: ${quality}` : "",
-    source ? `τύπος πηγής: ${source}` : "",
-  ]
-    .filter(Boolean)
-    .join("; ");
-}
-
-function localizedConfidence(value: string, locale: "el" | "en") {
-  if (locale === "en") return `${value} confidence`;
-  if (value === "high") return "υψηλή σιγουριά";
-  if (value === "low") return "χαμηλή σιγουριά";
-  return "μέτρια σιγουριά";
-}
-
-function displayConfidence(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
-  const rankingConfidence = food.ranking?.confidence ?? "medium";
-  const missingCoreFields = food.nutrition_confidence?.missing_core_fields ?? [];
-  const estimatedFields = food.nutrition_confidence?.estimated_fields ?? [];
-
-  if (rankingConfidence === "low" || missingCoreFields.length >= 2) {
-    return localizedConfidence("low", locale);
-  }
-
-  if (food.data_quality_status === "needs_review" || estimatedFields.length > 0) {
-    return localizedConfidence("medium", locale);
-  }
-
-  return localizedConfidence(rankingConfidence, locale);
-}
-
-function localizedDataStatus(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
-  const estimatedFields = food.nutrition_confidence?.estimated_fields ?? [];
-  const status =
-    food.data_quality_status === "verified"
-      ? "verified"
-      : food.data_quality_status === "partial"
-        ? "partial"
-        : food.data_quality_status === "needs_review"
-          ? "needs_review"
-          : "limited";
-
-  if (locale === "en") {
-    if (estimatedFields.length > 0 && status === "needs_review") return "needs review / estimated values";
-    if (status === "verified") return "verified data";
-    if (status === "partial") return "partial data";
-    if (status === "needs_review") return "needs review";
-    return "limited data";
-  }
-
-  if (estimatedFields.length > 0 && status === "needs_review") {
-    return "θέλει review / έχει εκτιμήσεις";
-  }
-  if (status === "verified") return "ελεγμένα δεδομένα";
-  if (status === "partial") return "μερικά δεδομένα";
-  if (status === "needs_review") return "θέλει review";
-  return "περιορισμένα δεδομένα";
-}
-
-function localizedNutritionConfidenceLabel(label: string | undefined, locale: "el" | "en") {
-  if (!label || locale === "en") return label ?? "";
-
-  const normalized = label.toLowerCase();
-  if (normalized.includes("strong nutrition data")) return "ισχυρά θρεπτικά δεδομένα";
-  if (normalized.includes("estimated")) return "χρήσιμο, με εκτιμώμενες τιμές";
-  if (normalized.includes("incomplete")) return "χρήσιμο αλλά ελλιπές";
-  if (normalized.includes("missing core")) return "προσοχή: λείπουν βασικά θρεπτικά";
-  if (normalized.includes("limited")) return "περιορισμένα θρεπτικά δεδομένα";
-  return label;
-}
-
 function missingNutritionFields(food: FoodV2ChatbotRecommendationItem) {
   const explicit = food.missing_nutrition_fields ?? [];
   const confidenceMissing = [
@@ -305,48 +219,23 @@ function formatNumber(value: number | null | undefined, digits = 1) {
   return Number(value.toFixed(digits));
 }
 
-function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
+function customerNutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
   const nutrition = food.nutrition;
-  if (!nutrition) return "";
+  const kcal = formatNumber(nutrition?.kcal_per_100g, 1);
+  const protein = formatNumber(nutrition?.protein_percent, 1);
+  const fat = formatNumber(nutrition?.fat_percent, 1);
+  const fiber = formatNumber(nutrition?.fiber_percent, 1);
 
-  const kcal = formatNumber(nutrition.kcal_per_100g, 1);
-  const protein = formatNumber(nutrition.protein_percent, 1);
-  const fat = formatNumber(nutrition.fat_percent, 1);
-  const fiber = formatNumber(nutrition.fiber_percent, 1);
-  const calcium = formatNumber(nutrition.calcium_percent, 2);
-  const phosphorus = formatNumber(nutrition.phosphorus_percent, 2);
-
-  const core = [
-    kcal !== null ? `kcal ${kcal}/100g` : "",
-    protein !== null ? `protein ${protein}%` : "",
-    fat !== null ? `fat ${fat}%` : "",
-    fiber !== null ? `fiber ${fiber}%` : "",
+  const values = [
+    kcal !== null ? `${kcal} kcal/100g` : "",
+    protein !== null ? `${protein}% ${locale === "el" ? "πρωτεΐνη" : "protein"}` : "",
+    fat !== null ? `${fat}% ${locale === "el" ? "λιπαρά" : "fat"}` : "",
+    fiber !== null ? `${fiber}% ${locale === "el" ? "ίνες" : "fiber"}` : "",
   ].filter(Boolean);
 
-  const minerals = [
-    calcium !== null ? `Ca ${calcium}%` : "",
-    phosphorus !== null ? `P ${phosphorus}%` : "",
-  ].filter(Boolean);
-
-  const values = [...core, ...(minerals.length === 2 ? [minerals.join(" / ")] : [])];
   if (values.length === 0) return "";
 
-  const label = locale === "el" ? "Θρεπτικά στοιχεία" : "Nutrition snapshot";
-  return `- ${label}: ${values.join("; ")}`;
-}
-
-function fitSummary(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
-  const ranking = food.ranking;
-  if (!ranking) return "";
-
-  const score = typeof ranking.total_score === "number" ? ranking.total_score : null;
-  const label = locale === "el" ? "Σύνοψη fit" : "Fit summary";
-  const source = localizedDataStatus(food, locale);
-
-  return `- ${label}: ${score !== null ? `${score}/100, ` : ""}${displayConfidence(
-    food,
-    locale
-  )}, ${source}`;
+  return `- ${locale === "el" ? "Με μια ματιά" : "At a glance"}: ${values.join("; ")}`;
 }
 
 function nutritionFitExplanation(
@@ -448,23 +337,13 @@ function nutritionFitExplanation(
   return "- Use case: general formula fit based on species, life stage, ingredients, and available nutrition data.";
 }
 
-function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
-  if (food.data_quality_status !== "needs_review") return "";
-
-  if (locale === "el") {
-    return "   Σημείωση: αυτή η τροφή θέλει ακόμη review, άρα τη βλέπουμε ως υποψήφια και όχι ως τελική απάντηση.";
-  }
-
-  return "   Note: this row still needs review, so treat it as a candidate rather than a final answer.";
-}
-
 function recommendationRoleLine(role: "premium" | "value", locale: "el" | "en") {
   if (locale === "el") {
     if (role === "premium") {
-      return "- Ρόλος: πιο δυνατή διατροφικά επιλογή με βάση το προφίλ, τον στόχο και τα διαθέσιμα δεδομένα.";
+      return "- Ρόλος: πιο δυνατή διατροφικά επιλογή για αυτό το προφίλ.";
     }
 
-    return "- Ρόλος: value εναλλακτική. Δεν έχουμε ακόμη τιμές προϊόντων, άρα βασίζεται στη φόρμουλα και στην ποιότητα των δεδομένων.";
+    return "- Ρόλος: πιο value εναλλακτική, αν θέλεις κάτι πιο απλό ή οικονομικό.";
   }
 
   if (role === "premium") {
@@ -482,34 +361,25 @@ function formatFood(
   role: "premium" | "value"
 ) {
   const score = food.ranking?.total_score;
-  const nutritionConfidence = localizedNutritionConfidenceLabel(
-    food.nutrition_confidence?.label,
-    locale
-  );
   const missing = missingNutritionFields(food);
   const reasons = (food.ranking?.reasons ?? [])
     .filter((reason) => !reason.toLowerCase().includes("matches the pet species"))
     .map((reason) => translateRankingText(reason, locale))
     .slice(0, 2);
   const optionLabel = locale === "el" ? "Επιλογή" : "Option";
-  const missingLabel = locale === "el" ? "Λείπουν θρεπτικά" : "Missing nutrition";
-  const estimatedLabel = locale === "el" ? "Εκτιμώμενα στοιχεία" : "Estimated nutrition";
   const whyLabel = locale === "el" ? "Γιατί ταιριάζει" : "Why it fits";
-  const estimated = food.nutrition_confidence?.estimated_fields ?? [];
 
   return [
     `${optionLabel} ${index}: ${foodName(food) || "Unnamed food"}${
-      typeof score === "number" ? ` (${score}/100, ${displayConfidence(food, locale)})` : ""
-    }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
+      typeof score === "number" ? ` (${score}/100)` : ""
+    }`,
     recommendationRoleLine(role, locale),
-    `- ${localizedSourceLabel(food, locale)}`,
-    fitSummary(food, locale),
     nutritionFitExplanation(food, goal, locale),
-    nutritionSnapshot(food, locale),
-    missing.length > 0 ? `- ${missingLabel}: ${missing.join(", ")}` : "",
-    estimated.length > 0 ? `- ${estimatedLabel}: ${estimated.join(", ")}` : "",
+    customerNutritionSnapshot(food, locale),
     reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
-    cautiousDataQualityNote(food, locale),
+    missing.length > 0 && locale === "en"
+      ? "- Some detailed minerals are not available yet, so portion and health-specific advice should stay cautious."
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -533,9 +403,10 @@ function formatTopPick(
     `${topLabel}: ${foodName(food) || "Unnamed food"}${
       typeof score === "number" ? ` (${score}/100)` : ""
     }.`,
-    localizedSourceLabel(food, locale),
+    locale === "el"
+      ? "Αν θέλεις να ξεκινήσεις από μία επιλογή, αυτή είναι η πιο δυνατή πρώτη πρόταση με βάση τα στοιχεία του κατοικιδίου."
+      : "If you want to start with one option, this is the strongest first pick for the pet profile.",
     nutritionFitExplanation(food, goal, locale),
-    cautiousDataQualityNote(food, locale).trim(),
     firstReason ? `${whyLabel}: ${translateRankingText(firstReason, locale)}` : "",
   ]
     .filter(Boolean)
@@ -547,6 +418,9 @@ function uniqueShortCautions(values: string[]) {
   const ignored = new Set([
     "Value ranking is a proxy until price data is available.",
     "Medical-condition matches are ranking support, not diagnosis or treatment.",
+    "Data is usable but still needs review.",
+    "Retailer source should be worded cautiously.",
+    "Detailed mineral data is incomplete.",
   ]);
 
   return values
@@ -579,11 +453,11 @@ export function formatFoodV2ChatbotRecommendationSummary(
   const intro =
     options.mode === "alternative"
       ? locale === "el"
-        ? "Εναλλακτικές τροφές από τη βάση NutriTail:"
-        : "Alternative food shortlist from the NutriTail nutrition database:"
+        ? "Εναλλακτικές τροφές που αξίζει να κοιτάξεις:"
+        : "Alternative foods worth considering:"
       : locale === "el"
-        ? "Προτεινόμενες τροφές από τη βάση NutriTail:"
-        : "Food shortlist from the NutriTail nutrition database:";
+        ? "Προτεινόμενες τροφές:"
+        : "Recommended foods:";
 
   if (premium.length === 0 && value.length === 0) {
     const holdCautions = uniqueShortCautions(
@@ -600,8 +474,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
           : `Avoiding current brand: ${excludedBrands.join(", ")}`
         : "",
       locale === "el"
-        ? "Δεν βρήκα αρκετά ασφαλή ή κατάλληλη Food V2 πρόταση για αυτό το κατοικίδιο με τα τωρινά δεδομένα."
-        : "I did not find a safe enough Food V2 recommendation for this pet with the current data.",
+        ? "Δεν βρήκα αρκετά κατάλληλη πρόταση για αυτό το κατοικίδιο με τα στοιχεία που έχουμε τώρα."
+        : "I did not find a suitable enough recommendation for this pet with the current context.",
       locale === "el"
         ? "Δεν θα προτείνω τροφές που δεν ταιριάζουν στο μέγεθος, στο life stage ή στον δηλωμένο στόχο."
         : "I will not recommend foods that do not fit the pet size, life stage, or stated goal.",
@@ -630,8 +504,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
     "",
     `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
     locale === "el"
-      ? "Διαχωρίζω πρώτα τις πιο δυνατές διατροφικά επιλογές και μετά τις value εναλλακτικές, όταν υπάρχουν αρκετές ασφαλείς υποψήφιες."
-      : "Shortlist split: strongest nutrition fits first, then value-style alternatives when enough safe candidates exist.",
+      ? "Παρακάτω θα δεις πρώτα τις πιο δυνατές διατροφικά επιλογές και μετά πιο απλές/value εναλλακτικές."
+      : "Below are the strongest nutrition fits first, followed by simpler value-style alternatives.",
     excludedBrands.length > 0
       ? locale === "el"
         ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
@@ -643,7 +517,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (premium.length > 0) {
     blocks.push(
       "",
-      locale === "el" ? "Καλύτερες ποιοτικά επιλογές:" : "Premium / strongest nutrition fits:",
+      locale === "el" ? "Οι καλύτερες επιλογές:" : "Best options:",
       premium
         .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale, goal, "premium"))
@@ -654,7 +528,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (value.length > 0) {
     blocks.push(
       "",
-      locale === "el" ? "Πιο οικονομικές / value εναλλακτικές:" : "Value-style alternatives:",
+      locale === "el" ? "Πιο απλές / value εναλλακτικές:" : "Value-style alternatives:",
       value
         .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale, goal, "value"))
@@ -680,7 +554,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   blocks.push(
     "",
     locale === "el"
-      ? "Χρησιμοποίησέ το σαν λίστα αγορών, όχι σαν διάγνωση ή θεραπεία. Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, σοβαρή αλλεργία, εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
+      ? "Επόμενο βήμα: διάλεξε μία από τις παραπάνω τροφές και μπορώ να σου υπολογίσω περίπου τα γραμμάρια/ημέρα. Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, έντονο εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
       : "Use this as a shopping shortlist, not a diagnosis or treatment plan. For urinary, kidney, diabetes, pancreatitis, severe allergy, vomiting, diarrhea, blood, or not eating, speak with a veterinarian first."
   );
 

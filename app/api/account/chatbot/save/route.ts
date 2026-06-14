@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { formatPetDisplayName } from "@/lib/petName";
 import { buildPetAnalysisHistoryRecord } from "@/services/petAnalysisHistoryBuilder";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import type { Pet } from "@/types/pet";
@@ -153,7 +154,7 @@ export async function POST(request: Request) {
         .insert({
           id: pet.id || crypto.randomUUID(),
           owner_id: "11111111-1111-1111-1111-111111111111",
-          name: pet.name,
+          name: formatPetDisplayName(pet.name),
           species: pet.species,
           breed: pet.breed || "unknown",
           age: pet.age,

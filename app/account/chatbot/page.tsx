@@ -28,6 +28,7 @@ import {
   goalFromPetContext,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { formatPetDisplayName } from "@/lib/petName";
 
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
@@ -49,6 +50,7 @@ type IntakeStep =
   | "neutered"
   | "health"
   | "currentFood"
+  | "preferences"
   | "weightGoal"
   | "analysis"
   | "done";
@@ -68,6 +70,8 @@ type PetIntake = {
   neutered?: boolean;
   healthIssues: string[];
   allergies: string[];
+  excludedIngredients?: string[];
+  preferredProteins?: string[];
   currentFoodName?: string;
   weightGoal?: WeightGoal;
 };
@@ -399,6 +403,98 @@ function parseListOrEmpty(text: string) {
     });
 
   return items;
+}
+
+function uniqueTerms(values: string[]) {
+  const seen = new Set<string>();
+  const terms: string[] = [];
+
+  values
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .forEach((value) => {
+      const key = normalizeUserText(value);
+      if (seen.has(key)) return;
+      seen.add(key);
+      terms.push(value);
+    });
+
+  return terms;
+}
+
+function parseTastePreferences(text: string): {
+  excludedIngredients: string[];
+  preferredProteins: string[];
+} {
+  const normalized = normalizeUserText(text);
+  const noPreference =
+    parseYesNoInput(text) === false ||
+    normalized.includes("no preference") ||
+    normalized.includes("no preferences") ||
+    normalized.includes("anything") ||
+    normalized.includes("whatever") ||
+    normalized.includes("δεν ξερω") ||
+    normalized.includes("δεν ξέρω") ||
+    normalized.includes("οτιδηποτε") ||
+    normalized.includes("οτιδήποτε");
+
+  if (noPreference) {
+    return { excludedIngredients: [], preferredProteins: [] };
+  }
+
+  const flavorTerms = [
+    { keys: ["chicken", "κοτοπουλ", "κοτόπουλ"], value: "chicken" },
+    { keys: ["lamb", "αρν"], value: "lamb" },
+    { keys: ["salmon", "σολομ"], value: "salmon" },
+    { keys: ["fish", "ψαρ"], value: "fish" },
+    { keys: ["duck", "παπια", "πάπια"], value: "duck" },
+    { keys: ["beef", "μοσχαρ", "βοδιν"], value: "beef" },
+    { keys: ["pork", "χοιριν"], value: "pork" },
+    { keys: ["turkey", "γαλοπουλ"], value: "turkey" },
+    { keys: ["rabbit", "κουνελ"], value: "rabbit" },
+    { keys: ["tuna", "τονο", "τόνο"], value: "tuna" },
+    { keys: ["rice", "ρυζ"], value: "rice" },
+    { keys: ["grain", "σιτηρ", "δημητριακ"], value: "grain" },
+  ];
+
+  const hasAvoidSignal =
+    normalized.includes("avoid") ||
+    normalized.includes("exclude") ||
+    normalized.includes("allerg") ||
+    normalized.includes("δεν τρω") ||
+    normalized.includes("δεν του αρε") ||
+    normalized.includes("δεν της αρε") ||
+    normalized.includes("τον πειρα") ||
+    normalized.includes("την πειρα") ||
+    normalized.includes("αλλεργ");
+
+  const hasPreferSignal =
+    normalized.includes("like") ||
+    normalized.includes("prefer") ||
+    normalized.includes("favorite") ||
+    normalized.includes("αρεσει") ||
+    normalized.includes("αρέσει") ||
+    normalized.includes("προτιμ") ||
+    normalized.includes("τρωει") ||
+    normalized.includes("τρώει");
+
+  const matched = flavorTerms
+    .filter((term) => term.keys.some((key) => normalized.includes(key)))
+    .map((term) => term.value);
+
+  if (matched.length === 0) {
+    return { excludedIngredients: [], preferredProteins: parseListOrEmpty(text) };
+  }
+
+  if (hasAvoidSignal) {
+    return { excludedIngredients: uniqueTerms(matched), preferredProteins: [] };
+  }
+
+  if (hasPreferSignal) {
+    return { excludedIngredients: [], preferredProteins: uniqueTerms(matched) };
+  }
+
+  return { excludedIngredients: [], preferredProteins: uniqueTerms(matched) };
 }
 
 function parseWeightGoal(text: string): WeightGoal | null {
@@ -808,6 +904,8 @@ async function getFoodV2RecommendationMessage(
         neutered: pet.neutered,
         allergies: pet.allergies,
         healthIssues: pet.healthIssues,
+        excludedIngredients: pet.excludedIngredients ?? [],
+        preferredProteins: pet.preferredProteins ?? [],
       },
       goal,
       format: "dry",
@@ -839,7 +937,7 @@ async function getFoodV2RecommendationMessage(
 
 function formatPetIntakeSummary(pet: PetIntake) {
   const details = [
-    `Pet: ${pet.name ?? "pet"} (${pet.species ?? "unknown species"})`,
+    `Pet: ${pet.name ? formatPetDisplayName(pet.name) : "pet"} (${pet.species ?? "unknown species"})`,
     `Weight/age: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} years`,
     `Activity: ${pet.activityLevel ?? "unknown"}`,
     `Neutered: ${
@@ -855,6 +953,14 @@ function formatPetIntakeSummary(pet: PetIntake) {
 
   if (pet.allergies.length > 0) {
     details.push(`Allergies/sensitivities: ${pet.allergies.join(", ")}`);
+  }
+
+  if ((pet.excludedIngredients ?? []).length > 0) {
+    details.push(`Avoids: ${(pet.excludedIngredients ?? []).join(", ")}`);
+  }
+
+  if ((pet.preferredProteins ?? []).length > 0) {
+    details.push(`Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`);
   }
 
   return details.join("\n");
@@ -876,7 +982,7 @@ function createPetFromIntake(intake: PetIntake): Pet {
   return {
     id: crypto.randomUUID(),
     ownerId: "11111111-1111-1111-1111-111111111111",
-    name: intake.name ?? "Pet",
+    name: formatPetDisplayName(intake.name),
     species: intake.species ?? "dog",
     breed: "unknown",
     age: intake.age ?? 1,
@@ -1625,7 +1731,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
     setFollowUpPet(null);
     setFollowUpMode(null);
     setRecommendationMode("default");
-    setPet({ healthIssues: [], allergies: [] });
+    setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
     setStep("species");
 
     addMessages(
@@ -2153,11 +2259,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "name") {
-      setPet((prev) => ({ ...prev, name: text }));
+      const displayName = formatPetDisplayName(text);
+
+      setPet((prev) => ({ ...prev, name: displayName }));
       setStep("weight");
 
       addMessages(
-        createMessage("bot", `Nice. About how many kg is ${text}?`)
+        createMessage("bot", `Nice. About how many kg is ${displayName}?`)
       );
 
       return;
@@ -2286,6 +2394,28 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           isUnknownFoodAnswer(currentFoodName)
             ? undefined
             : currentFoodName,
+      };
+
+      setPet(nextPet);
+      setStep("preferences");
+
+      addMessages(
+        createMessage(
+          "bot",
+          "Does your pet prefer or avoid any flavors or proteins? For example: likes lamb or salmon, does not eat chicken. If there is no preference, type no."
+        )
+      );
+
+      return;
+    }
+
+    if (step === "preferences") {
+      const preferences = parseTastePreferences(text);
+
+      const nextPet: PetIntake = {
+        ...pet,
+        excludedIngredients: preferences.excludedIngredients,
+        preferredProteins: preferences.preferredProteins,
       };
 
       setPet(nextPet);
@@ -2527,7 +2657,7 @@ Next actions:
                 </p>
               </div>
               <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
-                Food V2 powered
+                Smart food guidance
               </span>
             </div>
 
@@ -2648,16 +2778,16 @@ Next actions:
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
             <p className="font-semibold text-amber-950">
-              How Nutritail keeps recommendations careful
+              How Nutritail keeps recommendations sensible
             </p>
             <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-amber-900 sm:grid-cols-3">
               <p className="rounded-xl bg-white p-3">
-                Food facts come from the Nutritail database when a product is
-                matched.
+                We use your pet&apos;s age, weight, activity, neuter status, and
+                preferences before suggesting food.
               </p>
               <p className="rounded-xl bg-white p-3">
-                Missing nutrition data lowers confidence and should be treated
-                cautiously.
+                We avoid foods that conflict with declared allergies,
+                sensitivities, or disliked proteins.
               </p>
               <p className="rounded-xl bg-white p-3">
                 Urinary blockage, renal disease, pancreatitis, blood, not
