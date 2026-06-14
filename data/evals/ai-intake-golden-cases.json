@@ -1,0 +1,56 @@
+[
+  {
+    "id": "greek_dog_skin_salmon",
+    "message": "Έχω σκυλάκι 6 κιλά, 3 χρονών, τρέχει πολύ, δεν είναι στειρωμένο, έχει φαγούρα στο δέρμα, του αρέσει σολομός.",
+    "expect": {
+      "species": "dog",
+      "weightKg": 6,
+      "activityLevel": "high",
+      "neutered": false,
+      "healthIssues": ["itchy_skin"],
+      "preferredProteins": ["salmon"]
+    }
+  },
+  {
+    "id": "sterilised_cat_weight_loss",
+    "message": "Στειρωμένη γάτα 5kg θέλω να χάσει βάρος",
+    "expect": {
+      "species": "cat",
+      "weightKg": 5,
+      "neutered": true,
+      "weightGoal": "loss"
+    }
+  },
+  {
+    "id": "dog_avoid_chicken_maintain",
+    "message": "Ο σκύλος μου δεν τρώει κοτόπουλο και θέλω διατήρηση βάρους",
+    "expect": {
+      "species": "dog",
+      "excludedIngredients": ["chicken"],
+      "weightGoal": "maintain"
+    }
+  },
+  {
+    "id": "english_large_active_dog_gain",
+    "message": "Dog 28 kg, 4 years old, very active, not neutered, needs weight gain and likes salmon.",
+    "expect": {
+      "species": "dog",
+      "weightKg": 28,
+      "ageYears": 4,
+      "activityLevel": "high",
+      "neutered": false,
+      "weightGoal": "gain",
+      "preferredProteins": ["salmon"]
+    }
+  },
+  {
+    "id": "greek_urinary_cat",
+    "message": "Γάτα 4 κιλά με ουρολογικό, στειρωμένη",
+    "expect": {
+      "species": "cat",
+      "weightKg": 4,
+      "neutered": true,
+      "healthIssues": ["urinary"]
+    }
+  }
+]
