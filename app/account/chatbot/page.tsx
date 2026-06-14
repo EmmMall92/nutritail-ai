@@ -2482,7 +2482,7 @@ Next actions:
   }
 
   return (
-    <section className="mx-auto flex h-[calc(100svh-11rem)] min-h-[560px] max-w-3xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <section className="mx-auto flex h-[calc(100svh-8rem)] min-h-[520px] max-w-3xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:h-[calc(100svh-11rem)] sm:min-h-[560px] sm:rounded-2xl">
       <div className="flex shrink-0 flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
         <div className="min-w-0">
           <h1 className="text-2xl font-bold text-black">
@@ -2495,7 +2495,7 @@ Next actions:
           </p>
         </div>
 
-        <div className="flex shrink-0 gap-2">
+        <div className="grid w-full shrink-0 grid-cols-2 gap-2 sm:flex sm:w-auto">
           <a
             href="/account"
             className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:flex-none"
@@ -2513,7 +2513,7 @@ Next actions:
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-4 sm:p-5">
+      <div className="flex flex-1 scroll-pb-44 flex-col gap-4 overflow-y-auto overscroll-contain p-3 sm:p-5">
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -2609,7 +2609,7 @@ Next actions:
                   {formatLatestAnalysisSummary(followUpPet)}
                 </p>
               </div>
-              <div className="flex shrink-0 gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
                 <a
                   href={`/account/pets/${followUpPet.id}`}
                   className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-100"
@@ -2670,7 +2670,7 @@ Next actions:
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`max-w-[92%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
+            className={`max-w-[96%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
               message.role === "bot"
                 ? "self-start bg-gray-100 text-black"
                 : "self-end bg-black text-white"
@@ -2851,13 +2851,13 @@ Next actions:
         )}
 
         {quickReplies.length > 0 && !isAnalyzing && !isSaving && (
-          <div className="mb-3 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
+          <div className="mb-3 flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
               <button
                 key={reply}
                 type="button"
                 onClick={() => sendQuickReply(reply)}
-                className="min-h-10 shrink-0 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
+                className="min-h-10 max-w-[82vw] shrink-0 snap-start rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
               >
                 {reply}
               </button>
