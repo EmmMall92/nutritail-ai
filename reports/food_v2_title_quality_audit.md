@@ -1,6 +1,6 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-05T16:30:15.794Z
+Generated: 2026-06-14T15:04:32.123Z
 
 ## Summary
 
@@ -25,6 +25,24 @@ Generated: 2026-06-05T16:30:15.794Z
 
 - none
 
+## Medium Cleanup Focus By Brand
+
+- N&D: 54
+- Brit: 39
+- Ambrosia: 22
+- Hills: 16
+- Belcando: 14
+- Royal Canin: 14
+- Amanova: 10
+- Josera: 8
+- Leonardo: 8
+- Naturea: 6
+- Briantos: 4
+- Canagan: 4
+- Purina Pro Plan: 4
+- Royal Canin Veterinary Diet: 4
+- Schesir: 4
+
 ## Recommended Next Step
 
-Clean high/critical title issues before committing those rows to Food V2. Start with brands that have retailer-sourced descriptive titles, especially Calibra.
+No high/critical title issues were found. Work through the medium cleanup brands above when polishing customer-facing names.
