@@ -287,6 +287,64 @@ function fitSummary(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") 
   )}, ${source}`;
 }
 
+function nutritionFitExplanation(
+  food: FoodV2ChatbotRecommendationItem,
+  goal: FoodV2RecommendationGoal
+) {
+  const nutrition = food.nutrition;
+  const reasons = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
+  const cautions = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+  const kcal = formatNumber(nutrition?.kcal_per_100g, 1);
+  const fat = formatNumber(nutrition?.fat_percent, 1);
+  const protein = formatNumber(nutrition?.protein_percent, 1);
+  const calcium = formatNumber(nutrition?.calcium_percent, 2);
+  const phosphorus = formatNumber(nutrition?.phosphorus_percent, 2);
+
+  if (goal === "weight_control" || goal === "sterilised") {
+    const numbers = [
+      kcal !== null ? `${kcal} kcal/100g` : "",
+      fat !== null ? `${fat}% fat` : "",
+    ].filter(Boolean);
+
+    return numbers.length > 0
+      ? `- Use case: calorie-aware shortlist for sterilised or weight-prone pets (${numbers.join(", ")}).`
+      : "- Use case: positioned for weight or sterilised-pet control; confirm calories before portion advice.";
+  }
+
+  if (goal === "growth") {
+    const mineralText =
+      calcium !== null && phosphorus !== null
+        ? `Ca ${calcium}% / P ${phosphorus}%`
+        : "calcium and phosphorus still need confirmation";
+
+    return `- Use case: growth-focused option; ${mineralText}.`;
+  }
+
+  if (goal === "allergy") {
+    return "- Use case: ingredient-avoidance shortlist based on the available ingredient text; use a vet-guided elimination trial for true allergy work.";
+  }
+
+  if (goal === "sensitive_digestion") {
+    return reasons.includes("sensitive") || reasons.includes("digest")
+      ? "- Use case: digestion-focused shortlist with sensitive/GI positioning."
+      : "- Use case: general adult fit while digestion-specific data is limited.";
+  }
+
+  if (goal === "urinary" || goal === "renal") {
+    return cautions.includes("missing") || cautions.includes("weaker")
+      ? "- Use case: condition-positioned option, but mineral gaps mean cautious wording is needed."
+      : "- Use case: condition-positioned option; use alongside veterinary guidance.";
+  }
+
+  if (goal === "senior") {
+    return protein !== null
+      ? `- Use case: senior-fit shortlist with ${protein}% protein; watch weight, appetite, and muscle condition.`
+      : "- Use case: senior-fit shortlist; watch weight, appetite, and muscle condition.";
+  }
+
+  return "- Use case: general formula fit based on species, life stage, ingredients, and available nutrition data.";
+}
+
 function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
   if (food.data_quality_status !== "needs_review") return "";
 
@@ -297,7 +355,12 @@ function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem, locale: 
   return "   Note: this row still needs review, so treat it as a candidate rather than a final answer.";
 }
 
-function formatFood(food: FoodV2ChatbotRecommendationItem, index: number, locale: "el" | "en") {
+function formatFood(
+  food: FoodV2ChatbotRecommendationItem,
+  index: number,
+  locale: "el" | "en",
+  goal: FoodV2RecommendationGoal
+) {
   const score = food.ranking?.total_score;
   const confidence = food.ranking?.confidence ?? "medium";
   const nutritionConfidence = food.nutrition_confidence?.label;
@@ -316,6 +379,7 @@ function formatFood(food: FoodV2ChatbotRecommendationItem, index: number, locale
     }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
     `- ${localizedSourceLabel(food, locale)}`,
     fitSummary(food, locale),
+    nutritionFitExplanation(food, goal),
     nutritionSnapshot(food, locale),
     missing.length > 0 ? `- ${missingLabel}: ${missing.join(", ")}` : "",
     reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
@@ -325,7 +389,11 @@ function formatFood(food: FoodV2ChatbotRecommendationItem, index: number, locale
     .join("\n");
 }
 
-function formatTopPick(food: FoodV2ChatbotRecommendationItem | undefined, locale: "el" | "en") {
+function formatTopPick(
+  food: FoodV2ChatbotRecommendationItem | undefined,
+  locale: "el" | "en",
+  goal: FoodV2RecommendationGoal
+) {
   if (!food) return "";
 
   const score = food.ranking?.total_score;
@@ -340,6 +408,7 @@ function formatTopPick(food: FoodV2ChatbotRecommendationItem | undefined, locale
       typeof score === "number" ? ` (${score}/100)` : ""
     }.`,
     localizedSourceLabel(food, locale),
+    nutritionFitExplanation(food, goal),
     cautiousDataQualityNote(food, locale).trim(),
     firstReason ? `${whyLabel}: ${translateRankingText(firstReason, locale)}` : "",
   ]
@@ -439,7 +508,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
         ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
         : `Avoiding current brand: ${excludedBrands.join(", ")}`
       : "",
-    formatTopPick(premium[0] ?? value[0], locale),
+    formatTopPick(premium[0] ?? value[0], locale, goal),
   ];
 
   if (premium.length > 0) {
@@ -448,7 +517,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       locale === "el" ? "Καλύτερες ποιοτικά επιλογές:" : "Premium / strongest nutrition fits:",
       premium
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale))
+        .map((food, index) => formatFood(food, index + 1, locale, goal))
         .join("\n")
     );
   }
@@ -459,7 +528,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       locale === "el" ? "Πιο οικονομικές / value εναλλακτικές:" : "Value-style alternatives:",
       value
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale))
+        .map((food, index) => formatFood(food, index + 1, locale, goal))
         .join("\n")
     );
   }
