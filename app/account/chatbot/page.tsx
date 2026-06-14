@@ -36,8 +36,10 @@ import type { PetAnalysis } from "@/types/pet-analysis";
 type Species = "dog" | "cat";
 type ActivityLevel = "low" | "normal" | "high";
 type WeightGoal = "maintain" | "loss" | "gain";
+type ChatLanguage = "el" | "en";
 
-const MAX_PET_WEIGHT_KG = 150;
+const MAX_DOG_WEIGHT_KG = 90;
+const MAX_CAT_WEIGHT_KG = 15;
 const MAX_PET_AGE_YEARS = 40;
 
 type IntakeStep =
@@ -74,6 +76,11 @@ type PetIntake = {
   preferredProteins?: string[];
   currentFoodName?: string;
   weightGoal?: WeightGoal;
+};
+
+type RecommendedFoodChoice = {
+  name: string;
+  kcalPer100g?: number | null;
 };
 
 type AccountPetAnalysisHistoryItem = {
@@ -231,14 +238,27 @@ function createMessage(role: "bot" | "user", text: string): ChatMessage {
   };
 }
 
-function getQuickReplies(step: IntakeStep) {
-  if (step === "species") return ["Dog", "Cat"];
-  if (step === "activity") return ["Low", "Normal", "High"];
-  if (step === "neutered") return ["Yes", "No"];
-  if (step === "health") return ["No", "Sensitive stomach", "Itchy skin", "Urinary issue"];
-  if (step === "currentFood") return ["I don't know"];
+function getQuickReplies(step: IntakeStep, language: ChatLanguage) {
+  const greek = language === "el";
+
+  if (step === "species") return greek ? ["Σκύλος", "Γάτα"] : ["Dog", "Cat"];
+  if (step === "activity") return greek ? ["Χαμηλό", "Κανονικό", "Υψηλό"] : ["Low", "Normal", "High"];
+  if (step === "neutered") return greek ? ["Ναι", "Όχι"] : ["Yes", "No"];
+  if (step === "health") {
+    return greek
+      ? ["Όχι", "Ευαίσθητο στομάχι", "Φαγούρα/δέρμα", "Ουρολογικό"]
+      : ["No", "Sensitive stomach", "Itchy skin", "Urinary issue"];
+  }
+  if (step === "currentFood") return greek ? ["Δεν ξέρω"] : ["I don't know"];
+  if (step === "preferences") {
+    return greek
+      ? ["Όχι", "Δεν τρώει κοτόπουλο", "Του αρέσει αρνί", "Του αρέσει σολομός"]
+      : ["No", "No chicken", "Likes lamb", "Likes salmon"];
+  }
   if (step === "weightGoal") {
-    return ["Maintain weight", "Lose weight", "Gain weight"];
+    return greek
+      ? ["Διατήρηση βάρους", "Απώλεια βάρους", "Αύξηση βάρους"]
+      : ["Maintain weight", "Lose weight", "Gain weight"];
   }
 
   return [];
@@ -302,6 +322,10 @@ function parseNumber(text: string): number | null {
 
   const value = Number(match[0]);
   return Number.isFinite(value) ? value : null;
+}
+
+function getMaxWeightKg(species?: Species) {
+  return species === "cat" ? MAX_CAT_WEIGHT_KG : MAX_DOG_WEIGHT_KG;
 }
 
 function detectFollowUpAction(text: string): FollowUpAction | null {
@@ -878,7 +902,11 @@ ${rows.join("\n\n")}${summary}${followUp}`;
 
 async function getFoodV2RecommendationMessage(
   pet: PetIntake,
-  options: { mode?: RecommendationMode } = {}
+  options: {
+    mode?: RecommendationMode;
+    language?: ChatLanguage;
+    onChoices?: (choices: RecommendedFoodChoice[]) => void;
+  } = {}
 ) {
   if (!pet.species) return "";
 
@@ -925,8 +953,19 @@ async function getFoodV2RecommendationMessage(
     throw new Error(result.error || "Could not load Food V2 recommendations.");
   }
 
+  options.onChoices?.(
+    [...(result.premium ?? []), ...(result.value ?? [])]
+      .map((food) => ({
+        name: String(food.display_name ?? "").trim(),
+        kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
+      }))
+      .filter((food) => food.name)
+      .slice(0, 5)
+  );
+
   return formatFoodV2ChatbotRecommendationSummary(result, {
     mode: options.mode ?? "default",
+    locale: options.language ?? "el",
     excludedBrands:
       options.mode === "alternative"
         ? getExcludedBrandsForAlternative(pet.currentFoodName)
@@ -935,32 +974,88 @@ async function getFoodV2RecommendationMessage(
   });
 }
 
-function formatPetIntakeSummary(pet: PetIntake) {
-  const details = [
-    `Pet: ${pet.name ? formatPetDisplayName(pet.name) : "pet"} (${pet.species ?? "unknown species"})`,
-    `Weight/age: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} years`,
-    `Activity: ${pet.activityLevel ?? "unknown"}`,
-    `Neutered: ${
-      pet.neutered === undefined ? "unknown" : pet.neutered ? "yes" : "no"
-    }`,
-    `Goal: ${getWeightGoalLabel(pet.weightGoal)}`,
-    `Current food: ${pet.currentFoodName ?? "not provided"}`,
-  ];
+function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
+  const greek = language === "el";
+  const speciesLabel =
+    pet.species === "dog"
+      ? greek
+        ? "σκύλος"
+        : "dog"
+      : pet.species === "cat"
+        ? greek
+          ? "γάτα"
+          : "cat"
+        : greek
+          ? "άγνωστο είδος"
+          : "unknown species";
+  const activityLabel =
+    greek && pet.activityLevel === "low"
+      ? "χαμηλή"
+      : greek && pet.activityLevel === "normal"
+        ? "κανονική"
+        : greek && pet.activityLevel === "high"
+          ? "υψηλή"
+          : pet.activityLevel ?? "unknown";
+  const goalLabel = greek
+    ? pet.weightGoal === "loss"
+      ? "απώλεια βάρους"
+      : pet.weightGoal === "gain"
+        ? "αύξηση βάρους"
+        : "διατήρηση βάρους"
+    : getWeightGoalLabel(pet.weightGoal);
+
+  const details = greek
+    ? [
+        `Κατοικίδιο: ${pet.name ? formatPetDisplayName(pet.name) : "κατοικίδιο"} (${speciesLabel})`,
+        `Βάρος/ηλικία: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} ετών`,
+        `Δραστηριότητα: ${activityLabel}`,
+        `Στειρωμένο: ${
+          pet.neutered === undefined ? "άγνωστο" : pet.neutered ? "ναι" : "όχι"
+        }`,
+        `Στόχος: ${goalLabel}`,
+        `Τωρινή τροφή: ${pet.currentFoodName ?? "δεν δόθηκε"}`,
+      ]
+    : [
+        `Pet: ${pet.name ? formatPetDisplayName(pet.name) : "pet"} (${speciesLabel})`,
+        `Weight/age: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} years`,
+        `Activity: ${activityLabel}`,
+        `Neutered: ${
+          pet.neutered === undefined ? "unknown" : pet.neutered ? "yes" : "no"
+        }`,
+        `Goal: ${goalLabel}`,
+        `Current food: ${pet.currentFoodName ?? "not provided"}`,
+      ];
 
   if (pet.healthIssues.length > 0) {
-    details.push(`Health notes: ${pet.healthIssues.join(", ")}`);
+    details.push(
+      greek
+        ? `Θέματα υγείας: ${pet.healthIssues.join(", ")}`
+        : `Health notes: ${pet.healthIssues.join(", ")}`
+    );
   }
 
   if (pet.allergies.length > 0) {
-    details.push(`Allergies/sensitivities: ${pet.allergies.join(", ")}`);
+    details.push(
+      greek
+        ? `Αλλεργίες/ευαισθησίες: ${pet.allergies.join(", ")}`
+        : `Allergies/sensitivities: ${pet.allergies.join(", ")}`
+    );
   }
 
   if ((pet.excludedIngredients ?? []).length > 0) {
-    details.push(`Avoids: ${(pet.excludedIngredients ?? []).join(", ")}`);
+    details.push(
+      greek
+        ? `Αποφεύγει: ${(pet.excludedIngredients ?? []).join(", ")}`
+        : `Avoids: ${(pet.excludedIngredients ?? []).join(", ")}`
+    );
   }
 
   if ((pet.preferredProteins ?? []).length > 0) {
-    details.push(`Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`);
+    details.push(
+      greek
+        ? `Προτιμά: ${(pet.preferredProteins ?? []).join(", ")}`
+        : `Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`
+    );
   }
 
   return details.join("\n");
@@ -1255,6 +1350,7 @@ export default function AccountChatbotPage() {
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   const [step, setStep] = useState<IntakeStep>("petChoice");
+  const [chatLanguage, setChatLanguage] = useState<ChatLanguage>("el");
   const [input, setInput] = useState("");
   const [savedPets, setSavedPets] = useState<AccountPet[]>([]);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
@@ -1280,27 +1376,46 @@ export default function AccountChatbotPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackStatus, setFeedbackStatus] = useState("");
   const [savedPetId, setSavedPetId] = useState<string | null>(null);
+  const [recommendedFoodChoices, setRecommendedFoodChoices] = useState<
+    RecommendedFoodChoice[]
+  >([]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
       "bot",
-      "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet."
+      "Γεια σου! Επίλεξε ένα αποθηκευμένο κατοικίδιο για νέα ανάλυση ή ξεκίνα με νέο κατοικίδιο."
     ),
   ]);
-  const quickReplies = getQuickReplies(step);
+  const quickReplies = getQuickReplies(step, chatLanguage);
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
-      ? "Tip: write current weight, daily grams, no result, or another food."
+      ? botText(
+          "Tip: γράψε τωρινό βάρος, γραμμάρια/ημέρα, δεν είδα αποτέλεσμα ή άλλη τροφή.",
+          "Tip: write current weight, daily grams, no result, or another food."
+        )
       : followUpMode === "progress"
-        ? "Send weight, daily grams, treats, appetite, stool, or energy changes."
+        ? botText(
+            "Στείλε βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα ή αλλαγές ενέργειας.",
+            "Send weight, daily grams, treats, appetite, stool, or energy changes."
+          )
         : followUpMode === "no_result"
-          ? "Send current weight, grams per day, treats, and current food."
+          ? botText(
+              "Στείλε τωρινό βάρος, γραμμάρια/ημέρα, λιχουδιές και τωρινή τροφή.",
+              "Send current weight, grams per day, treats, and current food."
+            )
           : showSave
-            ? "Save when the details look right, or write what needs changing."
+            ? botText(
+                "Αποθήκευσε όταν τα στοιχεία είναι σωστά ή γράψε τι θέλει αλλαγή.",
+                "Save when the details look right, or write what needs changing."
+              )
             : "";
 
   function addMessages(...nextMessages: ChatMessage[]) {
     setMessages((prev) => [...prev, ...nextMessages]);
+  }
+
+  function botText(el: string, en: string) {
+    return chatLanguage === "el" ? el : en;
   }
 
   async function runFoodComparison(queries: string[]) {
@@ -1427,13 +1542,27 @@ export default function AccountChatbotPage() {
     }
   }
 
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
+    const frame = window.requestAnimationFrame(() => {
+      const container = messagesContainerRef.current;
+      if (container) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: "smooth",
+        });
+        return;
+      }
+
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [messages, showSave, step]);
 
   useEffect(() => {
@@ -1500,6 +1629,7 @@ export default function AccountChatbotPage() {
 
     setSelectedPetId(savedPet.id);
     setPet(nextPet);
+    setRecommendedFoodChoices([]);
 
     if (hasHistory) {
       setFollowUpPet(savedPet);
@@ -1535,6 +1665,7 @@ export default function AccountChatbotPage() {
     setFollowUpPet(null);
     setRecommendationMode("default");
     setPet(nextPet);
+    setRecommendedFoodChoices([]);
     setStep("currentFood");
 
     addMessages(
@@ -1732,11 +1863,12 @@ Then I can help decide whether the plan is working or needs adjustment.`
     setFollowUpMode(null);
     setRecommendationMode("default");
     setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
+    setRecommendedFoodChoices([]);
     setStep("species");
 
     addMessages(
-      createMessage("user", "Start with a new pet"),
-      createMessage("bot", "Great. Do you have a dog or a cat?")
+      createMessage("user", botText("Νέο κατοικίδιο", "Start with a new pet")),
+      createMessage("bot", botText("Τέλεια. Έχεις σκύλο ή γάτα;", "Great. Do you have a dog or a cat?"))
     );
   }
 
@@ -1744,11 +1876,15 @@ Then I can help decide whether the plan is working or needs adjustment.`
     try {
       setIsAnalyzing(true);
       setStep("analysis");
+      setRecommendedFoodChoices([]);
 
       addMessages(
         createMessage(
           "bot",
-          "Great. I am calculating nutrition needs and checking suitable foods..."
+          botText(
+            "Τέλεια. Υπολογίζω τις διατροφικές ανάγκες και ψάχνω κατάλληλες τροφές...",
+            "Great. I am calculating nutrition needs and checking suitable foods..."
+          )
         )
       );
 
@@ -1776,14 +1912,23 @@ Then I can help decide whether the plan is working or needs adjustment.`
       if (nextPet.weightGoal) {
         addMessages(
           createMessage(
-            "bot",
-            nextPet.weightGoal === "maintain"
-              ? "Goal: weight maintenance. Calories are based on maintenance needs."
-              : nextPet.weightGoal === "loss"
-                ? "Goal: weight loss. Calories have been reduced carefully for safer weight control."
-                : "Goal: weight gain. Calories have been increased in a controlled way."
-          )
-        );
+          "bot",
+          nextPet.weightGoal === "maintain"
+            ? botText(
+                "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
+                "Goal: weight maintenance. Calories are based on maintenance needs."
+              )
+            : nextPet.weightGoal === "loss"
+              ? botText(
+                  "Στόχος: απώλεια βάρους. Οι θερμίδες μειώνονται προσεκτικά για πιο ασφαλή έλεγχο βάρους.",
+                  "Goal: weight loss. Calories have been reduced carefully for safer weight control."
+                )
+              : botText(
+                  "Στόχος: αύξηση βάρους. Οι θερμίδες αυξάνονται ελεγχόμενα.",
+                  "Goal: weight gain. Calories have been increased in a controlled way."
+                )
+        )
+      );
       }
 
       const adjustedCalories = adjustCaloriesForWeightGoal({
@@ -1797,12 +1942,20 @@ Then I can help decide whether the plan is working or needs adjustment.`
         addMessages(
           createMessage(
             "bot",
-            `Treat allowance:
+            botText(
+              `Όριο για λιχουδιές:
+Οι λιχουδιές καλό είναι να μένουν περίπου στο 10% των ημερήσιων θερμίδων.
+
+Ημερήσιος στόχος: ${treats.dailyCalories} kcal/ημέρα
+Μέγιστο από λιχουδιές: περίπου ${treats.maxTreatCalories} kcal/ημέρα
+Θερμίδες από κύρια τροφή: περίπου ${treats.mainFoodCalories} kcal/ημέρα`,
+              `Treat allowance:
 Treats should stay around 10% of daily calories.
 
 Daily calorie target: ${treats.dailyCalories} kcal/day
 Maximum from treats: about ${treats.maxTreatCalories} kcal/day
 Main food calories: about ${treats.mainFoodCalories} kcal/day`
+            )
           )
         );
       }
@@ -1823,6 +1976,8 @@ ${guardrailText}`
       try {
         const foodV2Message = await getFoodV2RecommendationMessage(nextPet, {
           mode: recommendationMode,
+          language: chatLanguage,
+          onChoices: setRecommendedFoodChoices,
         });
 
         if (foodV2Message) {
@@ -2236,7 +2391,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         addMessages(
           createMessage(
             "bot",
-            "I could not tell whether this is a dog or cat. Please type dog or cat."
+            botText(
+              "Δεν κατάλαβα αν είναι σκύλος ή γάτα. Γράψε σκύλος ή γάτα.",
+              "I could not tell whether this is a dog or cat. Please type dog or cat."
+            )
           )
         );
 
@@ -2250,8 +2408,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         createMessage(
           "bot",
           species === "dog"
-            ? "Great, a dog. What is their name?"
-            : "Great, a cat. What is their name?"
+            ? botText("Τέλεια, σκύλος. Πώς τον/την λένε;", "Great, a dog. What is their name?")
+            : botText("Τέλεια, γάτα. Πώς τον/την λένε;", "Great, a cat. What is their name?")
         )
       );
 
@@ -2265,7 +2423,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       setStep("weight");
 
       addMessages(
-        createMessage("bot", `Nice. About how many kg is ${displayName}?`)
+        createMessage(
+          "bot",
+          botText(
+            `Ωραία. Περίπου πόσα κιλά είναι ο/η ${displayName};`,
+            `Nice. About how many kg is ${displayName}?`
+          )
+        )
       );
 
       return;
@@ -2273,12 +2437,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "weight") {
       const weight = parseNumber(text);
+      const maxWeight = getMaxWeightKg(pet.species);
 
-      if (!weight || weight <= 0 || weight > MAX_PET_WEIGHT_KG) {
+      if (!weight || weight <= 0 || weight > maxWeight) {
         addMessages(
           createMessage(
             "bot",
-            `Please enter a realistic weight in kg, for example 4.5. Maximum supported weight is ${MAX_PET_WEIGHT_KG} kg.`
+            botText(
+              `Γράψε ένα ρεαλιστικό βάρος σε kg, π.χ. 7. Μέγιστο για ${
+                pet.species === "cat" ? "γάτα" : "σκύλο"
+              }: ${maxWeight} kg.`,
+              `Please enter a realistic weight in kg, for example 7. Maximum for ${
+                pet.species === "cat" ? "a cat" : "a dog"
+              }: ${maxWeight} kg.`
+            )
           )
         );
 
@@ -2288,7 +2460,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       setPet((prev) => ({ ...prev, weight }));
       setStep("age");
 
-      addMessages(createMessage("bot", "Great. How old is your pet?"));
+      addMessages(createMessage("bot", botText("Τέλεια. Πόσο χρονών είναι;", "Great. How old is your pet?")));
 
       return;
     }
@@ -2313,7 +2485,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "What is your pet's activity level: low, normal, or high?"
+          botText(
+            "Ποιο είναι το επίπεδο δραστηριότητας: χαμηλό, κανονικό ή υψηλό;",
+            "What is your pet's activity level: low, normal, or high?"
+          )
         )
       );
 
@@ -2327,7 +2502,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         addMessages(
           createMessage(
             "bot",
-            "Choose one option: low, normal, or high activity."
+            botText(
+              "Διάλεξε μία επιλογή: χαμηλό, κανονικό ή υψηλό.",
+              "Choose one option: low, normal, or high activity."
+            )
           )
         );
 
@@ -2337,7 +2515,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       setPet((prev) => ({ ...prev, activityLevel }));
       setStep("neutered");
 
-      addMessages(createMessage("bot", "Is your pet neutered? Yes or no?"));
+      addMessages(createMessage("bot", botText("Είναι στειρωμένο; Ναι ή όχι;", "Is your pet neutered? Yes or no?")));
 
       return;
     }
@@ -2346,7 +2524,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const neutered = parseYesNoInput(text);
 
       if (neutered === null) {
-        addMessages(createMessage("bot", "Please answer yes or no."));
+        addMessages(createMessage("bot", botText("Απάντησε με ναι ή όχι.", "Please answer yes or no.")));
         return;
       }
 
@@ -2356,7 +2534,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "Any allergies, sensitivities, or health issues? If not, type no. If yes, separate them with commas."
+          botText(
+            "Υπάρχουν αλλεργίες, ευαισθησίες ή θέματα υγείας; Αν όχι, γράψε όχι. Αν ναι, γράψ’ τα με κόμμα.",
+            "Any allergies, sensitivities, or health issues? If not, type no. If yes, separate them with commas."
+          )
         )
       );
 
@@ -2378,7 +2559,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "What food are you feeding now? Write the brand and product name if you know it. If you are not sure, type I don't know."
+          botText(
+            "Ποια τροφή τρώει τώρα; Γράψε εταιρεία και όνομα προϊόντος αν το ξέρεις. Αν δεν είσαι σίγουρος/η, γράψε δεν ξέρω.",
+            "What food are you feeding now? Write the brand and product name if you know it. If you are not sure, type I don't know."
+          )
         )
       );
 
@@ -2402,7 +2586,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "Does your pet prefer or avoid any flavors or proteins? For example: likes lamb or salmon, does not eat chicken. If there is no preference, type no."
+          botText(
+            "Υπάρχει γεύση ή πρωτεΐνη που προτιμά ή αποφεύγει; Π.χ. του αρέσει αρνί ή σολομός, δεν τρώει κοτόπουλο. Αν δεν υπάρχει προτίμηση, γράψε όχι.",
+            "Does your pet prefer or avoid any flavors or proteins? For example: likes lamb or salmon, does not eat chicken. If there is no preference, type no."
+          )
         )
       );
 
@@ -2424,7 +2611,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "What is the weight goal: maintain weight, lose weight, or gain weight?"
+          botText(
+            "Ποιος είναι ο στόχος βάρους: διατήρηση, απώλεια ή αύξηση;",
+            "What is the weight goal: maintain weight, lose weight, or gain weight?"
+          )
         )
       );
 
@@ -2438,7 +2628,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         addMessages(
           createMessage(
             "bot",
-            "Choose one option: maintain weight, lose weight, or gain weight."
+            botText(
+              "Διάλεξε μία επιλογή: διατήρηση, απώλεια ή αύξηση βάρους.",
+              "Choose one option: maintain weight, lose weight, or gain weight."
+            )
           )
         );
 
@@ -2456,17 +2649,29 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         createMessage(
           "bot",
           weightGoal === "maintain"
-            ? "Got it. The goal is weight maintenance. I will continue with the analysis."
+            ? botText(
+                "Το κρατάω. Στόχος είναι η διατήρηση βάρους.",
+                "Got it. The goal is weight maintenance. I will continue with the analysis."
+              )
             : weightGoal === "loss"
-              ? "Got it. The goal is weight loss. I will be more careful with calories."
-              : "Got it. The goal is weight gain. I will account for higher energy needs."
+              ? botText(
+                  "Το κρατάω. Στόχος είναι η απώλεια βάρους, άρα θα είμαι πιο προσεκτικός με τις θερμίδες.",
+                  "Got it. The goal is weight loss. I will be more careful with calories."
+                )
+              : botText(
+                  "Το κρατάω. Στόχος είναι η αύξηση βάρους, άρα θα υπολογίσω αυξημένες ανάγκες.",
+                  "Got it. The goal is weight gain. I will account for higher energy needs."
+                )
         )
       );
 
       addMessages(
         createMessage(
           "bot",
-          `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet)}`
+          botText(
+            `Σύντομη περίληψη πριν υπολογίσω:\n${formatPetIntakeSummary(nextPet, "el")}`,
+            `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet, "en")}`
+          )
         )
       );
 
@@ -2507,6 +2712,49 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     setInput("");
 
     await handleStep(text);
+  }
+
+  function chooseRecommendedFood(choice: RecommendedFoodChoice) {
+    addMessages(createMessage("user", choice.name));
+
+    const adjustedCalories = latestAnalysis
+      ? adjustCaloriesForWeightGoal({
+          calories: latestAnalysis.nutrition.der,
+          goal: pet.weightGoal,
+        })
+      : null;
+
+    const gramsPerDay =
+      adjustedCalories && choice.kcalPer100g && choice.kcalPer100g > 0
+        ? Math.round((adjustedCalories / choice.kcalPer100g) * 100)
+        : null;
+
+    setPet((prev) => ({
+      ...prev,
+      currentFoodName: choice.name,
+    }));
+
+    setAnalysisMetadata((prev) => ({
+      ...(prev ?? {}),
+      matchedFoodName: choice.name,
+      feedingGramsPerDay: gramsPerDay,
+      weightGoal: pet.weightGoal ?? "maintain",
+    }));
+
+    addMessages(
+      createMessage(
+        "bot",
+        gramsPerDay
+          ? botText(
+              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τον σημερινό στόχο θερμίδων, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΧώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.`,
+              `Great, we will use ${choice.name}.\n\nBased on today's calorie target, the first estimate is about ${gramsPerDay}g/day.\n\nSplit it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.`
+            )
+          : botText(
+              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια από αυτή τη ροή, αλλά μπορώ να συνεχίσω με γενική καθοδήγηση ή να δοκιμάσουμε άλλη τροφή από τη λίστα.`,
+              `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.`
+            )
+      )
+    );
   }
 
   async function saveToMyAccount() {
@@ -2587,7 +2835,7 @@ Next actions:
 
   function restartChat() {
     setStep(savedPets.length > 0 ? "petChoice" : "species");
-    setPet({ healthIssues: [], allergies: [] });
+    setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
     setSelectedPetId(null);
     setFollowUpPet(null);
     setFollowUpMode(null);
@@ -2600,6 +2848,7 @@ Next actions:
     setAnalysisMetadata(null);
     setFeedbackStatus("");
     setSavedPetId(null);
+    setRecommendedFoodChoices([]);
 
     setMessages([
       createMessage(
@@ -2620,12 +2869,31 @@ Next actions:
           </h1>
 
           <p className="mt-1 text-sm text-gray-600">
-            Start with a saved pet or a new profile, then get a grounded food
-            shortlist, calories, and safety notes.
+            {botText(
+              "Ξεκίνα με αποθηκευμένο ή νέο κατοικίδιο και πάρε προτάσεις τροφών, θερμίδες και επόμενο βήμα.",
+              "Start with a saved pet or a new profile, then get a grounded food shortlist, calories, and safety notes."
+            )}
           </p>
         </div>
 
-        <div className="grid w-full shrink-0 grid-cols-2 gap-2 sm:flex sm:w-auto">
+        <div className="grid w-full shrink-0 grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
+          <div className="col-span-2 flex rounded-lg border border-gray-300 bg-white p-1 sm:col-span-1">
+            {(["el", "en"] as const).map((language) => (
+              <button
+                key={language}
+                type="button"
+                onClick={() => setChatLanguage(language)}
+                className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
+                  chatLanguage === language
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {language.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
           <a
             href="/account"
             className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:flex-none"
@@ -2643,21 +2911,26 @@ Next actions:
         </div>
       </div>
 
-      <div className="flex flex-1 scroll-pb-44 flex-col gap-4 overflow-y-auto overscroll-contain p-3 sm:p-5">
+      <div
+        ref={messagesContainerRef}
+        className="flex flex-1 scroll-pb-44 flex-col gap-4 overflow-y-auto overscroll-contain p-3 sm:p-5"
+      >
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="font-semibold text-emerald-950">
-                  What can I help with?
+                  {botText("Πώς μπορώ να βοηθήσω;", "What can I help with?")}
                 </p>
                 <p className="mt-1 text-sm text-emerald-900">
-                  Choose a pet first, then use one of these goals or write your
-                  own question.
+                  {botText(
+                    "Διάλεξε πρώτα κατοικίδιο και μετά γράψε τον στόχο ή την ερώτησή σου.",
+                    "Choose a pet first, then use one of these goals or write your own question."
+                  )}
                 </p>
               </div>
               <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
-                Smart food guidance
+                {botText("Έξυπνη πρόταση τροφής", "Smart food guidance")}
               </span>
             </div>
 
@@ -2778,20 +3051,29 @@ Next actions:
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
             <p className="font-semibold text-amber-950">
-              How Nutritail keeps recommendations sensible
+              {botText(
+                "Πώς κρατάμε τις προτάσεις λογικές",
+                "How Nutritail keeps recommendations sensible"
+              )}
             </p>
             <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-amber-900 sm:grid-cols-3">
               <p className="rounded-xl bg-white p-3">
-                We use your pet&apos;s age, weight, activity, neuter status, and
-                preferences before suggesting food.
+                {botText(
+                  "Χρησιμοποιούμε ηλικία, βάρος, δραστηριότητα, στειρωμένο και προτιμήσεις πριν προτείνουμε τροφή.",
+                  "We use your pet's age, weight, activity, neuter status, and preferences before suggesting food."
+                )}
               </p>
               <p className="rounded-xl bg-white p-3">
-                We avoid foods that conflict with declared allergies,
-                sensitivities, or disliked proteins.
+                {botText(
+                  "Αποφεύγουμε τροφές που συγκρούονται με αλλεργίες, ευαισθησίες ή πρωτεΐνες που δεν τρώει.",
+                  "We avoid foods that conflict with declared allergies, sensitivities, or disliked proteins."
+                )}
               </p>
               <p className="rounded-xl bg-white p-3">
-                Urinary blockage, renal disease, pancreatitis, blood, not
-                eating, vomiting, or diarrhea need veterinary care.
+                {botText(
+                  "Ουρολογικό, νεφρικό, παγκρεατίτιδα, αίμα, ανορεξία, εμετός ή διάρροια θέλουν κτηνίατρο.",
+                  "Urinary blockage, renal disease, pancreatitis, blood, not eating, vomiting, or diarrhea need veterinary care."
+                )}
               </p>
             </div>
           </div>
@@ -2809,6 +3091,32 @@ Next actions:
             {message.text}
           </div>
         ))}
+
+        {showSave && recommendedFoodChoices.length > 0 && (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="font-semibold text-emerald-950">
+              {botText("Διάλεξε τροφή για να συνεχίσουμε", "Choose a food to continue")}
+            </p>
+            <p className="mt-1 text-sm text-emerald-900">
+              {botText(
+                "Πάτησε μία επιλογή για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την επιλογή στην ανάλυση.",
+                "Tap one option to estimate daily grams and keep it in this analysis."
+              )}
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-2">
+              {recommendedFoodChoices.map((choice) => (
+                <button
+                  key={choice.name}
+                  type="button"
+                  onClick={() => chooseRecommendedFood(choice)}
+                  className="rounded-xl border border-emerald-200 bg-white p-3 text-left text-sm font-medium text-emerald-950 transition hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                >
+                  {choice.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {showSave && (
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -3011,7 +3319,11 @@ Next actions:
                 sendMessage();
               }
             }}
-            placeholder={isAnalyzing ? "Analyzing..." : "Write a message..."}
+            placeholder={
+              isAnalyzing
+                ? botText("Γίνεται ανάλυση...", "Analyzing...")
+                : botText("Γράψε μήνυμα...", "Write a message...")
+            }
             className="min-h-12 min-w-0 flex-1 rounded-xl border border-gray-300 px-3 py-3 text-base text-black disabled:bg-gray-100 sm:text-sm"
           />
 
@@ -3021,7 +3333,7 @@ Next actions:
             disabled={isAnalyzing || isSaving}
             className="min-h-12 shrink-0 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50 sm:px-5"
           >
-            {isAnalyzing ? "..." : "Send"}
+            {isAnalyzing ? "..." : botText("Αποστολή", "Send")}
           </button>
         </div>
       </div>
