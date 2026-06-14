@@ -54,6 +54,12 @@ type BrandFocusRow = {
   health: number;
 };
 
+type BrandWorkPlan = BrandFocusRow & {
+  nextStep: string;
+  topBlockers: CountItem[];
+  topEstimates: CountItem[];
+};
+
 function SummaryCard({
   label,
   value,
@@ -190,6 +196,57 @@ function visibilityHref(row: NutrientGapRow) {
   return `/admin/foods/v2-recommendation-visibility?${params.toString()}`;
 }
 
+function countTopItems(rows: NutrientGapRow[], field: keyof NutrientGapRow) {
+  const counts = new Map<string, number>();
+
+  for (const row of rows) {
+    const value = row[field];
+    if (!Array.isArray(value)) continue;
+
+    for (const item of value) {
+      counts.set(item, (counts.get(item) ?? 0) + 1);
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key))
+    .slice(0, 5);
+}
+
+function getBrandWorkPlan(brand: string, rows: NutrientGapRow[]) {
+  if (!brand || rows.length === 0) return null;
+
+  const plan: BrandWorkPlan = {
+    brand,
+    total: rows.length,
+    high: rows.filter((row) => row.priority === "high").length,
+    energy: rows.filter((row) =>
+      row.missing_blockers.some((field) => field.includes("kcal"))
+    ).length,
+    estimated: rows.filter((row) => row.estimated_fields_to_replace.length > 0)
+      .length,
+    health: rows.filter((row) => row.health_context.length > 0).length,
+    nextStep: "",
+    topBlockers: countTopItems(rows, "missing_blockers"),
+    topEstimates: countTopItems(rows, "estimated_fields_to_replace"),
+  };
+
+  if (plan.high > 0) {
+    plan.nextStep = "Start with high-priority rows before importing more data.";
+  } else if (plan.energy > 0) {
+    plan.nextStep = "Confirm official kcal first so portion advice becomes reliable.";
+  } else if (plan.estimated > 0) {
+    plan.nextStep = "Replace calculated values with official label or PDF values.";
+  } else if (plan.health > 0) {
+    plan.nextStep = "Review health-sensitive formulas before recommending them confidently.";
+  } else {
+    plan.nextStep = "This brand is mostly cleanup-ready; review low-priority helpful gaps.";
+  }
+
+  return plan;
+}
+
 export default function FoodV2NutrientGapsPage() {
   const [report, setReport] = useState<NutrientGapResponse | null>(null);
   const [error, setError] = useState("");
@@ -320,6 +377,16 @@ export default function FoodV2NutrientGapsPage() {
       )
       .slice(0, 12);
   }, [report?.rows]);
+
+  const selectedBrandRows = useMemo(
+    () => (report?.rows ?? []).filter((row) => row.brand === brandFilter),
+    [brandFilter, report?.rows]
+  );
+
+  const selectedBrandWorkPlan = useMemo(
+    () => getBrandWorkPlan(brandFilter, selectedBrandRows),
+    [brandFilter, selectedBrandRows]
+  );
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -524,6 +591,146 @@ export default function FoodV2NutrientGapsPage() {
                   />
                 ))}
               </div>
+
+              {selectedBrandWorkPlan && (
+                <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                        Selected brand work plan
+                      </p>
+                      <h3 className="mt-2 text-xl font-bold text-emerald-950">
+                        {selectedBrandWorkPlan.brand}
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-sm text-emerald-900">
+                        {selectedBrandWorkPlan.nextStep}
+                      </p>
+                    </div>
+                    <Link
+                      href={`/admin/foods/v2-review?search=${encodeURIComponent(
+                        selectedBrandWorkPlan.brand
+                      )}`}
+                      className="rounded-xl bg-emerald-700 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
+                    >
+                      Open brand review
+                    </Link>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter("all");
+                        setFocusFilter("all");
+                      }}
+                      className="rounded-xl bg-white p-3 text-left text-sm shadow-sm transition hover:ring-1 hover:ring-emerald-300"
+                    >
+                      <p className="text-xs text-gray-500">Total</p>
+                      <p className="mt-1 text-2xl font-bold text-black">
+                        {selectedBrandWorkPlan.total}
+                      </p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter("high");
+                        setFocusFilter("all");
+                      }}
+                      className="rounded-xl bg-white p-3 text-left text-sm shadow-sm transition hover:ring-1 hover:ring-emerald-300"
+                    >
+                      <p className="text-xs text-gray-500">High</p>
+                      <p className="mt-1 text-2xl font-bold text-black">
+                        {selectedBrandWorkPlan.high}
+                      </p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter("all");
+                        setFocusFilter("energy");
+                      }}
+                      className="rounded-xl bg-white p-3 text-left text-sm shadow-sm transition hover:ring-1 hover:ring-emerald-300"
+                    >
+                      <p className="text-xs text-gray-500">Needs kcal</p>
+                      <p className="mt-1 text-2xl font-bold text-black">
+                        {selectedBrandWorkPlan.energy}
+                      </p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter("all");
+                        setFocusFilter("estimated");
+                      }}
+                      className="rounded-xl bg-white p-3 text-left text-sm shadow-sm transition hover:ring-1 hover:ring-emerald-300"
+                    >
+                      <p className="text-xs text-gray-500">Estimates</p>
+                      <p className="mt-1 text-2xl font-bold text-black">
+                        {selectedBrandWorkPlan.estimated}
+                      </p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter("all");
+                        setFocusFilter("health");
+                      }}
+                      className="rounded-xl bg-white p-3 text-left text-sm shadow-sm transition hover:ring-1 hover:ring-emerald-300"
+                    >
+                      <p className="text-xs text-gray-500">Health</p>
+                      <p className="mt-1 text-2xl font-bold text-black">
+                        {selectedBrandWorkPlan.health}
+                      </p>
+                    </button>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <div className="rounded-xl bg-white p-4">
+                      <p className="text-sm font-semibold text-black">
+                        Top blockers
+                      </p>
+                      <div className="mt-3 space-y-2 text-sm text-gray-700">
+                        {selectedBrandWorkPlan.topBlockers.length === 0 ? (
+                          <p className="text-gray-500">No blockers listed.</p>
+                        ) : (
+                          selectedBrandWorkPlan.topBlockers.map((item) => (
+                            <p
+                              key={item.key}
+                              className="flex justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2"
+                            >
+                              <span>{item.key}</span>
+                              <span className="font-semibold">{item.count}</span>
+                            </p>
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-white p-4">
+                      <p className="text-sm font-semibold text-black">
+                        Estimated fields to replace
+                      </p>
+                      <div className="mt-3 space-y-2 text-sm text-gray-700">
+                        {selectedBrandWorkPlan.topEstimates.length === 0 ? (
+                          <p className="text-gray-500">
+                            No estimated fields listed.
+                          </p>
+                        ) : (
+                          selectedBrandWorkPlan.topEstimates.map((item) => (
+                            <p
+                              key={item.key}
+                              className="flex justify-between gap-3 rounded-lg bg-gray-50 px-3 py-2"
+                            >
+                              <span>{item.key}</span>
+                              <span className="font-semibold">{item.count}</span>
+                            </p>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
