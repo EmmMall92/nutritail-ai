@@ -266,6 +266,16 @@ function renderTopBrandActions(issues) {
   return renderCounts(byBrand) || "- none";
 }
 
+function renderMediumBrandActions(issues) {
+  const mediumIssues = issues.filter((issue) => issue.severity === "medium");
+  const byBrand = countBy(mediumIssues, "brand");
+  const rows = Object.entries(byBrand)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 15);
+
+  return rows.map(([brand, count]) => `- ${brand}: ${count}`).join("\n") || "- none";
+}
+
 async function main() {
   const rows = parseCsv(await readFile(paths.input, "utf8"));
   const issues = rows.flatMap(findTitleIssues);
@@ -302,9 +312,15 @@ async function main() {
       "",
       renderTopBrandActions(issues),
       "",
+      "## Medium Cleanup Focus By Brand",
+      "",
+      renderMediumBrandActions(issues),
+      "",
       "## Recommended Next Step",
       "",
-      "Clean high/critical title issues before committing those rows to Food V2. Start with brands that have retailer-sourced descriptive titles, especially Calibra.",
+      highIssueRows > 0
+        ? "Clean high/critical title issues before committing those rows to Food V2. Then work through the medium cleanup brands above."
+        : "No high/critical title issues were found. Work through the medium cleanup brands above when polishing customer-facing names.",
     ].join("\n"),
     "utf8"
   );
