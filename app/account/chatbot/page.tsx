@@ -508,6 +508,8 @@ function parseTastePreferences(text: string): {
   const excluded: string[] = [];
   const preferred: string[] = [];
   const clauses = normalized
+    .replace(/\s+\u03ba\u03b1\u03b9\s+(?=\u03b4\u03b5\u03bd\s+)/g, ". ")
+    .replace(/\s+and\s+(?=(does not|doesn't|dont|don't|no|not)\s+)/g, ". ")
     .split(/[.,;|\n]+|\s+\u03b1\u03bb\u03bb\u03b1\s+|\s+but\s+/)
     .map((clause) => clause.trim())
     .filter(Boolean);
@@ -1324,8 +1326,26 @@ function extractReadableProgressDetails(text: string) {
   };
 }
 
-function formatAnalysisResult(analysis: PetAnalysis) {
+function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "en") {
   const { nutrition, advice } = analysis;
+
+  if (language === "el") {
+    return `Η πρώτη διατροφική ανάλυση είναι έτοιμη:
+
+RER: ${nutrition.rer} kcal
+MER/DER: ${nutrition.der} kcal
+
+Βασικά σημεία:
+${
+  advice.length > 0
+    ? advice
+        .map((item) => `- ${item.title}: ${item.description}`)
+        .join("\n")
+    : "- Δεν υπάρχουν ειδικές σημειώσεις για αυτή την ανάλυση."
+}
+
+Σημείωση: Η καθοδήγηση είναι ενημερωτική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
+  }
 
   return `Your first nutrition analysis is ready:
 
@@ -1936,7 +1956,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
       const analysis = result.analysis as PetAnalysis;
       setLatestAnalysis(analysis);
 
-      addMessages(createMessage("bot", formatAnalysisResult(analysis)));
+      addMessages(createMessage("bot", formatAnalysisResult(analysis, chatLanguage)));
 
       if (nextPet.weightGoal) {
         addMessages(
@@ -2280,7 +2300,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "Next step: save this analysis if it looks right. If the food match was uncertain, send the exact bag name or a label photo before relying on formula-specific advice."
+          botText(
+            "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα για να συνεχίσουμε με γραμμάρια/ημέρα ή αποθήκευσε την ανάλυση αν σου φαίνεται σωστή.",
+            "Next step: choose one food from the list to continue with daily grams, or save this analysis if it looks right."
+          )
         )
       );
     } catch (error) {
@@ -2745,6 +2768,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   function chooseRecommendedFood(choice: RecommendedFoodChoice) {
     addMessages(createMessage("user", choice.name));
+    setRecommendedFoodChoices([]);
 
     const adjustedCalories = latestAnalysis
       ? adjustCaloriesForWeightGoal({
@@ -3151,41 +3175,64 @@ Next actions:
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
             <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
               <p className="font-semibold text-blue-950">
-                Review before saving
+                {botText("Έλεγχος πριν την αποθήκευση", "Review before saving")}
               </p>
               <p className="mt-1 text-sm text-blue-900">
-                Save when the pet details, calorie target, and food context look
-                right. You can run a new analysis later if weight, symptoms, or
-                food choice changes.
+                {botText(
+                  "Αποθήκευσε όταν τα στοιχεία, οι θερμίδες και η επιλογή τροφής φαίνονται σωστά. Μπορείς να κάνεις νέα ανάλυση αν αλλάξει βάρος, συμπτώματα ή τροφή.",
+                  "Save when the pet details, calorie target, and food context look right. You can run a new analysis later if weight, symptoms, or food choice changes."
+                )}
               </p>
             </div>
 
             {latestAnalysis && (
               <div className="rounded-xl border border-gray-200 bg-white p-4">
-                <p className="font-semibold text-black">Analysis summary</p>
+                <p className="font-semibold text-black">
+                  {botText("Σύνοψη ανάλυσης", "Analysis summary")}
+                </p>
                 <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                   <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">Pet</p>
+                    <p className="text-gray-500">{botText("Κατοικίδιο", "Pet")}</p>
                     <p className="font-semibold text-black">
-                      {pet.name ?? "Pet"} - {pet.species ?? "pet"}
+                      {pet.name ?? botText("Κατοικίδιο", "Pet")} -{" "}
+                      {pet.species === "dog"
+                        ? botText("σκύλος", "dog")
+                        : pet.species === "cat"
+                          ? botText("γάτα", "cat")
+                          : "pet"}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">Daily calories</p>
+                    <p className="text-gray-500">
+                      {botText("Ημερήσιες θερμίδες", "Daily calories")}
+                    </p>
                     <p className="font-semibold text-black">
-                      {latestAnalysis.nutrition.der} kcal/day
+                      {latestAnalysis.nutrition.der}{" "}
+                      {botText("kcal/ημέρα", "kcal/day")}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">Weight goal</p>
+                    <p className="text-gray-500">
+                      {botText("Στόχος βάρους", "Weight goal")}
+                    </p>
                     <p className="font-semibold text-black">
-                      {getWeightGoalLabel(pet.weightGoal)}
+                      {botText(
+                        pet.weightGoal === "loss"
+                          ? "απώλεια βάρους"
+                          : pet.weightGoal === "gain"
+                            ? "αύξηση βάρους"
+                            : "διατήρηση βάρους",
+                        getWeightGoalLabel(pet.weightGoal)
+                      )}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">Food match</p>
+                    <p className="text-gray-500">
+                      {botText("Επιλογή τροφής", "Food match")}
+                    </p>
                     <p className="font-semibold text-black">
-                      {analysisMetadata?.matchedFoodName ?? "No matched food"}
+                      {analysisMetadata?.matchedFoodName ??
+                        botText("Δεν επιλέχθηκε ακόμη τροφή", "No matched food")}
                     </p>
                   </div>
                 </div>
@@ -3194,27 +3241,33 @@ Next actions:
             )}
 
             <div className="rounded-xl border border-green-200 bg-green-50 p-4">
-              <p className="font-semibold text-black">Save to my account</p>
+              <p className="font-semibold text-black">
+                {botText("Αποθήκευση στον λογαριασμό μου", "Save to my account")}
+              </p>
 
               <p className="mt-1 text-sm text-gray-700">
-                This will save the pet profile, latest nutrition analysis, and
-                report entry in your account.
+                {botText(
+                  "Θα αποθηκευτούν το προφίλ κατοικιδίου, η τελευταία ανάλυση και το report στον λογαριασμό σου.",
+                  "This will save the pet profile, latest nutrition analysis, and report entry in your account."
+                )}
               </p>
               <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-green-900 sm:grid-cols-3">
                 <span className="rounded-full bg-white px-3 py-1 text-center">
-                  Pet profile
+                  {botText("Προφίλ", "Pet profile")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
-                  Nutrition report
+                  {botText("Report", "Nutrition report")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
-                  Analysis history
+                  {botText("Ιστορικό", "Analysis history")}
                 </span>
               </div>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-4">
-              <p className="font-semibold text-black">Was this helpful?</p>
+              <p className="font-semibold text-black">
+                {botText("Ήταν χρήσιμο;", "Was this helpful?")}
+              </p>
               <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <button
                   type="button"

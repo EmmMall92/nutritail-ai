@@ -21,7 +21,10 @@ function titleCaseToken(value: string) {
 }
 
 export function formatPetDisplayName(input: unknown, fallback = "Pet") {
-  const raw = String(input ?? "").replace(/\s+/g, " ").trim();
+  const raw = String(input ?? "")
+    .replace(/\s+/g, " ")
+    .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
+    .trim();
   if (!raw) return fallback;
 
   const known = KNOWN_GREEK_PET_NAMES[normalizeLookup(raw)];
