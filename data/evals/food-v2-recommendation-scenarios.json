@@ -141,6 +141,55 @@
       "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
     },
     {
+      "label": "Real small dog 7kg sterilised weight loss",
+      "goal": "weight_control",
+      "pet": {
+        "species": "dog",
+        "breed": "Small mixed breed",
+        "age": 6,
+        "weight": 7,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "excludedIngredients": [],
+        "healthIssues": ["sterilised", "weight loss", "sensitive stomach"]
+      },
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+    },
+    {
+      "label": "Real large dog 40kg low activity sterilised",
+      "goal": "sterilised",
+      "pet": {
+        "species": "dog",
+        "breed": "Large mixed breed",
+        "age": 6,
+        "weight": 40,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "excludedIngredients": [],
+        "healthIssues": ["sterilised", "low activity"]
+      },
+      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+    },
+    {
+      "label": "Real dog avoids chicken by taste",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Medium mixed breed",
+        "age": 4,
+        "weight": 17,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "excludedIngredients": ["chicken", "poultry"],
+        "preferredProteins": ["salmon", "lamb", "duck"],
+        "healthIssues": ["does not like chicken"]
+      },
+      "expectations": ["premium_or_value", "no_chicken_top_pick"]
+    },
+    {
       "label": "Senior dog joint support",
       "goal": "senior",
       "pet": {
@@ -154,6 +203,21 @@
         "healthIssues": ["joint support"]
       },
       "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick"]
+    },
+    {
+      "label": "Real senior small dog low activity",
+      "goal": "senior",
+      "pet": {
+        "species": "dog",
+        "breed": "Yorkshire Terrier",
+        "age": 11,
+        "weight": 5,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["senior", "low activity"]
+      },
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "moderate_calorie_fat_top_pick"]
     },
     {
       "label": "Sterilised cat",
@@ -184,6 +248,21 @@
         "healthIssues": ["kitten"]
       },
       "expectations": ["premium_or_value", "puppy_top_pick"]
+    },
+    {
+      "label": "Real large breed puppy 5 months",
+      "goal": "growth",
+      "pet": {
+        "species": "dog",
+        "breed": "Golden Retriever",
+        "age": 0.42,
+        "weight": 19,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "healthIssues": ["large breed puppy", "growth"]
+      },
+      "expectations": ["premium_or_value", "puppy_top_pick", "large_breed_growth_fit", "mineral_caution_or_data"]
     },
     {
       "label": "Sensitive digestion cat",
@@ -227,6 +306,22 @@
         "neutered": true,
         "allergies": [],
         "healthIssues": ["urinary"]
+      },
+      "expectations": ["premium_or_value", "urinary_top_pick"]
+    },
+    {
+      "label": "Real sterilised male cat urinary history",
+      "goal": "urinary",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 4,
+        "weight": 5.8,
+        "activityLevel": "low",
+        "neutered": true,
+        "sex": "male",
+        "allergies": [],
+        "healthIssues": ["urinary history", "sterilised", "weight control"]
       },
       "expectations": ["premium_or_value", "urinary_top_pick"]
     },
