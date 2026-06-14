@@ -180,6 +180,7 @@ function translateRankingText(value: string, locale: "el" | "en") {
     .replace(/Data is usable but still needs review\./gi, "Τα δεδομένα είναι χρήσιμα, αλλά θέλουν τελικό έλεγχο.")
     .replace(/Retailer source should be worded cautiously\./gi, "Η πηγή είναι retailer, άρα μιλάμε πιο προσεκτικά.")
     .replace(/Fat looks high for a sterilised or weight-prone pet\./gi, "Τα λιπαρά φαίνονται υψηλά για στειρωμένο ή επιρρεπές σε βάρος ζώο.")
+    .replace(/Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi, "Τα λιπαρά δεν είναι αρκετά χαμηλά για να είναι πρώτη επιλογή σε στειρωμένο ή weight-control περίπτωση.")
     .replace(/Energy density may be high for a sterilised pet\./gi, "Οι θερμίδες φαίνονται υψηλές για στειρωμένο ζώο.")
     .replace(/Active\/performance positioning is not ideal for a sterilised low-to-normal activity pet\./gi, "Η active/performance λογική δεν είναι ιδανική για στειρωμένο ζώο με χαμηλή ή κανονική δραστηριότητα.")
     .replace(/Not an exact senior life-stage match\./gi, "Δεν είναι ακριβές senior life-stage match.")
@@ -253,10 +254,16 @@ function nutritionFitExplanation(
   const phosphorus = formatNumber(nutrition?.phosphorus_percent, 2);
 
   if (goal === "weight_control" || goal === "sterilised") {
-    const numbers = [
-      kcal !== null ? `${kcal} kcal/100g` : "",
-      fat !== null ? `${fat}% fat` : "",
-    ].filter(Boolean);
+    const numbers =
+      locale === "el"
+        ? [
+            kcal !== null ? `${kcal} kcal/100g` : "",
+            fat !== null ? `${fat}% λιπαρά` : "",
+          ].filter(Boolean)
+        : [
+            kcal !== null ? `${kcal} kcal/100g` : "",
+            fat !== null ? `${fat}% fat` : "",
+          ].filter(Boolean);
 
     if (locale === "el") {
       return numbers.length > 0
@@ -554,7 +561,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   blocks.push(
     "",
     locale === "el"
-      ? "Επόμενο βήμα: διάλεξε μία από τις παραπάνω τροφές και μπορώ να σου υπολογίσω περίπου τα γραμμάρια/ημέρα. Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, έντονο εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
+      ? "Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, έντονο εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
       : "Use this as a shopping shortlist, not a diagnosis or treatment plan. For urinary, kidney, diabetes, pancreatitis, severe allergy, vomiting, diarrhea, blood, or not eating, speak with a veterinarian first."
   );
 

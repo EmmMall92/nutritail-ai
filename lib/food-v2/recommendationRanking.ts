@@ -378,6 +378,16 @@ function isHardDogSizeMismatch(
 
   if (
     pet.species === "dog" &&
+    hasNumber(pet.weight) &&
+    pet.weight >= 8 &&
+    expectedSize === "small" &&
+    declaredSize === "mini"
+  ) {
+    return true;
+  }
+
+  if (
+    pet.species === "dog" &&
     expectedSize === "giant" &&
     ["small", "medium"].includes(declaredSize)
   ) {
@@ -397,10 +407,10 @@ function inferDogSizeFromFoodText(food: FoodProductV2) {
   if (hasAny(text, ["medium breed", "medium dog", "medium adult"]) || hasWord(text, "medium")) {
     return "medium";
   }
-  if (hasAny(text, ["small breed", "small dog", "small adult"]) || hasWord(text, "small")) return "small";
-  if (hasAny(text, ["mini breed", "mini dog", "mini adult", "x small"]) || hasWord(text, "mini")) {
+  if (hasAny(text, ["xsmall", "x-small", "extra small", "x small", "mini breed", "mini dog", "mini adult"]) || hasWord(text, "mini")) {
     return "mini";
   }
+  if (hasAny(text, ["small breed", "small dog", "small adult"]) || hasWord(text, "small")) return "small";
   const breedSize = breedSizeFromText(text);
   if (breedSize) return breedSize;
   if (hasAny(text, ALL_BREED_TERMS)) return "all";
