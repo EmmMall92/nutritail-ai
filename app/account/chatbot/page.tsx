@@ -1113,7 +1113,7 @@ async function getFoodV2RecommendationMessage(
       .slice(0, 5)
   );
 
-  return formatFoodV2ChatbotRecommendationSummary(result, {
+  const deterministicText = formatFoodV2ChatbotRecommendationSummary(result, {
     mode: options.mode ?? "default",
     locale: options.language ?? "el",
     excludedBrands:
@@ -1122,6 +1122,42 @@ async function getFoodV2RecommendationMessage(
         : [],
     maxItemsPerSection: 2,
   });
+
+  try {
+    const composerResponse = await fetch("/api/account/chatbot/compose-recommendation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        locale: options.language ?? "el",
+        deterministicText,
+        petSummary: {
+          species: pet.species,
+          name: pet.name,
+          weightKg: pet.weight,
+          ageYears: pet.age,
+          activityLevel: pet.activityLevel,
+          neutered: pet.neutered,
+          weightGoal: pet.weightGoal,
+          healthIssues: pet.healthIssues ?? [],
+          preferredProteins: pet.preferredProteins ?? [],
+          excludedIngredients: pet.excludedIngredients ?? [],
+        },
+        recommendation: result,
+      }),
+    });
+
+    if (!composerResponse.ok) return deterministicText;
+
+    const composed = (await composerResponse.json()) as {
+      text?: string;
+      source?: "openai" | "fallback";
+    };
+
+    return composed.text?.trim() || deterministicText;
+  } catch (error) {
+    console.error("Failed to compose recommendation response:", error);
+    return deterministicText;
+  }
 }
 
 function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
