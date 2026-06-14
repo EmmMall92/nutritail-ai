@@ -1328,6 +1328,25 @@ function extractReadableProgressDetails(text: string) {
 
 function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "en") {
   const { nutrition, advice } = analysis;
+  const translateAdviceTitle = (title: string) => {
+    if (language !== "el") return title;
+    if (title === "Weight Control") return "Έλεγχος βάρους";
+    if (title === "Senior Nutrition") return "Διατροφή senior";
+    if (title === "Puppy/Kitten Growth") return "Ανάπτυξη κουταβιού/γατιού";
+    return title;
+  };
+  const translateAdviceDescription = (description: string) => {
+    if (language !== "el") return description;
+    return description
+      .replace(
+        /Neutered or weight-prone pets often need calorie control, measured portions, and treat calories kept within the daily target\./gi,
+        "Τα στειρωμένα ή επιρρεπή σε βάρος ζώα συνήθως χρειάζονται έλεγχο θερμίδων, μετρημένες μερίδες και οι λιχουδιές να μένουν μέσα στον ημερήσιο στόχο."
+      )
+      .replace(
+        /Older pets need monitoring for appetite, weight trend, muscle condition, and digestibility\. Do not assume a light diet is best if the pet is losing weight\./gi,
+        "Τα μεγαλύτερα ζώα χρειάζονται παρακολούθηση όρεξης, τάσης βάρους, μυϊκής κατάστασης και πέψης. Δεν θεωρούμε αυτόματα ότι μια light τροφή είναι η καλύτερη αν χάνει βάρος."
+      );
+  };
 
   if (language === "el") {
     return `Η πρώτη διατροφική ανάλυση είναι έτοιμη:
@@ -1339,7 +1358,10 @@ MER/DER: ${nutrition.der} kcal
 ${
   advice.length > 0
     ? advice
-        .map((item) => `- ${item.title}: ${item.description}`)
+        .map(
+          (item) =>
+            `- ${translateAdviceTitle(item.title)}: ${translateAdviceDescription(item.description)}`
+        )
         .join("\n")
     : "- Δεν υπάρχουν ειδικές σημειώσεις για αυτή την ανάλυση."
 }
