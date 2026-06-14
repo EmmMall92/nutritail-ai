@@ -355,11 +355,20 @@ function cautiousDataQualityNote(food: FoodV2ChatbotRecommendationItem, locale: 
   return "   Note: this row still needs review, so treat it as a candidate rather than a final answer.";
 }
 
+function recommendationRoleLine(role: "premium" | "value") {
+  if (role === "premium") {
+    return "- Role: strongest nutrition fit based on the pet profile, goal, and available data.";
+  }
+
+  return "- Role: value alternative; price data is not available yet, so this is based on formula positioning and data quality.";
+}
+
 function formatFood(
   food: FoodV2ChatbotRecommendationItem,
   index: number,
   locale: "el" | "en",
-  goal: FoodV2RecommendationGoal
+  goal: FoodV2RecommendationGoal,
+  role: "premium" | "value"
 ) {
   const score = food.ranking?.total_score;
   const confidence = food.ranking?.confidence ?? "medium";
@@ -377,6 +386,7 @@ function formatFood(
     `${optionLabel} ${index}: ${foodName(food) || "Unnamed food"}${
       typeof score === "number" ? ` (${score}/100, ${localizedConfidence(confidence, locale)})` : ""
     }${nutritionConfidence ? ` - ${nutritionConfidence}` : ""}`,
+    recommendationRoleLine(role),
     `- ${localizedSourceLabel(food, locale)}`,
     fitSummary(food, locale),
     nutritionFitExplanation(food, goal),
@@ -503,6 +513,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     intro,
     "",
     `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
+    "Shortlist split: strongest nutrition fits first, then value-style alternatives when enough safe candidates exist.",
     excludedBrands.length > 0
       ? locale === "el"
         ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
@@ -517,7 +528,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       locale === "el" ? "Καλύτερες ποιοτικά επιλογές:" : "Premium / strongest nutrition fits:",
       premium
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale, goal))
+        .map((food, index) => formatFood(food, index + 1, locale, goal, "premium"))
         .join("\n")
     );
   }
@@ -528,7 +539,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       locale === "el" ? "Πιο οικονομικές / value εναλλακτικές:" : "Value-style alternatives:",
       value
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale, goal))
+        .map((food, index) => formatFood(food, index + 1, locale, goal, "value"))
         .join("\n")
     );
   }
