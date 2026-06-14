@@ -54,6 +54,25 @@ const trustPillars = [
   },
 ];
 
+const customerOutcomes = [
+  {
+    title: "Guided chatbot intake",
+    text: "Start with your pet's age, weight, activity, neuter status, sensitivities, and current food.",
+  },
+  {
+    title: "Food shortlist",
+    text: "See stronger nutrition fits and value-style alternatives when the database has enough safe candidates.",
+  },
+  {
+    title: "Saved pet profile",
+    text: "Keep analyses, food context, calorie targets, and progress notes connected to each pet.",
+  },
+  {
+    title: "Printable result",
+    text: "Open a clear report or timeline that you can save, print, or review later.",
+  },
+];
+
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -218,6 +237,38 @@ export default function HomePage() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Online customer experience
+            </p>
+            <h2 className="mt-3 text-3xl font-black md:text-5xl">
+              From sign up to a useful nutrition result.
+            </h2>
+            <p className="mt-4 max-w-2xl text-gray-600">
+              Nutritail AI is built for pet parents using the website directly:
+              log in, choose a pet, run an analysis, save the result, and come
+              back later for progress checks or another food recommendation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {customerOutcomes.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm"
+              >
+                <h3 className="text-lg font-bold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-700">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
