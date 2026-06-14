@@ -30,6 +30,7 @@ import {
 } from "@/lib/food-v2/chatbotRecommendationSummary";
 import { formatPetDisplayName } from "@/lib/petName";
 
+import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -159,6 +160,13 @@ type FollowUpAction =
 
 type FollowUpMode = "progress" | "no_result" | null;
 type RecommendationMode = "default" | "alternative";
+type IntakeExtractionApiResponse = {
+  data?: AiIntakeExtraction;
+  source?: "openai" | "fallback";
+  warnings?: string[];
+  errors?: string[];
+  canUse?: boolean;
+};
 
 const starterCards = [
   {
@@ -448,6 +456,62 @@ function uniqueTerms(values: string[]) {
     });
 
   return terms;
+}
+
+function normalizeExtractedList(values: unknown) {
+  if (!Array.isArray(values)) return [];
+  return uniqueTerms(values.map((value) => String(value ?? "").trim()));
+}
+
+function shouldExtractIntakeFacts(step: IntakeStep, text: string) {
+  if (step === "analysis" || step === "done" || step === "petChoice") {
+    return false;
+  }
+
+  return text.trim().length >= 4;
+}
+
+function mergeExtractedPetFacts(
+  current: PetIntake,
+  extracted?: AiIntakeExtraction | null
+): PetIntake {
+  if (!extracted) return current;
+
+  const next: PetIntake = { ...current };
+
+  if (!next.species && extracted.species) next.species = extracted.species;
+  if (!next.name && extracted.petName) next.name = formatPetDisplayName(extracted.petName);
+  if (!next.weight && typeof extracted.weightKg === "number") next.weight = extracted.weightKg;
+  if (!next.age && typeof extracted.ageYears === "number") next.age = extracted.ageYears;
+  if (!next.activityLevel && extracted.activityLevel) {
+    next.activityLevel = extracted.activityLevel;
+  }
+  if (next.neutered === undefined && typeof extracted.neutered === "boolean") {
+    next.neutered = extracted.neutered;
+  }
+  if (!next.currentFoodName && extracted.currentFoodName) {
+    next.currentFoodName = extracted.currentFoodName;
+  }
+  if (!next.weightGoal && extracted.weightGoal) next.weightGoal = extracted.weightGoal;
+
+  next.healthIssues = uniqueTerms([
+    ...(next.healthIssues ?? []),
+    ...normalizeExtractedList(extracted.healthIssues),
+  ]);
+  next.allergies = uniqueTerms([
+    ...(next.allergies ?? []),
+    ...normalizeExtractedList(extracted.allergies),
+  ]);
+  next.excludedIngredients = uniqueTerms([
+    ...(next.excludedIngredients ?? []),
+    ...normalizeExtractedList(extracted.excludedIngredients),
+  ]);
+  next.preferredProteins = uniqueTerms([
+    ...(next.preferredProteins ?? []),
+    ...normalizeExtractedList(extracted.preferredProteins),
+  ]);
+
+  return next;
 }
 
 function parseTastePreferences(text: string): {
@@ -1599,6 +1663,28 @@ export default function AccountChatbotPage() {
     return chatLanguage === "el" ? el : en;
   }
 
+  async function extractIntakeFactsFromMessage(text: string) {
+    if (!shouldExtractIntakeFacts(step, text)) return null;
+
+    try {
+      const response = await fetch("/api/account/chatbot/extract-intake", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          locale: chatLanguage,
+        }),
+      });
+
+      if (!response.ok) return null;
+
+      return (await response.json()) as IntakeExtractionApiResponse;
+    } catch (error) {
+      console.error("Failed to extract intake facts:", error);
+      return null;
+    }
+  }
+
   async function runFoodComparison(
     queries: string[],
     options: { species?: Species } = {}
@@ -2602,8 +2688,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       return;
     }
 
+    const intakeExtraction = await extractIntakeFactsFromMessage(text);
+    const workingPet = mergeExtractedPetFacts(pet, intakeExtraction?.data);
+
+    if (intakeExtraction?.canUse) {
+      setPet(workingPet);
+    }
+
     if (step === "species") {
-      const species = parseSpeciesInput(text);
+      const species = parseSpeciesInput(text) ?? workingPet.species;
 
       if (!species) {
         addMessages(
@@ -2619,7 +2712,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, species }));
+      setPet((prev) => ({ ...prev, ...workingPet, species }));
       setStep("name");
 
       addMessages(
@@ -2654,8 +2747,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "weight") {
-      const weight = parseNumber(text);
-      const maxWeight = getMaxWeightKg(pet.species);
+      const weight = parseNumber(text) ?? workingPet.weight ?? null;
+      const maxWeight = getMaxWeightKg(workingPet.species ?? pet.species);
 
       if (!weight || weight <= 0 || weight > maxWeight) {
         addMessages(
@@ -2675,7 +2768,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, weight }));
+      setPet((prev) => ({ ...prev, ...workingPet, weight }));
       setStep("age");
 
       addMessages(createMessage("bot", botText("Τέλεια. Πόσο χρονών είναι;", "Great. How old is your pet?")));
@@ -2684,7 +2777,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "age") {
-      const age = parseNumber(text);
+      const age = parseNumber(text) ?? workingPet.age ?? null;
 
       if (age === null || age < 0 || age > MAX_PET_AGE_YEARS) {
         addMessages(
@@ -2697,7 +2790,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, age }));
+      setPet((prev) => ({ ...prev, ...workingPet, age }));
       setStep("activity");
 
       addMessages(
@@ -2714,7 +2807,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "activity") {
-      const activityLevel = parseActivityInput(text);
+      const activityLevel = parseActivityInput(text) ?? workingPet.activityLevel;
 
       if (!activityLevel) {
         addMessages(
@@ -2730,7 +2823,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, activityLevel }));
+      setPet((prev) => ({ ...prev, ...workingPet, activityLevel }));
       setStep("neutered");
 
       addMessages(createMessage("bot", botText("Είναι στειρωμένο; Ναι ή όχι;", "Is your pet neutered? Yes or no?")));
@@ -2739,14 +2832,16 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "neutered") {
-      const neutered = parseYesNoInput(text);
+      const neutered =
+        parseYesNoInput(text) ??
+        (typeof workingPet.neutered === "boolean" ? workingPet.neutered : null);
 
       if (neutered === null) {
         addMessages(createMessage("bot", botText("Απάντησε με ναι ή όχι.", "Please answer yes or no.")));
         return;
       }
 
-      setPet((prev) => ({ ...prev, neutered }));
+      setPet((prev) => ({ ...prev, ...workingPet, neutered }));
       setStep("health");
 
       addMessages(
@@ -2766,9 +2861,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const intakeClassification = classifyIntakeNotes(parseListOrEmpty(text));
 
       const nextPet: PetIntake = {
-        ...pet,
-        healthIssues: intakeClassification.healthIssues,
-        allergies: intakeClassification.allergies,
+        ...workingPet,
+        healthIssues: uniqueTerms([
+          ...(workingPet.healthIssues ?? []),
+          ...intakeClassification.healthIssues,
+        ]),
+        allergies: uniqueTerms([
+          ...(workingPet.allergies ?? []),
+          ...intakeClassification.allergies,
+        ]),
       };
 
       setPet(nextPet);
@@ -2791,11 +2892,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const currentFoodName = text.trim();
 
       const nextPet: PetIntake = {
-        ...pet,
+        ...workingPet,
         currentFoodName:
           isUnknownFoodAnswer(currentFoodName)
             ? undefined
-            : currentFoodName,
+            : workingPet.currentFoodName ?? currentFoodName,
       };
 
       setPet(nextPet);
@@ -2818,9 +2919,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const preferences = parseTastePreferences(text);
 
       const nextPet: PetIntake = {
-        ...pet,
-        excludedIngredients: preferences.excludedIngredients,
-        preferredProteins: preferences.preferredProteins,
+        ...workingPet,
+        excludedIngredients: uniqueTerms([
+          ...(workingPet.excludedIngredients ?? []),
+          ...preferences.excludedIngredients,
+        ]),
+        preferredProteins: uniqueTerms([
+          ...(workingPet.preferredProteins ?? []),
+          ...preferences.preferredProteins,
+        ]),
       };
 
       setPet(nextPet);
@@ -2840,7 +2947,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "weightGoal") {
-      const weightGoal = parseWeightGoalInput(text);
+      const weightGoal = parseWeightGoalInput(text) ?? workingPet.weightGoal;
 
       if (!weightGoal) {
         addMessages(
@@ -2857,7 +2964,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       }
 
       const nextPet: PetIntake = {
-        ...pet,
+        ...workingPet,
         weightGoal,
       };
 
