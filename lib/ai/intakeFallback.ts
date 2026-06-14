@@ -18,6 +18,19 @@ const EMPTY_EXTRACTION: AiIntakeExtraction = {
   notes: [],
 };
 
+const PROTEIN_TERMS = [
+  { keys: ["salmon", "σολομ"], value: "salmon" },
+  { keys: ["chicken", "κοτοπ"], value: "chicken" },
+  { keys: ["lamb", "αρν"], value: "lamb" },
+  { keys: ["beef", "μοσχαρ", "βοδιν"], value: "beef" },
+  { keys: ["fish", "ψαρ"], value: "fish" },
+  { keys: ["duck", "παπια"], value: "duck" },
+  { keys: ["pork", "χοιριν"], value: "pork" },
+  { keys: ["turkey", "γαλοπουλ"], value: "turkey" },
+  { keys: ["rabbit", "κουνελ"], value: "rabbit" },
+  { keys: ["tuna", "τονο"], value: "tuna" },
+];
+
 function normalizeText(value: string) {
   return value
     .toLowerCase()
@@ -43,7 +56,7 @@ function parseWeightKg(text: string) {
 function parseAgeYears(text: string) {
   const match = text
     .replace(",", ".")
-    .match(/(\d+(?:\.\d+)?)\s*(?:years?|yrs?|ετων|χρον)/i);
+    .match(/(\d+(?:\.\d+)?)\s*(?:years?|yrs?|ετων|ετών|χρον)/i);
   return match ? Number(match[1]) : null;
 }
 
@@ -81,12 +94,68 @@ function detectTerms(text: string, aliases: Array<[string[], string]>) {
   );
 }
 
+function splitPreferenceClauses(text: string) {
+  return text
+    .replace(/\s+και\s+(?=δεν\s+)/g, ". ")
+    .replace(/\s+and\s+(?=(does not|doesn't|dont|don't|no|not)\s+)/g, ". ")
+    .split(/[.,;|\n]+|\s+αλλα\s+|\s+αλλά\s+|\s+but\s+/)
+    .map((clause) => clause.trim())
+    .filter(Boolean);
+}
+
+function detectProteinPreferences(text: string) {
+  const excluded: string[] = [];
+  const preferred: string[] = [];
+  const clauses = splitPreferenceClauses(text);
+  const avoidSignals = [
+    "avoid",
+    "exclude",
+    "allerg",
+    "does not like",
+    "doesn't like",
+    "dont like",
+    "don't like",
+    "not like",
+    "δεν τρω",
+    "δεν του αρε",
+    "δεν της αρε",
+    "δεν αρε",
+    "τον πειρα",
+    "την πειρα",
+    "αλλεργ",
+  ];
+  const preferSignals = ["like", "prefer", "favorite", "αρεσει", "προτιμ", "τρωει"];
+
+  for (const clause of clauses.length > 0 ? clauses : [text]) {
+    const matches = PROTEIN_TERMS.filter((term) =>
+      term.keys.some((key) => clause.includes(normalizeText(key)))
+    ).map((term) => term.value);
+
+    if (matches.length === 0) continue;
+
+    if (includesAny(clause, avoidSignals)) {
+      excluded.push(...matches);
+    } else if (includesAny(clause, preferSignals)) {
+      preferred.push(...matches);
+    }
+  }
+
+  const uniqueExcluded = unique(excluded);
+  const excludedSet = new Set(uniqueExcluded);
+
+  return {
+    excluded: uniqueExcluded,
+    preferred: unique(preferred).filter((value) => !excludedSet.has(value)),
+  };
+}
+
 export function fallbackExtractIntake(
   message: string
 ): ValidatedAiIntakeExtraction {
   const text = normalizeText(message);
   const weightKg = parseWeightKg(message);
   const ageYears = parseAgeYears(message);
+  const proteinPreferences = detectProteinPreferences(text);
 
   const extraction: AiIntakeExtraction = {
     ...EMPTY_EXTRACTION,
@@ -104,20 +173,8 @@ export function fallbackExtractIntake(
       [["renal", "kidney", "νεφρ"], "renal"],
     ]),
     allergies: detectTerms(text, [[["allerg", "αλλεργ"], "suspected_allergy"]]),
-    preferredProteins: detectTerms(text, [
-      [["salmon", "σολομ"], "salmon"],
-      [["chicken", "κοτοπ"], "chicken"],
-      [["lamb", "αρν"], "lamb"],
-      [["fish", "ψαρ"], "fish"],
-    ]),
-    excludedIngredients: includesAny(text, ["δεν τρω", "avoid", "exclude", "δεν του αρε"])
-      ? detectTerms(text, [
-          [["chicken", "κοτοπ"], "chicken"],
-          [["lamb", "αρν"], "lamb"],
-          [["beef", "μοσχαρ"], "beef"],
-          [["fish", "ψαρ"], "fish"],
-        ])
-      : [],
+    preferredProteins: proteinPreferences.preferred,
+    excludedIngredients: proteinPreferences.excluded,
     confidence: "low",
     notes: ["fallback_extractor"],
   };
