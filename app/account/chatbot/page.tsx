@@ -398,6 +398,10 @@ function normalizeUserText(text: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function includesAny(value: string, terms: string[]) {
+  return terms.some((term) => value.includes(term));
+}
+
 function getExcludedBrandsForAlternative(currentFoodName?: string) {
   const normalized = normalizeUserText(currentFoodName ?? "");
 
@@ -467,86 +471,105 @@ function parseTastePreferences(text: string): {
   }
 
   const flavorTerms = [
-    { keys: ["chicken", "κοτοπουλ", "κοτόπουλ"], value: "chicken" },
-    { keys: ["lamb", "αρν"], value: "lamb" },
-    { keys: ["salmon", "σολομ"], value: "salmon" },
-    { keys: ["fish", "ψαρ"], value: "fish" },
-    { keys: ["duck", "παπια", "πάπια"], value: "duck" },
-    { keys: ["beef", "μοσχαρ", "βοδιν"], value: "beef" },
-    { keys: ["pork", "χοιριν"], value: "pork" },
-    { keys: ["turkey", "γαλοπουλ"], value: "turkey" },
-    { keys: ["rabbit", "κουνελ"], value: "rabbit" },
-    { keys: ["tuna", "τονο", "τόνο"], value: "tuna" },
-    { keys: ["rice", "ρυζ"], value: "rice" },
-    { keys: ["grain", "σιτηρ", "δημητριακ"], value: "grain" },
+    { keys: ["chicken", "\u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb"], value: "chicken" },
+    { keys: ["lamb", "\u03b1\u03c1\u03bd"], value: "lamb" },
+    { keys: ["salmon", "\u03c3\u03bf\u03bb\u03bf\u03bc"], value: "salmon" },
+    { keys: ["fish", "\u03c8\u03b1\u03c1"], value: "fish" },
+    { keys: ["duck", "\u03c0\u03b1\u03c0\u03b9\u03b1"], value: "duck" },
+    { keys: ["beef", "\u03bc\u03bf\u03c3\u03c7\u03b1\u03c1", "\u03b2\u03bf\u03b4\u03b9\u03bd"], value: "beef" },
+    { keys: ["pork", "\u03c7\u03bf\u03b9\u03c1\u03b9\u03bd"], value: "pork" },
+    { keys: ["turkey", "\u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03c5\u03bb"], value: "turkey" },
+    { keys: ["rabbit", "\u03ba\u03bf\u03c5\u03bd\u03b5\u03bb"], value: "rabbit" },
+    { keys: ["tuna", "\u03c4\u03bf\u03bd\u03bf"], value: "tuna" },
+    { keys: ["rice", "\u03c1\u03c5\u03b6"], value: "rice" },
+    { keys: ["grain", "\u03c3\u03b9\u03c4\u03b7\u03c1", "\u03b4\u03b7\u03bc\u03b7\u03c4\u03c1\u03b9\u03b1\u03ba"], value: "grain" },
   ];
 
-  const hasAvoidSignal =
-    normalized.includes("avoid") ||
-    normalized.includes("exclude") ||
-    normalized.includes("allerg") ||
-    normalized.includes("δεν τρω") ||
-    normalized.includes("δεν του αρε") ||
-    normalized.includes("δεν της αρε") ||
-    normalized.includes("τον πειρα") ||
-    normalized.includes("την πειρα") ||
-    normalized.includes("αλλεργ");
+  const avoidSignals = [
+    "avoid",
+    "exclude",
+    "allerg",
+    "\u03b4\u03b5\u03bd \u03c4\u03c1\u03c9",
+    "\u03b4\u03b5\u03bd \u03c4\u03bf\u03c5 \u03b1\u03c1\u03b5",
+    "\u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03b5",
+    "\u03c4\u03bf\u03bd \u03c0\u03b5\u03b9\u03c1\u03b1",
+    "\u03c4\u03b7\u03bd \u03c0\u03b5\u03b9\u03c1\u03b1",
+    "\u03b1\u03bb\u03bb\u03b5\u03c1\u03b3",
+  ];
+  const preferSignals = [
+    "like",
+    "prefer",
+    "favorite",
+    "\u03b1\u03c1\u03b5\u03c3\u03b5\u03b9",
+    "\u03c0\u03c1\u03bf\u03c4\u03b9\u03bc",
+    "\u03c4\u03c1\u03c9\u03b5\u03b9",
+  ];
 
-  const hasPreferSignal =
-    normalized.includes("like") ||
-    normalized.includes("prefer") ||
-    normalized.includes("favorite") ||
-    normalized.includes("αρεσει") ||
-    normalized.includes("αρέσει") ||
-    normalized.includes("προτιμ") ||
-    normalized.includes("τρωει") ||
-    normalized.includes("τρώει");
+  const excluded: string[] = [];
+  const preferred: string[] = [];
+  const clauses = normalized
+    .split(/[.,;|\n]+|\s+\u03b1\u03bb\u03bb\u03b1\s+|\s+but\s+/)
+    .map((clause) => clause.trim())
+    .filter(Boolean);
 
-  const matched = flavorTerms
-    .filter((term) => term.keys.some((key) => normalized.includes(key)))
-    .map((term) => term.value);
+  for (const clause of clauses.length > 0 ? clauses : [normalized]) {
+    const matched = flavorTerms
+      .filter((term) => term.keys.some((key) => clause.includes(key)))
+      .map((term) => term.value);
 
-  if (matched.length === 0) {
+    if (matched.length === 0) continue;
+
+    if (includesAny(clause, avoidSignals)) {
+      excluded.push(...matched);
+    } else if (includesAny(clause, preferSignals)) {
+      preferred.push(...matched);
+    } else {
+      preferred.push(...matched);
+    }
+  }
+
+  if (excluded.length === 0 && preferred.length === 0) {
     return { excludedIngredients: [], preferredProteins: parseListOrEmpty(text) };
   }
 
-  if (hasAvoidSignal) {
-    return { excludedIngredients: uniqueTerms(matched), preferredProteins: [] };
-  }
-
-  if (hasPreferSignal) {
-    return { excludedIngredients: [], preferredProteins: uniqueTerms(matched) };
-  }
-
-  return { excludedIngredients: [], preferredProteins: uniqueTerms(matched) };
+  return {
+    excludedIngredients: uniqueTerms(excluded),
+    preferredProteins: uniqueTerms(preferred),
+  };
 }
 
 function parseWeightGoal(text: string): WeightGoal | null {
   const value = normalizeUserText(text);
+  const maintainTerms = [
+    "maintain",
+    "maintenance",
+    "\u03b4\u03b9\u03b1\u03c4\u03b7\u03c1",
+    "\u03c3\u03c5\u03bd\u03c4\u03b7\u03c1",
+    "\u03ba\u03c1\u03b1\u03c4",
+  ];
+  const lossTerms = [
+    "loss",
+    "lose",
+    "\u03b1\u03c0\u03c9\u03bb",
+    "\u03c7\u03b1\u03c3",
+    "\u03b1\u03b4\u03c5\u03bd\u03b1\u03c4",
+  ];
+  const gainTerms = [
+    "gain",
+    "\u03b1\u03c5\u03be\u03b7",
+    "\u03c0\u03b1\u03c1",
+    "\u03b2\u03b1\u03bb",
+  ];
 
-  if (
-    value.includes("κρατ") ||
-    value.includes("συντηρ") ||
-    value.includes("maintain")
-  ) {
+  if (includesAny(value, maintainTerms)) {
     return "maintain";
   }
 
-  if (
-    value.includes("χασει") ||
-    value.includes("χάσει") ||
-    value.includes("αδυνατ") ||
-    value.includes("loss") ||
-    value.includes("lose")
-  ) {
+  if (includesAny(value, lossTerms)) {
     return "loss";
   }
 
-  if (
-    value.includes("παρει") ||
-    value.includes("πάρει") ||
-    value.includes("gain")
-  ) {
+  if (includesAny(value, gainTerms)) {
     return "gain";
   }
 
@@ -646,37 +669,43 @@ function parseYesNoInput(text: string): boolean | null {
 
 function parseWeightGoalInput(text: string): WeightGoal | null {
   const value = normalizeUserText(text);
+  const maintainTerms = [
+    "maintain",
+    "maintenance",
+    "diatir",
+    "syntir",
+    "\u03b4\u03b9\u03b1\u03c4\u03b7\u03c1",
+    "\u03c3\u03c5\u03bd\u03c4\u03b7\u03c1",
+    "\u03ba\u03c1\u03b1\u03c4",
+  ];
+  const lossTerms = [
+    "loss",
+    "lose",
+    "xas",
+    "adynat",
+    "\u03b1\u03c0\u03c9\u03bb",
+    "\u03c7\u03b1\u03c3",
+    "\u03b1\u03b4\u03c5\u03bd\u03b1\u03c4",
+  ];
+  const gainTerms = [
+    "gain",
+    "parei",
+    "pari",
+    "valei",
+    "\u03b1\u03c5\u03be\u03b7",
+    "\u03c0\u03b1\u03c1",
+    "\u03b2\u03b1\u03bb",
+  ];
 
-  if (
-    value.includes("maintain") ||
-    value.includes("maintenance") ||
-    value.includes("κρατ") ||
-    value.includes("συντηρ") ||
-    value.includes("diatir") ||
-    value.includes("syntir")
-  ) {
+  if (includesAny(value, maintainTerms)) {
     return "maintain";
   }
 
-  if (
-    value.includes("loss") ||
-    value.includes("lose") ||
-    value.includes("χασ") ||
-    value.includes("αδυνατ") ||
-    value.includes("xas") ||
-    value.includes("adynat")
-  ) {
+  if (includesAny(value, lossTerms)) {
     return "loss";
   }
 
-  if (
-    value.includes("gain") ||
-    value.includes("παρ") ||
-    value.includes("βαλ") ||
-    value.includes("parei") ||
-    value.includes("pari") ||
-    value.includes("valei")
-  ) {
+  if (includesAny(value, gainTerms)) {
     return "gain";
   }
 
