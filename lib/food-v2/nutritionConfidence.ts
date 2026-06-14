@@ -3,6 +3,7 @@ import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 export type FoodV2NutritionConfidenceLevel =
   | "strong_data"
   | "usable_incomplete"
+  | "estimated_or_review"
   | "caution_missing_core"
   | "limited_data";
 
@@ -13,11 +14,26 @@ export type FoodV2NutritionConfidence = {
   missing_core_fields: string[];
   missing_mineral_fields: string[];
   missing_optional_fields: string[];
+  estimated_fields: string[];
   notes: string[];
 };
 
 function hasNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+function sourceNotesInclude(food: FoodProductV2, token: string) {
+  return String(food.source_notes ?? "").toLowerCase().includes(token);
+}
+
+function estimatedFields(food: FoodProductV2) {
+  const fields: string[] = [];
+
+  if (sourceNotesInclude(food, "kcal_estimated=true")) {
+    fields.push("kcal_per_100g");
+  }
+
+  return fields;
 }
 
 export function getFoodV2NutritionConfidence(
@@ -55,11 +71,13 @@ export function getFoodV2NutritionConfidence(
   const missingOptional = Object.entries(optionalFields)
     .filter(([, value]) => !hasNumber(value))
     .map(([key]) => key);
+  const estimated = estimatedFields(food);
 
   let score = 0;
   score += (Object.keys(coreFields).length - missingCore.length) * 15;
   score += (Object.keys(mineralFields).length - missingMinerals.length) * 7;
   score += (Object.keys(optionalFields).length - missingOptional.length) * 2;
+  score -= estimated.length * 10;
 
   const notes: string[] = [];
 
@@ -82,6 +100,10 @@ export function getFoodV2NutritionConfidence(
     notes.push("Retailer source.");
   }
 
+  if (estimated.length > 0) {
+    notes.push(`Estimated fields: ${estimated.join(", ")}.`);
+  }
+
   const boundedScore = Math.max(0, Math.min(100, Math.round(score)));
 
   if (missingCore.length >= 2) {
@@ -92,6 +114,20 @@ export function getFoodV2NutritionConfidence(
       missing_core_fields: missingCore,
       missing_mineral_fields: missingMinerals,
       missing_optional_fields: missingOptional,
+      estimated_fields: estimated,
+      notes,
+    };
+  }
+
+  if (estimated.length > 0 && boundedScore >= 45) {
+    return {
+      level: "estimated_or_review",
+      label: "Usable with estimated values",
+      score: boundedScore,
+      missing_core_fields: missingCore,
+      missing_mineral_fields: missingMinerals,
+      missing_optional_fields: missingOptional,
+      estimated_fields: estimated,
       notes,
     };
   }
@@ -104,6 +140,7 @@ export function getFoodV2NutritionConfidence(
       missing_core_fields: missingCore,
       missing_mineral_fields: missingMinerals,
       missing_optional_fields: missingOptional,
+      estimated_fields: estimated,
       notes,
     };
   }
@@ -116,6 +153,7 @@ export function getFoodV2NutritionConfidence(
       missing_core_fields: missingCore,
       missing_mineral_fields: missingMinerals,
       missing_optional_fields: missingOptional,
+      estimated_fields: estimated,
       notes,
     };
   }
@@ -127,6 +165,7 @@ export function getFoodV2NutritionConfidence(
     missing_core_fields: missingCore,
     missing_mineral_fields: missingMinerals,
     missing_optional_fields: missingOptional,
+    estimated_fields: estimated,
     notes,
   };
 }

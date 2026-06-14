@@ -18,6 +18,7 @@ export type FoodV2ChatbotRecommendationItem = {
     missing_core_fields?: string[];
     missing_mineral_fields?: string[];
     missing_optional_fields?: string[];
+    estimated_fields?: string[];
   } | null;
   nutrition?: Record<string, number | null | undefined> | null;
 };
@@ -380,7 +381,9 @@ function formatFood(
     .slice(0, 2);
   const optionLabel = locale === "el" ? "Επιλογή" : "Option";
   const missingLabel = locale === "el" ? "Λείπουν θρεπτικά" : "Missing nutrition";
+  const estimatedLabel = locale === "el" ? "Estimated nutrition" : "Estimated nutrition";
   const whyLabel = locale === "el" ? "Γιατί ταιριάζει" : "Why it fits";
+  const estimated = food.nutrition_confidence?.estimated_fields ?? [];
 
   return [
     `${optionLabel} ${index}: ${foodName(food) || "Unnamed food"}${
@@ -392,6 +395,7 @@ function formatFood(
     nutritionFitExplanation(food, goal),
     nutritionSnapshot(food, locale),
     missing.length > 0 ? `- ${missingLabel}: ${missing.join(", ")}` : "",
+    estimated.length > 0 ? `- ${estimatedLabel}: ${estimated.join(", ")}` : "",
     reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
     cautiousDataQualityNote(food, locale),
   ]
