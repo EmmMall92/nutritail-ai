@@ -41,3 +41,10 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Generated local QA reports
+/reports/account_progress_live_route_smoke_qa.md
+/reports/chatbot_golden_qa.md
+/reports/customer_chatbot_flow_links_qa.md
+/reports/food_v2_ranking_scenario_audit.md
+/reports/food_v2_recommendation_smoke_qa.md
