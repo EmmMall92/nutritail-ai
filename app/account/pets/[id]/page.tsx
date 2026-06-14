@@ -131,6 +131,34 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
   return steps;
 }
 
+function getResultStatusDetail(item?: AnalysisHistoryItem) {
+  if (!item) {
+    return "Run the chatbot to create calories, food guidance, report, and timeline.";
+  }
+
+  if (item.matched_food_name && item.feeding_grams_per_day) {
+    return "Ready for portion tracking, progress check-ins, and printable sharing.";
+  }
+
+  if (item.matched_food_name) {
+    return "Formula is saved, but grams per day still need calorie confirmation.";
+  }
+
+  if (item.feeding_grams_per_day) {
+    return "Portion guidance exists, but the exact food formula still needs confirmation.";
+  }
+
+  return "Calories are useful, but this is still general guidance until the food match is confirmed.";
+}
+
+function getResultFollowUp(item?: AnalysisHistoryItem, progressLogCount = 0) {
+  if (!item) return "Start a nutrition analysis";
+  if (!item.matched_food_name) return "Confirm exact food";
+  if (!item.feeding_grams_per_day) return "Confirm kcal and grams";
+  if (progressLogCount === 0) return "Add first progress check";
+  return "Continue tracking progress";
+}
+
 function getCareNotes(pet: AccountPet) {
   const notes = [];
 
@@ -421,6 +449,73 @@ export default function AccountPetDetailPage() {
             >
               Recheck food fit
             </Link>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Latest result
+              </p>
+              <h2 className="mt-2 text-xl font-bold text-emerald-950">
+                {getReportReadiness(latest)}
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm text-emerald-900">
+                {getResultStatusDetail(latest)}
+              </p>
+            </div>
+
+            <Link
+              href={
+                latest
+                  ? `/account/chatbot?petId=${pet.id}&mode=progress`
+                  : `/account/chatbot?petId=${pet.id}`
+              }
+              className="rounded-xl bg-emerald-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-emerald-800"
+            >
+              {getResultFollowUp(latest, progressLogs.length)}
+            </Link>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-xl bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Daily target
+              </p>
+              <p className="mt-2 text-lg font-semibold text-black">
+                {latest?.mer ? `${latest.mer} kcal/day` : "Not calculated"}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Food match
+              </p>
+              <p className="mt-2 text-sm font-semibold text-black">
+                {latest?.matched_food_name ?? "Needs exact food"}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Feeding
+              </p>
+              <p className="mt-2 text-lg font-semibold text-black">
+                {latest?.feeding_grams_per_day
+                  ? `${latest.feeding_grams_per_day}g/day`
+                  : "Needs kcal check"}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Follow-up
+              </p>
+              <p className="mt-2 text-sm font-semibold text-black">
+                {getResultFollowUp(latest, progressLogs.length)}
+              </p>
+            </div>
           </div>
         </div>
 
