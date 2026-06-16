@@ -85,6 +85,7 @@ type RecommendedFoodChoice = {
   role?: "best" | "value";
   score?: number | null;
   reason?: string;
+  caution?: string;
   kcalPer100g?: number | null;
   proteinPercent?: number | null;
   fatPercent?: number | null;
@@ -260,7 +261,34 @@ function formatRecommendationChoiceReason(
   role: RecommendedFoodChoice["role"],
   language: ChatLanguage
 ) {
+  const text = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
+
   if (language === "el") {
+    if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+      return "Ταιριάζει με γεύση ή πρωτεΐνη που δήλωσες ότι προτιμά.";
+    }
+    if (text.includes("excluded ingredients") || text.includes("allergens were not detected")) {
+      return "Σέβεται τις αποφυγές ή αλλεργίες που δήλωσες.";
+    }
+    if (text.includes("weight") || text.includes("sterilised") || text.includes("calories")) {
+      return "Έχει πιο σωστή λογική για στειρωμένο ή επιρρεπές σε βάρος κατοικίδιο.";
+    }
+    if (text.includes("large-breed puppy") || text.includes("growth")) {
+      return "Είναι πιο κοντά στις ανάγκες ανάπτυξης.";
+    }
+    if (text.includes("senior")) {
+      return "Είναι πιο κοντά σε ανάγκες senior κατοικιδίου.";
+    }
+    if (text.includes("digest") || text.includes("sensitive")) {
+      return "Έχει λογική για πιο ευαίσθητη πέψη.";
+    }
+    if (text.includes("urinary")) {
+      return "Έχει ουρολογικό προσανατολισμό.";
+    }
+    if (text.includes("renal")) {
+      return "Έχει νεφρικό προσανατολισμό.";
+    }
+
     return role === "value"
       ? "Πιο απλή επιλογή με καλά διαθέσιμα στοιχεία."
       : "Δυνατή επιλογή με βάση το προφίλ του κατοικιδίου.";
@@ -272,6 +300,52 @@ function formatRecommendationChoiceReason(
   return role === "value"
     ? "A simpler option with useful available data."
     : "A strong fit based on this pet profile.";
+}
+
+function formatRecommendationChoiceCaution(
+  food: FoodV2ChatbotRecommendationItem,
+  language: ChatLanguage
+) {
+  const text = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+  if (!text) return undefined;
+
+  if (language === "el") {
+    if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
+      return "Έλεγξε τη μερίδα προσεκτικά, ειδικά αν υπάρχει τάση για βάρος.";
+    }
+    if (text.includes("large-breed") || text.includes("calcium") || text.includes("phosphorus")) {
+      return "Για μεγαλόσωμο κουτάβι θέλουμε προσοχή σε ασβέστιο και φώσφορο.";
+    }
+    if (text.includes("senior")) {
+      return "Σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση.";
+    }
+    if (text.includes("renal") || text.includes("kidney")) {
+      return "Σε νεφρικό θέμα η επιλογή τροφής πρέπει να γίνεται με κτηνίατρο.";
+    }
+    if (text.includes("urinary")) {
+      return "Σε ουρολογικό ιστορικό χρειάζεται επιβεβαίωση από κτηνίατρο.";
+    }
+
+    return undefined;
+  }
+
+  if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
+    return "Watch the daily portion carefully, especially if weight is a concern.";
+  }
+  if (text.includes("large-breed") || text.includes("calcium") || text.includes("phosphorus")) {
+    return "Large-breed puppies need extra care around calcium and phosphorus.";
+  }
+  if (text.includes("senior")) {
+    return "For senior pets, monitor weight, appetite, and muscle condition.";
+  }
+  if (text.includes("renal") || text.includes("kidney")) {
+    return "Renal cases should be diet-guided with a veterinarian.";
+  }
+  if (text.includes("urinary")) {
+    return "Urinary history should be confirmed with a veterinarian.";
+  }
+
+  return undefined;
 }
 
 function toRecommendationChoice(
@@ -287,6 +361,7 @@ function toRecommendationChoice(
     role,
     score: food.ranking?.total_score ?? null,
     reason: formatRecommendationChoiceReason(food, role, language),
+    caution: formatRecommendationChoiceCaution(food, language),
     kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
     proteinPercent: food.nutrition?.protein_percent ?? null,
     fatPercent: food.nutrition?.fat_percent ?? null,
@@ -3591,8 +3666,19 @@ Next actions:
                     {choice.name}
                   </span>
                   {choice.reason && (
-                    <span className="mt-2 text-sm leading-5 text-gray-700">
-                      {choice.reason}
+                    <span className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm leading-5 text-emerald-950">
+                      <span className="block text-xs font-semibold uppercase text-emerald-700">
+                        {botText("Γιατί ταιριάζει", "Why it fits")}
+                      </span>
+                      <span>{choice.reason}</span>
+                    </span>
+                  )}
+                  {choice.caution && (
+                    <span className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950">
+                      <span className="block text-xs font-semibold uppercase text-amber-700">
+                        {botText("Προσοχή", "Watch")}
+                      </span>
+                      <span>{choice.caution}</span>
                     </span>
                   )}
                   <span className="mt-3 flex flex-wrap gap-1.5 text-xs text-gray-700">
