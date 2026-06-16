@@ -27,6 +27,21 @@ type ValidationResponse = {
   issues: ValidationIssue[];
 };
 
+type AiStatusResponse = {
+  openai_configured: boolean;
+  model: string | null;
+  runtime_policy: {
+    source_of_truth: string;
+    openai_allowed_for: string[];
+    openai_not_allowed_for: string[];
+  };
+  surfaces: {
+    intake_extractor: string;
+    recommendation_composer: string;
+    food_ranking: string;
+  };
+};
+
 const FILTERS = ["all", "blocker", "warning"] as const;
 
 function getIssueHref(issue: ValidationIssue) {
@@ -49,6 +64,7 @@ function getBadgeClasses(severity: ValidationSeverity) {
 
 export default function AdminValidationPage() {
   const [data, setData] = useState<ValidationResponse | null>(null);
+  const [aiStatus, setAiStatus] = useState<AiStatusResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
@@ -62,14 +78,24 @@ export default function AdminValidationPage() {
         method: "GET",
         cache: "no-store",
       });
+      const aiResponse = await fetch("/api/admin/ai-status", {
+        method: "GET",
+        cache: "no-store",
+      });
 
       const result = await response.json();
+      const aiResult = await aiResponse.json();
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to load validation.");
       }
 
+      if (!aiResponse.ok) {
+        throw new Error(aiResult.error || "Failed to load AI status.");
+      }
+
       setData(result as ValidationResponse);
+      setAiStatus(aiResult as AiStatusResponse);
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Failed to load validation.");
@@ -124,6 +150,98 @@ export default function AdminValidationPage() {
         </div>
       ) : (
         <>
+          {aiStatus && (
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    AI Runtime Status
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold text-black">
+                    {aiStatus.openai_configured
+                      ? "OpenAI is configured"
+                      : "OpenAI is not configured"}
+                  </h3>
+                  <p className="mt-2 max-w-3xl text-sm text-gray-600">
+                    NutriTail keeps Food V2 and deterministic nutrition rules as
+                    the source of truth. OpenAI is only used for dialogue,
+                    structured fact extraction, and customer-friendly answer
+                    writing.
+                  </p>
+                </div>
+
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
+                    aiStatus.openai_configured
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {aiStatus.openai_configured ? "active" : "fallback only"}
+                </span>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Intake
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-black">
+                    {aiStatus.surfaces.intake_extractor}
+                  </p>
+                </div>
+
+                <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Answer writer
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-black">
+                    {aiStatus.surfaces.recommendation_composer}
+                  </p>
+                </div>
+
+                <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                  <p className="text-xs font-medium uppercase text-gray-500">
+                    Food ranking
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-black">
+                    {aiStatus.surfaces.food_ranking}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <p className="text-sm font-semibold text-black">
+                    OpenAI may help with
+                  </p>
+                  <ul className="mt-2 list-disc pl-5 text-sm text-gray-700">
+                    {aiStatus.runtime_policy.openai_allowed_for.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-black">
+                    OpenAI must not do
+                  </p>
+                  <ul className="mt-2 list-disc pl-5 text-sm text-gray-700">
+                    {aiStatus.runtime_policy.openai_not_allowed_for.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {aiStatus.model && (
+                <p className="mt-4 text-xs text-gray-500">
+                  Model: {aiStatus.model}
+                </p>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-6">
             <div className="rounded-xl border border-red-200 bg-white p-4 shadow-sm">
               <p className="text-xs font-medium uppercase text-red-700">
