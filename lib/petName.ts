@@ -6,6 +6,7 @@ const KNOWN_GREEK_PET_NAMES: Record<string, string> = {
   πικος: "Πίκος",
   σαραμπι: "Σαραμπί",
   κυρκη: "Κύρκη",
+  κλεομενης: "Κλεομένης",
 };
 
 function normalizeLookup(value: string) {
@@ -22,10 +23,28 @@ function titleCaseToken(value: string) {
 }
 
 function stripNamePrefix(value: string) {
-  return value
-    .replace(/^(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/i, "")
-    .replace(/^(?:his|her|their|the)\s+name\s+is\s+/i, "")
-    .replace(/^(?:called|named)\s+/i, "")
+  let cleaned = value
+    .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
+    .trim();
+
+  const phrasePatterns = [
+    /^(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/iu,
+    /^(?:ο|η)\s+(?:σκυλος|σκύλος|γατα|γάτα|γατος|γάτος)\s+μου\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/iu,
+    /^(?:το\s+)?(?:ονομα|όνομα)(?:\s+(?:του|της))?\s+(?:ειναι|είναι)\s+/iu,
+    /^(?:his|her|their|the|my\s+(?:dog|cat|pet)'?s)\s+name\s+is\s+/iu,
+    /^(?:called|named)\s+/iu,
+  ];
+
+  for (const pattern of phrasePatterns) {
+    cleaned = cleaned.replace(pattern, "").trim();
+  }
+
+  const inlineMarker = cleaned.match(
+    /(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+(.+)$/iu
+  );
+  if (inlineMarker?.[1]) cleaned = inlineMarker[1].trim();
+
+  return cleaned
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
     .trim();
 }
