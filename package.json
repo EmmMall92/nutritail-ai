@@ -89,6 +89,7 @@
     "qa:account-progress-live-routes": "node scripts/qa/check-account-progress-live-routes.mjs",
     "qa:customer-chatbot-flow-links": "node scripts/qa/check-customer-chatbot-flow-links.mjs",
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
+    "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs"
   },

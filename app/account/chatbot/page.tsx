@@ -29,6 +29,7 @@ import {
   type FoodV2ChatbotRecommendationItem,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
 import { formatPetDisplayName } from "@/lib/petName";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
@@ -3502,15 +3503,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           goal: pet.weightGoal,
         })
       : null;
-    const treats = adjustedCalories
-      ? calculateTreatsAllowance(adjustedCalories)
-      : null;
-    const mainFoodCalories = treats?.mainFoodCalories ?? adjustedCalories;
-
-    const gramsPerDay =
-      mainFoodCalories && choice.kcalPer100g && choice.kcalPer100g > 0
-        ? Math.round((mainFoodCalories / choice.kcalPer100g) * 100)
-        : null;
+    const portionEstimate = calculateMainFoodPortionEstimate({
+      finalDailyCalories: adjustedCalories,
+      kcalPer100g: choice.kcalPer100g,
+    });
+    const gramsPerDay = portionEstimate?.gramsPerDay ?? null;
 
     setPet((prev) => ({
       ...prev,
