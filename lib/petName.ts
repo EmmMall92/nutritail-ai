@@ -4,7 +4,8 @@ const KNOWN_GREEK_PET_NAMES: Record<string, string> = {
   μπεμπα: "Μπέμπα",
   μπεμπης: "Μπέμπης",
   πικος: "Πίκος",
-  σαραμπι: "Σαράμπι",
+  σαραμπι: "Σαραμπί",
+  κυρκη: "Κύρκη",
 };
 
 function normalizeLookup(value: string) {
@@ -20,17 +21,21 @@ function titleCaseToken(value: string) {
   return value.charAt(0).toLocaleUpperCase("el-GR") + value.slice(1);
 }
 
+function stripNamePrefix(value: string) {
+  return value
+    .replace(/^(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/i, "")
+    .replace(/^(?:his|her|their|the)\s+name\s+is\s+/i, "")
+    .replace(/^(?:called|named)\s+/i, "")
+    .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
+    .trim();
+}
+
 export function formatPetDisplayName(input: unknown, fallback = "Pet") {
   const rawInput = String(input ?? "")
     .replace(/\s+/g, " ")
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
     .trim();
-  const raw = rawInput
-    .replace(/^(?:τον|την|τη|το)\s+(?:λ[εέ]νε|λ[εέ]γεται)\s+/i, "")
-    .replace(/^(?:his|her|their|the)\s+name\s+is\s+/i, "")
-    .replace(/^(?:called|named)\s+/i, "")
-    .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
-    .trim();
+  const raw = stripNamePrefix(rawInput);
   if (!raw) return fallback;
 
   const known = KNOWN_GREEK_PET_NAMES[normalizeLookup(raw)];

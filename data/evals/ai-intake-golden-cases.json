@@ -5,6 +5,7 @@
     "expect": {
       "species": "dog",
       "weightKg": 6,
+      "ageYears": 3,
       "activityLevel": "high",
       "neutered": false,
       "healthIssues": ["itchy_skin"],
@@ -59,6 +60,50 @@
     "expect": {
       "preferredProteins": ["chicken"],
       "excludedIngredients": ["salmon"]
+    }
+  },
+  {
+    "id": "greek_pet_name_prefix",
+    "message": "την λένε Κύρκη",
+    "expect": {
+      "petName": "Κύρκη"
+    }
+  },
+  {
+    "id": "greek_multi_avoid_like",
+    "message": "Της αρέσει το κοτόπουλο και δεν της αρέσει καθόλου ο σολομός και το αρνί",
+    "expect": {
+      "preferredProteins": ["chicken"],
+      "excludedIngredients": ["salmon", "lamb"]
+    }
+  },
+  {
+    "id": "greek_weight_goal_maintain",
+    "message": "Διατήρηση βάρους",
+    "expect": {
+      "weightGoal": "maintain"
+    }
+  },
+  {
+    "id": "greek_weight_goal_loss",
+    "message": "Απώλεια βάρους",
+    "expect": {
+      "weightGoal": "loss"
+    }
+  },
+  {
+    "id": "greek_weight_goal_gain",
+    "message": "Αύξηση βάρους",
+    "expect": {
+      "weightGoal": "gain"
+    }
+  },
+  {
+    "id": "greek_dog_weight_too_high_rejected",
+    "message": "Έχω σκύλο 115 κιλά",
+    "expect": {
+      "species": "dog",
+      "weightKg": null
     }
   }
 ]
