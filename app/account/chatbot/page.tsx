@@ -1889,12 +1889,14 @@ export default function AccountChatbotPage() {
       });
     };
 
-    const frame = window.requestAnimationFrame(() => scrollToBottom());
-    const delayed = window.setTimeout(() => scrollToBottom("auto"), 120);
+    const frame = window.requestAnimationFrame(() => scrollToBottom("auto"));
+    const delayed = [120, 350, 800].map((delay) =>
+      window.setTimeout(() => scrollToBottom("auto"), delay)
+    );
 
     return () => {
       window.cancelAnimationFrame(frame);
-      window.clearTimeout(delayed);
+      delayed.forEach((timeoutId) => window.clearTimeout(timeoutId));
     };
   }, [messages, showSave, step, isAnalyzing, recommendedFoodChoices.length]);
 
@@ -3413,13 +3415,13 @@ Next actions:
                   href={`/account/pets/${followUpPet.id}`}
                   className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-100"
                 >
-                  Profile
+                  {botText("Προφίλ", "Profile")}
                 </a>
                 <a
                   href={`/print/pet-timeline/${followUpPet.id}`}
                   className="rounded-lg border border-blue-300 bg-white px-3 py-2 text-sm font-medium text-blue-900 transition hover:bg-blue-100"
                 >
-                  Timeline
+                  {botText("Ιστορικό", "Timeline")}
                 </a>
               </div>
             </div>
@@ -3599,7 +3601,7 @@ Next actions:
                   {botText("Προφίλ", "Pet profile")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
-                  {botText("Report", "Nutrition report")}
+                  {botText("Report διατροφής", "Nutrition report")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
                   {botText("Ιστορικό", "Analysis history")}
@@ -3624,7 +3626,7 @@ Next actions:
                   }
                   className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
                 >
-                  Helpful
+                  {botText("Χρήσιμο", "Helpful")}
                 </button>
                 <button
                   type="button"
@@ -3638,7 +3640,7 @@ Next actions:
                   }
                   className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
                 >
-                  Not helpful
+                  {botText("Όχι χρήσιμο", "Not helpful")}
                 </button>
               </div>
               {feedbackStatus && (
@@ -3652,7 +3654,9 @@ Next actions:
               disabled={isSaving}
               className="w-full rounded-xl bg-green-600 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
             >
-              {isSaving ? "Saving..." : "Save to my account"}
+              {isSaving
+                ? botText("Αποθήκευση...", "Saving...")
+                : botText("Αποθήκευση στον λογαριασμό μου", "Save to my account")}
             </button>
           </div>
         )}
