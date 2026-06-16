@@ -8,6 +8,7 @@ type ComposerLocale = "el" | "en";
 export type ChatbotRecommendationComposerInput = {
   locale?: ComposerLocale;
   deterministicText: string;
+  cardsFollow?: boolean;
   petSummary?: {
     species?: "dog" | "cat";
     name?: string;
@@ -59,6 +60,7 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
     premium: premium.slice(0, 3).map(compactFood),
     value: value.slice(0, 3).map(compactFood),
     notes: input.recommendation.notes?.slice(0, 4) ?? [],
+    cards_follow: Boolean(input.cardsFollow),
     deterministic_text: input.deterministicText,
   };
 }
@@ -224,6 +226,33 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
 
   if (foods.length === 0) return "";
 
+  if (input.cardsFollow) {
+    const goal = String(input.recommendation.goal ?? "general");
+    const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
+    const topFood = displayFoodName(foods[0]);
+    const topReason = simpleReason(foods[0], locale);
+
+    if (locale === "el") {
+      return [
+        "Έτοιμο. Με βάση τα στοιχεία του κατοικιδίου, έβαλα τις καλύτερες επιλογές από κάτω σε κάρτες.",
+        "",
+        `Στόχος: ${goalLabel}.`,
+        `Πρώτη κατεύθυνση: ${topFood}, γιατί ${topReason}.`,
+        "",
+        "Πάτησε μία κάρτα για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την επιλογή στην ανάλυση.",
+      ].join("\n");
+    }
+
+    return [
+      "Done. Based on this pet profile, I placed the best options below as cards.",
+      "",
+      `Goal: ${goalLabel}.`,
+      `First direction: ${topFood}, because it ${topReason}.`,
+      "",
+      "Tap one card to estimate grams/day and keep that food in the analysis.",
+    ].join("\n");
+  }
+
   const goal = String(input.recommendation.goal ?? "general");
   const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
   const petName = input.petSummary?.name?.trim();
@@ -275,6 +304,8 @@ function removeBackOfficeLines(text: string) {
 }
 
 function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationComposerInput) {
+  if (input.cardsFollow) return true;
+
   const foods = [...(input.recommendation.premium ?? []), ...(input.recommendation.value ?? [])];
   if (foods.length === 0) return true;
 
@@ -316,7 +347,7 @@ export async function composeChatbotRecommendationResponse(
           },
           {
             role: "user",
-            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- Present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not over-explain the internal score. If you mention a score, keep it secondary.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
+            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not over-explain the internal score. If you mention a score, keep it secondary.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
           },
         ],
         temperature: 0.2,

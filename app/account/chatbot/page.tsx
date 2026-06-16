@@ -1175,18 +1175,18 @@ async function getFoodV2RecommendationMessage(
     throw new Error(result.error || "Could not load Food V2 recommendations.");
   }
 
-  options.onChoices?.(
-    [
-      ...(result.premium ?? []).map((food) =>
-        toRecommendationChoice(food, "best", options.language ?? "el")
-      ),
-      ...(result.value ?? []).map((food) =>
-        toRecommendationChoice(food, "value", options.language ?? "el")
-      ),
-    ]
-      .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
-      .slice(0, 5)
-  );
+  const foodChoices = [
+    ...(result.premium ?? []).map((food) =>
+      toRecommendationChoice(food, "best", options.language ?? "el")
+    ),
+    ...(result.value ?? []).map((food) =>
+      toRecommendationChoice(food, "value", options.language ?? "el")
+    ),
+  ]
+    .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
+    .slice(0, 5);
+
+  options.onChoices?.(foodChoices);
 
   const deterministicText = formatFoodV2ChatbotRecommendationSummary(result, {
     mode: options.mode ?? "default",
@@ -1205,6 +1205,7 @@ async function getFoodV2RecommendationMessage(
       body: JSON.stringify({
         locale: options.language ?? "el",
         deterministicText,
+        cardsFollow: foodChoices.length > 0,
         petSummary: {
           species: pet.species,
           name: pet.name,
