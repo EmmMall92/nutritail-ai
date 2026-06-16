@@ -407,6 +407,46 @@
       "expectedSignals": ["growth"],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": ["calories", "veterinary"]
+    },
+    {
+      "id": "customer-smoke-compare-royal-acana-el",
+      "locale": "el-GR",
+      "prompt": "Σύγκρινε Royal Canin Mini Adult με Acana για τον σκύλο μου",
+      "expectedSignals": ["compare", "product_lookup"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["compare", "calories"]
+    },
+    {
+      "id": "customer-smoke-sterilised-portion-el",
+      "locale": "el-GR",
+      "prompt": "Έχω στειρωμένο σκύλο 10 κιλά και θέλω να κρατήσει βάρος",
+      "expectedSignals": ["neutered", "weight"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "portion", "treats"]
+    },
+    {
+      "id": "customer-smoke-chicken-allergy-el",
+      "locale": "el-GR",
+      "prompt": "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο και δεν θέλω τροφή με κοτόπουλο",
+      "expectedSignals": ["allergy", "chicken"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["ingredient", "veterinarian"]
+    },
+    {
+      "id": "customer-smoke-large-puppy-el",
+      "locale": "el-GR",
+      "prompt": "Θέλω τροφή για κουτάβι μεγαλόσωμης φυλής 5 μηνών",
+      "expectedSignals": ["growth", "large_breed"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calcium", "phosphorus"]
+    },
+    {
+      "id": "customer-smoke-urinary-male-cat-el",
+      "locale": "el-GR",
+      "prompt": "Ο αρσενικός γάτος μου πάει στην άμμο και δεν κατουράει",
+      "expectedSignals": ["urinary", "urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["urgent", "veterinarian"]
     }
   ]
 }
