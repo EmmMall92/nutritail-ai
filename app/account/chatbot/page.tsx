@@ -1963,6 +1963,61 @@ export default function AccountChatbotPage() {
     return chatLanguage === "el" ? el : en;
   }
 
+  function isNewPetRequest(text: string) {
+    const normalized = normalizeUserText(text);
+
+    return (
+      normalized.includes("new pet") ||
+      normalized.includes("start new") ||
+      normalized.includes("neo katoikidio") ||
+      normalized.includes("νέο κατοικίδιο") ||
+      normalized.includes("νεο κατοικιδιο")
+    );
+  }
+
+  function startNewPetFromPetChoice(text: string) {
+    const species = parseSpeciesInput(text);
+
+    setSelectedPetId(null);
+    setPendingCompareQueries([]);
+    setFollowUpMode(null);
+    setRecommendationMode("default");
+    setAnalysisMetadata({});
+    setRecommendedFoodChoices([]);
+    setPet({
+      healthIssues: [],
+      allergies: [],
+      excludedIngredients: [],
+      preferredProteins: [],
+    });
+
+    if (!species) {
+      setStep("species");
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Τέλεια. Έχεις σκύλο ή γάτα;",
+            "Great. Do you have a dog or a cat?"
+          )
+        )
+      );
+      return true;
+    }
+
+    setPet((prev) => ({ ...prev, species }));
+    setStep("name");
+    addMessages(
+      createMessage(
+        "bot",
+        species === "dog"
+          ? botText("Τέλεια, σκύλος. Πώς τον/την λένε;", "Great, a dog. What is their name?")
+          : botText("Τέλεια, γάτα. Πώς τον/την λένε;", "Great, a cat. What is their name?")
+      )
+    );
+    return true;
+  }
+
   async function extractIntakeFactsFromMessage(text: string) {
     if (!shouldExtractIntakeFacts(step, text)) return null;
 
@@ -3034,10 +3089,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (step === "petChoice") {
+      if (isNewPetRequest(text) || parseSpeciesInput(text)) {
+        startNewPetFromPetChoice(text);
+        return;
+      }
+
       addMessages(
         createMessage(
           "bot",
-          "Use the pet buttons above, or choose Start with a new pet."
+          botText(
+            "Για να σου δώσω σωστή πρόταση, πρώτα διάλεξε ένα αποθηκευμένο κατοικίδιο ή γράψε αν ξεκινάμε νέο με σκύλο ή γάτα. Π.χ. «έχω σκύλο».",
+            "To give a useful recommendation, first choose a saved pet or tell me if we are starting a new dog or cat. For example: \"I have a dog\"."
+          )
         )
       );
       return;
