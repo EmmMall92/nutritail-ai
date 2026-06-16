@@ -1702,10 +1702,15 @@ export default function AccountChatbotPage() {
             : "";
 
   function addMessages(...nextMessages: ChatMessage[]) {
-    setMessages((prev) => [...prev, ...nextMessages]);
+    const visibleMessages = nextMessages.filter((message) => message.text.trim());
+    if (visibleMessages.length === 0) return;
+
+    setMessages((prev) => [...prev, ...visibleMessages]);
   }
 
   function botText(el: string, en: string) {
+    if (!en.trim()) return "";
+
     return chatLanguage === "el" ? el : en;
   }
 
@@ -2301,14 +2306,22 @@ ${guardrailText}`
       }
 
       try {
+        let foodChoices: RecommendedFoodChoice[] = [];
         const foodV2Message = await getFoodV2RecommendationMessage(nextPet, {
           mode: recommendationMode,
           language: chatLanguage,
-          onChoices: setRecommendedFoodChoices,
+          onChoices: (choices) => {
+            foodChoices = choices;
+            setRecommendedFoodChoices(choices);
+          },
         });
 
         if (foodV2Message) {
           addMessages(createMessage("bot", foodV2Message));
+        }
+
+        if (foodChoices.length === 0) {
+          setRecommendedFoodChoices([]);
         }
       } catch (error) {
         console.error(error);
@@ -2586,7 +2599,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           "bot",
           botText(
             "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα για να συνεχίσουμε με γραμμάρια/ημέρα ή αποθήκευσε την ανάλυση αν σου φαίνεται σωστή.",
-            "Next step: choose one food from the list to continue with daily grams, or save this analysis if it looks right."
+            ""
           )
         )
       );

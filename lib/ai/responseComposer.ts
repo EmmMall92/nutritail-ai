@@ -64,11 +64,195 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
 }
 
 function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
+  const customerText = buildCustomerFallbackText(input);
+
   return {
-    text: input.deterministicText,
+    text: customerText || input.deterministicText,
     source: "fallback",
     warnings,
   };
+}
+
+const GOAL_LABELS_EL: Record<string, string> = {
+  allergy: "αποφυγή συστατικών",
+  general: "γενική επιλογή",
+  growth: "ανάπτυξη",
+  premium: "ποιοτική επιλογή",
+  renal: "νεφρική υποστήριξη",
+  sensitive_digestion: "ευαίσθητη πέψη",
+  senior: "senior ανάγκες",
+  sterilised: "στειρωμένο κατοικίδιο",
+  urinary: "ουρολογική υποστήριξη",
+  value: "οικονομική επιλογή",
+  weight_control: "έλεγχος βάρους",
+};
+
+const GOAL_LABELS_EN: Record<string, string> = {
+  allergy: "ingredient avoidance",
+  general: "general fit",
+  growth: "growth",
+  premium: "premium fit",
+  renal: "renal support",
+  sensitive_digestion: "sensitive digestion",
+  senior: "senior needs",
+  sterilised: "sterilised pet",
+  urinary: "urinary support",
+  value: "value fit",
+  weight_control: "weight control",
+};
+
+function displayFoodName(food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]) {
+  const brand = String(food.brand ?? "").trim();
+  const name = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
+
+  if (!brand) return name;
+  if (!name) return brand;
+  if (name.toLowerCase().startsWith(brand.toLowerCase())) return name;
+
+  return `${brand} - ${name}`;
+}
+
+function formatNumber(value: unknown, digits = 1) {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue)) return null;
+  return Number(numberValue.toFixed(digits));
+}
+
+function nutritionLine(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  locale: ComposerLocale
+) {
+  const kcal = formatNumber(food.nutrition?.kcal_per_100g, 1);
+  const protein = formatNumber(food.nutrition?.protein_percent, 1);
+  const fat = formatNumber(food.nutrition?.fat_percent, 1);
+  const fiber = formatNumber(food.nutrition?.fiber_percent, 1);
+
+  const values = [
+    kcal !== null ? `${kcal} kcal/100g` : "",
+    protein !== null ? `${protein}% ${locale === "el" ? "πρωτεΐνη" : "protein"}` : "",
+    fat !== null ? `${fat}% ${locale === "el" ? "λιπαρά" : "fat"}` : "",
+    fiber !== null ? `${fiber}% ${locale === "el" ? "ίνες" : "fiber"}` : "",
+  ].filter(Boolean);
+
+  return values.length > 0 ? values.join("; ") : null;
+}
+
+function simpleReason(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  locale: ComposerLocale
+) {
+  const reasons = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
+  const cautions = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+
+  if (reasons.includes("preferred protein") || reasons.includes("preferred flavor")) {
+    return locale === "el"
+      ? "ταιριάζει με προτίμηση γεύσης/πρωτεΐνης"
+      : "matches a preferred flavour or protein";
+  }
+
+  if (reasons.includes("excluded ingredients") || reasons.includes("allergens were not detected")) {
+    return locale === "el"
+      ? "σέβεται τις δηλωμένες αποφυγές συστατικών"
+      : "respects the declared ingredient avoidances";
+  }
+
+  if (reasons.includes("weight") || reasons.includes("sterilised") || cautions.includes("fat")) {
+    return locale === "el"
+      ? "έχει λογική για έλεγχο θερμίδων και βάρους"
+      : "fits calorie and weight-control thinking";
+  }
+
+  if (reasons.includes("sensitive") || reasons.includes("digest")) {
+    return locale === "el"
+      ? "έχει λογική για πιο ευαίσθητη πέψη"
+      : "has a sensible sensitive-digestion positioning";
+  }
+
+  if (reasons.includes("senior")) {
+    return locale === "el"
+      ? "είναι πιο κοντά σε senior ανάγκες"
+      : "is closer to senior needs";
+  }
+
+  if (reasons.includes("growth") || reasons.includes("puppy") || reasons.includes("kitten")) {
+    return locale === "el"
+      ? "είναι πιο κοντά στις ανάγκες ανάπτυξης"
+      : "is closer to growth needs";
+  }
+
+  return locale === "el"
+    ? "ταιριάζει στο βασικό προφίλ του κατοικιδίου"
+    : "fits the pet's basic profile";
+}
+
+function foodBullet(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  index: number,
+  locale: ComposerLocale
+) {
+  const name = displayFoodName(food);
+  const score = formatNumber(food.ranking?.total_score, 0);
+  const nutrition = nutritionLine(food, locale);
+  const reason = simpleReason(food, locale);
+
+  if (locale === "el") {
+    return [
+      `${index}. ${name}${score !== null ? ` (${score}/100)` : ""}`,
+      `   Γιατί: ${reason}.`,
+      nutrition ? `   Με μια ματιά: ${nutrition}.` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  return [
+    `${index}. ${name}${score !== null ? ` (${score}/100)` : ""}`,
+    `   Why: ${reason}.`,
+    nutrition ? `   At a glance: ${nutrition}.` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
+  const locale = input.locale ?? "el";
+  const premium = input.recommendation.premium ?? [];
+  const value = input.recommendation.value ?? [];
+  const foods = [...premium.slice(0, 3), ...value.slice(0, 2)].filter((food) =>
+    String(food.display_name ?? "").trim()
+  );
+
+  if (foods.length === 0) return "";
+
+  const goal = String(input.recommendation.goal ?? "general");
+  const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
+  const petName = input.petSummary?.name?.trim();
+
+  if (locale === "el") {
+    return [
+      petName
+        ? `Για ${petName}, θα ξεκινούσα με αυτές τις επιλογές:`
+        : "Θα ξεκινούσα με αυτές τις επιλογές:",
+      "",
+      `Στόχος: ${goalLabel}.`,
+      "",
+      foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
+      "",
+      "Το πιο πρακτικό επόμενο βήμα: πάτησε μία τροφή από τις επιλογές από κάτω για να υπολογίσω περίπου γραμμάρια/ημέρα.",
+      "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
+    ].join("\n");
+  }
+
+  return [
+    petName ? `For ${petName}, I would start with these options:` : "I would start with these options:",
+    "",
+    `Goal: ${goalLabel}.`,
+    "",
+    foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
+    "",
+    "Best next step: tap one food below and I can estimate grams/day.",
+    "For urinary, kidney, diabetes, pancreatitis, severe vomiting, diarrhea, blood, or not eating, speak with a veterinarian first.",
+  ].join("\n");
 }
 
 function removeBackOfficeLines(text: string) {
@@ -128,11 +312,11 @@ export async function composeChatbotRecommendationResponse(
           {
             role: "system",
             content:
-              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, and review status from customers. Keep the answer warm, short, practical, and easy to scan. Mention veterinary advice only for medical risk situations. Return plain text only.",
+              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear shortlist, not a back-office audit. Mention veterinary advice only for medical risk situations. Return plain text only.",
           },
           {
             role: "user",
-            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names.\n- Present first 2-3 strongest options and up to 2 value alternatives.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: choose a food to calculate grams/day.\n- Do not include backend review/source-quality wording.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
+            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- Present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not over-explain the internal score. If you mention a score, keep it secondary.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
           },
         ],
         temperature: 0.2,
