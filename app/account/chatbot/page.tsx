@@ -1814,8 +1814,8 @@ function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "e
 Θερμίδες ηρεμίας (RER): ${nutrition.rer} kcal/ημέρα
 Αυτό είναι περίπου το βασικό ποσό ενέργειας που χρειάζεται το σώμα σε πλήρη ηρεμία.
 
-Ημερήσιος στόχος (MER/DER): ${nutrition.der} kcal/ημέρα
-Αυτός είναι ο πρακτικός στόχος για την ημέρα, αφού λάβουμε υπόψη ηλικία, βάρος, δραστηριότητα, στείρωση και στόχο βάρους.
+Βασικός ημερήσιος στόχος (MER/DER): ${nutrition.der} kcal/ημέρα
+Αυτός είναι ο στόχος πριν την τελική προσαρμογή για απώλεια ή αύξηση βάρους. Λαμβάνει υπόψη βάρος, ηλικία, δραστηριότητα και στείρωση.
 
 Βασικά σημεία:
 ${
@@ -1837,8 +1837,8 @@ ${
 Resting calories (RER): ${nutrition.rer} kcal/day
 This is roughly the basic energy the body needs at complete rest.
 
-Daily target (MER/DER): ${nutrition.der} kcal/day
-This is the practical daily target after weight, age, activity, neuter status, and weight goal are considered.
+Base daily target (MER/DER): ${nutrition.der} kcal/day
+This is the target before the final weight-loss or weight-gain adjustment. It considers weight, age, activity, and neuter status.
 
 Key notes:
 ${
@@ -2620,13 +2620,13 @@ Then I can help decide whether the plan is working or needs adjustment.`
               `Όριο για λιχουδιές:
 Οι λιχουδιές καλό είναι να μένουν περίπου στο 10% των ημερήσιων θερμίδων.
 
-Ημερήσιος στόχος: ${treats.dailyCalories} kcal/ημέρα
+Τελικός ημερήσιος στόχος: ${treats.dailyCalories} kcal/ημέρα
 Μέγιστο από λιχουδιές: περίπου ${treats.maxTreatCalories} kcal/ημέρα
 Θερμίδες από κύρια τροφή: περίπου ${treats.mainFoodCalories} kcal/ημέρα`,
               `Treat allowance:
 Treats should stay around 10% of daily calories.
 
-Daily calorie target: ${treats.dailyCalories} kcal/day
+Final daily calorie target: ${treats.dailyCalories} kcal/day
 Maximum from treats: about ${treats.maxTreatCalories} kcal/day
 Main food calories: about ${treats.mainFoodCalories} kcal/day`
             )
