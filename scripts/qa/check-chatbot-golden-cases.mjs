@@ -148,30 +148,128 @@ const responseTermLexicon = {
   weight: ["weight", "βάρος", "κιλά"],
 };
 
+const supplementalSignalLexicon = {
+  active: ["working", "very active", "more energy", "active", "υψηλη", "υψηλή", "ενεργ"],
+  avoidance: ["does not like", "doesn't like", "dont like", "don't like", "avoid", "δεν τρω", "δεν του αρε", "δεν της αρε", "δεν αρε"],
+  budget: ["budget", "cheap", "value", "econom", "οικονομ", "τιμη", "τιμή"],
+  diabetes: ["diabetes", "diabetic", "διαβητ"],
+  fussy: ["fussy", "picky", "μιζερ", "μίζερ", "δεν τρωει ευκολα", "δεν τρώει εύκολα"],
+  hairball: ["hairball", "τριχομπαλ", "τριχόμπαλ"],
+  homemade: ["homemade", "home cooked", "μαγειρευ", "μαγειρεύ"],
+  hydration: ["water", "νερο", "νερό", "πινει", "πίνει"],
+  joint: ["joint", "mobility", "arthritis", "αρθρω", "αρθρώ"],
+  pancreatitis: ["pancreatitis", "παγκρεατ"],
+  photo: ["photo", "picture", "label", "φωτο", "ετικετ"],
+  premium: ["premium", "quality", "καλυτερ", "καλύτερ", "δεν με νοιαζει", "δεν με νοιάζει"],
+  transition: ["transition", "change food", "switch food", "αλλαξω τροφη", "αλλάξω τροφή", "αλλαγη τροφης", "αλλαγή τροφής"],
+};
+
+const supplementalResponseTermLexicon = {
+  fat: ["fat", "λιπαρ", "λίπος"],
+  fiber: ["fiber", "fibre", "ινα", "ίνα"],
+  growth: ["growth", "puppy", "kitten", "αναπτυξ", "ανάπτυξ"],
+  transition: ["transition", "gradual", "σταδιακ", "αλλαγ"],
+  water: ["water", "hydration", "νερο", "νερό", "ενυδατ"],
+};
+
+const mergedSignalLexicon = {
+  ...signalLexicon,
+  ...Object.fromEntries(
+    Object.entries(supplementalSignalLexicon).map(([key, values]) => [
+      key,
+      [...(signalLexicon[key] ?? []), ...values],
+    ])
+  ),
+  allergy: [...signalLexicon.allergy, "αλλεργ", "κοτοπ"],
+  digestive: [...signalLexicon.digestive, "διάρροια", "διαρροια", "μαλακα", "μαλακά", "στομαχ", "εμετ"],
+  growth: [...signalLexicon.growth, "κουταβ", "γατακ", "γατάκ", "μηνων", "μηνών", "εγκυ"],
+  ingredient_myth: [...signalLexicon.ingredient_myth, "χωρις σιτηρα", "χωρίς σιτηρά"],
+  kidney: [...signalLexicon.kidney, "νεφρ"],
+  large_breed: [...signalLexicon.large_breed, "μεγαλοσωμ", "μεγαλόσωμ", "40 κιλα", "40kg"],
+  low_confidence_match: [...signalLexicon.low_confidence_match, "κατι", "κάτι", "νομιζω", "νομίζω"],
+  needs_context: [...signalLexicon.needs_context, "καλυτερη τροφη", "καλύτερη τροφή"],
+  neutered: [...signalLexicon.neutered, "στειρω"],
+  senior: [...signalLexicon.senior, "ηλικιω", "12 χρον"],
+  urgent: [...signalLexicon.urgent, "δεν κατουρα", "δεν ουρει", "αιμα", "αίμα", "δεν τρωει καθολου", "δεν τρώει καθόλου", "vomiting for two days"],
+  urinary: [...signalLexicon.urinary, "ουρο", "ουρολογ"],
+  weight: [...signalLexicon.weight, "παχυ", "παχύ", "χανει βαρος", "χάνει βάρος"],
+};
+
+const mergedResponseTermLexicon = {
+  ...responseTermLexicon,
+  ...Object.fromEntries(
+    Object.entries(supplementalResponseTermLexicon).map(([key, values]) => [
+      key,
+      [...(responseTermLexicon[key] ?? []), ...values],
+    ])
+  ),
+  calories: [...responseTermLexicon.calories, "θερμ"],
+  candidates: [...responseTermLexicon.candidates, "επιλογ"],
+  ingredient: [...responseTermLexicon.ingredient, "συστα"],
+  portion: [...responseTermLexicon.portion, "μεριδ", "γραμμαρ"],
+  protein: [...responseTermLexicon.protein, "πρωτε"],
+  veterinarian: [...responseTermLexicon.veterinarian, "κτηνιατρ"],
+  veterinary: [...responseTermLexicon.veterinary, "κτηνιατρ"],
+  weight: [...responseTermLexicon.weight, "βαρος", "βάρος", "κιλα"],
+};
+
+mergedSignalLexicon.allergy = ["allergy", "allergic", "αλλεργ"];
+mergedSignalLexicon.avoidance.push("δεν τρώει", "δεν τρωει", "δεν της αρέσει", "δεν του αρέσει");
+mergedSignalLexicon.diabetes.push("διαβήτη", "διαβητη");
+mergedSignalLexicon.digestive.push("vomiting");
+mergedSignalLexicon.growth.push("έγκυος", "εγκυος");
+mergedSignalLexicon.large_breed.push("40 κιλά", "40κιλα");
+mergedSignalLexicon.product_lookup.push("royal", "canin");
+mergedSignalLexicon.weight.push("κιλα", "κιλά");
+
 function includesAny(text, terms = []) {
   const normalized = text.toLowerCase().replaceAll("_", " ");
   return terms.some((term) => normalized.includes(term.toLowerCase()));
 }
 
 function detectPromptSignals(prompt) {
-  return Object.entries(signalLexicon)
+  return Object.entries(mergedSignalLexicon)
     .filter(([, terms]) => includesAny(prompt, terms))
     .map(([signal]) => signal);
 }
 
 function detectSafetyLevel(prompt) {
-  if (includesAny(prompt, signalLexicon.urgent)) return "urgent";
+  if (includesAny(prompt, mergedSignalLexicon.urgent)) return "urgent";
+  if (
+    (includesAny(prompt, mergedSignalLexicon.fussy) ||
+      includesAny(prompt, mergedSignalLexicon.avoidance) ||
+      includesAny(prompt, mergedSignalLexicon.transition)) &&
+    !includesAny(prompt, ["blood", "αιμα", "αίμα", "vomiting", "εμετ", "διάρροια", "diarrhea", "καθολου", "καθόλου"])
+  ) {
+    return "normal";
+  }
+  if (
+    (includesAny(prompt, mergedSignalLexicon.senior) &&
+      includesAny(prompt, ["weight loss", "losing weight", "χανει βαρος", "χάνει βάρος"])) ||
+    includesAny(prompt, ["pregnant", "έγκυος", "εγκυος"])
+  ) {
+    return "caution";
+  }
 
   if (
     includesAny(prompt, [
-      ...signalLexicon.kidney,
-      ...signalLexicon.urinary,
-      ...signalLexicon.digestive,
-      ...signalLexicon.allergy,
-      "pancreatitis",
-      "diabetes",
+      ...mergedSignalLexicon.kidney,
+      ...mergedSignalLexicon.urinary,
+      ...mergedSignalLexicon.digestive,
+      ...mergedSignalLexicon.allergy,
+      ...mergedSignalLexicon.pancreatitis,
+      ...mergedSignalLexicon.diabetes,
+      ...mergedSignalLexicon.homemade,
+      ...mergedSignalLexicon.joint,
       "blood",
       "not eating",
+      "not eat",
+      "vomiting",
+      "εμετ",
+      "αιμα",
+      "αίμα",
+      "δεν τρωει",
+      "δεν τρώει",
       "δεν τρώει",
     ])
   ) {
@@ -184,7 +282,7 @@ function detectSafetyLevel(prompt) {
 function expectedResponseTermsCovered(expectedTerms = []) {
   return expectedTerms.map((term) => ({
     term,
-    covered: Boolean(responseTermLexicon[String(term).toLowerCase()]),
+    covered: Boolean(mergedResponseTermLexicon[String(term).toLowerCase()]),
   }));
 }
 
