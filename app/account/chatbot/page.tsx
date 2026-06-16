@@ -3502,10 +3502,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           goal: pet.weightGoal,
         })
       : null;
+    const treats = adjustedCalories
+      ? calculateTreatsAllowance(adjustedCalories)
+      : null;
+    const mainFoodCalories = treats?.mainFoodCalories ?? adjustedCalories;
 
     const gramsPerDay =
-      adjustedCalories && choice.kcalPer100g && choice.kcalPer100g > 0
-        ? Math.round((adjustedCalories / choice.kcalPer100g) * 100)
+      mainFoodCalories && choice.kcalPer100g && choice.kcalPer100g > 0
+        ? Math.round((mainFoodCalories / choice.kcalPer100g) * 100)
         : null;
 
     setPet((prev) => ({
@@ -3525,8 +3529,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         "bot",
         gramsPerDay
           ? botText(
-              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τον σημερινό στόχο θερμίδων, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΧώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.`,
-              `Great, we will use ${choice.name}.\n\nBased on today's calorie target, the first estimate is about ${gramsPerDay}g/day.\n\nSplit it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.`
+              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τις θερμίδες της κύριας τροφής, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΑυτό αφήνει χώρο για λίγες λιχουδιές μέσα στον ημερήσιο στόχο. Χώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.`,
+              `Great, we will use ${choice.name}.\n\nBased on the main-food calorie allowance, the first estimate is about ${gramsPerDay}g/day.\n\nThis leaves room for a small treat allowance inside the daily target. Split it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.`
             )
           : botText(
               `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια από αυτή τη ροή, αλλά μπορώ να συνεχίσω με γενική καθοδήγηση ή να δοκιμάσουμε άλλη τροφή από τη λίστα.`,
@@ -3895,7 +3899,7 @@ Next actions:
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {recommendedFoodChoices.map((choice) => (
+              {recommendedFoodChoices.map((choice, index) => (
                 <button
                   key={choice.name}
                   type="button"
@@ -3904,13 +3908,15 @@ Next actions:
                 >
                   <span className="flex items-start justify-between gap-3">
                     <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-900">
-                      {choice.role === "value"
+                      {index === 0
+                        ? botText("Πρώτη πρόταση", "Top pick")
+                        : choice.role === "value"
                         ? botText("Value επιλογή", "Value pick")
                         : botText("Καλύτερο fit", "Best fit")}
                     </span>
                     {choice.score != null && (
                       <span className="text-xs font-semibold text-emerald-700">
-                        {Math.round(choice.score)}/100
+                        {botText("Fit", "Fit")} {Math.round(choice.score)}/100
                       </span>
                     )}
                   </span>
@@ -3958,8 +3964,14 @@ Next actions:
                       </span>
                     )}
                   </span>
+                  <span className="mt-2 text-xs text-gray-500">
+                    {botText(
+                      "Πάτησέ τη για να υπολογίσουμε γραμμάρια/ημέρα.",
+                      "Tap to calculate grams per day."
+                    )}
+                  </span>
                   <span className="mt-4 rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white">
-                    {botText("Υπολόγισε γραμμάρια", "Calculate grams")}
+                    {botText("Επιλογή και υπολογισμός", "Choose and calculate")}
                   </span>
                 </button>
               ))}
