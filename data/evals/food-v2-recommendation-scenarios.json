@@ -60,7 +60,41 @@
         "preferredProteins": ["lamb", "salmon"],
         "healthIssues": []
       },
-      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_small_dog_top_pick"]
+      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_excluded_protein_top_picks", "no_small_dog_top_pick"]
+    },
+    {
+      "label": "Small sterilised dog likes chicken avoids lamb and beef",
+      "goal": "sterilised",
+      "pet": {
+        "species": "dog",
+        "breed": "Small mixed breed",
+        "age": 5,
+        "weight": 10,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "excludedIngredients": ["lamb", "beef"],
+        "preferredProteins": ["chicken"],
+        "healthIssues": ["sterilised"]
+      },
+      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick", "no_excluded_protein_top_picks"]
+    },
+    {
+      "label": "Dog likes chicken avoids salmon by taste",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 4,
+        "weight": 14,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "excludedIngredients": ["salmon"],
+        "preferredProteins": ["chicken"],
+        "healthIssues": ["does not like salmon"]
+      },
+      "expectations": ["premium_or_value", "no_excluded_protein_top_picks"]
     },
     {
       "label": "Chicken allergy dog",
@@ -77,7 +111,7 @@
         "healthIssues": ["skin allergy"],
         "preferredProteins": ["lamb", "duck", "salmon"]
       },
-      "expectations": ["premium_or_value", "no_chicken_top_pick"]
+      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_excluded_protein_top_picks"]
     },
     {
       "label": "Large breed puppy",
@@ -187,7 +221,7 @@
         "preferredProteins": ["salmon", "lamb", "duck"],
         "healthIssues": ["does not like chicken"]
       },
-      "expectations": ["premium_or_value", "no_chicken_top_pick"]
+      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_excluded_protein_top_picks"]
     },
     {
       "label": "Senior dog joint support",
@@ -310,6 +344,21 @@
       "expectations": ["premium_or_value", "urinary_top_pick"]
     },
     {
+      "label": "Urinary adult dog",
+      "goal": "urinary",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 6,
+        "weight": 18,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["urinary", "struvite history"]
+      },
+      "expectations": ["premium_or_value", "urinary_top_pick"]
+    },
+    {
       "label": "Real sterilised male cat urinary history",
       "goal": "urinary",
       "pet": {
@@ -337,6 +386,21 @@
         "neutered": true,
         "allergies": [],
         "healthIssues": ["renal", "kidney disease"]
+      },
+      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
+    },
+    {
+      "label": "Renal senior dog",
+      "goal": "renal",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 11,
+        "weight": 20,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["renal", "kidney disease", "senior"]
       },
       "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
     }

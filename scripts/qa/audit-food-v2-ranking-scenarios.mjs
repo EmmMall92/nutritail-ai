@@ -53,6 +53,35 @@ function hasAnyTerm(text, terms) {
   return terms.some((term) => text.includes(term));
 }
 
+const INGREDIENT_ALIASES = {
+  beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
+  chicken: ["chicken", "poultry", "κοτοπου", "κοτόπου", "kotopoulo"],
+  duck: ["duck", "παπια", "πάπια", "papia"],
+  fish: ["fish", "salmon", "tuna", "cod", "sardine", "herring", "trout", "ψαρι", "ψάρι"],
+  lamb: ["lamb", "αρνι", "αρνί", "arni"],
+  pork: ["pork", "χοιρινο", "χοιρινό", "xoirino", "hoirino"],
+  salmon: ["salmon", "σολομος", "σολομός", "solomos"],
+  turkey: ["turkey", "γαλοπουλα", "γαλοπούλα", "poultry"],
+};
+
+function normalizedIngredientTerms(values = []) {
+  const terms = new Set();
+
+  for (const value of values) {
+    const normalized = String(value ?? "").trim().toLowerCase();
+    if (!normalized) continue;
+
+    terms.add(normalized);
+    for (const [key, aliases] of Object.entries(INGREDIENT_ALIASES)) {
+      if (normalized.includes(key) || aliases.some((alias) => normalized.includes(alias))) {
+        aliases.forEach((alias) => terms.add(alias));
+      }
+    }
+  }
+
+  return [...terms];
+}
+
 function checkExpectations(scenario, data) {
   const picks = firstPicks(data);
   const first = picks[0];
@@ -73,6 +102,24 @@ function checkExpectations(scenario, data) {
     if (expectation === "no_chicken_top_pick") {
       if (hasAnyTerm(firstText, ["chicken", "κοτοπου", "poultry"])) {
         warnings.push("Top pick may contain chicken/poultry.");
+      }
+    }
+
+    if (expectation === "no_excluded_protein_top_picks") {
+      const excludedTerms = normalizedIngredientTerms([
+        ...(scenario.pet?.allergies ?? []),
+        ...(scenario.pet?.excludedIngredients ?? []),
+      ]);
+      const conflictingPicks = picks
+        .map((pick, index) => ({ index: index + 1, text: foodText(pick) }))
+        .filter((pick) => hasAnyTerm(pick.text, excludedTerms));
+
+      if (conflictingPicks.length > 0) {
+        warnings.push(
+          `Top picks include declared exclusions: #${conflictingPicks
+            .map((pick) => pick.index)
+            .join(", #")}.`
+        );
       }
     }
 

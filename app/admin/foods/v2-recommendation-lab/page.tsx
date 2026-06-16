@@ -331,6 +331,36 @@ function itemText(item: RecommendationItem | undefined) {
     .toLowerCase();
 }
 
+const INGREDIENT_ALIASES: Record<string, string[]> = {
+  beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
+  chicken: ["chicken", "poultry", "κοτοπου", "κοτόπου", "kotopoulo"],
+  duck: ["duck", "παπια", "πάπια", "papia"],
+  fish: ["fish", "salmon", "tuna", "cod", "sardine", "herring", "trout", "ψαρι", "ψάρι"],
+  lamb: ["lamb", "αρνι", "αρνί", "arni"],
+  pork: ["pork", "χοιρινο", "χοιρινό", "xoirino", "hoirino"],
+  salmon: ["salmon", "σολομος", "σολομός", "solomos"],
+  turkey: ["turkey", "γαλοπουλα", "γαλοπούλα", "poultry"],
+};
+
+function ingredientTerms(values: string[]) {
+  const terms = new Set<string>();
+
+  for (const value of values) {
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) continue;
+
+    terms.add(normalized);
+
+    for (const [key, aliases] of Object.entries(INGREDIENT_ALIASES)) {
+      if (normalized.includes(key) || aliases.some((alias) => normalized.includes(alias))) {
+        aliases.forEach((alias) => terms.add(alias));
+      }
+    }
+  }
+
+  return [...terms];
+}
+
 function qaVerdict(input: {
   result: RecommendationResponse;
   species: "dog" | "cat";
@@ -363,12 +393,21 @@ function qaVerdict(input: {
   const excluded = [...splitText(input.allergies), ...splitText(input.excludedIngredients)]
     .map((term) => term.toLowerCase())
     .filter(Boolean);
+  const excludedIngredientTerms = ingredientTerms(excluded);
 
   if (excluded.some((term) => term.includes("chicken"))) {
     if (allPickText.includes("chicken") || allPickText.includes("poultry")) {
       warnings.push("Chicken/poultry appears in top picks despite allergy or exclusion.");
     } else {
       passes.push("Top picks avoid obvious chicken/poultry terms.");
+    }
+  }
+
+  if (excludedIngredientTerms.length > 0) {
+    if (excludedIngredientTerms.some((term) => allPickText.includes(term))) {
+      warnings.push("Top picks include one of the declared excluded proteins/flavors.");
+    } else {
+      passes.push("Top picks avoid declared excluded proteins/flavors.");
     }
   }
 
