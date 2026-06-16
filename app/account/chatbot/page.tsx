@@ -2197,10 +2197,23 @@ export default function AccountChatbotPage() {
     const delayed = [120, 350, 800].map((delay) =>
       window.setTimeout(() => scrollToBottom("auto"), delay)
     );
+    const container = messagesContainerRef.current;
+    const resizeObserver =
+      container && "ResizeObserver" in window
+        ? new ResizeObserver(() => scrollToBottom("auto"))
+        : null;
+
+    if (container && resizeObserver) {
+      resizeObserver.observe(container);
+      Array.from(container.children).forEach((child) =>
+        resizeObserver.observe(child)
+      );
+    }
 
     return () => {
       window.cancelAnimationFrame(frame);
       delayed.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      resizeObserver?.disconnect();
     };
   }, [messages, showSave, step, isAnalyzing, recommendedFoodChoices.length]);
 
