@@ -42,7 +42,7 @@ function checkCase(testCase: GoldenCase) {
     id: testCase.id,
     status: failures.length === 0 ? "pass" : "fail",
     failures,
-    source: result.canUse ? "fallback" : "none",
+    source: result.acceptedFields.length > 0 ? "fallback" : "none",
   };
 }
 
