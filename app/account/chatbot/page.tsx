@@ -1512,20 +1512,42 @@ function parseSavedWeightGoal(value?: string | null): WeightGoal | undefined {
   return undefined;
 }
 
-function formatLatestAnalysisSummary(savedPet: AccountPet) {
+function savedWeightGoalLabel(value?: string | null, language: ChatLanguage = "en") {
+  const goal = parseSavedWeightGoal(value);
+  if (language !== "el") return getWeightGoalLabel(goal);
+
+  if (goal === "loss") return "απώλεια βάρους";
+  if (goal === "gain") return "αύξηση βάρους";
+  return "διατήρηση βάρους";
+}
+
+function formatLatestAnalysisSummary(
+  savedPet: AccountPet,
+  language: ChatLanguage = "en"
+) {
   const latest = getLatestSavedPetAnalysis(savedPet);
 
-  if (!latest) return "No previous analysis found.";
+  if (!latest) {
+    return language === "el"
+      ? "Δεν βρέθηκε προηγούμενη ανάλυση."
+      : "No previous analysis found.";
+  }
 
   const parts = [
     getHistoryWeightGoal(latest)
-      ? `Goal: ${getWeightGoalLabel(
-          parseSavedWeightGoal(getHistoryWeightGoal(latest))
-        )}`
+      ? language === "el"
+        ? `Στόχος: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`
+        : `Goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`
       : null,
-    getHistoryFoodName(latest) ? `Food: ${getHistoryFoodName(latest)}` : null,
+    getHistoryFoodName(latest)
+      ? language === "el"
+        ? `Τροφή: ${getHistoryFoodName(latest)}`
+        : `Food: ${getHistoryFoodName(latest)}`
+      : null,
     getHistoryFeedingGrams(latest)
-      ? `Feeding: ${getHistoryFeedingGrams(latest)}g/day`
+      ? language === "el"
+        ? `Ποσότητα: ${getHistoryFeedingGrams(latest)}g/ημέρα`
+        : `Feeding: ${getHistoryFeedingGrams(latest)}g/day`
       : null,
     typeof getHistoryFoodScore(latest) === "number"
       ? `Score: ${getHistoryFoodScore(latest)}/100`
@@ -1534,35 +1556,74 @@ function formatLatestAnalysisSummary(savedPet: AccountPet) {
 
   return parts.length
     ? parts.join("\n")
-    : "Previous analysis exists, but it has limited saved details.";
+    : language === "el"
+      ? "Υπάρχει προηγούμενη ανάλυση, αλλά έχει περιορισμένες αποθηκευμένες λεπτομέρειες."
+      : "Previous analysis exists, but it has limited saved details.";
 }
 
-function formatSavedPetProfileSummary(savedPet: AccountPet) {
-  const details = [
-    `Profile: ${savedPet.species}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} years`,
-    `Activity: ${savedPet.activity_level ?? "unknown"}`,
-    `Neutered: ${savedPet.neutered ? "yes" : "no"}`,
-  ];
+function formatSavedPetProfileSummary(
+  savedPet: AccountPet,
+  language: ChatLanguage = "en"
+) {
+  const details =
+    language === "el"
+      ? [
+          `Προφίλ: ${savedPet.species === "dog" ? "σκύλος" : "γάτα"}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} ετών`,
+          `Δραστηριότητα: ${savedPet.activity_level ?? "άγνωστη"}`,
+          `Στειρωμένο: ${savedPet.neutered ? "ναι" : "όχι"}`,
+        ]
+      : [
+          `Profile: ${savedPet.species}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} years`,
+          `Activity: ${savedPet.activity_level ?? "unknown"}`,
+          `Neutered: ${savedPet.neutered ? "yes" : "no"}`,
+        ];
 
   if ((savedPet.health_issues ?? []).length > 0) {
-    details.push(`Health notes: ${(savedPet.health_issues ?? []).join(", ")}`);
+    details.push(
+      language === "el"
+        ? `Σημειώσεις υγείας: ${(savedPet.health_issues ?? []).join(", ")}`
+        : `Health notes: ${(savedPet.health_issues ?? []).join(", ")}`
+    );
   }
 
   if ((savedPet.allergies ?? []).length > 0) {
-    details.push(`Avoid: ${(savedPet.allergies ?? []).join(", ")}`);
+    details.push(
+      language === "el"
+        ? `Αποφυγές: ${(savedPet.allergies ?? []).join(", ")}`
+        : `Avoid: ${(savedPet.allergies ?? []).join(", ")}`
+    );
   }
 
   return details.join("\n");
 }
 
-function formatSavedPetContinuityIntro(savedPet: AccountPet) {
+function formatSavedPetContinuityIntro(
+  savedPet: AccountPet,
+  language: ChatLanguage = "en"
+) {
+  if (language === "el") {
+    return `Βρήκα προηγούμενο διατροφικό ιστορικό για ${savedPet.name}.
+
+Αποθηκευμένο προφίλ:
+${formatSavedPetProfileSummary(savedPet, language)}
+
+Τελευταία ανάλυση:
+${formatLatestAnalysisSummary(savedPet, language)}
+
+Τι θέλεις να κάνουμε τώρα;
+- Έλεγχος προόδου: γράψε τωρινό βάρος, γραμμάρια/ημέρα, λιχουδιές και τι αλλαγές βλέπεις.
+- Δεν είδα αποτέλεσμα: ελέγχουμε θερμίδες, λιχουδιές, συνέπεια και αν ταιριάζει η τροφή.
+- Άλλη τροφή: κρατάω το ίδιο κατοικίδιο και ψάχνω διαφορετικές επιλογές.
+- Ιστορικό: βλέπεις προηγούμενες αναλύσεις και πρόοδο.`;
+  }
+
   return `I found previous nutrition history for ${savedPet.name}.
 
 Saved profile:
-${formatSavedPetProfileSummary(savedPet)}
+${formatSavedPetProfileSummary(savedPet, language)}
 
 Latest saved analysis:
-${formatLatestAnalysisSummary(savedPet)}
+${formatLatestAnalysisSummary(savedPet, language)}
 
 What would you like to do next?
 - Progress check: tell me current weight, grams/day, treats, and visible changes.
@@ -1575,27 +1636,58 @@ function buildFollowUpProgressReply({
   text,
   savedPet,
   mode,
+  language = "en",
 }: {
   text: string;
   savedPet: AccountPet;
   mode: Exclude<FollowUpMode, null>;
+  language?: ChatLanguage;
 }) {
   const currentWeight = parseNumber(text);
   const previousWeight = Number(savedPet.weight);
+  const deltaKg =
+    currentWeight && Number.isFinite(previousWeight)
+      ? Number((currentWeight - previousWeight).toFixed(1))
+      : null;
   const weightLine =
     currentWeight && Number.isFinite(previousWeight)
-      ? currentWeight < previousWeight
-        ? `Current weight looks lower than the saved profile (${previousWeight} kg -> ${currentWeight} kg). That suggests progress, but keep checking body condition and energy.`
-        : currentWeight > previousWeight
-          ? `Current weight looks higher than the saved profile (${previousWeight} kg -> ${currentWeight} kg). We should review portions, treats, and food density.`
-          : `Current weight looks unchanged from the saved profile (${previousWeight} kg). That does not always mean failure, but we should check consistency and timing.`
-      : "I could not read a clear current weight yet. Send weight in kg, daily grams, treats, and any visible changes.";
+      ? language === "el"
+        ? deltaKg !== null && deltaKg < 0
+          ? `Το τωρινό βάρος φαίνεται χαμηλότερο από το αποθηκευμένο (${previousWeight} kg -> ${currentWeight} kg). Αυτό δείχνει πρόοδο, αρκεί να είναι σταδιακή και το ζώο να έχει καλή όρεξη/ενέργεια.`
+          : deltaKg !== null && deltaKg > 0
+            ? `Το τωρινό βάρος φαίνεται υψηλότερο από το αποθηκευμένο (${previousWeight} kg -> ${currentWeight} kg). Θέλει έλεγχο σε γραμμάρια, λιχουδιές και θερμιδική πυκνότητα τροφής.`
+            : `Το βάρος φαίνεται ίδιο με το αποθηκευμένο (${previousWeight} kg). Αυτό δεν σημαίνει απαραίτητα αποτυχία, αλλά πρέπει να δούμε συνέπεια, λιχουδιές και χρόνο εφαρμογής.`
+        : deltaKg !== null && deltaKg < 0
+          ? `Current weight looks lower than the saved profile (${previousWeight} kg -> ${currentWeight} kg). That suggests progress, but keep checking body condition and energy.`
+          : deltaKg !== null && deltaKg > 0
+            ? `Current weight looks higher than the saved profile (${previousWeight} kg -> ${currentWeight} kg). We should review portions, treats, and food density.`
+            : `Current weight looks unchanged from the saved profile (${previousWeight} kg). That does not always mean failure, but we should check consistency and timing.`
+      : language === "el"
+        ? "Δεν διάβασα καθαρά τωρινό βάρος. Γράψε βάρος σε kg, γραμμάρια/ημέρα, λιχουδιές και τι αλλαγές βλέπεις."
+        : "I could not read a clear current weight yet. Send weight in kg, daily grams, treats, and any visible changes.";
 
   const latest = getLatestSavedPetAnalysis(savedPet);
   const grams = getHistoryFeedingGrams(latest);
   const foodName = getHistoryFoodName(latest);
 
   if (mode === "no_result") {
+    if (language === "el") {
+      return `${weightLine}
+
+Αν δεν είδαμε αποτέλεσμα, θα το έλεγχα με αυτή τη σειρά:
+1. Ζυγίζουμε την τροφή με ζυγαριά κουζίνας, όχι με ποτήρι.
+2. Οι λιχουδιές μπαίνουν μέσα στο ημερήσιο όριο.
+3. Όλοι στο σπίτι ταΐζουν το ίδιο πλάνο.
+4. Ζύγισμα μία φορά την εβδομάδα, στην ίδια ζυγαριά.
+5. Αν σε 2-3 εβδομάδες δεν αλλάζει τίποτα, ξανατρέχουμε ανάλυση με τωρινό βάρος και ακριβή τροφή.
+
+Αποθηκευμένο πλαίσιο:
+- Τροφή: ${foodName ?? "δεν έχει επιβεβαιωθεί"}
+- Προηγούμενη ποσότητα: ${grams ? `${grams}g/ημέρα` : "δεν έχει επιβεβαιωθεί"}
+
+Στείλε μου ακριβή γραμμάρια/ημέρα και λιχουδιές/ημέρα για να κρίνω αν θέλει μικρή μείωση, αλλαγή τροφής ή νέα ανάλυση.`;
+    }
+
     return `${weightLine}
 
 For no visible result, I would check this order:
@@ -1610,6 +1702,22 @@ Saved context:
 - Previous feeding amount: ${grams ? `${grams}g/day` : "not confirmed"}
 
 Send the exact daily grams and treats per day and I can help decide whether to adjust the plan or suggest a different food.`;
+  }
+
+  if (language === "el") {
+    return `${weightLine}
+
+Για να κρίνουμε δίκαια την πρόοδο, στείλε μου:
+1. Πόσα γραμμάρια/ημέρα τρώει τώρα
+2. Πόσες λιχουδιές/σνακ παίρνει
+3. Αν η όρεξη είναι φυσιολογική, υπερβολική ή μειωμένη
+4. Πώς είναι κόπρανα και ενέργεια
+
+Αποθηκευμένο πλαίσιο:
+- Τροφή: ${foodName ?? "δεν έχει επιβεβαιωθεί"}
+- Προηγούμενη ποσότητα: ${grams ? `${grams}g/ημέρα` : "δεν έχει επιβεβαιωθεί"}
+
+Αν το θέμα είναι ότι βαρέθηκε γεύση ή εταιρία, πάτησε "Άλλη τροφή" και θα κρατήσω το ίδιο προφίλ.`;
   }
 
   return `${weightLine}
@@ -2115,7 +2223,7 @@ export default function AccountChatbotPage() {
         createMessage("user", `Use ${savedPet.name}`),
         createMessage(
           "bot",
-          formatSavedPetContinuityIntro(savedPet)
+          formatSavedPetContinuityIntro(savedPet, chatLanguage)
         )
       );
 
@@ -2182,12 +2290,20 @@ export default function AccountChatbotPage() {
         ...(echoUser ? [createMessage("user", "Open timeline")] : []),
         createMessage(
           "bot",
-          `You can review ${targetPet.name}'s previous nutrition history here:
+          botText(
+            `Μπορείς να δεις το προηγούμενο διατροφικό ιστορικό του/της ${targetPet.name} εδώ:
+
+- Προφίλ κατοικιδίου: ${siteUrl}/account/pets/${targetPet.id}
+- Εκτυπώσιμο timeline: ${siteUrl}/print/pet-timeline/${targetPet.id}
+
+Μετά γύρνα εδώ και γράψε μου τι άλλαξε: βάρος, όρεξη, κόπρανα, λιχουδιές ή αν δέχτηκε την τροφή.`,
+            `You can review ${targetPet.name}'s previous nutrition history here:
 
 - Pet profile: ${siteUrl}/account/pets/${targetPet.id}
 - Printable timeline: ${siteUrl}/print/pet-timeline/${targetPet.id}
 
 After checking it, come back and tell me what changed: weight, appetite, stool quality, treats, or whether the food was accepted.`
+          )
         )
       );
       return;
@@ -2200,7 +2316,17 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
         ...(echoUser ? [createMessage("user", "Progress check")] : []),
         createMessage(
           "bot",
-          `Let's check ${targetPet.name}'s progress without starting from zero.
+          botText(
+            `Πάμε να ελέγξουμε την πρόοδο του/της ${targetPet.name}, χωρίς να ξεκινήσουμε από την αρχή.
+
+Γράψε μου:
+1. Τωρινό βάρος
+2. Πόσα γραμμάρια/ημέρα τρώει
+3. Λιχουδιές/σνακ ανά ημέρα
+4. Τι αλλαγή βλέπεις σε σώμα, όρεξη, κόπρανα ή ενέργεια
+
+Μετά θα σου πω αν το πλάνο φαίνεται να δουλεύει ή αν θέλει προσαρμογή.`,
+            `Let's check ${targetPet.name}'s progress without starting from zero.
 
 Tell me:
 1. Current weight now
@@ -2209,6 +2335,7 @@ Tell me:
 4. Any visible change in body shape, appetite, stool, or energy
 
 Then I can help decide whether the plan is working or needs adjustment.`
+          )
         )
       );
       return;
@@ -2221,7 +2348,17 @@ Then I can help decide whether the plan is working or needs adjustment.`
         ...(echoUser ? [createMessage("user", "No visible result")] : []),
         createMessage(
           "bot",
-          `If there was no weight-loss progress, I would first check the practical blockers:
+          botText(
+            `Αν δεν είδαμε αποτέλεσμα, πρώτα ελέγχουμε τα πρακτικά σημεία:
+
+- Τα γραμμάρια μετριούνται με ζυγαριά;
+- Οι λιχουδιές μπαίνουν μέσα στις ημερήσιες θερμίδες;
+- Ταΐζει κάποιος άλλος κάτι έξτρα;
+- Το βάρος ελέγχεται στην ίδια ζυγαριά;
+- Άλλαξε τροφή μετά την τελευταία ανάλυση;
+
+Στείλε μου τωρινό βάρος, γραμμάρια/ημέρα, όνομα τροφής και λιχουδιές/ημέρα. Μετά θα σου πω αν θέλει μικρή μείωση, αλλαγή τροφής ή νέα ανάλυση.`,
+            `If there was no weight-loss progress, I would first check the practical blockers:
 
 - Are the grams measured with a scale?
 - Are treats included in the daily calories?
@@ -2230,6 +2367,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
 - Has the food changed since the last analysis?
 
 Send me the current weight, daily grams, food name, and treats per day. I can then suggest whether to reduce portions carefully, change food type, or re-run the full analysis.`
+          )
         )
       );
       return;
@@ -2244,9 +2382,14 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
         ...(echoUser ? [createMessage("user", "Try another food")] : []),
         createMessage(
           "bot",
-          `No problem. If ${targetPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
+          botText(
+            `Κανένα πρόβλημα. Αν ο/η ${targetPet.name} βαρέθηκε γεύση, εταιρία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.
+
+Ποια τροφή τρώει τώρα; Γράψε ακριβή εταιρία και προϊόν αν τα ξέρεις, αλλιώς γράψε "δεν ξέρω".`,
+            `No problem. If ${targetPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
 
 What food is ${targetPet.name} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
+          )
         )
       );
       return;
@@ -2317,7 +2460,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
       setStep("petChoice");
       addMessages(
         createMessage("user", `Use ${targetPet.name}`),
-        createMessage("bot", formatSavedPetContinuityIntro(targetPet))
+        createMessage("bot", formatSavedPetContinuityIntro(targetPet, chatLanguage))
       );
       return;
     }
@@ -2331,7 +2474,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
         `Great. I will use ${targetPet.name}'s saved profile. What food is ${targetPet.name} eating now? If you are not sure, type "I don't know".`
       )
     );
-  }, [isLoadingPets, savedPets]);
+  }, [chatLanguage, isLoadingPets, savedPets]);
 
   function startNewPetAnalysis() {
     setSelectedPetId(null);
@@ -2783,6 +2926,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             text,
             savedPet: followUpPet,
             mode: followUpMode,
+            language: chatLanguage,
           })
         )
       );
@@ -2807,6 +2951,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 text,
                 savedPet: followUpPet,
                 mode: "progress",
+                language: chatLanguage,
               })
             )
           );
@@ -2827,6 +2972,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 text,
                 savedPet: followUpPet,
                 mode: "no_result",
+                language: chatLanguage,
               })
             )
           );
@@ -2851,6 +2997,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               text,
               savedPet: followUpPet,
               mode: "progress",
+              language: chatLanguage,
             })
           )
         );
