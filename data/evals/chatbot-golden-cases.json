@@ -159,6 +159,254 @@
       "expectedSignals": [],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": ["calories", "portion"]
+    },
+    {
+      "id": "sterilised-small-dog-maintenance-el",
+      "locale": "el-GR",
+      "prompt": "Έχω σκυλίτσα 6 κιλά στειρωμένη με χαμηλή δραστηριότητα και θέλω συντήρηση βάρους",
+      "expectedSignals": ["neutered", "weight"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "portion", "treats"]
+    },
+    {
+      "id": "chicken-like-salmon-avoid-el",
+      "locale": "el-GR",
+      "prompt": "Της αρέσει το κοτόπουλο και δεν της αρέσει καθόλου ο σολομός",
+      "expectedSignals": ["chicken", "avoidance"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["ingredient"]
+    },
+    {
+      "id": "budget-good-food-el",
+      "locale": "el-GR",
+      "prompt": "Θέλω μια οικονομική αλλά καλή τροφή για ενήλικο σκύλο",
+      "expectedSignals": ["budget"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["candidates", "calories"]
+    },
+    {
+      "id": "premium-food-request-el",
+      "locale": "el-GR",
+      "prompt": "Θέλω από τις καλύτερες τροφές, δεν με νοιάζει τόσο η τιμή",
+      "expectedSignals": ["premium"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["protein", "calories"]
+    },
+    {
+      "id": "fussy-dog-el",
+      "locale": "el-GR",
+      "prompt": "Ο σκύλος μου είναι μίζερος με την τροφή και δεν τρώει εύκολα",
+      "expectedSignals": ["fussy"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["transition", "ingredient"]
+    },
+    {
+      "id": "food-transition-el",
+      "locale": "el-GR",
+      "prompt": "Πώς να αλλάξω τροφή χωρίς να του πειράξει το στομάχι;",
+      "expectedSignals": ["transition"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["slowly", "portion"]
+    },
+    {
+      "id": "pancreatitis-dog-en",
+      "locale": "en-GB",
+      "prompt": "My dog had pancreatitis and I need a dry food",
+      "expectedSignals": ["pancreatitis"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["fat", "veterinary"]
+    },
+    {
+      "id": "diabetic-dog-el",
+      "locale": "el-GR",
+      "prompt": "Ο σκύλος μου έχει διαβήτη, ποια τροφή να πάρω;",
+      "expectedSignals": ["diabetes"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["veterinary", "calories"]
+    },
+    {
+      "id": "cat-hairball-el",
+      "locale": "el-GR",
+      "prompt": "Η γάτα μου κάνει πολλές τριχόμπαλες, θέλω ξηρά τροφή",
+      "expectedSignals": ["hairball"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["fiber", "ingredient"]
+    },
+    {
+      "id": "kitten-food-el",
+      "locale": "el-GR",
+      "prompt": "Έχω γατάκι 4 μηνών, τι ξηρά τροφή να πάρω;",
+      "expectedSignals": ["growth"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "growth"]
+    },
+    {
+      "id": "sterilised-cat-overweight-en",
+      "locale": "en-GB",
+      "prompt": "Sterilised indoor cat 6 kg is overweight and always hungry",
+      "expectedSignals": ["neutered", "weight"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "treats", "portion"]
+    },
+    {
+      "id": "cat-not-eating-red-flag-el",
+      "locale": "el-GR",
+      "prompt": "Η γάτα μου δεν τρώει καθόλου από χθες",
+      "expectedSignals": ["urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["veterinarian", "urgent"]
+    },
+    {
+      "id": "bloody-diarrhea-el",
+      "locale": "el-GR",
+      "prompt": "Έχει διάρροια με αίμα, να αλλάξω τροφή;",
+      "expectedSignals": ["digestive", "urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["veterinarian", "urgent"]
+    },
+    {
+      "id": "vomiting-persistent-en",
+      "locale": "en-GB",
+      "prompt": "My dog has been vomiting for two days, should I change food?",
+      "expectedSignals": ["digestive", "urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["veterinarian", "urgent"]
+    },
+    {
+      "id": "senior-dog-weight-loss-el",
+      "locale": "el-GR",
+      "prompt": "Ο σκύλος μου είναι 12 χρονών και χάνει βάρος",
+      "expectedSignals": ["senior", "weight"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["senior", "veterinary", "weight"]
+    },
+    {
+      "id": "active-working-dog-en",
+      "locale": "en-GB",
+      "prompt": "Working dog, very active, needs more energy",
+      "expectedSignals": ["active"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "protein"]
+    },
+    {
+      "id": "large-dog-small-breed-risk-el",
+      "locale": "el-GR",
+      "prompt": "Έχω σκύλο 40 κιλά, μην μου βγάλεις τροφή για μικρόσωμα",
+      "expectedSignals": ["large_breed"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["weight", "candidates"]
+    },
+    {
+      "id": "photo-label-extraction-el",
+      "locale": "el-GR",
+      "prompt": "Μπορώ να σου στείλω φωτογραφία από την ετικέτα της τροφής;",
+      "expectedSignals": ["photo"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["ingredient", "calories"]
+    },
+    {
+      "id": "current-food-match-uncertain-el",
+      "locale": "el-GR",
+      "prompt": "Τρώει royal mini κάτι αλλά δεν ξέρω ακριβώς ποια",
+      "expectedSignals": ["product_lookup", "low_confidence_match"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["candidates", "exact brand"]
+    },
+    {
+      "id": "royal-vs-acana-with-pet-context-el",
+      "locale": "el-GR",
+      "prompt": "Για σκύλο 6 κιλά στειρωμένο, Royal Canin ή Acana;",
+      "expectedSignals": ["compare", "product_lookup", "neutered"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["compare", "calories"]
+    },
+    {
+      "id": "farmina-vs-josera-budget-en",
+      "locale": "en-GB",
+      "prompt": "Compare Farmina and Josera for a budget adult dog",
+      "expectedSignals": ["compare", "product_lookup", "budget"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["compare", "calories"]
+    },
+    {
+      "id": "renal-cat-el",
+      "locale": "el-GR",
+      "prompt": "Η γάτα μου έχει νεφρικό θέμα και θέλω τροφή",
+      "expectedSignals": ["kidney"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["phosphorus", "veterinary"]
+    },
+    {
+      "id": "urinary-cat-prevention-el",
+      "locale": "el-GR",
+      "prompt": "Θέλω τροφή για γάτα με τάση για ουρολογικό",
+      "expectedSignals": ["urinary"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["minerals", "veterinarian"]
+    },
+    {
+      "id": "allergy-elimination-trial-en",
+      "locale": "en-GB",
+      "prompt": "I think my dog has food allergy, should I try salmon?",
+      "expectedSignals": ["allergy"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["ingredient", "veterinarian"]
+    },
+    {
+      "id": "avoid-beef-lamb-el",
+      "locale": "el-GR",
+      "prompt": "Δεν τρώει μοσχάρι και αρνί, αλλά του αρέσει πάπια",
+      "expectedSignals": ["avoidance"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["ingredient"]
+    },
+    {
+      "id": "sensitive-stool-puppy-el",
+      "locale": "el-GR",
+      "prompt": "Το κουτάβι μου έχει μαλακά κακά με την τροφή",
+      "expectedSignals": ["growth", "digestive"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["slowly", "veterinarian"]
+    },
+    {
+      "id": "how-much-water-cat-el",
+      "locale": "el-GR",
+      "prompt": "Πόσο νερό πρέπει να πίνει η γάτα μου με ξηρά τροφή;",
+      "expectedSignals": ["hydration"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["water"]
+    },
+    {
+      "id": "treats-and-weight-loss-en",
+      "locale": "en-GB",
+      "prompt": "Dog needs weight loss but gets biscuits every day",
+      "expectedSignals": ["weight"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["treats", "calories", "portion"]
+    },
+    {
+      "id": "supplements-joint-senior-el",
+      "locale": "el-GR",
+      "prompt": "Senior σκύλος με αρθρώσεις, να πάρω τροφή με συμπληρώματα;",
+      "expectedSignals": ["senior", "joint"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["senior", "veterinary"]
+    },
+    {
+      "id": "homemade-diet-el",
+      "locale": "el-GR",
+      "prompt": "Θέλω να του μαγειρεύω μόνος μου αντί για ξηρά τροφή",
+      "expectedSignals": ["homemade"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["veterinary"]
+    },
+    {
+      "id": "pregnant-cat-el",
+      "locale": "el-GR",
+      "prompt": "Η γάτα μου είναι έγκυος, τι τροφή χρειάζεται;",
+      "expectedSignals": ["growth"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["calories", "veterinary"]
     }
   ]
 }
