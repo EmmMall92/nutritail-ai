@@ -179,23 +179,40 @@ type IntakeExtractionApiResponse = {
 const starterCards = [
   {
     title: "Find the right food",
+    titleEl: "Βρες κατάλληλη τροφή",
     helper: "Best first step for allergies, weight control, sterilised pets, or sensitive digestion.",
+    helperEl:
+      "Ιδανικό πρώτο βήμα για αλλεργίες, βάρος, στείρωση ή ευαίσθητη πέψη.",
     prompt: "I want a food recommendation for my pet.",
+    promptEl: "Θέλω πρόταση τροφής για το κατοικίδιό μου.",
   },
   {
     title: "Compare formulas",
+    titleEl: "Σύγκριση τροφών",
     helper: "Useful when you are choosing between two brands or two specific foods.",
+    helperEl:
+      "Χρήσιμο όταν διαλέγεις ανάμεσα σε δύο εταιρίες ή δύο συγκεκριμένες τροφές.",
     prompt: "Compare Royal Canin and Acana for my pet.",
+    promptEl: "Σύγκρινε Royal Canin και Acana για το κατοικίδιό μου.",
   },
   {
     title: "Daily grams",
+    titleEl: "Γραμμάρια την ημέρα",
     helper: "Estimate calories, portions, and treat allowance from the pet profile.",
+    helperEl:
+      "Υπολογισμός θερμίδων, μερίδας και ορίου για λιχουδιές.",
     prompt: "How many grams should I feed per day?",
+    promptEl: "Πόσα γραμμάρια να δίνω την ημέρα;",
   },
   {
     title: "Health caution",
+    titleEl: "Θέμα υγείας",
     helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the bot stays careful.",
+    helperEl:
+      "Για ουρολογικό, νεφρικό, παγκρεατίτιδα, εμετό, διάρροια ή ανορεξία, το bot απαντά προσεκτικά.",
     prompt: "My pet has a health concern and I need safe food guidance.",
+    promptEl:
+      "Το κατοικίδιό μου έχει θέμα υγείας και θέλω ασφαλή διατροφική καθοδήγηση.",
   },
 ];
 
@@ -3701,14 +3718,16 @@ Next actions:
                 <button
                   key={card.title}
                   type="button"
-                  onClick={() => setInput(card.prompt)}
+                  onClick={() =>
+                    setInput(chatLanguage === "el" ? card.promptEl : card.prompt)
+                  }
                   className="rounded-xl border border-emerald-200 bg-white p-4 text-left transition hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
                 >
                   <span className="block font-semibold text-black">
-                    {card.title}
+                    {chatLanguage === "el" ? card.titleEl : card.title}
                   </span>
                   <span className="mt-1 block text-sm text-gray-600">
-                    {card.helper}
+                    {chatLanguage === "el" ? card.helperEl : card.helper}
                   </span>
                 </button>
               ))}
