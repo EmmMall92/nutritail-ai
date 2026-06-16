@@ -26,6 +26,7 @@ import {
 import {
   formatFoodV2ChatbotRecommendationSummary,
   goalFromPetContext,
+  type FoodV2ChatbotRecommendationItem,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
 import { formatPetDisplayName } from "@/lib/petName";
@@ -81,7 +82,13 @@ type PetIntake = {
 
 type RecommendedFoodChoice = {
   name: string;
+  role?: "best" | "value";
+  score?: number | null;
+  reason?: string;
   kcalPer100g?: number | null;
+  proteinPercent?: number | null;
+  fatPercent?: number | null;
+  fiberPercent?: number | null;
 };
 
 type AccountPetAnalysisHistoryItem = {
@@ -237,6 +244,61 @@ const KNOWN_FOOD_BRANDS = [
   "brit",
   "happy dog",
 ];
+
+function formatRecommendationChoiceName(food: FoodV2ChatbotRecommendationItem) {
+  const brand = String(food.brand ?? "").trim();
+  const displayName = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
+
+  if (!brand) return displayName;
+  if (displayName.toLowerCase().startsWith(brand.toLowerCase())) return displayName;
+
+  return [brand, displayName].filter(Boolean).join(" - ");
+}
+
+function formatRecommendationChoiceReason(
+  food: FoodV2ChatbotRecommendationItem,
+  role: RecommendedFoodChoice["role"],
+  language: ChatLanguage
+) {
+  if (language === "el") {
+    return role === "value"
+      ? "Πιο απλή επιλογή με καλά διαθέσιμα στοιχεία."
+      : "Δυνατή επιλογή με βάση το προφίλ του κατοικιδίου.";
+  }
+
+  const reason = food.ranking?.reasons?.find(Boolean);
+  if (reason) return reason.replace(/\.$/, ".");
+
+  return role === "value"
+    ? "A simpler option with useful available data."
+    : "A strong fit based on this pet profile.";
+}
+
+function toRecommendationChoice(
+  food: FoodV2ChatbotRecommendationItem,
+  role: RecommendedFoodChoice["role"],
+  language: ChatLanguage
+): RecommendedFoodChoice | null {
+  const name = formatRecommendationChoiceName(food);
+  if (!name) return null;
+
+  return {
+    name,
+    role,
+    score: food.ranking?.total_score ?? null,
+    reason: formatRecommendationChoiceReason(food, role, language),
+    kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
+    proteinPercent: food.nutrition?.protein_percent ?? null,
+    fatPercent: food.nutrition?.fat_percent ?? null,
+    fiberPercent: food.nutrition?.fiber_percent ?? null,
+  };
+}
+
+function formatChoiceNumber(value: number | null | undefined, digits = 1) {
+  if (value == null || !Number.isFinite(value)) return null;
+
+  return Number(value).toFixed(digits).replace(/\.0$/, "");
+}
 
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
@@ -1114,12 +1176,15 @@ async function getFoodV2RecommendationMessage(
   }
 
   options.onChoices?.(
-    [...(result.premium ?? []), ...(result.value ?? [])]
-      .map((food) => ({
-        name: String(food.display_name ?? "").trim(),
-        kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
-      }))
-      .filter((food) => food.name)
+    [
+      ...(result.premium ?? []).map((food) =>
+        toRecommendationChoice(food, "best", options.language ?? "el")
+      ),
+      ...(result.value ?? []).map((food) =>
+        toRecommendationChoice(food, "value", options.language ?? "el")
+      ),
+    ]
+      .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
       .slice(0, 5)
   );
 
@@ -3491,7 +3556,7 @@ Next actions:
         ))}
 
         {showSave && recommendedFoodChoices.length > 0 && (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
               {botText("Διάλεξε τροφή για να συνεχίσουμε", "Choose a food to continue")}
             </p>
@@ -3501,15 +3566,62 @@ Next actions:
                 "Tap one option to estimate daily grams and keep it in this analysis."
               )}
             </p>
-            <div className="mt-3 grid grid-cols-1 gap-2">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {recommendedFoodChoices.map((choice) => (
                 <button
                   key={choice.name}
                   type="button"
                   onClick={() => chooseRecommendedFood(choice)}
-                  className="rounded-xl border border-emerald-200 bg-white p-3 text-left text-sm font-medium text-emerald-950 transition hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  className="flex h-full flex-col rounded-xl border border-emerald-200 bg-white p-4 text-left text-sm text-emerald-950 transition hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-600"
                 >
-                  {choice.name}
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-900">
+                      {choice.role === "value"
+                        ? botText("Value επιλογή", "Value pick")
+                        : botText("Καλύτερο fit", "Best fit")}
+                    </span>
+                    {choice.score != null && (
+                      <span className="text-xs font-semibold text-emerald-700">
+                        {Math.round(choice.score)}/100
+                      </span>
+                    )}
+                  </span>
+                  <span className="mt-3 text-base font-semibold leading-5 text-black">
+                    {choice.name}
+                  </span>
+                  {choice.reason && (
+                    <span className="mt-2 text-sm leading-5 text-gray-700">
+                      {choice.reason}
+                    </span>
+                  )}
+                  <span className="mt-3 flex flex-wrap gap-1.5 text-xs text-gray-700">
+                    {formatChoiceNumber(choice.kcalPer100g) && (
+                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                        {formatChoiceNumber(choice.kcalPer100g)} kcal/100g
+                      </span>
+                    )}
+                    {formatChoiceNumber(choice.proteinPercent) && (
+                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                        {formatChoiceNumber(choice.proteinPercent)}%{" "}
+                        {botText("πρωτεΐνη", "protein")}
+                      </span>
+                    )}
+                    {formatChoiceNumber(choice.fatPercent) && (
+                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                        {formatChoiceNumber(choice.fatPercent)}%{" "}
+                        {botText("λιπαρά", "fat")}
+                      </span>
+                    )}
+                    {formatChoiceNumber(choice.fiberPercent) && (
+                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                        {formatChoiceNumber(choice.fiberPercent)}%{" "}
+                        {botText("ίνες", "fiber")}
+                      </span>
+                    )}
+                  </span>
+                  <span className="mt-4 rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white">
+                    {botText("Υπολόγισε γραμμάρια", "Calculate grams")}
+                  </span>
                 </button>
               ))}
             </div>
