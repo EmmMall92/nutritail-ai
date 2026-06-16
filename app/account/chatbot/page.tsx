@@ -1037,7 +1037,11 @@ function parseCompareQueries(text: string) {
     .replace(/\bfor my pet\b/gi, "")
     .replace(/\bfor this pet\b/gi, "")
     .replace(/\bfor the pet\b/gi, "")
+    .replace(/\bfor my dog\b/gi, "")
+    .replace(/\bfor my cat\b/gi, "")
     .replace(/σύγκρινε|συγκρινε|σύγκριση|συγκριση/gi, "")
+    .replace(/\s+(?:με|και|ή|η)\s+/giu, " vs ")
+    .replace(/\s+για\s+(?:τον|την|τη|το)\s+(?:σκύλο|σκυλο|γάτα|γατα|κατοικίδιο|κατοικιδιο)\s+μου\b/giu, "")
     .split(/\s+vs\s+|\s+and\s+|\s+or\s+|[,;\n]+/i)
     .map((item) => item.trim())
     .filter((item) => item.length >= 3)
@@ -1083,9 +1087,37 @@ function getStandaloneNutritionReply(text: string) {
   return null;
 }
 
-function formatNutritionValue(value: number | null | undefined, suffix: string) {
-  if (value === null || value === undefined) return "missing";
+function formatCustomerNutritionValue(
+  value: number | null | undefined,
+  suffix: string,
+  language: ChatLanguage
+) {
+  if (value === null || value === undefined) {
+    return language === "el" ? "δεν υπάρχει στοιχείο" : "not available";
+  }
+
   return `${value}${suffix}`;
+}
+
+function compactCompareName(item: FoodComparisonItem, language: ChatLanguage) {
+  if (!item.match) return item.query;
+
+  return [item.match.brand, item.match.name]
+    .filter(Boolean)
+    .join(" - ")
+    .trim() || (language === "el" ? "Άγνωστη τροφή" : "Unknown food");
+}
+
+function finalDailyCaloriesForAnalysis(
+  analysis: PetAnalysis | null,
+  goal?: WeightGoal
+) {
+  if (!analysis) return null;
+
+  return adjustCaloriesForWeightGoal({
+    calories: analysis.nutrition.der,
+    goal,
+  });
 }
 
 function formatFoodComparison(
@@ -1102,11 +1134,9 @@ function formatFoodComparison(
   }
 
   const missedMatches = comparisons.filter((item) => !item.match);
+  const matchedItems = comparisons.filter((item) => item.match);
   const partialMatches = comparisons.filter(
-    (item) =>
-      item.match &&
-      ((item.missing_nutrition_fields ?? []).length > 0 ||
-        item.data_confidence === "low")
+    (item) => item.match && (item.missing_nutrition_fields ?? []).length > 0
   );
 
   const rows = comparisons.map((item, index) => {
@@ -1119,27 +1149,20 @@ Next step: send the exact brand and formula from the bag, or try a shorter query
     }
 
     const nutrition = item.nutrition ?? {};
-    const missing = item.missing_nutrition_fields ?? [];
     const cautions = item.cautions ?? [];
-
-    const title = `${index + 1}. ${
-      item.match.brand ?? (greek ? "Άγνωστη εταιρεία" : "Unknown brand")
-    } - ${item.match.name ?? item.query}`;
+    const title = `${index + 1}. ${compactCompareName(item, language)}`;
 
     if (greek) {
       return `${title}
-Match: ${item.match_score ?? 0}; σιγουριά δεδομένων: ${
-        item.data_confidence ?? "χαμηλή"
-      }
-Kcal/100g: ${formatNutritionValue(nutrition.kcal_per_100g, "")}
-Πρωτεΐνη: ${formatNutritionValue(nutrition.protein_percent, "%")}
-Λιπαρά: ${formatNutritionValue(nutrition.fat_percent, "%")}
-Ίνες: ${formatNutritionValue(nutrition.fiber_percent, "%")}
-Ασβέστιο/Φώσφορος: ${formatNutritionValue(
+Θερμίδες: ${formatCustomerNutritionValue(nutrition.kcal_per_100g, " kcal/100g", language)}
+Πρωτεΐνη: ${formatCustomerNutritionValue(nutrition.protein_percent, "%", language)}
+Λιπαρά: ${formatCustomerNutritionValue(nutrition.fat_percent, "%", language)}
+Ίνες: ${formatCustomerNutritionValue(nutrition.fiber_percent, "%", language)}
+Ασβέστιο/Φώσφορος: ${formatCustomerNutritionValue(
         nutrition.calcium_percent,
-        "%"
-      )} / ${formatNutritionValue(nutrition.phosphorus_percent, "%")}
-Λείπουν στοιχεία: ${missing.length > 0 ? missing.join(", ") : "κανένα"}${
+        "%",
+        language
+      )} / ${formatCustomerNutritionValue(nutrition.phosphorus_percent, "%", language)}${
         cautions.length > 0
           ? `\nΠροσοχή:\n${cautions.map((item) => `- ${item}`).join("\n")}`
           : ""
@@ -1147,18 +1170,15 @@ Kcal/100g: ${formatNutritionValue(nutrition.kcal_per_100g, "")}
     }
 
     return `${title}
-Match score: ${item.match_score ?? 0}; data confidence: ${
-      item.data_confidence ?? "low"
-    }
-Kcal/100g: ${formatNutritionValue(nutrition.kcal_per_100g, "")}
-Protein: ${formatNutritionValue(nutrition.protein_percent, "%")}
-Fat: ${formatNutritionValue(nutrition.fat_percent, "%")}
-Fiber: ${formatNutritionValue(nutrition.fiber_percent, "%")}
-Calcium/Phosphorus: ${formatNutritionValue(
+Calories: ${formatCustomerNutritionValue(nutrition.kcal_per_100g, " kcal/100g", language)}
+Protein: ${formatCustomerNutritionValue(nutrition.protein_percent, "%", language)}
+Fat: ${formatCustomerNutritionValue(nutrition.fat_percent, "%", language)}
+Fiber: ${formatCustomerNutritionValue(nutrition.fiber_percent, "%", language)}
+Calcium/Phosphorus: ${formatCustomerNutritionValue(
       nutrition.calcium_percent,
-      "%"
-    )} / ${formatNutritionValue(nutrition.phosphorus_percent, "%")}
-Missing fields: ${missing.length > 0 ? missing.join(", ") : "none"}${
+      "%",
+      language
+    )} / ${formatCustomerNutritionValue(nutrition.phosphorus_percent, "%", language)}${
       cautions.length > 0
         ? `\nCautions:\n${cautions.map((item) => `- ${item}`).join("\n")}`
         : ""
@@ -1190,24 +1210,24 @@ Quick read:
 
 Τι σημαίνει αυτό:
 - ${missedMatches.length} επιλογή/ές χρειάζονται πιο ακριβές όνομα προϊόντος για σίγουρη σύγκριση.
-- ${partialMatches.length} matched επιλογή/ές έχουν ελλιπή θρεπτικά δεδομένα, άρα η σύγκριση είναι κατευθυντική.
+- ${partialMatches.length} επιλογή/ές έχουν κάποια κενά θρεπτικών στοιχείων, άρα η σύγκριση είναι κατευθυντική.
 - Για υγεία, απώλεια βάρους, κουτάβια, νεφρικό ή ουρολογικό θέμα, επιβεβαίωσε τα στοιχεία της ετικέτας πριν επιλέξεις.`
         : `
 
 What this means:
 - ${missedMatches.length} item(s) need a more exact product name before I can compare them confidently.
-- ${partialMatches.length} matched item(s) have missing nutrition fields, so use the comparison as directional rather than final.
+- ${partialMatches.length} item(s) have some nutrition gaps, so use the comparison as directional rather than final.
 - For health issues, weight loss, puppies, kidney, or urinary concerns, confirm the label data before choosing.`
       : greek
         ? `
 
 Τι σημαίνει αυτό:
-- Τα προϊόντα ταιριάζουν αρκετά καλά με τη βάση για δομημένη σύγκριση.
+- Βρήκα ${matchedItems.length} προϊόντα αρκετά καθαρά για δομημένη σύγκριση.
 - Πριν διαλέξεις, μετράνε πάντα ηλικία, βάρος, στόχος, στείρωση και θέματα υγείας.`
         : `
 
 What this means:
-- These products matched the database well enough for a structured comparison.
+- I found ${matchedItems.length} products clearly enough for a structured comparison.
 - Still use pet context before choosing: age, weight goal, neuter status, and health issues matter.`;
 
   return `${greek ? "Σύγκριση τροφών" : "Food comparison"}:
@@ -3995,6 +4015,12 @@ Next actions:
                 <p className="font-semibold text-black">
                   {botText("Σύνοψη ανάλυσης", "Analysis summary")}
                 </p>
+                <p className="mt-1 text-sm text-gray-600">
+                  {botText(
+                    "Έλεγξε γρήγορα τα βασικά πριν το αποθηκεύσεις στον λογαριασμό σου.",
+                    "Quickly review the essentials before saving this to your account."
+                  )}
+                </p>
                 <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                   <div className="rounded-lg bg-gray-50 p-3">
                     <p className="text-gray-500">{botText("Κατοικίδιο", "Pet")}</p>
@@ -4009,11 +4035,18 @@ Next actions:
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
                     <p className="text-gray-500">
-                      {botText("Ημερήσιες θερμίδες", "Daily calories")}
+                      {botText("Τελικός στόχος θερμίδων", "Final calorie target")}
                     </p>
                     <p className="font-semibold text-black">
-                      {latestAnalysis.nutrition.der}{" "}
+                      {finalDailyCaloriesForAnalysis(latestAnalysis, pet.weightGoal) ??
+                        latestAnalysis.nutrition.der}{" "}
                       {botText("kcal/ημέρα", "kcal/day")}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {botText(
+                        "Περιλαμβάνει την προσαρμογή για τον στόχο βάρους.",
+                        "Includes the adjustment for the weight goal."
+                      )}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
@@ -4038,6 +4071,25 @@ Next actions:
                     <p className="font-semibold text-black">
                       {analysisMetadata?.matchedFoodName ??
                         botText("Δεν επιλέχθηκε ακόμη τροφή", "No matched food")}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="text-gray-500">
+                      {botText("Πρώτη μερίδα", "First portion")}
+                    </p>
+                    <p className="font-semibold text-black">
+                      {analysisMetadata?.feedingGramsPerDay
+                        ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
+                        : botText(
+                            "Διάλεξε τροφή για γραμμάρια",
+                            "Choose a food for grams"
+                          )}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {botText(
+                        "Η εκτίμηση αφήνει χώρο για μικρή ποσότητα λιχουδιών.",
+                        "The estimate leaves room for a small treat allowance."
+                      )}
                     </p>
                   </div>
                 </div>

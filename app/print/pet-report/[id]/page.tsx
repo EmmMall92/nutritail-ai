@@ -180,6 +180,15 @@ function getFoodMatchDetail(analysis?: AnalysisHistoryItem | null) {
   return "No exact food was saved, so the report stays general.";
 }
 
+function getMealSplit(gramsPerDay?: number | null) {
+  if (!gramsPerDay || !Number.isFinite(gramsPerDay)) return null;
+
+  return {
+    twoMeals: Math.round(gramsPerDay / 2),
+    threeMeals: Math.round(gramsPerDay / 3),
+  };
+}
+
 function ReportCard({
   label,
   value,
@@ -264,6 +273,7 @@ export default function PrintablePetReportPage() {
   }, [pet]);
 
   const calorieExplanation = getCalorieExplanation(latestAnalysis);
+  const mealSplit = getMealSplit(latestAnalysis?.feeding_grams_per_day);
 
   if (isLoading) {
     return (
@@ -498,6 +508,42 @@ export default function PrintablePetReportPage() {
                     </p>
                   </div>
                 )}
+
+                {latestAnalysis.matched_food_name &&
+                  latestAnalysis.feeding_grams_per_day && (
+                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm">
+                      <p className="font-semibold text-emerald-950">
+                        Feeding plan
+                      </p>
+                      <p className="mt-2 text-2xl font-bold text-emerald-950">
+                        {latestAnalysis.feeding_grams_per_day}g/day
+                      </p>
+                      <p className="mt-1 text-xs text-emerald-900">
+                        Start here, monitor weight and stool, then adjust with
+                        a progress check instead of changing portions blindly.
+                      </p>
+                      {mealSplit && (
+                        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          <div className="rounded-lg bg-white p-3">
+                            <p className="text-xs uppercase text-emerald-700">
+                              2 meals
+                            </p>
+                            <p className="font-semibold text-emerald-950">
+                              {mealSplit.twoMeals}g per meal
+                            </p>
+                          </div>
+                          <div className="rounded-lg bg-white p-3">
+                            <p className="text-xs uppercase text-emerald-700">
+                              3 meals
+                            </p>
+                            <p className="font-semibold text-emerald-950">
+                              {mealSplit.threeMeals}g per meal
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
                   <p className="text-gray-500">How to use this report</p>
