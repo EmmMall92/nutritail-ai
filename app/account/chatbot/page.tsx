@@ -1873,24 +1873,30 @@ export default function AccountChatbotPage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
       const container = messagesContainerRef.current;
       if (container) {
         container.scrollTo({
           top: container.scrollHeight,
-          behavior: "smooth",
+          behavior,
         });
         return;
       }
 
       messagesEndRef.current?.scrollIntoView({
-        behavior: "smooth",
+        behavior,
         block: "end",
       });
-    });
+    };
 
-    return () => window.cancelAnimationFrame(frame);
-  }, [messages, showSave, step]);
+    const frame = window.requestAnimationFrame(() => scrollToBottom());
+    const delayed = window.setTimeout(() => scrollToBottom("auto"), 120);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(delayed);
+    };
+  }, [messages, showSave, step, isAnalyzing, recommendedFoodChoices.length]);
 
   useEffect(() => {
     async function loadSavedPets() {
@@ -3303,7 +3309,7 @@ Next actions:
 
       <div
         ref={messagesContainerRef}
-        className="flex flex-1 scroll-pb-44 flex-col gap-4 overflow-y-auto overscroll-contain p-3 sm:p-5"
+        className="flex flex-1 scroll-pb-56 flex-col gap-4 overflow-y-auto overscroll-contain p-3 pb-28 sm:p-5 sm:pb-32"
       >
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
