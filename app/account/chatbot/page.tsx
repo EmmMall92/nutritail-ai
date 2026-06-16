@@ -3718,14 +3718,21 @@ Next actions:
 
         {step === "petChoice" && (
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-            <p className="font-semibold text-black">Choose a pet</p>
+            <p className="font-semibold text-black">
+              {botText("Διάλεξε κατοικίδιο", "Choose a pet")}
+            </p>
             <p className="mt-1 text-sm text-gray-600">
-              Run a fresh analysis using a saved profile, or start a new pet.
+              {botText(
+                "Κάνε νέα ανάλυση με αποθηκευμένο προφίλ ή ξεκίνα με νέο κατοικίδιο.",
+                "Run a fresh analysis using a saved profile, or start a new pet."
+              )}
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {isLoadingPets ? (
-                <p className="text-sm text-gray-600">Loading saved pets...</p>
+                <p className="text-sm text-gray-600">
+                  {botText("Φορτώνω τα αποθηκευμένα κατοικίδια...", "Loading saved pets...")}
+                </p>
               ) : (
                 savedPets.map((savedPet) => (
                   <button
@@ -3738,8 +3745,8 @@ Next actions:
                       {savedPet.name}
                     </span>
                     <span className="mt-1 block text-sm text-gray-600">
-                      {savedPet.species} - {savedPet.weight} kg - age{" "}
-                      {savedPet.age}
+                      {savedPet.species} - {savedPet.weight} kg -{" "}
+                      {botText("ηλικία", "age")} {savedPet.age}
                     </span>
                   </button>
                 ))
@@ -3752,10 +3759,13 @@ Next actions:
                   className="min-h-[92px] rounded-xl border border-black bg-white p-4 text-left transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black"
                 >
                   <span className="block font-semibold text-black">
-                    Start with a new pet
+                    {botText("Νέο κατοικίδιο", "Start with a new pet")}
                   </span>
                   <span className="mt-1 block text-sm text-gray-600">
-                    Answer the full intake flow from scratch.
+                    {botText(
+                      "Απάντησε τη ροή από την αρχή για νέο προφίλ.",
+                      "Answer the full intake flow from scratch."
+                    )}
                   </span>
                 </button>
               )}
