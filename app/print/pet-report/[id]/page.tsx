@@ -76,16 +76,16 @@ function getReportConfidence(score?: number | null) {
 
 function getReportNextSteps(analysis?: AnalysisHistoryItem | null) {
   const steps = [
-    "Use the daily calorie target as the starting point and monitor body condition.",
-    "Make food changes gradually over several days unless your veterinarian says otherwise.",
+    "Use the daily calorie target as the starting point, then adjust only after tracking weight and body shape.",
+    "Make food changes gradually over 7 days unless your veterinarian gives different instructions.",
   ];
 
   if (!analysis?.matched_food_name) {
-    steps.push("Add the exact food name or label photo before relying on formula-specific advice.");
+    steps.push("Add the exact food name or a label photo before relying on formula-specific feeding advice.");
   }
 
   if (!analysis?.feeding_grams_per_day) {
-    steps.push("Confirm kcal per 100g to calculate a precise gram-per-day feeding amount.");
+    steps.push("Confirm kcal per 100g to calculate the daily grams more precisely.");
   }
 
   if ((analysis?.food_score ?? 0) < 60) {
@@ -115,14 +115,14 @@ function getMonitoringChecklist(analysis?: AnalysisHistoryItem | null) {
 
 function getReportSummary(analysis?: AnalysisHistoryItem | null) {
   if (!analysis) {
-    return "This report needs a saved nutrition analysis before it can show calories, feeding amount, and food fit.";
+    return "This report needs a saved analysis before it can show calories, portions, and food fit.";
   }
 
   if (analysis.matched_food_name && analysis.feeding_grams_per_day) {
-    return "This report has enough saved information for a practical feeding summary.";
+    return "This report is ready to use as a practical feeding summary.";
   }
 
-  return "This report is useful, but some food-specific details are still missing.";
+  return "This report is useful, but food-specific portion details are still missing.";
 }
 
 function getFormulaStatus(analysis?: AnalysisHistoryItem | null) {
@@ -141,6 +141,43 @@ function getRecheckWindow(analysis?: AnalysisHistoryItem | null) {
   }
   if (analysis.weight_goal === "loss") return "In 2-4 weeks";
   return "When weight, appetite, stool, or food acceptance changes";
+}
+
+function getGoalLabel(value?: string | null) {
+  if (value === "loss") return "Weight loss";
+  if (value === "gain") return "Weight gain";
+  if (value === "maintenance") return "Weight maintenance";
+  return formatWeightGoal(value);
+}
+
+function getCalorieExplanation(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) {
+    return {
+      rest: "RER is the resting calorie estimate before lifestyle adjustments.",
+      daily: "MER/DER is the practical daily target after lifestyle and goal adjustments.",
+    };
+  }
+
+  return {
+    rest: `${analysis.rer} kcal/day is the estimated resting energy need before activity, neuter status, and weight goal adjustments.`,
+    daily: `${analysis.mer} kcal/day is the practical daily target for the current plan.`,
+  };
+}
+
+function getFeedingDetail(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) return "Save an analysis first to calculate portions.";
+  if (analysis.feeding_grams_per_day) {
+    return "Start here, split into meals, and recheck weight/body condition before changing the amount.";
+  }
+  return "Choose or confirm a specific food so Nutritail can convert calories into grams per day.";
+}
+
+function getFoodMatchDetail(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis) return "No food has been selected yet.";
+  if (analysis.matched_food_name) {
+    return "Use this as the selected formula for the current feeding plan.";
+  }
+  return "No exact food was saved, so the report stays general.";
 }
 
 function ReportCard({
@@ -226,6 +263,8 @@ export default function PrintablePetReportPage() {
     })[0];
   }, [pet]);
 
+  const calorieExplanation = getCalorieExplanation(latestAnalysis);
+
   if (isLoading) {
     return (
       <main className="min-h-screen bg-gray-50 p-6">
@@ -257,7 +296,7 @@ export default function PrintablePetReportPage() {
         <div className="flex flex-col gap-4 border-b border-gray-200 pb-6 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">
-              Printable nutrition report
+              Printable nutrition plan
             </p>
             <h1 className="mt-2 text-3xl font-bold text-black sm:text-4xl">
               Nutritail AI Report
@@ -293,12 +332,12 @@ export default function PrintablePetReportPage() {
           <ReportCard label="Pet" value={pet.name} detail={pet.species} />
           <ReportCard label="Weight" value={`${pet.weight} kg`} />
           <ReportCard
-            label="Daily calories"
+            label="Daily target"
             value={latestAnalysis ? `${latestAnalysis.mer} kcal` : "-"}
-            detail="MER/DER target"
+            detail="Practical calories per day"
           />
           <ReportCard
-            label="Food score"
+            label="Food fit"
             value={
               latestAnalysis?.food_score !== null &&
               latestAnalysis?.food_score !== undefined
@@ -317,15 +356,15 @@ export default function PrintablePetReportPage() {
             {getReportSummary(latestAnalysis)}
           </h2>
           <p className="mt-3 text-sm text-emerald-900">
-            Use this as a practical nutrition summary for portions, transition,
-            and food-fit discussion. It is not a medical diagnosis or treatment
-            plan.
+            Use this as a practical nutrition summary for calories, portions,
+            food choice, and follow-up. It is not a medical diagnosis or
+            treatment plan.
           </p>
 
           <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="rounded-xl border border-emerald-100 bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Confidence
+                Plan confidence
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-950">
                 {getReportConfidence(latestAnalysis?.food_score)}
@@ -333,7 +372,7 @@ export default function PrintablePetReportPage() {
             </div>
             <div className="rounded-xl border border-emerald-100 bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Food status
+                Formula status
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-950">
                 {getFormulaStatus(latestAnalysis)}
@@ -341,7 +380,7 @@ export default function PrintablePetReportPage() {
             </div>
             <div className="rounded-xl border border-emerald-100 bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Recheck
+                Best recheck time
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-950">
                 {getRecheckWindow(latestAnalysis)}
@@ -353,7 +392,7 @@ export default function PrintablePetReportPage() {
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.15fr]">
           <div className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-6 print:border-gray-300">
             <h2 className="text-lg font-semibold text-black">
-              Pet Information
+              Pet profile
             </h2>
 
             <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
@@ -386,57 +425,88 @@ export default function PrintablePetReportPage() {
 
           <div className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-6 print:border-gray-300">
             <h2 className="text-lg font-semibold text-black">
-              Latest Nutrition Analysis
+              Calories and portions
             </h2>
 
             {latestAnalysis ? (
               <div className="mt-4 space-y-4">
                 <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                   <div>
-                    <dt className="text-gray-500">RER</dt>
+                    <dt className="text-gray-500">Resting calories</dt>
                     <dd className="font-semibold text-black">
                       {latestAnalysis.rer} kcal
                     </dd>
-                  </div>
-                  <div>
-                    <dt className="text-gray-500">MER/DER</dt>
-                    <dd className="font-semibold text-black">
-                      {latestAnalysis.mer} kcal
+                    <dd className="mt-1 text-xs text-gray-500">
+                      Basic energy before lifestyle adjustments.
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-gray-500">Feeding amount</dt>
+                    <dt className="text-gray-500">Daily target</dt>
+                    <dd className="font-semibold text-black">
+                      {latestAnalysis.mer} kcal
+                    </dd>
+                    <dd className="mt-1 text-xs text-gray-500">
+                      Practical target for the current plan.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-gray-500">Daily grams</dt>
                     <dd className="font-semibold text-black">
                       {latestAnalysis.feeding_grams_per_day
                         ? `${latestAnalysis.feeding_grams_per_day}g/day`
                         : "-"}
                     </dd>
+                    <dd className="mt-1 text-xs text-gray-500">
+                      {getFeedingDetail(latestAnalysis)}
+                    </dd>
                   </div>
                   <div>
                     <dt className="text-gray-500">Weight goal</dt>
                     <dd className="font-semibold text-black">
-                      {formatWeightGoal(latestAnalysis.weight_goal)}
+                      {getGoalLabel(latestAnalysis.weight_goal)}
                     </dd>
                   </div>
                 </dl>
 
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
+                    <p className="font-semibold text-black">
+                      What resting calories mean
+                    </p>
+                    <p className="mt-1 text-xs text-gray-600">
+                      {calorieExplanation.rest}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
+                    <p className="font-semibold text-black">
+                      What daily target means
+                    </p>
+                    <p className="mt-1 text-xs text-gray-600">
+                      {calorieExplanation.daily}
+                    </p>
+                  </div>
+                </div>
+
                 {latestAnalysis.matched_food_name && (
                   <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
-                    <p className="text-gray-500">Matched food</p>
+                    <p className="text-gray-500">Selected food</p>
                     <p className="mt-1 font-semibold text-black">
                       {latestAnalysis.matched_food_name}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {getFoodMatchDetail(latestAnalysis)}
                     </p>
                   </div>
                 )}
 
                 <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
-                  <p className="text-gray-500">Report confidence</p>
+                  <p className="text-gray-500">How to use this report</p>
                   <p className="mt-1 font-semibold text-black">
                     {getReportConfidence(latestAnalysis.food_score)}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Confidence depends on pet context, food match quality, and
-                    available nutrition data.
+                    Confidence depends on pet context, the saved food match,
+                    and the nutrition data available for that formula.
                   </p>
                 </div>
 

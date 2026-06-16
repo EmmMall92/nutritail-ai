@@ -321,6 +321,13 @@ async function main() {
       highIssueRows > 0
         ? "Clean high/critical title issues before committing those rows to Food V2. Then work through the medium cleanup brands above."
         : "No high/critical title issues were found. Work through the medium cleanup brands above when polishing customer-facing names.",
+      "",
+      "## Title Cleanup Policy",
+      "",
+      "- Customer-facing names should look like product names, not SEO descriptions.",
+      "- Prefer Gatoskilo titles when they are clean product titles, then official/PDF titles, then other retailers, with Petsamolis last.",
+      "- Keep `formula_name` concise and keep the brand in `display_name`.",
+      "- Full playbook: docs/food-v2-title-cleanup-playbook.md",
     ].join("\n"),
     "utf8"
   );
