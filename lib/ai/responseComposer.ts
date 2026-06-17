@@ -31,13 +31,17 @@ export type ChatbotRecommendationComposerResult = {
   warnings: string[];
 };
 
-function compactFood(food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]) {
+function compactFood(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  locale: ComposerLocale
+) {
   return {
     brand: food.brand ?? null,
     name: food.display_name ?? null,
     score: food.ranking?.total_score ?? null,
-    reasons: food.ranking?.reasons?.slice(0, 3) ?? [],
-    cautions: food.ranking?.cautions?.slice(0, 3) ?? [],
+    customer_reason: simpleReason(food, locale),
+    customer_caution: simpleCaution(food, locale),
+    nutrition_snapshot: nutritionLine(food, locale),
     nutrition: {
       kcal_per_100g: food.nutrition?.kcal_per_100g ?? null,
       protein_percent: food.nutrition?.protein_percent ?? null,
@@ -52,13 +56,14 @@ function compactFood(food: NonNullable<FoodV2ChatbotRecommendationResponse["prem
 function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
+  const locale = input.locale ?? "el";
 
   return {
-    locale: input.locale ?? "el",
+    locale,
     pet: input.petSummary ?? {},
     goal: input.recommendation.goal ?? "general",
-    premium: premium.slice(0, 3).map(compactFood),
-    value: value.slice(0, 3).map(compactFood),
+    premium: premium.slice(0, 3).map((food) => compactFood(food, locale)),
+    value: value.slice(0, 3).map((food) => compactFood(food, locale)),
     notes: input.recommendation.notes?.slice(0, 4) ?? [],
     cards_follow: Boolean(input.cardsFollow),
     deterministic_text: input.deterministicText,
@@ -187,6 +192,46 @@ function simpleReason(
     : "fits the pet's basic profile";
 }
 
+function simpleCaution(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  locale: ComposerLocale
+) {
+  const text = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+  if (!text) return null;
+
+  if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
+    return locale === "el"
+      ? "θέλει σωστή μερίδα, ειδικά αν υπάρχει τάση για βάρος"
+      : "portion size should be measured carefully, especially if weight is a concern";
+  }
+
+  if (text.includes("large-breed") || text.includes("calcium") || text.includes("phosphorus")) {
+    return locale === "el"
+      ? "σε μεγαλόσωμο κουτάβι θέλουμε προσοχή σε ασβέστιο και φώσφορο"
+      : "large-breed puppies need extra care around calcium and phosphorus";
+  }
+
+  if (text.includes("senior")) {
+    return locale === "el"
+      ? "σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση"
+      : "for senior pets, monitor weight, appetite, and muscle condition";
+  }
+
+  if (text.includes("renal") || text.includes("kidney")) {
+    return locale === "el"
+      ? "σε νεφρικό θέμα η τελική επιλογή πρέπει να γίνεται με κτηνίατρο"
+      : "renal cases should be diet-guided with a veterinarian";
+  }
+
+  if (text.includes("urinary")) {
+    return locale === "el"
+      ? "σε ουρολογικό ιστορικό χρειάζεται επιβεβαίωση από κτηνίατρο"
+      : "urinary history should be confirmed with a veterinarian";
+  }
+
+  return null;
+}
+
 function foodBullet(
   food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
   index: number,
@@ -296,6 +341,14 @@ function removeBackOfficeLines(text: string) {
         "source tier",
         "retailer source",
         "quality:",
+        "needs review",
+        "missing nutrition",
+        "data quality",
+        "confidence internals",
+        "πηγή:",
+        "ποιότητα:",
+        "χρειάζεται review",
+        "θέλει review",
       ].some((term) => normalized.includes(term));
     })
     .join("\n")
@@ -343,7 +396,7 @@ export async function composeChatbotRecommendationResponse(
           {
             role: "system",
             content:
-              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear shortlist, not a back-office audit. Mention veterinary advice only for medical risk situations. Return plain text only.",
+              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Prefer customer_reason, customer_caution, and nutrition_snapshot over raw internal wording. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear shortlist, not a back-office audit. Mention veterinary advice only for medical risk situations. Return plain text only.",
           },
           {
             role: "user",
