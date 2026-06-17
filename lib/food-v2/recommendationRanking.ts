@@ -498,6 +498,16 @@ function hasAny(text: string, terms: readonly string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
 
+function hasContradictingSpeciesLabel(food: FoodProductV2, petSpecies: "dog" | "cat") {
+  const text = normalizeText([food.brand, food.display_name, food.formula_name].join(" "));
+
+  if (petSpecies === "dog") {
+    return hasAny(text, ["feline", "cat", "γάτα", "γατα", "gato"]);
+  }
+
+  return hasAny(text, ["canine", "dog", "σκύλος", "σκυλος", "skylos"]);
+}
+
 function hasWord(text: string, word: string) {
   return text.split(" ").includes(normalizeText(word));
 }
@@ -634,6 +644,16 @@ function scoreFit(input: FoodV2RankingInput) {
     addSignal(signals, "boost", "species_match", 35, "Matches the pet species.");
   } else {
     addSignal(signals, "exclude", "species_mismatch", -100, "Different species.");
+  }
+
+  if (hasContradictingSpeciesLabel(food, pet.species)) {
+    addSignal(
+      signals,
+      "exclude",
+      "contradicting_species_label",
+      -100,
+      "Excluded because the product title appears to target a different species."
+    );
   }
 
   if (lifeStageMatches(food, stage)) {

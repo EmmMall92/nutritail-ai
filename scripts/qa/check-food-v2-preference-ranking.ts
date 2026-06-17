@@ -59,6 +59,13 @@ const foods = [
     primary_animal_proteins: ["salmon"],
     ingredients: ["salmon", "potato", "poultry fat"],
   }),
+  food({
+    id: "feline-urinary-mislabeled-dog",
+    formula_key: "qa|urinary-feline|dog|dry",
+    display_name: "Urinary Feline Rich In Chicken",
+    primary_animal_proteins: ["chicken"],
+    ingredients: ["chicken", "rice"],
+  }),
 ];
 
 const pet = {
@@ -90,6 +97,9 @@ const chicken = [...result.premium, ...result.value, ...result.hold].find(
 const salmon = [...result.premium, ...result.value, ...result.hold].find(
   (item) => item.formula_key === "qa|small-adult-salmon|dog|dry"
 );
+const felineNamedDogFood = [...result.premium, ...result.value, ...result.hold].find(
+  (item) => item.formula_key === "qa|urinary-feline|dog|dry"
+);
 
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
@@ -107,6 +117,22 @@ if (
 ) {
   console.error("Salmon food with poultry fat should not match chicken preference.");
   console.error(salmon.signals);
+  process.exit(1);
+}
+
+if (felineNamedDogFood?.bucket !== "hold") {
+  console.error("Dog recommendations should hold products with feline/cat-specific titles.");
+  console.error(felineNamedDogFood);
+  process.exit(1);
+}
+
+if (
+  !felineNamedDogFood?.signals.some(
+    (signal) => signal.code === "contradicting_species_label"
+  )
+) {
+  console.error("Expected contradicting_species_label signal.");
+  console.error(felineNamedDogFood?.signals);
   process.exit(1);
 }
 
