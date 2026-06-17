@@ -220,32 +220,47 @@ const starterCards = [
 const followUpActions: {
   id: FollowUpAction;
   title: string;
+  titleEl: string;
   helper: string;
+  helperEl: string;
 }[] = [
   {
     id: "progress",
     title: "Progress check",
+    titleEl: "Έλεγχος προόδου",
     helper: "Talk through weight, appetite, stool, treats, and visible changes.",
+    helperEl:
+      "Μιλάμε για βάρος, όρεξη, κόπρανα, λιχουδιές και ορατές αλλαγές.",
   },
   {
     id: "no_result",
     title: "No visible result",
+    titleEl: "Δεν είδα αποτέλεσμα",
     helper: "Review calories, treats, grams per day, activity, and food fit.",
+    helperEl:
+      "Ελέγχουμε θερμίδες, λιχουδιές, γραμμάρια/ημέρα, δραστηριότητα και fit τροφής.",
   },
   {
     id: "change_food",
     title: "Try another food",
+    titleEl: "Άλλη τροφή",
     helper: "Get a new shortlist if taste, brand, or formula is not working.",
+    helperEl:
+      "Νέα λίστα αν η γεύση, η εταιρία ή η φόρμουλα δεν λειτούργησε.",
   },
   {
     id: "timeline",
     title: "Open timeline",
+    titleEl: "Άνοιγμα ιστορικού",
     helper: "Review previous analyses and progress history.",
+    helperEl: "Δες προηγούμενες αναλύσεις και πρόοδο.",
   },
   {
     id: "new_analysis",
     title: "Fresh analysis",
+    titleEl: "Νέα ανάλυση",
     helper: "Run the full guided flow again for this pet.",
+    helperEl: "Ξεκίνα ξανά την πλήρη ροή για αυτό το κατοικίδιο.",
   },
 ];
 
@@ -2393,7 +2408,9 @@ export default function AccountChatbotPage() {
 
     if (action === "timeline") {
       addMessages(
-        ...(echoUser ? [createMessage("user", "Open timeline")] : []),
+        ...(echoUser
+          ? [createMessage("user", botText("Άνοιγμα ιστορικού", "Open timeline"))]
+          : []),
         createMessage(
           "bot",
           botText(
@@ -2419,7 +2436,9 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
       setStep("petChoice");
       setFollowUpMode("progress");
       addMessages(
-        ...(echoUser ? [createMessage("user", "Progress check")] : []),
+        ...(echoUser
+          ? [createMessage("user", botText("Έλεγχος προόδου", "Progress check"))]
+          : []),
         createMessage(
           "bot",
           botText(
@@ -2451,7 +2470,14 @@ Then I can help decide whether the plan is working or needs adjustment.`
       setStep("petChoice");
       setFollowUpMode("no_result");
       addMessages(
-        ...(echoUser ? [createMessage("user", "No visible result")] : []),
+        ...(echoUser
+          ? [
+              createMessage(
+                "user",
+                botText("Δεν είδα αποτέλεσμα", "No visible result")
+              ),
+            ]
+          : []),
         createMessage(
           "bot",
           botText(
@@ -2485,7 +2511,9 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
       setRecommendationMode("alternative");
       setStep("currentFood");
       addMessages(
-        ...(echoUser ? [createMessage("user", "Try another food")] : []),
+        ...(echoUser
+          ? [createMessage("user", botText("Άλλη τροφή", "Try another food"))]
+          : []),
         createMessage(
           "bot",
           botText(
@@ -3818,10 +3846,13 @@ Next actions:
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="font-semibold text-blue-950">
-                  Continue {followUpPet.name}&apos;s plan
+                  {botText(
+                    `Συνέχεια για το πλάνο του/της ${followUpPet.name}`,
+                    `Continue ${followUpPet.name}'s plan`
+                  )}
                 </p>
                 <p className="mt-1 whitespace-pre-line text-sm text-blue-900">
-                  {formatLatestAnalysisSummary(followUpPet)}
+                  {formatLatestAnalysisSummary(followUpPet, chatLanguage)}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
@@ -3849,10 +3880,10 @@ Next actions:
                   className="rounded-xl border border-blue-200 bg-white p-4 text-left transition hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   <span className="block font-semibold text-black">
-                    {action.title}
+                    {botText(action.titleEl, action.title)}
                   </span>
                   <span className="mt-1 block text-sm text-gray-600">
-                    {action.helper}
+                    {botText(action.helperEl, action.helper)}
                   </span>
                 </button>
               ))}
