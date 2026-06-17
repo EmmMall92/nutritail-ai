@@ -31,6 +31,10 @@ import {
 } from "@/lib/food-v2/chatbotRecommendationSummary";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
 import { formatPetDisplayName } from "@/lib/petName";
+import {
+  parseTastePreferences as parseSharedTastePreferences,
+  removeExcludedFromPreferred as removeSharedExcludedFromPreferred,
+} from "@/lib/chatbot/tastePreferences";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
@@ -650,10 +654,7 @@ function normalizeExtractedList(values: unknown) {
 }
 
 function removeExcludedFromPreferred(preferred: string[], excluded: string[]) {
-  const excludedSet = new Set(excluded.map((value) => normalizeUserText(value)));
-  return uniqueTerms(preferred).filter(
-    (value) => !excludedSet.has(normalizeUserText(value))
-  );
+  return removeSharedExcludedFromPreferred(preferred, excluded);
 }
 
 function shouldExtractIntakeFacts(step: IntakeStep, text: string) {
@@ -714,6 +715,15 @@ function parseTastePreferences(text: string): {
   excludedIngredients: string[];
   preferredProteins: string[];
 } {
+  const shared = parseSharedTastePreferences(text);
+  if (
+    shared.excludedIngredients.length > 0 ||
+    shared.preferredProteins.length > 0 ||
+    parseYesNoInput(text) === false
+  ) {
+    return shared;
+  }
+
   const normalized = normalizeUserText(text);
   const noPreference =
     parseYesNoInput(text) === false ||
