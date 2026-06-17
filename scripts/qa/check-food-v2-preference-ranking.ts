@@ -136,4 +136,68 @@ if (
   process.exit(1);
 }
 
-console.log("Food V2 preference ranking QA passed.");
+const weightSensitivePet = {
+  ...pet,
+  weight: 34,
+  age: 9,
+  neutered: true,
+  activityLevel: "low" as const,
+  healthIssues: ["weight control"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const activeHighFat = food({
+  id: "active-high-fat",
+  formula_key: "qa|active-high-fat|dog|dry",
+  display_name: "Team Breeder Top Active Chicken",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 404,
+});
+const activeHighFatRanking = rankFoodV2ForPet({
+  food: activeHighFat,
+  nutrients: {
+    ...nutrients(activeHighFat),
+    fat_percent: 21.5,
+    fiber_percent: 2,
+  },
+  pet: weightSensitivePet,
+  goal: "senior",
+});
+
+if (activeHighFatRanking.bucket !== "hold") {
+  console.error("High-kcal/high-fat active foods should be held for senior weight-control cases.");
+  console.error(activeHighFatRanking);
+  process.exit(1);
+}
+
+const puppyPet = {
+  ...pet,
+  age: 0.5,
+  weight: 9,
+  healthIssues: ["sensitive digestion"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const adultGi = food({
+  id: "adult-gi",
+  formula_key: "qa|adult-gi|dog|dry",
+  display_name: "Gastrointestinal Adult",
+  life_stage: "adult",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const adultGiRanking = rankFoodV2ForPet({
+  food: adultGi,
+  nutrients: nutrients(adultGi),
+  pet: puppyPet,
+  goal: "sensitive_digestion",
+});
+
+if (adultGiRanking.bucket !== "hold") {
+  console.error("Adult GI foods should be held when the pet is still a puppy.");
+  console.error(adultGiRanking);
+  process.exit(1);
+}
+
+console.log("Food V2 preference, weight, and puppy guard QA passed.");

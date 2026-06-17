@@ -323,7 +323,9 @@ function petLifeStage(pet: FoodV2RankingInput["pet"]) {
 function isLargeBreedDog(pet: FoodV2RankingInput["pet"]) {
   return (
     pet.species === "dog" &&
-    (pet.weight >= 25 || ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? ""))
+    (pet.weight >= 25 ||
+      (pet.age < 1 && pet.weight >= 18) ||
+      ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? ""))
   );
 }
 
@@ -768,6 +770,22 @@ function scoreFit(input: FoodV2RankingInput) {
         "Fat is not low enough to be a first pick for a sterilised or weight-control case."
       );
     }
+    if (
+      strictWeightContext &&
+      !weightPositioned &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g >= 382 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 16
+    ) {
+      addSignal(
+        signals,
+        "exclude",
+        "high_energy_fat_weight_sensitive",
+        -100,
+        "Excluded because calories and fat are too high for a first weight-control shortlist."
+      );
+    }
     if (activePositioned && pet.activityLevel !== "high") {
       const activePenalty = strictWeightContext ? -34 : -24;
       score += activePenalty;
@@ -814,6 +832,21 @@ function scoreFit(input: FoodV2RankingInput) {
       const penalty = nutrients.fat_percent >= 18 ? -20 : -12;
       score += penalty;
       addSignal(signals, "caution", "higher_fat_weight_goal", penalty, "Fat looks high for a weight-control goal.");
+    }
+    if (
+      !weightPositioned &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g >= 382 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 16
+    ) {
+      addSignal(
+        signals,
+        "exclude",
+        "high_energy_fat_weight_goal",
+        -100,
+        "Excluded because calories and fat are too high for this weight-control goal."
+      );
     }
     if (activePositioned && pet.activityLevel !== "high") {
       score -= 18;
@@ -954,6 +987,15 @@ function scoreFit(input: FoodV2RankingInput) {
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
     if (lifeStageMatches(food, stage)) score += 10;
+    if (stage === "puppy" && !lifeStageMatches(food, stage)) {
+      addSignal(
+        signals,
+        "exclude",
+        "adult_food_for_puppy_growth",
+        -100,
+        "Excluded because puppy/growth cases need puppy or all-life-stage food before adult options."
+      );
+    }
     if (stage === "puppy" && isLargeBreedDog(pet)) {
       if (hasAny(haystack, ["large breed", "maxi", "giant", "large puppy", "puppy large"])) {
         score += 18;
