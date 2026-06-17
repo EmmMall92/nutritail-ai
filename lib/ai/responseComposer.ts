@@ -157,16 +157,16 @@ function simpleReason(
       : "matches a preferred flavour or protein";
   }
 
-  if (reasons.includes("excluded ingredients") || reasons.includes("allergens were not detected")) {
-    return locale === "el"
-      ? "σέβεται τις δηλωμένες αποφυγές συστατικών"
-      : "respects the declared ingredient avoidances";
-  }
-
   if (reasons.includes("weight") || reasons.includes("sterilised") || cautions.includes("fat")) {
     return locale === "el"
       ? "έχει λογική για έλεγχο θερμίδων και βάρους"
       : "fits calorie and weight-control thinking";
+  }
+
+  if (reasons.includes("excluded ingredients") || reasons.includes("allergens were not detected")) {
+    return locale === "el"
+      ? "σέβεται τις δηλωμένες αποφυγές συστατικών"
+      : "respects the declared ingredient avoidances";
   }
 
   if (reasons.includes("sensitive") || reasons.includes("digest")) {

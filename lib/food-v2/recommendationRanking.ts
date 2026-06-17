@@ -432,6 +432,37 @@ function ingredientAliasesFor(value: string) {
   return INGREDIENT_ALIAS_TERMS[value] ?? ALLERGEN_TERMS[value] ?? [value];
 }
 
+function preferredIngredientAliasesFor(value: string) {
+  const normalized = normalizeText(value);
+
+  if (normalized === "chicken") return ["chicken", "κοτοπουλ", "kotopoulo"];
+  if (normalized === "beef") return ["beef", "μοσχαρ", "moschari", "moshari"];
+  if (normalized === "lamb") return ["lamb", "αρν", "arni"];
+  if (normalized === "pork") return ["pork", "χοιριν", "xoirino", "hoirino"];
+  if (normalized === "duck") return ["duck", "παπια", "papia"];
+  if (normalized === "turkey") return ["turkey", "γαλοπουλ", "galopoula"];
+  if (normalized === "rabbit") return ["rabbit", "κουνελ", "kouneli"];
+  if (normalized === "salmon") return ["salmon", "σολομ", "solomos"];
+  if (normalized === "tuna") return ["tuna", "τονο", "tonos"];
+  if (normalized === "cod") return ["cod", "codfish", "μπακαλιαρ", "bakaliaros"];
+  if (normalized === "sardine") return ["sardine", "σαρδελ", "sardela"];
+  if (normalized === "herring") return ["herring", "ρεγγ", "rega"];
+  if (normalized === "trout") return ["trout", "πεστροφ", "pestrofa"];
+  if (normalized === "fish") return ingredientAliasesFor("fish");
+
+  return [value];
+}
+
+function preferredIngredientText(food: FoodProductV2) {
+  return normalizeText(
+    [
+      food.formula_name,
+      food.display_name,
+      ...(food.primary_animal_proteins ?? []),
+    ].join(" ")
+  );
+}
+
 function containsAllergen(food: FoodProductV2, allergies: string[]) {
   const foodText = textFor(food);
   return allergies.some((allergy) => {
@@ -447,6 +478,17 @@ function containsIngredientTerm(food: FoodProductV2, values: string[]) {
   return values.some((value) => {
     const normalized = normalizeText(value);
     const terms = ingredientAliasesFor(normalized);
+
+    return terms.some((term) => foodText.includes(normalizeText(term)));
+  });
+}
+
+function containsPreferredIngredientTerm(food: FoodProductV2, values: string[]) {
+  const foodText = preferredIngredientText(food);
+
+  return values.some((value) => {
+    const normalized = normalizeText(value);
+    const terms = preferredIngredientAliasesFor(normalized);
 
     return terms.some((term) => foodText.includes(normalizeText(term)));
   });
@@ -807,25 +849,25 @@ function scoreFit(input: FoodV2RankingInput) {
         "Excluded because it contains an ingredient or flavor the pet should avoid."
       );
     } else {
-      score += 8;
+      score += 2;
       addSignal(
         signals,
         "boost",
         "excluded_ingredients_not_detected",
-        8,
+        2,
         "Avoided the pet's excluded ingredients or flavors."
       );
     }
   }
 
   if ((pet.preferredProteins ?? []).length > 0) {
-    if (containsIngredientTerm(food, pet.preferredProteins ?? [])) {
-      score += 8;
+    if (containsPreferredIngredientTerm(food, pet.preferredProteins ?? [])) {
+      score += 14;
       addSignal(
         signals,
         "boost",
         "preferred_protein_match",
-        8,
+        14,
         "Matches a preferred protein or flavor."
       );
     } else {

@@ -300,11 +300,11 @@ function formatRecommendationChoiceReason(
     if (text.includes("preferred protein") || text.includes("preferred flavor")) {
       return "Ταιριάζει με γεύση ή πρωτεΐνη που δήλωσες ότι προτιμά.";
     }
-    if (text.includes("excluded ingredients") || text.includes("allergens were not detected")) {
-      return "Σέβεται τις αποφυγές ή αλλεργίες που δήλωσες.";
-    }
     if (text.includes("weight") || text.includes("sterilised") || text.includes("calories")) {
       return "Έχει πιο σωστή λογική για στειρωμένο ή επιρρεπές σε βάρος κατοικίδιο.";
+    }
+    if (text.includes("excluded ingredients") || text.includes("allergens were not detected")) {
+      return "Σέβεται τις αποφυγές ή αλλεργίες που δήλωσες.";
     }
     if (text.includes("large-breed puppy") || text.includes("growth")) {
       return "Είναι πιο κοντά στις ανάγκες ανάπτυξης.";
@@ -3698,8 +3698,14 @@ Next actions:
       createMessage(
         "bot",
         savedPets.length > 0
-          ? "Let's start again. Choose a saved pet or start with a new pet."
-          : "Let's start again. Do you have a dog or a cat?"
+          ? botText(
+              "Ξεκινάμε ξανά. Διάλεξε ένα αποθηκευμένο κατοικίδιο ή ξεκίνα με νέο κατοικίδιο.",
+              "Let's start again. Choose a saved pet or start with a new pet."
+            )
+          : botText(
+              "Ξεκινάμε ξανά. Έχεις σκύλο ή γάτα;",
+              "Let's start again. Do you have a dog or a cat?"
+            )
       ),
     ]);
   }
