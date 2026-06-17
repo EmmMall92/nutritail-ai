@@ -1,5 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
+import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
+import { formatPetDisplayName } from "@/lib/petName";
 
 type GoldenCase = {
   id: string;
@@ -46,10 +48,42 @@ function checkCase(testCase: GoldenCase) {
   };
 }
 
+function checkUiHelpers() {
+  const failures: string[] = [];
+  const name = formatPetDisplayName("\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7");
+
+  if (name !== "\u039a\u03cd\u03c1\u03ba\u03b7") {
+    failures.push(`pet display name: expected \u039a\u03cd\u03c1\u03ba\u03b7 got ${name}`);
+  }
+
+  const preferences = parseTastePreferences(
+    "\u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b8\u03cc\u03bb\u03bf\u03c5 \u03bf \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2"
+  );
+
+  if (!preferences.preferredProteins.includes("chicken")) {
+    failures.push("taste preferences: expected chicken in preferredProteins");
+  }
+
+  if (!preferences.excludedIngredients.includes("salmon")) {
+    failures.push("taste preferences: expected salmon in excludedIngredients");
+  }
+
+  if (preferences.preferredProteins.includes("salmon")) {
+    failures.push("taste preferences: salmon must not appear in preferredProteins");
+  }
+
+  return {
+    id: "ui_helper_regressions",
+    status: failures.length === 0 ? "pass" : "fail",
+    failures,
+    source: "ui_helpers",
+  };
+}
+
 async function main() {
   const raw = await readFile(goldenPath, "utf8");
   const cases = JSON.parse(raw) as GoldenCase[];
-  const results = cases.map(checkCase);
+  const results = [...cases.map(checkCase), checkUiHelpers()];
   const failed = results.filter((result) => result.status === "fail");
 
   console.log(
