@@ -91,6 +91,7 @@
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
     "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
+    "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs"
   },
