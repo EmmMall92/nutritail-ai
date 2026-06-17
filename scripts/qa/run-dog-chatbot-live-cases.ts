@@ -263,13 +263,28 @@ function requiredMissingFields(data: ExtractionResult) {
 
 function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | null) {
   const expected = testCase.expected;
+  const messageText = normalize(testCase.message);
+  const inferredHealthIssues = [
+    ...(testCase.checks?.obesityLogic ? ["weight control"] : []),
+    ...(testCase.goal === "sensitive_digestion" ? ["sensitive digestion"] : []),
+    ...(testCase.goal === "renal" ? ["renal"] : []),
+    ...(testCase.goal === "urinary" ? ["urinary"] : []),
+    ...(testCase.goal === "allergy" ? ["allergy"] : []),
+    ...(messageText.includes("χάνει μυς") || messageText.includes("χανει μυς")
+      ? ["muscle loss"]
+      : []),
+  ];
+
   return {
     id: `dog-live-qa-${testCase.id}`,
     ownerId: "qa",
     name: `Dog QA ${testCase.id}`,
     species: "dog",
     breed: breedFromMessage(testCase.message),
-    age: extraction?.ageYears ?? expected.ageYears ?? defaultAgeForGoal(testCase.goal),
+    age:
+      extraction?.ageYears ??
+      expected.ageYears ??
+      (messageText.includes("κουταβ") ? 0.5 : defaultAgeForGoal(testCase.goal)),
     weight: extraction?.weightKg ?? expected.weightKg ?? defaultWeightForGoal(testCase.goal),
     activityLevel:
       extraction?.activityLevel ??
@@ -285,6 +300,7 @@ function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | n
     ],
     healthIssues: [
       ...(extraction?.healthIssues ?? []),
+      ...inferredHealthIssues,
       ...(testCase.safety !== "normal" ? ["needs veterinary caution"] : []),
     ],
     excludedIngredients: [
@@ -416,12 +432,12 @@ function validateMissingQuestionFlow(extraction: ExtractionResult | null) {
 function detectSafety(message: string) {
   const text = normalize(message);
   if (
-    /αιμα|αίμα|κατερρευ|έντονο πονο|εντονο πονο|δεν τρωει 2|δεν τρώει 2|εμετο συνεχεια|εμετό συνέχεια|φουσκωσει|φουσκώσει|δεν μπορει να ουρησει|δεν μπορεί να ουρήσει/.test(text)
+    /αιμα|αίμα|κατερρευ|έντονο πονο|εντονο πονο|δεν τρωει 2|δεν τρώει 2|εμετο συνεχεια|εμετό συνέχεια|φουσκωσει|φουσκώσει|φουσκωνει|φουσκώνει|δεν μπορει να ουρησει|δεν μπορεί να ουρήσει/.test(text)
   ) {
     return "emergency" as const;
   }
   if (
-    /νεφρ|παγκρεατ|διαβητ|καρδιακ|διάρροια|διαρροια|εμετ|φαγουρα|φαγούρα|κοκκιν|αρθρ|μειωμενη ορεξη|μειωμένη όρεξη|δυσκοιλιοτητα|δυσκοιλιότητα|πολυ νερο|πολύ νερό|ουρολιθ|αλλεργ|ευαισθη|ευαίσθη|στομαχ|στομάχ|μαλακα κακα|μαλακά κακά|πειραζει|πειράζει|δοντια|δόντια|μαγειρευτο|μαγειρευτό|χασει πολλα κιλα|χάσει πολλά κιλά|ουρει πολυ|ουρεί πολύ|πετρα στα δοντια|πέτρα στα δόντια|μονοπρωτειν/.test(text)
+    /νεφρ|παγκρεατ|διαβητ|καρδιακ|διάρροια|διαρροια|εμετ|φαγουρα|φαγούρα|κοκκιν|αρθρ|μειωμενη ορεξη|μειωμένη όρεξη|δυσκοιλιοτητα|δυσκοιλιότητα|πολυ νερο|πολύ νερό|ουρολιθ|αλλεργ|ευαισθη|ευαίσθη|στομαχ|στομάχ|μαλακα κακα|μαλακά κακά|μαλακα κοπρανα|μαλακά κόπρανα|πειραζει|πειράζει|δοντια|δόντια|μαγειρευτο|μαγειρευτό|χασει πολλα κιλα|χάσει πολλά κιλά|χανει μυς|χάνει μυς|ουρει πολυ|ουρεί πολύ|πετρα στα δοντια|πέτρα στα δόντια|μονοπρωτειν/.test(text)
   ) {
     return "vet_referral" as const;
   }
