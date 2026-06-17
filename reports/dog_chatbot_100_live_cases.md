@@ -1,14 +1,14 @@
 # Dog Chatbot 100 Live Cases
 
-Generated: 2026-06-17T19:19:55.959Z
+Generated: 2026-06-17T19:27:47.256Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
 ## Summary
 
 - Cases checked: 100
-- Passed: 90
-- Needs review: 10
+- Passed: 92
+- Needs review: 8
 
 Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, and weight-control kcal/fat/fiber logic.
 
@@ -32,7 +32,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 12 | pass | Monge Monge Hypo With Salmon And Tuna; Monge VetSolution Monge Vetsolution Gastrointestinal Adult; Purina Pro Plan Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
 | 13 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 14 | pass | Monge VetSolution Monge Vetsolution Renal And Oxalate; Josera Josera RENAL DRY; Royal Canin Royal Canin Vet Diet Small Renal | - |
-| 15 | review | Monge Monge Urinary Feline Rich In Chicken; Monge VetSolution Monge Vetsolution Renal And Oxalate; Monge VetSolution Monge Vetsolution Urinary Struvite | food: Dog shortlist includes a candidate whose title looks feline/cat-specific. |
+| 15 | pass | Monge VetSolution Monge Vetsolution Renal And Oxalate; Monge VetSolution Monge Vetsolution Urinary Struvite; Royal Canin Royal Canin Vet Diet Urinary S/O | - |
 | 16 | pass | Josera Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Acana Senior; Orijen Orijen Senior | - |
 | 17 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 18 | pass | Monge Monge Hypo With Salmon And Tuna; Monge VetSolution Monge Vetsolution Gastrointestinal Adult; Purina Pro Plan Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Digestion Αρνί | - |
@@ -107,7 +107,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 87 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 88 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 89 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
-| 90 | review | Monge Monge Urinary Feline Rich In Chicken; Monge VetSolution Monge Vetsolution Renal And Oxalate; Monge VetSolution Monge Vetsolution Urinary Struvite | food: Dog shortlist includes a candidate whose title looks feline/cat-specific. |
+| 90 | pass | Monge VetSolution Monge Vetsolution Renal And Oxalate; Monge VetSolution Monge Vetsolution Urinary Struvite; Royal Canin Royal Canin Vet Diet Urinary S/O | - |
 | 91 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 92 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
 | 93 | pass | ACANA Acana Classic Red Meat; ACANA Acana Prairie Poultry; Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised | - |
