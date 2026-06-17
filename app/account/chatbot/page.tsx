@@ -408,6 +408,22 @@ function formatChoiceNumber(value: number | null | undefined, digits = 1) {
   return Number(value).toFixed(digits).replace(/\.0$/, "");
 }
 
+function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
+  const emphasis =
+    index === 0
+      ? "border-emerald-500 bg-emerald-50 shadow-md"
+      : choice.role === "value"
+        ? "border-sky-200 bg-sky-50/60"
+        : "border-emerald-200 bg-white";
+
+  return [
+    "group flex h-full flex-col rounded-2xl border p-4 text-left text-sm text-gray-900 transition",
+    "hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-md",
+    "focus:outline-none focus:ring-2 focus:ring-emerald-600",
+    emphasis,
+  ].join(" ");
+}
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -3936,7 +3952,7 @@ Next actions:
         ))}
 
         {showSave && recommendedFoodChoices.length > 0 && (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
+          <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
               {botText("Διάλεξε τροφή για να συνεχίσουμε", "Choose a food to continue")}
             </p>
@@ -3952,10 +3968,19 @@ Next actions:
                   key={choice.name}
                   type="button"
                   onClick={() => chooseRecommendedFood(choice)}
-                  className="flex h-full flex-col rounded-xl border border-emerald-200 bg-white p-4 text-left text-sm text-emerald-950 transition hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  aria-label={`${botText("Επιλογή τροφής", "Choose food")}: ${choice.name}`}
+                  className={getRecommendationCardClassName(choice, index)}
                 >
                   <span className="flex items-start justify-between gap-3">
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-900">
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        index === 0
+                          ? "bg-emerald-700 text-white"
+                          : choice.role === "value"
+                            ? "bg-sky-100 text-sky-900"
+                            : "bg-emerald-100 text-emerald-900"
+                      }`}
+                    >
                       {index === 0
                         ? botText("Πρώτη πρόταση", "Top pick")
                         : choice.role === "value"
@@ -3963,16 +3988,16 @@ Next actions:
                         : botText("Καλύτερο fit", "Best fit")}
                     </span>
                     {choice.score != null && (
-                      <span className="text-xs font-semibold text-emerald-700">
-                        {botText("Fit", "Fit")} {Math.round(choice.score)}/100
+                      <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
+                        {botText("Καταλληλότητα", "Fit")} {Math.round(choice.score)}/100
                       </span>
                     )}
                   </span>
-                  <span className="mt-3 text-base font-semibold leading-5 text-black">
+                  <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
                     {choice.name}
                   </span>
                   {choice.reason && (
-                    <span className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm leading-5 text-emerald-950">
+                    <span className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100">
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
                         {botText("Γιατί ταιριάζει", "Why it fits")}
                       </span>
@@ -3980,33 +4005,36 @@ Next actions:
                     </span>
                   )}
                   {choice.caution && (
-                    <span className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950">
+                    <span className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100">
                       <span className="block text-xs font-semibold uppercase text-amber-700">
                         {botText("Προσοχή", "Watch")}
                       </span>
                       <span>{choice.caution}</span>
                     </span>
                   )}
-                  <span className="mt-3 flex flex-wrap gap-1.5 text-xs text-gray-700">
+                  <span className="mt-3 text-xs font-semibold uppercase text-gray-500">
+                    {botText("Με μια ματιά", "At a glance")}
+                  </span>
+                  <span className="mt-2 flex flex-wrap gap-1.5 text-xs text-gray-700">
                     {formatChoiceNumber(choice.kcalPer100g) && (
-                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
                         {formatChoiceNumber(choice.kcalPer100g)} kcal/100g
                       </span>
                     )}
                     {formatChoiceNumber(choice.proteinPercent) && (
-                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
                         {formatChoiceNumber(choice.proteinPercent)}%{" "}
                         {botText("πρωτεΐνη", "protein")}
                       </span>
                     )}
                     {formatChoiceNumber(choice.fatPercent) && (
-                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
                         {formatChoiceNumber(choice.fatPercent)}%{" "}
                         {botText("λιπαρά", "fat")}
                       </span>
                     )}
                     {formatChoiceNumber(choice.fiberPercent) && (
-                      <span className="rounded-full bg-gray-100 px-2 py-1">
+                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
                         {formatChoiceNumber(choice.fiberPercent)}%{" "}
                         {botText("ίνες", "fiber")}
                       </span>
@@ -4018,7 +4046,7 @@ Next actions:
                       "Tap to calculate grams per day."
                     )}
                   </span>
-                  <span className="mt-4 rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white">
+                  <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Επιλογή και υπολογισμός", "Choose and calculate")}
                   </span>
                 </button>
