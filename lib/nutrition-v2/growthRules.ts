@@ -1,5 +1,27 @@
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 
+export type GrowthFitSignal = {
+  type: "boost" | "caution" | "exclude";
+  code: string;
+  points: number;
+  message: string;
+};
+
+export type GrowthFitInput = {
+  food: Pick<FoodProductV2, "life_stage" | "kcal_per_100g">;
+  nutrients: Pick<
+    FoodNutrientsV2,
+    "calcium_percent" | "phosphorus_percent" | "dha_percent" | "epa_dha_percent"
+  >;
+  petStage: "puppy" | "kitten" | "adult" | "senior";
+  lifeStageMatches: boolean;
+  isLargeBreedDog: boolean;
+  positioning: {
+    largeBreedGrowth: boolean;
+    genericGrowth: boolean;
+  };
+};
+
 export const GROWTH_SCIENTIFIC_PRINCIPLES = [
   {
     id: "growth_is_not_maximum_speed",
@@ -96,4 +118,103 @@ export function evaluateGrowthRules(
   }
 
   return { findings, cautions };
+}
+
+export function evaluateGrowthFitRules(input: GrowthFitInput) {
+  const signals: GrowthFitSignal[] = [];
+  const { food, nutrients, petStage, positioning } = input;
+  const isGrowthPet = petStage === "puppy" || petStage === "kitten";
+
+  if (!isGrowthPet) return signals;
+
+  if (input.lifeStageMatches) {
+    signals.push({
+      type: "boost",
+      code: "growth_life_stage_match",
+      points: 10,
+      message: `Matches ${petStage} growth life stage.`,
+    });
+  } else if (petStage === "puppy") {
+    signals.push({
+      type: "exclude",
+      code: "adult_food_for_puppy_growth",
+      points: -100,
+      message:
+        "Excluded because puppy/growth cases need puppy or all-life-stage food before adult options.",
+    });
+  } else if (petStage === "kitten") {
+    signals.push({
+      type: "exclude",
+      code: "adult_food_for_kitten_growth",
+      points: -100,
+      message:
+        "Excluded because kitten/growth cases need kitten or all-life-stage food before adult options.",
+    });
+  }
+
+  if (petStage === "puppy" && input.isLargeBreedDog) {
+    if (positioning.largeBreedGrowth) {
+      signals.push({
+        type: "boost",
+        code: "large_breed_puppy_fit",
+        points: 20,
+        message: "Large-breed puppy positioning fits this growth case.",
+      });
+    } else if (positioning.genericGrowth) {
+      signals.push({
+        type: "caution",
+        code: "generic_puppy_for_large_breed",
+        points: -10,
+        message:
+          "Generic puppy food is less specific than a large-breed puppy formula.",
+      });
+    }
+
+    if (!hasNumber(nutrients.calcium_percent) || !hasNumber(nutrients.phosphorus_percent)) {
+      signals.push({
+        type: "caution",
+        code: "large_breed_growth_mineral_gap",
+        points: -14,
+        message: "Large-breed puppy ranking needs calcium and phosphorus data.",
+      });
+    } else {
+      const caP = nutrients.calcium_percent / nutrients.phosphorus_percent;
+      if (caP >= 1 && caP <= 1.8) {
+        signals.push({
+          type: "boost",
+          code: "large_breed_growth_ca_p_available",
+          points: 8,
+          message: "Calcium and phosphorus data support growth-stage review.",
+        });
+      } else {
+        signals.push({
+          type: "caution",
+          code: "large_breed_growth_ca_p_review",
+          points: -12,
+          message:
+            "Calcium/phosphorus balance should be reviewed before confident large-breed puppy advice.",
+        });
+      }
+    }
+  }
+
+  if (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent)) {
+    signals.push({
+      type: "boost",
+      code: "growth_dha",
+      points: 6,
+      message: "DHA/EPA-DHA data supports growth reasoning.",
+    });
+  }
+
+  if (petStage === "puppy" && hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 430) {
+    signals.push({
+      type: "caution",
+      code: "high_energy_density_for_growth_review",
+      points: -8,
+      message: "Energy density is high enough to review growth feeding portions carefully.",
+    });
+  }
+
+  return signals;
 }
