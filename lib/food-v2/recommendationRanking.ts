@@ -315,7 +315,14 @@ function petLifeStage(pet: FoodV2RankingInput["pet"]) {
     return "adult";
   }
 
-  if (pet.age < 1) return "puppy";
+  if (
+    pet.age < 1 ||
+    (pet.age <= 1 &&
+      (pet.weight >= 25 ||
+        ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? "")))
+  ) {
+    return "puppy";
+  }
   if (pet.age >= 8) return "senior";
   return "adult";
 }
