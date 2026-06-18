@@ -755,8 +755,58 @@ function itemText(item: FoodV2Item) {
   return normalize([item.brand, item.display_name, item.formula_key].join(" "));
 }
 
+function itemDecisionText(item: FoodV2Item) {
+  const signals = item.ranking?.signals?.map((signal) => `${signal.code} ${signal.message}`) ?? [];
+  return normalize([
+    itemText(item),
+    item.life_stage,
+    item.dog_size,
+    item.source_priority,
+    ...(item.ranking?.reasons ?? []),
+    ...(item.ranking?.cautions ?? []),
+    ...(item.guard_flags ?? []),
+    ...signals,
+  ].join(" "));
+}
+
 function hasAny(items: FoodV2Item[], terms: string[]) {
-  return items.some((item) => terms.some((term) => itemText(item).includes(normalize(term))));
+  return items.some((item) => terms.some((term) => itemDecisionText(item).includes(normalize(term))));
+}
+
+function hasAnyInFirst(items: FoodV2Item[], terms: string[], limit = 3) {
+  return hasAny(items.slice(0, limit), terms);
+}
+
+function isCalorieAware(item: FoodV2Item) {
+  const kcal = item.nutrition?.kcal_per_100g;
+  const fat = item.nutrition?.fat_percent;
+  const fiber = item.nutrition?.fiber_percent;
+  return (
+    (typeof kcal === "number" && kcal <= 365) ||
+    (typeof fat === "number" && fat <= 13) ||
+    (typeof fiber === "number" && fiber >= 3.5) ||
+    /sterilised|sterilized|light|weight|satiety|obesity|neutered/i.test(itemDecisionText(item))
+  );
+}
+
+function isTooEnergyDenseForSterilised(item: FoodV2Item) {
+  const kcal = item.nutrition?.kcal_per_100g;
+  const fat = item.nutrition?.fat_percent;
+  return (
+    (typeof kcal === "number" && kcal > 385) ||
+    (typeof fat === "number" && fat > 16) ||
+    /active|performance|working|sport|energy/i.test(itemDecisionText(item))
+  );
+}
+
+function isClearlyHighEnergy(item: FoodV2Item) {
+  const kcal = item.nutrition?.kcal_per_100g;
+  const fat = item.nutrition?.fat_percent;
+  return (
+    (typeof kcal === "number" && kcal >= 375) ||
+    (typeof fat === "number" && fat >= 16) ||
+    /active|performance|working|sport|energy/i.test(itemDecisionText(item))
+  );
 }
 
 function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof getRecommendations>>) {
@@ -777,6 +827,14 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.checks?.allergyReject?.length && hasAny(top, testCase.checks.allergyReject)) {
     warnings.push(`Top recommendations may conflict with allergy/rejection: ${testCase.checks.allergyReject.join(", ")}`);
+  }
+
+  if (testCase.goal === "renal" && top.length > 0 && !hasAnyInFirst(top, ["renal", "kidney"], 3)) {
+    warnings.push("Renal case did not surface a renal/kidney-oriented food in the first three visible candidates.");
+  }
+
+  if (testCase.goal === "urinary" && top.length > 0 && !hasAnyInFirst(top, ["urinary", "struvite", "oxalate"], 3)) {
+    warnings.push("Urinary case did not surface a urinary/struvite/oxalate-oriented food in the first three visible candidates.");
   }
 
   if (testCase.checks?.puppyGrowth && top.length > 0) {
@@ -800,15 +858,35 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.checks?.obesityLogic && top.length > 0) {
     const first = top[0];
-    const kcal = first.nutrition?.kcal_per_100g;
-    const fat = first.nutrition?.fat_percent;
-    const fiber = first.nutrition?.fiber_percent;
-    const calorieAware =
-      (typeof kcal === "number" && kcal <= 365) ||
-      (typeof fat === "number" && fat <= 13) ||
-      (typeof fiber === "number" && fiber >= 3.5);
-    if (!calorieAware) {
-      warnings.push(`Weight-control top candidate is not clearly kcal/fat/fiber aware: kcal=${kcal}, fat=${fat}, fiber=${fiber}`);
+    if (!isCalorieAware(first)) {
+      warnings.push(`Weight-control top candidate is not clearly kcal/fat/fiber aware: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}, fiber=${first.nutrition?.fiber_percent}`);
+    }
+  }
+
+  if (testCase.goal === "sterilised" && top.length > 0) {
+    const first = top[0];
+    if (!isCalorieAware(first)) {
+      warnings.push("Sterilised case top candidate is not clearly calorie/neuter aware.");
+    }
+    if (isTooEnergyDenseForSterilised(first)) {
+      warnings.push(`Sterilised case top candidate looks too energy-dense or active-positioned: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}`);
+    }
+  }
+
+  if (testCase.goal === "senior" && top.length > 0) {
+    const seniorTerms = ["senior", "mature", "ageing", "aging", "joint", "mobility", "mini age"];
+    if (!hasAnyInFirst(top, seniorTerms, 3)) {
+      warnings.push("Senior case did not surface senior/mature/joint-oriented candidates in the first three visible foods.");
+    }
+  }
+
+  if (testCase.expected.activityLevel === "high" && testCase.goal === "general" && top.length > 0) {
+    const first = top[0];
+    const lowEnergyOrDietPositioned =
+      /sterilised|sterilized|light|weight|satiety|obesity|renal|urinary/i.test(itemDecisionText(first)) ||
+      (typeof first.nutrition?.kcal_per_100g === "number" && first.nutrition.kcal_per_100g < 340);
+    if (lowEnergyOrDietPositioned && !isClearlyHighEnergy(first)) {
+      warnings.push(`High-activity general case top candidate looks diet/medical or too low-energy: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}`);
     }
   }
 
@@ -835,7 +913,7 @@ function renderReport(results: CaseResult[]) {
     `- Passed: ${passed}`,
     `- Needs review: ${review}`,
     "",
-    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, and weight-control kcal/fat/fiber logic.",
+    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and high-activity mismatch guards.",
     "",
     results.some((item) => item.extractionSource === "openai")
       ? "OpenAI fact extraction was checked for each case."
