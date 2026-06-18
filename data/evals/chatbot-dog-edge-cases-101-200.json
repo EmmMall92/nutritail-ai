@@ -2,105 +2,1258 @@
   "source": "user_supplied_dog_cases_101_200",
   "purpose": "Expanded dog golden cases for recommendation accuracy, safety triage, and customer-facing answer quality.",
   "cases": [
-    {"id":"dog-101-husky-summer-low-appetite","locale":"el-GR","prompt":"Έχω Husky 2 ετών, 25kg, τρώει ελάχιστα το καλοκαίρι.","expectedSignals":["active"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","weight"]},
-    {"id":"dog-102-husky-working-mountain","locale":"el-GR","prompt":"Έχω Husky 25kg που δουλεύει σε βουνό.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","protein"]},
-    {"id":"dog-103-akita-chicken-sensitive","locale":"el-GR","prompt":"Έχω Akita 38kg με ευαισθησία στο κοτόπουλο.","expectedSignals":["allergy","chicken","large_breed"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-104-boxer-gas","locale":"el-GR","prompt":"Έχω Boxer 28kg με χρόνια αέρια.","expectedSignals":["digestive","large_breed"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-105-rottweiler-8m","locale":"el-GR","prompt":"Έχω Rottweiler 45kg 8 μηνών.","expectedSignals":["growth","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calcium","phosphorus"]},
-    {"id":"dog-106-cane-corso-12m","locale":"el-GR","prompt":"Έχω Cane Corso 55kg 12 μηνών.","expectedSignals":["growth","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calcium","phosphorus"]},
-    {"id":"dog-107-great-dane-7m","locale":"el-GR","prompt":"Έχω Great Dane 60kg 7 μηνών.","expectedSignals":["growth","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calcium","phosphorus"]},
-    {"id":"dog-108-saint-bernard-puppy","locale":"el-GR","prompt":"Έχω Saint Bernard 65kg κουτάβι.","expectedSignals":["growth","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calcium","phosphorus"]},
-    {"id":"dog-109-doberman-athletic","locale":"el-GR","prompt":"Έχω Doberman 35kg πολύ αθλητικό.","expectedSignals":["active","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","protein"]},
-    {"id":"dog-110-malinois-training","locale":"el-GR","prompt":"Έχω Belgian Malinois που εκπαιδεύεται καθημερινά.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","protein"]},
-    {"id":"dog-111-hunting-high-calorie","locale":"el-GR","prompt":"Έχω σκύλο 18kg που κυνηγάει και καίει πολλές θερμίδες.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-112-apartment-only","locale":"el-GR","prompt":"Έχω σκύλο 20kg που ζει αποκλειστικά σε διαμέρισμα.","expectedSignals":["weight"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","portion"]},
-    {"id":"dog-113-agility","locale":"el-GR","prompt":"Έχω σκύλο που κάνει agility 4 φορές την εβδομάδα.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","protein"]},
-    {"id":"dog-114-daily-swimming","locale":"el-GR","prompt":"Έχω σκύλο που κολυμπάει καθημερινά.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-115-runs-10k","locale":"el-GR","prompt":"Έχω σκύλο που τρέχει μαζί μου 10km.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","protein"]},
-    {"id":"dog-116-just-neutered","locale":"el-GR","prompt":"Έχω σκύλο που μόλις στειρώθηκε.","expectedSignals":["neutered"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","portion"]},
-    {"id":"dog-117-gained-after-neuter","locale":"el-GR","prompt":"Έχω σκύλο που πήρε 3kg μετά τη στείρωση.","expectedSignals":["neutered","weight"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","treats"]},
-    {"id":"dog-118-unexplained-weight-loss","locale":"el-GR","prompt":"Έχω σκύλο που χάνει βάρος χωρίς λόγο.","expectedSignals":["weight"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian","weight"]},
-    {"id":"dog-119-begging","locale":"el-GR","prompt":"Έχω σκύλο που ζητιανεύει συνέχεια.","expectedSignals":["weight"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["treats","calories"]},
-    {"id":"dog-120-eats-fast","locale":"el-GR","prompt":"Έχω σκύλο που τρώει πολύ γρήγορα.","expectedSignals":["feeding_behavior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-121-vomits-empty-stomach","locale":"el-GR","prompt":"Έχω σκύλο που κάνει εμετό όταν μένει νηστικός.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-122-morning-vomit","locale":"el-GR","prompt":"Έχω σκύλο που κάνει εμετό μόνο το πρωί.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-123-eats-grass","locale":"el-GR","prompt":"Έχω σκύλο που τρώει χόρτα συχνά.","expectedSignals":["digestive"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-124-coprophagia","locale":"el-GR","prompt":"Έχω σκύλο που τρώει περιττώματα.","expectedSignals":["feeding_behavior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-125-licks-paws","locale":"el-GR","prompt":"Έχω σκύλο που γλείφει πατούσες συνέχεια.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-126-itches-after-food","locale":"el-GR","prompt":"Έχω σκύλο που ξύνεται μετά το φαγητό.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-127-bites-tail","locale":"el-GR","prompt":"Έχω σκύλο που δαγκώνει την ουρά του.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-128-ear-infections","locale":"el-GR","prompt":"Έχω σκύλο με συχνές ωτίτιδες.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-129-chronic-itch","locale":"el-GR","prompt":"Έχω σκύλο με χρόνιο κνησμό.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-130-poor-coat","locale":"el-GR","prompt":"Έχω σκύλο με κακή ποιότητα τριχώματος.","expectedSignals":["skin_coat"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-131-constipation","locale":"el-GR","prompt":"Έχω σκύλο με δυσκοιλιότητα.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["fiber","veterinarian"]},
-    {"id":"dog-132-chronic-soft-stool","locale":"el-GR","prompt":"Έχω σκύλο με χρόνια μαλακά κόπρανα.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-133-ibd","locale":"el-GR","prompt":"Έχω σκύλο με IBD.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-134-epi","locale":"el-GR","prompt":"Έχω σκύλο με εξωκρινή παγκρεατική ανεπάρκεια.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-135-gastritis","locale":"el-GR","prompt":"Έχω σκύλο με συχνή γαστρίτιδα.","expectedSignals":["digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinarian"]},
-    {"id":"dog-136-food-intolerance","locale":"el-GR","prompt":"Έχω σκύλο με τροφική δυσανεξία.","expectedSignals":["allergy","digestive"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-137-no-dairy","locale":"el-GR","prompt":"Έχω σκύλο που δεν αντέχει τα γαλακτοκομικά.","expectedSignals":["avoidance"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-138-no-legumes","locale":"el-GR","prompt":"Έχω σκύλο που δεν αντέχει τα όσπρια.","expectedSignals":["avoidance"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-139-no-rice","locale":"el-GR","prompt":"Έχω σκύλο που δεν αντέχει το ρύζι.","expectedSignals":["avoidance"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-140-no-lamb","locale":"el-GR","prompt":"Έχω σκύλο που δεν αντέχει το αρνί.","expectedSignals":["avoidance"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-141-chicken-turkey-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό σε κοτόπουλο και γαλοπούλα.","expectedSignals":["allergy","chicken"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-142-salmon-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό σε σολομό.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-143-beef-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό στο μοσχάρι.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-144-wheat-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό στο σιτάρι.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-145-corn-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό στο καλαμπόκι.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-146-many-ingredient-allergy","locale":"el-GR","prompt":"Έχω σκύλο αλλεργικό σε πολλά συστατικά.","expectedSignals":["allergy"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["ingredient","veterinarian"]},
-    {"id":"dog-147-fish-only","locale":"el-GR","prompt":"Έχω σκύλο που τρώει μόνο ψάρι.","expectedSignals":["avoidance"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-148-wet-only","locale":"el-GR","prompt":"Έχω σκύλο που τρώει μόνο κονσέρβα.","expectedSignals":["wet_food"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-149-refuses-dry","locale":"el-GR","prompt":"Έχω σκύλο που αρνείται όλες τις ξηρές τροφές.","expectedSignals":["fussy"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["transition"]},
-    {"id":"dog-150-eats-with-wet","locale":"el-GR","prompt":"Έχω σκύλο που τρώει μόνο όταν βάλω υγρή.","expectedSignals":["fussy"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-151-urinary-problem","locale":"el-GR","prompt":"Έχω σκύλο με ουρικό πρόβλημα.","expectedSignals":["urinary"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["minerals","veterinarian"]},
-    {"id":"dog-152-struvite-history","locale":"el-GR","prompt":"Έχω σκύλο με ιστορικό στρουβίτη.","expectedSignals":["urinary"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["minerals","veterinarian"]},
-    {"id":"dog-153-oxalate-history","locale":"el-GR","prompt":"Έχω σκύλο με ιστορικό οξαλικών λίθων.","expectedSignals":["urinary"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["minerals","veterinarian"]},
-    {"id":"dog-154-ckd","locale":"el-GR","prompt":"Έχω σκύλο με χρόνια νεφρική νόσο.","expectedSignals":["kidney"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["phosphorus","veterinary"]},
-    {"id":"dog-155-high-urea","locale":"el-GR","prompt":"Έχω σκύλο με αυξημένη ουρία.","expectedSignals":["kidney"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-156-high-creatinine","locale":"el-GR","prompt":"Έχω σκύλο με αυξημένη κρεατινίνη.","expectedSignals":["kidney"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-157-liver-disease","locale":"el-GR","prompt":"Έχω σκύλο με ηπατική νόσο.","expectedSignals":["liver"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-158-high-liver-enzymes","locale":"el-GR","prompt":"Έχω σκύλο με αυξημένα ηπατικά ένζυμα.","expectedSignals":["liver"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-159-cholecystitis","locale":"el-GR","prompt":"Έχω σκύλο με χολοκυστίτιδα.","expectedSignals":["liver"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-160-heart-disease","locale":"el-GR","prompt":"Έχω σκύλο με χρόνια καρδιοπάθεια.","expectedSignals":["cardiac"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-161-arthritis","locale":"el-GR","prompt":"Έχω σκύλο με αρθρίτιδα.","expectedSignals":["joint"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-162-hip-dysplasia","locale":"el-GR","prompt":"Έχω σκύλο με δυσπλασία ισχίου.","expectedSignals":["joint"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-163-elbow-dysplasia","locale":"el-GR","prompt":"Έχω σκύλο με δυσπλασία αγκώνα.","expectedSignals":["joint"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-164-cruciate-surgery","locale":"el-GR","prompt":"Έχω σκύλο μετά από χειρουργείο χιαστού.","expectedSignals":["joint"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-165-chronic-joint-pain","locale":"el-GR","prompt":"Έχω σκύλο με χρόνιο πόνο στις αρθρώσεις.","expectedSignals":["joint"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-166-low-muscle","locale":"el-GR","prompt":"Έχω σκύλο με χαμηλή μυϊκή μάζα.","expectedSignals":["senior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["protein","veterinary"]},
-    {"id":"dog-167-post-op-recovery","locale":"el-GR","prompt":"Έχω σκύλο που αναρρώνει από επέμβαση.","expectedSignals":["recovery"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-168-after-hospital","locale":"el-GR","prompt":"Έχω σκύλο μετά από νοσηλεία.","expectedSignals":["recovery"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-169-needs-weight-gain","locale":"el-GR","prompt":"Έχω σκύλο που χρειάζεται να πάρει βάρος.","expectedSignals":["weight"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]},
-    {"id":"dog-170-needs-muscle-gain","locale":"el-GR","prompt":"Έχω σκύλο που χρειάζεται να πάρει μυϊκή μάζα.","expectedSignals":["muscle"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["protein","veterinary"]},
-    {"id":"dog-171-pregnant","locale":"el-GR","prompt":"Έχω έγκυο σκύλα.","expectedSignals":["growth"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]},
-    {"id":"dog-172-lactating-six-puppies","locale":"el-GR","prompt":"Έχω σκύλα που θηλάζει 6 κουτάβια.","expectedSignals":["growth"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]},
-    {"id":"dog-173-lactating-ten-puppies","locale":"el-GR","prompt":"Έχω σκύλα που θηλάζει 10 κουτάβια.","expectedSignals":["growth"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]},
-    {"id":"dog-174-post-weaning-dam","locale":"el-GR","prompt":"Έχω σκύλα μετά τον απογαλακτισμό.","expectedSignals":["reproduction"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-175-orphan-puppy","locale":"el-GR","prompt":"Έχω κουτάβι ορφανό.","expectedSignals":["growth"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-176-just-weaned-puppy","locale":"el-GR","prompt":"Έχω κουτάβι που μόλις απογαλακτίστηκε.","expectedSignals":["growth"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["growth","calories"]},
-    {"id":"dog-177-very-small-puppy","locale":"el-GR","prompt":"Έχω κουτάβι πολύ μικρόσωμης φυλής.","expectedSignals":["growth"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["growth"]},
-    {"id":"dog-178-giant-puppy","locale":"el-GR","prompt":"Έχω κουτάβι γιγαντόσωμης φυλής.","expectedSignals":["growth","large_breed"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calcium","phosphorus"]},
-    {"id":"dog-179-poor-growth-puppy","locale":"el-GR","prompt":"Έχω κουτάβι με κακή ανάπτυξη.","expectedSignals":["growth"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-180-thin-puppy","locale":"el-GR","prompt":"Έχω κουτάβι πολύ αδύνατο.","expectedSignals":["growth","weight"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]},
-    {"id":"dog-181-sixteen-year-old","locale":"el-GR","prompt":"Έχω σκύλο 16 ετών.","expectedSignals":["senior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["senior"]},
-    {"id":"dog-182-seventeen-year-old","locale":"el-GR","prompt":"Έχω σκύλο 17 ετών.","expectedSignals":["senior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["senior"]},
-    {"id":"dog-183-cognitive-dysfunction","locale":"el-GR","prompt":"Έχω σκύλο με άνοια.","expectedSignals":["senior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary","senior"]},
-    {"id":"dog-184-smell-food-poorly","locale":"el-GR","prompt":"Έχω σκύλο που δεν μυρίζει καλά το φαγητό.","expectedSignals":["senior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-185-no-teeth","locale":"el-GR","prompt":"Έχω σκύλο που δεν έχει δόντια.","expectedSignals":["senior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-186-chokes-large-kibble","locale":"el-GR","prompt":"Έχω σκύλο που πνίγεται με μεγάλες κροκέτες.","expectedSignals":["chewing"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-187-low-activity-age","locale":"el-GR","prompt":"Έχω σκύλο με λίγες δραστηριότητες λόγω ηλικίας.","expectedSignals":["senior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories","senior"]},
-    {"id":"dog-188-sleeps-20-hours","locale":"el-GR","prompt":"Έχω σκύλο που κοιμάται 20 ώρες τη μέρα.","expectedSignals":["senior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary","senior"]},
-    {"id":"dog-189-low-appetite-age","locale":"el-GR","prompt":"Έχω σκύλο με χαμηλή όρεξη λόγω ηλικίας.","expectedSignals":["senior"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary","senior"]},
-    {"id":"dog-190-easy-chewing","locale":"el-GR","prompt":"Έχω σκύλο που χρειάζεται εύκολη μάσηση.","expectedSignals":["senior"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-191-hot-climate","locale":"el-GR","prompt":"Έχω σκύλο σε πολύ ζεστό κλίμα.","expectedSignals":["hydration"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["water"]},
-    {"id":"dog-192-cold-climate","locale":"el-GR","prompt":"Έχω σκύλο σε πολύ ψυχρό κλίμα.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-193-outside-only","locale":"el-GR","prompt":"Έχω σκύλο που ζει αποκλειστικά έξω.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-194-apartment-no-yard","locale":"el-GR","prompt":"Έχω σκύλο σε πολυκατοικία χωρίς αυλή.","expectedSignals":["weight"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-195-farm-dog","locale":"el-GR","prompt":"Έχω σκύλο σε αγρόκτημα.","expectedSignals":["active"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["calories"]},
-    {"id":"dog-196-travels-often","locale":"el-GR","prompt":"Έχω σκύλο που ταξιδεύει συχνά.","expectedSignals":["travel"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-197-changes-country","locale":"el-GR","prompt":"Έχω σκύλο που αλλάζει χώρα κάθε λίγους μήνες.","expectedSignals":["travel"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["ingredient"]},
-    {"id":"dog-198-multi-dog-home","locale":"el-GR","prompt":"Έχω σκύλο που ζει με άλλους 4 σκύλους.","expectedSignals":["multi_pet"],"expectedSafetyLevel":"normal","expectedResponseMustMention":["portion"]},
-    {"id":"dog-199-rescue-unknown-history","locale":"el-GR","prompt":"Έχω σκύλο rescue με άγνωστο ιστορικό.","expectedSignals":["rescue"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["veterinary"]},
-    {"id":"dog-200-rescue-malnourished","locale":"el-GR","prompt":"Έχω σκύλο rescue που βρέθηκε υποσιτισμένος.","expectedSignals":["weight"],"expectedSafetyLevel":"caution","expectedResponseMustMention":["calories","veterinary"]}
+    {
+      "id": "dog-101-husky-summer-low-appetite",
+      "locale": "el-GR",
+      "prompt": "??? Husky 2 ????, 25kg, ????? ???????? ?? ?????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "weight"
+      ]
+    },
+    {
+      "id": "dog-102-husky-working-mountain",
+      "locale": "el-GR",
+      "prompt": "??? Husky 25kg ??? ???????? ?? ?????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "protein"
+      ]
+    },
+    {
+      "id": "dog-103-akita-chicken-sensitive",
+      "locale": "el-GR",
+      "prompt": "??? Akita 38kg ?? ?????????? ??? ?????????.",
+      "expectedSignals": [
+        "allergy",
+        "chicken",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-104-boxer-gas",
+      "locale": "el-GR",
+      "prompt": "??? Boxer 28kg ?? ?????? ?????.",
+      "expectedSignals": [
+        "digestive",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-105-rottweiler-8m",
+      "locale": "el-GR",
+      "prompt": "??? Rottweiler 45kg 8 ?????.",
+      "expectedSignals": [
+        "growth",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calcium",
+        "phosphorus"
+      ]
+    },
+    {
+      "id": "dog-106-cane-corso-12m",
+      "locale": "el-GR",
+      "prompt": "??? Cane Corso 55kg 12 ?????.",
+      "expectedSignals": [
+        "growth",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calcium",
+        "phosphorus"
+      ]
+    },
+    {
+      "id": "dog-107-great-dane-7m",
+      "locale": "el-GR",
+      "prompt": "??? Great Dane 60kg 7 ?????.",
+      "expectedSignals": [
+        "growth",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calcium",
+        "phosphorus"
+      ]
+    },
+    {
+      "id": "dog-108-saint-bernard-puppy",
+      "locale": "el-GR",
+      "prompt": "??? Saint Bernard 65kg ???????.",
+      "expectedSignals": [
+        "growth",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calcium",
+        "phosphorus"
+      ]
+    },
+    {
+      "id": "dog-109-doberman-athletic",
+      "locale": "el-GR",
+      "prompt": "??? Doberman 35kg ???? ????????.",
+      "expectedSignals": [
+        "active",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "protein"
+      ]
+    },
+    {
+      "id": "dog-110-malinois-training",
+      "locale": "el-GR",
+      "prompt": "??? Belgian Malinois ??? ???????????? ??????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "protein"
+      ]
+    },
+    {
+      "id": "dog-111-hunting-high-calorie",
+      "locale": "el-GR",
+      "prompt": "??? ????? 18kg ??? ???????? ??? ????? ?????? ????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-112-apartment-only",
+      "locale": "el-GR",
+      "prompt": "??? ????? 20kg ??? ??? ???????????? ?? ??????????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-113-agility",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? agility 4 ????? ??? ????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "protein"
+      ]
+    },
+    {
+      "id": "dog-114-daily-swimming",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????????? ??????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-115-runs-10k",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ?????? ???? ??? 10km.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "protein"
+      ]
+    },
+    {
+      "id": "dog-116-just-neutered",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ??????????.",
+      "expectedSignals": [
+        "neutered"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-117-gained-after-neuter",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ???? 3kg ???? ?? ????????.",
+      "expectedSignals": [
+        "neutered",
+        "weight"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "treats"
+      ]
+    },
+    {
+      "id": "dog-118-unexplained-weight-loss",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ????? ????? ????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian",
+        "weight"
+      ]
+    },
+    {
+      "id": "dog-119-begging",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ?????????? ????????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "treats",
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-120-eats-fast",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ???? ???????.",
+      "expectedSignals": [
+        "feeding_behavior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-121-vomits-empty-stomach",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ????? ???? ????? ????????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-122-morning-vomit",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ????? ???? ?? ????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-123-eats-grass",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ????? ?????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-124-coprophagia",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ???????????.",
+      "expectedSignals": [
+        "feeding_behavior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-125-licks-paws",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??????? ???????? ????????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-126-itches-after-food",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??????? ???? ?? ??????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-127-bites-tail",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ???????? ??? ???? ???.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-128-ear-infections",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ????????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-129-chronic-itch",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ??????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-130-poor-coat",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???? ???????? ??????????.",
+      "expectedSignals": [
+        "skin_coat"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-131-constipation",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????????????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "fiber",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-132-chronic-soft-stool",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ?????? ???????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-133-ibd",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? IBD.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-134-epi",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ??????????? ??????????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-135-gastritis",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ????? ??????????.",
+      "expectedSignals": [
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-136-food-intolerance",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ??????? ?????????.",
+      "expectedSignals": [
+        "allergy",
+        "digestive"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-137-no-dairy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ??????? ?? ?????????????.",
+      "expectedSignals": [
+        "avoidance"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-138-no-legumes",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ??????? ?? ??????.",
+      "expectedSignals": [
+        "avoidance"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-139-no-rice",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ??????? ?? ????.",
+      "expectedSignals": [
+        "avoidance"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-140-no-lamb",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ??????? ?? ????.",
+      "expectedSignals": [
+        "avoidance"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-141-chicken-turkey-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ?? ????????? ??? ?????????.",
+      "expectedSignals": [
+        "allergy",
+        "chicken"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-142-salmon-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ?? ??????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-143-beef-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ??? ???????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-144-wheat-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ??? ??????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-145-corn-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ??? ?????????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-146-many-ingredient-allergy",
+      "locale": "el-GR",
+      "prompt": "??? ????? ????????? ?? ????? ?????????.",
+      "expectedSignals": [
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "ingredient",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-147-fish-only",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ???? ????.",
+      "expectedSignals": [
+        "avoidance"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-148-wet-only",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ???? ????????.",
+      "expectedSignals": [
+        "wet_food"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-149-refuses-dry",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ???????? ???? ??? ????? ??????.",
+      "expectedSignals": [
+        "fussy"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "transition"
+      ]
+    },
+    {
+      "id": "dog-150-eats-with-wet",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????? ???? ???? ???? ????.",
+      "expectedSignals": [
+        "fussy"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-151-urinary-problem",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ????????.",
+      "expectedSignals": [
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "minerals",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-152-struvite-history",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ?????????.",
+      "expectedSignals": [
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "minerals",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-153-oxalate-history",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ???????? ?????.",
+      "expectedSignals": [
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "minerals",
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "dog-154-ckd",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ??????? ????.",
+      "expectedSignals": [
+        "kidney"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "phosphorus",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-155-high-urea",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ?????.",
+      "expectedSignals": [
+        "kidney"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-156-high-creatinine",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ??????????.",
+      "expectedSignals": [
+        "kidney"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-157-liver-disease",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ??????? ????.",
+      "expectedSignals": [
+        "liver"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-158-high-liver-enzymes",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????? ??????? ??????.",
+      "expectedSignals": [
+        "liver"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-159-cholecystitis",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????????????.",
+      "expectedSignals": [
+        "liver"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-160-heart-disease",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ????????????.",
+      "expectedSignals": [
+        "cardiac"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-161-arthritis",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????????.",
+      "expectedSignals": [
+        "joint"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-162-hip-dysplasia",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ????????? ??????.",
+      "expectedSignals": [
+        "joint"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-163-elbow-dysplasia",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ????????? ??????.",
+      "expectedSignals": [
+        "joint"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-164-cruciate-surgery",
+      "locale": "el-GR",
+      "prompt": "??? ????? ???? ??? ??????????? ???????.",
+      "expectedSignals": [
+        "joint"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-165-chronic-joint-pain",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ???? ???? ?????????.",
+      "expectedSignals": [
+        "joint"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-166-low-muscle",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ????? ????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "protein",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-167-post-op-recovery",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????????? ??? ????????.",
+      "expectedSignals": [
+        "recovery"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-168-after-hospital",
+      "locale": "el-GR",
+      "prompt": "??? ????? ???? ??? ????????.",
+      "expectedSignals": [
+        "recovery"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-169-needs-weight-gain",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ?????????? ?? ????? ?????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-170-needs-muscle-gain",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ?????????? ?? ????? ????? ????.",
+      "expectedSignals": [
+        "muscle"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "protein",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-171-pregnant",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-172-lactating-six-puppies",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??????? 6 ????????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-173-lactating-ten-puppies",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??????? 10 ????????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-174-post-weaning-dam",
+      "locale": "el-GR",
+      "prompt": "??? ????? ???? ??? ?????????????.",
+      "expectedSignals": [
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-175-orphan-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ??????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-176-just-weaned-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ??? ????? ???????????????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "growth",
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-177-very-small-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ???? ?????????? ?????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "growth"
+      ]
+    },
+    {
+      "id": "dog-178-giant-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ???????????? ?????.",
+      "expectedSignals": [
+        "growth",
+        "large_breed"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calcium",
+        "phosphorus"
+      ]
+    },
+    {
+      "id": "dog-179-poor-growth-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ?? ???? ????????.",
+      "expectedSignals": [
+        "growth"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-180-thin-puppy",
+      "locale": "el-GR",
+      "prompt": "??? ??????? ???? ???????.",
+      "expectedSignals": [
+        "growth",
+        "weight"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-181-sixteen-year-old",
+      "locale": "el-GR",
+      "prompt": "??? ????? 16 ????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-182-seventeen-year-old",
+      "locale": "el-GR",
+      "prompt": "??? ????? 17 ????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-183-cognitive-dysfunction",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary",
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-184-smell-food-poorly",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ??????? ???? ?? ??????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-185-no-teeth",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ???? ??????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-186-chokes-large-kibble",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ???????? ?? ??????? ????????.",
+      "expectedSignals": [
+        "chewing"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-187-low-activity-age",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ????? ?????????????? ???? ???????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories",
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-188-sleeps-20-hours",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ???????? 20 ???? ?? ????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary",
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-189-low-appetite-age",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????? ????? ???? ???????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary",
+        "senior"
+      ]
+    },
+    {
+      "id": "dog-190-easy-chewing",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ?????????? ?????? ??????.",
+      "expectedSignals": [
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-191-hot-climate",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???? ????? ?????.",
+      "expectedSignals": [
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "water"
+      ]
+    },
+    {
+      "id": "dog-192-cold-climate",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???? ????? ?????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-193-outside-only",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ???????????? ???.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-194-apartment-no-yard",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ???????????? ????? ????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-195-farm-dog",
+      "locale": "el-GR",
+      "prompt": "??? ????? ?? ?????????.",
+      "expectedSignals": [
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "calories"
+      ]
+    },
+    {
+      "id": "dog-196-travels-often",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ????????? ?????.",
+      "expectedSignals": [
+        "travel"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-197-changes-country",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??????? ???? ???? ?????? ?????.",
+      "expectedSignals": [
+        "travel"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "ingredient"
+      ]
+    },
+    {
+      "id": "dog-198-multi-dog-home",
+      "locale": "el-GR",
+      "prompt": "??? ????? ??? ??? ?? ?????? 4 ???????.",
+      "expectedSignals": [
+        "multi_pet"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": [
+        "portion"
+      ]
+    },
+    {
+      "id": "dog-199-rescue-unknown-history",
+      "locale": "el-GR",
+      "prompt": "??? ????? rescue ?? ??????? ????????.",
+      "expectedSignals": [
+        "rescue"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "veterinary"
+      ]
+    },
+    {
+      "id": "dog-200-rescue-malnourished",
+      "locale": "el-GR",
+      "prompt": "??? ????? rescue ??? ??????? ?????????????.",
+      "expectedSignals": [
+        "weight"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": [
+        "calories",
+        "veterinary"
+      ]
+    }
   ]
 }
