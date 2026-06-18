@@ -61,6 +61,16 @@ const checks = [
     file: "app/account/chatbot/page.tsx",
     expected: "/account/chatbot?petId=${savedPetId}&mode=progress",
   },
+  {
+    label: "Recommendation cards preview grams before choosing food",
+    file: "app/account/chatbot/page.tsx",
+    expected: "getRecommendationChoicePortionPreview",
+  },
+  {
+    label: "Recommendation cards expose customer portion label",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Estimated portion",
+  },
 ];
 
 async function runCheck(check) {
