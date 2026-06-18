@@ -21,6 +21,7 @@ const sampleResponse = {
         cautions: [
           "Data is usable but still needs review.",
           "Retailer source should be worded cautiously.",
+          "Fat looks high for a sterilised or weight-prone pet.",
         ],
       },
       nutrition: {
@@ -62,6 +63,9 @@ const forbiddenTerms = [
   "data quality",
   "missing nutrition",
   "missing_nutrition",
+  "fat looks high",
+  "renal cases need",
+  "urinary reasoning is weaker",
   "role:",
   "use case:",
   "ρόλος:",

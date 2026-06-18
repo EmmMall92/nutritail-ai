@@ -83,11 +83,34 @@ const checks = [
   },
 ];
 
+const forbiddenChecks = [
+  {
+    label: "Current-food candidate copy does not expose matcher score",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "${confidence}, score ${score}",
+  },
+  {
+    label: "Current-food quality note does not expose data-quality label",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Data quality:",
+  },
+];
+
 async function runCheck(check) {
   const content = await readFile(check.file, "utf8");
   const ok = content.includes(check.expected);
   return {
     ...check,
+    ok,
+  };
+}
+
+async function runForbiddenCheck(check) {
+  const content = await readFile(check.file, "utf8");
+  const ok = !content.includes(check.forbidden);
+  return {
+    label: check.label,
+    file: check.file,
     ok,
   };
 }
@@ -108,6 +131,10 @@ async function main() {
 
   for (const check of checks) {
     rows.push(await runCheck(check));
+  }
+
+  for (const check of forbiddenChecks) {
+    rows.push(await runForbiddenCheck(check));
   }
 
   const passed = rows.filter((row) => row.ok).length;
