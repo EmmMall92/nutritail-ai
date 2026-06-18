@@ -259,6 +259,14 @@ function cautions(input: FoodIntelligenceInput) {
   ) {
     result.push("Urinary-positioned use needs magnesium and phosphorus context.");
   }
+  if (
+    hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
+    !hasNumber(input.nutrients?.epa_percent) &&
+    !hasNumber(input.nutrients?.dha_percent) &&
+    !hasNumber(input.nutrients?.epa_dha_percent)
+  ) {
+    result.push("Skin/coat positioning is weaker without declared EPA/DHA detail.");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -329,6 +337,14 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "limited_protein_allergy_review");
   }
+  if (
+    hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
+    (hasNumber(nutrients.epa_percent) ||
+      hasNumber(nutrients.dha_percent) ||
+      hasNumber(nutrients.epa_dha_percent))
+  ) {
+    addUnique(result, "skin_coat_omega_review");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -360,6 +376,14 @@ function notIdealCases(input: FoodIntelligenceInput) {
     animalProteinCount(input) > 2
   ) {
     cases.push("strict_allergy_trial_with_many_proteins");
+  }
+  if (
+    hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
+    !hasNumber(input.nutrients?.epa_percent) &&
+    !hasNumber(input.nutrients?.dha_percent) &&
+    !hasNumber(input.nutrients?.epa_dha_percent)
+  ) {
+    cases.push("skin_coat_without_omega_detail");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 

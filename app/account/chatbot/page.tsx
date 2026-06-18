@@ -402,6 +402,11 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       en: "renal cases without full phosphorus data",
     },
     senior: { el: "ηλικιωμένο ζώο", en: "senior pets" },
+    skin_coat_omega_review: { el: "δέρμα και τρίχωμα", en: "skin and coat support" },
+    skin_coat_without_omega_detail: {
+      el: "δέρμα/τρίχωμα χωρίς πλήρη omega στοιχεία",
+      en: "skin/coat cases without full omega detail",
+    },
     small_breed: { el: "μικρόσωμο ζώο", en: "small breeds" },
     sterilised: { el: "στειρωμένο ζώο", en: "sterilised pets" },
     sensitive_digestion: { el: "ευαίσθητη πέψη", en: "sensitive digestion" },
