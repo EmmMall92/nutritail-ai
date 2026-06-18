@@ -101,6 +101,7 @@
     "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
     "qa:dog-edge-fixture": "tsx scripts/qa/check-dog-edge-case-fixture.ts",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
+    "qa:chatbot-golden-suite": "node scripts/qa/run-chatbot-golden-suite.mjs",
     "audit:dog-chatbot-golden-coverage": "node scripts/qa/audit-dog-chatbot-golden-coverage.mjs",
     "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
