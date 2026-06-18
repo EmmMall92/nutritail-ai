@@ -171,6 +171,60 @@ if (activeHighFatRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const weightControlFood = food({
+  id: "weight-control",
+  formula_key: "qa|weight-control|dog|dry",
+  display_name: "Adult Light Weight Control Chicken",
+  dog_size: "large",
+  commercial_tags: ["weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 320,
+});
+const highEnergyAdultFood = food({
+  id: "high-energy-adult",
+  formula_key: "qa|high-energy-adult|dog|dry",
+  display_name: "Adult Chicken Energy Rich",
+  dog_size: "large",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 396,
+});
+const weightControlRanking = rankFoodV2ForPet({
+  food: weightControlFood,
+  nutrients: {
+    ...nutrients(weightControlFood),
+    protein_percent: 29,
+    fat_percent: 9,
+    fiber_percent: 7,
+  },
+  pet: weightSensitivePet,
+  goal: "weight_control",
+});
+const highEnergyAdultRanking = rankFoodV2ForPet({
+  food: highEnergyAdultFood,
+  nutrients: {
+    ...nutrients(highEnergyAdultFood),
+    protein_percent: 25,
+    fat_percent: 17,
+    fiber_percent: 2,
+  },
+  pet: weightSensitivePet,
+  goal: "weight_control",
+});
+
+if (weightControlRanking.total_score <= highEnergyAdultRanking.total_score) {
+  console.error("Weight-control food should outrank high-energy adult food for weight-loss cases.");
+  console.error({ weightControlRanking, highEnergyAdultRanking });
+  process.exit(1);
+}
+
+if (!weightControlRanking.signals.some((signal) => signal.code === "obesity_satiety_fiber")) {
+  console.error("Expected obesity_satiety_fiber signal for weight-control food.");
+  console.error(weightControlRanking.signals);
+  process.exit(1);
+}
+
 const highActivityPet = {
   ...pet,
   weight: 25,
@@ -201,6 +255,73 @@ if (activeFitRanking.bucket === "hold") {
 if (!activeFitRanking.signals.some((signal) => signal.code === "active_formula_activity_fit")) {
   console.error("Expected active_formula_activity_fit for high-activity adult dog.");
   console.error(activeFitRanking.signals);
+  process.exit(1);
+}
+
+const seniorPet = {
+  ...pet,
+  weight: 15,
+  age: 11,
+  activityLevel: "low" as const,
+  neutered: true,
+  healthIssues: ["senior mobility"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const seniorFood = food({
+  id: "senior-food",
+  formula_key: "qa|senior-food|dog|dry",
+  display_name: "Senior 8+ Chicken",
+  life_stage: "senior",
+  dog_size: "medium",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 335,
+});
+const genericAdultFood = food({
+  id: "generic-adult",
+  formula_key: "qa|generic-adult|dog|dry",
+  display_name: "Adult Maintenance Chicken",
+  life_stage: "adult",
+  dog_size: "medium",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
+const seniorRanking = rankFoodV2ForPet({
+  food: seniorFood,
+  nutrients: {
+    ...nutrients(seniorFood),
+    protein_percent: 25,
+    fat_percent: 10,
+    fiber_percent: 4,
+    epa_dha_percent: 0.25,
+    glucosamine_mgkg: 400,
+  },
+  pet: seniorPet,
+  goal: "senior",
+});
+const genericAdultSeniorRanking = rankFoodV2ForPet({
+  food: genericAdultFood,
+  nutrients: {
+    ...nutrients(genericAdultFood),
+    protein_percent: 23,
+    fat_percent: 15,
+    fiber_percent: 2,
+  },
+  pet: seniorPet,
+  goal: "senior",
+});
+
+if (seniorRanking.total_score <= genericAdultSeniorRanking.total_score) {
+  console.error("Senior-positioned food should outrank generic adult food for senior cases.");
+  console.error({ seniorRanking, genericAdultSeniorRanking });
+  process.exit(1);
+}
+
+if (!seniorRanking.signals.some((signal) => signal.code === "senior_mobility_support_signal")) {
+  console.error("Expected senior_mobility_support_signal for senior mobility food.");
+  console.error(seniorRanking.signals);
   process.exit(1);
 }
 
