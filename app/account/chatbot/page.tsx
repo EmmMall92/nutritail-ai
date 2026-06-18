@@ -91,6 +91,8 @@ type RecommendedFoodChoice = {
   score?: number | null;
   reason?: string;
   caution?: string;
+  bestUseCases?: string[];
+  notIdealCases?: string[];
   kcalPer100g?: number | null;
   proteinPercent?: number | null;
   fatPercent?: number | null;
@@ -385,6 +387,56 @@ function formatRecommendationChoiceCaution(
   return undefined;
 }
 
+function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
+  const key = value.trim().toLowerCase().replace(/\s+/g, "_");
+  const labels: Record<string, { el: string; en: string }> = {
+    adult: { el: "ενήλικο ζώο", en: "adult pets" },
+    all_life_stages: { el: "πολλαπλά στάδια ζωής", en: "multiple life stages" },
+    allergy: { el: "ιστορικό αλλεργίας", en: "allergy history" },
+    chicken_allergy: { el: "αλλεργία στο κοτόπουλο", en: "chicken allergy" },
+    gi_support: { el: "ευαίσθητη πέψη", en: "sensitive digestion" },
+    hairball: { el: "τριχόμπαλες", en: "hairball support" },
+    kitten: { el: "γατάκι", en: "kitten" },
+    large_breed: { el: "μεγαλόσωμο ζώο", en: "large breeds" },
+    puppy: { el: "κουτάβι", en: "puppy" },
+    renal: { el: "νεφρική υποστήριξη", en: "renal support" },
+    renal_decision_without_phosphorus: {
+      el: "νεφρικό περιστατικό χωρίς πλήρη φώσφορο",
+      en: "renal cases without full phosphorus data",
+    },
+    senior: { el: "ηλικιωμένο ζώο", en: "senior pets" },
+    small_breed: { el: "μικρόσωμο ζώο", en: "small breeds" },
+    sterilised: { el: "στειρωμένο ζώο", en: "sterilised pets" },
+    sensitive_digestion: { el: "ευαίσθητη πέψη", en: "sensitive digestion" },
+    urinary: { el: "ουρολογική υποστήριξη", en: "urinary support" },
+    urinary_decision_without_magnesium: {
+      el: "ουρολογικό ιστορικό χωρίς πλήρες μαγνήσιο",
+      en: "urinary cases without full magnesium data",
+    },
+    weight_control: { el: "έλεγχο βάρους", en: "weight control" },
+    weight_loss_without_portion_control: {
+      el: "απώλεια βάρους χωρίς μετρημένη μερίδα",
+      en: "weight loss without measured portions",
+    },
+  };
+
+  return labels[key]?.[language] ?? value.replace(/_/g, " ");
+}
+
+function formatFoodIntelligenceLabels(values: string[] | undefined, language: ChatLanguage) {
+  const seen = new Set<string>();
+
+  return (values ?? [])
+    .map((value) => formatFoodIntelligenceLabel(value, language))
+    .filter((value) => {
+      const key = value.toLowerCase();
+      if (!value || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 3);
+}
+
 function toRecommendationChoice(
   food: FoodV2ChatbotRecommendationItem,
   role: RecommendedFoodChoice["role"],
@@ -399,6 +451,14 @@ function toRecommendationChoice(
     score: food.ranking?.total_score ?? null,
     reason: formatRecommendationChoiceReason(food, role, language),
     caution: formatRecommendationChoiceCaution(food, language),
+    bestUseCases: formatFoodIntelligenceLabels(
+      food.food_intelligence?.best_use_cases,
+      language
+    ),
+    notIdealCases: formatFoodIntelligenceLabels(
+      food.food_intelligence?.not_ideal_cases,
+      language
+    ),
     kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
     proteinPercent: food.nutrition?.protein_percent ?? null,
     fatPercent: food.nutrition?.fat_percent ?? null,
@@ -4020,12 +4080,46 @@ Next actions:
                       <span>{choice.reason}</span>
                     </span>
                   )}
+                  {choice.bestUseCases && choice.bestUseCases.length > 0 && (
+                    <span className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm leading-5 text-emerald-950 ring-1 ring-emerald-100">
+                      <span className="block text-xs font-semibold uppercase text-emerald-700">
+                        {botText("Ιδανικό για", "Best for")}
+                      </span>
+                      <span className="mt-1 flex flex-wrap gap-1.5">
+                        {choice.bestUseCases.map((item) => (
+                          <span
+                            key={item}
+                            className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </span>
+                    </span>
+                  )}
                   {choice.caution && (
                     <span className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100">
                       <span className="block text-xs font-semibold uppercase text-amber-700">
                         {botText("Προσοχή", "Watch")}
                       </span>
                       <span>{choice.caution}</span>
+                    </span>
+                  )}
+                  {choice.notIdealCases && choice.notIdealCases.length > 0 && (
+                    <span className="mt-2 rounded-xl bg-orange-50 px-3 py-2 text-sm leading-5 text-orange-950 ring-1 ring-orange-100">
+                      <span className="block text-xs font-semibold uppercase text-orange-700">
+                        {botText("Όχι πρώτη επιλογή για", "Not first choice for")}
+                      </span>
+                      <span className="mt-1 flex flex-wrap gap-1.5">
+                        {choice.notIdealCases.map((item) => (
+                          <span
+                            key={item}
+                            className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </span>
                     </span>
                   )}
                   <span className="mt-3 text-xs font-semibold uppercase text-gray-500">
