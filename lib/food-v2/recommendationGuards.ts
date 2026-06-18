@@ -25,6 +25,80 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage: "Breed-size positioning does not fit this dog.",
   },
+  therapeutic_food_without_matching_condition: {
+    code: "therapeutic_food_without_matching_condition",
+    severity: "block",
+    fallbackMessage:
+      "Veterinary or therapeutic positioning does not match this pet context.",
+  },
+  urinary_goal_without_urinary_positioning: {
+    code: "urinary_goal_without_urinary_positioning",
+    severity: "block",
+    fallbackMessage: "Urinary cases need urinary-positioned foods.",
+  },
+  renal_urinary_mismatch: {
+    code: "renal_urinary_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Urinary/oxalate positioning does not replace renal diet support.",
+  },
+  growth_food_for_adult_pet: {
+    code: "growth_food_for_adult_pet",
+    severity: "block",
+    fallbackMessage: "Growth food does not fit an adult or senior pet.",
+  },
+  adult_food_for_puppy_growth: {
+    code: "adult_food_for_puppy_growth",
+    severity: "block",
+    fallbackMessage: "Puppy growth cases need puppy or all-life-stage food.",
+  },
+  adult_food_for_kitten_growth: {
+    code: "adult_food_for_kitten_growth",
+    severity: "block",
+    fallbackMessage: "Kitten growth cases need kitten or all-life-stage food.",
+  },
+  obesity_active_formula_mismatch: {
+    code: "obesity_active_formula_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Active/performance food does not fit this weight-loss context.",
+  },
+  obesity_high_energy_high_fat: {
+    code: "obesity_high_energy_high_fat",
+    severity: "block",
+    fallbackMessage:
+      "High calories and high fat conflict with the weight-loss goal.",
+  },
+  high_energy_fat_weight_sensitive: {
+    code: "high_energy_fat_weight_sensitive",
+    severity: "block",
+    fallbackMessage:
+      "Calories and fat are too high for a first weight-control shortlist.",
+  },
+  sterilised_high_energy_fat_mismatch: {
+    code: "sterilised_high_energy_fat_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "This is too energy-dense for a sterilised maintenance shortlist.",
+  },
+  active_formula_for_weight_sensitive_pet: {
+    code: "active_formula_for_weight_sensitive_pet",
+    severity: "block",
+    fallbackMessage:
+      "Active/performance food is a poor first choice for this weight-sensitive context.",
+  },
+  light_formula_for_high_activity_pet: {
+    code: "light_formula_for_high_activity_pet",
+    severity: "block",
+    fallbackMessage:
+      "Light/sterilised energy positioning is a poor first choice for a high-activity pet.",
+  },
+  senior_active_energy_mismatch: {
+    code: "senior_active_energy_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Active/high-energy food is not a first pick for a low-activity senior pet.",
+  },
   adjacent_dog_size_mismatch: {
     code: "adjacent_dog_size_mismatch",
     severity: "warning",
