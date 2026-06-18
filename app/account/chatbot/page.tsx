@@ -3722,12 +3722,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          `Saved successfully.
-
-Next actions:
-- Open pet profile: ${siteUrl}/account/pets/${result.pet.id}
-- Open printable report: ${siteUrl}/print/pet-report/${result.pet.id}
-- Start another analysis: ${siteUrl}/account/chatbot`
+          botText(
+            "Η ανάλυση αποθηκεύτηκε. Παρακάτω θα βρεις τα επόμενα βήματα: προφίλ, report, ιστορικό και έλεγχο προόδου.",
+            "Saved. Your next steps are ready below: profile, report, timeline, and progress check."
+          )
         )
       );
 
@@ -4345,31 +4343,73 @@ Next actions:
         {savedPetId && (
           <div className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4">
             <div>
-              <p className="font-semibold text-black">Analysis saved</p>
+              <p className="font-semibold text-black">
+                {botText("Η ανάλυση αποθηκεύτηκε", "Analysis saved")}
+              </p>
               <p className="mt-1 text-sm text-gray-700">
-                Your pet profile, report, and analysis history are ready.
+                {botText(
+                  "Το προφίλ, το report και το ιστορικό είναι έτοιμα. Διάλεξε τι θέλεις να κάνεις τώρα.",
+                  "Your pet profile, report, and history are ready. Choose what you want to do next."
+                )}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <a
                 href={`/account/pets/${savedPetId}`}
-                className="rounded-xl border border-green-300 bg-white px-4 py-3 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+                className="rounded-xl border border-green-300 bg-white px-4 py-3 text-sm font-medium text-green-900 transition hover:bg-green-100"
               >
-                Open profile
+                <span className="block">
+                  {botText("Άνοιγμα προφίλ", "Open profile")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-green-800">
+                  {botText("Στοιχεία κατοικιδίου και αναλύσεις.", "Pet details and analyses.")}
+                </span>
               </a>
               <a
                 href={`/print/pet-report/${savedPetId}`}
-                className="rounded-xl bg-green-600 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                className="rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700"
               >
-                Open report
+                <span className="block">
+                  {botText("Άνοιγμα report", "Open report")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-green-50">
+                  {botText("Εκτυπώσιμη σύνοψη για τον πελάτη.", "Printable customer summary.")}
+                </span>
+              </a>
+              <a
+                href={`/print/pet-timeline/${savedPetId}`}
+                className="rounded-xl border border-green-300 bg-white px-4 py-3 text-sm font-medium text-green-900 transition hover:bg-green-100"
+              >
+                <span className="block">
+                  {botText("Ιστορικό / timeline", "Timeline")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-green-800">
+                  {botText("Προηγούμενες αναλύσεις και αλλαγές.", "Previous analyses and changes.")}
+                </span>
+              </a>
+              <a
+                href={`/account/chatbot?petId=${savedPetId}&mode=progress`}
+                className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-950 transition hover:bg-blue-100"
+              >
+                <span className="block">
+                  {botText("Έλεγχος προόδου", "Progress check")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-blue-900">
+                  {botText("Βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.", "Weight, grams, treats, and results.")}
+                </span>
               </a>
               <button
                 type="button"
                 onClick={restartChat}
-                className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-gray-100"
+                className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-gray-100 sm:col-span-2"
               >
-                New analysis
+                <span className="block">
+                  {botText("Νέα ανάλυση", "New analysis")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-gray-600">
+                  {botText("Για άλλο κατοικίδιο ή αλλαγή στόχου/τροφής.", "For another pet or a new goal/food change.")}
+                </span>
               </button>
             </div>
           </div>

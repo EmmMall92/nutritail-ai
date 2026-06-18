@@ -46,6 +46,21 @@ const checks = [
     file: "app/account/pets/[id]/page.tsx",
     expected: "/account/chatbot?petId=${pet.id}",
   },
+  {
+    label: "Saved chatbot analysis links to printable report",
+    file: "app/account/chatbot/page.tsx",
+    expected: "/print/pet-report/${savedPetId}",
+  },
+  {
+    label: "Saved chatbot analysis links to printable timeline",
+    file: "app/account/chatbot/page.tsx",
+    expected: "/print/pet-timeline/${savedPetId}",
+  },
+  {
+    label: "Saved chatbot analysis links to progress check",
+    file: "app/account/chatbot/page.tsx",
+    expected: "/account/chatbot?petId=${savedPetId}&mode=progress",
+  },
 ];
 
 async function runCheck(check) {
