@@ -3,6 +3,7 @@ import path from "node:path";
 
 const paths = {
   fixtures: "data/evals/chatbot-golden-cases.json",
+  extraFixtures: ["data/evals/chatbot-dog-edge-cases-101-200.json"],
   report: "reports/chatbot_response_contract_summary.md",
 };
 
@@ -61,6 +62,45 @@ function requiredMentionsFor(testCase, contracts) {
   }
   if (signals.includes("weight") || signals.includes("neutered")) {
     mentions.add("calorie");
+  }
+  if (signals.includes("active")) {
+    mentions.add("calorie");
+    mentions.add("protein");
+  }
+  if (signals.includes("feeding_behavior") || signals.includes("multi_pet")) {
+    mentions.add("portion");
+    mentions.add("calorie");
+  }
+  if (signals.includes("hydration")) {
+    mentions.add("water");
+    mentions.add("portion");
+  }
+  if (signals.includes("travel") || signals.includes("wet_food")) {
+    mentions.add("portion");
+    mentions.add("ingredient");
+  }
+  if (signals.includes("skin_coat") || signals.includes("avoidance")) {
+    mentions.add("ingredient");
+    mentions.add("individual");
+  }
+  if (signals.includes("liver") || signals.includes("cardiac")) {
+    mentions.add("veterinary");
+  }
+  if (signals.includes("recovery") || signals.includes("reproduction")) {
+    mentions.add("veterinary");
+    mentions.add("calories");
+  }
+  if (signals.includes("muscle")) {
+    mentions.add("protein");
+    mentions.add("veterinary");
+  }
+  if (signals.includes("chewing")) {
+    mentions.add("portion");
+    mentions.add("veterinary");
+  }
+  if (signals.includes("rescue")) {
+    mentions.add("veterinary");
+    mentions.add("calories");
   }
 
   return [...mentions].sort();
@@ -180,12 +220,27 @@ ${results
 async function main() {
   const raw = await readFile(paths.fixtures, "utf8");
   const data = JSON.parse(raw);
+  const extraCases = (
+    await Promise.all(
+      paths.extraFixtures.map(async (fixturePath) => {
+        try {
+          const extraRaw = await readFile(fixturePath, "utf8");
+          const extraData = JSON.parse(extraRaw);
+
+          return Array.isArray(extraData.cases) ? extraData.cases : [];
+        } catch (error) {
+          if (error?.code === "ENOENT") return [];
+          throw error;
+        }
+      })
+    )
+  ).flat();
 
   if (!Array.isArray(data.cases)) {
     throw new Error("Chatbot golden eval file must include a cases array.");
   }
 
-  const results = data.cases.map(validateCase);
+  const results = [...data.cases, ...extraCases].map(validateCase);
   const report = renderReport(results);
 
   await mkdir(path.dirname(paths.report), { recursive: true });
