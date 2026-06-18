@@ -6,6 +6,7 @@ import {
 } from "@/lib/nutrition-rules/rulesRegistry";
 import { evaluateFeedingFitRules } from "@/lib/nutrition-v2/feedingRules";
 import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
+import { evaluateIngredientFitRules } from "@/lib/nutrition-v2/ingredientRules";
 import { evaluateObesityFitRules } from "@/lib/nutrition-v2/obesityRules";
 import { evaluateSeniorFitRules } from "@/lib/nutrition-v2/seniorRules";
 
@@ -165,65 +166,6 @@ const GOAL_THERAPEUTIC_TERMS: Record<FoodV2RecommendationGoal, string[]> = {
   allergy: ["hypoallergenic", "anallergenic", "sensitivity", "dermatosis", "skin"],
   urinary: ["urinary", "struvite", "oxalate"],
   renal: ["renal", "kidney"],
-};
-
-const ALLERGEN_TERMS: Record<string, string[]> = {
-  chicken: ["chicken", "poultry", "κοτοπουλο", "kotopoulo"],
-  beef: ["beef", "μοσχαρι", "moschari", "moshari"],
-  lamb: ["lamb", "αρνι", "arni"],
-  pork: ["pork", "χοιρινο", "xoirino", "hoirino"],
-  fish: ["fish", "salmon", "tuna", "cod", "sardine", "herring", "ψαρι"],
-  salmon: ["salmon", "σολομος", "solomos"],
-  duck: ["duck", "παπια", "papia"],
-  turkey: ["turkey", "γαλοπουλα", "galopoula"],
-  wheat: ["wheat", "σιταρι", "sitar"],
-  corn: ["corn", "maize", "καλαμποκι", "kalampoki"],
-  soy: ["soy", "soya", "σογια", "sogia"],
-  dairy: ["milk", "dairy", "γαλα", "gala"],
-  egg: ["egg", "αυγο", "avgo"],
-};
-
-const INGREDIENT_ALIAS_TERMS: Record<string, string[]> = {
-  chicken: ["chicken", "poultry", "κοτοπουλο", "κότοπουλο", "kotopoulo"],
-  poultry: ["poultry", "chicken", "turkey", "πουλερικα", "poulerika"],
-  beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
-  lamb: ["lamb", "αρνι", "αρνί", "arni"],
-  pork: ["pork", "χοιρινο", "χοιρινό", "xoirino", "hoirino"],
-  duck: ["duck", "παπια", "πάπια", "papia"],
-  turkey: ["turkey", "γαλοπουλα", "γαλοπούλα", "galopoula"],
-  rabbit: ["rabbit", "κουνελι", "κουνέλι", "kouneli"],
-  venison: ["venison", "deer", "ελαφι", "ελάφι", "elafi"],
-  boar: ["boar", "wild boar", "αγριογουρουνο", "agriogourouno"],
-  insect: ["insect", "εντομο", "έντομο", "entomo"],
-  fish: [
-    "fish",
-    "salmon",
-    "tuna",
-    "cod",
-    "codfish",
-    "sardine",
-    "herring",
-    "anchovy",
-    "trout",
-    "whitefish",
-    "ψαρι",
-    "ψάρι",
-    "psari",
-  ],
-  salmon: ["salmon", "σολομος", "σολομός", "solomos"],
-  tuna: ["tuna", "τονος", "τόνος", "tonos"],
-  cod: ["cod", "codfish", "μπακαλιαρος", "bakaliaros"],
-  sardine: ["sardine", "σαρδελα", "σαρδέλα", "sardela"],
-  herring: ["herring", "ρεγγα", "ρέγγα", "rega"],
-  trout: ["trout", "πεστροφα", "πέστροφα", "pestrofa"],
-  wheat: ["wheat", "σιταρι", "σιτάρι", "sitar", "sitari"],
-  corn: ["corn", "maize", "καλαμποκι", "καλαμπόκι", "kalampoki"],
-  rice: ["rice", "ρυζι", "ρύζι", "ryzi", "rizi"],
-  pea: ["pea", "peas", "αρακα", "αρακά", "araka"],
-  potato: ["potato", "potatoes", "πατατα", "πατάτα", "patata"],
-  soy: ["soy", "soya", "σογια", "σόγια", "sogia"],
-  dairy: ["milk", "dairy", "γαλα", "γάλα", "gala"],
-  egg: ["egg", "αυγο", "αυγό", "avgo"],
 };
 
 const VALUE_MARKERS = [
@@ -439,72 +381,6 @@ function addSignal(
   message: string
 ) {
   signals.push({ type, code, points, message });
-}
-
-function ingredientAliasesFor(value: string) {
-  return INGREDIENT_ALIAS_TERMS[value] ?? ALLERGEN_TERMS[value] ?? [value];
-}
-
-function preferredIngredientAliasesFor(value: string) {
-  const normalized = normalizeText(value);
-
-  if (normalized === "chicken") return ["chicken", "κοτοπουλ", "kotopoulo"];
-  if (normalized === "beef") return ["beef", "μοσχαρ", "moschari", "moshari"];
-  if (normalized === "lamb") return ["lamb", "αρν", "arni"];
-  if (normalized === "pork") return ["pork", "χοιριν", "xoirino", "hoirino"];
-  if (normalized === "duck") return ["duck", "παπια", "papia"];
-  if (normalized === "turkey") return ["turkey", "γαλοπουλ", "galopoula"];
-  if (normalized === "rabbit") return ["rabbit", "κουνελ", "kouneli"];
-  if (normalized === "salmon") return ["salmon", "σολομ", "solomos"];
-  if (normalized === "tuna") return ["tuna", "τονο", "tonos"];
-  if (normalized === "cod") return ["cod", "codfish", "μπακαλιαρ", "bakaliaros"];
-  if (normalized === "sardine") return ["sardine", "σαρδελ", "sardela"];
-  if (normalized === "herring") return ["herring", "ρεγγ", "rega"];
-  if (normalized === "trout") return ["trout", "πεστροφ", "pestrofa"];
-  if (normalized === "fish") return ingredientAliasesFor("fish");
-
-  return [value];
-}
-
-function preferredIngredientText(food: FoodProductV2) {
-  return normalizeText(
-    [
-      food.formula_name,
-      food.display_name,
-      ...(food.primary_animal_proteins ?? []),
-    ].join(" ")
-  );
-}
-
-function containsAllergen(food: FoodProductV2, allergies: string[]) {
-  const foodText = textFor(food);
-  return allergies.some((allergy) => {
-    const normalized = normalizeText(allergy);
-    const terms = ingredientAliasesFor(normalized);
-    return terms.some((term) => foodText.includes(normalizeText(term)));
-  });
-}
-
-function containsIngredientTerm(food: FoodProductV2, values: string[]) {
-  const foodText = textFor(food);
-
-  return values.some((value) => {
-    const normalized = normalizeText(value);
-    const terms = ingredientAliasesFor(normalized);
-
-    return terms.some((term) => foodText.includes(normalizeText(term)));
-  });
-}
-
-function containsPreferredIngredientTerm(food: FoodProductV2, values: string[]) {
-  const foodText = preferredIngredientText(food);
-
-  return values.some((value) => {
-    const normalized = normalizeText(value);
-    const terms = preferredIngredientAliasesFor(normalized);
-
-    return terms.some((term) => foodText.includes(normalizeText(term)));
-  });
 }
 
 function hasAny(text: string, terms: readonly string[]) {
@@ -747,71 +623,18 @@ function scoreFit(input: FoodV2RankingInput) {
     })
   );
 
-  if (goal === "sensitive_digestion" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["digest", "sensitive", "diarrhea", "stool", "gas"])) {
-    if (hasAny(haystack, ["digestive", "gastro", "intestinal", "sensitive", "hypoallergenic"])) {
-      score += 16;
-      addSignal(signals, "boost", "gi_goal_fit", 16, "Positioned for sensitive digestion.");
-    }
-    if (hasAny(haystack, ["fos", "mos", "inulin", "chicory", "psyllium", "beet pulp"])) {
-      score += 5;
-      addSignal(signals, "boost", "digestive_support_ingredients", 5, "Includes digestive-support ingredients.");
-    }
-  }
-
-  if (goal === "allergy" || (pet.allergies ?? []).length > 0) {
-    if (containsAllergen(food, pet.allergies ?? [])) {
-      addSignal(signals, "exclude", "allergen_conflict", -100, "Ingredients appear to contain a declared allergen.");
-    } else if ((pet.allergies ?? []).length > 0) {
-      score += 18;
-      addSignal(signals, "boost", "allergen_not_detected", 18, "Declared allergens were not detected in the ingredient text.");
-    }
-    if (hasAny(haystack, ["monoprotein", "hypoallergenic", "hydrolysed", "hydrolyzed"])) {
-      score += 10;
-      addSignal(signals, "boost", "allergy_positioning", 10, "Has allergy-friendly positioning.");
-    }
-  }
-
-  if ((pet.excludedIngredients ?? []).length > 0) {
-    if (containsIngredientTerm(food, pet.excludedIngredients ?? [])) {
-      addSignal(
-        signals,
-        "exclude",
-        "excluded_ingredient_preference",
-        -100,
-        "Excluded because it contains an ingredient or flavor the pet should avoid."
-      );
-    } else {
-      score += 2;
-      addSignal(
-        signals,
-        "boost",
-        "excluded_ingredients_not_detected",
-        2,
-        "Avoided the pet's excluded ingredients or flavors."
-      );
-    }
-  }
-
-  if ((pet.preferredProteins ?? []).length > 0) {
-    if (containsPreferredIngredientTerm(food, pet.preferredProteins ?? [])) {
-      score += 14;
-      addSignal(
-        signals,
-        "boost",
-        "preferred_protein_match",
-        14,
-        "Matches a preferred protein or flavor."
-      );
-    } else {
-      addSignal(
-        signals,
-        "caution",
-        "preferred_protein_missing",
-        -4,
-        "Does not clearly match the pet's preferred protein or flavor."
-      );
-    }
-  }
+  applyRuleSignals(
+    evaluateIngredientFitRules({
+      food,
+      goal:
+        goal === "allergy" || goal === "sensitive_digestion"
+          ? goal
+          : "general",
+      allergies: pet.allergies,
+      excludedIngredients: pet.excludedIngredients,
+      preferredProteins: pet.preferredProteins,
+    })
+  );
 
   if (goal === "urinary" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["urinary", "struvite", "crystal"])) {
     const hasUrinaryPositioning = hasAny(haystack, ["urinary", "struvite", "oxalate"]);
