@@ -35,6 +35,22 @@ function foodText(food) {
     .toLowerCase();
 }
 
+function positioningText(food) {
+  return [
+    food?.brand,
+    food?.display_name,
+    food?.formula_key,
+    food?.life_stage,
+    food?.dog_size,
+    food?.health_tags?.join(" "),
+    food?.medical_tags?.join(" "),
+    food?.commercial_tags?.join(" "),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
 function nutritionHas(food, fields) {
   return fields.some((field) => {
     const value = food?.nutrition?.[field];
@@ -157,7 +173,7 @@ function checkExpectations(scenario, data) {
 
     if (expectation === "no_weight_control_top_pick") {
       if (
-        hasAnyTerm(firstText, [
+        hasAnyTerm(positioningText(first), [
           "weight",
           "light",
           "sterilised",
@@ -255,7 +271,7 @@ function checkExpectations(scenario, data) {
 
     if (expectation === "no_unrelated_therapeutic_top_picks") {
       const unrelatedTherapeuticPick = picks.find((pick) =>
-        hasAnyTerm(foodText(pick), [
+        hasAnyTerm(positioningText(pick), [
           "gastro",
           "gastrointestinal",
           "liver",

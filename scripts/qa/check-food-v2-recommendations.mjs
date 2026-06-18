@@ -50,6 +50,21 @@ function itemText(item) {
   );
 }
 
+function positioningText(item) {
+  return normalizeText(
+    [
+      item?.brand,
+      item?.display_name,
+      item?.formula_key,
+      item?.life_stage,
+      item?.dog_size,
+      ...(item?.health_tags ?? []),
+      ...(item?.medical_tags ?? []),
+      ...(item?.commercial_tags ?? []),
+    ].join(" ")
+  );
+}
+
 function hasAny(text, terms) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
@@ -80,7 +95,7 @@ function expectationWarnings(scenario, body, hasUsableRecommendations) {
         warnings.push("Top pick looks positioned for a small dog.");
       }
     } else if (expectation === "no_weight_control_top_pick") {
-      if (hasAny(topText, ["light", "sterilised", "sterilized", "neutered", "weight", "obesity", "satiety"])) {
+      if (hasAny(positioningText(topPick), ["light", "sterilised", "sterilized", "neutered", "weight", "obesity", "satiety"])) {
         warnings.push("Top pick looks weight-control positioned.");
       }
     } else if (expectation === "no_active_performance_top_pick") {
@@ -103,7 +118,7 @@ function expectationWarnings(scenario, body, hasUsableRecommendations) {
         "satiety",
         "pancreatic",
       ];
-      if (top.some((item) => hasAny(itemText(item), therapeuticTerms))) {
+      if (top.some((item) => hasAny(positioningText(item), therapeuticTerms))) {
         warnings.push("A top recommendation looks like an unrelated therapeutic food.");
       }
     } else if (expectation === "weight_or_sterilised_fit") {
