@@ -7,6 +7,13 @@ const reportPath =
 const goldenCasesPath =
   process.env.NUTRITAIL_GOLDEN_CASES_PATH ||
   "data/evals/chatbot-golden-cases.json";
+const extraGoldenCasesPaths = (
+  process.env.NUTRITAIL_EXTRA_GOLDEN_CASES_PATHS ||
+  "data/evals/chatbot-dog-edge-cases-101-200.json"
+)
+  .split(";")
+  .map((item) => item.trim())
+  .filter(Boolean);
 const runLiveChecks = process.env.NUTRITAIL_QA_LIVE === "1";
 
 const recommendationCases = [
@@ -287,10 +294,22 @@ function expectedResponseTermsCovered(expectedTerms = []) {
 }
 
 async function loadGoldenCases() {
-  const raw = await readFile(goldenCasesPath, "utf8");
-  const parsed = JSON.parse(raw);
+  const paths = [goldenCasesPath, ...extraGoldenCasesPaths];
+  const caseGroups = await Promise.all(
+    paths.map(async (filePath) => {
+      try {
+        const raw = await readFile(filePath, "utf8");
+        const parsed = JSON.parse(raw);
 
-  return Array.isArray(parsed.cases) ? parsed.cases : [];
+        return Array.isArray(parsed.cases) ? parsed.cases : [];
+      } catch (error) {
+        if (error?.code === "ENOENT" && filePath !== goldenCasesPath) return [];
+        throw error;
+      }
+    })
+  );
+
+  return caseGroups.flat();
 }
 
 async function postJson(pathname, body) {

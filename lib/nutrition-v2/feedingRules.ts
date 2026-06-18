@@ -220,6 +220,24 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
           "Excluded because calories and fat are too high for a first weight-control shortlist.",
       });
     }
+
+    if (
+      goal === "sterilised" &&
+      !positioning.weightControl &&
+      pet.activityLevel !== "high" &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g >= 370 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 15
+    ) {
+      signals.push({
+        type: "exclude",
+        code: "sterilised_high_energy_fat_mismatch",
+        points: -100,
+        message:
+          "Excluded because this is too energy-dense for a sterilised maintenance shortlist.",
+      });
+    }
   }
 
   if (goal === "weight_control") {

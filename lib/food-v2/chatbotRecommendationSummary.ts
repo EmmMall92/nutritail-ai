@@ -20,6 +20,14 @@ export type FoodV2ChatbotRecommendationItem = {
     missing_optional_fields?: string[];
     estimated_fields?: string[];
   } | null;
+  food_intelligence?: {
+    score?: number;
+    confidence_level?: "high" | "medium" | "low";
+    strengths?: string[];
+    cautions?: string[];
+    best_use_cases?: string[];
+    not_ideal_cases?: string[];
+  } | null;
   nutrition?: Record<string, number | null | undefined> | null;
 };
 
