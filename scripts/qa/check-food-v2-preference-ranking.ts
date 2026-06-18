@@ -569,4 +569,56 @@ if (!urinaryOnlyRenalGuards.some((flag) => flag.code === "renal_urinary_mismatch
   process.exit(1);
 }
 
+const generalSkinPet = {
+  ...pet,
+  weight: 6,
+  age: 3,
+  activityLevel: "high" as const,
+  neutered: false,
+  healthIssues: ["itchy skin"],
+  excludedIngredients: [],
+  preferredProteins: ["salmon"],
+};
+const unrelatedGastroFood = food({
+  id: "unrelated-gastro",
+  formula_key: "qa|josera-gastro-dry|dog|dry",
+  brand: "Josera",
+  display_name: "Josera GASTRO DRY",
+  formula_name: "GASTRO DRY",
+  ingredients: ["poultry", "rice"],
+});
+const unrelatedLiverFood = food({
+  id: "unrelated-liver",
+  formula_key: "qa|josera-liver-dry|dog|dry",
+  brand: "Josera",
+  display_name: "Josera LIVER DRY",
+  formula_name: "LIVER DRY",
+  ingredients: ["poultry", "rice"],
+});
+
+for (const item of [unrelatedGastroFood, unrelatedLiverFood]) {
+  const ranking = rankFoodV2ForPet({
+    food: item,
+    nutrients: nutrients(item),
+    pet: generalSkinPet,
+    goal: "general",
+  });
+
+  if (ranking.bucket !== "hold") {
+    console.error("Unrelated therapeutic food should be held for general/skin context.");
+    console.error(ranking);
+    process.exit(1);
+  }
+
+  if (
+    !ranking.signals.some(
+      (signal) => signal.code === "therapeutic_food_without_matching_condition"
+    )
+  ) {
+    console.error("Expected unrelated therapeutic food to expose the therapeutic mismatch signal.");
+    console.error(ranking.signals);
+    process.exit(1);
+  }
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");
