@@ -4,6 +4,8 @@ import {
   scoringWeightsForScenario,
   type RecommendationScenario,
 } from "@/lib/nutrition-rules/rulesRegistry";
+import { evaluateFeedingFitRules } from "@/lib/nutrition-v2/feedingRules";
+import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
 
 export type FoodV2RecommendationGoal =
   | "general"
@@ -533,35 +535,6 @@ function hasWeightControlPositioning(foodText: string) {
   return hasAny(foodText, ["light", "weight", "satiety", "obesity", "sterilised", "sterilized", "neutered"]);
 }
 
-function isWeightSensitiveContext(input: {
-  goal: FoodV2RecommendationGoal;
-  pet: FoodV2RankingInput["pet"];
-}) {
-  const healthText = normalizeText((input.pet.healthIssues ?? []).join(" "));
-
-  return (
-    input.goal === "sterilised" ||
-    input.goal === "weight_control" ||
-    input.pet.neutered ||
-    input.pet.activityLevel === "low" ||
-    hasAny(healthText, ["weight", "obesity", "overweight", "sterilised", "sterilized", "neutered"])
-  );
-}
-
-function isStrictWeightControlContext(input: {
-  goal: FoodV2RecommendationGoal;
-  pet: FoodV2RankingInput["pet"];
-}) {
-  const healthText = normalizeText((input.pet.healthIssues ?? []).join(" "));
-
-  return (
-    input.goal === "weight_control" ||
-    hasAny(healthText, ["weight", "obesity", "overweight", "loss"]) ||
-    (input.goal === "sterilised" &&
-      (input.pet.neutered || input.pet.activityLevel === "low"))
-  );
-}
-
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -647,6 +620,12 @@ function scoreFit(input: FoodV2RankingInput) {
   const haystack = textFor(food);
   const stage = petLifeStage(pet);
   let score = 0;
+  const applyRuleSignals = (ruleSignals: FoodV2RankingSignal[]) => {
+    ruleSignals.forEach((signal) => {
+      if (signal.type !== "exclude") score += signal.points;
+      addSignal(signals, signal.type, signal.code, signal.points, signal.message);
+    });
+  };
 
   if (food.species === pet.species) {
     score += 35;
@@ -737,143 +716,18 @@ function scoreFit(input: FoodV2RankingInput) {
     );
   }
 
-  if (isWeightSensitiveContext({ goal, pet })) {
-    const weightPositioned = hasWeightControlPositioning(haystack);
-    const activePositioned = hasActivePositioning(haystack);
-    const strictWeightContext = isStrictWeightControlContext({ goal, pet });
-
-    if (weightPositioned) {
-      score += 14;
-      addSignal(signals, "boost", "sterilised_fit", 14, "Useful weight-aware positioning for a sterilised pet.");
-    }
-    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 360) {
-      score += 10;
-      addSignal(signals, "boost", "moderate_energy_neutered", 10, "Moderate calories fit a sterilised pet better.");
-    } else if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 380) {
-      score += 4;
-      addSignal(signals, "boost", "acceptable_energy_neutered", 4, "Calories look acceptable for a sterilised pet.");
-    }
-    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 385) {
-      const penalty = food.kcal_per_100g > 405 ? -24 : -16;
-      score += penalty;
-      addSignal(signals, "caution", "energy_dense_neutered", penalty, "Energy density may be high for a sterilised pet.");
-    }
-    if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 16) {
-      const penalty = nutrients.fat_percent >= 18 ? -18 : -12;
-      score += penalty;
-      addSignal(signals, "caution", "fat_dense_neutered", penalty, "Fat looks high for a sterilised or weight-prone pet.");
-    } else if (
-      strictWeightContext &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent >= 14.5 &&
-      !weightPositioned
-    ) {
-      score -= 8;
-      addSignal(
-        signals,
-        "caution",
-        "moderately_fatty_weight_sensitive",
-        -8,
-        "Fat is not low enough to be a first pick for a sterilised or weight-control case."
-      );
-    }
-    if (
-      strictWeightContext &&
-      !weightPositioned &&
-      hasNumber(food.kcal_per_100g) &&
-      food.kcal_per_100g >= 382 &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent >= 16
-    ) {
-      addSignal(
-        signals,
-        "exclude",
-        "high_energy_fat_weight_sensitive",
-        -100,
-        "Excluded because calories and fat are too high for a first weight-control shortlist."
-      );
-    }
-    if (activePositioned && pet.activityLevel !== "high") {
-      const activePenalty = strictWeightContext ? -34 : -24;
-      score += activePenalty;
-      addSignal(
-        signals,
-        "caution",
-        "active_formula_for_neutered_pet",
-        activePenalty,
-        "Active/performance positioning is not ideal for a sterilised low-to-normal activity pet."
-      );
-      if (
-        !weightPositioned &&
-        strictWeightContext &&
-        (food.kcal_per_100g == null || food.kcal_per_100g > 370 || (nutrients.fat_percent ?? 0) >= 14.5)
-      ) {
-        addSignal(
-          signals,
-          "exclude",
-          "active_formula_for_weight_sensitive_pet",
-          -100,
-          "Excluded because active/performance food is a poor first choice for this sterilised or weight-control context."
-        );
-      }
-    }
-  }
-
-  if (goal === "weight_control" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["weight", "obesity", "overweight"])) {
-    const weightPositioned = hasWeightControlPositioning(haystack);
-    const activePositioned = hasActivePositioning(haystack);
-
-    if (weightPositioned) {
-      score += 20;
-      addSignal(signals, "boost", "weight_goal_fit", 20, "Positioned for weight control.");
-    }
-    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 350) {
-      score += 10;
-      addSignal(signals, "boost", "lower_calorie_weight_goal", 10, "Lower calorie density fits a weight-control goal.");
-    } else if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 380) {
-      const penalty = food.kcal_per_100g > 400 ? -24 : -16;
-      score += penalty;
-      addSignal(signals, "caution", "higher_calorie_weight_goal", penalty, "Calories look high for a weight-control goal.");
-    }
-    if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 16) {
-      const penalty = nutrients.fat_percent >= 18 ? -20 : -12;
-      score += penalty;
-      addSignal(signals, "caution", "higher_fat_weight_goal", penalty, "Fat looks high for a weight-control goal.");
-    }
-    if (
-      !weightPositioned &&
-      hasNumber(food.kcal_per_100g) &&
-      food.kcal_per_100g >= 382 &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent >= 16
-    ) {
-      addSignal(
-        signals,
-        "exclude",
-        "high_energy_fat_weight_goal",
-        -100,
-        "Excluded because calories and fat are too high for this weight-control goal."
-      );
-    }
-    if (activePositioned && pet.activityLevel !== "high") {
-      score -= 18;
-      addSignal(signals, "caution", "active_formula_for_weight_goal", -18, "Active/performance food is usually not a first pick for weight control.");
-    }
-    if (
-      !weightPositioned &&
-      activePositioned &&
-      pet.activityLevel !== "high" &&
-      (food.kcal_per_100g == null || food.kcal_per_100g > 380 || (nutrients.fat_percent ?? 0) >= 16)
-    ) {
-      addSignal(
-        signals,
-        "exclude",
-        "active_high_energy_weight_goal",
-        -100,
-        "Excluded because active/high-energy positioning conflicts with the weight-control goal."
-      );
-    }
-  }
+  applyRuleSignals(
+    evaluateFeedingFitRules({
+      food,
+      nutrients,
+      pet,
+      goal,
+      positioning: {
+        active: hasActivePositioning(haystack),
+        weightControl: hasWeightControlPositioning(haystack),
+      },
+    })
+  );
 
   if (goal === "sensitive_digestion" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["digest", "sensitive", "diarrhea", "stool", "gas"])) {
     if (hasAny(haystack, ["digestive", "gastro", "intestinal", "sensitive", "hypoallergenic"])) {
@@ -993,32 +847,25 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
-    if (lifeStageMatches(food, stage)) score += 10;
-    if (stage === "puppy" && !lifeStageMatches(food, stage)) {
-      addSignal(
-        signals,
-        "exclude",
-        "adult_food_for_puppy_growth",
-        -100,
-        "Excluded because puppy/growth cases need puppy or all-life-stage food before adult options."
-      );
-    }
-    if (stage === "puppy" && isLargeBreedDog(pet)) {
-      if (hasAny(haystack, ["large breed", "maxi", "giant", "large puppy", "puppy large"])) {
-        score += 18;
-        addSignal(signals, "boost", "large_breed_puppy_fit", 18, "Large-breed puppy positioning fits this growth case.");
-      } else if (hasAny(haystack, ["puppy", "junior"])) {
-        score -= 8;
-        addSignal(signals, "caution", "generic_puppy_for_large_breed", -8, "Generic puppy food is less specific than a large-breed puppy formula.");
-      }
-    }
-    if (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent)) {
-      score += 6;
-      addSignal(signals, "boost", "growth_dha", 6, "DHA/EPA-DHA data supports growth reasoning.");
-    }
-    if (isLargeBreedDog(pet) && (!hasNumber(nutrients.calcium_percent) || !hasNumber(nutrients.phosphorus_percent))) {
-      addSignal(signals, "caution", "large_breed_growth_mineral_gap", -14, "Large-breed puppy ranking needs calcium and phosphorus data.");
-    }
+    applyRuleSignals(
+      evaluateGrowthFitRules({
+        food,
+        nutrients,
+        petStage: stage,
+        lifeStageMatches: lifeStageMatches(food, stage),
+        isLargeBreedDog: isLargeBreedDog(pet),
+        positioning: {
+          largeBreedGrowth: hasAny(haystack, [
+            "large breed",
+            "maxi",
+            "giant",
+            "large puppy",
+            "puppy large",
+          ]),
+          genericGrowth: hasAny(haystack, ["puppy", "junior", "kitten"]),
+        },
+      })
+    );
   }
 
   if (goal === "senior" || stage === "senior") {

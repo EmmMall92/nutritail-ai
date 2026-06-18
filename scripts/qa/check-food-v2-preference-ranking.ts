@@ -171,6 +171,39 @@ if (activeHighFatRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const highActivityPet = {
+  ...pet,
+  weight: 25,
+  age: 3,
+  neutered: false,
+  activityLevel: "high" as const,
+  healthIssues: [],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const activeFitRanking = rankFoodV2ForPet({
+  food: activeHighFat,
+  nutrients: {
+    ...nutrients(activeHighFat),
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: highActivityPet,
+  goal: "general",
+});
+
+if (activeFitRanking.bucket === "hold") {
+  console.error("Active foods should remain usable for genuinely high-activity adult dogs.");
+  console.error(activeFitRanking);
+  process.exit(1);
+}
+
+if (!activeFitRanking.signals.some((signal) => signal.code === "active_formula_activity_fit")) {
+  console.error("Expected active_formula_activity_fit for high-activity adult dog.");
+  console.error(activeFitRanking.signals);
+  process.exit(1);
+}
+
 const puppyPet = {
   ...pet,
   age: 0.5,
@@ -227,6 +260,49 @@ const adultLargeBreedRanking = rankFoodV2ForPet({
 if (adultLargeBreedRanking.bucket !== "hold") {
   console.error("Adult large-breed food should be held for 12-month giant-breed growth cases.");
   console.error(adultLargeBreedRanking);
+  process.exit(1);
+}
+
+const genericPuppyFood = food({
+  id: "generic-puppy",
+  formula_key: "qa|generic-puppy|dog|dry",
+  display_name: "Puppy Junior Chicken",
+  life_stage: "puppy",
+  dog_size: "all",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const largeBreedPuppyFood = food({
+  id: "large-breed-puppy",
+  formula_key: "qa|large-breed-puppy|dog|dry",
+  display_name: "Large Breed Puppy Chicken",
+  life_stage: "puppy",
+  dog_size: "large",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const genericPuppyRanking = rankFoodV2ForPet({
+  food: genericPuppyFood,
+  nutrients: nutrients(genericPuppyFood),
+  pet: twelveMonthGiantPuppy,
+  goal: "growth",
+});
+const largeBreedPuppyRanking = rankFoodV2ForPet({
+  food: largeBreedPuppyFood,
+  nutrients: nutrients(largeBreedPuppyFood),
+  pet: twelveMonthGiantPuppy,
+  goal: "growth",
+});
+
+if (largeBreedPuppyRanking.total_score <= genericPuppyRanking.total_score) {
+  console.error("Large-breed puppy food should outrank generic puppy food for giant-breed growth cases.");
+  console.error({ largeBreedPuppyRanking, genericPuppyRanking });
+  process.exit(1);
+}
+
+if (!largeBreedPuppyRanking.signals.some((signal) => signal.code === "large_breed_puppy_fit")) {
+  console.error("Expected large_breed_puppy_fit signal.");
+  console.error(largeBreedPuppyRanking.signals);
   process.exit(1);
 }
 
