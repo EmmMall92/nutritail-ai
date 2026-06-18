@@ -294,8 +294,8 @@ function nutritionFitExplanation(
     }
 
     return numbers.length > 0
-      ? `- Use case: calorie-aware shortlist for sterilised or weight-prone pets (${numbers.join(", ")}).`
-      : "- Use case: positioned for weight or sterilised-pet control; confirm calories before portion advice.";
+      ? `- Good when: the pet needs calorie-aware food choices (${numbers.join(", ")}).`
+      : "- Good when: the pet needs weight or sterilised-pet control; confirm calories before portion advice.";
   }
 
   if (goal === "growth") {
@@ -312,7 +312,7 @@ function nutritionFitExplanation(
       return `- Χρήση: επιλογή με λογική ανάπτυξης. ${greekMineralText}.`;
     }
 
-    return `- Use case: growth-focused option; ${mineralText}.`;
+    return `- Good when: growth is the priority; ${mineralText}.`;
   }
 
   if (goal === "allergy") {
@@ -320,7 +320,7 @@ function nutritionFitExplanation(
       return "- Χρήση: shortlist αποφυγής συστατικών με βάση τα διαθέσιμα συστατικά. Για πραγματική αλλεργία, χρειάζεται elimination trial με κτηνίατρο.";
     }
 
-    return "- Use case: ingredient-avoidance shortlist based on the available ingredient text; use a vet-guided elimination trial for true allergy work.";
+    return "- Good when: you need to avoid specific ingredients based on the label; use a vet-guided elimination trial for true allergy work.";
   }
 
   if (goal === "sensitive_digestion") {
@@ -331,8 +331,8 @@ function nutritionFitExplanation(
     }
 
     return reasons.includes("sensitive") || reasons.includes("digest")
-      ? "- Use case: digestion-focused shortlist with sensitive/GI positioning."
-      : "- Use case: general adult fit while digestion-specific data is limited.";
+      ? "- Good when: digestion support or sensitive/GI positioning matters."
+      : "- Good when: you need a general adult option while digestion-specific data is limited.";
   }
 
   if (goal === "urinary" || goal === "renal") {
@@ -343,8 +343,8 @@ function nutritionFitExplanation(
     }
 
     return cautions.includes("missing") || cautions.includes("weaker")
-      ? "- Use case: condition-positioned option, but mineral gaps mean cautious wording is needed."
-      : "- Use case: condition-positioned option; use alongside veterinary guidance.";
+      ? "- Good when: the food is positioned for this condition, but mineral gaps mean cautious wording is needed."
+      : "- Good when: the food is positioned for this condition; use alongside veterinary guidance.";
   }
 
   if (goal === "senior") {
@@ -355,15 +355,15 @@ function nutritionFitExplanation(
     }
 
     return protein !== null
-      ? `- Use case: senior-fit shortlist with ${protein}% protein; watch weight, appetite, and muscle condition.`
-      : "- Use case: senior-fit shortlist; watch weight, appetite, and muscle condition.";
+      ? `- Good when: you need a senior-fit shortlist with ${protein}% protein; watch weight, appetite, and muscle condition.`
+      : "- Good when: you need a senior-fit shortlist; watch weight, appetite, and muscle condition.";
   }
 
   if (locale === "el") {
     return "- Χρήση: γενικό fit με βάση είδος, ηλικία, συστατικά και διαθέσιμα θρεπτικά δεδομένα.";
   }
 
-  return "- Use case: general formula fit based on species, life stage, ingredients, and available nutrition data.";
+  return "- Good when: the formula fits the pet's species, life stage, ingredients, and available nutrition data.";
 }
 
 function recommendationRoleLine(role: "premium" | "value", locale: "el" | "en") {
@@ -376,10 +376,19 @@ function recommendationRoleLine(role: "premium" | "value", locale: "el" | "en") 
   }
 
   if (role === "premium") {
-    return "- Role: strongest nutrition fit based on the pet profile, goal, and available data.";
+    return "- Best fit: strongest nutrition match for this pet profile.";
   }
 
-  return "- Role: value alternative; price data is not available yet, so this is based on formula positioning and data quality.";
+  return "- Good alternative: simpler value-style option when you want another practical choice.";
+}
+
+function customerizeRecommendationLine(value: string, locale: "el" | "en") {
+  if (locale === "en") return value;
+
+  return value
+    .replace(/^- Χρήση:/, "- Ταιριάζει όταν:")
+    .replace(/^- Ρόλος: πιο δυνατή διατροφικά επιλογή/, "- Καλύτερο fit: δυνατή διατροφικά επιλογή")
+    .replace(/^- Ρόλος: πιο value εναλλακτική,/, "- Καλή εναλλακτική:");
 }
 
 function formatFood(
@@ -402,8 +411,8 @@ function formatFood(
     `${optionLabel} ${index}: ${foodName(food) || "Unnamed food"}${
       typeof score === "number" ? ` (${score}/100)` : ""
     }`,
-    recommendationRoleLine(role, locale),
-    nutritionFitExplanation(food, goal, locale),
+    customerizeRecommendationLine(recommendationRoleLine(role, locale), locale),
+    customerizeRecommendationLine(nutritionFitExplanation(food, goal, locale), locale),
     customerNutritionSnapshot(food, locale),
     reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
     missing.length > 0 && locale === "en"
@@ -435,7 +444,7 @@ function formatTopPick(
     locale === "el"
       ? "Αν θέλεις να ξεκινήσεις από μία επιλογή, αυτή είναι η πιο δυνατή πρώτη πρόταση με βάση τα στοιχεία του κατοικιδίου."
       : "If you want to start with one option, this is the strongest first pick for the pet profile.",
-    nutritionFitExplanation(food, goal, locale),
+    customerizeRecommendationLine(nutritionFitExplanation(food, goal, locale), locale),
     firstReason ? `${whyLabel}: ${translateRankingText(firstReason, locale)}` : "",
   ]
     .filter(Boolean)
