@@ -1,6 +1,8 @@
 import type { Species } from "@/types/food-v2";
+import type { NutritionKnowledgeSourceId } from "@/lib/nutrition-v2/knowledgeSources";
 
 export type NutritionRuleSource =
+  | NutritionKnowledgeSourceId
   | "FEDIAF_2025"
   | "AAFCO"
   | "WSAVA"
