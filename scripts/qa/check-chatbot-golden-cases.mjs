@@ -227,6 +227,116 @@ mergedSignalLexicon.digestive.push("vomiting");
 mergedSignalLexicon.growth.push("έγκυος", "εγκυος");
 mergedSignalLexicon.large_breed.push("40 κιλά", "40κιλα");
 mergedSignalLexicon.product_lookup.push("royal", "canin");
+Object.assign(mergedSignalLexicon, {
+  ...mergedSignalLexicon,
+  cardiac: [
+    ...(mergedSignalLexicon.cardiac ?? []),
+    "heart",
+    "cardiac",
+    "kardiopatheia",
+  ],
+  chewing: [
+    ...(mergedSignalLexicon.chewing ?? []),
+    "chokes",
+    "kibble",
+    "pnigetai",
+    "kroket",
+  ],
+  feeding_behavior: [
+    ...(mergedSignalLexicon.feeding_behavior ?? []),
+    "coprophagia",
+    "eats fast",
+    "fast eater",
+    "perittomata",
+    "poly grigora",
+  ],
+  hydration: [
+    ...(mergedSignalLexicon.hydration ?? []),
+    "hot climate",
+    "zesto klima",
+    "zestos kairos",
+  ],
+  liver: [
+    ...(mergedSignalLexicon.liver ?? []),
+    "liver",
+    "hepatic",
+    "ipatik",
+    "enzymes",
+    "cholecyst",
+    "cholokyst",
+  ],
+  multi_pet: [
+    ...(mergedSignalLexicon.multi_pet ?? []),
+    "multi dog",
+    "other dogs",
+    "zei me allous",
+    "zei me alloys",
+    "me allous 4",
+    "me alloys 4",
+    "allous 4 skylous",
+    "alloys 4 skyloys",
+  ],
+  muscle: [
+    ...(mergedSignalLexicon.muscle ?? []),
+    "muscle",
+    "myiki maza",
+  ],
+  portion_size: [
+    ...(mergedSignalLexicon.portion_size ?? []),
+    "daily grams",
+    "grams per day",
+    "posa grammaria",
+    "grammaria",
+  ],
+  recovery: [
+    ...(mergedSignalLexicon.recovery ?? []),
+    "recovery",
+    "post op",
+    "surgery",
+    "hospital",
+    "anarronei",
+    "nosileia",
+    "epemvasi",
+  ],
+  reproduction: [
+    ...(mergedSignalLexicon.reproduction ?? []),
+    "pregnant",
+    "lactating",
+    "weaning",
+    "egky",
+    "thilazei",
+    "apogalakt",
+  ],
+  rescue: [
+    ...(mergedSignalLexicon.rescue ?? []),
+    "rescue",
+    "unknown history",
+    "agnosto istoriko",
+  ],
+  skin_coat: [
+    ...(mergedSignalLexicon.skin_coat ?? []),
+    "coat",
+    "fur",
+    "trichoma",
+    "trixoma",
+    "kaki poiotita",
+  ],
+  travel: [
+    ...(mergedSignalLexicon.travel ?? []),
+    "travel",
+    "taxideuei",
+    "taxideyei",
+    "syxna",
+    "changes country",
+    "allazei chora",
+  ],
+  wet_food: [
+    ...(mergedSignalLexicon.wet_food ?? []),
+    "wet food",
+    "canned",
+    "konserva",
+  ],
+});
 mergedSignalLexicon.weight.push("κιλα", "κιλά");
 
 const greekToLatinMap = {

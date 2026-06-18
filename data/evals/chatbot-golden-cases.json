@@ -46,7 +46,7 @@
       "prompt": "scratching ears, maybe allergic to chicken",
       "expectedSignals": ["allergy", "chicken"],
       "expectedSafetyLevel": "caution",
-      "expectedResponseMustMention": ["ingredient"]
+      "expectedResponseMustMention": ["ingredient", "individual"]
     },
     {
       "id": "greek-chicken-allergy",
@@ -156,7 +156,7 @@
       "id": "greek-daily-grams",
       "locale": "el-GR",
       "prompt": "Πόσα γραμμάρια να δίνω;",
-      "expectedSignals": [],
+      "expectedSignals": ["portion_size"],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": ["calories", "portion"]
     },
@@ -174,7 +174,7 @@
       "prompt": "Της αρέσει το κοτόπουλο και δεν της αρέσει καθόλου ο σολομός",
       "expectedSignals": ["chicken", "avoidance"],
       "expectedSafetyLevel": "normal",
-      "expectedResponseMustMention": ["ingredient"]
+      "expectedResponseMustMention": ["ingredient", "individual"]
     },
     {
       "id": "budget-good-food-el",
@@ -374,7 +374,7 @@
       "prompt": "Πόσο νερό πρέπει να πίνει η γάτα μου με ξηρά τροφή;",
       "expectedSignals": ["hydration"],
       "expectedSafetyLevel": "normal",
-      "expectedResponseMustMention": ["water"]
+      "expectedResponseMustMention": ["water", "portion"]
     },
     {
       "id": "treats-and-weight-loss-en",
