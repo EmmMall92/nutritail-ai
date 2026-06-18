@@ -83,7 +83,7 @@ export function evaluateObesityRules(
   if (food.commercial_tags.includes("weight_control") || food.medical_tags.includes("obesity")) {
     boosts.push("weight_control_positioning");
   }
-  if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 360) boosts.push("lower_energy_density");
+  if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 360) boosts.push("lower_calorie_density");
   if (hasNumber(nutrients.fiber_percent) && nutrients.fiber_percent >= 4) boosts.push("satiety_fiber_signal");
   if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent >= 25) boosts.push("lean_mass_support_signal");
 
@@ -189,21 +189,21 @@ export function evaluateObesityFitRules(input: ObesityFitInput) {
     if (food.kcal_per_100g <= 335) {
       signals.push({
         type: "boost",
-        code: "obesity_lower_energy_density",
+        code: "obesity_lower_calorie_density",
         points: 14,
         message: "Lower calorie density is useful for weight-loss planning.",
       });
     } else if (food.kcal_per_100g <= 360) {
       signals.push({
         type: "boost",
-        code: "obesity_moderate_energy_density",
+        code: "obesity_moderate_calorie_density",
         points: 8,
         message: "Moderate calorie density can fit a controlled weight plan.",
       });
     } else if (food.kcal_per_100g >= 385) {
       signals.push({
         type: "caution",
-        code: "obesity_energy_density_high",
+        code: "obesity_calorie_density_high",
         points: food.kcal_per_100g >= 405 ? -22 : -14,
         message: "Calories look high for a weight-loss shortlist.",
       });
