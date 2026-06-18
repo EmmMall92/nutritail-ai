@@ -49,6 +49,9 @@ const packOrOfferPatterns = [
   /\b(?:offer|promo|gift|free|δ[ωώ]ρο|προσφορ[αά])\b/iu,
 ];
 
+const repeatedProductTermPattern =
+  /\b(vetsolution|vet\s*solution|veterinary|urinary|renal|hepatic|gastrointestinal|diabetic|obesity|dermatosis|hypoallergenic|sterilised|sterilized|senior|puppy|kitten|adult|mini|medium|maxi|large|giant)(?:\s+\1)+\b/iu;
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -125,6 +128,10 @@ function wordCount(value) {
   return normalizeText(value).split(/\s+/u).filter(Boolean).length;
 }
 
+function hasRepeatedProductTerms(value) {
+  return repeatedProductTermPattern.test(normalizeText(value));
+}
+
 function addIssue(issues, row, severity, issueType, suggestedAction) {
   issues.push({
     severity,
@@ -179,6 +186,16 @@ function findTitleIssues(row) {
       "medium",
       "formula_name_starts_with_brand",
       "Remove duplicated brand from formula_name; display_name should carry the brand."
+    );
+  }
+
+  if (hasRepeatedProductTerms(formulaName) || hasRepeatedProductTerms(displayName)) {
+    addIssue(
+      issues,
+      row,
+      "medium",
+      "repeated_formula_terms",
+      "Remove duplicated title tokens such as VetSolution VetSolution or Urinary Urinary before customer-facing use."
     );
   }
 

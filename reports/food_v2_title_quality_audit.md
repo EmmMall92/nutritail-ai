@@ -1,6 +1,6 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-14T15:04:32.123Z
+Generated: 2026-06-18T19:37:52.010Z
 
 ## Summary
 
@@ -46,3 +46,10 @@ Generated: 2026-06-14T15:04:32.123Z
 ## Recommended Next Step
 
 No high/critical title issues were found. Work through the medium cleanup brands above when polishing customer-facing names.
+
+## Title Cleanup Policy
+
+- Customer-facing names should look like product names, not SEO descriptions.
+- Prefer Gatoskilo titles when they are clean product titles, then official/PDF titles, then other retailers, with Petsamolis last.
+- Keep `formula_name` concise and keep the brand in `display_name`.
+- Full playbook: docs/food-v2-title-cleanup-playbook.md
