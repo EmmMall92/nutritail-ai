@@ -420,7 +420,30 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     },
   };
 
-  return labels[key]?.[language] ?? value.replace(/_/g, " ");
+  const supplementalLabels: Record<string, { el: string; en: string }> = {
+    active_working: { el: "πολύ δραστήριο ζώο", en: "active or working pets" },
+    calorie_aware_feeding: { el: "ελεγχόμενες θερμίδες", en: "calorie-aware feeding" },
+    growth_development: { el: "ανάπτυξη κουταβιού/γατιού", en: "puppy/kitten development" },
+    growth_without_mineral_review: {
+      el: "ανάπτυξη χωρίς πλήρη έλεγχο μετάλλων",
+      en: "growth without full mineral review",
+    },
+    low_activity_sterilised_without_portion_control: {
+      el: "στειρωμένο/ήρεμο ζώο χωρίς μετρημένη μερίδα",
+      en: "low-activity or sterilised pets without measured portions",
+    },
+    renal_phosphorus_review: {
+      el: "νεφρικός έλεγχος φωσφόρου",
+      en: "renal phosphorus review",
+    },
+    senior_mobility: { el: "senior κινητικότητα", en: "senior mobility" },
+    urinary_mineral_review: {
+      el: "ουρολογικός έλεγχος μετάλλων",
+      en: "urinary mineral review",
+    },
+  };
+
+  return labels[key]?.[language] ?? supplementalLabels[key]?.[language] ?? value.replace(/_/g, " ");
 }
 
 function formatFoodIntelligenceLabels(values: string[] | undefined, language: ChatLanguage) {

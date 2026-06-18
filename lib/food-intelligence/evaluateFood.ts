@@ -48,6 +48,25 @@ function clamp(value: number) {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
+function allTags(input: FoodIntelligenceInput) {
+  return [
+    ...(input.ingredient_tags ?? []),
+    ...(input.health_tags ?? []),
+    ...(input.medical_tags ?? []),
+  ].map((tag) => tag.toLowerCase());
+}
+
+function hasTag(input: FoodIntelligenceInput, terms: string[]) {
+  const tags = allTags(input);
+  return tags.some((tag) =>
+    terms.some((term) => tag.includes(term.toLowerCase()))
+  );
+}
+
+function addUnique(result: string[], value: string) {
+  if (!result.includes(value)) result.push(value);
+}
+
 function proteinQuality(input: FoodIntelligenceInput) {
   const protein = input.nutrients?.protein_percent;
   const ingredientTags = input.ingredient_tags ?? [];
@@ -142,9 +161,29 @@ function confidence(input: FoodIntelligenceInput, score: number): "high" | "medi
 function strengths(input: FoodIntelligenceInput) {
   const tags = input.ingredient_tags ?? [];
   const result: string[] = [];
+  const nutrients = input.nutrients ?? {};
 
   for (const profile of ingredientProfiles) {
     if (tags.includes(profile.tag)) result.push(...profile.strengths);
+  }
+
+  if (hasNumber(nutrients.kcal_per_100g) && nutrients.kcal_per_100g <= 350) {
+    addUnique(result, "Lower calorie density supports measured feeding.");
+  }
+  if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent >= 28) {
+    addUnique(result, "Higher protein level supports lean-mass-aware feeding.");
+  }
+  if (hasNumber(nutrients.fiber_percent) && nutrients.fiber_percent >= 5) {
+    addUnique(result, "Fiber level can support satiety or stool quality.");
+  }
+  if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 16) {
+    addUnique(result, "Higher fat level can support active or weight-gain contexts.");
+  }
+  if (hasNumber(nutrients.epa_percent) || hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent)) {
+    addUnique(result, "Declared EPA/DHA improves omega-3 reasoning.");
+  }
+  if (hasNumber(nutrients.calcium_percent) && hasNumber(nutrients.phosphorus_percent)) {
+    addUnique(result, "Calcium and phosphorus are available for mineral review.");
   }
 
   for (const profile of nutrientProfiles) {
@@ -177,28 +216,103 @@ function cautions(input: FoodIntelligenceInput) {
   if (input.data_quality_status === "needs_review") {
     result.push("Needs review before confident chatbot claims.");
   }
+  if (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent >= 18) {
+    result.push("Fat is high for weight-control or pancreatitis-sensitive contexts.");
+  }
+  if (hasNumber(input.nutrients?.kcal_per_100g) && input.nutrients.kcal_per_100g >= 390) {
+    result.push("Calories are high for low-activity or sterilised pets.");
+  }
+  if (
+    hasTag(input, ["renal", "kidney"]) &&
+    !hasNumber(input.nutrients?.phosphorus_percent)
+  ) {
+    result.push("Renal-positioned use needs phosphorus data.");
+  }
+  if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    (!hasNumber(input.nutrients?.magnesium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))
+  ) {
+    result.push("Urinary-positioned use needs magnesium and phosphorus context.");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
 
 function bestUseCases(input: FoodIntelligenceInput) {
-  return [
+  const nutrients = input.nutrients ?? {};
+  const result = [
     ...(input.health_tags ?? []),
     ...(input.medical_tags ?? []),
     input.life_stage && input.life_stage !== "unknown" ? input.life_stage : "",
-  ].filter(Boolean).slice(0, 8);
+  ].filter(Boolean);
+
+  if (
+    hasTag(input, ["sterilised", "sterilized", "neutered", "weight_control", "obesity"]) ||
+    (hasNumber(nutrients.kcal_per_100g) &&
+      nutrients.kcal_per_100g <= 350 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent <= 12)
+  ) {
+    addUnique(result, "calorie_aware_feeding");
+  }
+  if (
+    hasTag(input, ["active", "performance", "sport", "working"]) ||
+    (hasNumber(nutrients.kcal_per_100g) &&
+      nutrients.kcal_per_100g >= 380 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 16)
+  ) {
+    addUnique(result, "active_working");
+  }
+  if (
+    (input.life_stage === "senior" || hasTag(input, ["senior", "mature", "joint", "mobility"])) &&
+    (hasNumber(nutrients.epa_percent) ||
+      hasNumber(nutrients.epa_dha_percent) ||
+      hasTag(input, ["joint", "mobility"]))
+  ) {
+    addUnique(result, "senior_mobility");
+  }
+  if (
+    ["puppy", "kitten"].includes(input.life_stage ?? "") &&
+    (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent))
+  ) {
+    addUnique(result, "growth_development");
+  }
+  if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    hasNumber(nutrients.magnesium_percent) &&
+    hasNumber(nutrients.phosphorus_percent)
+  ) {
+    addUnique(result, "urinary_mineral_review");
+  }
+  if (
+    hasTag(input, ["renal", "kidney"]) &&
+    hasNumber(nutrients.phosphorus_percent)
+  ) {
+    addUnique(result, "renal_phosphorus_review");
+  }
+
+  return [...new Set(result)].slice(0, 8);
 }
 
 function notIdealCases(input: FoodIntelligenceInput) {
   const cases: string[] = [];
   const fat = input.nutrients?.fat_percent;
+  const kcal = input.nutrients?.kcal_per_100g;
 
   if (hasNumber(fat) && fat >= 18) cases.push("weight_loss_without_portion_control");
+  if (hasNumber(kcal) && kcal >= 390) cases.push("low_activity_sterilised_without_portion_control");
   if (!hasNumber(input.nutrients?.phosphorus_percent)) cases.push("renal_decision_without_phosphorus");
   if (!hasNumber(input.nutrients?.magnesium_percent)) cases.push("urinary_decision_without_magnesium");
+  if (
+    ["puppy", "kitten"].includes(input.life_stage ?? "") &&
+    (!hasNumber(input.nutrients?.calcium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))
+  ) {
+    cases.push("growth_without_mineral_review");
+  }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
-  return cases;
+  return [...new Set(cases)].slice(0, 8);
 }
 
 export function evaluateFoodIntelligence(input: FoodIntelligenceInput): FoodIntelligenceResult {
