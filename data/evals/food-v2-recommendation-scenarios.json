@@ -419,6 +419,24 @@
         "healthIssues": ["renal", "kidney disease", "senior"]
       },
       "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
+    },
+    {
+      "label": "Active dog weight gain no unrelated medical diets",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Belgian Malinois",
+        "age": 3,
+        "weight": 28,
+        "activityLevel": "high",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": ["salmon"],
+        "excludedIngredients": [],
+        "weightGoal": "gain",
+        "healthIssues": ["daily training", "working dog", "needs weight gain"]
+      },
+      "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick", "no_unrelated_therapeutic_top_picks"]
     }
   ]
 }

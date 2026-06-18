@@ -97,15 +97,22 @@ function normalizedHealthText(healthIssues: string[] | undefined) {
   return (healthIssues ?? []).join(" ").toLowerCase();
 }
 
+function isWeightGainContext(healthText: string) {
+  return /weight gain|gain weight|needs? to gain|underweight|muscle gain|gain muscle/.test(
+    healthText
+  );
+}
+
 export function isObesityOrWeightLossContext(input: {
   goal: ObesityFitInput["goal"];
   pet: ObesityFitInput["pet"];
 }) {
   const healthText = normalizedHealthText(input.pet.healthIssues);
+  if (isWeightGainContext(healthText)) return false;
 
   return (
     input.goal === "weight_control" ||
-    /obesity|overweight|weight|loss|bcs|παχ|βαρ/.test(healthText)
+    /obesity|overweight|weight control|weight loss|loss|lose weight|bcs|παχ|βαρ/.test(healthText)
   );
 }
 

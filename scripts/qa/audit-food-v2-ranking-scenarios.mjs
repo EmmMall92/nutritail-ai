@@ -155,6 +155,33 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "no_weight_control_top_pick") {
+      if (
+        hasAnyTerm(firstText, [
+          "weight",
+          "light",
+          "sterilised",
+          "sterilized",
+          "satiety",
+          "obesity",
+        ])
+      ) {
+        warnings.push("Top pick looks weight-control positioned.");
+      }
+    }
+
+    if (expectation === "active_energy_fit") {
+      const kcal = first?.nutrition?.kcal_per_100g;
+      const fat = first?.nutrition?.fat_percent;
+      if (
+        !hasAnyTerm(firstText, ["active", "performance", "energy", "working"]) &&
+        !(typeof kcal === "number" && kcal >= 360) &&
+        !(typeof fat === "number" && fat >= 15)
+      ) {
+        warnings.push("Top pick does not show active/energy fit.");
+      }
+    }
+
     if (expectation === "moderate_calorie_fat_top_pick") {
       const kcal = first?.nutrition?.kcal_per_100g;
       const fat = first?.nutrition?.fat_percent;
@@ -223,6 +250,34 @@ function checkExpectations(scenario, data) {
         !hasAnyTerm(firstText, ["renal", "kidney"])
       ) {
         warnings.push("Renal scenario returned urinary/oxalate positioning without renal/kidney positioning.");
+      }
+    }
+
+    if (expectation === "no_unrelated_therapeutic_top_picks") {
+      const unrelatedTherapeuticPick = picks.find((pick) =>
+        hasAnyTerm(foodText(pick), [
+          "gastro",
+          "gastrointestinal",
+          "liver",
+          "hepatic",
+          "renal",
+          "kidney",
+          "urinary",
+          "struvite",
+          "oxalate",
+          "diabetic",
+          "obesity",
+          "satiety",
+          "pancreatic",
+        ])
+      );
+
+      if (unrelatedTherapeuticPick) {
+        warnings.push(
+          `Top picks include unrelated therapeutic positioning: ${
+            unrelatedTherapeuticPick.display_name ?? "unknown"
+          }.`
+        );
       }
     }
 

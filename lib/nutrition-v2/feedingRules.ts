@@ -100,18 +100,27 @@ function normalizedHealthText(healthIssues: string[] | undefined) {
   return (healthIssues ?? []).join(" ").toLowerCase();
 }
 
+function isWeightGainContext(healthText: string) {
+  return /weight gain|gain weight|needs? to gain|underweight|muscle gain|gain muscle/.test(
+    healthText
+  );
+}
+
 export function isWeightSensitiveFeedingContext(input: {
   goal: FeedingFitGoal;
   pet: FeedingFitInput["pet"];
 }) {
   const healthText = normalizedHealthText(input.pet.healthIssues);
+  if (isWeightGainContext(healthText)) return false;
 
   return (
     input.goal === "sterilised" ||
     input.goal === "weight_control" ||
     input.pet.neutered ||
     input.pet.activityLevel === "low" ||
-    /weight|obesity|overweight|sterilis|neuter/.test(healthText)
+    /weight control|weight loss|loss|lose weight|obesity|overweight|sterilis|neuter/.test(
+      healthText
+    )
   );
 }
 
@@ -120,10 +129,11 @@ export function isStrictWeightControlFeedingContext(input: {
   pet: FeedingFitInput["pet"];
 }) {
   const healthText = normalizedHealthText(input.pet.healthIssues);
+  if (isWeightGainContext(healthText)) return false;
 
   return (
     input.goal === "weight_control" ||
-    /weight|obesity|overweight|loss/.test(healthText) ||
+    /weight control|weight loss|loss|lose weight|obesity|overweight/.test(healthText) ||
     (input.goal === "sterilised" &&
       (input.pet.neutered || input.pet.activityLevel === "low"))
   );
@@ -135,6 +145,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
   const weightSensitive = isWeightSensitiveFeedingContext({ goal, pet });
   const strictWeightContext = isStrictWeightControlFeedingContext({ goal, pet });
   const activityText = normalizedHealthText(pet.healthIssues);
+  const weightGainContext = isWeightGainContext(activityText);
   const highActivity =
     pet.activityLevel === "high" ||
     /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
@@ -314,14 +325,15 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
 
   if (highActivity && !strictWeightContext && positioning.weightControl && !positioning.active) {
     signals.push({
-      type: "caution",
+      type: weightGainContext ? "exclude" : "caution",
       code: "weight_control_formula_for_active_pet",
-      points: -24,
+      points: weightGainContext ? -100 : -24,
       message:
         "Weight-control positioning may underserve a highly active pet unless weight loss is the goal.",
     });
 
     if (
+      weightGainContext ||
       (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 355) ||
       (hasNumber(nutrients.fat_percent) && nutrients.fat_percent <= 12)
     ) {
