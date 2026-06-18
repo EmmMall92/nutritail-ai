@@ -134,7 +134,12 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
   const { food, goal, nutrients, pet, positioning } = input;
   const weightSensitive = isWeightSensitiveFeedingContext({ goal, pet });
   const strictWeightContext = isStrictWeightControlFeedingContext({ goal, pet });
-  const highActivity = pet.activityLevel === "high";
+  const activityText = normalizedHealthText(pet.healthIssues);
+  const highActivity =
+    pet.activityLevel === "high" ||
+    /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
+      activityText
+    );
 
   if (weightSensitive) {
     if (positioning.weightControl) {

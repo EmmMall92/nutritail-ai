@@ -2,6 +2,7 @@ import {
   rankFoodV2ForPet,
   splitFoodV2Recommendations,
 } from "@/lib/food-v2/recommendationRanking";
+import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 
 function food(overrides: Partial<FoodProductV2>): FoodProductV2 {
@@ -322,6 +323,33 @@ if (!activeFitRanking.signals.some((signal) => signal.code === "active_formula_a
   process.exit(1);
 }
 
+const workingDogContextRanking = rankFoodV2ForPet({
+  food: activeHighFat,
+  nutrients: {
+    ...nutrients(activeHighFat),
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: {
+    ...highActivityPet,
+    activityLevel: "normal" as const,
+    healthIssues: ["working dog", "daily mountain training"],
+  },
+  goal: "general",
+});
+
+if (workingDogContextRanking.bucket === "hold") {
+  console.error("Working-dog context should keep active foods usable even when activityLevel is not explicit.");
+  console.error(workingDogContextRanking);
+  process.exit(1);
+}
+
+if (!workingDogContextRanking.signals.some((signal) => signal.code === "active_formula_activity_fit")) {
+  console.error("Expected active_formula_activity_fit from working-dog context.");
+  console.error(workingDogContextRanking.signals);
+  process.exit(1);
+}
+
 const seniorPet = {
   ...pet,
   weight: 15,
@@ -488,6 +516,56 @@ if (largeBreedPuppyRanking.total_score <= genericPuppyRanking.total_score) {
 if (!largeBreedPuppyRanking.signals.some((signal) => signal.code === "large_breed_puppy_fit")) {
   console.error("Expected large_breed_puppy_fit signal.");
   console.error(largeBreedPuppyRanking.signals);
+  process.exit(1);
+}
+
+const renalPet = {
+  ...pet,
+  species: "cat" as const,
+  weight: 4.2,
+  age: 12,
+  activityLevel: "low" as const,
+  neutered: true,
+  healthIssues: ["renal", "kidney disease"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const urinaryOnlyFood = food({
+  id: "urinary-only",
+  formula_key: "qa|urinary-only|cat|dry",
+  brand: "QA Vet",
+  display_name: "Vetsolution Urinary Oxalate",
+  species: "cat",
+  life_stage: "adult",
+  ingredients: ["chicken", "rice"],
+  medical_tags: ["urinary"],
+});
+const urinaryOnlyRenalRanking = rankFoodV2ForPet({
+  food: urinaryOnlyFood,
+  nutrients: {
+    ...nutrients(urinaryOnlyFood),
+    phosphorus_percent: 0.7,
+  },
+  pet: renalPet,
+  goal: "renal",
+});
+const urinaryOnlyRenalGuards = detectFoodV2RecommendationGuardFlags(urinaryOnlyRenalRanking);
+
+if (urinaryOnlyRenalRanking.bucket !== "hold") {
+  console.error("Urinary-only food should be held for renal cases.");
+  console.error(urinaryOnlyRenalRanking);
+  process.exit(1);
+}
+
+if (!urinaryOnlyRenalRanking.signals.some((signal) => signal.code === "renal_urinary_mismatch")) {
+  console.error("Expected renal_urinary_mismatch signal for urinary-only renal mismatch.");
+  console.error(urinaryOnlyRenalRanking.signals);
+  process.exit(1);
+}
+
+if (!urinaryOnlyRenalGuards.some((flag) => flag.code === "renal_urinary_mismatch" && flag.severity === "block")) {
+  console.error("Expected renal_urinary_mismatch to be exposed as a block guard.");
+  console.error(urinaryOnlyRenalGuards);
   process.exit(1);
 }
 
