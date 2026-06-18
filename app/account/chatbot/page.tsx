@@ -488,6 +488,25 @@ function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: nu
   ].join(" ");
 }
 
+function getRecommendationChoicePortionPreview(
+  choice: RecommendedFoodChoice,
+  analysis: PetAnalysis | null,
+  weightGoal: WeightGoal | undefined
+) {
+  if (!analysis) return null;
+
+  const adjustedCalories = adjustCaloriesForWeightGoal({
+    calories: analysis.nutrition.der,
+    goal: weightGoal,
+  });
+  const portionEstimate = calculateMainFoodPortionEstimate({
+    finalDailyCalories: adjustedCalories,
+    kcalPer100g: choice.kcalPer100g,
+  });
+
+  return portionEstimate?.gramsPerDay ?? null;
+}
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -4076,6 +4095,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         {botText("Γιατί ταιριάζει", "Why it fits")}
                       </span>
                       <span>{choice.reason}</span>
+                    </span>
+                  )}
+                  {getRecommendationChoicePortionPreview(
+                    choice,
+                    latestAnalysis,
+                    pet.weightGoal
+                  ) && (
+                    <span className="mt-3 rounded-xl bg-lime-50 px-3 py-2 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
+                      <span className="block text-xs font-semibold uppercase text-lime-700">
+                        {botText("Περίπου ποσότητα", "Estimated portion")}
+                      </span>
+                      <span>
+                        {getRecommendationChoicePortionPreview(
+                          choice,
+                          latestAnalysis,
+                          pet.weightGoal
+                        )}
+                        g/{botText("ημέρα", "day")}
+                      </span>
                     </span>
                   )}
                   {choice.bestUseCases && choice.bestUseCases.length > 0 && (
