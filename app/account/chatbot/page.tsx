@@ -15,10 +15,7 @@ import {
 import { calculateTreatsAllowance } from "@/lib/treatsCalculator";
 import { buildFoodTransitionGuide } from "@/lib/foodTransitionGuide";
 import { calculateFoodScore } from "@/lib/foodScore";
-import {
-  formatChatGuardrails,
-  generateChatGuardrails,
-} from "@/lib/nutrition/chatGuardrails";
+import { generateChatGuardrails } from "@/lib/nutrition/chatGuardrails";
 import {
   buildFoodScoreExplanation,
   getFoodScoreLabel,
@@ -1674,7 +1671,22 @@ function buildGuardrailText(pet: PetIntake, language: ChatLanguage) {
     allergies: pet.allergies,
   });
 
-  return localizeGuardrailText(formatChatGuardrails(guardrails), language);
+  if (!guardrails.hasUrgentSignal) return "";
+
+  const notes = guardrails.safetyNotes.slice(0, 2);
+  if (notes.length === 0) return "";
+
+  if (language === "el") {
+    return [
+      "Μικρή προσοχή πριν δούμε τις τροφές:",
+      ...notes.map((note) => `- ${localizeGuardrailText(note, "el")}`),
+    ].join("\n");
+  }
+
+  return [
+    "One quick caution before the food shortlist:",
+    ...notes.map((note) => `- ${note}`),
+  ].join("\n");
 }
 
 function createPetFromIntake(intake: PetIntake): Pet {
