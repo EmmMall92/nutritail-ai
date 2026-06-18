@@ -175,6 +175,38 @@ export function normalizeCanonicalFormulaName(value: unknown) {
   );
 }
 
+export function normalizeBrandlessFoodDisplayName({
+  brand,
+  display_name,
+  formula_name,
+}: {
+  brand: string;
+  display_name?: string | null;
+  formula_name?: string | null;
+}) {
+  const cleanedBrand = normalizeCanonicalFormulaName(brand);
+  const fallback = normalizeCanonicalFormulaName(formula_name);
+  let cleanedDisplay = normalizeCanonicalFormulaName(display_name) || fallback;
+
+  if (!cleanedDisplay) return "";
+
+  const normalizedBrand = normalizeSearchText(cleanedBrand);
+  let normalizedDisplay = normalizeSearchText(cleanedDisplay);
+
+  while (
+    normalizedBrand &&
+    (normalizedDisplay === normalizedBrand ||
+      normalizedDisplay.startsWith(`${normalizedBrand} `))
+  ) {
+    cleanedDisplay = cleanedDisplay.slice(cleanedBrand.length).trim();
+    normalizedDisplay = normalizeSearchText(cleanedDisplay);
+  }
+
+  return dedupeRepeatedDisplayTerms(cleanedDisplay)
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function normalizeCanonicalFormulaKeyPart(value: unknown) {
   return slugify(
     normalizeCanonicalFormulaName(value)
