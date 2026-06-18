@@ -4501,7 +4501,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               <p className="mt-1 text-sm text-gray-700">
                 {botText(
                   "Το προφίλ, το report και το ιστορικό είναι έτοιμα. Διάλεξε τι θέλεις να κάνεις τώρα.",
-                  "Your pet profile, report, and history are ready. Choose what you want to do next."
+                  "Your pet profile, report, timeline, and progress check are ready. Choose what you want to do next."
                 )}
               </p>
             </div>

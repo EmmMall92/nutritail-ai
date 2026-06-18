@@ -79,7 +79,17 @@ const checks = [
   {
     label: "Compact recommendation fallback points to food cards",
     file: "app/account/chatbot/page.tsx",
-    expected: "Tap one card below",
+    expected: "Choose one card below",
+  },
+  {
+    label: "Saved chatbot analysis frames next steps as ready",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Your pet profile, report, timeline, and progress check are ready. Choose what you want to do next.",
+  },
+  {
+    label: "Saved chatbot analysis exposes progress check action",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Weight, grams, treats, and results.",
   },
 ];
 
