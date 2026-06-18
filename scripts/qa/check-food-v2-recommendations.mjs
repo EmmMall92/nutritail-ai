@@ -87,6 +87,25 @@ function expectationWarnings(scenario, body, hasUsableRecommendations) {
       if (hasAny(topText, ["active", "performance", "sport", "working", "energy rich", "high energy"])) {
         warnings.push("Top pick looks active/performance positioned.");
       }
+    } else if (expectation === "no_unrelated_therapeutic_top_picks") {
+      const therapeuticTerms = [
+        "gastro",
+        "gastrointestinal",
+        "liver",
+        "hepatic",
+        "renal",
+        "kidney",
+        "urinary",
+        "struvite",
+        "oxalate",
+        "diabetic",
+        "obesity",
+        "satiety",
+        "pancreatic",
+      ];
+      if (top.some((item) => hasAny(itemText(item), therapeuticTerms))) {
+        warnings.push("A top recommendation looks like an unrelated therapeutic food.");
+      }
     } else if (expectation === "weight_or_sterilised_fit") {
       if (!hasAny(topText, ["light", "sterilised", "sterilized", "neutered", "weight", "obesity", "satiety", "lower calorie"])) {
         warnings.push("Top pick does not show weight/sterilised fit.");

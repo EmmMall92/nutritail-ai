@@ -87,6 +87,28 @@ const activePerformance = rankFoodV2ForPet({
   goal: "general",
 });
 
+const weightGainHighActivityDog = {
+  ...highActivityDog,
+  healthIssues: ["working dog", "daily training", "needs weight gain"],
+};
+
+const lightSterilisedForGain = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "light-sterilised-gain",
+    display_name: "Large Light Sterilised",
+    commercial_tags: ["sterilised", "light"],
+    kcal_per_100g: 344,
+  },
+  nutrients: {
+    protein_percent: 30,
+    fat_percent: 11,
+    fiber_percent: 5.7,
+  },
+  pet: weightGainHighActivityDog,
+  goal: "general",
+});
+
 assert(
   lightSterilised.bucket === "hold",
   "Light/sterilised formula should be held for a high-activity dog when weight loss is not the goal."
@@ -107,12 +129,20 @@ assert(
   signalCodes(activePerformance).includes("energy_density_for_high_activity"),
   "High-activity formula should receive energy-density support."
 );
+assert(
+  lightSterilisedForGain.bucket === "hold",
+  "Light/sterilised formula should be held for high-activity dogs that need weight gain."
+);
+assert(
+  !signalCodes(lightSterilisedForGain).includes("sterilised_fit"),
+  "Weight-gain context must not be treated as a weight-control or sterilised fit."
+);
 
 console.log(
   JSON.stringify(
     {
-      checked: 2,
-      passed: 2,
+      checked: 3,
+      passed: 3,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -122,6 +152,11 @@ console.log(
         bucket: activePerformance.bucket,
         score: activePerformance.total_score,
         signals: signalCodes(activePerformance),
+      },
+      light_sterilised_for_gain: {
+        bucket: lightSterilisedForGain.bucket,
+        score: lightSterilisedForGain.total_score,
+        signals: signalCodes(lightSterilisedForGain),
       },
     },
     null,
