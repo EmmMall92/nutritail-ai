@@ -56,13 +56,13 @@ type RecommendationSummaryOptions = {
   maxItemsPerSection?: number;
 };
 
-const GOAL_LABELS: Record<FoodV2RecommendationGoal, string> = {
+const GOAL_LABELS_EN: Record<FoodV2RecommendationGoal, string> = {
   general: "general fit",
   premium: "premium fit",
   value: "value fit",
   weight_control: "weight control",
   sensitive_digestion: "sensitive digestion",
-  allergy: "allergy or ingredient avoidance",
+  allergy: "ingredient avoidance",
   urinary: "urinary support",
   renal: "renal support",
   growth: "growth",
@@ -76,7 +76,7 @@ const GOAL_LABELS_EL: Record<FoodV2RecommendationGoal, string> = {
   value: "οικονομική επιλογή",
   weight_control: "έλεγχος βάρους",
   sensitive_digestion: "ευαίσθητη πέψη",
-  allergy: "αλλεργία ή αποφυγή συστατικών",
+  allergy: "αποφυγή συστατικών",
   urinary: "ουρολογική υποστήριξη",
   renal: "νεφρική υποστήριξη",
   growth: "ανάπτυξη",
@@ -84,8 +84,24 @@ const GOAL_LABELS_EL: Record<FoodV2RecommendationGoal, string> = {
   senior: "ηλικιωμένο κατοικίδιο",
 };
 
-function normalizeText(value: string) {
-  return value
+const INTERNAL_NOTE_PATTERNS = [
+  /needs[_\s-]?review/i,
+  /retailer/i,
+  /source tier/i,
+  /source priority/i,
+  /data quality/i,
+  /missing nutrition/i,
+  /confidence internals/i,
+  /candidate kept out/i,
+  /value ranking is a proxy/i,
+  /medical-condition matches are ranking support/i,
+  /data is usable but still needs review/i,
+  /retailer source should be worded cautiously/i,
+  /detailed mineral data is incomplete/i,
+];
+
+function normalizeText(value: unknown) {
+  return String(value ?? "")
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "");
@@ -107,9 +123,8 @@ export function goalFromPetContext(
       "itch",
       "skin",
       "derma",
-      "fagour",
-      "\u03c6\u03b1\u03b3\u03bf\u03c5\u03c1",
-      "\u03b4\u03b5\u03c1\u03bc",
+      "φαγουρ",
+      "δερμ",
     ])
   ) {
     return "allergy";
@@ -118,7 +133,10 @@ export function goalFromPetContext(
     return "urinary";
   }
   if (hasAny(pet.healthIssues, ["renal", "kidney", "ckd", "νεφρ"])) return "renal";
-  if (pet.weightGoal === "loss" || hasAny(pet.healthIssues, ["weight", "obesity", "overweight", "βάρος", "παχυ"])) {
+  if (
+    pet.weightGoal === "loss" ||
+    hasAny(pet.healthIssues, ["weight", "obesity", "overweight", "βάρος", "παχυ"])
+  ) {
     return "weight_control";
   }
   if (
@@ -131,6 +149,7 @@ export function goalFromPetContext(
       "gas",
       "πέψη",
       "διάρροια",
+      "αέρια",
     ])
   ) {
     return "sensitive_digestion";
@@ -153,20 +172,19 @@ export function goalFromPetContext(
 }
 
 function foodName(food: FoodV2ChatbotRecommendationItem) {
-  const brand = String(food.brand ?? "").trim();
+  const brand = String(food.brand ?? "").replace(/\s+/g, " ").trim();
   let displayName = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
-
-  const firstBrandWord = brand.split(/\s+/)[0];
-  if (firstBrandWord) {
-    const repeatedBrandWord = new RegExp(
-      `^${escapeRegExp(firstBrandWord)}\\s+${escapeRegExp(firstBrandWord)}\\s+`,
-      "i"
-    );
-    displayName = displayName.replace(repeatedBrandWord, "");
-  }
 
   if (brand && displayName.toLowerCase().startsWith(brand.toLowerCase())) {
     return displayName;
+  }
+
+  const firstBrandWord = brand.split(/\s+/)[0];
+  if (firstBrandWord) {
+    displayName = displayName.replace(
+      new RegExp(`^${escapeRegExp(firstBrandWord)}\\s+${escapeRegExp(firstBrandWord)}\\s+`, "i"),
+      firstBrandWord + " "
+    );
   }
 
   return [brand, displayName].filter(Boolean).join(" - ");
@@ -176,79 +194,23 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function translateRankingText(value: string, locale: "el" | "en") {
-  if (locale === "en") return value;
-
-  return value
-    .replace(/Matches adult life stage\./gi, "Ταιριάζει σε ενήλικο ζώο.")
-    .replace(/Matches puppy life stage\./gi, "Ταιριάζει σε κουτάβι.")
-    .replace(/Matches kitten life stage\./gi, "Ταιριάζει σε γατάκι.")
-    .replace(/Matches senior life stage\./gi, "Ταιριάζει σε senior ζώο.")
-    .replace(/Matches size or breed-size positioning\./gi, "Ταιριάζει στο μέγεθος ή στον τύπο φυλής.")
-    .replace(/Useful weight-aware positioning for a sterilised pet\./gi, "Έχει λογική για στειρωμένο ή επιρρεπές σε βάρος ζώο.")
-    .replace(/Moderate calories fit a sterilised pet better\./gi, "Οι θερμίδες είναι πιο ήπιες για στειρωμένο ζώο.")
-    .replace(/Calories look acceptable for a sterilised pet\./gi, "Οι θερμίδες φαίνονται αποδεκτές για στειρωμένο ζώο.")
-    .replace(/Positioned for weight control\./gi, "Έχει προσανατολισμό για έλεγχο βάρους.")
-    .replace(/Lower calorie density fits a weight-control goal\./gi, "Η χαμηλότερη θερμιδική πυκνότητα βοηθά στον έλεγχο βάρους.")
-    .replace(/Positioned for urinary support\./gi, "Έχει ουρολογικό προσανατολισμό.")
-    .replace(/Positioned for renal support\./gi, "Έχει νεφρικό προσανατολισμό.")
-    .replace(/Positioned for senior pets\./gi, "Είναι πιο κοντά σε senior ανάγκες.")
-    .replace(/Positioned for sensitive digestion\./gi, "Έχει προσανατολισμό για ευαίσθητη πέψη.")
-    .replace(/Declared allergens were not detected in the ingredient text\./gi, "Δεν εντοπίστηκε το δηλωμένο αλλεργιογόνο στα συστατικά.")
-    .replace(/Avoided the pet's excluded ingredients or flavors\./gi, "Αποφεύγει τα συστατικά ή τις γεύσεις που δήλωσες.")
-    .replace(/Matches a preferred protein or flavor\./gi, "Ταιριάζει με προτιμώμενη πρωτεΐνη ή γεύση.")
-    .replace(/Ingredient data is available\./gi, "Υπάρχουν διαθέσιμα στοιχεία συστατικών.")
-    .replace(/Official source has priority\./gi, "Η πηγή είναι επίσημη ή υψηλής προτεραιότητας.")
-    .replace(/Data is usable but still needs review\./gi, "Τα δεδομένα είναι χρήσιμα, αλλά θέλουν τελικό έλεγχο.")
-    .replace(/Retailer source should be worded cautiously\./gi, "Η πηγή είναι retailer, άρα μιλάμε πιο προσεκτικά.")
-    .replace(/Fat looks high for a sterilised or weight-prone pet\./gi, "Τα λιπαρά φαίνονται υψηλά για στειρωμένο ή επιρρεπές σε βάρος ζώο.")
-    .replace(/Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi, "Τα λιπαρά δεν είναι αρκετά χαμηλά για να είναι πρώτη επιλογή σε στειρωμένο ή weight-control περίπτωση.")
-    .replace(/Energy density may be high for a sterilised pet\./gi, "Οι θερμίδες φαίνονται υψηλές για στειρωμένο ζώο.")
-    .replace(/Active\/performance positioning is not ideal for a sterilised low-to-normal activity pet\./gi, "Η active/performance λογική δεν είναι ιδανική για στειρωμένο ζώο με χαμηλή ή κανονική δραστηριότητα.")
-    .replace(/Not an exact senior life-stage match\./gi, "Δεν είναι ακριβές senior life-stage match.")
-    .replace(/Large-breed puppy ranking needs calcium and phosphorus data\./gi, "Για μεγαλόσωμο κουτάβι χρειαζόμαστε ασβέστιο και φώσφορο για μεγαλύτερη σιγουριά.")
-    .replace(/Renal cases need veterinarian-directed renal diet selection\./gi, "Τα νεφρικά περιστατικά χρειάζονται επιλογή τροφής με καθοδήγηση κτηνιάτρου.")
-    .replace(/Urinary reasoning is weaker without magnesium and phosphorus\./gi, "Η ουρολογική αξιολόγηση είναι πιο αδύναμη χωρίς μαγνήσιο και φώσφορο.");
-}
-
-function missingNutritionFields(food: FoodV2ChatbotRecommendationItem) {
-  const explicit = food.missing_nutrition_fields ?? [];
-  const confidenceMissing = [
-    ...(food.nutrition_confidence?.missing_core_fields ?? []),
-    ...(food.nutrition_confidence?.missing_mineral_fields ?? []),
-  ];
-
-  if (explicit.length > 0 || confidenceMissing.length > 0) {
-    return [...new Set([...explicit, ...confidenceMissing])].slice(0, 6);
-  }
-
-  const nutrition = food.nutrition;
-  if (!nutrition) return [];
-
-  return [
-    "kcal_per_100g",
-    "protein_percent",
-    "fat_percent",
-    "fiber_percent",
-    "calcium_percent",
-    "phosphorus_percent",
-    "sodium_percent",
-    "magnesium_percent",
-  ].filter((field) => nutrition[field] === null || nutrition[field] === undefined);
-}
-
 function formatNumber(value: number | null | undefined, digits = 1) {
   if (typeof value !== "number" || !Number.isFinite(value)) return null;
   return Number(value.toFixed(digits));
 }
 
-function customerNutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
+function scoreLabel(score: unknown) {
+  return typeof score === "number" && Number.isFinite(score)
+    ? ` (${Math.round(score)}/100)`
+    : "";
+}
+
+function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
   const nutrition = food.nutrition;
   const kcal = formatNumber(nutrition?.kcal_per_100g, 1);
   const protein = formatNumber(nutrition?.protein_percent, 1);
   const fat = formatNumber(nutrition?.fat_percent, 1);
   const fiber = formatNumber(nutrition?.fiber_percent, 1);
-
   const values = [
     kcal !== null ? `${kcal} kcal/100g` : "",
     protein !== null ? `${protein}% ${locale === "el" ? "πρωτεΐνη" : "protein"}` : "",
@@ -257,260 +219,184 @@ function customerNutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale
   ].filter(Boolean);
 
   if (values.length === 0) return "";
-
-  return `- ${locale === "el" ? "Με μια ματιά" : "At a glance"}: ${values.join("; ")}`;
+  return locale === "el" ? `Με μια ματιά: ${values.join("; ")}` : `At a glance: ${values.join("; ")}`;
 }
 
-function nutritionFitExplanation(
+function isInternalLine(value: string) {
+  return INTERNAL_NOTE_PATTERNS.some((pattern) => pattern.test(value));
+}
+
+function customerReason(
   food: FoodV2ChatbotRecommendationItem,
   goal: FoodV2RecommendationGoal,
   locale: "el" | "en"
 ) {
-  const nutrition = food.nutrition;
-  const reasons = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
-  const cautions = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
-  const kcal = formatNumber(nutrition?.kcal_per_100g, 1);
-  const fat = formatNumber(nutrition?.fat_percent, 1);
-  const protein = formatNumber(nutrition?.protein_percent, 1);
-  const calcium = formatNumber(nutrition?.calcium_percent, 2);
-  const phosphorus = formatNumber(nutrition?.phosphorus_percent, 2);
+  const text = normalizeText([
+    ...(food.ranking?.reasons ?? []),
+    ...(food.ranking?.cautions ?? []),
+    ...(food.food_intelligence?.strengths ?? []),
+    ...(food.food_intelligence?.best_use_cases ?? []),
+  ].join(" "));
 
-  if (goal === "weight_control" || goal === "sterilised") {
-    const numbers =
-      locale === "el"
-        ? [
-            kcal !== null ? `${kcal} kcal/100g` : "",
-            fat !== null ? `${fat}% λιπαρά` : "",
-          ].filter(Boolean)
-        : [
-            kcal !== null ? `${kcal} kcal/100g` : "",
-            fat !== null ? `${fat}% fat` : "",
-          ].filter(Boolean);
-
-    if (locale === "el") {
-      return numbers.length > 0
-        ? `- Χρήση: υποψήφια για στειρωμένα ή επιρρεπή σε βάρος ζώα (${numbers.join(", ")}).`
-        : "- Χρήση: έχει λογική για έλεγχο βάρους ή στειρωμένο ζώο, αλλά θέλει επιβεβαίωση θερμίδων πριν από ακριβή δοσολογία.";
-    }
-
-    return numbers.length > 0
-      ? `- Good when: the pet needs calorie-aware food choices (${numbers.join(", ")}).`
-      : "- Good when: the pet needs weight or sterilised-pet control; confirm calories before portion advice.";
+  if (goal === "sterilised" || goal === "weight_control") {
+    return locale === "el"
+      ? "ταιριάζει καλύτερα σε έλεγχο θερμίδων και βάρους"
+      : "fits calorie and weight-control needs";
   }
-
-  if (goal === "growth") {
-    const mineralText =
-      calcium !== null && phosphorus !== null
-        ? `Ca ${calcium}% / P ${phosphorus}%`
-        : "calcium and phosphorus still need confirmation";
-
-    if (locale === "el") {
-      const greekMineralText =
-        calcium !== null && phosphorus !== null
-          ? `Ca ${calcium}% / P ${phosphorus}%`
-          : "θέλει ακόμη επιβεβαίωση ασβεστίου και φωσφόρου";
-      return `- Χρήση: επιλογή με λογική ανάπτυξης. ${greekMineralText}.`;
-    }
-
-    return `- Good when: growth is the priority; ${mineralText}.`;
-  }
-
   if (goal === "allergy") {
-    if (locale === "el") {
-      return "- Χρήση: shortlist αποφυγής συστατικών με βάση τα διαθέσιμα συστατικά. Για πραγματική αλλεργία, χρειάζεται elimination trial με κτηνίατρο.";
-    }
-
-    return "- Good when: you need to avoid specific ingredients based on the label; use a vet-guided elimination trial for true allergy work.";
+    return locale === "el"
+      ? "σέβεται τις δηλωμένες αποφυγές συστατικών"
+      : "respects the declared ingredient avoidances";
   }
-
-  if (goal === "sensitive_digestion") {
-    if (locale === "el") {
-      return reasons.includes("sensitive") || reasons.includes("digest")
-        ? "- Χρήση: shortlist για ευαίσθητη πέψη ή GI προσανατολισμό."
-        : "- Χρήση: γενικό adult fit, αλλά τα digestion-specific δεδομένα είναι περιορισμένα.";
-    }
-
-    return reasons.includes("sensitive") || reasons.includes("digest")
-      ? "- Good when: digestion support or sensitive/GI positioning matters."
-      : "- Good when: you need a general adult option while digestion-specific data is limited.";
+  if (goal === "sensitive_digestion" || text.includes("digest") || text.includes("gastro")) {
+    return locale === "el"
+      ? "είναι πιο κοντά σε ανάγκες ευαίσθητης πέψης"
+      : "is closer to sensitive-digestion needs";
   }
-
-  if (goal === "urinary" || goal === "renal") {
-    if (locale === "el") {
-      return cautions.includes("missing") || cautions.includes("weaker")
-        ? "- Χρήση: τροφή με σχετικό προσανατολισμό, αλλά τα κενά στα μέταλλα θέλουν προσεκτική διατύπωση."
-        : "- Χρήση: τροφή με σχετικό προσανατολισμό. Να χρησιμοποιείται μαζί με κτηνιατρική καθοδήγηση.";
-    }
-
-    return cautions.includes("missing") || cautions.includes("weaker")
-      ? "- Good when: the food is positioned for this condition, but mineral gaps mean cautious wording is needed."
-      : "- Good when: the food is positioned for this condition; use alongside veterinary guidance.";
+  if (goal === "urinary") {
+    return locale === "el"
+      ? "έχει ουρολογική λογική και θέλει χρήση μαζί με κτηνιατρική καθοδήγηση"
+      : "has urinary-support logic and should be used with veterinary guidance";
   }
-
+  if (goal === "renal") {
+    return locale === "el"
+      ? "έχει νεφρική λογική και η τελική επιλογή πρέπει να γίνεται με κτηνίατρο"
+      : "has renal-support logic and final choice should be vet-guided";
+  }
+  if (goal === "growth") {
+    return locale === "el"
+      ? "είναι πιο κοντά στις ανάγκες ανάπτυξης"
+      : "is closer to growth needs";
+  }
   if (goal === "senior") {
-    if (locale === "el") {
-      return protein !== null
-        ? `- Χρήση: senior shortlist με ${protein}% πρωτεΐνη. Θέλει παρακολούθηση βάρους, όρεξης και μυϊκής κατάστασης.`
-        : "- Χρήση: senior shortlist. Θέλει παρακολούθηση βάρους, όρεξης και μυϊκής κατάστασης.";
-    }
-
-    return protein !== null
-      ? `- Good when: you need a senior-fit shortlist with ${protein}% protein; watch weight, appetite, and muscle condition.`
-      : "- Good when: you need a senior-fit shortlist; watch weight, appetite, and muscle condition.";
+    return locale === "el"
+      ? "είναι πιο κοντά σε senior ανάγκες"
+      : "is closer to senior needs";
+  }
+  if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+    return locale === "el"
+      ? "ταιριάζει με προτίμηση γεύσης ή πρωτεΐνης"
+      : "matches a preferred flavour or protein";
   }
 
-  if (locale === "el") {
-    return "- Χρήση: γενικό fit με βάση είδος, ηλικία, συστατικά και διαθέσιμα θρεπτικά δεδομένα.";
-  }
-
-  return "- Good when: the formula fits the pet's species, life stage, ingredients, and available nutrition data.";
+  return locale === "el"
+    ? "ταιριάζει στο βασικό προφίλ του κατοικιδίου"
+    : "fits the pet's basic profile";
 }
 
-function recommendationRoleLine(role: "premium" | "value", locale: "el" | "en") {
-  if (locale === "el") {
-    if (role === "premium") {
-      return "- Ρόλος: πιο δυνατή διατροφικά επιλογή για αυτό το προφίλ.";
-    }
+function customerCaution(value: string, locale: "el" | "en") {
+  const text = normalizeText(value);
+  if (isInternalLine(value)) return "";
 
-    return "- Ρόλος: πιο value εναλλακτική, αν θέλεις κάτι πιο απλό ή οικονομικό.";
+  if (text.includes("fat") || text.includes("energy") || text.includes("calorie")) {
+    return locale === "el"
+      ? "Θέλει μετρημένη μερίδα, ειδικά αν υπάρχει τάση για βάρος."
+      : "Portions should be measured carefully, especially if weight is a concern.";
+  }
+  if (text.includes("large breed") || text.includes("calcium") || text.includes("phosphorus")) {
+    return locale === "el"
+      ? "Σε μεγαλόσωμο κουτάβι θέλουμε έλεγχο ασβεστίου και φωσφόρου."
+      : "Large-breed puppies need calcium and phosphorus checked.";
+  }
+  if (text.includes("senior")) {
+    return locale === "el"
+      ? "Σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση."
+      : "For senior pets, monitor weight, appetite and muscle condition.";
+  }
+  if (text.includes("renal") || text.includes("kidney")) {
+    return locale === "el"
+      ? "Σε νεφρικό θέμα η επιλογή τροφής πρέπει να γίνεται με κτηνίατρο."
+      : "Kidney cases should be diet-guided with a veterinarian.";
+  }
+  if (text.includes("urinary")) {
+    return locale === "el"
+      ? "Σε ουρολογικό ιστορικό χρειάζεται επιβεβαίωση από κτηνίατρο."
+      : "Urinary history should be confirmed with a veterinarian.";
   }
 
-  if (role === "premium") {
-    return "- Best fit: strongest nutrition match for this pet profile.";
-  }
-
-  return "- Good alternative: simpler value-style option when you want another practical choice.";
+  return "";
 }
 
-function customerizeRecommendationLine(value: string, locale: "el" | "en") {
-  if (locale === "en") return value;
+function uniqueCustomerCautions(
+  foods: FoodV2ChatbotRecommendationItem[],
+  locale: "el" | "en"
+) {
+  const seen = new Set<string>();
+  const cautions: string[] = [];
 
-  return value
-    .replace(/^- Χρήση:/, "- Ταιριάζει όταν:")
-    .replace(/^- Ρόλος: πιο δυνατή διατροφικά επιλογή/, "- Καλύτερο fit: δυνατή διατροφικά επιλογή")
-    .replace(/^- Ρόλος: πιο value εναλλακτική,/, "- Καλή εναλλακτική:");
+  for (const food of foods) {
+    for (const raw of food.ranking?.cautions ?? []) {
+      const caution = customerCaution(raw, locale);
+      const key = normalizeText(caution);
+      if (caution && !seen.has(key)) {
+        seen.add(key);
+        cautions.push(caution);
+      }
+    }
+  }
+
+  return cautions.slice(0, 2);
 }
 
 function formatFood(
   food: FoodV2ChatbotRecommendationItem,
   index: number,
   locale: "el" | "en",
-  goal: FoodV2RecommendationGoal,
-  role: "premium" | "value"
-) {
-  const score = food.ranking?.total_score;
-  const missing = missingNutritionFields(food);
-  const reasons = (food.ranking?.reasons ?? [])
-    .filter((reason) => !reason.toLowerCase().includes("matches the pet species"))
-    .map((reason) => translateRankingText(reason, locale))
-    .slice(0, 2);
-  const optionLabel = locale === "el" ? "Επιλογή" : "Option";
-  const whyLabel = locale === "el" ? "Γιατί ταιριάζει" : "Why it fits";
-
-  return [
-    `${optionLabel} ${index}: ${foodName(food) || "Unnamed food"}${
-      typeof score === "number" ? ` (${score}/100)` : ""
-    }`,
-    customerizeRecommendationLine(recommendationRoleLine(role, locale), locale),
-    customerizeRecommendationLine(nutritionFitExplanation(food, goal, locale), locale),
-    customerNutritionSnapshot(food, locale),
-    reasons.length > 0 ? `- ${whyLabel}: ${reasons.join("; ")}` : "",
-    missing.length > 0 && locale === "en"
-      ? "- Some detailed minerals are not available yet, so portion and health-specific advice should stay cautious."
-      : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-}
-
-function formatTopPick(
-  food: FoodV2ChatbotRecommendationItem | undefined,
-  locale: "el" | "en",
   goal: FoodV2RecommendationGoal
 ) {
-  if (!food) return "";
+  const name = foodName(food) || (locale === "el" ? "Τροφή χωρίς όνομα" : "Unnamed food");
+  const reason = customerReason(food, goal, locale);
+  const snapshot = nutritionSnapshot(food, locale);
 
-  const score = food.ranking?.total_score;
-  const firstReason = food.ranking?.reasons?.find(
-    (reason) => !reason.toLowerCase().includes("matches the pet species")
-  );
-  const topLabel = locale === "el" ? "Πρώτη επιλογή" : "Top pick";
-  const whyLabel = locale === "el" ? "Γιατί" : "Why";
+  if (locale === "el") {
+    return [
+      `${index}. ${name}${scoreLabel(food.ranking?.total_score)}`,
+      `   Γιατί ταιριάζει: ${reason}.`,
+      snapshot ? `   ${snapshot}.` : "",
+    ].filter(Boolean).join("\n");
+  }
 
   return [
-    `${topLabel}: ${foodName(food) || "Unnamed food"}${
-      typeof score === "number" ? ` (${score}/100)` : ""
-    }.`,
-    locale === "el"
-      ? "Αν θέλεις να ξεκινήσεις από μία επιλογή, αυτή είναι η πιο δυνατή πρώτη πρόταση με βάση τα στοιχεία του κατοικιδίου."
-      : "If you want to start with one option, this is the strongest first pick for the pet profile.",
-    customerizeRecommendationLine(nutritionFitExplanation(food, goal, locale), locale),
-    firstReason ? `${whyLabel}: ${translateRankingText(firstReason, locale)}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+    `${index}. ${name}${scoreLabel(food.ranking?.total_score)}`,
+    `   Why it fits: ${reason}.`,
+    snapshot ? `   ${snapshot}.` : "",
+  ].filter(Boolean).join("\n");
 }
 
-function uniqueShortCautions(values: string[]) {
-  const seen = new Set<string>();
-  const ignored = new Set([
-    "Value ranking is a proxy until price data is available.",
-    "Medical-condition matches are ranking support, not diagnosis or treatment.",
-    "Data is usable but still needs review.",
-    "Retailer source should be worded cautiously.",
-    "Detailed mineral data is incomplete.",
-  ]);
-
-  return values
-    .map((value) => value.trim())
-    .filter((value) => value && !ignored.has(value))
-    .map((value) => customerCautionText(value))
-    .filter((value) => {
-      const key = normalizeText(value);
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 3);
-}
-
-function customerCautionText(value: string) {
-  const normalized = normalizeText(value);
-
-  if (normalized.includes("fat looks high")) {
-    return "This looks richer in fat, so portions matter more for sterilised or weight-prone pets.";
-  }
-  if (normalized.includes("fat is not low enough")) {
-    return "This can still be an option, but it is not the lightest choice for weight control.";
-  }
-  if (normalized.includes("energy density may be high")) {
-    return "This is more calorie-dense, so it needs careful daily grams.";
-  }
-  if (normalized.includes("active/performance positioning")) {
-    return "This may suit active dogs better than low-activity sterilised pets.";
-  }
-  if (normalized.includes("not an exact senior")) {
-    return "It is not a perfect senior match, so watch appetite, weight and muscle condition.";
-  }
-  if (normalized.includes("large-breed puppy")) {
-    return "For large-breed puppies, calcium and phosphorus should be checked before relying on it.";
-  }
-  if (normalized.includes("renal cases")) {
-    return "For kidney cases, use veterinarian guidance before choosing a diet.";
-  }
-  if (normalized.includes("urinary reasoning")) {
-    return "For urinary cases, minerals matter and veterinarian guidance is important.";
+function sectionTitle(role: "premium" | "value", locale: "el" | "en") {
+  if (locale === "el") {
+    return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο απλές / value επιλογές:";
   }
 
-  return value;
+  return role === "premium" ? "Best nutrition fits:" : "Simpler / value options:";
 }
 
 function nextStepLine(locale: "el" | "en") {
+  return locale === "el"
+    ? "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να υπολογίσουμε περίπου γραμμάρια/ημέρα."
+    : "Next step: choose one food card and I can estimate daily grams.";
+}
+
+function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
+  const medicalGoal = goal === "urinary" || goal === "renal";
   if (locale === "el") {
-    return "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα για να υπολογίσουμε περίπου γραμμάρια/ημέρα.";
+    return medicalGoal
+      ? "Για ουρολογικό ή νεφρικό ιστορικό, η τελική επιλογή τροφής πρέπει να συμφωνεί με τον/την κτηνίατρο."
+      : "Η πρόταση είναι διατροφική καθοδήγηση και δεν αντικαθιστά κτηνιατρική συμβουλή.";
   }
 
-  return "Next step: choose one food from the list and I can estimate daily grams.";
+  return medicalGoal
+    ? "For urinary or kidney history, final diet choice should match veterinary guidance."
+    : "This is nutrition guidance and does not replace veterinary advice.";
+}
+
+function cleanOutput(text: string) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => !isInternalLine(line))
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 export function formatFoodV2ChatbotRecommendationSummary(
@@ -523,11 +409,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
   const goal = response.goal ?? "general";
   const excludedBrands = options.excludedBrands ?? [];
   const locale = options.locale ?? "el";
-  const maxItemsPerSection = Math.min(
-    Math.max(options.maxItemsPerSection ?? 3, 1),
-    3
-  );
-  const goalLabel = locale === "el" ? GOAL_LABELS_EL[goal] : GOAL_LABELS[goal];
+  const maxItemsPerSection = Math.min(Math.max(options.maxItemsPerSection ?? 3, 1), 3);
+  const goalLabel = locale === "el" ? GOAL_LABELS_EL[goal] : GOAL_LABELS_EN[goal];
   const intro =
     options.mode === "alternative"
       ? locale === "el"
@@ -538,11 +421,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
         : "Recommended foods:";
 
   if (premium.length === 0 && value.length === 0) {
-    const holdCautions = uniqueShortCautions(
-      hold.flatMap((food) => food.ranking?.cautions ?? [])
-    );
-
-    return [
+    return cleanOutput([
       intro,
       "",
       `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
@@ -552,91 +431,69 @@ export function formatFoodV2ChatbotRecommendationSummary(
           : `Avoiding current brand: ${excludedBrands.join(", ")}`
         : "",
       locale === "el"
-        ? "Δεν βρήκα αρκετά κατάλληλη πρόταση για αυτό το κατοικίδιο με τα στοιχεία που έχουμε τώρα."
-        : "I did not find a suitable enough recommendation for this pet with the current context.",
-      locale === "el"
-        ? "Δεν θα προτείνω τροφές που δεν ταιριάζουν στο μέγεθος, στο life stage ή στον δηλωμένο στόχο."
-        : "I will not recommend foods that do not fit the pet size, life stage, or stated goal.",
+        ? "Δεν βρήκα αρκετά κατάλληλη πρόταση με τα στοιχεία που έχουμε τώρα."
+        : "I did not find a suitable enough recommendation with the current context.",
       hold.length > 0
         ? locale === "el"
-          ? `Έλεγξα ${hold.length} candidate${hold.length === 1 ? "" : "s"} και τα κράτησα εκτός shortlist.`
-          : `Checked ${hold.length} candidate${hold.length === 1 ? "" : "s"} and kept them out of the shortlist.`
-        : "",
-      holdCautions.length > 0
-        ? [
-            locale === "el" ? "Βασικοί λόγοι απόρριψης:" : "Main hold reasons:",
-            ...holdCautions.map((caution) => `- ${translateRankingText(caution, locale)}`),
-          ].join("\n")
+          ? "Κράτησα εκτός shortlist τροφές που δεν ταίριαζαν αρκετά σε μέγεθος, ηλικία, στόχο ή δηλωμένες αποφυγές."
+          : "I kept foods out of the shortlist when they did not fit size, life stage, goal, or declared avoidances closely enough."
         : "",
       "",
       locale === "el"
-        ? "Καλύτερο επόμενο βήμα: πρόσθεσε ή έλεγξε περισσότερες τροφές με αξιόπιστα θρεπτικά δεδομένα πριν βασιστούμε σε συγκεκριμένη πρόταση."
-        : "Best next step: add or verify more foods with reliable nutrition data before relying on a specific recommendation.",
-    ]
-      .filter(Boolean)
-      .join("\n");
+        ? "Καλύτερο επόμενο βήμα: δώσε μου άλλη προτίμηση γεύσης ή πρόσθεσε πιο ακριβή στοιχεία για το κατοικίδιο."
+        : "Best next step: share another flavour preference or more precise pet details.",
+    ].filter(Boolean).join("\n"));
   }
 
+  const top = premium[0] ?? value[0];
   const blocks = [
     intro,
     "",
     `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
-    locale === "el"
-      ? "Παρακάτω θα δεις πρώτα τις πιο δυνατές διατροφικά επιλογές και μετά πιο απλές/value εναλλακτικές."
-      : "Below are the strongest nutrition fits first, followed by simpler value-style alternatives.",
+    top
+      ? locale === "el"
+        ? `Πρώτη κατεύθυνση: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
+        : `First direction: ${foodName(top)}, because it ${customerReason(top, goal, locale)}.`
+      : "",
     excludedBrands.length > 0
       ? locale === "el"
         ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
         : `Avoiding current brand: ${excludedBrands.join(", ")}`
       : "",
-    formatTopPick(premium[0] ?? value[0], locale, goal),
   ];
 
   if (premium.length > 0) {
     blocks.push(
       "",
-      locale === "el" ? "Οι καλύτερες επιλογές:" : "Best options:",
+      sectionTitle("premium", locale),
       premium
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale, goal, "premium"))
-        .join("\n")
+        .map((food, index) => formatFood(food, index + 1, locale, goal))
+        .join("\n\n")
     );
   }
 
   if (value.length > 0) {
     blocks.push(
       "",
-      locale === "el" ? "Πιο απλές / value εναλλακτικές:" : "Value-style alternatives:",
+      sectionTitle("value", locale),
       value
         .slice(0, maxItemsPerSection)
-        .map((food, index) => formatFood(food, index + 1, locale, goal, "value"))
-        .join("\n")
+        .map((food, index) => formatFood(food, index + 1, locale, goal))
+        .join("\n\n")
     );
   }
 
-  const cautions = [
-    ...premium.flatMap((food) => food.ranking?.cautions ?? []),
-    ...value.flatMap((food) => food.ranking?.cautions ?? []),
-    ...(response.notes ?? []),
-  ];
-  const uniqueCautions = uniqueShortCautions(cautions);
-
-  if (uniqueCautions.length > 0) {
+  const cautions = uniqueCustomerCautions([...premium, ...value], locale);
+  if (cautions.length > 0) {
     blocks.push(
       "",
-      locale === "el" ? "Προσοχή:" : "Cautions:",
-      uniqueCautions.map((caution) => `- ${translateRankingText(caution, locale)}`).join("\n")
+      locale === "el" ? "Κράτα στο μυαλό:" : "Keep in mind:",
+      cautions.map((caution) => `- ${caution}`).join("\n")
     );
   }
 
-  blocks.push(
-    "",
-    nextStepLine(locale),
-    "",
-    locale === "el"
-      ? "Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, έντονο εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
-      : "Use this as a shopping shortlist, not a diagnosis or treatment plan. For urinary, kidney, diabetes, pancreatitis, severe allergy, vomiting, diarrhea, blood, or not eating, speak with a veterinarian first."
-  );
+  blocks.push("", nextStepLine(locale), vetSafetyLine(locale, goal));
 
-  return blocks.join("\n");
+  return cleanOutput(blocks.filter(Boolean).join("\n"));
 }

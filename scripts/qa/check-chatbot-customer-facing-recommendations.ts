@@ -39,21 +39,15 @@ const sampleResponse = {
   notes: [],
 };
 
-const sample = formatFoodV2ChatbotRecommendationSummary(
-  sampleResponse,
-  {
-    locale: "en",
-    maxItemsPerSection: 2,
-  }
-);
+const sample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
+  locale: "en",
+  maxItemsPerSection: 2,
+});
 
-const greekSample = formatFoodV2ChatbotRecommendationSummary(
-  sampleResponse,
-  {
-    locale: "el",
-    maxItemsPerSection: 2,
-  },
-);
+const greekSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
+  locale: "el",
+  maxItemsPerSection: 2,
+});
 
 const forbiddenTerms = [
   "needs_review",
@@ -68,23 +62,41 @@ const forbiddenTerms = [
   "urinary reasoning is weaker",
   "role:",
   "use case:",
-  "ρόλος:",
-  "χρήση:",
+  "candidate kept out",
+  "value ranking is a proxy",
+  "data is usable",
+  "Ο",
+  "Ο‡",
 ];
 
 const lowerSample = `${sample}\n${greekSample}`.toLowerCase();
-const leakedTerms = forbiddenTerms.filter((term) => lowerSample.includes(term));
+const leakedTerms = forbiddenTerms.filter((term) =>
+  lowerSample.includes(term.toLowerCase())
+);
 
 if (leakedTerms.length > 0) {
-  console.error("Customer-facing recommendation leaked back-office terms:");
+  console.error("Customer-facing recommendation leaked back-office or mojibake terms:");
   console.error(leakedTerms.join(", "));
   console.error(sample);
+  console.error(greekSample);
   process.exit(1);
 }
 
 if (!sample.includes("Recommended foods") || !sample.includes("Happy Dog")) {
   console.error("Customer-facing recommendation did not include the expected shortlist.");
   console.error(sample);
+  process.exit(1);
+}
+
+if (!greekSample.includes("Προτεινόμενες τροφές") || !greekSample.includes("Happy Dog")) {
+  console.error("Greek customer-facing recommendation did not include the expected shortlist.");
+  console.error(greekSample);
+  process.exit(1);
+}
+
+if (!greekSample.includes("Επόμενο βήμα")) {
+  console.error("Greek customer-facing recommendation did not include a clear next step.");
+  console.error(greekSample);
   process.exit(1);
 }
 
