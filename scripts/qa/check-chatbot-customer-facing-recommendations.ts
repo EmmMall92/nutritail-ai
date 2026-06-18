@@ -102,6 +102,14 @@ if (!greekSample.includes("Επόμενο βήμα")) {
 }
 
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+
+if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
+  console.error("Customer-facing recommendation should not expose raw internal score labels.");
+  console.error(sample);
+  console.error(greekSample);
+  process.exit(1);
+}
+
 const requiredCardFlowCopy = [
   "1. Pick",
   "2. Calculate",

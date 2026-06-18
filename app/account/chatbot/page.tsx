@@ -1404,15 +1404,15 @@ function formatCompactFoodV2RecommendationFallback({
 
   const intro =
     mode === "alternative"
-      ? "I found a few alternative options using the same pet profile."
-      : "I found a few suitable options from the NutriTail database.";
+      ? "I found a few alternative options for the same pet profile."
+      : "I placed the best matches below as food cards.";
   const reason = topChoice.reason ? `\nWhy it stands out: ${topChoice.reason}` : "";
 
   return `${intro}
 
 Top pick: ${topChoice.name}.${reason}
 
-Tap one card below and I will estimate grams/day and keep that food in the analysis.`;
+Choose one card below and I will estimate grams/day and keep that food in the analysis.`;
 }
 
 async function getFoodV2RecommendationMessage(

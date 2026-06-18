@@ -199,10 +199,8 @@ function formatNumber(value: number | null | undefined, digits = 1) {
   return Number(value.toFixed(digits));
 }
 
-function scoreLabel(score: unknown) {
-  return typeof score === "number" && Number.isFinite(score)
-    ? ` (${Math.round(score)}/100)`
-    : "";
+function scoreLabel() {
+  return "";
 }
 
 function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
@@ -350,14 +348,14 @@ function formatFood(
 
   if (locale === "el") {
     return [
-      `${index}. ${name}${scoreLabel(food.ranking?.total_score)}`,
+      `${index}. ${name}${scoreLabel()}`,
       `   Γιατί ταιριάζει: ${reason}.`,
       snapshot ? `   ${snapshot}.` : "",
     ].filter(Boolean).join("\n");
   }
 
   return [
-    `${index}. ${name}${scoreLabel(food.ranking?.total_score)}`,
+    `${index}. ${name}${scoreLabel()}`,
     `   Why it fits: ${reason}.`,
     snapshot ? `   ${snapshot}.` : "",
   ].filter(Boolean).join("\n");
