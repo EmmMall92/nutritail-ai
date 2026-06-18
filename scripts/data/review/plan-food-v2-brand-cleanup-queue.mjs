@@ -16,6 +16,9 @@ const headers = [
   "recommended_phase",
   "total_rows",
   "customer_impact_score",
+  "customer_title_risk_score",
+  "duplicate_customer_risk_score",
+  "nutrition_confidence_gap_score",
   "readiness_status",
   "title_issue_rows",
   "title_issue_identities",
@@ -23,8 +26,11 @@ const headers = [
   "missing_calcium_phosphorus_rows",
   "missing_ash_rows",
   "estimated_kcal_rows",
+  "missing_kcal_rows",
   "official_rows",
   "retailer_rows",
+  "next_cleanup_file",
+  "next_cleanup_step",
   "recommended_action",
 ];
 
@@ -169,6 +175,61 @@ function actionFor(row) {
   return "Run a small admin preview batch and manually inspect titles, source and duplicates.";
 }
 
+function nextCleanupFileFor(row) {
+  if (row.recommended_phase === "dedupe_before_import") {
+    return paths.duplicateRisks;
+  }
+  if (row.recommended_phase === "title_cleanup") {
+    return paths.titleQuality;
+  }
+  if (row.recommended_phase === "nutrient_backfill") {
+    return "data/review/food_v2_nutrient_gap_priorities.csv";
+  }
+  if (row.recommended_phase === "controlled_import_ready") {
+    return paths.output;
+  }
+  return paths.brandReadiness;
+}
+
+function nextCleanupStepFor(row) {
+  if (row.recommended_phase === "dedupe_before_import") {
+    return "Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.";
+  }
+  if (row.recommended_phase === "title_cleanup") {
+    return "Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.";
+  }
+  if (row.recommended_phase === "nutrient_backfill") {
+    return "Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.";
+  }
+  if (row.recommended_phase === "controlled_import_ready") {
+    return "Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.";
+  }
+  return "Review a small brand batch manually for title, source, duplicate and nutrient confidence before customer exposure.";
+}
+
+function customerTitleRiskScore(row) {
+  const titleRows = Math.min(toNumber(row.title_issue_rows), 120) * 0.55;
+  const identities = Math.min(toNumber(row.title_issue_identities), 80) * 0.9;
+  const strategic = strategicBrandWeights.get(row.brand) ? 8 : 0;
+  return Math.min(100, Math.round(titleRows + identities + strategic));
+}
+
+function duplicateCustomerRiskScore(row) {
+  const duplicateGroups = Math.min(toNumber(row.duplicate_risk_groups), 60) * 1.6;
+  const totalRows = Math.min(toNumber(row.total_rows), 120) * 0.08;
+  const strategic = strategicBrandWeights.get(row.brand) ? 6 : 0;
+  return Math.min(100, Math.round(duplicateGroups + totalRows + strategic));
+}
+
+function nutritionConfidenceGapScore(row) {
+  const minerals = Math.min(toNumber(row.missing_calcium_phosphorus_rows), 120) * 0.55;
+  const ash = Math.min(toNumber(row.missing_ash_rows), 120) * 0.25;
+  const estimatedKcal = Math.min(toNumber(row.estimated_kcal_rows), 80) * 0.45;
+  const missingKcal = Math.min(toNumber(row.missing_kcal_rows), 80) * 0.9;
+  const retailerOnly = toNumber(row.official_rows) === 0 && toNumber(row.retailer_rows) > 0 ? 8 : 0;
+  return Math.min(100, Math.round(minerals + ash + estimatedKcal + missingKcal + retailerOnly));
+}
+
 function priorityScore(row) {
   const strategic = strategicBrandWeights.get(row.brand) ?? 0;
   const totalRows = Math.min(toNumber(row.total_rows), 120) * 0.25;
@@ -203,6 +264,18 @@ function customerImpactScore(row) {
 
 function renderReport(rows) {
   const topRows = rows.slice(0, 30);
+  const customerHotspots = [...rows]
+    .sort((a, b) => b.customer_impact_score - a.customer_impact_score)
+    .slice(0, 12);
+  const titleHotspots = [...rows]
+    .sort((a, b) => b.customer_title_risk_score - a.customer_title_risk_score)
+    .slice(0, 10);
+  const duplicateHotspots = [...rows]
+    .sort((a, b) => b.duplicate_customer_risk_score - a.duplicate_customer_risk_score)
+    .slice(0, 10);
+  const nutritionHotspots = [...rows]
+    .sort((a, b) => b.nutrition_confidence_gap_score - a.nutrition_confidence_gap_score)
+    .slice(0, 10);
   const byPhase = rows.reduce((counts, row) => {
     counts.set(row.recommended_phase, (counts.get(row.recommended_phase) ?? 0) + 1);
     return counts;
@@ -236,12 +309,43 @@ function renderReport(rows) {
         `- ${row.priority_rank}. ${row.brand}: priority=${row.priority_score}; customer_impact=${row.customer_impact_score}; ${row.recommended_phase}; rows=${row.total_rows}; title identities=${row.title_issue_identities}; title issues=${row.title_issue_rows}; duplicates=${row.duplicate_risk_groups}; Ca/P gaps=${row.missing_calcium_phosphorus_rows}`
     ),
     "",
+    "## Customer-Facing Risk Hotspots",
+    "",
+    "These brands are most likely to produce confusing customer recommendations because of visible title, duplicate or nutrition-confidence issues.",
+    "",
+    ...customerHotspots.map(
+      (row) =>
+        `- ${row.brand}: customer_impact=${row.customer_impact_score}; title_risk=${row.customer_title_risk_score}; duplicate_risk=${row.duplicate_customer_risk_score}; nutrition_gap=${row.nutrition_confidence_gap_score}; next=${row.next_cleanup_file}`
+    ),
+    "",
+    "## Title Cleanup Hotspots",
+    "",
+    ...titleHotspots.map(
+      (row) =>
+        `- ${row.brand}: title_risk=${row.customer_title_risk_score}; title issues=${row.title_issue_rows}; identities=${row.title_issue_identities}; next step: ${row.next_cleanup_step}`
+    ),
+    "",
+    "## Duplicate Cleanup Hotspots",
+    "",
+    ...duplicateHotspots.map(
+      (row) =>
+        `- ${row.brand}: duplicate_risk=${row.duplicate_customer_risk_score}; duplicate groups=${row.duplicate_risk_groups}; next step: ${row.next_cleanup_step}`
+    ),
+    "",
+    "## Nutrition Confidence Hotspots",
+    "",
+    ...nutritionHotspots.map(
+      (row) =>
+        `- ${row.brand}: nutrition_gap=${row.nutrition_confidence_gap_score}; Ca/P gaps=${row.missing_calcium_phosphorus_rows}; ash gaps=${row.missing_ash_rows}; estimated kcal=${row.estimated_kcal_rows}; missing kcal=${row.missing_kcal_rows}`
+    ),
+    "",
     "## How To Use This",
     "",
     "1. Start with high `customer_impact_score` brands because these are most likely to affect visible chatbot recommendations.",
     "2. Resolve `dedupe_before_import` before importing new rows, because duplicate formulas can confuse ranking and food cards.",
     "3. Resolve `title_cleanup` before customer exposure, because product names are what users remember and click.",
     "4. Resolve `nutrient_backfill` before relying on medical, growth, senior, or weight-control confidence.",
+    "5. Use the risk columns to split work: title risk affects what customers see, duplicate risk affects ranking, nutrition gap risk affects confidence.",
     "",
     "`title_issue_identities` counts distinct formula/source identities from the title audit and may be higher than committed rows when the source registry has extra candidate rows.",
     "",
@@ -290,6 +394,7 @@ async function main() {
         missing_calcium_phosphorus_rows: toNumber(row.missing_core_mineral_rows),
         missing_ash_rows: toNumber(row.missing_ash_rows),
         estimated_kcal_rows: toNumber(row.estimated_kcal_rows),
+        missing_kcal_rows: toNumber(row.missing_kcal_rows),
         official_rows: toNumber(row.official_rows),
         retailer_rows: toNumber(row.retailer_rows),
       };
@@ -302,6 +407,11 @@ async function main() {
         ...fullRow,
         priority_score: priorityScore(fullRow),
         customer_impact_score: customerImpactScore(fullRow),
+        customer_title_risk_score: customerTitleRiskScore(fullRow),
+        duplicate_customer_risk_score: duplicateCustomerRiskScore(fullRow),
+        nutrition_confidence_gap_score: nutritionConfidenceGapScore(fullRow),
+        next_cleanup_file: nextCleanupFileFor(fullRow),
+        next_cleanup_step: nextCleanupStepFor(fullRow),
         recommended_action: actionFor(fullRow),
       };
     })
