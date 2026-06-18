@@ -200,4 +200,34 @@ if (adultGiRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const twelveMonthGiantPuppy = {
+  ...pet,
+  breed: "Cane Corso",
+  age: 1,
+  weight: 55,
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const adultLargeBreedFood = food({
+  id: "adult-large-breed",
+  formula_key: "qa|adult-large-breed|dog|dry",
+  display_name: "Adult Med/maxi Chicken",
+  life_stage: "adult",
+  dog_size: "large",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const adultLargeBreedRanking = rankFoodV2ForPet({
+  food: adultLargeBreedFood,
+  nutrients: nutrients(adultLargeBreedFood),
+  pet: twelveMonthGiantPuppy,
+  goal: "growth",
+});
+
+if (adultLargeBreedRanking.bucket !== "hold") {
+  console.error("Adult large-breed food should be held for 12-month giant-breed growth cases.");
+  console.error(adultLargeBreedRanking);
+  process.exit(1);
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");
