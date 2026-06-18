@@ -71,6 +71,16 @@ const checks = [
     file: "app/account/chatbot/page.tsx",
     expected: "Estimated portion",
   },
+  {
+    label: "Recommendation composer has compact customer fallback",
+    file: "app/account/chatbot/page.tsx",
+    expected: "formatCompactFoodV2RecommendationFallback",
+  },
+  {
+    label: "Compact recommendation fallback points to food cards",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Tap one card below",
+  },
 ];
 
 async function runCheck(check) {
