@@ -1,12 +1,14 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const paths = {
-  input: "data/imports/food_v2_best_candidate_preview.csv",
+  candidateInput: "data/imports/food_v2_best_candidate_preview.csv",
+  sourceRegistryInput: "data/sources/category_product_sources_registry.csv",
   output: "data/review/food_v2_title_quality_audit.csv",
   report: "reports/food_v2_title_quality_audit.md",
 };
 
 const headers = [
+  "audit_source",
   "severity",
   "issue_type",
   "brand",
@@ -22,6 +24,9 @@ const headers = [
 const descriptiveTitlePatterns = [
   /\b(?:dietetic|dietary|complete|complementary)\s+(?:food|feed)\b/i,
   /\b(?:food|feed)\s+for\b/i,
+  /\b(?:holistic|complete|dry|dietetic|veterinary)\s+food\s+for\b/i,
+  /(?:πλήρης|ολοκληρωμένη|ολιστική|ξηρή|διαιτητική|κτηνιατρική)\s+τροφή\s+για/iu,
+  /τροφή\s+για\s+(?:ενήλικ|κουτάβ|γατάκ|σκύλ|γάτ)/iu,
   /\b(?:support|management|treatment|reduction)\s+of\b/i,
   /διαιτητικ[ηή]\s+τροφ[ηή]/iu,
   /κτηνιατρικ[ηή]\s*τροφ[ηή]/iu,
@@ -141,6 +146,7 @@ function hasMojibake(value) {
 
 function addIssue(issues, row, severity, issueType, suggestedAction) {
   issues.push({
+    audit_source: row.audit_source,
     severity,
     issue_type: issueType,
     brand: row.brand,
@@ -268,6 +274,29 @@ function findTitleIssues(row) {
   return issues;
 }
 
+function normalizeCandidateRow(row) {
+  return {
+    ...row,
+    audit_source: "food_v2_best_candidate_preview",
+  };
+}
+
+function normalizeSourceRegistryRow(row) {
+  const productTitle = normalizeText(row.product_title);
+  const brand = normalizeText(row.brand_guess);
+
+  return {
+    audit_source: "category_product_sources_registry",
+    brand,
+    formula_name: productTitle,
+    display_name: productTitle,
+    species: row.species,
+    format: row.format,
+    source_priority: row.source_tier,
+    formula_key: `${row.source_group || "source"}|${row.product_url || productTitle}`,
+  };
+}
+
 function countBy(rows, field) {
   return rows.reduce((acc, row) => {
     const key = row[field] || "unknown";
@@ -311,7 +340,19 @@ function renderMediumBrandActions(issues) {
 }
 
 async function main() {
-  const rows = parseCsv(await readFile(paths.input, "utf8"));
+  const candidateRows = parseCsv(await readFile(paths.candidateInput, "utf8")).map(
+    normalizeCandidateRow
+  );
+  const sourceRegistryRows = parseCsv(
+    await readFile(paths.sourceRegistryInput, "utf8")
+  )
+    .filter(
+      (row) =>
+        !["failed", "rejected"].includes(normalizeComparable(row.status)) &&
+        normalizeText(row.product_title)
+    )
+    .map(normalizeSourceRegistryRow);
+  const rows = [...candidateRows, ...sourceRegistryRows];
   const issues = rows.flatMap(findTitleIssues);
   const highIssueRows = rowsWithHighIssues(issues);
   const issueFreeRows = rows.length - new Set(issues.map((issue) => issue.formula_key)).size;
@@ -328,10 +369,12 @@ async function main() {
       "",
       "## Summary",
       "",
-      `- Candidate rows reviewed: ${rows.length}`,
+      `- Rows reviewed: ${rows.length}`,
+      `- Food V2 candidate rows reviewed: ${candidateRows.length}`,
+      `- Source registry rows reviewed: ${sourceRegistryRows.length}`,
       `- Issue rows: ${issues.length}`,
-      `- Candidate rows with high/critical title issues: ${highIssueRows}`,
-      `- Candidate rows without title issues: ${issueFreeRows}`,
+      `- Rows with high/critical title issues: ${highIssueRows}`,
+      `- Rows without title issues: ${issueFreeRows}`,
       `- Output CSV: ${paths.output}`,
       "",
       "## Issues By Severity",
@@ -356,6 +399,11 @@ async function main() {
         ? "Clean high/critical title issues before committing those rows to Food V2. Then work through the medium cleanup brands above."
         : "No high/critical title issues were found. Work through the medium cleanup brands above when polishing customer-facing names.",
       "",
+      "## Inputs",
+      "",
+      `- Food V2 candidates: ${paths.candidateInput}`,
+      `- Source registry: ${paths.sourceRegistryInput}`,
+      "",
       "## Title Cleanup Policy",
       "",
       "- Customer-facing names should look like product names, not SEO descriptions.",
@@ -369,7 +417,9 @@ async function main() {
   console.log(
     JSON.stringify(
       {
-        candidateRows: rows.length,
+        rowsReviewed: rows.length,
+        foodV2CandidateRows: candidateRows.length,
+        sourceRegistryRows: sourceRegistryRows.length,
         issueRows: issues.length,
         highIssueRows,
         issueFreeRows,
