@@ -1,0 +1,422 @@
+{
+  "source_collection_id": "NUTRITION_TRAINING_LINKS",
+  "display_name": "Nutrition Training Links",
+  "local_folder": "C:\\Users\\NIOstb\\Desktop\\εκπαιδευση links",
+  "policy": {
+    "allowed_use": [
+      "decision_rules",
+      "nutrition_logic",
+      "disease_nutrition",
+      "growth_nutrition",
+      "senior_nutrition"
+    ],
+    "copyright_rule": "Do not copy source text. Use these files only to extract NutriTail-owned structured rules, cautions, contraindications, and uncertainty logic.",
+    "ranking_rule": "Food ranking remains deterministic from Food V2 data and NutriTail rules. These references may support rule design and customer-facing explanations only."
+  },
+  "priority_notes": [
+    "Use textbook sources first for core clinical rules, then use these links as guideline, client-education, and cross-check support.",
+    "WSAVA and FEDIAF files in this folder are high-value for assessment, label interpretation, treats, BCS/MCS, and EU nutrient guidance.",
+    "Tufts-style veterinary nutrition articles are useful for customer-friendly safety wording and practical edge cases.",
+    "Pet Nutrition Alliance tools are useful for calorie, manufacturer-evaluation, and comparison workflow design.",
+    "FoodData Central datasets are human-food datasets and should not be used to rank pet foods; keep them reserved for future ingredient-level nutrient research only."
+  ],
+  "source_map": [
+    {
+      "source_id": "WSAVA",
+      "files": [
+        "WSAVA-Nutrition-Assessment-Guidelines-2011-JSAP.pdf",
+        "WSAVA_GuideNutrition_v2_260223.pdf",
+        "WSAVA_GuideNutrition_v3_260316.pptx",
+        "Implementing-the-WSAVA-Nutrition-Guidelines.pdf",
+        "Nutritional-Assessment-Checklist.pdf",
+        "Selecting-a-pet-food-for-your-pet-updated-2021_WSAVA-Global-Nutrition-Toolkit.pdf",
+        "SOP-for-use-of-the-WSAVA-GNC-Toolkits-and-Guidelines-v4.pdf"
+      ],
+      "topics": [
+        "nutrition_assessment",
+        "diet_history",
+        "body_condition",
+        "muscle_condition",
+        "manufacturer_evaluation",
+        "owner_communication",
+        "safety_framing"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "obesityRules",
+        "seniorRules",
+        "foodEvaluationEngine"
+      ]
+    },
+    {
+      "source_id": "WSAVA",
+      "files": [
+        "WSAVA_BCSCat_BCSDog_Nutrition_250612.pdf",
+        "WSAVA_BCSCat_BCSCat_Nutrition_250612.pdf",
+        "Muscle-Condition-Score-Chart-for-Dogs.pdf",
+        "Muscle-Condition-Score-Chart-for-Cats.pdf",
+        "What’s Your Pet’s Score_ Assessing Muscle Condition.html"
+      ],
+      "topics": [
+        "body_condition_score",
+        "muscle_condition_score",
+        "weight_trend",
+        "senior_monitoring",
+        "obesity_screening"
+      ],
+      "target_rule_files": [
+        "obesityRules",
+        "seniorRules",
+        "feedingRules"
+      ]
+    },
+    {
+      "source_id": "WSAVA",
+      "files": [
+        "WSAVA_GuidetoTreats_Dogs_251107.pdf",
+        "WSAVA_GuidetoTreats_Cats_251107.pdf",
+        "Treats-guidelines-for-dogs.pdf"
+      ],
+      "topics": [
+        "treat_allowance",
+        "calorie_budget",
+        "owner_adherence",
+        "weight_control"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "obesityRules"
+      ]
+    },
+    {
+      "source_id": "FEDIAF",
+      "files": [
+        "FEDIAF-Nutritional-Guidelines_2025-ONLINE.pdf",
+        "Nutrition-Label-EU-16_9.pdf"
+      ],
+      "topics": [
+        "eu_nutrient_guidance",
+        "label_interpretation",
+        "analytical_constituents",
+        "life_stage_requirements",
+        "complete_feed"
+      ],
+      "target_rule_files": [
+        "vitaminMineralRules",
+        "growthRules",
+        "feedingRules",
+        "foodEvaluationEngine"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "Think Your Pet has a Food Allergy_ Eliminating Mistakes in Elimination Diet Trials.html",
+        "A Webinar on Nutrition and Client Education for Canine Skin Problems.html",
+        "What’s the Best Diet for Dogs with Chronic Diarrhea_.html",
+        "Acute Diarrhea in Dogs and Cats_ Dietary Causes v. Medical Disease.html",
+        "Does My Pet Need a ‘Bland Diet’_.html"
+      ],
+      "topics": [
+        "food_allergy",
+        "elimination_trial",
+        "pruritus",
+        "skin",
+        "chronic_diarrhea",
+        "acute_diarrhea",
+        "bland_diet",
+        "gi_safety"
+      ],
+      "target_rule_files": [
+        "ingredientRules",
+        "giRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "Can Diet Prevent or Treat Urinary Tract Infections in Dogs_.html",
+        "What Treats Can I Give my Dog with Calcium Oxalate Stones_.html",
+        "Test your Nutrition Know-How for Cats with Kidney Disease.html"
+      ],
+      "topics": [
+        "urinary",
+        "uti",
+        "calcium_oxalate",
+        "treat_selection",
+        "kidney_disease",
+        "renal_caution"
+      ],
+      "target_rule_files": [
+        "urinaryRules",
+        "renalRules",
+        "vitaminMineralRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "All About Ash.html",
+        "Carb Confusion_ Part 2 – Measuring and Comparing Carbohydrate in Pet Foods.html",
+        "To Chelate or Not to Chelate [Minerals]_.html",
+        "What Nutrients are Essential for My Pet_.html",
+        "Stalk About Nutritious_ It’s Corn!.html",
+        "“Preservative-Free” Pet Food_.html"
+      ],
+      "topics": [
+        "ash",
+        "carbohydrates",
+        "minerals",
+        "essential_nutrients",
+        "corn",
+        "preservatives",
+        "ingredient_myths"
+      ],
+      "target_rule_files": [
+        "carbohydrateRules",
+        "vitaminMineralRules",
+        "ingredientRules",
+        "foodEvaluationEngine"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "Growth Guide_ Keeping your Puppy on the Right Track.html",
+        "What’s the Best Food for your New Puppy_.html",
+        "Managing Feline Osteoarthritis With Nutrition.html",
+        "Can Diet Help With My Dog’s Seizures_.html"
+      ],
+      "topics": [
+        "puppy_growth",
+        "growth_monitoring",
+        "feline_osteoarthritis",
+        "seizure_context",
+        "medical_uncertainty"
+      ],
+      "target_rule_files": [
+        "growthRules",
+        "seniorRules",
+        "fatRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "Diet-Associated DCM_ Research Update.html",
+        "Diet-associated dilated cardiomyopathy_ The cause is not yet known but it hasn’t gone away.html",
+        "Raw diets_ Pet owners frequently underestimate human health risks.html",
+        "Raw Pet Food Risks_ A Research Update.html",
+        "What Nutritionists Wish You Knew_ 5 Homecooked Diet Mistakes & Misconceptions.html"
+      ],
+      "topics": [
+        "dcm",
+        "grain_free_caution",
+        "raw_diet_risk",
+        "homecooked_diet_risk",
+        "client_safety"
+      ],
+      "target_rule_files": [
+        "ingredientRules",
+        "feedingRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "TUFTS_VETERINARY_NUTRITION",
+      "files": [
+        "Make “Cents” of Your Pet Food Budget by Calculating Pet Food Costs.html",
+        "Expensive eats_ Comparing the costs of different types of dog food.html",
+        "Comparing kitty’s calorie costs.html",
+        "Veterinarian Recommended Pet Foods_ What You Need to Know.html",
+        "What’s in a name_ What is a Board Certified Veterinary Nutritionist and why does it matter_.html",
+        "The-Savvy-Cat-Owner-s-Guide-to-Nutrition-on-the-Internet.pdf",
+        "The-Savvy-Dog-Owner-s-Guide-to-Nutrition-on-the-Internet.pdf"
+      ],
+      "topics": [
+        "budget",
+        "cost_per_day",
+        "customer_education",
+        "nutritionist_credential",
+        "internet_source_quality"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "foodEvaluationEngine",
+        "responsePlanner"
+      ]
+    },
+    {
+      "source_id": "WALTHAM",
+      "files": [
+        "A first for companion animals_ New AI-assisted model provides early warning of canine oral health risks. _ WALTHAM.html",
+        "Better together_ how caring for pets helps us care for ourselves _ WALTHAM.html",
+        "Twenty-Four-Hour Feeding Patterns of In-Home Healthy Aging Cats Fed Wet, Dry, or a Combination of Wet and Dry Diets Ad Libitum.html"
+      ],
+      "topics": [
+        "oral_health_context",
+        "human_animal_bond",
+        "cat_feeding_patterns",
+        "senior_cat_feeding"
+      ],
+      "target_rule_files": [
+        "seniorRules",
+        "feedingRules"
+      ]
+    },
+    {
+      "source_id": "UC_DAVIS_VETERINARY_NUTRITION",
+      "files": [
+        "Nutrition Service _ School of Veterinary Medicine.html"
+      ],
+      "topics": [
+        "specialist_referral",
+        "veterinary_nutrition_service",
+        "medical_case_boundary"
+      ],
+      "target_rule_files": [
+        "safetyRules",
+        "responsePlanner"
+      ]
+    },
+    {
+      "source_id": "VETFOLIO",
+      "files": [
+        "Feeding-Guide-for-Hospitalized-Dogs-and-Cats.pdf",
+        "Feeding-Instructions-and-Monitoring-Chart-for-Hospitalized-Patients.pdf",
+        "The Veterinary Technician’s Role in Chronic Pain Management.html",
+        "Oncology in Veterinary General Practice.html"
+      ],
+      "topics": [
+        "hospitalized_patient_feeding",
+        "feeding_monitoring",
+        "chronic_pain",
+        "oncology_caution",
+        "vet_referral"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "seniorRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "WIKIVET",
+      "files": [
+        "Dental Formula - Dog - WikiVet English.html",
+        "Dental Formula - Cat - WikiVet English.html",
+        "Category_Endocrine Diseases - Cat - WikiVet English.html"
+      ],
+      "topics": [
+        "dental_context",
+        "cat_endocrine_context",
+        "tertiary_reference"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "seniorRules",
+        "safetyRules"
+      ],
+      "use_limit": "Tertiary support only; do not use as the first source for clinical decisions."
+    }
+  ],
+  "supporting_references": [
+    {
+      "source_group": "Pet Nutrition Alliance",
+      "files": [
+        "Calorie Calculator _ Pet Nutrition Alliance.html",
+        "Calorie-Needs-for-Healthy-Adult-Dogs-updated-July-2020.pdf",
+        "Calorie-Needs-for-Healthy-Adult-Cats-updated-July-2020.pdf",
+        "Pet Food Manufacturer Evaluation Report _ Pet Nutrition Alliance.html",
+        "Pet Food Manufacturer Evaluation Report – Full Protocol _ Pet Nutrition Alliance.html",
+        "Pet-Nutrition-Alliance-Pet-Food-Manufacturer-Report-2023.pdf",
+        "Pet Food Nutrient Calculator_ Comparing nutrient levels between two pet foods.html"
+      ],
+      "topics": [
+        "calorie_estimation",
+        "manufacturer_evaluation",
+        "nutrient_comparison",
+        "customer_facing_calculator_patterns"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "foodEvaluationEngine"
+      ]
+    },
+    {
+      "source_group": "AAFCO",
+      "files": [
+        "AAFCO_2014_QA-QC_Guidelines_TOC.pdf",
+        "AAFCO_AFI_Model_Training_Manual_060325.pdf",
+        "Dramatic changes to pet food labels proposed by AAFCO.html"
+      ],
+      "topics": [
+        "labeling",
+        "feed_control",
+        "quality_assurance",
+        "regulatory_context"
+      ],
+      "target_rule_files": [
+        "foodEvaluationEngine",
+        "vitaminMineralRules"
+      ]
+    },
+    {
+      "source_group": "USDA FoodData Central",
+      "files": [
+        "FoodData_Central_foundation_food_json_2026-04-30.json",
+        "FoodData_Central_branded_food_csv_2026-04-30",
+        "FoodData_Central_csv_2026-04-30",
+        "FoodData_Central_foundation_food_csv_2026-04-30",
+        "FoodData_Central_sr_legacy_food_csv_2018-04",
+        "FoodData_Central_survey_food_csv_2024-10-31"
+      ],
+      "topics": [
+        "human_food_nutrient_dataset",
+        "future_ingredient_research_only"
+      ],
+      "use_limit": "Do not use for pet food recommendation ranking or pet-food product completeness. Reserve for future ingredient-level research if needed."
+    },
+    {
+      "source_group": "General veterinary notes",
+      "files": [
+        "Complete vet notes of clinical pathology for bcse e navle.pdf",
+        "Complete vet notes of physiology for bcse e navle.pdf",
+        "complete vet notes of toxicology for BCSE and NAVLE_20240602_072753_0000.pdf",
+        "FIM_9th_Edition_6x9-FINAL_2-25-26.pdf",
+        "NCRF-2026.docx",
+        "NCRF-2026 (1).docx"
+      ],
+      "topics": [
+        "background_reference",
+        "not_primary_nutrition_rules"
+      ],
+      "use_limit": "Use only as background orientation after higher-priority nutrition sources. Do not create diagnosis or treatment claims from these notes."
+    }
+  ],
+  "excluded_or_low_priority_files": [
+    {
+      "files": [
+        "75 Million Pets Aren't Getting Care. Cost and Access Are Why..html",
+        "Higher Pet Food Prices Frustrate Consumers _ Today's Veterinary Business.html",
+        "Neurodiversity and Mental Health in Veterinary Medicine.html",
+        "We’re Back!.html"
+      ],
+      "reason": "Useful market or profession context, but not nutrition decision logic."
+    },
+    {
+      "files": [
+        "Chlamydophila felis - WikiVet English.html",
+        "Feline Infectious Anaemia - WikiVet English.html",
+        "Mycobacterium lepraemurium - WikiVet English.html",
+        "Streptococcus canis - WikiVet English.html",
+        "Tyzzer's Disease - WikiVet English.html",
+        "FDA Investigates Animal Illnesses Linked to Jerky Pet Treats _ FDA.html"
+      ],
+      "reason": "Disease or safety background only; not directly used for food-ranking rules."
+    }
+  ]
+}
