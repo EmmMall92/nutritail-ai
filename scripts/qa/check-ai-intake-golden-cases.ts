@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
+import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
 import { formatPetDisplayName } from "@/lib/petName";
 
@@ -80,10 +81,50 @@ function checkUiHelpers() {
   };
 }
 
+function checkValidatedOpenAiCleanup() {
+  const failures: string[] = [];
+  const result = validateAiIntakeExtraction({
+    petName: "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7",
+    preferredProteins: [
+      "\u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf",
+      "\u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2",
+    ],
+    excludedIngredients: ["salmon"],
+    confidence: "medium",
+  });
+
+  if (result.data.petName !== "\u039a\u03cd\u03c1\u03ba\u03b7") {
+    failures.push(`validated pet name: expected \u039a\u03cd\u03c1\u03ba\u03b7 got ${result.data.petName}`);
+  }
+
+  if (!result.data.preferredProteins?.includes("chicken")) {
+    failures.push("validated proteins: expected chicken in preferredProteins");
+  }
+
+  if (result.data.preferredProteins?.includes("salmon")) {
+    failures.push("validated proteins: salmon must be removed from preferredProteins");
+  }
+
+  if (!result.data.excludedIngredients?.includes("salmon")) {
+    failures.push("validated proteins: expected salmon in excludedIngredients");
+  }
+
+  return {
+    id: "validated_openai_cleanup",
+    status: failures.length === 0 ? "pass" : "fail",
+    failures,
+    source: "validation",
+  };
+}
+
 async function main() {
   const raw = await readFile(goldenPath, "utf8");
   const cases = JSON.parse(raw) as GoldenCase[];
-  const results = [...cases.map(checkCase), checkUiHelpers()];
+  const results = [
+    ...cases.map(checkCase),
+    checkUiHelpers(),
+    checkValidatedOpenAiCleanup(),
+  ];
   const failed = results.filter((result) => result.status === "fail");
 
   console.log(
