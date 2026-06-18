@@ -52,6 +52,9 @@ const packOrOfferPatterns = [
 const repeatedProductTermPattern =
   /\b(vetsolution|vet\s*solution|veterinary|urinary|renal|hepatic|gastrointestinal|diabetic|obesity|dermatosis|hypoallergenic|sterilised|sterilized|senior|puppy|kitten|adult|mini|medium|maxi|large|giant)(?:\s+\1)+\b/iu;
 
+const mojibakeTitlePattern =
+  /(?:Ξ[Ά-ΏΑ-Ω]|Ο[€‡ƒ„‰…]|Β®|�)/u;
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -132,6 +135,10 @@ function hasRepeatedProductTerms(value) {
   return repeatedProductTermPattern.test(normalizeText(value));
 }
 
+function hasMojibake(value) {
+  return mojibakeTitlePattern.test(String(value ?? ""));
+}
+
 function addIssue(issues, row, severity, issueType, suggestedAction) {
   issues.push({
     severity,
@@ -157,6 +164,16 @@ function findTitleIssues(row) {
   if (!formulaName) {
     addIssue(issues, row, "critical", "missing_formula_name", "Do not import until formula_name exists.");
     return issues;
+  }
+
+  if (hasMojibake(formulaName) || hasMojibake(displayName)) {
+    addIssue(
+      issues,
+      row,
+      "high",
+      "title_contains_mojibake",
+      "Fix text encoding or replace with a clean Gatoskilo/official/PDF title before customer-facing use."
+    );
   }
 
   if (wordCount(formulaName) > 10 || formulaName.length > 80) {
