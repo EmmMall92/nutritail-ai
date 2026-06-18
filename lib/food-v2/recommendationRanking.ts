@@ -6,6 +6,8 @@ import {
 } from "@/lib/nutrition-rules/rulesRegistry";
 import { evaluateFeedingFitRules } from "@/lib/nutrition-v2/feedingRules";
 import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
+import { evaluateObesityFitRules } from "@/lib/nutrition-v2/obesityRules";
+import { evaluateSeniorFitRules } from "@/lib/nutrition-v2/seniorRules";
 
 export type FoodV2RecommendationGoal =
   | "general"
@@ -729,6 +731,22 @@ function scoreFit(input: FoodV2RankingInput) {
     })
   );
 
+  applyRuleSignals(
+    evaluateObesityFitRules({
+      food,
+      nutrients,
+      pet,
+      goal:
+        goal === "weight_control" || goal === "sterilised" || goal === "senior"
+          ? goal
+          : "general",
+      positioning: {
+        active: hasActivePositioning(haystack),
+        weightControl: hasWeightControlPositioning(haystack),
+      },
+    })
+  );
+
   if (goal === "sensitive_digestion" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["digest", "sensitive", "diarrhea", "stool", "gas"])) {
     if (hasAny(haystack, ["digestive", "gastro", "intestinal", "sensitive", "hypoallergenic"])) {
       score += 16;
@@ -869,13 +887,25 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "senior" || stage === "senior") {
-    if (food.life_stage === "senior" || hasAny(haystack, ["senior", "mature", "7+", "8+", "10+", "12+"])) {
-      score += 20;
-      addSignal(signals, "boost", "senior_positioning", 20, "Positioned for senior pets.");
-    } else if (stage === "senior") {
-      score -= 10;
-      addSignal(signals, "caution", "adult_formula_for_senior_pet", -10, "Adult food is less specific than a senior-positioned formula.");
-    }
+    applyRuleSignals(
+      evaluateSeniorFitRules({
+        food,
+        nutrients,
+        pet,
+        stage,
+        goal:
+          goal === "weight_control" || goal === "sterilised" || goal === "senior"
+            ? goal
+            : "general",
+        positioning: {
+          active: hasActivePositioning(haystack),
+          senior:
+            food.life_stage === "senior" ||
+            hasAny(haystack, ["senior", "mature", "7+", "8+", "10+", "12+"]),
+          weightControl: hasWeightControlPositioning(haystack),
+        },
+      })
+    );
   }
 
   return {
