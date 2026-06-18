@@ -5,6 +5,8 @@ import type {
   ExtractedWeightGoal,
   ValidatedAiIntakeExtraction,
 } from "@/lib/ai/intakeTypes";
+import { removeExcludedFromPreferred } from "@/lib/chatbot/tastePreferences";
+import { formatPetDisplayName } from "@/lib/petName";
 
 const VALID_SPECIES = new Set<ExtractedSpecies>(["dog", "cat"]);
 const VALID_ACTIVITY = new Set<ExtractedActivityLevel>(["low", "normal", "high"]);
@@ -18,10 +20,42 @@ const DOG_MAX_WEIGHT_KG = 90;
 const CAT_MAX_WEIGHT_KG = 15;
 const MAX_AGE_YEARS = 40;
 
+const INGREDIENT_ALIASES = [
+  { canonical: "chicken", aliases: ["chicken", "\u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb"] },
+  { canonical: "lamb", aliases: ["lamb", "\u03b1\u03c1\u03bd"] },
+  { canonical: "salmon", aliases: ["salmon", "\u03c3\u03bf\u03bb\u03bf\u03bc"] },
+  { canonical: "fish", aliases: ["fish", "\u03c8\u03b1\u03c1"] },
+  { canonical: "duck", aliases: ["duck", "\u03c0\u03b1\u03c0\u03b9\u03b1"] },
+  { canonical: "beef", aliases: ["beef", "\u03bc\u03bf\u03c3\u03c7\u03b1\u03c1", "\u03b2\u03bf\u03b4\u03b9\u03bd"] },
+  { canonical: "pork", aliases: ["pork", "\u03c7\u03bf\u03b9\u03c1\u03b9\u03bd"] },
+  { canonical: "turkey", aliases: ["turkey", "\u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03c5\u03bb"] },
+  { canonical: "rabbit", aliases: ["rabbit", "\u03ba\u03bf\u03c5\u03bd\u03b5\u03bb"] },
+  { canonical: "tuna", aliases: ["tuna", "\u03c4\u03bf\u03bd\u03bf"] },
+  { canonical: "rice", aliases: ["rice", "\u03c1\u03c5\u03b6"] },
+  { canonical: "grain", aliases: ["grain", "\u03c3\u03b9\u03c4\u03b7\u03c1", "\u03b4\u03b7\u03bc\u03b7\u03c4\u03c1\u03b9\u03b1\u03ba"] },
+] as const;
+
+function normalizeLookup(value: string) {
+  return value
+    .toLocaleLowerCase("el-GR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’']/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function cleanString(value: unknown) {
   if (typeof value !== "string") return null;
   const cleaned = value.replace(/\s+/g, " ").trim();
   return cleaned.length > 0 ? cleaned : null;
+}
+
+function cleanPetName(value: unknown) {
+  const cleaned = cleanString(value);
+  if (!cleaned) return null;
+
+  return formatPetDisplayName(cleaned);
 }
 
 function cleanStringArray(value: unknown) {
@@ -42,6 +76,22 @@ function cleanStringArray(value: unknown) {
   }
 
   return items.slice(0, 12);
+}
+
+function canonicalizeIngredientTerm(value: string) {
+  const normalized = normalizeLookup(value);
+
+  for (const item of INGREDIENT_ALIASES) {
+    if (item.aliases.some((alias) => normalized.includes(normalizeLookup(alias)))) {
+      return item.canonical;
+    }
+  }
+
+  return normalized;
+}
+
+function cleanIngredientArray(value: unknown) {
+  return cleanStringArray(value).map(canonicalizeIngredientTerm);
 }
 
 function cleanNumber(value: unknown) {
@@ -126,9 +176,15 @@ export function validateAiIntakeExtraction(
     errors,
   });
 
+  const excludedIngredients = cleanIngredientArray(input.excludedIngredients);
+  const preferredProteins = removeExcludedFromPreferred(
+    cleanIngredientArray(input.preferredProteins),
+    excludedIngredients
+  );
+
   const data: AiIntakeExtraction = {
     species,
-    petName: cleanString(input.petName),
+    petName: cleanPetName(input.petName),
     weightKg: cleanWeight,
     ageYears: cleanAge,
     activityLevel,
@@ -137,8 +193,8 @@ export function validateAiIntakeExtraction(
     healthIssues: cleanStringArray(input.healthIssues),
     allergies: cleanStringArray(input.allergies),
     currentFoodName: cleanString(input.currentFoodName),
-    preferredProteins: cleanStringArray(input.preferredProteins),
-    excludedIngredients: cleanStringArray(input.excludedIngredients),
+    preferredProteins,
+    excludedIngredients,
     weightGoal,
     language: input.language === "en" ? "en" : input.language === "el" ? "el" : null,
     missingFields: cleanStringArray(input.missingFields),
