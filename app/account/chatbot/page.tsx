@@ -1117,18 +1117,18 @@ function getFoodQualityNote(food: Record<string, unknown>) {
   const status = String(food.data_quality_status ?? "").toLowerCase();
 
   if (status === "verified") {
-    return "Data quality: verified official source. I can be more confident about this formula's published nutrition fields.";
+    return "Τα στοιχεία αυτής της τροφής είναι αρκετά πλήρη, οπότε μπορούμε να μιλήσουμε πιο καθαρά για τη θρεπτική της εικόνα.";
   }
 
   if (status === "partial") {
-    return "Data quality: partial official source. Some minerals or calories may be missing, so I will avoid overclaiming.";
+    return "Μερικά διατροφικά στοιχεία λείπουν, οπότε θα κρατήσω την πρόταση προσεκτική.";
   }
 
   if (status === "needs_review" || status === "unknown") {
-    return "Data quality: needs review. Treat this match as tentative until the nutrition panel is confirmed.";
+    return "Δεν έχω ακόμη όλα τα στοιχεία της ετικέτας, οπότε το χρησιμοποιώ σαν πιθανό ταίριασμα και όχι σαν απόλυτη απάντηση.";
   }
 
-  return "Data quality: not fully classified yet. I will keep the recommendation cautious.";
+  return "Τα στοιχεία δεν είναι πλήρως συμπληρωμένα, οπότε θα κρατήσω την πρόταση προσεκτική.";
 }
 
 function isConfidentFoodMatch(matchResult: Record<string, unknown>) {
@@ -1142,10 +1142,8 @@ function getFoodCandidateLabel(candidate: FoodMatchCandidate) {
   const brand = String(candidate.brand ?? "").trim();
   const name = String(candidate.name ?? "").trim();
   const label = [brand, name].filter(Boolean).join(" - ");
-  const confidence = String(candidate.match_confidence ?? "low");
-  const score = Number(candidate.match_score ?? 0);
 
-  return `${label || "Unnamed food"} (${confidence}, score ${score})`;
+  return label || "Unnamed food";
 }
 
 function formatFoodMatchCandidates(candidates: unknown) {

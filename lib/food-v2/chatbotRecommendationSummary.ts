@@ -464,6 +464,7 @@ function uniqueShortCautions(values: string[]) {
   return values
     .map((value) => value.trim())
     .filter((value) => value && !ignored.has(value))
+    .map((value) => customerCautionText(value))
     .filter((value) => {
       const key = normalizeText(value);
       if (seen.has(key)) return false;
@@ -471,6 +472,45 @@ function uniqueShortCautions(values: string[]) {
       return true;
     })
     .slice(0, 3);
+}
+
+function customerCautionText(value: string) {
+  const normalized = normalizeText(value);
+
+  if (normalized.includes("fat looks high")) {
+    return "This looks richer in fat, so portions matter more for sterilised or weight-prone pets.";
+  }
+  if (normalized.includes("fat is not low enough")) {
+    return "This can still be an option, but it is not the lightest choice for weight control.";
+  }
+  if (normalized.includes("energy density may be high")) {
+    return "This is more calorie-dense, so it needs careful daily grams.";
+  }
+  if (normalized.includes("active/performance positioning")) {
+    return "This may suit active dogs better than low-activity sterilised pets.";
+  }
+  if (normalized.includes("not an exact senior")) {
+    return "It is not a perfect senior match, so watch appetite, weight and muscle condition.";
+  }
+  if (normalized.includes("large-breed puppy")) {
+    return "For large-breed puppies, calcium and phosphorus should be checked before relying on it.";
+  }
+  if (normalized.includes("renal cases")) {
+    return "For kidney cases, use veterinarian guidance before choosing a diet.";
+  }
+  if (normalized.includes("urinary reasoning")) {
+    return "For urinary cases, minerals matter and veterinarian guidance is important.";
+  }
+
+  return value;
+}
+
+function nextStepLine(locale: "el" | "en") {
+  if (locale === "el") {
+    return "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα για να υπολογίσουμε περίπου γραμμάρια/ημέρα.";
+  }
+
+  return "Next step: choose one food from the list and I can estimate daily grams.";
 }
 
 export function formatFoodV2ChatbotRecommendationSummary(
@@ -590,6 +630,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
   }
 
   blocks.push(
+    "",
+    nextStepLine(locale),
     "",
     locale === "el"
       ? "Για ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, έντονο εμετό, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο."
