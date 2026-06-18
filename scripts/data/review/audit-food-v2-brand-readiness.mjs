@@ -15,13 +15,21 @@ const headers = [
   "retailer_rows",
   "label_kcal_rows",
   "estimated_kcal_rows",
+  "missing_kcal_rows",
   "ash_rows",
+  "missing_ash_rows",
   "calcium_phosphorus_rows",
+  "missing_core_mineral_rows",
   "epa_dha_rows",
+  "title_risk_rows",
+  "possible_duplicate_identity_rows",
   "avg_core_score",
   "readiness_status",
   "recommended_next_action",
 ];
+
+const repeatedProductTermPattern =
+  /\b(vetsolution|vet\s*solution|veterinary|urinary|renal|hepatic|gastrointestinal|diabetic|obesity|dermatosis|hypoallergenic|sterilised|sterilized|senior|puppy|kitten|adult|mini|medium|maxi|large|giant)(?:\s+\1)+\b/iu;
 
 function parseCsv(text) {
   const rows = [];
@@ -93,6 +101,48 @@ function hasBothValues(row, fields) {
   return fields.every((field) => hasValue(row[field]));
 }
 
+function normalizeComparable(value) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/gu, "")
+    .replace(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|gr|grams?)\b/giu, "")
+    .replace(/[^a-z0-9α-ω]+/giu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function wordCount(value) {
+  return String(value ?? "").trim().split(/\s+/u).filter(Boolean).length;
+}
+
+function hasTitleRisk(row) {
+  const formulaName = String(row.formula_name ?? "").trim();
+  const displayName = String(row.display_name ?? "").trim();
+  const brand = normalizeComparable(row.brand);
+  const formula = normalizeComparable(formulaName);
+
+  return (
+    !formulaName ||
+    formulaName.length > 80 ||
+    displayName.length > 100 ||
+    wordCount(formulaName) > 10 ||
+    (brand && formula.startsWith(`${brand} `)) ||
+    repeatedProductTermPattern.test(formulaName) ||
+    repeatedProductTermPattern.test(displayName)
+  );
+}
+
+function identityKeyFor(row) {
+  return [
+    normalizeComparable(row.brand),
+    normalizeComparable(row.formula_name || row.display_name),
+    normalizeComparable(row.species),
+    normalizeComparable(row.format),
+  ].join("|");
+}
+
 function sourceNotes(row) {
   return String(row.source_notes ?? "").toLowerCase();
 }
@@ -118,6 +168,9 @@ function readinessStatus(summary) {
   const labelKcalRate =
     summary.total_rows > 0 ? summary.label_kcal_rows / summary.total_rows : 0;
 
+  if (summary.title_risk_rows > 0 || summary.possible_duplicate_identity_rows > 0) {
+    return "needs_data_cleanup";
+  }
   if (summary.total_rows >= 5 && summary.avg_core_score >= 90 && labelKcalRate >= 0.5) {
     return "ready_for_controlled_import";
   }
@@ -137,6 +190,12 @@ function nextAction(summary) {
   if (summary.readiness_status === "ready_for_controlled_import") {
     return "Filter this brand in admin preview, run Check Existing, then import selected rows.";
   }
+  if (summary.title_risk_rows > 0 || summary.possible_duplicate_identity_rows > 0) {
+    return "Clean title risks and possible duplicate identities before import, then rerun Check Existing.";
+  }
+  if (summary.missing_kcal_rows > 0 || summary.missing_core_mineral_rows > 0) {
+    return "Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations.";
+  }
   if (summary.readiness_status === "review_before_import") {
     return "Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch.";
   }
@@ -149,7 +208,7 @@ function nextAction(summary) {
   return "Clean missing nutrition fields and title/source notes before import.";
 }
 
-function summarizeBrand(brand, rows) {
+function summarizeBrand(brand, rows, duplicateIdentityKeys) {
   const scores = rows.map(coreScore);
   const avgCoreScore =
     scores.length > 0
@@ -170,12 +229,21 @@ function summarizeBrand(brand, rows) {
     estimated_kcal_rows: rows.filter((row) =>
       sourceNotes(row).includes("kcal_estimated=true")
     ).length,
+    missing_kcal_rows: rows.filter((row) => !hasAnyValue(row, ["kcal_per_100g", "kcal_per_kg"])).length,
     ash_rows: rows.filter((row) => hasValue(row.ash_percent)).length,
+    missing_ash_rows: rows.filter((row) => !hasValue(row.ash_percent)).length,
     calcium_phosphorus_rows: rows.filter((row) =>
       hasBothValues(row, ["calcium_percent", "phosphorus_percent"])
     ).length,
+    missing_core_mineral_rows: rows.filter(
+      (row) => !hasBothValues(row, ["calcium_percent", "phosphorus_percent"])
+    ).length,
     epa_dha_rows: rows.filter((row) =>
       hasAnyValue(row, ["epa_dha_percent", "epa_percent", "dha_percent"])
+    ).length,
+    title_risk_rows: rows.filter(hasTitleRisk).length,
+    possible_duplicate_identity_rows: rows.filter((row) =>
+      duplicateIdentityKeys.has(identityKeyFor(row))
     ).length,
     avg_core_score: avgCoreScore,
     readiness_status: "",
@@ -194,6 +262,10 @@ function renderReport(rows) {
   const cleanup = rows.filter((row) =>
     ["needs_source_backfill", "needs_data_cleanup"].includes(row.readiness_status)
   );
+  const titleRisk = rows.filter((row) => Number(row.title_risk_rows) > 0);
+  const duplicateRisk = rows.filter((row) => Number(row.possible_duplicate_identity_rows) > 0);
+  const kcalGaps = rows.filter((row) => Number(row.missing_kcal_rows) > 0);
+  const mineralGaps = rows.filter((row) => Number(row.missing_core_mineral_rows) > 0);
 
   const renderList = (items) =>
     items
@@ -215,6 +287,10 @@ Generated: ${new Date().toISOString()}
 - Review before import: ${review.length}
 - Small batch review: ${small.length}
 - Needs cleanup/source backfill: ${cleanup.length}
+- Brands with title risks: ${titleRisk.length}
+- Brands with possible duplicate identities: ${duplicateRisk.length}
+- Brands missing kcal in at least one row: ${kcalGaps.length}
+- Brands missing calcium/phosphorus in at least one row: ${mineralGaps.length}
 - Input: ${paths.input}
 - CSV: ${paths.output}
 
@@ -234,6 +310,20 @@ ${renderList(small)}
 
 ${renderList(cleanup)}
 
+## Brand Cleanup Focus
+
+Title risks:
+${renderList(titleRisk)}
+
+Possible duplicate identities:
+${renderList(duplicateRisk)}
+
+Missing kcal:
+${renderList(kcalGaps)}
+
+Missing calcium/phosphorus:
+${renderList(mineralGaps)}
+
 ## Operating Rule
 
 Use this audit to choose brand-by-brand import batches. It does not write to Supabase and does not replace human review; it ranks brands by current preview completeness and provenance so the admin import can move in controlled batches.
@@ -248,9 +338,23 @@ async function main() {
     const brand = row.brand || "Unknown";
     byBrand.set(brand, [...(byBrand.get(brand) ?? []), row]);
   }
+  const identityCounts = new Map();
+
+  for (const row of rows) {
+    const key = identityKeyFor(row);
+    identityCounts.set(key, (identityCounts.get(key) ?? 0) + 1);
+  }
+
+  const duplicateIdentityKeys = new Set(
+    [...identityCounts.entries()]
+      .filter(([, count]) => count > 1)
+      .map(([key]) => key)
+  );
 
   const summaries = [...byBrand.entries()]
-    .map(([brand, brandRows]) => summarizeBrand(brand, brandRows))
+    .map(([brand, brandRows]) =>
+      summarizeBrand(brand, brandRows, duplicateIdentityKeys)
+    )
     .sort(
       (a, b) =>
         b.avg_core_score - a.avg_core_score ||

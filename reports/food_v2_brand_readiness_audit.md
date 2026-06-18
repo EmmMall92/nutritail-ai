@@ -1,14 +1,18 @@
 # Food V2 Brand Readiness Audit
 
-Generated: 2026-06-05T16:58:27.347Z
+Generated: 2026-06-18T19:56:38.146Z
 
 ## Summary
 
 - Brands reviewed: 84
 - Ready for controlled import: 20
-- Review before import: 20
-- Small batch review: 31
-- Needs cleanup/source backfill: 13
+- Review before import: 19
+- Small batch review: 29
+- Needs cleanup/source backfill: 16
+- Brands with title risks: 4
+- Brands with possible duplicate identities: 0
+- Brands missing kcal in at least one row: 0
+- Brands missing calcium/phosphorus in at least one row: 39
 - Input: data/imports/food_v2_best_candidate_preview.csv
 - CSV: data/review/food_v2_brand_readiness_audit.csv
 
@@ -45,7 +49,6 @@ Generated: 2026-06-05T16:58:27.347Z
 - Hill's Prescription Diet: 8 rows, avg score 95, recommendable 0
 - Equilibrio: 7 rows, avg score 95, recommendable 0
 - Kudo: 7 rows, avg score 95, recommendable 0
-- Dr. Clauder: 6 rows, avg score 95, recommendable 0
 - Hills: 37 rows, avg score 94, recommendable 0
 - Brekkies: 5 rows, avg score 91, recommendable 0
 - Trainer: 5 rows, avg score 90, recommendable 0
@@ -76,19 +79,21 @@ Generated: 2026-06-05T16:58:27.347Z
 - Black Olympus: 1 rows, avg score 95, recommendable 0
 - Burns: 1 rows, avg score 95, recommendable 0
 - Cat Vital: 1 rows, avg score 95, recommendable 0
-- Markus Mühle: 1 rows, avg score 95, recommendable 0
 - Meradog: 1 rows, avg score 95, recommendable 0
 - Whiskas: 1 rows, avg score 95, recommendable 0
 - Fish4Dogs: 1 rows, avg score 90, recommendable 0
+- Meowing Heads: 1 rows, avg score 90, recommendable 0
 
 ## Needs Cleanup Or Source Backfill
 
 - Calibra: 3 rows, avg score 100, recommendable 0
 - Optima Nova: 3 rows, avg score 100, recommendable 0
+- Dr. Clauder: 6 rows, avg score 95, recommendable 0
 - Anima: 3 rows, avg score 95, recommendable 0
 - Eukanuba: 3 rows, avg score 95, recommendable 0
 - GranataPet: 3 rows, avg score 95, recommendable 0
 - Hill's Science Plan: 3 rows, avg score 95, recommendable 0
+- Markus Mühle: 1 rows, avg score 95, recommendable 0
 - Bedog: 3 rows, avg score 92, recommendable 0
 - Wolf of Wilderness: 3 rows, avg score 92, recommendable 0
 - Barking Heads: 3 rows, avg score 90, recommendable 0
@@ -96,6 +101,43 @@ Generated: 2026-06-05T16:58:27.347Z
 - Ecopet Natural: 3 rows, avg score 85, recommendable 0
 - Monge: 3 rows, avg score 85, recommendable 0
 - Royal Canin Size: 3 rows, avg score 85, recommendable 0
+- Schesir: 2 rows, avg score 85, recommendable 0
+
+## Brand Cleanup Focus
+
+Title risks:
+- Dr. Clauder: 6 rows, avg score 95, recommendable 0
+- Hill's Science Plan: 3 rows, avg score 95, recommendable 0
+- Markus Mühle: 1 rows, avg score 95, recommendable 0
+- Schesir: 2 rows, avg score 85, recommendable 0
+
+Possible duplicate identities:
+- none
+
+Missing kcal:
+- none
+
+Missing calcium/phosphorus:
+- Happy Cat: 14 rows, avg score 98, recommendable 0
+- Orijen: 8 rows, avg score 98, recommendable 0
+- Ambrosia: 11 rows, avg score 96, recommendable 0
+- Dr. Clauder: 6 rows, avg score 95, recommendable 0
+- Cennamo: 13 rows, avg score 94, recommendable 0
+- Gemon: 10 rows, avg score 93, recommendable 0
+- Bedog: 3 rows, avg score 92, recommendable 0
+- Wolf of Wilderness: 3 rows, avg score 92, recommendable 0
+- Josera: 97 rows, avg score 91, recommendable 0
+- Brekkies: 5 rows, avg score 91, recommendable 0
+- JosiDog: 24 rows, avg score 90, recommendable 0
+- Purina Pro Plan: 13 rows, avg score 90, recommendable 0
+- Trainer: 5 rows, avg score 90, recommendable 0
+- Wellness Core: 5 rows, avg score 90, recommendable 0
+- Barking Heads: 3 rows, avg score 90, recommendable 0
+- Fish4Dogs: 1 rows, avg score 90, recommendable 0
+- Meowing Heads: 1 rows, avg score 90, recommendable 0
+- Royal Canin Breed: 1 rows, avg score 90, recommendable 0
+- Friskies: 5 rows, avg score 89, recommendable 0
+- Pedigree: 5 rows, avg score 89, recommendable 0
 
 ## Operating Rule
 
