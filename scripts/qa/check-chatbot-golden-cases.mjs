@@ -229,15 +229,272 @@ mergedSignalLexicon.large_breed.push("40 κιλά", "40κιλα");
 mergedSignalLexicon.product_lookup.push("royal", "canin");
 mergedSignalLexicon.weight.push("κιλα", "κιλά");
 
+const greekToLatinMap = {
+  "\u03b1": "a",
+  "\u03b2": "v",
+  "\u03b3": "g",
+  "\u03b4": "d",
+  "\u03b5": "e",
+  "\u03b6": "z",
+  "\u03b7": "i",
+  "\u03b8": "th",
+  "\u03b9": "i",
+  "\u03ba": "k",
+  "\u03bb": "l",
+  "\u03bc": "m",
+  "\u03bd": "n",
+  "\u03be": "x",
+  "\u03bf": "o",
+  "\u03c0": "p",
+  "\u03c1": "r",
+  "\u03c2": "s",
+  "\u03c3": "s",
+  "\u03c4": "t",
+  "\u03c5": "y",
+  "\u03c6": "f",
+  "\u03c7": "ch",
+  "\u03c8": "ps",
+  "\u03c9": "o",
+};
+
+const asciiSignalLexicon = {
+  active: [
+    "agility",
+    "agrokt",
+    "athlit",
+    "bouno",
+    "douleuei",
+    "douleyei",
+    "ekpaideuetai",
+    "ekpaideyetai",
+    "energeia",
+    "exo",
+    "farm",
+    "kalokair",
+    "kaiei",
+    "kolympa",
+    "kyniga",
+    "mountain",
+    "outdoor",
+    "psychro",
+    "trechei",
+    "trexei",
+    "voyno",
+    "vouno",
+  ],
+  allergy: [
+    "allerg",
+    "derma",
+    "eyaisthis",
+    "fagoura",
+    "gleifei",
+    "knismos",
+    "knism",
+    "ksynetai",
+    "dagkonei",
+    "otitid",
+    "patous",
+    "oura",
+    "trichoma",
+    "trixoma",
+    "trofiki dysanexia",
+    "trofiki dysaneksia",
+    "xynetai",
+  ],
+  avoidance: [
+    "arnitai",
+    "den antechei",
+    "den troei",
+    "galaktokom",
+    "mono psari",
+    "ospria",
+    "refuses",
+    "ryzi",
+    "sitari",
+  ],
+  digestive: [
+    "aeria",
+    "chorta",
+    "dyskoiliotita",
+    "dysanexia",
+    "dysaneksia",
+    "gastritida",
+    "grass",
+    "ibd",
+    "koprana",
+    "pagkreatiki aneparkeia",
+    "perittomata",
+    "stomach",
+  ],
+  fussy: ["arneitai", "arnietai", "arnitai", "den troei", "mono otan valo ygri", "refuses"],
+  growth: [
+    "apogalakt",
+    "egky",
+    "egku",
+    "egkyo",
+    "egkyos",
+    "koutab",
+    "lactating",
+    "orfano",
+    "puppy",
+    "thilazei",
+  ],
+  joint: [
+    "agkona",
+    "arthrit",
+    "arthrose",
+    "dysplasia",
+    "isxio",
+    "joint",
+    "chiast",
+    "xiast",
+  ],
+  kidney: ["kreatinin", "nefr", "ouria", "oyria", "urea"],
+  large_breed: [
+    "akita",
+    "boxer",
+    "cane corso",
+    "doberman",
+    "gigantos",
+    "great dane",
+    "malinois",
+    "megalos",
+    "rottweiler",
+    "saint bernard",
+  ],
+  neutered: ["meta ti steirosi", "steiroth", "steirosi", "steirom"],
+  senior: [
+    "anoia",
+    "dontia",
+    "eukoli masisi",
+    "iliki",
+    "koimatai",
+    "masisi",
+    "myiki maza",
+    "myrizei",
+    "orexi",
+    "senior",
+    "xronon",
+  ],
+  urgent: ["aim", "anorexia", "blood", "collapse", "xeirourgeio"],
+  urinary: ["oxalik", "oyrik", "oyrolog", "stroyvit", "struvit", "ourik", "ourolog"],
+  weight: [
+    "adynato",
+    "apoleia varous",
+    "diamerisma",
+    "polykatoikia",
+    "pachainei",
+    "paxainei",
+    "parei varos",
+    "pire 3",
+    "parei myiki maza",
+    "ypositism",
+    "ypostitism",
+    "zitia",
+  ],
+};
+
+const cautionTerms = [
+  ...asciiSignalLexicon.allergy,
+  ...asciiSignalLexicon.digestive,
+  ...asciiSignalLexicon.joint,
+  ...asciiSignalLexicon.kidney,
+  ...asciiSignalLexicon.urinary,
+  "anoia",
+  "apoleia varous",
+  "adynato",
+  "chamili orexi",
+  "cholecyst",
+  "egky",
+  "egku",
+  "heart disease",
+  "ipatik",
+  "kaki anaptyxi",
+  "kardiopatheia",
+  "cholekyst",
+  "cholokyst",
+  "koimatai",
+  "liver",
+  "low appetite",
+  "myrizei",
+  "myiki maza",
+  "nosileia",
+  "nosos",
+  "orfano",
+  "poor coat",
+  "pnigetai",
+  "parei varos",
+  "rescue",
+  "surgery",
+  "aneparkeia",
+  "anarronei",
+  "apogalaktismo",
+  "thilazei",
+  "chanei varos choris logo",
+  "xanei varos xoris logo",
+  "xeirourgeio",
+  "xanei varos",
+  "elachista",
+  "ypostitism",
+];
+
+for (const [signal, aliases] of Object.entries(asciiSignalLexicon)) {
+  mergedSignalLexicon[signal] = [...(mergedSignalLexicon[signal] ?? []), ...aliases];
+}
+mergedSignalLexicon.compare.push("sygkr", "sigkr", "sugkr");
+
+function removeDiacritics(value) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function greekToGreeklish(value) {
+  return removeDiacritics(value.toLowerCase())
+    .replace(/[\u0370-\u03ff]/g, (char) => greekToLatinMap[char] ?? char)
+    .replace(/\s+/g, " ");
+}
+
+function normalizeSearchText(value) {
+  const lower = String(value ?? "").toLowerCase().replaceAll("_", " ");
+  return `${lower} ${greekToGreeklish(lower)}`;
+}
+
+function searchCandidates(value) {
+  const lower = String(value ?? "").toLowerCase().replaceAll("_", " ");
+  return [lower, greekToGreeklish(lower)]
+    .map((item) => item.trim())
+    .filter((item) => item.length >= 3 || item === "vs");
+}
+
 function includesAny(text, terms = []) {
-  const normalized = text.toLowerCase().replaceAll("_", " ");
-  return terms.some((term) => normalized.includes(term.toLowerCase()));
+  const normalized = normalizeSearchText(text);
+  return terms.some((term) =>
+    searchCandidates(term).some((candidate) => normalized.includes(candidate))
+  );
 }
 
 function detectPromptSignals(prompt) {
-  return Object.entries(mergedSignalLexicon)
+  const signals = Object.entries(mergedSignalLexicon)
     .filter(([, terms]) => includesAny(prompt, terms))
     .map(([signal]) => signal);
+
+  const normalized = normalizeSearchText(prompt);
+  if (
+    !signals.includes("compare") &&
+    (/\sή\s/.test(String(prompt).toLowerCase()) ||
+      /\bvs\b/.test(normalized) ||
+      /\bversus\b/.test(normalized)) &&
+    signals.includes("product_lookup")
+  ) {
+    signals.push("compare");
+  }
+  if (
+    !signals.includes("senior") &&
+    /\b(1[1-9]|2[0-9])\s*(ετών|χρον|eton|xron|chron)/.test(normalized)
+  ) {
+    signals.push("senior");
+  }
+
+  return signals;
 }
 
 function detectSafetyLevel(prompt) {
@@ -246,7 +503,14 @@ function detectSafetyLevel(prompt) {
     (includesAny(prompt, mergedSignalLexicon.fussy) ||
       includesAny(prompt, mergedSignalLexicon.avoidance) ||
       includesAny(prompt, mergedSignalLexicon.transition)) &&
+    !includesAny(prompt, mergedSignalLexicon.allergy) &&
     !includesAny(prompt, ["blood", "αιμα", "αίμα", "vomiting", "εμετ", "διάρροια", "diarrhea", "καθολου", "καθόλου"])
+  ) {
+    return "normal";
+  }
+  if (
+    includesAny(prompt, ["grass", "chorta"]) &&
+    !includesAny(prompt, ["vomiting", "diarrhea", "emeto", "emet", "malaka", "koprana"])
   ) {
     return "normal";
   }
@@ -272,6 +536,7 @@ function detectSafetyLevel(prompt) {
       "not eating",
       "not eat",
       "vomiting",
+      ...cautionTerms,
       "εμετ",
       "αιμα",
       "αίμα",
