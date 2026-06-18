@@ -287,6 +287,49 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     }
   }
 
+  if (highActivity && !strictWeightContext && !positioning.weightControl) {
+    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g >= 380) {
+      signals.push({
+        type: "boost",
+        code: "energy_density_for_high_activity",
+        points: 6,
+        message: "Energy density can support a high-activity pet.",
+      });
+    }
+
+    if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 16) {
+      signals.push({
+        type: "boost",
+        code: "fat_supports_high_activity",
+        points: 4,
+        message: "Fat level can help cover higher activity energy needs.",
+      });
+    }
+  }
+
+  if (highActivity && !strictWeightContext && positioning.weightControl && !positioning.active) {
+    signals.push({
+      type: "caution",
+      code: "weight_control_formula_for_active_pet",
+      points: -24,
+      message:
+        "Weight-control positioning may underserve a highly active pet unless weight loss is the goal.",
+    });
+
+    if (
+      (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 355) ||
+      (hasNumber(nutrients.fat_percent) && nutrients.fat_percent <= 12)
+    ) {
+      signals.push({
+        type: "exclude",
+        code: "light_formula_for_high_activity_pet",
+        points: -100,
+        message:
+          "Excluded because light/sterilised energy positioning is a poor first choice for a high-activity pet.",
+      });
+    }
+  }
+
   if (positioning.active && !highActivity) {
     const activePenalty = strictWeightContext ? -34 : -24;
     signals.push({
