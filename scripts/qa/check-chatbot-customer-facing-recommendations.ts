@@ -1,4 +1,5 @@
 import { formatFoodV2ChatbotRecommendationSummary } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { readFileSync } from "node:fs";
 
 const sampleResponse = {
   goal: "sterilised" as const,
@@ -97,6 +98,43 @@ if (!greekSample.includes("Προτεινόμενες τροφές") || !greekSa
 if (!greekSample.includes("Επόμενο βήμα")) {
   console.error("Greek customer-facing recommendation did not include a clear next step.");
   console.error(greekSample);
+  process.exit(1);
+}
+
+const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+const requiredCardFlowCopy = [
+  "1. Pick",
+  "2. Calculate",
+  "3. Save",
+  "Choose and calculate",
+  "Tap to calculate grams per day.",
+];
+const missingCardFlowCopy = requiredCardFlowCopy.filter(
+  (term) => !chatbotPage.includes(term)
+);
+
+if (missingCardFlowCopy.length > 0) {
+  console.error("Chatbot food cards are missing customer-facing flow copy:");
+  console.error(missingCardFlowCopy.join(", "));
+  process.exit(1);
+}
+
+const recommendedChoicesIndex = chatbotPage.indexOf("recommendedFoodChoices.map");
+const recommendationBlockIndex = chatbotPage.lastIndexOf(
+  "showSave && recommendedFoodChoices.length > 0",
+  recommendedChoicesIndex
+);
+const pickStepIndex = chatbotPage.lastIndexOf("1. Pick", recommendedChoicesIndex);
+
+if (
+  recommendedChoicesIndex === -1 ||
+  recommendationBlockIndex === -1 ||
+  pickStepIndex === -1 ||
+  pickStepIndex < recommendationBlockIndex
+) {
+  console.error(
+    "Customer-facing Pick/Calculate/Save flow must appear inside the recommended food card area."
+  );
   process.exit(1);
 }
 
