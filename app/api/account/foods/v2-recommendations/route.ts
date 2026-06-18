@@ -8,6 +8,7 @@ import {
 import { normalizeCanonicalFormulaName } from "@/lib/food-v2/canonicalFood";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
+import { evaluateFoodIntelligence } from "@/lib/food-intelligence/evaluateFood";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 import type { PetActivityLevel, PetSpecies } from "@/types/pet";
 
@@ -104,6 +105,29 @@ function compactRanking(
   nutrients: FoodNutrientsV2
 ) {
   const displayName = normalizeCanonicalFormulaName(product.display_name);
+  const foodIntelligence = evaluateFoodIntelligence({
+    species: product.species,
+    life_stage: product.life_stage,
+    dog_size: product.dog_size,
+    ingredient_tags: product.commercial_tags,
+    health_tags: product.commercial_tags,
+    medical_tags: product.medical_tags,
+    data_quality_status: product.data_quality_status,
+    source_priority: product.source_priority,
+    nutrients: {
+      kcal_per_100g: product.kcal_per_100g,
+      protein_percent: nutrients.protein_percent ?? null,
+      fat_percent: nutrients.fat_percent ?? null,
+      fiber_percent: nutrients.fiber_percent ?? null,
+      calcium_percent: nutrients.calcium_percent ?? null,
+      phosphorus_percent: nutrients.phosphorus_percent ?? null,
+      magnesium_percent: nutrients.magnesium_percent ?? null,
+      sodium_percent: nutrients.sodium_percent ?? null,
+      epa_percent: nutrients.epa_percent ?? null,
+      dha_percent: nutrients.dha_percent ?? null,
+      epa_dha_percent: nutrients.epa_dha_percent ?? null,
+    },
+  });
 
   return {
     id: product.id,
@@ -122,6 +146,14 @@ function compactRanking(
       display_name: displayName,
     },
     guard_flags: detectFoodV2RecommendationGuardFlags(ranking),
+    food_intelligence: {
+      score: foodIntelligence.score,
+      confidence_level: foodIntelligence.confidence_level,
+      strengths: foodIntelligence.food_strengths.slice(0, 4),
+      cautions: foodIntelligence.food_cautions.slice(0, 4),
+      best_use_cases: foodIntelligence.best_use_cases.slice(0, 4),
+      not_ideal_cases: foodIntelligence.not_ideal_cases.slice(0, 4),
+    },
     nutrition_confidence: getFoodV2NutritionConfidence(product, nutrients),
     nutrition: {
       kcal_per_100g: product.kcal_per_100g,

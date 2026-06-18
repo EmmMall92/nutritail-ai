@@ -157,14 +157,14 @@ export function evaluateGrowthFitRules(input: GrowthFitInput) {
       signals.push({
         type: "boost",
         code: "large_breed_puppy_fit",
-        points: 20,
+        points: 30,
         message: "Large-breed puppy positioning fits this growth case.",
       });
     } else if (positioning.genericGrowth) {
       signals.push({
         type: "caution",
         code: "generic_puppy_for_large_breed",
-        points: -10,
+        points: -20,
         message:
           "Generic puppy food is less specific than a large-breed puppy formula.",
       });

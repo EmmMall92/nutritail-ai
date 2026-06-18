@@ -146,14 +146,14 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
     signals.push({
       type: "boost",
       code: "senior_positioning",
-      points: 20,
+      points: 26,
       message: "Positioned for senior pets.",
     });
   } else if (stage === "senior") {
     signals.push({
       type: "caution",
       code: "adult_formula_for_senior_pet",
-      points: -10,
+      points: -22,
       message: "Adult food is less specific than a senior-positioned formula.",
     });
   }
