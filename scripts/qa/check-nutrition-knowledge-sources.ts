@@ -8,6 +8,7 @@ import {
 
 const expectedOrder: NutritionKnowledgeSourceId[] = [
   "CANINE_FELINE_NUTRITION_BOOK",
+  "SMALL_ANIMAL_CLINICAL_NUTRITION",
   "WSAVA",
   "FEDIAF",
   "NRC",

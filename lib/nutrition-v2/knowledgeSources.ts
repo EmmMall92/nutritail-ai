@@ -7,6 +7,7 @@ export type NutritionKnowledgeUse =
 
 export type NutritionKnowledgeSourceId =
   | "CANINE_FELINE_NUTRITION_BOOK"
+  | "SMALL_ANIMAL_CLINICAL_NUTRITION"
   | "WSAVA"
   | "FEDIAF"
   | "NRC"
@@ -50,57 +51,67 @@ export const NUTRITAIL_KNOWLEDGE_SOURCES = [
     policyNotes: ["Use as the first source for core nutrition concepts and decision logic."],
   },
   {
-    id: "WSAVA",
+    id: "SMALL_ANIMAL_CLINICAL_NUTRITION",
     priority: 2,
+    displayName: "Small Animal Clinical Nutrition",
+    allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
+    policyNotes: [
+      "Use as the primary clinical nutrition textbook layer for disease, growth, senior, and feeding-management rules.",
+      "Store only NutriTail-owned structured rules and source-map metadata; do not copy book text.",
+    ],
+  },
+  {
+    id: "WSAVA",
+    priority: 3,
     displayName: "WSAVA",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for nutrition assessment, owner communication, and safety framing."],
   },
   {
     id: "FEDIAF",
-    priority: 3,
+    priority: 4,
     displayName: "FEDIAF",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for EU labeling, nutrient guidance, and market-relevant interpretation."],
   },
   {
     id: "NRC",
-    priority: 4,
+    priority: 5,
     displayName: "NRC",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for nutrient requirement logic and scientific cross-checks."],
   },
   {
     id: "WALTHAM",
-    priority: 5,
+    priority: 6,
     displayName: "Waltham",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for practical companion-animal nutrition concepts."],
   },
   {
     id: "TUFTS_VETERINARY_NUTRITION",
-    priority: 6,
+    priority: 7,
     displayName: "Tufts Veterinary Nutrition",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for client-facing veterinary nutrition explanations and safety nuance."],
   },
   {
     id: "UC_DAVIS_VETERINARY_NUTRITION",
-    priority: 7,
+    priority: 8,
     displayName: "UC Davis Veterinary Nutrition",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use for specialist veterinary nutrition logic and clinical caution."],
   },
   {
     id: "VETFOLIO",
-    priority: 8,
+    priority: 9,
     displayName: "VetFolio",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use as supporting veterinary education material when higher-priority sources are insufficient."],
   },
   {
     id: "WIKIVET",
-    priority: 9,
+    priority: 10,
     displayName: "WikiVet",
     allowedUses: [...NUTRITAIL_KNOWLEDGE_ALLOWED_USES],
     policyNotes: ["Use as tertiary support only, not as the first source for clinical rules."],
