@@ -120,6 +120,70 @@ if (
   process.exit(1);
 }
 
+const riceAndPeaFood = food({
+  id: "rice-pea",
+  formula_key: "qa|rice-pea|dog|dry",
+  display_name: "Adult Duck With Rice And Peas",
+  primary_animal_proteins: ["duck"],
+  carbohydrate_sources: ["rice", "peas"],
+  ingredients: ["duck", "rice", "peas"],
+});
+const ricePeaRanking = rankFoodV2ForPet({
+  food: riceAndPeaFood,
+  nutrients: nutrients(riceAndPeaFood),
+  pet: {
+    ...pet,
+    excludedIngredients: ["rice", "legumes"],
+    preferredProteins: ["duck"],
+  },
+  goal: "allergy",
+});
+
+if (ricePeaRanking.bucket !== "hold") {
+  console.error("Foods with explicitly excluded rice/legumes should be held.");
+  console.error(ricePeaRanking);
+  process.exit(1);
+}
+
+if (
+  !ricePeaRanking.signals.some((signal) =>
+    signal.code.startsWith("excluded_ingredient_preference")
+  )
+) {
+  console.error("Expected excluded_ingredient_preference signal for rice/legumes.");
+  console.error(ricePeaRanking.signals);
+  process.exit(1);
+}
+
+const broadAnimalFood = food({
+  id: "broad-animal",
+  formula_key: "qa|broad-animal|dog|dry",
+  display_name: "Sensitive Adult Animal Protein",
+  ingredients: ["animal protein", "rice", "animal fat"],
+  primary_animal_proteins: ["animal protein"],
+});
+const broadAnimalRanking = rankFoodV2ForPet({
+  food: broadAnimalFood,
+  nutrients: nutrients(broadAnimalFood),
+  pet: {
+    ...pet,
+    allergies: ["chicken"],
+    excludedIngredients: ["chicken"],
+    preferredProteins: [],
+  },
+  goal: "allergy",
+});
+
+if (
+  !broadAnimalRanking.signals.some(
+    (signal) => signal.code === "broad_animal_terms_allergy_uncertainty"
+  )
+) {
+  console.error("Expected broad animal terms to reduce allergy confidence.");
+  console.error(broadAnimalRanking.signals);
+  process.exit(1);
+}
+
 if (felineNamedDogFood?.bucket !== "hold") {
   console.error("Dog recommendations should hold products with feline/cat-specific titles.");
   console.error(felineNamedDogFood);
