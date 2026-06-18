@@ -74,6 +74,12 @@ export const nutrientProfiles: NutrientProfile[] = [
     useful_for: ["puppy_growth", "kitten_growth"],
     cautions: ["Use published data only; do not infer exact DHA from generic fish ingredients."],
   },
+  {
+    field: "epa_dha_percent",
+    role: "Combined omega-3 detail useful when brands publish EPA/DHA together.",
+    useful_for: ["skin", "coat_support", "joint_support", "senior", "renal_review"],
+    cautions: ["Combined EPA/DHA is useful, but separate EPA and DHA values are more precise."],
+  },
 ];
 
 export const ingredientProfiles: IngredientProfile[] = [

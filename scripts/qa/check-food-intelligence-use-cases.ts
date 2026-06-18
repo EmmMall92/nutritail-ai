@@ -216,4 +216,53 @@ assert(
   limitedProteinAllergyReview
 );
 
+const skinCoatOmegaReview = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["skin"],
+  ingredient_tags: ["salmon", "rice"],
+  medical_tags: ["dermatosis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 365,
+    protein_percent: 26,
+    fat_percent: 14,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+    epa_dha_percent: 0.35,
+  },
+});
+
+assert(
+  skinCoatOmegaReview.best_use_cases.includes("skin_coat_omega_review"),
+  "Expected skin_coat_omega_review when skin/coat positioning has declared EPA-DHA data.",
+  skinCoatOmegaReview
+);
+
+const skinCoatWithoutOmegaDetail = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["skin"],
+  ingredient_tags: ["fish", "rice"],
+  medical_tags: ["dermatosis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 360,
+    protein_percent: 25,
+    fat_percent: 13,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  skinCoatWithoutOmegaDetail.not_ideal_cases.includes("skin_coat_without_omega_detail"),
+  "Expected skin_coat_without_omega_detail when skin/coat positioning lacks EPA-DHA detail.",
+  skinCoatWithoutOmegaDetail
+);
+
 console.log("Food intelligence use-case QA passed.");
