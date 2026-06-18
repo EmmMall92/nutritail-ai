@@ -74,6 +74,7 @@
     "canonicalize:food-v2-titles": "node scripts/data/review/canonicalize-food-v2-titles.mjs",
     "audit:food-v2-brand-readiness": "node scripts/data/review/audit-food-v2-brand-readiness.mjs",
     "plan:food-v2-brand-import-batches": "node scripts/data/review/plan-food-v2-brand-import-batches.mjs",
+    "plan:food-v2-brand-cleanup-queue": "node scripts/data/review/plan-food-v2-brand-cleanup-queue.mjs",
     "audit:food-v2-nutrient-gaps": "node scripts/data/review/audit-food-v2-nutrient-gap-priorities.mjs",
     "audit:food-v2-recommendation-safety": "node scripts/data/review/audit-food-v2-recommendation-safety.mjs",
     "plan:food-v2-controlled-import-round1": "node scripts/data/review/plan-food-v2-controlled-import-round1.mjs",
