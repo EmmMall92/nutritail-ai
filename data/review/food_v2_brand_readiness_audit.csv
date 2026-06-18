@@ -1,28 +1,24 @@
 brand,total_rows,recommendable_rows,official_rows,retailer_rows,label_kcal_rows,estimated_kcal_rows,missing_kcal_rows,ash_rows,missing_ash_rows,calcium_phosphorus_rows,missing_core_mineral_rows,epa_dha_rows,title_risk_rows,possible_duplicate_identity_rows,avg_core_score,readiness_status,recommended_next_action
-Brit,49,0,0,49,49,0,0,49,0,49,0,23,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-N&D,36,0,0,36,36,0,0,36,0,36,0,36,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Brit,46,0,0,46,46,0,0,46,0,46,0,23,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Club 4 Paws,18,0,0,18,18,0,0,18,0,18,0,0,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Farmina,12,0,0,12,12,0,0,12,0,12,0,11,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Happy Dog,11,0,0,11,0,11,0,11,0,11,0,0,0,0,100,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Harper & Bone,11,0,0,11,11,0,0,11,0,11,0,6,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Acana,7,0,0,7,7,0,0,7,0,7,0,7,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Farmina,7,0,0,7,7,0,0,7,0,7,0,7,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Canagan,6,0,0,6,0,6,0,6,0,6,0,0,0,0,100,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
-Hi,6,0,0,6,6,0,0,6,0,6,0,1,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Hi,6,0,0,6,6,0,0,6,0,6,0,0,0,0,100,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Acana,4,0,0,4,4,0,0,4,0,4,0,4,0,0,100,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
+Orijen,4,0,0,4,4,0,0,4,0,4,0,4,0,0,100,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Calibra,3,0,0,3,3,0,0,3,0,3,0,0,0,0,100,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Optima Nova,3,0,0,3,0,3,0,3,0,3,0,0,0,0,100,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Nature,2,0,0,2,0,2,0,2,0,2,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Profine,2,0,0,2,2,0,0,2,0,2,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
-Vet Expert,2,0,0,2,1,1,0,2,0,2,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
-ACANA,1,0,0,1,1,0,0,1,0,1,0,1,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Akvatera,1,0,0,1,0,1,0,1,0,1,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Banters,1,0,0,1,0,1,0,1,0,1,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Prince,1,0,0,1,0,1,0,1,0,1,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
-Happy Dog,18,0,0,18,0,18,0,18,0,18,0,0,0,0,99,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
+Vet Expert,1,0,0,1,1,0,0,1,0,1,0,0,0,0,100,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Carnilove,10,0,0,10,10,0,0,10,0,10,0,3,0,0,99,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Happy Cat,14,0,0,14,4,10,0,14,0,13,1,0,0,0,98,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Naturea,11,0,0,11,11,0,0,11,0,11,0,0,0,0,98,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Orijen,8,0,0,8,8,0,0,8,0,6,2,6,0,0,98,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Pro-Nutrition (Flatazor),6,0,0,6,6,0,0,5,1,6,0,5,0,0,98,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Ambrosia,11,0,0,11,6,5,0,10,1,10,1,0,0,0,96,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Ownat,9,0,0,9,9,0,0,9,0,9,0,0,0,0,96,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Belcando,20,0,0,20,0,20,0,20,0,20,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Leonardo,10,0,0,10,0,10,0,10,0,10,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
@@ -30,6 +26,7 @@ Hill's Prescription Diet,8,0,0,8,0,8,0,8,0,8,0,0,0,0,95,review_before_import,"Ex
 Equilibrio,7,0,0,7,0,7,0,7,0,7,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Kudo,7,0,0,7,1,6,0,7,0,7,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Dr. Clauder,6,0,0,6,0,6,0,6,0,5,1,0,6,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
+Pro-Nutrition (Flatazor),6,0,0,6,6,0,0,5,1,6,0,1,0,0,95,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Matisse,5,0,0,5,5,0,0,5,0,5,0,0,0,0,95,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Anima,3,0,0,3,3,0,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Eukanuba,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
@@ -49,13 +46,15 @@ Meradog,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch
 Whiskas,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Hills,37,0,0,37,12,25,0,32,5,37,0,2,0,0,94,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Cennamo,13,0,0,13,11,2,0,13,0,11,2,0,0,0,94,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Ambrosia,8,0,0,8,3,5,0,7,1,7,1,0,0,0,94,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
+Purina Pro Plan,4,0,0,4,1,3,0,4,0,2,2,1,0,0,94,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Gemon,10,0,0,10,7,3,0,10,0,6,4,0,0,0,93,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Josera,54,0,49,5,49,5,0,54,0,39,15,0,0,0,92,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Bedog,3,0,0,3,0,3,0,3,0,2,1,0,0,0,92,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Wolf of Wilderness,3,0,0,3,0,3,0,3,0,2,1,0,0,0,92,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
-Josera,97,0,68,29,69,28,0,97,0,59,38,0,0,0,91,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
+Royal Canin,29,0,0,29,6,23,0,29,0,8,21,17,0,0,91,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Brekkies,5,0,0,5,0,5,0,5,0,1,4,0,0,0,91,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 JosiDog,24,0,24,0,24,0,0,24,0,12,12,0,0,0,90,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
-Purina Pro Plan,13,0,0,13,7,6,0,13,0,5,8,1,0,0,90,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Trainer,5,0,0,5,0,5,0,5,0,0,5,0,0,0,90,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Wellness Core,5,0,0,5,5,0,0,5,0,0,5,0,0,0,90,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Barking Heads,3,0,0,3,0,3,0,3,0,1,2,0,0,0,90,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
@@ -68,7 +67,6 @@ Reflex,19,0,0,19,0,19,0,19,0,6,13,0,0,0,88,review_before_import,"Backfill kcal a
 Royal Canin Veterinary Diet,5,0,0,5,0,5,0,5,0,1,4,0,0,0,87,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Tonus Dog Chow,5,0,0,5,0,5,0,5,0,0,5,0,0,0,87,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Amanova,10,0,0,10,10,0,0,10,0,0,10,2,0,0,86,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
-Royal Canin,159,0,63,96,81,78,0,122,37,16,143,34,0,0,85,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Taste of the Wild,7,0,0,7,7,0,0,7,0,0,7,0,0,0,85,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 BEWI,3,0,0,3,0,3,0,3,0,0,3,0,0,0,85,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Ecopet Natural,3,0,0,3,3,0,0,3,0,0,3,0,0,0,85,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
@@ -76,10 +74,8 @@ Monge,3,0,0,3,3,0,0,3,0,0,3,0,0,0,85,needs_data_cleanup,"Backfill kcal and Ca/P 
 Royal Canin Size,3,0,0,3,0,3,0,3,0,0,3,0,0,0,85,needs_data_cleanup,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Enjoy,2,0,0,2,0,2,0,2,0,0,2,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 ProChoice,2,0,0,2,0,2,0,0,2,1,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
-Schesir,2,0,0,2,2,0,0,2,0,0,2,0,2,0,85,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
 Trendline,2,0,0,2,0,2,0,2,0,0,2,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 AdPet,1,0,0,1,0,1,0,1,0,0,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Frolic,1,0,0,1,0,1,0,1,0,0,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Greca Cat,1,0,0,1,0,1,0,1,0,0,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
-Purina Pro Plan Veterinary Diets,1,0,0,1,0,1,0,1,0,0,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Vidok,1,0,0,1,0,1,0,1,0,0,1,0,0,0,85,small_batch_review,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."

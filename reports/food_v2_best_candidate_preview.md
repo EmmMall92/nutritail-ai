@@ -1,39 +1,35 @@
 # Food V2 Best Candidate Preview Export
 
-Generated: 2026-06-05T16:30:06.120Z
+Generated: 2026-06-18T20:42:50.427Z
 
 ## Summary
 
-- Importable best candidate rows exported: 801
+- Importable best candidate rows exported: 553
 - Candidate groups considered: 831
-- Already-imported canonical rows skipped: 9
-- High title-risk rows skipped: 21
-- Missing source rows skipped: 0
+- Already-imported canonical rows skipped: 257
+- High title-risk rows skipped: 20
+- Missing source rows skipped: 1
 - Existing DB canonical check: enabled
 - Output CSV: data/imports/food_v2_best_candidate_preview.csv
 
 ## By Source Priority
 
-- retailer: 646
-- official: 155
+- retailer: 480
+- official: 73
 
 ## By Brand
 
-- Royal Canin: 159
-- Josera: 97
-- Brit: 49
+- Josera: 54
+- Brit: 46
 - Hills: 37
-- N&D: 36
+- Royal Canin: 29
 - JosiDog: 24
 - Belcando: 20
 - Reflex: 19
 - Club 4 Paws: 18
-- Happy Dog: 18
 - Happy Cat: 14
 - Cennamo: 13
-- Purina Pro Plan: 13
-- Farmina: 12
-- Ambrosia: 11
+- Happy Dog: 11
 - Harper & Bone: 11
 - Naturea: 11
 - Amanova: 10
@@ -41,10 +37,10 @@ Generated: 2026-06-05T16:30:06.120Z
 - Gemon: 10
 - Leonardo: 10
 - Ownat: 9
+- Ambrosia: 8
 - Hill's Prescription Diet: 8
-- Orijen: 8
-- Acana: 7
 - Equilibrio: 7
+- Farmina: 7
 - Kudo: 7
 - Taste of the Wild: 7
 - Canagan: 6
@@ -59,6 +55,9 @@ Generated: 2026-06-05T16:30:06.120Z
 - Tonus Dog Chow: 5
 - Trainer: 5
 - Wellness Core: 5
+- Acana: 4
+- Orijen: 4
+- Purina Pro Plan: 4
 - Anima: 3
 - Barking Heads: 3
 - Bedog: 3
@@ -79,12 +78,9 @@ Generated: 2026-06-05T16:30:06.120Z
 - Nature: 2
 - ProChoice: 2
 - Profine: 2
-- Schesir: 2
 - Trendline: 2
 - Trovet: 2
-- Vet Expert: 2
 - Wellfed: 2
-- ACANA: 1
 - AdPet: 1
 - Akvatera: 1
 - Banters: 1
@@ -99,21 +95,17 @@ Generated: 2026-06-05T16:30:06.120Z
 - Meowing Heads: 1
 - Meradog: 1
 - Prince: 1
-- Purina Pro Plan Veterinary Diets: 1
 - Royal Canin Breed: 1
+- Vet Expert: 1
 - Vidok: 1
 - Whiskas: 1
 
 ## By Dataset
 
-- data/imports/gatoskilo_local_html_batch_v2.csv: 544
-- data/imports/category_product_sources_extract_v2.csv: 125
-- data/imports/gatoskilo_royal_canin_dog_html_batch_v2.csv: 62
-- data/imports/royal_canin_gr_product_extract_v2.csv: 62
-- data/imports/external_product_sources_extract_v2.csv: 4
-- data/imports/retailer_source_backfill_v2.csv: 2
-- data/imports/gatoskilo_product_extract_v2.csv: 1
-- data/imports/petshop88_product_extract_v2.csv: 1
+- data/imports/gatoskilo_local_html_batch_v2.csv: 421
+- data/imports/category_product_sources_extract_v2.csv: 106
+- data/imports/gatoskilo_royal_canin_dog_html_batch_v2.csv: 24
+- data/imports/external_product_sources_extract_v2.csv: 2
 
 ## Already Imported Canonical Rows Skipped
 
@@ -121,11 +113,33 @@ Generated: 2026-06-05T16:30:06.120Z
 - schesir|adult small chicken rice|dog|dry: Schesir Dry Small Maintenance με κοτόπουλο
 - schesir|sterilized light chicken|cat|dry: Schesir Cat Sterilized & Light με κοτόπουλο
 - schesir|kitten chicken|cat|dry: Schesir Dry Kitten με κοτόπουλο
+- royal canin|maxi ageing 8 plus|dog|dry: Royal Canin Maxi Ageing 8+ 15kg
+- orijen|tundra|cat|dry: Orijen Tundra 1.8kg
+- orijen|regional red|cat|dry: Orijen Regional Red 1.8kg
+- josera|josicat classic sterilised|cat|dry: Josera JosiCat Classic Sterilised 1.9kg
+- royal canin|bulldog puppy|dog|dry: Royal Canin Bulldog Puppy
+- royal canin|chihuahua adult|dog|dry: Royal Canin Chihuahua Adult
+- royal canin|french bulldog adult|dog|dry: Royal Canin French Bulldog Adult
+- royal canin|shih tzu adult|dog|dry: Royal Canin Shih Tzu Adult
+- royal canin|west highland white terrier adult|dog|dry: Royal Canin West Highland White Terrier Adult
+- royal canin|chihuahua puppy|dog|dry: Royal Canin Chihuahua Puppy
+- royal canin|junior giant|dog|dry: Royal Canin JUNIOR - GIANT
+- royal canin|giant adult|dog|dry: Royal Canin Giant Adult 4kg
+- royal canin|maxi adult|dog|dry: Royal Canin Maxi Adult 3kg
+- royal canin|medium adult|dog|dry: Royal Canin Medium Adult 3kg
+- royal canin|yorkshire junior|dog|dry: Royal Canin Yorkshire Junior 1.5kg
+- schesir|adult medium pork ham|dog|dry: Schesir Adult Medium με Χοιρινό Προσούτο
+- schesir|adult medium fish|dog|dry: Schesir Adult Medium με Ψάρι
 - schesir|adult small pork ham|dog|dry: Schesir Adult Small με Χοιρινό Προσούτο
 - schesir|adult small fish and rice|dog|dry: Schesir Adult Small με Ψάρι & Ρύζι
 - schesir|mature medium chicken|dog|dry: Schesir Mature Medium με Κοτόπουλο
 - schesir|puppy large chicken|dog|dry: Schesir Puppy Large με Κοτόπουλο
 - schesir|puppy medium chicken|dog|dry: Schesir Puppy Medium με Κοτόπουλο
+- royal canin|medium starter|dog|dry: Royal Canin Medium Starter 4kg
+- josera|active nature|dog|dry: Josera Active Nature
+- josera|mini junior duck and salmon|dog|dry: Josera MINI JUNIOR DUCK & SALMON
+- acana|prairie poultry|dog|dry: Acana Prairie Poultry 9.7kg
+- ...and 227 more
 
 ## High Title-Risk Rows Skipped
 
@@ -135,7 +149,6 @@ Generated: 2026-06-05T16:30:06.120Z
 - calibra|διαιτητικη τροφη για την αντι τωπιση της ουρολιθιασης οξαλικου κυστινης and ουρικο|dog|dry: Calibra Διαιτητική τροφή για την αντιμετώπιση της ουρολιθίασης οξαλικού, κυστίνης και ουρικο (formula_name_too_long)
 - calibra|διαιτητικη τροφη για την αντι τωπιση των λιθων στρουβιτη|dog|dry: Calibra Διαιτητική τροφή για την αντιμετώπιση των λίθων στρουβίτη (formula_name_looks_like_description)
 - calibra|life μονοπρωτεινικη τροφη beef για ενηλικους σκυλους μικροσωμων φυλων 1|dog|dry: Calibra Life Μονοπρωτεϊνική τροφή με μοσχάρι για ενήλικους σκύλους μικρόσωμων φυλών (110 kg) (formula_name_too_long)
-- ambrosia|mediterranean grain free senior light and sterilised fresh sardine and cod|dog|dry: Ambrosia Mediterranean Grain Free Senior Light & Sterilised Fresh Sardine & Cod 5kg (formula_name_too_long)
 - brit|care mini dog adult grain free hair and skin salmon and herring|dog|dry: Brit Care Mini Dog Adult Grain Free Hair & Skin Salmon & Herring 2kg (formula_name_too_long)
 - brit|care mini dog adult grain free light and sterilised rabbit and salmon|dog|dry: Brit Care Mini Dog Adult Grain Free Light & Sterilised Rabbit & Salmon 2kg (formula_name_too_long)
 - calibra|διαιτητικη τροφη για ενηλικα παχυσαρκα ενηλικα σκυλια σακχαρωδη διαβητη|dog|dry: Calibra Διαιτητική τροφή για ενήλικα παχύσαρκα ενήλικα σκυλιά με σακχαρώδη διαβήτη (formula_name_looks_like_description)
