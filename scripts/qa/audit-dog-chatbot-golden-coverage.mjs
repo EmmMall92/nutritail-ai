@@ -72,6 +72,12 @@ async function main() {
     edgeSummary.duplicates.length > 0
       ? `Edge fixture duplicate ids: ${edgeSummary.duplicates.join(", ")}.`
       : null,
+    liveDamaged.length > 0
+      ? `Live runner has damaged prompt ids: ${liveDamaged.join(", ")}.`
+      : null,
+    edgeDamaged.length > 0
+      ? `Edge fixture has damaged prompt ids: ${edgeDamaged.join(", ")}.`
+      : null,
   ].filter(Boolean);
 
   await mkdir(path.dirname(reportPath), { recursive: true });
@@ -110,8 +116,8 @@ async function main() {
       "## Next Step",
       "",
       liveDamaged.length > 0 || edgeDamaged.length > 0
-        ? "Replace damaged prompts with clean Greek source text, then promote this audit from warning-style coverage to a strict golden-suite gate."
-        : "Promote the cleaned 200-case set into a strict golden-suite gate and start tracking recommendation regressions by scenario.",
+        ? "Replace damaged prompts with clean Greek source text before relying on the dog chatbot golden suite."
+        : "The 200-case golden suite coverage is structurally clean. Continue tracking recommendation regressions by scenario.",
       "",
     ].join("\n"),
     "utf8"
