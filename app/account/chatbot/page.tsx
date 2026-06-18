@@ -1355,6 +1355,48 @@ What this means:
 ${rows.join("\n\n")}${summary}${followUp}`;
 }
 
+function formatCompactFoodV2RecommendationFallback({
+  foodChoices,
+  language,
+  mode,
+}: {
+  foodChoices: RecommendedFoodChoice[];
+  language: ChatLanguage;
+  mode: RecommendationMode;
+}) {
+  const topChoice = foodChoices[0];
+
+  if (!topChoice) return "";
+
+  if (language === "el") {
+    const intro =
+      mode === "alternative"
+        ? "Βρήκα μερικές εναλλακτικές επιλογές με βάση το ίδιο προφίλ κατοικιδίου."
+        : "Βρήκα μερικές κατάλληλες επιλογές από τη βάση NutriTail.";
+    const reason = topChoice.reason
+      ? `\nΓιατί ξεχωρίζει: ${topChoice.reason}`
+      : "";
+
+    return `${intro}
+
+Πρώτη επιλογή: ${topChoice.name}.${reason}
+
+Πάτησε μία κάρτα από κάτω για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την τροφή στην ανάλυση.`;
+  }
+
+  const intro =
+    mode === "alternative"
+      ? "I found a few alternative options using the same pet profile."
+      : "I found a few suitable options from the NutriTail database.";
+  const reason = topChoice.reason ? `\nWhy it stands out: ${topChoice.reason}` : "";
+
+  return `${intro}
+
+Top pick: ${topChoice.name}.${reason}
+
+Tap one card below and I will estimate grams/day and keep that food in the analysis.`;
+}
+
 async function getFoodV2RecommendationMessage(
   pet: PetIntake,
   options: {
@@ -1430,6 +1472,14 @@ async function getFoodV2RecommendationMessage(
         : [],
     maxItemsPerSection: 2,
   });
+  const compactFallbackText =
+    foodChoices.length > 0
+      ? formatCompactFoodV2RecommendationFallback({
+          foodChoices,
+          language: options.language ?? "el",
+          mode: options.mode ?? "default",
+        })
+      : deterministicText;
 
   try {
     const composerResponse = await fetch("/api/account/chatbot/compose-recommendation", {
@@ -1455,17 +1505,17 @@ async function getFoodV2RecommendationMessage(
       }),
     });
 
-    if (!composerResponse.ok) return deterministicText;
+    if (!composerResponse.ok) return compactFallbackText;
 
     const composed = (await composerResponse.json()) as {
       text?: string;
       source?: "openai" | "fallback";
     };
 
-    return composed.text?.trim() || deterministicText;
+    return composed.text?.trim() || compactFallbackText;
   } catch (error) {
     console.error("Failed to compose recommendation response:", error);
-    return deterministicText;
+    return compactFallbackText;
   }
 }
 
