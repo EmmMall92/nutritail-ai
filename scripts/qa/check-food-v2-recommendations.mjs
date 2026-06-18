@@ -83,6 +83,10 @@ function expectationWarnings(scenario, body, hasUsableRecommendations) {
       if (hasAny(topText, ["light", "sterilised", "sterilized", "neutered", "weight", "obesity", "satiety"])) {
         warnings.push("Top pick looks weight-control positioned.");
       }
+    } else if (expectation === "no_active_performance_top_pick") {
+      if (hasAny(topText, ["active", "performance", "sport", "working", "energy rich", "high energy"])) {
+        warnings.push("Top pick looks active/performance positioned.");
+      }
     } else if (expectation === "weight_or_sterilised_fit") {
       if (!hasAny(topText, ["light", "sterilised", "sterilized", "neutered", "weight", "obesity", "satiety", "lower calorie"])) {
         warnings.push("Top pick does not show weight/sterilised fit.");
