@@ -109,7 +109,9 @@ async function main() {
       "",
       "## Next Step",
       "",
-      "Replace damaged prompts with clean Greek source text, then promote this audit from warning-style coverage to a strict golden-suite gate.",
+      liveDamaged.length > 0 || edgeDamaged.length > 0
+        ? "Replace damaged prompts with clean Greek source text, then promote this audit from warning-style coverage to a strict golden-suite gate."
+        : "Promote the cleaned 200-case set into a strict golden-suite gate and start tracking recommendation regressions by scenario.",
       "",
     ].join("\n"),
     "utf8"

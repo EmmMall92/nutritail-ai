@@ -1,6 +1,6 @@
 # Dog Chatbot Golden Coverage Audit
 
-Generated: 2026-06-18T21:19:46.538Z
+Generated: 2026-06-18T21:23:53.947Z
 
 ## Summary
 
@@ -9,13 +9,13 @@ Generated: 2026-06-18T21:19:46.538Z
 - External 101-200 fixture cases: 100
 - External 101-200 fixture unique ids: 100
 - Live runner damaged prompts: 0
-- External fixture damaged prompts: 100
+- External fixture damaged prompts: 0
 - Blocking structural problems: 0
 
 ## Damaged Prompt Cleanup
 
 - Live runner prompts look clean.
-- External fixture ids needing prompt cleanup: 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200
+- External fixture prompts look clean.
 
 ## Blocking Problems
 
@@ -23,4 +23,4 @@ Generated: 2026-06-18T21:19:46.538Z
 
 ## Next Step
 
-Replace damaged prompts with clean Greek source text, then promote this audit from warning-style coverage to a strict golden-suite gate.
+Promote the cleaned 200-case set into a strict golden-suite gate and start tracking recommendation regressions by scenario.
