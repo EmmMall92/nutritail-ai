@@ -93,6 +93,7 @@
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
     "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
+    "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs"
   },
