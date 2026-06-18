@@ -4138,6 +4138,32 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "Tap one option to estimate daily grams and keep it in this analysis."
               )}
             </p>
+            <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
+                <span className="block text-emerald-800">
+                  {botText("1. Διάλεξε", "1. Pick")}
+                </span>
+                <span className="font-normal text-emerald-950">
+                  {botText("την τροφή που σου ταιριάζει", "the food that feels right")}
+                </span>
+              </div>
+              <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
+                <span className="block text-sky-800">
+                  {botText("2. Υπολόγισε", "2. Calculate")}
+                </span>
+                <span className="font-normal text-sky-950">
+                  {botText("περίπου γραμμάρια/ημέρα", "estimated grams/day")}
+                </span>
+              </div>
+              <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
+                <span className="block text-amber-800">
+                  {botText("3. Αποθήκευσε", "3. Save")}
+                </span>
+                <span className="font-normal text-amber-950">
+                  {botText("την ανάλυση στο προφίλ", "the analysis to the profile")}
+                </span>
+              </div>
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {recommendedFoodChoices.map((choice, index) => (
                 <button
