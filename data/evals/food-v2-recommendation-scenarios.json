@@ -160,6 +160,22 @@
       "expectations": ["premium_or_value"]
     },
     {
+      "label": "Active working dog",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Belgian Malinois",
+        "age": 3,
+        "weight": 28,
+        "activityLevel": "high",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": [],
+        "healthIssues": ["daily training", "working dog"]
+      },
+      "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick"]
+    },
+    {
       "label": "Low activity weight-loss dog",
       "goal": "weight_control",
       "pet": {
