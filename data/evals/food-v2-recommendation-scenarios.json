@@ -28,7 +28,7 @@
         "allergies": [],
         "healthIssues": ["weight control"]
       },
-      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit"]
+      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit", "no_active_performance_top_pick"]
     },
     {
       "label": "Small sterilised dog",
@@ -43,7 +43,7 @@
         "allergies": [],
         "healthIssues": ["sterilised"]
       },
-      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick"]
+      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Avoid chicken by preference",
@@ -77,7 +77,7 @@
         "preferredProteins": ["chicken"],
         "healthIssues": ["sterilised"]
       },
-      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick", "no_excluded_protein_top_picks"]
+      "expectations": ["premium_or_value", "moderate_calorie_fat_top_pick", "no_excluded_protein_top_picks", "no_active_performance_top_pick"]
     },
     {
       "label": "Dog likes chicken avoids salmon by taste",
@@ -188,7 +188,7 @@
         "allergies": [],
         "healthIssues": ["overweight", "weight control"]
       },
-      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Real small dog 7kg sterilised weight loss",
@@ -204,7 +204,7 @@
         "excludedIngredients": [],
         "healthIssues": ["sterilised", "weight loss", "sensitive stomach"]
       },
-      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Real large dog 40kg low activity sterilised",
@@ -220,7 +220,7 @@
         "excludedIngredients": [],
         "healthIssues": ["sterilised", "low activity"]
       },
-      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick"]
+      "expectations": ["premium_or_value", "no_small_dog_top_pick", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Real dog avoids chicken by taste",
@@ -267,7 +267,7 @@
         "allergies": [],
         "healthIssues": ["senior", "low activity"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "moderate_calorie_fat_top_pick"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Sterilised cat",
@@ -282,7 +282,7 @@
         "allergies": [],
         "healthIssues": ["weight control", "sterilised"]
       },
-      "expectations": ["premium_or_value", "weight_or_sterilised_fit"]
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "no_active_performance_top_pick"]
     },
     {
       "label": "Kitten growth",
@@ -342,7 +342,7 @@
         "allergies": [],
         "healthIssues": ["overweight", "weight control"]
       },
-      "expectations": ["premium_or_value", "weight_or_sterilised_fit"]
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "no_active_performance_top_pick"]
     },
     {
       "label": "Urinary cat",
