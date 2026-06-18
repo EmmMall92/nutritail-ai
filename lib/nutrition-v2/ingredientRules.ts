@@ -270,13 +270,40 @@ function matchingValues(text: string, values: readonly string[]) {
   );
 }
 
+function ingredientTermsOverlap(a: string, b: string) {
+  const aTerms = termsFor(a).map(normalizeText).filter(Boolean);
+  const bTerms = termsFor(b).map(normalizeText).filter(Boolean);
+
+  return aTerms.some((aTerm) =>
+    bTerms.some(
+      (bTerm) =>
+        aTerm === bTerm ||
+        (aTerm.length >= 4 && bTerm.includes(aTerm)) ||
+        (bTerm.length >= 4 && aTerm.includes(bTerm))
+    )
+  );
+}
+
+function removeAvoidedFromPreferred(
+  preferred: readonly string[],
+  avoided: readonly string[]
+) {
+  return preferred.filter(
+    (preference) =>
+      !avoided.some((avoidedIngredient) =>
+        ingredientTermsOverlap(preference, avoidedIngredient)
+      )
+  );
+}
+
 export function evaluateIngredientFitRules(input: IngredientFitInput) {
   const signals: IngredientFitSignal[] = [];
   const text = allIngredientText(input.food);
   const preferenceText = preferredProteinText(input.food);
   const allergies = input.allergies ?? [];
   const excluded = input.excludedIngredients ?? [];
-  const preferred = input.preferredProteins ?? [];
+  const avoided = [...allergies, ...excluded];
+  const preferred = removeAvoidedFromPreferred(input.preferredProteins ?? [], avoided);
   const allergyMatches = matchingValues(text, allergies);
   const excludedMatches = matchingValues(text, excluded);
 
