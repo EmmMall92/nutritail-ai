@@ -1,81 +1,81 @@
-priority_rank,brand,priority_score,recommended_phase,total_rows,readiness_status,title_issue_rows,duplicate_risk_groups,missing_calcium_phosphorus_rows,missing_ash_rows,estimated_kcal_rows,official_rows,retailer_rows,recommended_action
-1,Royal Canin,201,dedupe_before_import,29,review_before_import,12,56,21,0,23,0,29,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-2,Brit,96,title_cleanup,46,ready_for_controlled_import,39,0,0,0,0,0,46,Clean customer-facing formula names before wider chatbot exposure.
-3,Belcando,69,dedupe_before_import,20,review_before_import,14,4,0,0,20,0,20,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-4,Hills,67,title_cleanup,37,review_before_import,16,0,0,5,25,0,37,Clean customer-facing formula names before wider chatbot exposure.
-5,Ambrosia,64,title_cleanup,8,review_before_import,16,0,1,1,5,0,8,Clean customer-facing formula names before wider chatbot exposure.
-6,Josera,63,dedupe_before_import,54,ready_for_controlled_import,0,3,15,0,5,49,5,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-7,Royal Canin Veterinary Diet,51,title_cleanup,5,review_before_import,4,0,4,0,5,0,5,Clean customer-facing formula names before wider chatbot exposure.
-8,Happy Dog,39,nutrient_backfill,11,review_before_import,0,0,0,0,11,0,11,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-9,Hill's Prescription Diet,36,title_cleanup,8,review_before_import,2,0,0,0,8,0,8,Clean customer-facing formula names before wider chatbot exposure.
-10,Acana,36,dedupe_before_import,4,needs_data_cleanup,0,2,0,0,0,0,4,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-11,Orijen,36,dedupe_before_import,4,needs_data_cleanup,0,2,0,0,0,0,4,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-12,Farmina,35,controlled_import_ready,7,ready_for_controlled_import,0,0,0,0,0,0,7,"Use admin preview, Check Existing, then import selected rows."
-13,Purina Pro Plan,34,title_cleanup,4,needs_data_cleanup,2,0,2,0,3,0,4,Clean customer-facing formula names before wider chatbot exposure.
-14,Amanova,30,title_cleanup,10,review_before_import,10,0,10,0,0,0,10,Clean customer-facing formula names before wider chatbot exposure.
-15,Monge,30,nutrient_backfill,3,needs_data_cleanup,0,0,3,0,0,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-16,Reflex,26,dedupe_before_import,19,review_before_import,0,1,13,0,19,0,19,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-17,Leonardo,26,title_cleanup,10,review_before_import,8,0,0,0,10,0,10,Clean customer-facing formula names before wider chatbot exposure.
-18,Canagan,18,title_cleanup,6,review_before_import,4,0,0,0,6,0,6,Clean customer-facing formula names before wider chatbot exposure.
-19,Naturea,17,title_cleanup,11,ready_for_controlled_import,6,0,0,0,0,0,11,Clean customer-facing formula names before wider chatbot exposure.
-20,JosiDog,16,nutrient_backfill,24,ready_for_controlled_import,0,0,12,0,0,24,0,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-21,Happy Cat,16,nutrient_backfill,14,review_before_import,0,0,1,0,10,0,14,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-22,Taste of the Wild,14,nutrient_backfill,7,review_before_import,0,0,7,0,0,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-23,Brekkies,14,nutrient_backfill,5,review_before_import,0,0,4,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-24,Trainer,14,nutrient_backfill,5,review_before_import,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-25,Friskies,14,nutrient_backfill,5,review_before_import,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-26,Tonus Dog Chow,14,nutrient_backfill,5,review_before_import,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-27,Equilibrio,13,nutrient_backfill,7,review_before_import,0,0,0,0,7,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-28,Kudo,13,nutrient_backfill,7,review_before_import,0,0,0,0,6,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-29,Pedigree,13,nutrient_backfill,5,review_before_import,0,0,3,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-30,Briantos,13,dedupe_before_import,2,small_batch_review,4,1,0,0,1,0,2,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-31,Club 4 Paws,11,controlled_import_ready,18,ready_for_controlled_import,0,0,0,0,0,0,18,"Use admin preview, Check Existing, then import selected rows."
-32,Gemon,11,nutrient_backfill,10,ready_for_controlled_import,0,0,4,0,3,0,10,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-33,Ownat,11,title_cleanup,9,ready_for_controlled_import,2,0,0,0,0,0,9,Clean customer-facing formula names before wider chatbot exposure.
-34,Wolf of Wilderness,11,title_cleanup,3,needs_data_cleanup,4,0,1,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
-35,Cennamo,10,nutrient_backfill,13,ready_for_controlled_import,0,0,2,0,2,0,13,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-36,Dr. Clauder,10,title_cleanup,6,needs_data_cleanup,2,0,1,0,6,0,6,Clean customer-facing formula names before wider chatbot exposure.
-37,Harper & Bone,9,controlled_import_ready,11,ready_for_controlled_import,0,0,0,0,0,0,11,"Use admin preview, Check Existing, then import selected rows."
-38,Carnilove,9,controlled_import_ready,10,ready_for_controlled_import,0,0,0,0,0,0,10,"Use admin preview, Check Existing, then import selected rows."
-39,Wellness Core,9,nutrient_backfill,5,ready_for_controlled_import,0,0,5,0,0,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-40,Barking Heads,9,dedupe_before_import,3,needs_data_cleanup,0,1,2,0,3,0,3,"Review duplicate groups first, pick one canonical survivor per formula, then import."
-41,BEWI,9,title_cleanup,3,needs_data_cleanup,2,0,3,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
-42,Hi,8,controlled_import_ready,6,ready_for_controlled_import,0,0,0,0,0,0,6,"Use admin preview, Check Existing, then import selected rows."
-43,Pro-Nutrition (Flatazor),8,controlled_import_ready,6,ready_for_controlled_import,0,0,0,1,0,0,6,"Use admin preview, Check Existing, then import selected rows."
-44,Nature,8,title_cleanup,2,small_batch_review,2,0,0,0,2,0,2,Clean customer-facing formula names before wider chatbot exposure.
-45,Bozita,8,title_cleanup,2,small_batch_review,2,0,0,0,2,0,2,Clean customer-facing formula names before wider chatbot exposure.
-46,Matisse,7,controlled_import_ready,5,ready_for_controlled_import,0,0,0,0,0,0,5,"Use admin preview, Check Existing, then import selected rows."
-47,Bedog,6,nutrient_backfill,3,needs_data_cleanup,0,0,1,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-48,Ecopet Natural,6,nutrient_backfill,3,needs_data_cleanup,0,0,3,0,0,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-49,Royal Canin Size,6,nutrient_backfill,3,needs_data_cleanup,0,0,3,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-50,Enjoy,6,nutrient_backfill,2,small_batch_review,0,0,2,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-51,Trendline,6,nutrient_backfill,2,small_batch_review,0,0,2,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-52,Calibra,5,small_batch_review,3,needs_data_cleanup,0,0,0,0,0,0,3,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-53,Optima Nova,5,nutrient_backfill,3,needs_data_cleanup,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-54,Anima,5,small_batch_review,3,needs_data_cleanup,0,0,0,0,0,0,3,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-55,Eukanuba,5,nutrient_backfill,3,needs_data_cleanup,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-56,GranataPet,5,nutrient_backfill,3,needs_data_cleanup,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-57,Hill's Science Plan,5,nutrient_backfill,3,needs_data_cleanup,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-58,Profine,5,small_batch_review,2,small_batch_review,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-59,Cibau,5,small_batch_review,2,small_batch_review,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-60,Trovet,5,small_batch_review,2,small_batch_review,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-61,Wellfed,5,nutrient_backfill,2,small_batch_review,0,0,0,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-62,ProChoice,5,nutrient_backfill,2,small_batch_review,0,0,1,2,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-63,Fish4Dogs,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-64,Meowing Heads,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-65,Royal Canin Breed,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-66,AdPet,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-67,Frolic,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-68,Greca Cat,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-69,Vidok,5,nutrient_backfill,1,small_batch_review,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-70,Akvatera,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-71,Banters,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-72,Prince,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-73,Vet Expert,4,small_batch_review,1,small_batch_review,0,0,0,0,0,0,1,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-74,Belcando Mastercraft,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-75,Black Olympus,4,small_batch_review,1,small_batch_review,0,0,0,0,0,0,1,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-76,Burns,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-77,Cat Vital,4,small_batch_review,1,small_batch_review,0,0,0,0,0,0,1,"Run a small admin preview batch and manually inspect titles, source and duplicates."
-78,Markus Mühle,4,nutrient_backfill,1,needs_data_cleanup,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-79,Meradog,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
-80,Whiskas,4,nutrient_backfill,1,small_batch_review,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+priority_rank,brand,priority_score,recommended_phase,total_rows,customer_impact_score,readiness_status,title_issue_rows,title_issue_identities,duplicate_risk_groups,missing_calcium_phosphorus_rows,missing_ash_rows,estimated_kcal_rows,official_rows,retailer_rows,recommended_action
+1,Josera,199,dedupe_before_import,54,134,ready_for_controlled_import,69,68,3,15,0,5,49,5,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+2,Royal Canin,196,dedupe_before_import,29,136,review_before_import,12,6,56,21,0,23,0,29,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+3,Belcando,101,dedupe_before_import,20,87,review_before_import,68,26,4,0,0,20,0,20,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+4,Ambrosia,97,title_cleanup,8,82,review_before_import,94,28,0,1,1,5,0,8,Clean customer-facing formula names before wider chatbot exposure.
+5,Brit,80,title_cleanup,46,77,ready_for_controlled_import,39,19,0,0,0,0,0,46,Clean customer-facing formula names before wider chatbot exposure.
+6,JosiDog,64,title_cleanup,24,47,ready_for_controlled_import,24,24,0,12,0,0,24,0,Clean customer-facing formula names before wider chatbot exposure.
+7,Hills,60,title_cleanup,37,59,review_before_import,16,8,0,0,5,25,0,37,Clean customer-facing formula names before wider chatbot exposure.
+8,Royal Canin Veterinary Diet,54,title_cleanup,5,50,review_before_import,8,4,0,4,0,5,0,5,Clean customer-facing formula names before wider chatbot exposure.
+9,Hill's Prescription Diet,52,title_cleanup,8,46,review_before_import,22,9,0,0,0,8,0,8,Clean customer-facing formula names before wider chatbot exposure.
+10,Happy Dog,39,nutrient_backfill,11,39,review_before_import,0,0,0,0,0,11,0,11,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+11,Acana,36,dedupe_before_import,4,39,needs_data_cleanup,0,0,2,0,0,0,0,4,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+12,Orijen,36,dedupe_before_import,4,39,needs_data_cleanup,0,0,2,0,0,0,0,4,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+13,Farmina,35,controlled_import_ready,7,37,ready_for_controlled_import,0,0,0,0,0,0,0,7,"Use admin preview, Check Existing, then import selected rows."
+14,Purina Pro Plan,33,title_cleanup,4,37,needs_data_cleanup,2,1,0,2,0,3,0,4,Clean customer-facing formula names before wider chatbot exposure.
+15,Monge,30,nutrient_backfill,3,34,needs_data_cleanup,0,0,0,3,0,0,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+16,Reflex,26,dedupe_before_import,19,25,review_before_import,0,0,1,13,0,19,0,19,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+17,Amanova,26,title_cleanup,10,22,review_before_import,10,5,0,10,0,0,0,10,Clean customer-facing formula names before wider chatbot exposure.
+18,Calibra,25,title_cleanup,3,24,needs_data_cleanup,44,10,0,0,0,0,0,3,Clean customer-facing formula names before wider chatbot exposure.
+19,Leonardo,23,title_cleanup,10,20,review_before_import,8,4,0,0,0,10,0,10,Clean customer-facing formula names before wider chatbot exposure.
+20,Cennamo,20,title_cleanup,13,21,ready_for_controlled_import,11,5,0,2,0,2,0,13,Clean customer-facing formula names before wider chatbot exposure.
+21,Carnilove,19,title_cleanup,10,19,ready_for_controlled_import,16,5,0,0,0,0,0,10,Clean customer-facing formula names before wider chatbot exposure.
+22,Wolf of Wilderness,18,title_cleanup,3,19,needs_data_cleanup,15,6,0,1,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
+23,Canagan,17,title_cleanup,6,15,review_before_import,4,2,0,0,0,6,0,6,Clean customer-facing formula names before wider chatbot exposure.
+24,Happy Cat,16,nutrient_backfill,14,16,review_before_import,0,0,0,1,0,10,0,14,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+25,Briantos,16,dedupe_before_import,2,17,small_batch_review,10,4,1,0,0,1,0,2,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+26,Naturea,15,title_cleanup,11,16,ready_for_controlled_import,6,3,0,0,0,0,0,11,Clean customer-facing formula names before wider chatbot exposure.
+27,Anima,15,title_cleanup,3,17,needs_data_cleanup,20,5,0,0,0,0,0,3,Clean customer-facing formula names before wider chatbot exposure.
+28,Taste of the Wild,14,nutrient_backfill,7,12,review_before_import,0,0,0,7,0,0,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+29,Brekkies,14,nutrient_backfill,5,12,review_before_import,0,0,0,4,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+30,Trainer,14,nutrient_backfill,5,12,review_before_import,0,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+31,Friskies,14,nutrient_backfill,5,12,review_before_import,0,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+32,Tonus Dog Chow,14,nutrient_backfill,5,12,review_before_import,0,0,0,5,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+33,Black Olympus,14,title_cleanup,1,16,small_batch_review,22,5,0,0,0,0,0,1,Clean customer-facing formula names before wider chatbot exposure.
+34,Equilibrio,13,nutrient_backfill,7,12,review_before_import,0,0,0,0,0,7,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+35,Kudo,13,nutrient_backfill,7,12,review_before_import,0,0,0,0,0,6,0,7,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+36,Pedigree,13,nutrient_backfill,5,12,review_before_import,0,0,0,3,0,5,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+37,Club 4 Paws,11,controlled_import_ready,18,14,ready_for_controlled_import,0,0,0,0,0,0,0,18,"Use admin preview, Check Existing, then import selected rows."
+38,Gemon,11,nutrient_backfill,10,13,ready_for_controlled_import,0,0,0,4,0,3,0,10,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+39,Eukanuba,11,title_cleanup,3,14,needs_data_cleanup,6,3,0,0,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
+40,Ownat,10,title_cleanup,9,13,ready_for_controlled_import,2,1,0,0,0,0,0,9,Clean customer-facing formula names before wider chatbot exposure.
+41,Harper & Bone,9,controlled_import_ready,11,12,ready_for_controlled_import,0,0,0,0,0,0,0,11,"Use admin preview, Check Existing, then import selected rows."
+42,Dr. Clauder,9,title_cleanup,6,13,needs_data_cleanup,2,1,0,1,0,6,0,6,Clean customer-facing formula names before wider chatbot exposure.
+43,Wellness Core,9,nutrient_backfill,5,11,ready_for_controlled_import,0,0,0,5,0,0,0,5,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+44,Barking Heads,9,dedupe_before_import,3,13,needs_data_cleanup,0,0,1,2,0,3,0,3,"Review duplicate groups first, pick one canonical survivor per formula, then import."
+45,Hi,8,controlled_import_ready,6,10,ready_for_controlled_import,0,0,0,0,0,0,0,6,"Use admin preview, Check Existing, then import selected rows."
+46,Pro-Nutrition (Flatazor),8,controlled_import_ready,6,10,ready_for_controlled_import,0,0,0,0,1,0,0,6,"Use admin preview, Check Existing, then import selected rows."
+47,BEWI,8,title_cleanup,3,12,needs_data_cleanup,2,1,0,3,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
+48,Akvatera,8,title_cleanup,1,12,small_batch_review,7,2,0,0,0,1,0,1,Clean customer-facing formula names before wider chatbot exposure.
+49,Matisse,7,controlled_import_ready,5,10,ready_for_controlled_import,0,0,0,0,0,0,0,5,"Use admin preview, Check Existing, then import selected rows."
+50,Hill's Science Plan,7,title_cleanup,3,11,needs_data_cleanup,2,1,0,0,0,3,0,3,Clean customer-facing formula names before wider chatbot exposure.
+51,Nature,7,title_cleanup,2,11,small_batch_review,2,1,0,0,0,2,0,2,Clean customer-facing formula names before wider chatbot exposure.
+52,Bozita,7,title_cleanup,2,11,small_batch_review,2,1,0,0,0,2,0,2,Clean customer-facing formula names before wider chatbot exposure.
+53,Bedog,6,nutrient_backfill,3,10,needs_data_cleanup,0,0,0,1,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+54,Ecopet Natural,6,nutrient_backfill,3,10,needs_data_cleanup,0,0,0,3,0,0,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+55,Royal Canin Size,6,nutrient_backfill,3,11,needs_data_cleanup,0,0,0,3,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+56,Enjoy,6,nutrient_backfill,2,10,small_batch_review,0,0,0,2,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+57,Trendline,6,nutrient_backfill,2,10,small_batch_review,0,0,0,2,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+58,Burns,6,title_cleanup,1,10,small_batch_review,2,1,0,0,0,1,0,1,Clean customer-facing formula names before wider chatbot exposure.
+59,Optima Nova,5,nutrient_backfill,3,10,needs_data_cleanup,0,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+60,GranataPet,5,nutrient_backfill,3,10,needs_data_cleanup,0,0,0,0,0,3,0,3,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+61,Profine,5,small_batch_review,2,9,small_batch_review,0,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
+62,Cibau,5,small_batch_review,2,9,small_batch_review,0,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
+63,Trovet,5,small_batch_review,2,9,small_batch_review,0,0,0,0,0,0,0,2,"Run a small admin preview batch and manually inspect titles, source and duplicates."
+64,Wellfed,5,nutrient_backfill,2,9,small_batch_review,0,0,0,0,0,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+65,ProChoice,5,nutrient_backfill,2,9,small_batch_review,0,0,0,1,2,2,0,2,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+66,Fish4Dogs,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+67,Meowing Heads,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+68,Royal Canin Breed,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+69,AdPet,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+70,Frolic,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+71,Greca Cat,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+72,Vidok,5,nutrient_backfill,1,9,small_batch_review,0,0,0,1,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+73,Banters,4,nutrient_backfill,1,9,small_batch_review,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+74,Prince,4,nutrient_backfill,1,9,small_batch_review,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+75,Vet Expert,4,small_batch_review,1,8,small_batch_review,0,0,0,0,0,0,0,1,"Run a small admin preview batch and manually inspect titles, source and duplicates."
+76,Belcando Mastercraft,4,nutrient_backfill,1,9,small_batch_review,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+77,Cat Vital,4,small_batch_review,1,8,small_batch_review,0,0,0,0,0,0,0,1,"Run a small admin preview batch and manually inspect titles, source and duplicates."
+78,Markus Mühle,4,nutrient_backfill,1,9,needs_data_cleanup,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+79,Meradog,4,nutrient_backfill,1,9,small_batch_review,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."
+80,Whiskas,4,nutrient_backfill,1,9,small_batch_review,0,0,0,0,0,1,0,1,"Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations."

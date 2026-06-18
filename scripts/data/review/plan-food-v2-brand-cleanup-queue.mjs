@@ -15,8 +15,10 @@ const headers = [
   "priority_score",
   "recommended_phase",
   "total_rows",
+  "customer_impact_score",
   "readiness_status",
   "title_issue_rows",
+  "title_issue_identities",
   "duplicate_risk_groups",
   "missing_calcium_phosphorus_rows",
   "missing_ash_rows",
@@ -108,6 +110,13 @@ function addCount(map, key, amount = 1) {
   map.set(key, (map.get(key) ?? 0) + amount);
 }
 
+function addSetValue(map, key, value) {
+  if (!key || !value) return;
+  const current = map.get(key) ?? new Set();
+  current.add(value);
+  map.set(key, current);
+}
+
 function inferBrandFromDuplicate(row) {
   const key = String(row.canonical_identity_key ?? "");
   const firstKeyPart = key.split("|")[0]?.trim();
@@ -163,7 +172,7 @@ function actionFor(row) {
 function priorityScore(row) {
   const strategic = strategicBrandWeights.get(row.brand) ?? 0;
   const totalRows = Math.min(toNumber(row.total_rows), 120) * 0.25;
-  const title = Math.min(toNumber(row.title_issue_rows), 80) * 1.4;
+  const title = Math.min(toNumber(row.title_issue_identities), 80) * 2;
   const duplicate = Math.min(toNumber(row.duplicate_risk_groups), 40) * 3;
   const mineral = Math.min(toNumber(row.missing_calcium_phosphorus_rows), 120) * 0.35;
   const estimated = Math.min(toNumber(row.estimated_kcal_rows), 80) * 0.2;
@@ -177,6 +186,19 @@ function priorityScore(row) {
           : 4;
 
   return Math.round(strategic + totalRows + title + duplicate + mineral + estimated + readiness);
+}
+
+function customerImpactScore(row) {
+  const strategic = strategicBrandWeights.get(row.brand) ?? 0;
+  const rows = Math.min(toNumber(row.total_rows), 100) * 0.35;
+  const titles = Math.min(toNumber(row.title_issue_identities), 50) * 1.5;
+  const duplicates = Math.min(toNumber(row.duplicate_risk_groups), 25) * 2.5;
+  const nutrition =
+    Math.min(toNumber(row.missing_calcium_phosphorus_rows), 100) * 0.25 +
+    Math.min(toNumber(row.estimated_kcal_rows), 60) * 0.25;
+  const sourcePenalty = toNumber(row.official_rows) === 0 ? 8 : 0;
+
+  return Math.round(strategic + rows + titles + duplicates + nutrition + sourcePenalty);
 }
 
 function renderReport(rows) {
@@ -196,6 +218,10 @@ function renderReport(rows) {
     `- Brands queued: ${rows.length}`,
     `- Top priority brand: ${rows[0]?.brand ?? "none"}`,
     `- Output CSV: ${paths.output}`,
+    `- Highest customer impact brand: ${
+      [...rows].sort((a, b) => b.customer_impact_score - a.customer_impact_score)[0]?.brand ??
+      "none"
+    }`,
     "",
     "## Queue By Phase",
     "",
@@ -207,8 +233,17 @@ function renderReport(rows) {
     "",
     ...topRows.map(
       (row) =>
-        `- ${row.priority_rank}. ${row.brand}: score ${row.priority_score}; ${row.recommended_phase}; rows=${row.total_rows}; titles=${row.title_issue_rows}; duplicates=${row.duplicate_risk_groups}; Ca/P gaps=${row.missing_calcium_phosphorus_rows}`
+        `- ${row.priority_rank}. ${row.brand}: priority=${row.priority_score}; customer_impact=${row.customer_impact_score}; ${row.recommended_phase}; rows=${row.total_rows}; title identities=${row.title_issue_identities}; title issues=${row.title_issue_rows}; duplicates=${row.duplicate_risk_groups}; Ca/P gaps=${row.missing_calcium_phosphorus_rows}`
     ),
+    "",
+    "## How To Use This",
+    "",
+    "1. Start with high `customer_impact_score` brands because these are most likely to affect visible chatbot recommendations.",
+    "2. Resolve `dedupe_before_import` before importing new rows, because duplicate formulas can confuse ranking and food cards.",
+    "3. Resolve `title_cleanup` before customer exposure, because product names are what users remember and click.",
+    "4. Resolve `nutrient_backfill` before relying on medical, growth, senior, or weight-control confidence.",
+    "",
+    "`title_issue_identities` counts distinct formula/source identities from the title audit and may be higher than committed rows when the source registry has extra candidate rows.",
     "",
     "## Operating Rule",
     "",
@@ -224,9 +259,17 @@ async function main() {
   ]);
 
   const titleIssuesByBrand = new Map();
+  const titleIssueFormulaKeysByBrand = new Map();
   const duplicateGroupsByBrand = new Map();
 
-  for (const row of titleRows) addCount(titleIssuesByBrand, row.brand);
+  for (const row of titleRows) {
+    addCount(titleIssuesByBrand, row.brand);
+    addSetValue(
+      titleIssueFormulaKeysByBrand,
+      row.brand,
+      row.formula_key || `${row.brand}|${row.formula_name}|${row.species}|${row.format}`
+    );
+  }
   for (const row of duplicateRows) {
     if (row.risk_level === "hold") continue;
     addCount(duplicateGroupsByBrand, inferBrandFromDuplicate(row));
@@ -235,12 +278,14 @@ async function main() {
   const queue = brandRows
     .map((row) => {
       const titleIssueRows = titleIssuesByBrand.get(row.brand) ?? 0;
+      const titleIssueIdentities = titleIssueFormulaKeysByBrand.get(row.brand)?.size ?? 0;
       const duplicateRiskGroups = duplicateGroupsByBrand.get(row.brand) ?? 0;
       const enriched = {
         brand: row.brand,
         total_rows: toNumber(row.total_rows),
         readiness_status: row.readiness_status,
         title_issue_rows: titleIssueRows,
+        title_issue_identities: titleIssueIdentities,
         duplicate_risk_groups: duplicateRiskGroups,
         missing_calcium_phosphorus_rows: toNumber(row.missing_core_mineral_rows),
         missing_ash_rows: toNumber(row.missing_ash_rows),
@@ -256,6 +301,7 @@ async function main() {
       return {
         ...fullRow,
         priority_score: priorityScore(fullRow),
+        customer_impact_score: customerImpactScore(fullRow),
         recommended_action: actionFor(fullRow),
       };
     })
