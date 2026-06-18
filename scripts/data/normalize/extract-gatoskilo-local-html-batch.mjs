@@ -472,6 +472,38 @@ function lifeStageFromText(title, text, species) {
   return "";
 }
 
+function titleFirstLifeStageFromText(title, text, species) {
+  const titleText = normalizeForMatch(title);
+  const bodyText = normalizeForMatch(text);
+
+  if (species === "cat") {
+    if (/kitten|junior/u.test(titleText)) return "kitten";
+    if (/senior|maturity|ageing|7\+|8\+|10\+|12\+/u.test(titleText)) return "senior";
+    if (
+      /adult|indoor|fit|sensible|persian|urinary care|hairball|dental care|digestive care|light weight/u.test(
+        titleText
+      )
+    ) {
+      return "adult";
+    }
+  }
+
+  if (/puppy|junior/u.test(titleText)) return "puppy";
+  if (/senior|maturity|ageing|8\+|7\+|10\+|12\+/u.test(titleText)) return "senior";
+  if (/adult|sterilised|light weight|urinary care|digestive care|dental care/u.test(titleText)) {
+    return "adult";
+  }
+
+  const legacyTitleOnlyStage = lifeStageFromText(title, "", species);
+  if (legacyTitleOnlyStage) return legacyTitleOnlyStage;
+
+  if (species === "cat" && /kitten/u.test(bodyText) && !/adult/u.test(bodyText)) return "kitten";
+  if (/puppy|junior/u.test(bodyText) && !/adult/u.test(bodyText)) return "puppy";
+  if (/senior|maturity|ageing|8\+|7\+|10\+|12\+/u.test(bodyText)) return "senior";
+  if (/adult/u.test(bodyText)) return "adult";
+  return "";
+}
+
 function dogSizeFromText(title, text) {
   const haystack = normalizeForMatch(`${title} ${text}`);
   if (/mini|small|μικροσωμ/u.test(haystack)) return "small";
@@ -567,7 +599,7 @@ function buildProductRow(html, filePath, headers) {
   const formulaName = formulaNameFromTitle(title, brand);
   const species = speciesFromText(canonicalUrl, title, bodyText);
   const format = /dry|ksira|ksiri|ξηρ/iu.test(`${canonicalUrl} ${title} ${bodyText}`) ? "dry" : "";
-  const lifeStage = lifeStageFromText(title, bodyText, species);
+  const lifeStage = titleFirstLifeStageFromText(title, bodyText, species);
   const dogSize = species === "dog" ? dogSizeFromText(title, bodyText) : "";
   const ingredientText = compositionSection?.bodyText ?? "";
   const ingredients = splitIngredients(ingredientText);

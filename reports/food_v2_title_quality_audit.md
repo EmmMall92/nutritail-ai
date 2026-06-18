@@ -1,25 +1,24 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-18T19:37:52.010Z
+Generated: 2026-06-18T20:42:58.319Z
 
 ## Summary
 
-- Candidate rows reviewed: 801
-- Issue rows: 227
+- Candidate rows reviewed: 553
+- Issue rows: 151
 - Candidate rows with high/critical title issues: 0
-- Candidate rows without title issues: 688
+- Candidate rows without title issues: 478
 - Output CSV: data/review/food_v2_title_quality_audit.csv
 
 ## Issues By Severity
 
-- medium: 227
+- medium: 151
 
 ## Issues By Type
 
-- retailer_title_needs_human_review: 113
-- formula_contains_pack_or_offer: 91
-- medical_claim_used_as_name: 21
-- formula_name_starts_with_brand: 2
+- retailer_title_needs_human_review: 75
+- formula_contains_pack_or_offer: 57
+- medical_claim_used_as_name: 19
 
 ## High/Critical Issues By Brand
 
@@ -27,21 +26,21 @@ Generated: 2026-06-18T19:37:52.010Z
 
 ## Medium Cleanup Focus By Brand
 
-- N&D: 54
 - Brit: 39
-- Ambrosia: 22
+- Ambrosia: 16
 - Hills: 16
 - Belcando: 14
-- Royal Canin: 14
+- Royal Canin: 12
 - Amanova: 10
-- Josera: 8
 - Leonardo: 8
 - Naturea: 6
 - Briantos: 4
 - Canagan: 4
-- Purina Pro Plan: 4
 - Royal Canin Veterinary Diet: 4
-- Schesir: 4
+- Wolf of Wilderness: 4
+- BEWI: 2
+- Bozita: 2
+- Dr. Clauder: 2
 
 ## Recommended Next Step
 

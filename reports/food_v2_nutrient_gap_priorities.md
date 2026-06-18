@@ -1,75 +1,75 @@
 # Food V2 Nutrient Gap Priorities
 
-Generated: 2026-06-05T17:47:09.443Z
+Generated: 2026-06-18T20:42:58.328Z
 
 ## Summary
 
-- Candidate rows reviewed: 801
-- Rows with nutrient gaps or estimated/default values: 801
-- High priority: 477
-- Medium priority: 312
-- Low priority: 12
+- Candidate rows reviewed: 553
+- Rows with nutrient gaps or estimated/default values: 553
+- High priority: 274
+- Medium priority: 265
+- Low priority: 14
 - Output CSV: data/review/food_v2_nutrient_gap_priorities.csv
 
 ## Priority By Level
 
-- high: 477
-- medium: 312
-- low: 12
+- high: 274
+- medium: 265
+- low: 14
 
 ## Most Common Blockers
 
-- none: 496
-- calcium_percent: 294
-- phosphorus_percent: 262
+- none: 404
+- calcium_percent: 142
+- phosphorus_percent: 131
 
 ## Estimated Values To Replace
 
-- none: 457
-- kcal_per_100g: 344
-- moisture_percent: 232
+- none: 299
+- kcal_per_100g: 254
+- moisture_percent: 145
 
 ## Health Context
 
-- none: 461
-- puppy: 104
-- senior: 95
-- kitten: 56
-- weight_control: 51
-- urinary: 24
-- renal: 19
-- allergy: 6
+- none: 377
+- puppy: 53
+- weight_control: 35
+- senior: 30
+- kitten: 25
+- urinary: 16
+- renal: 14
 - gi_support: 6
-- obesity: 3
+- allergy: 4
+- obesity: 2
 - sensitive_digestion: 2
 
 ## Top Priority Rows
 
-- Royal Canin - Royal Canin Urinary Care 400g: priority=high; score=192; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=urinary, kitten
-- Royal Canin - Royal Canin Mini Urinary Care: priority=high; score=174; blockers=calcium_percent, phosphorus_percent; estimated=none; context=urinary, senior
-- Purina Pro Plan - Purina Pro Plan Renal Plus Sterilised Σολομός 10kg: priority=high; score=168; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=renal
-- Royal Canin - Royal Canin Medium Adult 7+ 4kg: priority=high; score=168; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=senior
 - Fish4Dogs - Fish4dogs Finest Salmon Senior Small 6kg: priority=high; score=164; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=senior
-- Royal Canin - Royal Canin Maxi light Weight Care: priority=high; score=162; blockers=calcium_percent, phosphorus_percent; estimated=none; context=weight_control, senior
-- Royal Canin - Royal Canin Medium Light Weight Care: priority=high; score=162; blockers=calcium_percent, phosphorus_percent; estimated=none; context=weight_control, senior
-- Royal Canin - Royal Canin Mini Light Weight Care: priority=high; score=162; blockers=calcium_percent, phosphorus_percent; estimated=none; context=weight_control, senior
 - Reflex - Reflex Plus Kitten Chicken 1.5kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
 - Reflex - Reflex Plus Medium / Large Junior Lamb 12kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
-- Royal Canin - Royal Canin Baby Cat 400gr: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Cocker Junior 3kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
-- Royal Canin - Royal Canin Dental Care 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Digestive Care 400gr: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Fit 32 10kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Hair & Skin Care 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Hairball Care 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Indoor 27 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Kitten 400gr: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Light Weight Care 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=weight_control, kitten
-- Royal Canin - Royal Canin Persian Adult 400g: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
-- Royal Canin - Royal Canin Poodle Junior 3kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
-- Royal Canin - Royal Canin Pug Junior 1.5kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
-- Royal Canin - Royal Canin Rottweiler Junior 12kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
-- Royal Canin - Royal Canin Schnauzer Junior 1.5kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
+- Tonus Dog Chow - Tonus Dog Chow Puppy Κοτόπουλο 2.5kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
+- Trendline - Trendline Kitten Chicken 15kg: priority=high; score=156; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
+- Josera - Josera LOOPIES WITH BEEF: priority=high; score=146; blockers=calcium_percent, phosphorus_percent; estimated=none; context=senior
+- Josera - Josera LOOPIES WITH LAMB: priority=high; score=146; blockers=calcium_percent, phosphorus_percent; estimated=none; context=senior
+- Josera - Josera LOOPIES WITH POULTRY: priority=high; score=146; blockers=calcium_percent, phosphorus_percent; estimated=none; context=senior
+- Reflex - Reflex Plus Breed Pomeranian Puppy Hypoallergenic 1.5kg: priority=high; score=144; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g; context=puppy
+- Reflex - Reflex Plus Breed Poodle Puppy Hypoallergenic 1.5kg: priority=high; score=144; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g; context=puppy
+- Ambrosia - Ambrosia Mediterranean Diet Grain Free Puppy Fresh Sardine & Herring 1,5kg: priority=high; score=140; blockers=calcium_percent, phosphorus_percent; estimated=none; context=puppy
+- Royal Canin - Royal Canin Vet Diet Dog Urinary UC Low P 2kg: priority=high; score=140; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=urinary
+- Brekkies - Brekkies Cat Adult Special Care Urinary 20kg: priority=high; score=132; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=urinary
+- Dr. Clauder - Dr Clauder's High Premium Cat Sterilised/Senior/Light 10kg: priority=high; score=122; blockers=calcium_percent; estimated=kcal_per_100g, moisture_percent; context=weight_control, senior
+- Royal Canin - Royal Canin Maxi Puppy 3kg: priority=high; score=120; blockers=calcium_percent, phosphorus_percent; estimated=none; context=puppy
+- Royal Canin - Royal Canin Medium Puppy 3kg: priority=high; score=120; blockers=calcium_percent, phosphorus_percent; estimated=none; context=puppy
+- Josera - Josera Help Cat Renal 2kg: priority=high; score=116; blockers=none; estimated=kcal_per_100g, moisture_percent; context=renal
+- Royal Canin - Royal Canin Vet Diet Puppy GastroIntestinal 1kg: priority=high; score=114; blockers=phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=puppy
+- Burns - Burns Adult & Senior Sensitive Duck & Potato: priority=high; score=112; blockers=none; estimated=kcal_per_100g; context=senior
+- Happy Dog - Happy Dog Fit & Vital Mini Senior 4kg: priority=high; score=112; blockers=none; estimated=kcal_per_100g, moisture_percent; context=senior
+- Happy Dog - Happy Dog NaturCroq Senior 11kg: priority=high; score=112; blockers=none; estimated=kcal_per_100g, moisture_percent; context=senior
+- Happy Dog - Happy Dog Senior 12kg: priority=high; score=112; blockers=none; estimated=kcal_per_100g, moisture_percent; context=senior
+- Royal Canin Veterinary Diet - Royal Canin Veterinary Canine Gastrointestinal Low Fat: priority=high; score=112; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g; context=gi_support
+- Royal Canin Veterinary Diet - Royal Canin Veterinary Dog - Gastrointestinal: priority=high; score=112; blockers=calcium_percent, phosphorus_percent; estimated=kcal_per_100g; context=gi_support
+- Happy Cat - Happy Cat Minkas Junior Care 1.5kg: priority=high; score=110; blockers=phosphorus_percent; estimated=kcal_per_100g, moisture_percent; context=kitten
 
 ## Workflow
 
