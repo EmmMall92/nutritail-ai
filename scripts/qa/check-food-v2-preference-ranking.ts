@@ -121,6 +121,41 @@ if (
   process.exit(1);
 }
 
+const contradictoryPreferencePet = {
+  ...pet,
+  excludedIngredients: ["salmon"],
+  preferredProteins: ["salmon", "chicken"],
+};
+const salmonFoodWithContradictoryPreference = food({
+  id: "salmon-contradictory-preference",
+  formula_key: "qa|salmon-contradictory-preference|dog|dry",
+  display_name: "Adult Salmon",
+  primary_animal_proteins: ["salmon"],
+  ingredients: ["salmon", "rice"],
+});
+const contradictoryPreferenceRanking = rankFoodV2ForPet({
+  food: salmonFoodWithContradictoryPreference,
+  nutrients: nutrients(salmonFoodWithContradictoryPreference),
+  pet: contradictoryPreferencePet,
+  goal: "general",
+});
+
+if (contradictoryPreferenceRanking.bucket !== "hold") {
+  console.error("Excluded ingredient should win over a contradictory preferred protein.");
+  console.error(contradictoryPreferenceRanking);
+  process.exit(1);
+}
+
+if (
+  contradictoryPreferenceRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_match"
+  )
+) {
+  console.error("Avoided protein must not receive a preferred protein boost.");
+  console.error(contradictoryPreferenceRanking.signals);
+  process.exit(1);
+}
+
 const riceAndPeaFood = food({
   id: "rice-pea",
   formula_key: "qa|rice-pea|dog|dry",
