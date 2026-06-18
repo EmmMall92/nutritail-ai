@@ -144,4 +144,76 @@ assert(
   renalFood
 );
 
+const lowFatPancreatitisReview = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["sensitive_digestion"],
+  ingredient_tags: ["turkey", "rice"],
+  medical_tags: ["pancreatitis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 330,
+    protein_percent: 24,
+    fat_percent: 8,
+    fiber_percent: 3,
+    calcium_percent: 1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  lowFatPancreatitisReview.best_use_cases.includes("low_fat_pancreatitis_review"),
+  "Expected low_fat_pancreatitis_review for pancreatitis-positioned food with low fat data.",
+  lowFatPancreatitisReview
+);
+
+const highFatPancreatitisMismatch = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["sensitive_digestion"],
+  ingredient_tags: ["chicken", "salmon"],
+  medical_tags: ["pancreatitis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 410,
+    protein_percent: 29,
+    fat_percent: 18,
+    fiber_percent: 2.5,
+    calcium_percent: 1.2,
+    phosphorus_percent: 0.9,
+  },
+});
+
+assert(
+  highFatPancreatitisMismatch.not_ideal_cases.includes("pancreatitis_without_low_fat_review"),
+  "Expected high-fat pancreatitis-sensitive food to be flagged as not ideal without low-fat review.",
+  highFatPancreatitisMismatch
+);
+
+const limitedProteinAllergyReview = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["allergy"],
+  ingredient_tags: ["duck", "rice"],
+  medical_tags: ["dermatosis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 360,
+    protein_percent: 25,
+    fat_percent: 13,
+    fiber_percent: 2.8,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  limitedProteinAllergyReview.best_use_cases.includes("limited_protein_allergy_review"),
+  "Expected limited_protein_allergy_review for allergy-positioned food with one clear animal protein tag.",
+  limitedProteinAllergyReview
+);
+
 console.log("Food intelligence use-case QA passed.");

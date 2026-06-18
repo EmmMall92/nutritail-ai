@@ -67,6 +67,24 @@ function addUnique(result: string[], value: string) {
   if (!result.includes(value)) result.push(value);
 }
 
+const animalProteinTags = [
+  "chicken",
+  "lamb",
+  "salmon",
+  "duck",
+  "beef",
+  "fish",
+  "turkey",
+  "pork",
+  "rabbit",
+  "tuna",
+];
+
+function animalProteinCount(input: FoodIntelligenceInput) {
+  const tags = new Set((input.ingredient_tags ?? []).map((tag) => tag.toLowerCase()));
+  return animalProteinTags.filter((tag) => tags.has(tag)).length;
+}
+
 function proteinQuality(input: FoodIntelligenceInput) {
   const protein = input.nutrients?.protein_percent;
   const ingredientTags = input.ingredient_tags ?? [];
@@ -219,6 +237,13 @@ function cautions(input: FoodIntelligenceInput) {
   if (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent >= 18) {
     result.push("Fat is high for weight-control or pancreatitis-sensitive contexts.");
   }
+  if (
+    hasTag(input, ["pancreatitis", "pancreatic"]) &&
+    hasNumber(input.nutrients?.fat_percent) &&
+    input.nutrients.fat_percent > 12
+  ) {
+    result.push("Pancreatitis-sensitive use usually needs a veterinarian-guided low-fat decision.");
+  }
   if (hasNumber(input.nutrients?.kcal_per_100g) && input.nutrients.kcal_per_100g >= 390) {
     result.push("Calories are high for low-activity or sterilised pets.");
   }
@@ -291,6 +316,19 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "renal_phosphorus_review");
   }
+  if (
+    hasTag(input, ["pancreatitis", "pancreatic", "low_fat"]) &&
+    hasNumber(nutrients.fat_percent) &&
+    nutrients.fat_percent <= 10
+  ) {
+    addUnique(result, "low_fat_pancreatitis_review");
+  }
+  if (
+    hasTag(input, ["allergy", "hypoallergenic", "intolerance", "dermatosis"]) &&
+    animalProteinCount(input) === 1
+  ) {
+    addUnique(result, "limited_protein_allergy_review");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -309,6 +347,19 @@ function notIdealCases(input: FoodIntelligenceInput) {
     (!hasNumber(input.nutrients?.calcium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))
   ) {
     cases.push("growth_without_mineral_review");
+  }
+  if (
+    hasTag(input, ["pancreatitis", "pancreatic"]) &&
+    hasNumber(fat) &&
+    fat > 12
+  ) {
+    cases.push("pancreatitis_without_low_fat_review");
+  }
+  if (
+    hasTag(input, ["allergy", "hypoallergenic", "intolerance", "dermatosis"]) &&
+    animalProteinCount(input) > 2
+  ) {
+    cases.push("strict_allergy_trial_with_many_proteins");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
