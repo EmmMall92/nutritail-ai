@@ -120,8 +120,9 @@ export function evaluateObesityFitRules(input: ObesityFitInput) {
   const signals: ObesityFitSignal[] = [];
   const { food, goal, nutrients, pet, positioning } = input;
   const weightLossContext = isObesityOrWeightLossContext({ goal, pet });
+  const sterilisedContext = goal === "sterilised" || (pet.neutered && positioning.weightControl);
 
-  if (!weightLossContext) return signals;
+  if (!weightLossContext && !sterilisedContext) return signals;
 
   if (positioning.weightControl) {
     signals.push({
@@ -130,6 +131,58 @@ export function evaluateObesityFitRules(input: ObesityFitInput) {
       points: 18,
       message: "Positioned for weight control or satiety.",
     });
+  }
+
+  if (sterilisedContext && !weightLossContext) {
+    if (hasNumber(food.kcal_per_100g)) {
+      if (food.kcal_per_100g <= 335) {
+        signals.push({
+          type: "boost",
+          code: "sterilised_lower_energy_density",
+          points: 16,
+          message: "Lower calorie density is a better first fit for sterilised pets.",
+        });
+      } else if (food.kcal_per_100g <= 350) {
+        signals.push({
+          type: "caution",
+          code: "sterilised_moderate_energy_density",
+          points: -4,
+          message: "Calories are acceptable but not the leanest first pick for a sterilised pet.",
+        });
+      } else if (food.kcal_per_100g >= 365) {
+        signals.push({
+          type: "caution",
+          code: "sterilised_energy_density_high",
+          points: -12,
+          message: "Calories look high for a sterilised-pet shortlist.",
+        });
+      }
+    }
+
+    if (hasNumber(nutrients.fat_percent)) {
+      if (nutrients.fat_percent <= 10) {
+        signals.push({
+          type: "boost",
+          code: "sterilised_lower_fat_density",
+          points: 16,
+          message: "Lower fat is a better first fit for sterilised pets.",
+        });
+      } else if (nutrients.fat_percent <= 12) {
+        signals.push({
+          type: "caution",
+          code: "sterilised_moderate_fat_density",
+          points: -4,
+          message: "Fat is acceptable but not the leanest first pick for a sterilised pet.",
+        });
+      } else if (nutrients.fat_percent >= 13) {
+        signals.push({
+          type: "caution",
+          code: "sterilised_fat_density_high",
+          points: -12,
+          message: "Fat looks high for a sterilised-pet shortlist.",
+        });
+      }
+    }
   }
 
   if (hasNumber(food.kcal_per_100g)) {

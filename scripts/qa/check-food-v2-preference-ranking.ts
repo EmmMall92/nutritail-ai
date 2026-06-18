@@ -325,6 +325,81 @@ if (!weightControlRanking.signals.some((signal) => signal.code === "obesity_sati
   process.exit(1);
 }
 
+const sterilisedLeanFood = food({
+  id: "sterilised-lean",
+  formula_key: "qa|sterilised-lean|dog|dry",
+  display_name: "Adult Sterilised Light Chicken",
+  dog_size: "small",
+  commercial_tags: ["sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const sterilisedRicherFood = food({
+  id: "sterilised-richer",
+  formula_key: "qa|sterilised-richer|dog|dry",
+  display_name: "Neutered Adult Duck Mini",
+  dog_size: "small",
+  commercial_tags: ["sterilised"],
+  ingredients: ["duck", "quinoa", "pea fiber"],
+  primary_animal_proteins: ["duck"],
+  kcal_per_100g: 344.4,
+});
+const sterilisedLeanRanking = rankFoodV2ForPet({
+  food: sterilisedLeanFood,
+  nutrients: {
+    ...nutrients(sterilisedLeanFood),
+    protein_percent: 22,
+    fat_percent: 9,
+    fiber_percent: 2.5,
+  },
+  pet: {
+    ...pet,
+    weight: 8,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+const sterilisedRicherRanking = rankFoodV2ForPet({
+  food: sterilisedRicherFood,
+  nutrients: {
+    ...nutrients(sterilisedRicherFood),
+    protein_percent: 30,
+    fat_percent: 11,
+    fiber_percent: 5.7,
+  },
+  pet: {
+    ...pet,
+    weight: 8,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+
+if (sterilisedLeanRanking.total_score <= sterilisedRicherRanking.total_score) {
+  console.error("Lower-kcal/lower-fat food should outrank richer options for sterilised cases.");
+  console.error({ sterilisedLeanRanking, sterilisedRicherRanking });
+  process.exit(1);
+}
+
+if (
+  !sterilisedLeanRanking.signals.some(
+    (signal) => signal.code === "sterilised_lower_fat_density"
+  )
+) {
+  console.error("Expected sterilised_lower_fat_density signal.");
+  console.error(sterilisedLeanRanking.signals);
+  process.exit(1);
+}
+
 const highActivityPet = {
   ...pet,
   weight: 25,
@@ -601,6 +676,120 @@ if (!urinaryOnlyRenalRanking.signals.some((signal) => signal.code === "renal_uri
 if (!urinaryOnlyRenalGuards.some((flag) => flag.code === "renal_urinary_mismatch" && flag.severity === "block")) {
   console.error("Expected renal_urinary_mismatch to be exposed as a block guard.");
   console.error(urinaryOnlyRenalGuards);
+  process.exit(1);
+}
+
+const renalFood = food({
+  id: "renal-food",
+  formula_key: "qa|renal|cat|dry",
+  brand: "QA Vet",
+  display_name: "Vetsolution Renal",
+  species: "cat",
+  life_stage: "senior",
+  ingredients: ["rice", "egg", "fish oil"],
+  medical_tags: ["renal"],
+});
+const renalRanking = rankFoodV2ForPet({
+  food: renalFood,
+  nutrients: {
+    ...nutrients(renalFood),
+    protein_percent: 25,
+    fat_percent: 15,
+    phosphorus_percent: 0.45,
+    sodium_percent: 0.25,
+    epa_dha_percent: 0.35,
+  },
+  pet: renalPet,
+  goal: "renal",
+});
+
+if (renalRanking.bucket === "hold") {
+  console.error("Renal-positioned food with phosphorus data should remain usable for renal cases.");
+  console.error(renalRanking);
+  process.exit(1);
+}
+
+if (renalRanking.total_score <= urinaryOnlyRenalRanking.total_score) {
+  console.error("Renal-positioned food should outrank urinary-only food for renal cases.");
+  console.error({ renalRanking, urinaryOnlyRenalRanking });
+  process.exit(1);
+}
+
+if (!renalRanking.signals.some((signal) => signal.code === "renal_formula_positioning")) {
+  console.error("Expected renal_formula_positioning from renal rules.");
+  console.error(renalRanking.signals);
+  process.exit(1);
+}
+
+const urinaryPet = {
+  ...pet,
+  species: "cat" as const,
+  weight: 5,
+  age: 5,
+  activityLevel: "normal" as const,
+  neutered: true,
+  healthIssues: ["urinary", "struvite history"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const urinaryFood = food({
+  id: "urinary-food",
+  formula_key: "qa|urinary|cat|dry",
+  brand: "QA Vet",
+  display_name: "Urinary Struvite",
+  species: "cat",
+  life_stage: "adult",
+  ingredients: ["chicken", "rice"],
+  medical_tags: ["urinary"],
+});
+const renalOnlyForUrinaryFood = food({
+  id: "renal-only-urinary-context",
+  formula_key: "qa|renal-only-urinary-context|cat|dry",
+  brand: "QA Vet",
+  display_name: "Renal Support",
+  species: "cat",
+  life_stage: "adult",
+  ingredients: ["rice", "egg"],
+  medical_tags: ["renal"],
+});
+const urinaryRanking = rankFoodV2ForPet({
+  food: urinaryFood,
+  nutrients: {
+    ...nutrients(urinaryFood),
+    magnesium_percent: 0.07,
+    phosphorus_percent: 0.75,
+  },
+  pet: urinaryPet,
+  goal: "urinary",
+});
+const renalOnlyUrinaryRanking = rankFoodV2ForPet({
+  food: renalOnlyForUrinaryFood,
+  nutrients: nutrients(renalOnlyForUrinaryFood),
+  pet: urinaryPet,
+  goal: "urinary",
+});
+
+if (urinaryRanking.bucket === "hold") {
+  console.error("Urinary-positioned food should remain usable for urinary cases.");
+  console.error(urinaryRanking);
+  process.exit(1);
+}
+
+if (renalOnlyUrinaryRanking.bucket !== "hold") {
+  console.error("Renal-only food should be held for urinary cases.");
+  console.error(renalOnlyUrinaryRanking);
+  process.exit(1);
+}
+
+if (!urinaryRanking.signals.some((signal) => signal.code === "urinary_formula_positioning")) {
+  console.error("Expected urinary_formula_positioning from urinary rules.");
+  console.error(urinaryRanking.signals);
+  process.exit(1);
+}
+
+if (!renalOnlyUrinaryRanking.signals.some((signal) => signal.code === "urinary_renal_mismatch")) {
+  console.error("Expected urinary_renal_mismatch for renal-only urinary mismatch.");
+  console.error(renalOnlyUrinaryRanking.signals);
   process.exit(1);
 }
 

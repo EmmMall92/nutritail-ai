@@ -8,7 +8,9 @@ import { evaluateFeedingFitRules } from "@/lib/nutrition-v2/feedingRules";
 import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
 import { evaluateIngredientFitRules } from "@/lib/nutrition-v2/ingredientRules";
 import { evaluateObesityFitRules } from "@/lib/nutrition-v2/obesityRules";
+import { evaluateRenalRules } from "@/lib/nutrition-v2/renalRules";
 import { evaluateSeniorFitRules } from "@/lib/nutrition-v2/seniorRules";
+import { evaluateUrinaryRules } from "@/lib/nutrition-v2/urinaryRules";
 
 export type FoodV2RecommendationGoal =
   | "general"
@@ -417,6 +419,21 @@ function hasWeightControlPositioning(foodText: string) {
   return hasAny(foodText, ["light", "weight", "satiety", "obesity", "sterilised", "sterilized", "neutered"]);
 }
 
+function hasRenalPositioning(foodText: string) {
+  return hasAny(foodText, ["renal", "kidney"]);
+}
+
+function hasUrinaryPositioning(foodText: string) {
+  return hasAny(foodText, ["urinary", "struvite", "oxalate"]);
+}
+
+function hasSeniorPositioning(food: FoodProductV2, foodText: string) {
+  return (
+    food.life_stage === "senior" ||
+    hasAny(foodText, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "12+"])
+  );
+}
+
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -504,6 +521,23 @@ function scoreFit(input: FoodV2RankingInput) {
   let score = 0;
   const applyRuleSignals = (ruleSignals: FoodV2RankingSignal[]) => {
     ruleSignals.forEach((signal) => {
+      if (signal.type !== "exclude") score += signal.points;
+      addSignal(signals, signal.type, signal.code, signal.points, signal.message);
+    });
+  };
+  const applyLegacyRuleLabels = (
+    labels: { boosts: string[]; cautions: string[] },
+    mapping: Record<string, FoodV2RankingSignal>
+  ) => {
+    labels.boosts.forEach((code) => {
+      const signal = mapping[code];
+      if (!signal) return;
+      score += signal.points;
+      addSignal(signals, signal.type, signal.code, signal.points, signal.message);
+    });
+    labels.cautions.forEach((code) => {
+      const signal = mapping[code];
+      if (!signal) return;
       if (signal.type !== "exclude") score += signal.points;
       addSignal(signals, signal.type, signal.code, signal.points, signal.message);
     });
@@ -641,9 +675,10 @@ function scoreFit(input: FoodV2RankingInput) {
   );
 
   if (goal === "urinary" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["urinary", "struvite", "crystal"])) {
-    const hasUrinaryPositioning = hasAny(haystack, ["urinary", "struvite", "oxalate"]);
+    const hasUrinary = hasUrinaryPositioning(haystack);
+    const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
 
-    if (hasUrinaryPositioning) {
+    if (hasUrinary) {
       score += 20;
       addSignal(signals, "boost", "urinary_positioning", 20, "Positioned for urinary support.");
     } else if (goal === "urinary") {
@@ -655,17 +690,62 @@ function scoreFit(input: FoodV2RankingInput) {
         "Excluded because urinary cases need urinary-positioned foods before a confident shortlist."
       );
     }
+    if (goal === "urinary" && hasRenalOnly) {
+      addSignal(
+        signals,
+        "exclude",
+        "urinary_renal_mismatch",
+        -100,
+        "Excluded because renal positioning does not replace urinary/stone-specific diet support."
+      );
+    }
     if (!hasNumber(nutrients.magnesium_percent) || !hasNumber(nutrients.phosphorus_percent)) {
       addSignal(signals, "caution", "missing_urinary_minerals", -8, "Urinary reasoning is weaker without magnesium and phosphorus.");
     }
+    applyLegacyRuleLabels(
+      evaluateUrinaryRules(
+        {
+          species: food.species,
+          medical_tags: food.medical_tags,
+          source_priority: food.source_priority,
+        },
+        nutrients
+      ),
+      {
+        urinary_formula_positioning: {
+          type: "boost",
+          code: "urinary_formula_positioning",
+          points: 8,
+          message: "Medical tags confirm urinary formula positioning.",
+        },
+        missing_magnesium_for_urinary_review: {
+          type: "caution",
+          code: "missing_magnesium_for_urinary_review",
+          points: -4,
+          message: "Magnesium data is missing for urinary review.",
+        },
+        missing_phosphorus_for_urinary_review: {
+          type: "caution",
+          code: "missing_phosphorus_for_urinary_review",
+          points: -4,
+          message: "Phosphorus data is missing for urinary review.",
+        },
+        urinary_claim_needs_strong_source: {
+          type: "caution",
+          code: "urinary_claim_needs_strong_source",
+          points: -4,
+          message: "Urinary claims are stronger with official source data.",
+        },
+      }
+    );
   }
 
   if (goal === "renal" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["renal", "kidney", "ckd"])) {
-    const hasRenalPositioning = hasAny(haystack, ["renal", "kidney"]);
+    const hasRenal = hasRenalPositioning(haystack);
     const hasUrinaryOnlyPositioning =
-      hasAny(haystack, ["urinary", "struvite", "oxalate"]) && !hasRenalPositioning;
+      hasUrinaryPositioning(haystack) && !hasRenal;
 
-    if (hasRenalPositioning) {
+    if (hasRenal) {
       score += 24;
       addSignal(signals, "boost", "renal_positioning", 24, "Positioned for renal support.");
     } else {
@@ -689,6 +769,47 @@ function scoreFit(input: FoodV2RankingInput) {
     if (!hasNumber(nutrients.phosphorus_percent)) {
       addSignal(signals, "caution", "missing_phosphorus_renal", -12, "Renal recommendations need phosphorus data.");
     }
+    applyLegacyRuleLabels(
+      evaluateRenalRules(
+        {
+          medical_tags: food.medical_tags,
+          source_priority: food.source_priority,
+        },
+        nutrients
+      ),
+      {
+        renal_formula_positioning: {
+          type: "boost",
+          code: "renal_formula_positioning",
+          points: 10,
+          message: "Medical tags confirm renal formula positioning.",
+        },
+        epa_dha_renal_support_signal: {
+          type: "boost",
+          code: "epa_dha_renal_support_signal",
+          points: 4,
+          message: "EPA/DHA data supports renal fatty-acid context.",
+        },
+        missing_phosphorus_for_renal_review: {
+          type: "caution",
+          code: "missing_phosphorus_for_renal_review",
+          points: -8,
+          message: "Phosphorus data is missing for renal review.",
+        },
+        high_protein_not_renal_default: {
+          type: "caution",
+          code: "high_protein_not_renal_default",
+          points: -10,
+          message: "High protein is not a default renal-diet advantage without vet context.",
+        },
+        renal_claim_needs_strong_source: {
+          type: "caution",
+          code: "renal_claim_needs_strong_source",
+          points: -6,
+          message: "Renal claims are stronger with official source data.",
+        },
+      }
+    );
   }
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
@@ -726,17 +847,25 @@ function scoreFit(input: FoodV2RankingInput) {
             : "general",
         positioning: {
           active: hasActivePositioning(haystack),
-          senior:
-            food.life_stage === "senior" ||
-            hasAny(haystack, ["senior", "mature", "7+", "8+", "10+", "12+"]),
+          senior: hasSeniorPositioning(food, haystack),
           weightControl: hasWeightControlPositioning(haystack),
         },
       })
     );
   }
 
+  let adjustedScore = score;
+  if (goal === "sterilised") {
+    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 340) {
+      adjustedScore -= 30;
+    }
+    if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 10) {
+      adjustedScore -= 20;
+    }
+  }
+
   return {
-    score: Math.max(0, Math.min(100, score)),
+    score: Math.max(0, Math.min(100, adjustedScore)),
     signals,
   };
 }
