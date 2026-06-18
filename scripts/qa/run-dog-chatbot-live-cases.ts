@@ -316,6 +316,36 @@ const EXTRA_CASES_101_200: DogQaCase[] = [
 
 const ALL_CASES = [...CASES, ...EXTRA_CASES_101_200];
 
+function assertCaseCoverage() {
+  const ids = ALL_CASES.map((testCase) => testCase.id);
+  const uniqueIds = new Set(ids);
+  const missingExtraIds = Array.from({ length: 100 }, (_, index) => index + 101).filter(
+    (id) => !uniqueIds.has(id)
+  );
+
+  const problems = [
+    CASES.length !== 100
+      ? `expected 100 base dog cases, found ${CASES.length}`
+      : null,
+    EXTRA_CASES_101_200.length !== 100
+      ? `expected 100 dog edge cases 101-200, found ${EXTRA_CASES_101_200.length}`
+      : null,
+    ALL_CASES.length !== 200
+      ? `expected 200 total dog chatbot cases, found ${ALL_CASES.length}`
+      : null,
+    uniqueIds.size !== ALL_CASES.length
+      ? "duplicate dog chatbot case ids found"
+      : null,
+    missingExtraIds.length > 0
+      ? `missing dog edge case ids: ${missingExtraIds.join(", ")}`
+      : null,
+  ].filter(Boolean);
+
+  if (problems.length > 0) {
+    throw new Error(`Dog chatbot QA case coverage is incomplete: ${problems.join("; ")}`);
+  }
+}
+
 function parseEnvFile(text: string) {
   for (const rawLine of text.split(/\r?\n/)) {
     const line = rawLine.trim();
@@ -833,6 +863,7 @@ function renderReport(results: CaseResult[]) {
 }
 
 async function main() {
+  assertCaseCoverage();
   await loadEnv();
   const client =
     RUN_OPENAI && process.env.OPENAI_API_KEY?.trim()
