@@ -7,6 +7,7 @@ import {
 } from "@/lib/food-v2/recommendationRanking";
 import { normalizeCanonicalFormulaName } from "@/lib/food-v2/canonicalFood";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
+import { isLikelyNonCompleteFoodProduct } from "@/lib/food-v2/productFormGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
 import { evaluateFoodIntelligence } from "@/lib/food-intelligence/evaluateFood";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
@@ -245,6 +246,7 @@ export async function POST(request: Request) {
       stringArray(body.excluded_brands ?? body.excludedBrands).map(normalizedText)
     );
     const productRows = ((products ?? []) as unknown as FoodProductV2Row[])
+      .filter((product) => !isLikelyNonCompleteFoodProduct(product))
       .filter((product) => !excludedBrands.has(normalizedText(product.brand)));
     const productIds = productRows.map((product) => product.id).filter(Boolean);
 
