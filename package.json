@@ -96,6 +96,7 @@
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
     "qa:feeding-rules": "tsx scripts/qa/check-feeding-rule-edge-cases.ts",
     "qa:food-intelligence-use-cases": "tsx scripts/qa/check-food-intelligence-use-cases.ts",
+    "qa:food-v2-product-form-guards": "tsx scripts/qa/check-food-v2-product-form-guards.ts",
     "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
     "qa:dog-edge-fixture": "tsx scripts/qa/check-dog-edge-case-fixture.ts",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
