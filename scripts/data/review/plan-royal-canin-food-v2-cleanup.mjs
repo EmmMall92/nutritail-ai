@@ -88,6 +88,106 @@ function byNumeric(field, direction = "desc") {
   };
 }
 
+function splitFormulaKeys(row) {
+  return String(row.formula_keys ?? "")
+    .split("|")
+    .map((key) => key.trim())
+    .filter(Boolean);
+}
+
+function sourceHintForFormulaKey(formulaKey) {
+  const key = String(formulaKey ?? "").toLowerCase();
+  if (key.includes("-official")) return "official";
+  if (key.includes("-document") || key.includes("-pdf")) return "document";
+  if (key.includes("-gatoskilo") || key.includes("-retailer")) return "retailer";
+  if (key.includes("-photo")) return "photo";
+  if (key.includes("-spreadsheet") || key.includes("-ods")) return "spreadsheet";
+  return "unknown";
+}
+
+function survivorScore(formulaKey) {
+  const sourceHint = sourceHintForFormulaKey(formulaKey);
+  const sourceScore =
+    sourceHint === "official"
+      ? 100
+      : sourceHint === "document"
+        ? 85
+        : sourceHint === "retailer"
+          ? 70
+          : sourceHint === "photo"
+            ? 60
+            : sourceHint === "spreadsheet"
+              ? 45
+              : 35;
+
+  const hasCanonicalName = /royal-canin-[a-z0-9-]+-(dog|cat)-dry/u.test(formulaKey) ? 8 : 0;
+  const packPenalty = /\b\d+(kg|g|gr)\b/u.test(formulaKey) ? -10 : 0;
+  return sourceScore + hasCanonicalName + packPenalty;
+}
+
+function chooseRecommendedSurvivor(row) {
+  const keys = splitFormulaKeys(row);
+  if (keys.length === 0) {
+    return {
+      recommended_survivor_formula_key: row.best_formula_key ?? "",
+      survivor_source_hint: sourceHintForFormulaKey(row.best_formula_key),
+      survivor_decision: "Use current best row; no formula key alternatives were available.",
+    };
+  }
+
+  const [survivor] = [...keys].sort(
+    (a, b) => survivorScore(b) - survivorScore(a) || a.localeCompare(b)
+  );
+  const currentBest = String(row.best_formula_key ?? "");
+  const sourceHint = sourceHintForFormulaKey(survivor);
+  const currentHint = sourceHintForFormulaKey(currentBest);
+  const survivorDecision =
+    survivor === currentBest
+      ? `Keep current best row as canonical survivor (${sourceHint}).`
+      : `Prefer ${sourceHint} row over current ${currentHint || "unknown"} best row; keep the rest as evidence/backfill.`;
+
+  return {
+    recommended_survivor_formula_key: survivor,
+    survivor_source_hint: sourceHint,
+    survivor_decision: survivorDecision,
+  };
+}
+
+function titleCase(text) {
+  const smallWords = new Set(["and", "or", "of", "the", "with"]);
+  return String(text ?? "")
+    .split(/\s+/u)
+    .filter(Boolean)
+    .map((word, index) => {
+      const lower = word.toLowerCase();
+      if (lower === "plus") return "+";
+      if (index > 0 && smallWords.has(lower)) return lower;
+      if (/^\d+\+?$/u.test(word)) return word;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    })
+    .join(" ")
+    .replace(/\s+\+/gu, "+");
+}
+
+function customerFormulaNameFromIdentity(row) {
+  const keyParts = String(row.canonical_identity_key ?? "").split("|");
+  const formulaPart = keyParts[1]?.trim();
+  if (formulaPart) return `Royal Canin ${titleCase(formulaPart)}`;
+
+  return String(row.best_display_name ?? "")
+    .replace(/\s+\d+(?:[.,]\d+)?\s*(?:kg|g|gr)\b/giu, "")
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
+function enrichDuplicateRow(row) {
+  return {
+    ...row,
+    ...chooseRecommendedSurvivor(row),
+    customer_formula_name: customerFormulaNameFromIdentity(row),
+  };
+}
+
 function hasLifeStageConflict(row) {
   const name = String(row.display_name ?? "").toLowerCase();
   const stage = String(row.life_stage ?? "").toLowerCase();
@@ -141,7 +241,7 @@ function renderReport({ readiness, duplicates, titles, nutrients, lifeStageConfl
     "",
     ...topDuplicates.map(
       (row, index) =>
-        `${index + 1}. ${row.best_display_name} | rows=${row.row_count}; candidates=${row.candidate_count}; sources=${row.source_priorities}; action=${row.recommended_action}`
+        `${index + 1}. ${row.customer_formula_name} | rows=${row.row_count}; candidates=${row.candidate_count}; survivor=${row.recommended_survivor_formula_key}; sources=${row.source_priorities}; action=${row.survivor_decision}`
     ),
     "",
     "## Top Title Cleanup Rows",
@@ -185,6 +285,7 @@ async function main() {
   const duplicates = duplicateRows
     .filter((row) => row.risk_level !== "hold")
     .filter(isRoyalCaninDuplicate)
+    .map(enrichDuplicateRow)
     .sort(byNumeric("row_count"));
   const titles = titleRows
     .filter((row) => row.brand === brand)
@@ -207,6 +308,10 @@ async function main() {
       "recommended_action",
       "best_formula_key",
       "best_display_name",
+      "recommended_survivor_formula_key",
+      "survivor_source_hint",
+      "customer_formula_name",
+      "survivor_decision",
       "source_priorities",
       "formula_keys",
     ]),

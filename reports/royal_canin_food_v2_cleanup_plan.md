@@ -1,6 +1,6 @@
 # Royal Canin Food V2 Cleanup Plan
 
-Generated: 2026-06-18T20:43:14.200Z
+Generated: 2026-06-18T22:28:57.798Z
 
 ## Summary
 
@@ -25,21 +25,21 @@ Generated: 2026-06-18T20:43:14.200Z
 
 ## Top Duplicate Groups
 
-1. Royal Canin Maxi Ageing 8+ 15kg | rows=4; candidates=1; sources=retailer|official|unknown; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-2. Royal Canin Bulldog Puppy | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-3. Royal Canin Chihuahua Adult | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-4. Royal Canin Chihuahua Puppy | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-5. Royal Canin French Bulldog Adult | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-6. Royal Canin Giant Adult 4kg | rows=3; candidates=1; sources=retailer|official|manual_photo; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-7. Royal Canin JUNIOR - GIANT | rows=3; candidates=1; sources=official|unknown; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-8. Royal Canin Maxi Adult 3kg | rows=3; candidates=1; sources=retailer|official|manual_photo; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-9. Royal Canin Medium Adult 3kg | rows=3; candidates=1; sources=retailer|official|manual_photo; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-10. Royal Canin Shih Tzu Adult | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-11. Royal Canin West Highland White Terrier Adult | rows=3; candidates=2; sources=official|retailer|manual_photo; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-12. Royal Canin Medium Starter 4kg | rows=3; candidates=1; sources=retailer|unknown; action=Safe to use best row as survivor if title and pack-size differences look expected.
-13. Royal Canin Yorkshire Junior 1.5kg | rows=3; candidates=1; sources=retailer|unknown; action=Safe to use best row as survivor if title and pack-size differences look expected.
-14. Royal Canin Beagle Adult | rows=2; candidates=2; sources=official|retailer; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-15. Royal Canin Boxer Adult | rows=2; candidates=2; sources=official|retailer; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+1. Royal Canin Maxi Ageing 8+ | rows=4; candidates=1; survivor=royal-canin-maxi-ageing-8-dog-dry-gr-official; sources=retailer|official|unknown; action=Prefer official row over current retailer best row; keep the rest as evidence/backfill.
+2. Royal Canin Bulldog Puppy | rows=3; candidates=2; survivor=royal-canin-bulldog-puppy-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+3. Royal Canin Chihuahua Adult | rows=3; candidates=2; survivor=royal-canin-chihuahua-adult-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+4. Royal Canin Chihuahua Puppy | rows=3; candidates=2; survivor=royal-canin-chihuahua-puppy-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+5. Royal Canin French Bulldog Adult | rows=3; candidates=2; survivor=royal-canin-french-bulldog-adult-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+6. Royal Canin Giant Adult | rows=3; candidates=1; survivor=royal-canin-giant-adult-dog-dry-gr-official; sources=retailer|official|manual_photo; action=Prefer official row over current retailer best row; keep the rest as evidence/backfill.
+7. Royal Canin Junior Giant | rows=3; candidates=1; survivor=royal-canin-junior-giant-dog-dry-gr-official; sources=official|unknown; action=Keep current best row as canonical survivor (official).
+8. Royal Canin Maxi Adult | rows=3; candidates=1; survivor=royal-canin-maxi-adult-dog-dry-gr-official; sources=retailer|official|manual_photo; action=Prefer official row over current retailer best row; keep the rest as evidence/backfill.
+9. Royal Canin Medium Adult | rows=3; candidates=1; survivor=royal-canin-medium-adult-dog-dry-gr-official; sources=retailer|official|manual_photo; action=Prefer official row over current retailer best row; keep the rest as evidence/backfill.
+10. Royal Canin Shih Tzu Adult | rows=3; candidates=2; survivor=royal-canin-shih-tzu-adult-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+11. Royal Canin West Highland White Terrier Adult | rows=3; candidates=2; survivor=royal-canin-west-highland-white-terrier-adult-dog-dry-gr-official; sources=official|retailer|manual_photo; action=Keep current best row as canonical survivor (official).
+12. Royal Canin Medium Starter | rows=3; candidates=1; survivor=royal-canin-medium-starter-dog-dry-gr-gatoskilo; sources=retailer|unknown; action=Keep current best row as canonical survivor (retailer).
+13. Royal Canin Yorkshire Junior | rows=3; candidates=1; survivor=royal-canin-yorkshire-junior-dog-dry-gr-gatoskilo; sources=retailer|unknown; action=Keep current best row as canonical survivor (retailer).
+14. Royal Canin Beagle Adult | rows=2; candidates=2; survivor=royal-canin-beagle-adult-dog-dry-gr-official; sources=official|retailer; action=Keep current best row as canonical survivor (official).
+15. Royal Canin Boxer Adult | rows=2; candidates=2; survivor=royal-canin-boxer-adult-dog-dry-gr-official; sources=official|retailer; action=Keep current best row as canonical survivor (official).
 
 ## Top Title Cleanup Rows
 
