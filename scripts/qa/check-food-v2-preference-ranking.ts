@@ -556,6 +556,78 @@ if (adultGiRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const adultSensitivePet = {
+  ...pet,
+  weight: 16,
+  age: 4,
+  activityLevel: "normal" as const,
+  neutered: true,
+  healthIssues: ["sensitive digestion", "soft stool"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const digestiveAdultFood = food({
+  id: "digestive-adult",
+  formula_key: "qa|digestive-adult|dog|dry",
+  display_name: "Adult Sensitive Digestion Chicken",
+  life_stage: "adult",
+  ingredients: ["chicken", "rice", "beet pulp", "chicory"],
+  fiber_sources: ["beet pulp", "chicory"],
+  commercial_tags: ["sensitive_digestion"],
+  primary_animal_proteins: ["chicken"],
+});
+const neuteredNonDigestiveFood = food({
+  id: "neutered-non-digestive",
+  formula_key: "qa|neutered-non-digestive|dog|dry",
+  display_name: "Neutered Adult Duck Mini",
+  life_stage: "adult",
+  ingredients: ["duck", "quinoa", "pea fiber"],
+  commercial_tags: ["sterilised"],
+  primary_animal_proteins: ["duck"],
+});
+const digestiveAdultRanking = rankFoodV2ForPet({
+  food: digestiveAdultFood,
+  nutrients: {
+    ...nutrients(digestiveAdultFood),
+    fiber_percent: 3.8,
+  },
+  pet: adultSensitivePet,
+  goal: "sensitive_digestion",
+});
+const neuteredNonDigestiveRanking = rankFoodV2ForPet({
+  food: neuteredNonDigestiveFood,
+  nutrients: {
+    ...nutrients(neuteredNonDigestiveFood),
+    protein_percent: 30,
+    fat_percent: 11,
+    fiber_percent: 5.7,
+  },
+  pet: adultSensitivePet,
+  goal: "sensitive_digestion",
+});
+
+if (digestiveAdultRanking.total_score <= neuteredNonDigestiveRanking.total_score) {
+  console.error("Digestive-positioned food should outrank neutered-only food for sensitive digestion.");
+  console.error({ digestiveAdultRanking, neuteredNonDigestiveRanking });
+  process.exit(1);
+}
+
+if (!digestiveAdultRanking.signals.some((signal) => signal.code === "sensitive_digestive_positioning")) {
+  console.error("Expected sensitive_digestive_positioning for digestive adult food.");
+  console.error(digestiveAdultRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !neuteredNonDigestiveRanking.signals.some(
+    (signal) => signal.code === "weight_positioning_not_digestive_fit"
+  )
+) {
+  console.error("Expected weight_positioning_not_digestive_fit for neutered-only sensitive case.");
+  console.error(neuteredNonDigestiveRanking.signals);
+  process.exit(1);
+}
+
 const twelveMonthGiantPuppy = {
   ...pet,
   breed: "Cane Corso",

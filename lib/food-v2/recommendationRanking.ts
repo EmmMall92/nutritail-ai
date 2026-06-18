@@ -5,6 +5,7 @@ import {
   type RecommendationScenario,
 } from "@/lib/nutrition-rules/rulesRegistry";
 import { evaluateFeedingFitRules } from "@/lib/nutrition-v2/feedingRules";
+import { evaluateGiRules } from "@/lib/nutrition-v2/giRules";
 import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
 import { evaluateIngredientFitRules } from "@/lib/nutrition-v2/ingredientRules";
 import { evaluateObesityFitRules } from "@/lib/nutrition-v2/obesityRules";
@@ -419,6 +420,21 @@ function hasWeightControlPositioning(foodText: string) {
   return hasAny(foodText, ["light", "weight", "satiety", "obesity", "sterilised", "sterilized", "neutered"]);
 }
 
+function hasSensitiveDigestivePositioning(foodText: string) {
+  return hasAny(foodText, [
+    "gastro",
+    "gastrointestinal",
+    "digestive",
+    "digestion",
+    "sensitive digestion",
+    "sensitive stomach",
+    "intestinal",
+    "hypoallergenic",
+    "hydrolysed",
+    "hydrolyzed",
+  ]);
+}
+
 function hasRenalPositioning(foodText: string) {
   return hasAny(foodText, ["renal", "kidney"]);
 }
@@ -674,6 +690,77 @@ function scoreFit(input: FoodV2RankingInput) {
     })
   );
 
+  if (goal === "sensitive_digestion") {
+    const hasDigestiveFit = hasSensitiveDigestivePositioning(haystack);
+
+    if (hasDigestiveFit) {
+      score += 24;
+      addSignal(
+        signals,
+        "boost",
+        "sensitive_digestive_positioning",
+        24,
+        "Positioned for sensitive digestion."
+      );
+    } else {
+      addSignal(
+        signals,
+        "caution",
+        "sensitive_goal_without_digestive_positioning",
+        -22,
+        "Sensitive digestion cases should prefer digestive-positioned foods."
+      );
+    }
+
+    if (hasWeightControlPositioning(haystack) && !hasDigestiveFit) {
+      addSignal(
+        signals,
+        "caution",
+        "weight_positioning_not_digestive_fit",
+        -18,
+        "Weight-control positioning does not replace digestive support."
+      );
+    }
+
+    applyLegacyRuleLabels(
+      evaluateGiRules(
+        {
+          medical_tags: food.medical_tags,
+          commercial_tags: food.commercial_tags,
+          fiber_sources: food.fiber_sources,
+          primary_animal_proteins: food.primary_animal_proteins,
+        },
+        nutrients
+      ),
+      {
+        digestive_support_positioning: {
+          type: "boost",
+          code: "digestive_support_positioning",
+          points: 10,
+          message: "Medical or commercial tags support digestive positioning.",
+        },
+        fiber_context_available: {
+          type: "boost",
+          code: "fiber_context_available",
+          points: 4,
+          message: "Fiber context is available for digestive review.",
+        },
+        allergy_or_hydrolysed_context: {
+          type: "boost",
+          code: "allergy_or_hydrolysed_context",
+          points: 4,
+          message: "Hydrolysed or allergy-context protein can support GI-sensitive cases.",
+        },
+        missing_fiber_context: {
+          type: "caution",
+          code: "missing_fiber_context",
+          points: -6,
+          message: "Digestive reasoning is weaker without fiber context.",
+        },
+      }
+    );
+  }
+
   if (goal === "urinary" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["urinary", "struvite", "crystal"])) {
     const hasUrinary = hasUrinaryPositioning(haystack);
     const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
@@ -862,6 +949,9 @@ function scoreFit(input: FoodV2RankingInput) {
     if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 10) {
       adjustedScore -= 20;
     }
+  }
+  if (goal === "sensitive_digestion" && !hasSensitiveDigestivePositioning(haystack)) {
+    adjustedScore -= hasWeightControlPositioning(haystack) ? 50 : 30;
   }
 
   return {

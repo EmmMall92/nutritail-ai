@@ -138,21 +138,21 @@ export function evaluateObesityFitRules(input: ObesityFitInput) {
       if (food.kcal_per_100g <= 335) {
         signals.push({
           type: "boost",
-          code: "sterilised_lower_energy_density",
+          code: "sterilised_lower_calorie_density",
           points: 16,
           message: "Lower calorie density is a better first fit for sterilised pets.",
         });
       } else if (food.kcal_per_100g <= 350) {
         signals.push({
           type: "caution",
-          code: "sterilised_moderate_energy_density",
+          code: "sterilised_moderate_calorie_density",
           points: -4,
           message: "Calories are acceptable but not the leanest first pick for a sterilised pet.",
         });
       } else if (food.kcal_per_100g >= 365) {
         signals.push({
           type: "caution",
-          code: "sterilised_energy_density_high",
+          code: "sterilised_calorie_density_high",
           points: -12,
           message: "Calories look high for a sterilised-pet shortlist.",
         });
