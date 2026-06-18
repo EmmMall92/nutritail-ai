@@ -1,0 +1,156 @@
+{
+  "source_id": "SMALL_ANIMAL_CLINICAL_NUTRITION",
+  "display_name": "Small Animal Clinical Nutrition",
+  "local_folder": "C:\\Users\\NIOstb\\Desktop\\small animal clinical nutrition book",
+  "policy": {
+    "allowed_use": [
+      "decision_rules",
+      "nutrition_logic",
+      "disease_nutrition",
+      "growth_nutrition",
+      "senior_nutrition"
+    ],
+    "copyright_rule": "Do not copy source text. Extract only NutriTail-owned structured decision logic, cautions, contraindications, and uncertainty rules."
+  },
+  "priority_notes": [
+    "Use after Canine and Feline Nutrition and before guideline/reference sources when clinical feeding-management detail is needed.",
+    "Use WSAVA, FEDIAF, NRC, Waltham, Tufts, UC Davis, VetFolio, and WikiVet as cross-check or safety-context sources."
+  ],
+  "chapter_map": [
+    {
+      "file": "SACN5_13.pdf",
+      "topics": ["adult_dog", "maintenance", "diet_history", "body_condition"],
+      "target_rule_files": ["feedingRules", "ingredientRules"]
+    },
+    {
+      "file": "SACN5_14.pdf",
+      "topics": ["mature_dog", "senior_dog", "aging", "weight_trend"],
+      "target_rule_files": ["seniorRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_16.pdf",
+      "topics": ["neonatal_puppy", "orphan_puppy", "nursing", "early_growth"],
+      "target_rule_files": ["growthRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_17.pdf",
+      "topics": ["puppy_growth", "large_breed_puppy", "calcium_phosphorus", "growth_rate"],
+      "target_rule_files": ["growthRules", "vitaminMineralRules"]
+    },
+    {
+      "file": "SACN5_18.pdf",
+      "topics": ["working_dog", "sporting_dog", "activity", "performance"],
+      "target_rule_files": ["feedingRules", "fatRules", "proteinRules"]
+    },
+    {
+      "file": "SACN5_20.pdf",
+      "topics": ["adult_cat", "cat_maintenance", "cat_weight"],
+      "target_rule_files": ["feedingRules", "seniorRules"]
+    },
+    {
+      "file": "SACN5_21.pdf",
+      "topics": ["mature_cat", "senior_cat", "aging", "renal_screening"],
+      "target_rule_files": ["seniorRules", "renalRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_23.pdf",
+      "topics": ["neonatal_kitten", "orphan_kitten", "nursing"],
+      "target_rule_files": ["growthRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_24.pdf",
+      "topics": ["kitten_growth", "postweaning_kitten", "growth_energy"],
+      "target_rule_files": ["growthRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_27.pdf",
+      "topics": ["obesity", "overweight", "body_condition", "weight_loss"],
+      "target_rule_files": ["obesityRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_29.pdf",
+      "topics": ["diabetes", "glucose", "insulin", "weight_control"],
+      "target_rule_files": ["feedingRules", "obesityRules"]
+    },
+    {
+      "file": "SACN5_31.pdf",
+      "topics": ["adverse_food_reaction", "food_allergy", "elimination_trial"],
+      "target_rule_files": ["ingredientRules", "giRules"]
+    },
+    {
+      "file": "SACN5_32.pdf",
+      "topics": ["skin", "dermatology", "pruritus", "allergy_context"],
+      "target_rule_files": ["ingredientRules", "fatRules"]
+    },
+    {
+      "file": "SACN5_35.pdf",
+      "topics": ["cognitive_dysfunction", "senior_dog", "aging"],
+      "target_rule_files": ["seniorRules", "fatRules"]
+    },
+    {
+      "file": "SACN5_37.pdf",
+      "topics": ["chronic_kidney_disease", "renal", "phosphorus", "azotemia"],
+      "target_rule_files": ["renalRules", "vitaminMineralRules"]
+    },
+    {
+      "file": "SACN5_38.pdf",
+      "topics": ["canine_urolithiasis", "urinary", "urolith"],
+      "target_rule_files": ["urinaryRules", "vitaminMineralRules"]
+    },
+    {
+      "file": "SACN5_39.pdf",
+      "topics": ["urate", "purine", "urinary"],
+      "target_rule_files": ["urinaryRules", "proteinRules"]
+    },
+    {
+      "file": "SACN5_40.pdf",
+      "topics": ["calcium_oxalate", "urinary", "urolith"],
+      "target_rule_files": ["urinaryRules", "vitaminMineralRules"]
+    },
+    {
+      "file": "SACN5_43.pdf",
+      "topics": ["struvite", "urinary", "urolith"],
+      "target_rule_files": ["urinaryRules", "vitaminMineralRules"]
+    },
+    {
+      "file": "SACN5_46.pdf",
+      "topics": ["feline_lower_urinary_tract", "flutd", "urinary_cat"],
+      "target_rule_files": ["urinaryRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_48.pdf",
+      "topics": ["gastrointestinal", "feeding_management", "digestive_disorders"],
+      "target_rule_files": ["giRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_52.pdf",
+      "topics": ["gastritis", "vomiting", "gi"],
+      "target_rule_files": ["giRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_55.pdf",
+      "topics": ["small_intestine", "enteropathy", "diarrhea", "gi"],
+      "target_rule_files": ["giRules", "ingredientRules"]
+    },
+    {
+      "file": "SACN5_57.pdf",
+      "topics": ["inflammatory_bowel_disease", "ibd", "chronic_enteropathy"],
+      "target_rule_files": ["giRules", "ingredientRules"]
+    },
+    {
+      "file": "SACN5_66.pdf",
+      "topics": ["malassimilation", "exocrine_pancreatic_insufficiency", "epi"],
+      "target_rule_files": ["giRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_67.pdf",
+      "topics": ["pancreatitis", "fat_sensitive", "vomiting"],
+      "target_rule_files": ["giRules", "fatRules", "feedingRules"]
+    },
+    {
+      "file": "SACN5_68.pdf",
+      "topics": ["hepatic", "liver", "hepatobiliary"],
+      "target_rule_files": ["proteinRules", "feedingRules"]
+    }
+  ]
+}
