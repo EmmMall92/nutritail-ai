@@ -1,13 +1,13 @@
 # Food V2 Duplicate Merge Risk Audit
 
-Generated: 2026-06-18T20:42:58.363Z
+Generated: 2026-06-19T02:18:01.852Z
 
 ## Summary
 
 - Groups analyzed: 337
 - High risk groups: 0
-- Medium risk groups: 57
-- Low risk groups: 24
+- Medium risk groups: 41
+- Low risk groups: 40
 - Hold groups: 256
 - Output CSV: data/review/food_v2_duplicate_merge_risk_audit.csv
 
@@ -19,17 +19,10 @@ Generated: 2026-06-18T20:42:58.363Z
 
 - Schesir Dry Medium Maintenance Chicken: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Schesir Dry Small Maintenance με κοτόπουλο: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-- Royal Canin Maxi Ageing 8+ 15kg: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-- Schesir Cat Sterilized & Light με κοτόπουλο: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-- Schesir Dry Kitten με κοτόπουλο: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
 - Royal Canin Bulldog Puppy: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Royal Canin Chihuahua Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Royal Canin Chihuahua Puppy: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Royal Canin French Bulldog Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-- Royal Canin Giant Adult 4kg: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-- Royal Canin JUNIOR - GIANT: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-- Royal Canin Maxi Adult 3kg: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
-- Royal Canin Medium Adult 3kg: official_and_lower_priority_sources_overlap; action=Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.
 - Royal Canin Shih Tzu Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Royal Canin West Highland White Terrier Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Acana Prairie Poultry 9.7kg: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
@@ -37,6 +30,13 @@ Generated: 2026-06-18T20:42:58.363Z
 - Josera Active Nature: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Josera MINI JUNIOR DUCK & SALMON: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Royal Canin Beagle Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Boxer Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Bulldog Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Cavalier King Charles Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Cocker Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Dachshund Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin Dalmatian Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
+- Royal Canin German Shepherd Adult 11kg: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 
 ## Operating Rule
 

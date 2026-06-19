@@ -391,7 +391,7 @@ async function main() {
     );
   }
   for (const row of duplicateRows) {
-    if (row.risk_level === "hold") continue;
+    if (row.risk_level === "hold" || row.risk_level === "low") continue;
     addCount(duplicateGroupsByBrand, inferBrandFromDuplicate(row));
   }
 

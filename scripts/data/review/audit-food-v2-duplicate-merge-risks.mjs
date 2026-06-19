@@ -189,10 +189,10 @@ function classifyGroup(rows) {
 
   if (mixedSourceRank && priorities.includes("official")) {
     return {
-      risk_level: "medium",
+      risk_level: "low",
       risk_reason: "official_and_lower_priority_sources_overlap",
       recommended_action:
-        "Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill.",
+        "Prefer official source for survivor; keep retailer/photo rows only as evidence/backfill after a quick spot-check.",
     };
   }
 
