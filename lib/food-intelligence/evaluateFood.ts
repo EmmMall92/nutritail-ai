@@ -192,6 +192,47 @@ function hasChewingEaseSupport(input: FoodIntelligenceInput) {
   );
 }
 
+function hasHotWeatherContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "summer",
+    "hot_weather",
+    "hot_climate",
+    "heat",
+    "heatwave",
+    "warm_weather",
+    "καλοκαιρι",
+    "ζεστη",
+  ]);
+}
+
+function hasLowAppetiteContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "low_appetite",
+    "reduced_appetite",
+    "poor_appetite",
+    "eats_little",
+    "picky",
+    "fussy",
+    "appetite",
+    "μειωμενη_ορεξη",
+  ]);
+}
+
+function hasSummerLowAppetiteContext(input: FoodIntelligenceInput) {
+  return hasHotWeatherContext(input) && hasLowAppetiteContext(input);
+}
+
+function hasSummerLowAppetiteSupport(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasSummerLowAppetiteContext(input) &&
+    hasNumber(nutrients.kcal_per_100g) &&
+    nutrients.kcal_per_100g >= 355 &&
+    (!hasNumber(nutrients.fat_percent) || nutrients.fat_percent >= 10)
+  );
+}
+
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   const size = String(input.dog_size ?? "").toLowerCase();
 
@@ -346,6 +387,9 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasChewingEaseSupport(input)) {
     addUnique(result, "Small-breed or easy-chew positioning can help pets that struggle with large kibble.");
   }
+  if (hasSummerLowAppetiteSupport(input)) {
+    addUnique(result, "Moderate energy density can help when seasonal heat reduces how much the pet eats.");
+  }
   if (
     input.species === "cat" &&
     hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
@@ -445,6 +489,16 @@ function cautions(input: FoodIntelligenceInput) {
   }
   if (hasChewingEaseContext(input) && !hasChewingEaseSupport(input)) {
     result.push("Chewing-ease use is weaker without small-kibble or easy-chew positioning.");
+  }
+  if (hasSummerLowAppetiteContext(input)) {
+    result.push("Seasonal low appetite needs hydration and body-weight monitoring.");
+  }
+  if (
+    hasSummerLowAppetiteContext(input) &&
+    ((hasNumber(input.nutrients?.kcal_per_100g) && input.nutrients.kcal_per_100g <= 335) ||
+      (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent <= 9))
+  ) {
+    result.push("Light or very low-energy nutrition is weaker when the pet already eats little in hot weather.");
   }
 
   return [...new Set(result)].slice(0, 8);
@@ -565,6 +619,9 @@ function bestUseCases(input: FoodIntelligenceInput) {
   if (hasChewingEaseSupport(input)) {
     addUnique(result, "easy_chewing_kibble_review");
   }
+  if (hasSummerLowAppetiteSupport(input)) {
+    addUnique(result, "summer_low_appetite_feeding_review");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -640,6 +697,12 @@ function notIdealCases(input: FoodIntelligenceInput) {
   }
   if (hasChewingEaseContext(input) && !hasChewingEaseSupport(input)) {
     cases.push("chewing_difficulty_without_small_kibble_support");
+  }
+  if (
+    hasSummerLowAppetiteContext(input) &&
+    ((hasNumber(kcal) && kcal <= 335) || (hasNumber(fat) && fat <= 9))
+  ) {
+    cases.push("summer_low_appetite_without_energy_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
