@@ -44,6 +44,17 @@ const NOISE_WORDS = [
   "gift",
 ];
 
+const DESCRIPTIVE_TITLE_PATTERNS = [
+  /\bcomplete\s+food\s+for\b/i,
+  /\bholistic\s+food\s+for\b/i,
+  /\bideal\s+for\b/i,
+  /\bfood\s+for\s+(?:adult|puppy|kitten|senior|sterilised|sensitive)\b/i,
+  /τροφ[ηή]\s+για/iu,
+  /ιδανικ[ηή]\s+για/iu,
+  /ολιστικ[ηή]\s+τροφ[ηή]/iu,
+  /πλ[ηή]ρη[ςσ]\s+τροφ[ηή]/iu,
+];
+
 const DOG_SIZE_LABELS: Record<DogSize, string> = {
   mini: "Mini",
   small: "Small",
@@ -320,6 +331,26 @@ export function normalizeBrandlessFormulaName({
       formula_name: cleanedFormula,
     }) || cleanedFormula
   );
+}
+
+export function isLikelyDescriptiveFoodTitle({
+  brand,
+  display_name,
+  formula_name,
+}: {
+  brand: string;
+  display_name?: string | null;
+  formula_name?: string | null;
+}) {
+  const title = normalizeBrandlessFoodDisplayName({
+    brand,
+    display_name,
+    formula_name,
+  });
+
+  if (!title) return false;
+
+  return DESCRIPTIVE_TITLE_PATTERNS.some((pattern) => pattern.test(title));
 }
 
 export function normalizeCanonicalFormulaKeyPart(value: unknown) {
