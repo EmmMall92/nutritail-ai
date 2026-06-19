@@ -34,8 +34,20 @@ assert(
   sterilisedLight
 );
 assert(
+  sterilisedLight.best_use_cases.includes("sterilised_weight_management"),
+  "Expected sterilised_weight_management for visibly sterilised food with weight-aware nutrition.",
+  sterilisedLight
+);
+assert(
   sterilisedLight.food_strengths.some((item) => item.includes("Fiber level")),
   "Expected fiber strength for satiety/stool support.",
+  sterilisedLight
+);
+assert(
+  sterilisedLight.food_strengths.some((item) =>
+    item.includes("Calorie and fat profile fits weight-aware feeding")
+  ),
+  "Expected weight-aware strength for sterilised food with lower kcal and fat.",
   sterilisedLight
 );
 
@@ -61,6 +73,11 @@ const activeFood = evaluateFoodIntelligence({
 assert(
   activeFood.best_use_cases.includes("active_working"),
   "Expected active_working for active/high-energy food.",
+  activeFood
+);
+assert(
+  activeFood.best_use_cases.includes("high_activity_energy_support"),
+  "Expected high_activity_energy_support for active food with higher kcal and fat.",
   activeFood
 );
 assert(
@@ -92,6 +109,11 @@ const seniorMobility = evaluateFoodIntelligence({
 assert(
   seniorMobility.best_use_cases.includes("senior_mobility"),
   "Expected senior_mobility when senior/mobility positioning has EPA-DHA data.",
+  seniorMobility
+);
+assert(
+  seniorMobility.best_use_cases.includes("senior_muscle_monitoring"),
+  "Expected senior_muscle_monitoring when senior food has useful protein data.",
   seniorMobility
 );
 
@@ -245,6 +267,92 @@ assert(
   limitedProteinAllergyReview.best_use_cases.includes("limited_protein_allergy_review"),
   "Expected limited_protein_allergy_review for allergy-positioned food with one clear animal protein tag.",
   limitedProteinAllergyReview
+);
+assert(
+  limitedProteinAllergyReview.food_strengths.some((item) =>
+    item.includes("Single clear animal protein")
+  ),
+  "Expected a customer-useful strength for allergy-positioned food with one animal protein.",
+  limitedProteinAllergyReview
+);
+
+const energyDenseSterilisedMismatch = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "small",
+  health_tags: ["sterilised"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 398,
+    protein_percent: 28,
+    fat_percent: 18,
+    fiber_percent: 2,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  energyDenseSterilisedMismatch.not_ideal_cases.includes(
+    "sterilised_weight_control_energy_mismatch"
+  ),
+  "Expected energy-dense, higher-fat sterilised-positioned food to be flagged as a mismatch.",
+  energyDenseSterilisedMismatch
+);
+
+const lowEnergyActiveMismatch = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: ["active"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 330,
+    protein_percent: 25,
+    fat_percent: 9,
+    fiber_percent: 5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  lowEnergyActiveMismatch.not_ideal_cases.includes("active_working_without_energy_support"),
+  "Expected active-positioned food with weight-aware nutrition to be marked as weak for working dogs.",
+  lowEnergyActiveMismatch
+);
+
+const genericSeniorWithoutSupport = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "senior",
+  dog_size: "medium",
+  health_tags: [],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 360,
+    protein_percent: 22,
+    fat_percent: 12,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  genericSeniorWithoutSupport.not_ideal_cases.includes(
+    "senior_without_clear_senior_or_mobility_support"
+  ),
+  "Expected senior food without visible senior/mobility/omega signals to be marked as less ideal.",
+  genericSeniorWithoutSupport
 );
 
 const skinCoatOmegaReview = evaluateFoodIntelligence({

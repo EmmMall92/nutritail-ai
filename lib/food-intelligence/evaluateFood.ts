@@ -78,6 +78,10 @@ const animalProteinTags = [
   "pork",
   "rabbit",
   "tuna",
+  "venison",
+  "deer",
+  "insect",
+  "egg",
 ];
 
 function animalProteinCount(input: FoodIntelligenceInput) {
@@ -94,6 +98,38 @@ function calciumPhosphorusRatio(input: FoodIntelligenceInput) {
   }
 
   return calcium / phosphorus;
+}
+
+function hasOmegaDetail(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasNumber(nutrients.epa_percent) ||
+    hasNumber(nutrients.dha_percent) ||
+    hasNumber(nutrients.epa_dha_percent)
+  );
+}
+
+function hasWeightAwareNutrition(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasNumber(nutrients.kcal_per_100g) &&
+    nutrients.kcal_per_100g <= 350 &&
+    hasNumber(nutrients.fat_percent) &&
+    nutrients.fat_percent <= 12
+  );
+}
+
+function hasEnergyDenseNutrition(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasNumber(nutrients.kcal_per_100g) &&
+    nutrients.kcal_per_100g >= 380 &&
+    hasNumber(nutrients.fat_percent) &&
+    nutrients.fat_percent >= 16
+  );
 }
 
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
@@ -217,14 +253,29 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasNumber(nutrients.fiber_percent) && nutrients.fiber_percent >= 5) {
     addUnique(result, "Fiber level can support satiety or stool quality.");
   }
+  if (
+    hasWeightAwareNutrition(input) &&
+    hasTag(input, ["sterilised", "sterilized", "neutered", "light", "weight_control"])
+  ) {
+    addUnique(result, "Calorie and fat profile fits weight-aware feeding.");
+  }
+  if (hasEnergyDenseNutrition(input) && hasTag(input, ["active", "performance", "sport", "working"])) {
+    addUnique(result, "Energy and fat profile can support active or working dogs.");
+  }
   if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent >= 16) {
     addUnique(result, "Higher fat level can support active or weight-gain contexts.");
   }
-  if (hasNumber(nutrients.epa_percent) || hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent)) {
+  if (hasOmegaDetail(input)) {
     addUnique(result, "Declared EPA/DHA improves omega-3 reasoning.");
   }
   if (hasNumber(nutrients.calcium_percent) && hasNumber(nutrients.phosphorus_percent)) {
     addUnique(result, "Calcium and phosphorus are available for mineral review.");
+  }
+  if (
+    animalProteinCount(input) === 1 &&
+    hasTag(input, ["allergy", "hypoallergenic", "monoprotein", "sensitive", "dermatosis"])
+  ) {
+    addUnique(result, "Single clear animal protein can support ingredient-avoidance planning.");
   }
 
   for (const profile of nutrientProfiles) {
@@ -271,6 +322,25 @@ function cautions(input: FoodIntelligenceInput) {
     result.push("Calories are high for low-activity or sterilised pets.");
   }
   if (
+    hasEnergyDenseNutrition(input) &&
+    hasTag(input, ["sterilised", "sterilized", "neutered", "light", "weight_control", "obesity"])
+  ) {
+    result.push("Energy and fat are too high for a first sterilised or weight-control shortlist.");
+  }
+  if (
+    hasWeightAwareNutrition(input) &&
+    hasTag(input, ["active", "performance", "sport", "working"])
+  ) {
+    result.push("Weight-aware nutrition may underserve genuinely active or working dogs.");
+  }
+  if (
+    input.life_stage === "senior" &&
+    !hasTag(input, ["senior", "mature", "joint", "mobility"]) &&
+    !hasOmegaDetail(input)
+  ) {
+    result.push("Senior use is weaker without senior positioning or declared mobility/omega detail.");
+  }
+  if (
     hasTag(input, ["renal", "kidney"]) &&
     !hasNumber(input.nutrients?.phosphorus_percent)
   ) {
@@ -284,9 +354,7 @@ function cautions(input: FoodIntelligenceInput) {
   }
   if (
     hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
-    !hasNumber(input.nutrients?.epa_percent) &&
-    !hasNumber(input.nutrients?.dha_percent) &&
-    !hasNumber(input.nutrients?.epa_dha_percent)
+    !hasOmegaDetail(input)
   ) {
     result.push("Skin/coat positioning is weaker without declared EPA/DHA detail.");
   }
@@ -304,29 +372,40 @@ function bestUseCases(input: FoodIntelligenceInput) {
 
   if (
     hasTag(input, ["sterilised", "sterilized", "neutered", "weight_control", "obesity"]) ||
-    (hasNumber(nutrients.kcal_per_100g) &&
-      nutrients.kcal_per_100g <= 350 &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent <= 12)
+    hasWeightAwareNutrition(input)
   ) {
     addUnique(result, "calorie_aware_feeding");
   }
   if (
+    hasTag(input, ["sterilised", "sterilized", "neutered"]) &&
+    hasWeightAwareNutrition(input)
+  ) {
+    addUnique(result, "sterilised_weight_management");
+  }
+  if (
     hasTag(input, ["active", "performance", "sport", "working"]) ||
-    (hasNumber(nutrients.kcal_per_100g) &&
-      nutrients.kcal_per_100g >= 380 &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent >= 16)
+    hasEnergyDenseNutrition(input)
   ) {
     addUnique(result, "active_working");
   }
   if (
+    hasTag(input, ["active", "performance", "sport", "working"]) &&
+    hasEnergyDenseNutrition(input)
+  ) {
+    addUnique(result, "high_activity_energy_support");
+  }
+  if (
     (input.life_stage === "senior" || hasTag(input, ["senior", "mature", "joint", "mobility"])) &&
-    (hasNumber(nutrients.epa_percent) ||
-      hasNumber(nutrients.epa_dha_percent) ||
-      hasTag(input, ["joint", "mobility"]))
+    (hasOmegaDetail(input) || hasTag(input, ["joint", "mobility"]))
   ) {
     addUnique(result, "senior_mobility");
+  }
+  if (
+    (input.life_stage === "senior" || hasTag(input, ["senior", "mature"])) &&
+    hasNumber(nutrients.protein_percent) &&
+    nutrients.protein_percent >= 24
+  ) {
+    addUnique(result, "senior_muscle_monitoring");
   }
   if (
     ["puppy", "kitten"].includes(input.life_stage ?? "") &&
@@ -370,10 +449,15 @@ function bestUseCases(input: FoodIntelligenceInput) {
     addUnique(result, "limited_protein_allergy_review");
   }
   if (
+    hasTag(input, ["sensitive_digestion", "digestive", "gastro", "intestinal"]) &&
+    (hasTag(input, ["rice", "prebiotic", "digestive_support"]) ||
+      (hasNumber(nutrients.fiber_percent) && nutrients.fiber_percent >= 2))
+  ) {
+    addUnique(result, "digestive_tolerance_review");
+  }
+  if (
     hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
-    (hasNumber(nutrients.epa_percent) ||
-      hasNumber(nutrients.dha_percent) ||
-      hasNumber(nutrients.epa_dha_percent))
+    hasOmegaDetail(input)
   ) {
     addUnique(result, "skin_coat_omega_review");
   }
@@ -388,6 +472,18 @@ function notIdealCases(input: FoodIntelligenceInput) {
 
   if (hasNumber(fat) && fat >= 18) cases.push("weight_loss_without_portion_control");
   if (hasNumber(kcal) && kcal >= 390) cases.push("low_activity_sterilised_without_portion_control");
+  if (
+    hasEnergyDenseNutrition(input) &&
+    hasTag(input, ["sterilised", "sterilized", "neutered", "light", "weight_control"])
+  ) {
+    cases.push("sterilised_weight_control_energy_mismatch");
+  }
+  if (
+    hasWeightAwareNutrition(input) &&
+    hasTag(input, ["active", "performance", "sport", "working"])
+  ) {
+    cases.push("active_working_without_energy_support");
+  }
   if (!hasNumber(input.nutrients?.phosphorus_percent)) cases.push("renal_decision_without_phosphorus");
   if (!hasNumber(input.nutrients?.magnesium_percent)) cases.push("urinary_decision_without_magnesium");
   if (
@@ -418,11 +514,16 @@ function notIdealCases(input: FoodIntelligenceInput) {
   }
   if (
     hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
-    !hasNumber(input.nutrients?.epa_percent) &&
-    !hasNumber(input.nutrients?.dha_percent) &&
-    !hasNumber(input.nutrients?.epa_dha_percent)
+    !hasOmegaDetail(input)
   ) {
     cases.push("skin_coat_without_omega_detail");
+  }
+  if (
+    input.life_stage === "senior" &&
+    !hasTag(input, ["senior", "mature", "joint", "mobility"]) &&
+    !hasOmegaDetail(input)
+  ) {
+    cases.push("senior_without_clear_senior_or_mobility_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
