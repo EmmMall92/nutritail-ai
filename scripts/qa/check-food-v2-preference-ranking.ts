@@ -400,6 +400,100 @@ if (maintenanceAdultRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const greekRenalPet = {
+  ...pet,
+  healthIssues: [
+    "\u03c7\u03c1\u03cc\u03bd\u03b9\u03b1 \u03bd\u03b5\u03c6\u03c1\u03b9\u03ba\u03ae \u03bd\u03cc\u03c3\u03bf\u03c2",
+  ],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const greekContextRenalFood = food({
+  id: "renal-vet",
+  formula_key: "qa|renal-vet|dog|dry",
+  display_name: "Renal Veterinary Diet",
+  medical_tags: ["renal"],
+  ingredients: ["rice", "egg", "fish oil"],
+  primary_animal_proteins: ["egg"],
+  kcal_per_100g: 389,
+});
+const greekContextUrinaryOnlyFood = food({
+  id: "urinary-oxalate",
+  formula_key: "qa|urinary-oxalate|dog|dry",
+  display_name: "Urinary Oxalate Veterinary Diet",
+  medical_tags: ["urinary"],
+  ingredients: ["rice", "chicken", "fish oil"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 372,
+});
+const greekContextRenalRanking = rankFoodV2ForPet({
+  food: greekContextRenalFood,
+  nutrients: {
+    ...nutrients(greekContextRenalFood),
+    protein_percent: 18,
+    phosphorus_percent: 0.35,
+    sodium_percent: 0.22,
+    epa_dha_percent: 0.4,
+  },
+  pet: greekRenalPet,
+  goal: "general",
+});
+const greekContextUrinaryOnlyRenalRanking = rankFoodV2ForPet({
+  food: greekContextUrinaryOnlyFood,
+  nutrients: {
+    ...nutrients(greekContextUrinaryOnlyFood),
+    protein_percent: 24,
+    phosphorus_percent: 0.75,
+    sodium_percent: 0.4,
+  },
+  pet: greekRenalPet,
+  goal: "general",
+});
+
+if (greekContextRenalRanking.total_score <= greekContextUrinaryOnlyRenalRanking.total_score) {
+  console.error("Greek renal context should prefer renal-positioned food over urinary-only food.");
+  console.error({ greekContextRenalRanking, greekContextUrinaryOnlyRenalRanking });
+  process.exit(1);
+}
+
+if (greekContextUrinaryOnlyRenalRanking.bucket !== "hold") {
+  console.error("Urinary-only food should be held for Greek renal context.");
+  console.error(greekContextUrinaryOnlyRenalRanking);
+  process.exit(1);
+}
+
+if (
+  !greekContextUrinaryOnlyRenalRanking.signals.some(
+    (signal) => signal.code === "renal_urinary_mismatch"
+  )
+) {
+  console.error("Expected renal_urinary_mismatch for urinary-only food in renal context.");
+  console.error(greekContextUrinaryOnlyRenalRanking.signals);
+  process.exit(1);
+}
+
+const greekUrinaryRanking = rankFoodV2ForPet({
+  food: greekContextUrinaryOnlyFood,
+  nutrients: nutrients(greekContextUrinaryOnlyFood),
+  pet: {
+    ...pet,
+    healthIssues: ["\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3\u03b9\u03ba\u03cc"],
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "general",
+});
+
+if (
+  !greekUrinaryRanking.signals.some(
+    (signal) => signal.code === "urinary_positioning"
+  )
+) {
+  console.error("Greek urinary context should recognize urinary-positioned foods.");
+  console.error(greekUrinaryRanking.signals);
+  process.exit(1);
+}
+
 const sterilisedLeanFood = food({
   id: "sterilised-lean",
   formula_key: "qa|sterilised-lean|dog|dry",

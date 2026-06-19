@@ -502,6 +502,39 @@ function urinarySubtypeFromPet(pet: FoodV2RankingInput["pet"]) {
   return urinarySubtypeFromText((pet.healthIssues ?? []).join(" "));
 }
 
+function hasRenalContext(pet: FoodV2RankingInput["pet"]) {
+  return hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+    "renal",
+    "kidney",
+    "ckd",
+    "creatinine",
+    "urea",
+    "\u03bd\u03b5\u03c6\u03c1",
+    "\u03bd\u03b5\u03c6\u03c1\u03b9\u03ba",
+    "\u03bf\u03c5\u03c1\u03b9\u03b1",
+    "\u03ba\u03c1\u03b5\u03b1\u03c4\u03b9\u03bd",
+  ]);
+}
+
+function hasUrinaryContext(pet: FoodV2RankingInput["pet"]) {
+  return hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+    "urinary",
+    "struvite",
+    "oxalate",
+    "crystal",
+    "stone",
+    "urolith",
+    "\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3",
+    "\u03bf\u03c5\u03c1\u03b9\u03ba",
+    "\u03bf\u03c5\u03c1\u03b1",
+    "\u03ba\u03c1\u03c5\u03c3\u03c4\u03b1\u03bb",
+    "\u03bf\u03be\u03b1\u03bb",
+    "ΞΏΟ…ΟΞΏΞ»ΞΏΞ³",
+    "ΞΊΟΟ…ΟƒΟ„Ξ±Ξ»Ξ»",
+    "ΞΏΞΎΞ±Ξ»",
+  ]);
+}
+
 function hasPancreatitisContext(values: string[] | undefined) {
   return hasAny(normalizeText((values ?? []).join(" ")), [
     "pancreatitis",
@@ -827,7 +860,9 @@ function scoreFit(input: FoodV2RankingInput) {
 
   if (
     hasTherapeuticPositioning(haystack) &&
-    !therapeuticPositioningFitsGoal(haystack, goal, pet.healthIssues ?? [])
+    !therapeuticPositioningFitsGoal(haystack, goal, pet.healthIssues ?? []) &&
+    !(hasRenalContext(pet) && hasRenalPositioning(haystack)) &&
+    !(hasUrinaryContext(pet) && hasUrinaryPositioning(haystack))
   ) {
     addSignal(
       signals,
@@ -951,20 +986,7 @@ function scoreFit(input: FoodV2RankingInput) {
     );
   }
 
-  if (
-    goal === "urinary" ||
-    hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
-      "urinary",
-      "struvite",
-      "oxalate",
-      "crystal",
-      "stone",
-      "urolith",
-      "ουρολογ",
-      "κρυσταλλ",
-      "οξαλ",
-    ])
-  ) {
+  if (goal === "urinary" || hasUrinaryContext(pet)) {
     const hasUrinary = hasUrinaryPositioning(haystack);
     const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
     const petUrinarySubtype = urinarySubtypeFromPet(pet);
@@ -1058,7 +1080,7 @@ function scoreFit(input: FoodV2RankingInput) {
     );
   }
 
-  if (goal === "renal" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["renal", "kidney", "ckd"])) {
+  if (goal === "renal" || hasRenalContext(pet)) {
     const hasRenal = hasRenalPositioning(haystack);
     const hasUrinaryOnlyPositioning =
       hasUrinaryPositioning(haystack) && !hasRenal;
