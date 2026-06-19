@@ -129,11 +129,30 @@ function hasNumber(value: unknown): value is number {
 }
 
 function healthText(healthIssues: string[] | undefined) {
-  return (healthIssues ?? [])
+  const normalized = (healthIssues ?? [])
     .join(" ")
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "");
+
+  const greekAppetiteSignal = hasSeniorAppetiteOrWeightLossConcern(normalized)
+    ? " appetite losing weight"
+    : "";
+  const greekMobilitySignal = hasSeniorMobilityConcern(normalized) ? " mobility joint" : "";
+
+  return `${normalized}${greekAppetiteSignal}${greekMobilitySignal}`;
+}
+
+function hasSeniorMobilityConcern(text: string) {
+  return /joint|arthritis|mobility|hip|elbow|arthr|osteoarthr|dysplasia|cruciate|χιαστ|αρθρω|αρθριτ|κινητικ|ισχι|αγκων|δυσπλασ/.test(
+    text
+  );
+}
+
+function hasSeniorAppetiteOrWeightLossConcern(text: string) {
+  return /appetite|anorexia|not eating|weight loss|losing weight|poor appetite|ορεξ|ανορεξ|δεν τρω|τρωει λιγο|χανει βαρος|αδυνατιζ|απωλεια βαρους/.test(
+    text
+  );
 }
 
 export function evaluateSeniorFitRules(input: SeniorFitInput) {
