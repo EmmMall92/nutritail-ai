@@ -32,6 +32,15 @@ const cases = [
     expected: "Vetsolution Urinary Oxalate",
   },
   {
+    label: "Schesir repeated leading token after brand cleanup",
+    input: {
+      brand: "Schesir",
+      display_name: "Schesir Schesir Adult Medium Chicken",
+      formula_name: "Schesir Adult Medium Chicken",
+    },
+    expected: "Adult Medium Chicken",
+  },
+  {
     label: "Purina registered mark and mojibake salmon token",
     input: {
       brand: "Purina Pro Plan",
