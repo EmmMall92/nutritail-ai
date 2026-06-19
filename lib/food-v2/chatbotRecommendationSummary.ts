@@ -236,8 +236,8 @@ function scoreLabel() {
 
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
-    ? `Για αυτό το κατοικίδιο κοιτάμε κυρίως: ${goalLabel}.`
-    : `For this pet, I am prioritising: ${goalLabel}.`;
+    ? `Κύρια ανάγκη που καλύπτουμε: ${goalLabel}.`
+    : `Main need we are covering: ${goalLabel}.`;
 }
 
 function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
@@ -416,7 +416,7 @@ function sectionTitle(
     }
 
     return role === "premium"
-      ? "First value picks:"
+      ? "Practical first picks:"
       : "Stronger nutrition alternatives:";
   }
 
@@ -424,13 +424,13 @@ function sectionTitle(
     return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο απλές / value επιλογές:";
   }
 
-  return role === "premium" ? "Best options for this pet:" : "Value-friendly alternatives:";
+  return role === "premium" ? "First picks:" : "Simple alternatives:";
 }
 
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
-    ? "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να υπολογίσουμε περίπου γραμμάρια/ημέρα."
-    : "Next step: choose a food card to calculate daily grams.";
+    ? "Επόμενο βήμα: πάτησε μία κάρτα τροφής για να δεις περίπου ποσότητα/ημέρα."
+    : "Next step: tap one food card to estimate portions/day.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
@@ -466,9 +466,9 @@ function compactCardsIntro({
       [
         "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         recommendationFocusLine(locale, goalLabel),
-        `Πρώτη κατεύθυνση: ${name}, γιατί ${reason}.`,
+        `Ξεκίνα από: ${name}, γιατί ${reason}.`,
         snapshot,
-        "Πάτησε μία κάρτα για να υπολογίσουμε περίπου γραμμάρια/ημέρα.",
+        "Πάτησε μία κάρτα για να δεις περίπου ποσότητα/ημέρα.",
         vetSafetyLine(locale, goal),
       ]
         .filter(Boolean)
@@ -480,9 +480,9 @@ function compactCardsIntro({
     [
       "Done. I placed the best options below as cards.",
       recommendationFocusLine(locale, goalLabel),
-      `First direction: ${name}, because it ${reason}.`,
+      `Start with: ${name}, because it ${reason}.`,
       snapshot,
-      "Tap one card to estimate grams/day.",
+      "Tap one card to estimate portions/day.",
       vetSafetyLine(locale, goal),
     ]
       .filter(Boolean)
@@ -539,7 +539,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
         : "Alternative foods worth considering:"
       : locale === "el"
         ? "Προτεινόμενες τροφές:"
-        : "Food picks for this pet:";
+        : "Recommended foods:";
   const topForCards = premium[0] ?? value[0];
 
   if (options.compactForCards && topForCards) {
@@ -583,8 +583,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
     recommendationFocusLine(locale, goalLabel ?? goal),
     top
       ? locale === "el"
-        ? `Πρώτη κατεύθυνση: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
-        : `First direction: ${foodName(top)}, because it ${customerReason(top, goal, locale)}.`
+        ? `Ξεκίνα από: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
+        : `Start with: ${foodName(top)}, because it ${customerReason(top, goal, locale)}.`
       : "",
     excludedBrands.length > 0
       ? locale === "el"
