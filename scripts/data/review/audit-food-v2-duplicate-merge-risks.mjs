@@ -154,6 +154,9 @@ function materialDeltaReasons(rows) {
 
 function classifyGroup(rows) {
   const candidateRows = rows.filter((row) => row.decision === "candidate");
+  const candidateFormulaKeys = [
+    ...new Set(candidateRows.map((row) => row.formula_key).filter(Boolean)),
+  ];
   const priorities = [...new Set(rows.map((row) => row.source_priority).filter(Boolean))];
   const materialReasons = materialDeltaReasons(rows);
   const sourceRanks = rows.map((row) => sourceRank(row.source_priority));
@@ -175,6 +178,15 @@ function classifyGroup(rows) {
       risk_reason: materialReasons.join("; "),
       recommended_action:
         "Manual review required. Do not auto-merge; verify label/PDF/source before choosing survivor.",
+    };
+  }
+
+  if (duplicateCandidates && candidateFormulaKeys.length === 1) {
+    return {
+      risk_level: "low",
+      risk_reason: "duplicate_candidate_same_formula_key",
+      recommended_action:
+        "Treat as an exact candidate duplicate. Keep one row for import and use the duplicate only as evidence after a quick spot-check.",
     };
   }
 
