@@ -1,14 +1,14 @@
 # Dog Chatbot 200 Live Cases
 
-Generated: 2026-06-19T21:22:01.637Z
+Generated: 2026-06-19T21:46:19.879Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
 ## Summary
 
 - Cases checked: 200
-- Passed: 199
-- Needs review: 1
+- Passed: 200
+- Needs review: 0
 
 Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity mismatch guards.
 
@@ -71,7 +71,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 51 | pass | Josera MINI SENIOR SALMON; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 52 | pass | Orijen Senior; Royal Canin Medium Adult 7+; Royal Canin Maxi Joint Care | - |
 | 53 | pass | Acana Senior; Orijen Senior; Josera MINI SENIOR SALMON | - |
-| 54 | review | - | food: Food V2 returned no visible premium/value candidates. |
+| 54 | pass | Brit Care Sustainable Senior Chicken & Insect; Acana Senior; Orijen Senior | - |
 | 55 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
 | 56 | pass | Monge VetSolution Renal And Oxalate | - |
 | 57 | pass | Orijen Senior; Purina Pro Plan MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο; Royal Canin Medium Adult 7+ | - |
@@ -209,7 +209,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 189 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
 | 190 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
 | 191 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 192 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
+| 192 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
 | 193 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
 | 194 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 195 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
