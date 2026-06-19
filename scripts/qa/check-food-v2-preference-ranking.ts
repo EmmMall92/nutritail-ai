@@ -569,6 +569,81 @@ if (
   process.exit(1);
 }
 
+const summerLowAppetitePet = {
+  ...pet,
+  breed: "Husky",
+  weight: 25,
+  age: 2,
+  activityLevel: "normal" as const,
+  neutered: false,
+  healthIssues: ["eats little in summer", "hot weather"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const summerPracticalEnergyFood = food({
+  id: "summer-practical-energy",
+  formula_key: "qa|summer-practical-energy|dog|dry",
+  display_name: "Adult Salmon Summer Appetite",
+  dog_size: "large",
+  ingredients: ["salmon", "rice"],
+  primary_animal_proteins: ["salmon"],
+  kcal_per_100g: 368,
+});
+const summerLightFood = food({
+  id: "summer-light",
+  formula_key: "qa|summer-light|dog|dry",
+  display_name: "Adult Light Chicken",
+  dog_size: "large",
+  commercial_tags: ["light"],
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 320,
+});
+const summerPracticalEnergyRanking = rankFoodV2ForPet({
+  food: summerPracticalEnergyFood,
+  nutrients: {
+    ...nutrients(summerPracticalEnergyFood),
+    fat_percent: 14,
+  },
+  pet: summerLowAppetitePet,
+  goal: "general",
+});
+const summerLightRanking = rankFoodV2ForPet({
+  food: summerLightFood,
+  nutrients: {
+    ...nutrients(summerLightFood),
+    fat_percent: 8,
+  },
+  pet: summerLowAppetitePet,
+  goal: "general",
+});
+
+if (summerPracticalEnergyRanking.total_score <= summerLightRanking.total_score) {
+  console.error("Summer low-appetite context should not rank light/low-energy food first.");
+  console.error({ summerPracticalEnergyRanking, summerLightRanking });
+  process.exit(1);
+}
+
+if (
+  !summerPracticalEnergyRanking.signals.some(
+    (signal) => signal.code === "summer_low_appetite_energy_density"
+  )
+) {
+  console.error("Expected summer_low_appetite_energy_density for practical energy candidate.");
+  console.error(summerPracticalEnergyRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !summerLightRanking.signals.some(
+    (signal) => signal.code === "summer_low_appetite_light_formula_mismatch"
+  )
+) {
+  console.error("Expected summer_low_appetite_light_formula_mismatch for light summer option.");
+  console.error(summerLightRanking.signals);
+  process.exit(1);
+}
+
 const seniorPet = {
   ...pet,
   weight: 15,
