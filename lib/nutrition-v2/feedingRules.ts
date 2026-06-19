@@ -280,7 +280,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     signals.push({
       type: "boost",
       code: "active_formula_activity_fit",
-      points: 14,
+      points: weightGainContext ? 24 : 14,
       message: "Active/performance positioning fits a highly active pet.",
     });
 
@@ -288,7 +288,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
       signals.push({
         type: "boost",
         code: "energy_density_for_active_pet",
-        points: 8,
+        points: weightGainContext ? 12 : 8,
         message: "Higher calorie density can fit a high-activity pet.",
       });
     }
@@ -297,7 +297,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
       signals.push({
         type: "boost",
         code: "fat_level_for_active_pet",
-        points: 5,
+        points: weightGainContext ? 8 : 5,
         message: "Fat level can support higher energy needs in an active pet.",
       });
     }
@@ -319,6 +319,17 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         code: "fat_supports_high_activity",
         points: 4,
         message: "Fat level can help cover higher activity energy needs.",
+      });
+    }
+
+    if (weightGainContext && !positioning.active) {
+      signals.push({
+        type: "caution",
+        code: "weight_gain_without_active_positioning",
+        points:
+          hasNumber(food.kcal_per_100g) && food.kcal_per_100g >= 380 ? -8 : -20,
+        message:
+          "Weight-gain working dogs should usually start from active or energy-dense formulas.",
       });
     }
   }

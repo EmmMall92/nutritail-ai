@@ -460,6 +460,57 @@ if (!workingDogContextRanking.signals.some((signal) => signal.code === "active_f
   process.exit(1);
 }
 
+const workingDogWeightGainPet = {
+  ...highActivityPet,
+  healthIssues: ["working dog", "daily mountain training", "needs weight gain"],
+  preferredProteins: ["salmon"],
+};
+const preferredButNotActiveSalmon = food({
+  id: "preferred-salmon-not-active",
+  formula_key: "qa|preferred-salmon-not-active|dog|dry",
+  display_name: "Adult Salmon Maintenance",
+  dog_size: "large",
+  ingredients: ["salmon", "rice"],
+  primary_animal_proteins: ["salmon"],
+  kcal_per_100g: 352,
+});
+const activeWeightGainRanking = rankFoodV2ForPet({
+  food: activeHighFat,
+  nutrients: {
+    ...nutrients(activeHighFat),
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: workingDogWeightGainPet,
+  goal: "general",
+});
+const preferredButNotActiveRanking = rankFoodV2ForPet({
+  food: preferredButNotActiveSalmon,
+  nutrients: {
+    ...nutrients(preferredButNotActiveSalmon),
+    fat_percent: 12,
+    fiber_percent: 3,
+  },
+  pet: workingDogWeightGainPet,
+  goal: "general",
+});
+
+if (activeWeightGainRanking.total_score <= preferredButNotActiveRanking.total_score) {
+  console.error("Active/energy fit should outrank flavor preference for working weight-gain cases.");
+  console.error({ activeWeightGainRanking, preferredButNotActiveRanking });
+  process.exit(1);
+}
+
+if (
+  !preferredButNotActiveRanking.signals.some(
+    (signal) => signal.code === "weight_gain_without_active_positioning"
+  )
+) {
+  console.error("Expected weight_gain_without_active_positioning for non-active weight-gain option.");
+  console.error(preferredButNotActiveRanking.signals);
+  process.exit(1);
+}
+
 const seniorPet = {
   ...pet,
   weight: 15,
