@@ -5,14 +5,38 @@ const liveCasesPath = "scripts/qa/run-dog-chatbot-live-cases.ts";
 const edgeFixturePath = "data/evals/chatbot-dog-edge-cases-101-200.json";
 const reportPath = "reports/dog_chatbot_golden_coverage_audit.md";
 
-const damagedTextPattern =
-  /(?:\?{3,}|Ξ|Ο[€‡ƒ„‰…]|Β®|�)/u;
+const damagedTextPattern = /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
+
+function repairLegacyGreekMojibake(value) {
+  const text = String(value ?? "");
+  if (!damagedTextPattern.test(text)) return text;
+
+  const bytes = [];
+  for (const char of text) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return text;
+    }
+  }
+
+  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+}
 
 function extractLiveCaseIds(source) {
   return [...source.matchAll(/\{\s*id:\s*(\d+),\s*message:\s*"([^"]*)"/gu)].map(
     (match) => ({
       id: Number(match[1]),
-      prompt: match[2],
+      prompt: repairLegacyGreekMojibake(match[2]),
     })
   );
 }
@@ -31,7 +55,7 @@ function extractLiveCaseCoverage(source) {
     );
     cases.push({
       id: Number(match[1]),
-      prompt: match[2],
+      prompt: repairLegacyGreekMojibake(match[2]),
       goal: match[3],
       safety: match[4],
       checks,
@@ -190,7 +214,7 @@ async function main() {
   const edgeFixture = JSON.parse(await readFile(edgeFixturePath, "utf8"));
   const edgeCases = (edgeFixture.cases ?? []).map((item) => ({
     id: Number(String(item.id ?? "").match(/^dog-(\d+)/u)?.[1]),
-    prompt: item.prompt,
+    prompt: repairLegacyGreekMojibake(item.prompt),
   }));
   const edgeSummary = summarizeIds(edgeCases, 101, 200);
 

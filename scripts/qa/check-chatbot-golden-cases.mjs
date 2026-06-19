@@ -16,6 +16,33 @@ const extraGoldenCasesPaths = (
   .filter(Boolean);
 const runLiveChecks = process.env.NUTRITAIL_QA_LIVE === "1";
 
+const damagedTextPattern = /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
+
+function repairLegacyGreekMojibake(value) {
+  const text = String(value ?? "");
+  if (!damagedTextPattern.test(text)) return text;
+
+  const bytes = [];
+  for (const char of text) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return text;
+    }
+  }
+
+  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+}
+
 const recommendationCases = [
   {
     label: "Sterilised cat food recommendation",
@@ -676,7 +703,12 @@ async function loadGoldenCases() {
         const raw = await readFile(filePath, "utf8");
         const parsed = JSON.parse(raw);
 
-        return Array.isArray(parsed.cases) ? parsed.cases : [];
+        return Array.isArray(parsed.cases)
+          ? parsed.cases.map((item) => ({
+              ...item,
+              prompt: repairLegacyGreekMojibake(item.prompt),
+            }))
+          : [];
       } catch (error) {
         if (error?.code === "ENOENT" && filePath !== goldenCasesPath) return [];
         throw error;

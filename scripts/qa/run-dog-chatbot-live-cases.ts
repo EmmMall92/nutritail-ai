@@ -313,7 +313,37 @@ const EXTRA_CASES_101_200: DogQaCase[] = [
   { id: 200, message: "Έχω σκύλο rescue που βρέθηκε υποσιτισμένος.", goal: "general", safety: "vet_referral", expected: { species: "dog", weightGoal: "gain" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
 ];
 
-const ALL_CASES = [...CASES, ...EXTRA_CASES_101_200];
+const damagedTextPattern = /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map<string, number>();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
+
+function repairLegacyGreekMojibake(value?: string) {
+  const text = String(value ?? "");
+  if (!damagedTextPattern.test(text)) return text;
+
+  const bytes: number[] = [];
+  for (const char of text) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return text;
+    }
+  }
+
+  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+}
+
+const ALL_CASES = [...CASES, ...EXTRA_CASES_101_200].map((testCase) => ({
+  ...testCase,
+  message: repairLegacyGreekMojibake(testCase.message),
+}));
 
 function parseCaseIds(value: string | undefined) {
   if (!value?.trim()) return null;

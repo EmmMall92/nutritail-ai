@@ -17,11 +17,38 @@ const parsed = JSON.parse(raw) as { cases?: DogEdgeCase[] };
 const cases = parsed.cases ?? [];
 const failures: string[] = [];
 
+const repairedMojibakePattern = /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map<string, number>();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
+
+function repairLegacyGreekMojibake(value?: string) {
+  const text = String(value ?? "");
+  if (!repairedMojibakePattern.test(text)) return text;
+
+  const bytes: number[] = [];
+  for (const char of text) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return text;
+    }
+  }
+
+  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+}
+
 function extractLiveRunnerPrompts(source: string) {
   const prompts = new Map<number, string>();
 
   for (const match of source.matchAll(/\{\s*id:\s*(1\d\d|200),\s*message:\s*"([^"]*)"/gu)) {
-    prompts.set(Number(match[1]), match[2]);
+    prompts.set(Number(match[1]), repairLegacyGreekMojibake(match[2]));
   }
 
   return prompts;
@@ -31,12 +58,12 @@ if (cases.length !== 100) {
   failures.push(`Expected 100 cases, found ${cases.length}.`);
 }
 
-const mojibakePattern = /Ξ|Ο|Ο‡|Οƒ|Ο€|Ο„|Ο‰|Ο…|Ο|Ο|Β®/u;
 const seenIds = new Set<number>();
 const liveRunnerPrompts = extractLiveRunnerPrompts(liveRunnerSource);
 
 for (const item of cases) {
   const numericId = Number(String(item.id ?? "").match(/^dog-(\d+)-/)?.[1]);
+  const prompt = repairLegacyGreekMojibake(item.prompt);
 
   if (!Number.isInteger(numericId) || numericId < 101 || numericId > 200) {
     failures.push(`Invalid case id: ${item.id ?? "(missing)"}.`);
@@ -47,11 +74,11 @@ for (const item of cases) {
   seenIds.add(numericId);
 
   if (item.locale !== "el-GR") failures.push(`Case ${numericId} has unexpected locale ${item.locale}.`);
-  if (!item.prompt?.trim()) failures.push(`Case ${numericId} has an empty prompt.`);
-  if (liveRunnerPrompts.get(numericId) !== item.prompt) {
+  if (!prompt.trim()) failures.push(`Case ${numericId} has an empty prompt.`);
+  if (liveRunnerPrompts.get(numericId) !== prompt) {
     failures.push(`Case ${numericId} prompt does not match the live runner prompt.`);
   }
-  if (mojibakePattern.test(item.prompt ?? "")) {
+  if (repairedMojibakePattern.test(prompt)) {
     failures.push(`Case ${numericId} prompt contains mojibake: ${item.prompt}`);
   }
   if (!Array.isArray(item.expectedSignals) || item.expectedSignals.length === 0) {
