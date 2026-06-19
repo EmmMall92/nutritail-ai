@@ -70,7 +70,11 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
 }
 
 function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
-  const customerText = buildCustomerFallbackText(input);
+  const locale = input.locale ?? "el";
+  const customerText = polishCustomerFacingLanguage(
+    buildCustomerFallbackText(input),
+    locale
+  );
 
   return {
     text: customerText || input.deterministicText,
@@ -354,6 +358,29 @@ function removeBackOfficeLines(text: string) {
     .trim();
 }
 
+function polishCustomerFacingLanguage(text: string, locale: ComposerLocale) {
+  if (locale !== "el") return text;
+
+  return text
+    .replace(/\bWeight Control\b/g, "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2")
+    .replace(/\bSenior Nutrition\b/g, "\u0394\u03b9\u03b1\u03c4\u03c1\u03bf\u03c6\u03ae senior")
+    .replace(/\bHigh Activity\b/g, "\u03a5\u03c8\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1")
+    .replace(
+      /Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi,
+      "\u03a4\u03b1 \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03c1\u03ba\u03b5\u03c4\u03ac \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c3\u03b5 \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03bf \u03ae \u03b5\u03c0\u03b9\u03c1\u03c1\u03b5\u03c0\u03ad\u03c2 \u03c3\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2 \u03b6\u03ce\u03bf."
+    )
+    .replace(
+      /Active\/performance food does not fit this weight-loss context\./gi,
+      "\u03a4\u03c1\u03bf\u03c6\u03ae active/performance \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03bb\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c3\u03c4\u03cc\u03c7\u03bf \u03b1\u03c0\u03ce\u03bb\u03b5\u03b9\u03b1\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+    )
+    .replace(
+      /Low-fat formulas are not a credible first pick for active weight-gain cases\./gi,
+      "\u03a4\u03c1\u03bf\u03c6\u03ad\u03c2 \u03bc\u03b5 \u03c0\u03bf\u03bb\u03cd \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b9\u03b4\u03b1\u03bd\u03b9\u03ba\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03b4\u03c1\u03b1\u03c3\u03c4\u03ae\u03c1\u03b9\u03bf \u03b6\u03ce\u03bf \u03c0\u03bf\u03c5 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b1\u03cd\u03be\u03b7\u03c3\u03b7 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+    )
+    .replace(/\bMatches adult life stage\b/gi, "\u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03b5\u03b9 \u03c3\u03b5 \u03b5\u03bd\u03ae\u03bb\u03b9\u03ba\u03bf \u03b6\u03ce\u03bf")
+    .replace(/\bIngredient data is available\b/gi, "\u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03c3\u03c5\u03c3\u03c4\u03b1\u03c4\u03b9\u03ba\u03ce\u03bd");
+}
+
 function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationComposerInput) {
   if (input.cardsFollow) return true;
 
@@ -407,7 +434,10 @@ export async function composeChatbotRecommendationResponse(
       { signal: controller.signal }
     );
 
-    const text = removeBackOfficeLines(response.output_text ?? "");
+    const text = polishCustomerFacingLanguage(
+      removeBackOfficeLines(response.output_text ?? ""),
+      locale
+    );
     if (text.length < 80) return fallback(input, ["composer_output_too_short"]);
     if (!hasAtLeastOneKnownFood(text, input)) {
       return fallback(input, ["composer_did_not_preserve_known_food"]);
