@@ -180,6 +180,11 @@ const requiredCardFlowCopy = [
   "3 meals: about",
   "analysisMetadata.feedingGramsPerDay / 2",
   "getRecommendationChoiceFacts(choice, chatLanguage)",
+  "calorie_aware_feeding",
+  "limited_protein_allergy_review",
+  "large_breed_growth_mineral_review",
+  "skin_coat_omega_review",
+  "active_working",
   "kcal/100g",
   "protein",
   "fat",
@@ -218,6 +223,7 @@ const forbiddenChatbotPageCopy = [
   "Good match",
   "Useful alternative",
   "getRecommendationChoiceMatchLabel",
+  "const reason = food.ranking?.reasons?.find",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)

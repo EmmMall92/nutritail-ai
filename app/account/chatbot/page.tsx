@@ -294,32 +294,77 @@ function formatRecommendationChoiceReason(
   role: RecommendedFoodChoice["role"],
   language: ChatLanguage
 ) {
-  const text = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
+  const text = [
+    ...(food.ranking?.reasons ?? []),
+    ...(food.food_intelligence?.best_use_cases ?? []),
+    ...(food.food_intelligence?.strengths ?? []),
+    food.brand,
+    food.display_name,
+  ]
+    .join(" ")
+    .toLowerCase();
+  const kcal = food.nutrition?.kcal_per_100g;
+  const fat = food.nutrition?.fat_percent;
+  const protein = food.nutrition?.protein_percent;
+
+  const calorieText =
+    kcal != null && fat != null
+      ? language === "el"
+        ? `Οι θερμίδες και τα λιπαρά του (${formatChoiceNumber(kcal)} kcal/100g, ${formatChoiceNumber(fat)}% λιπαρά) βοηθούν να δουλέψουμε με μετρημένη μερίδα.`
+        : `Its calories and fat (${formatChoiceNumber(kcal)} kcal/100g, ${formatChoiceNumber(fat)}% fat) make portion control easier.`
+      : undefined;
+  const proteinText =
+    protein != null
+      ? language === "el"
+        ? `Δίνει καθαρό σημείο αναφοράς για την πρωτεΐνη (${formatChoiceNumber(protein)}%).`
+        : `It gives us a clear protein reference (${formatChoiceNumber(protein)}%).`
+      : undefined;
 
   if (language === "el") {
     if (text.includes("preferred protein") || text.includes("preferred flavor")) {
       return "Ταιριάζει με γεύση ή πρωτεΐνη που δήλωσες ότι προτιμά.";
     }
-    if (text.includes("weight") || text.includes("sterilised") || text.includes("calories")) {
-      return "Έχει πιο σωστή λογική για στειρωμένο ή επιρρεπές σε βάρος κατοικίδιο.";
+    if (
+      text.includes("calorie_aware_feeding") ||
+      text.includes("weight") ||
+      text.includes("sterilised") ||
+      text.includes("sterilized") ||
+      text.includes("neutered") ||
+      text.includes("calories")
+    ) {
+      return calorieText ?? "Έχει πιο σωστή λογική για στειρωμένο ή επιρρεπές σε βάρος κατοικίδιο.";
     }
-    if (text.includes("excluded ingredients") || text.includes("allergens were not detected")) {
-      return "Σέβεται τις αποφυγές ή αλλεργίες που δήλωσες.";
+    if (
+      text.includes("limited_protein_allergy_review") ||
+      text.includes("excluded ingredients") ||
+      text.includes("allergens were not detected")
+    ) {
+      return "Σέβεται τις αποφυγές που δήλωσες και είναι πιο κατάλληλη για προσεκτική επιλογή πρωτεΐνης.";
     }
-    if (text.includes("large-breed puppy") || text.includes("growth")) {
-      return "Είναι πιο κοντά στις ανάγκες ανάπτυξης.";
+    if (
+      text.includes("large_breed_growth_mineral_review") ||
+      text.includes("large-breed puppy") ||
+      text.includes("growth")
+    ) {
+      return "Είναι πιο κοντά στις ανάγκες ανάπτυξης, με καλύτερη λογική για ασβέστιο/φώσφορο όταν μιλάμε για μεγαλόσωμο κουτάβι.";
     }
-    if (text.includes("senior")) {
-      return "Είναι πιο κοντά σε ανάγκες senior κατοικιδίου.";
+    if (text.includes("senior_mobility") || text.includes("senior")) {
+      return "Είναι πιο κοντά σε ανάγκες senior κατοικιδίου, όπου κοιτάμε βάρος, όρεξη, μυϊκή κατάσταση και κινητικότητα.";
     }
     if (text.includes("digest") || text.includes("sensitive")) {
       return "Έχει λογική για πιο ευαίσθητη πέψη.";
     }
+    if (text.includes("skin_coat_omega_review")) {
+      return "Έχει λογική για δέρμα/τρίχωμα, ειδικά όταν υπάρχουν διαθέσιμα στοιχεία για EPA/DHA ή ωμέγα λιπαρά.";
+    }
+    if (text.includes("active_working") || text.includes("active") || text.includes("performance")) {
+      return proteinText ?? "Ταιριάζει καλύτερα σε πιο δραστήριο ζώο που χρειάζεται περισσότερη διατροφική υποστήριξη.";
+    }
     if (text.includes("urinary")) {
-      return "Έχει ουρολογικό προσανατολισμό.";
+      return "Έχει ουρολογικό προσανατολισμό και πρέπει να χρησιμοποιείται με κτηνιατρική καθοδήγηση.";
     }
     if (text.includes("renal")) {
-      return "Έχει νεφρικό προσανατολισμό.";
+      return "Έχει νεφρικό προσανατολισμό και η τελική επιλογή πρέπει να συμφωνεί με τον/την κτηνίατρο.";
     }
 
     return role === "value"
@@ -327,8 +372,51 @@ function formatRecommendationChoiceReason(
       : "Δυνατή επιλογή με βάση το προφίλ του κατοικιδίου.";
   }
 
-  const reason = food.ranking?.reasons?.find(Boolean);
-  if (reason) return reason.replace(/\.$/, ".");
+  if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+    return "It matches a flavour or protein preference you gave.";
+  }
+  if (
+    text.includes("calorie_aware_feeding") ||
+    text.includes("weight") ||
+    text.includes("sterilised") ||
+    text.includes("sterilized") ||
+    text.includes("neutered") ||
+    text.includes("calories")
+  ) {
+    return calorieText ?? "It has better logic for a sterilised or weight-prone pet.";
+  }
+  if (
+    text.includes("limited_protein_allergy_review") ||
+    text.includes("excluded ingredients") ||
+    text.includes("allergens were not detected")
+  ) {
+    return "It respects the avoidances you gave and is better suited to careful protein selection.";
+  }
+  if (
+    text.includes("large_breed_growth_mineral_review") ||
+    text.includes("large-breed puppy") ||
+    text.includes("growth")
+  ) {
+    return "It is closer to growth needs, with better calcium/phosphorus logic for large-breed puppies.";
+  }
+  if (text.includes("senior_mobility") || text.includes("senior")) {
+    return "It is closer to senior needs, where weight, appetite, muscle condition, and mobility matter.";
+  }
+  if (text.includes("digest") || text.includes("sensitive")) {
+    return "It has better logic for sensitive digestion.";
+  }
+  if (text.includes("skin_coat_omega_review")) {
+    return "It has skin/coat logic, especially when EPA/DHA or omega details are available.";
+  }
+  if (text.includes("active_working") || text.includes("active") || text.includes("performance")) {
+    return proteinText ?? "It fits a more active pet that needs stronger nutrition support.";
+  }
+  if (text.includes("urinary")) {
+    return "It has urinary-support positioning and should be used with veterinary guidance.";
+  }
+  if (text.includes("renal")) {
+    return "It has renal-support positioning and the final choice should match veterinary guidance.";
+  }
 
   return role === "value"
     ? "A simpler option with useful available data."
