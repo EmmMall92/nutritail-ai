@@ -481,6 +481,9 @@ function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | n
     ...(testCase.goal === "sensitive_digestion" ? ["sensitive digestion"] : []),
     ...(testCase.goal === "renal" ? ["renal"] : []),
     ...(testCase.goal === "urinary" ? ["urinary"] : []),
+    ...(expectedUrinarySubtype(testCase)
+      ? [`urinary ${expectedUrinarySubtype(testCase)} history`]
+      : []),
     ...(testCase.goal === "allergy" ? ["allergy"] : []),
     ...(testCase.checks?.largeBreedPuppy ? ["large breed puppy", "bone growth"] : []),
     ...(messageText.includes("χάνει μυς") || messageText.includes("χανει μυς")
@@ -858,6 +861,17 @@ function hasAnyInFirst(items: FoodV2Item[], terms: string[], limit = 3) {
   return hasAny(items.slice(0, limit), terms);
 }
 
+function expectedUrinarySubtype(testCase: DogQaCase) {
+  const text = normalize(testCase.message);
+  if (text.includes("struvite") || text.includes("struvit") || text.includes("στρουβι")) {
+    return "struvite" as const;
+  }
+  if (text.includes("oxalate") || text.includes("oxalat") || text.includes("οξαλ")) {
+    return "oxalate" as const;
+  }
+  return null;
+}
+
 function isCalorieAware(item: FoodV2Item) {
   const kcal = item.nutrition?.kcal_per_100g;
   const fat = item.nutrition?.fat_percent;
@@ -916,6 +930,22 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.goal === "urinary" && top.length > 0 && !hasAnyInFirst(top, ["urinary", "struvite", "oxalate"], 3)) {
     warnings.push("Urinary case did not surface a urinary/struvite/oxalate-oriented food in the first three visible candidates.");
+  }
+
+  const urinarySubtype = expectedUrinarySubtype(testCase);
+  if (testCase.goal === "urinary" && urinarySubtype && top.length > 0) {
+    const oppositeSubtype = urinarySubtype === "struvite" ? "oxalate" : "struvite";
+    const firstThree = top.slice(0, 3);
+    const first = top[0];
+    if (!hasAny([first], [urinarySubtype])) {
+      warnings.push(`Urinary ${urinarySubtype} case top candidate is not ${urinarySubtype}-specific.`);
+    }
+    if (!hasAny(firstThree, [urinarySubtype])) {
+      warnings.push(`Urinary ${urinarySubtype} case did not surface a ${urinarySubtype}-specific food in the first three visible candidates.`);
+    }
+    if (hasAny(firstThree, [oppositeSubtype]) && !hasAny(firstThree, [urinarySubtype])) {
+      warnings.push(`Urinary ${urinarySubtype} case surfaced ${oppositeSubtype}-only positioning without a matching subtype option.`);
+    }
   }
 
   if (testCase.checks?.puppyGrowth && top.length > 0) {
