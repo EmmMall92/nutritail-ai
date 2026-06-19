@@ -17,6 +17,87 @@ function extractLiveCaseIds(source) {
   );
 }
 
+function extractLiveCaseCoverage(source) {
+  const cases = [];
+  const pattern = /\{\s*id:\s*(\d+),\s*message:\s*"([^"]*)",\s*goal:\s*"([^"]+)",\s*safety:\s*"([^"]+)"(.*)\},?\s*$/u;
+
+  for (const line of source.split(/\r?\n/u)) {
+    const match = line.match(pattern);
+    if (!match) continue;
+
+    const checksBlock = String(match[5] ?? "").match(/checks:\s*\{([^}]*)\}/u)?.[1] ?? "";
+    const checks = [...checksBlock.matchAll(/(\w+):\s*(?:true|\[[^\]]+\])/gu)].map(
+      (check) => check[1]
+    );
+    cases.push({
+      id: Number(match[1]),
+      prompt: match[2],
+      goal: match[3],
+      safety: match[4],
+      checks,
+    });
+  }
+
+  return cases;
+}
+
+function countBy(items, selector) {
+  const counts = new Map();
+
+  for (const item of items) {
+    const key = selector(item);
+    if (!key) continue;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+function renderCounts(counts) {
+  if (counts.length === 0) return "- none";
+  return counts.map(([key, count]) => `- ${key}: ${count}`).join("\n");
+}
+
+function missingRequiredCoverage(coverageCases) {
+  const goals = new Set(coverageCases.map((item) => item.goal));
+  const checks = new Set(coverageCases.flatMap((item) => item.checks));
+  const safeties = new Set(coverageCases.map((item) => item.safety));
+  const requiredGoals = [
+    "general",
+    "value",
+    "premium",
+    "weight_control",
+    "sensitive_digestion",
+    "allergy",
+    "urinary",
+    "renal",
+    "growth",
+    "sterilised",
+    "senior",
+  ];
+  const requiredChecks = [
+    "allergyReject",
+    "puppyGrowth",
+    "largeBreedPuppy",
+    "obesityLogic",
+    "medicalNoTreatment",
+    "foodV2Candidates",
+  ];
+  const requiredSafeties = ["normal", "vet_referral", "emergency"];
+
+  return [
+    ...requiredGoals
+      .filter((goal) => !goals.has(goal))
+      .map((goal) => `missing goal coverage: ${goal}`),
+    ...requiredChecks
+      .filter((check) => !checks.has(check))
+      .map((check) => `missing check coverage: ${check}`),
+    ...requiredSafeties
+      .filter((safety) => !safeties.has(safety))
+      .map((safety) => `missing safety coverage: ${safety}`),
+  ];
+}
+
 function summarizeIds(cases, from, to) {
   const ids = cases.map((item) => item.id);
   const uniqueIds = new Set(ids);
@@ -42,6 +123,7 @@ function damagedCases(cases) {
 async function main() {
   const liveSource = await readFile(liveCasesPath, "utf8");
   const liveCases = extractLiveCaseIds(liveSource);
+  const liveCoverageCases = extractLiveCaseCoverage(liveSource);
   const liveSummary = summarizeIds(liveCases, 1, 200);
 
   const edgeFixture = JSON.parse(await readFile(edgeFixturePath, "utf8"));
@@ -78,6 +160,10 @@ async function main() {
     edgeDamaged.length > 0
       ? `Edge fixture has damaged prompt ids: ${edgeDamaged.join(", ")}.`
       : null,
+    liveCoverageCases.length !== 200
+      ? `Live coverage parser should find 200 cases, found ${liveCoverageCases.length}.`
+      : null,
+    ...missingRequiredCoverage(liveCoverageCases),
   ].filter(Boolean);
 
   await mkdir(path.dirname(reportPath), { recursive: true });
@@ -96,7 +182,25 @@ async function main() {
       `- External 101-200 fixture unique ids: ${edgeSummary.unique}`,
       `- Live runner damaged prompts: ${liveDamaged.length}`,
       `- External fixture damaged prompts: ${edgeDamaged.length}`,
+      `- Coverage parser cases: ${liveCoverageCases.length}`,
       `- Blocking structural problems: ${blockingProblems.length}`,
+      "",
+      "## Goal Coverage",
+      "",
+      renderCounts(countBy(liveCoverageCases, (item) => item.goal)),
+      "",
+      "## Safety Coverage",
+      "",
+      renderCounts(countBy(liveCoverageCases, (item) => item.safety)),
+      "",
+      "## Check Coverage",
+      "",
+      renderCounts(
+        countBy(
+          liveCoverageCases.flatMap((item) => item.checks.map((check) => ({ check }))),
+          (item) => item.check
+        )
+      ),
       "",
       "## Damaged Prompt Cleanup",
       "",
@@ -128,6 +232,7 @@ async function main() {
       {
         liveCases: liveSummary.count,
         edgeCases: edgeSummary.count,
+        coverageCases: liveCoverageCases.length,
         liveDamagedPrompts: liveDamaged.length,
         edgeDamagedPrompts: edgeDamaged.length,
         blockingProblems: blockingProblems.length,
