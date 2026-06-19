@@ -1265,6 +1265,39 @@ function formatCustomerBulletSection(title: string, items: string[]) {
   return `${title}\n${visibleItems.map((item) => `- ${item}`).join("\n")}`;
 }
 
+function formatCustomerCautionForLanguage(item: string, language: ChatLanguage) {
+  const text = item
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  if (language === "el") {
+    if (text.includes("fat") || text.includes("energy") || text.includes("calorie")) {
+      return "\u0398\u03ad\u03bb\u03b5\u03b9 \u03bc\u03b5\u03c4\u03c1\u03b7\u03bc\u03ad\u03bd\u03b7 \u03bc\u03b5\u03c1\u03af\u03b4\u03b1, \u03b5\u03b9\u03b4\u03b9\u03ba\u03ac \u03b1\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03c4\u03ac\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03b2\u03ac\u03c1\u03bf\u03c2.";
+    }
+    if (text.includes("senior")) {
+      return "\u03a3\u03b5 senior \u03b6\u03ce\u03bf \u03c0\u03b1\u03c1\u03b1\u03ba\u03bf\u03bb\u03bf\u03c5\u03b8\u03bf\u03cd\u03bc\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ba\u03b1\u03b9 \u03bc\u03c5\u03ca\u03ba\u03ae \u03ba\u03b1\u03c4\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7.";
+    }
+    if (text.includes("renal") || text.includes("kidney")) {
+      return "\u03a3\u03b5 \u03bd\u03b5\u03c6\u03c1\u03b9\u03ba\u03cc \u03b8\u03ad\u03bc\u03b1 \u03b7 \u03c4\u03b5\u03bb\u03b9\u03ba\u03ae \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2 \u03c0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03b3\u03af\u03bd\u03b5\u03c4\u03b1\u03b9 \u03bc\u03b5 \u03ba\u03c4\u03b7\u03bd\u03af\u03b1\u03c4\u03c1\u03bf.";
+    }
+    if (text.includes("urinary")) {
+      return "\u03a3\u03b5 \u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3\u03b9\u03ba\u03cc \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b5\u03c0\u03b9\u03b2\u03b5\u03b2\u03b1\u03af\u03c9\u03c3\u03b7 \u03b1\u03c0\u03cc \u03ba\u03c4\u03b7\u03bd\u03af\u03b1\u03c4\u03c1\u03bf.";
+    }
+    if (text.includes("calcium") || text.includes("phosphorus") || text.includes("large-breed")) {
+      return "\u03a3\u03b5 \u03bc\u03b5\u03b3\u03b1\u03bb\u03cc\u03c3\u03c9\u03bc\u03bf \u03ba\u03bf\u03c5\u03c4\u03ac\u03b2\u03b9 \u03b8\u03ad\u03bb\u03bf\u03c5\u03bc\u03b5 \u03c0\u03c1\u03bf\u03c3\u03bf\u03c7\u03ae \u03c3\u03b5 \u03b1\u03c3\u03b2\u03ad\u03c3\u03c4\u03b9\u03bf \u03ba\u03b1\u03b9 \u03c6\u03ce\u03c3\u03c6\u03bf\u03c1\u03bf.";
+    }
+
+    return "";
+  }
+
+  if (text.includes("fat is not low enough")) {
+    return "Portions should be measured carefully, especially for sterilised or weight-control cases.";
+  }
+
+  return item;
+}
+
 function formatCurrentFoodMatchMessage(params: {
   language: ChatLanguage;
   brand: unknown;
@@ -1289,6 +1322,13 @@ function formatCurrentFoodMatchMessage(params: {
   const foodName = [params.brand, params.name].map((value) => String(value ?? "").trim()).filter(Boolean).join(" - ");
   const fit = formatCustomerFoodFit(params.foodScore, params.language);
   const isGreek = params.language === "el";
+  const customerCautions = [
+    ...params.nutritionCautions,
+    ...params.ingredientCautions,
+    ...params.explanation,
+  ]
+    .map((item) => formatCustomerCautionForLanguage(item, params.language))
+    .filter(Boolean);
 
   const sections = [
     isGreek
@@ -1303,7 +1343,7 @@ function formatCurrentFoodMatchMessage(params: {
     ),
     formatCustomerBulletSection(
       isGreek ? "Τι να παρακολουθείς" : "What to monitor",
-      [...params.nutritionCautions, ...params.ingredientCautions, ...params.explanation].slice(0, 4)
+      customerCautions.slice(0, 4)
     ),
   ];
 
@@ -1483,7 +1523,9 @@ Next step: send the exact brand and formula from the bag, or try a shorter query
     }
 
     const nutrition = item.nutrition ?? {};
-    const cautions = item.cautions ?? [];
+    const cautions = (item.cautions ?? [])
+      .map((caution) => formatCustomerCautionForLanguage(caution, language))
+      .filter(Boolean);
     const title = `${index + 1}. ${compactCompareName(item, language)}`;
 
     if (greek) {
