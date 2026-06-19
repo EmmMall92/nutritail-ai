@@ -112,6 +112,12 @@ const coreScenarioSamples = [
             reasons: ["Urinary subtype matches the request."],
             cautions: ["Magnesium data is missing for urinary review."],
           },
+          food_intelligence: {
+            best_use_cases: ["urinary_mineral_review", "urinary_complete_mineral_review"],
+            strengths: [
+              "Magnesium, phosphorus and sodium are available for urinary mineral review.",
+            ],
+          },
         },
       ],
     }),
@@ -131,6 +137,10 @@ const coreScenarioSamples = [
             ...sampleResponse.premium[0].ranking,
             reasons: ["Renal support positioning."],
             cautions: ["Phosphorus data is missing for renal review."],
+          },
+          food_intelligence: {
+            best_use_cases: ["renal_phosphorus_review", "renal_mineral_review"],
+            strengths: ["Phosphorus and sodium are available for renal mineral review."],
           },
         },
       ],
@@ -243,6 +253,30 @@ for (const scenario of coreScenarioSamples) {
     console.error(scenario.text);
     process.exit(1);
   }
+}
+
+const urinaryCustomerScenario = coreScenarioSamples.find(
+  (scenario) => scenario.label === "urinary cat"
+);
+if (
+  !urinaryCustomerScenario?.text.includes("magnesium, phosphorus and sodium context") ||
+  !urinaryCustomerScenario.text.includes("key mineral context")
+) {
+  console.error("Urinary customer-facing copy should explain mineral context without back-office wording.");
+  console.error(urinaryCustomerScenario?.text);
+  process.exit(1);
+}
+
+const renalCustomerScenario = coreScenarioSamples.find(
+  (scenario) => scenario.label === "renal senior cat"
+);
+if (
+  !renalCustomerScenario?.text.includes("phosphorus and sodium context") ||
+  !renalCustomerScenario.text.includes("renal-positioned foods")
+) {
+  console.error("Renal customer-facing copy should explain phosphorus/sodium context without back-office wording.");
+  console.error(renalCustomerScenario?.text);
+  process.exit(1);
 }
 
 if (!sample.includes("Your food shortlist") || !sample.includes("Happy Dog")) {
