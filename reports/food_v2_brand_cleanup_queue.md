@@ -1,13 +1,13 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-19T02:18:02.312Z
+Generated: 2026-06-19T02:22:24.240Z
 
 ## Summary
 
 - Brands queued: 80
-- Top priority brand: Royal Canin
+- Top priority brand: Ambrosia
 - Output CSV: data/review/food_v2_brand_cleanup_queue.csv
-- Highest customer impact brand: Royal Canin
+- Highest customer impact brand: Ambrosia
 
 ## Queue By Phase
 
@@ -19,12 +19,12 @@ Generated: 2026-06-19T02:18:02.312Z
 
 ## Top Cleanup Priorities
 
-- 1. Royal Canin: priority=181; customer_impact=136; dedupe_before_import; rows=29; title identities=6; title issues=12; duplicates=35; Ca/P gaps=21
-- 2. Ambrosia: priority=97; customer_impact=82; title_cleanup; rows=8; title identities=28; title issues=89; duplicates=0; Ca/P gaps=1
-- 3. Belcando: priority=89; customer_impact=77; title_cleanup; rows=20; title identities=26; title issues=57; duplicates=0; Ca/P gaps=0
-- 4. Brit: priority=80; customer_impact=77; title_cleanup; rows=46; title identities=19; title issues=39; duplicates=0; Ca/P gaps=0
-- 5. Josera: priority=62; customer_impact=58; dedupe_before_import; rows=54; title identities=1; title issues=1; duplicates=2; Ca/P gaps=15
-- 6. Hills: priority=60; customer_impact=59; title_cleanup; rows=37; title identities=8; title issues=16; duplicates=0; Ca/P gaps=0
+- 1. Ambrosia: priority=97; customer_impact=82; title_cleanup; rows=8; title identities=28; title issues=89; duplicates=0; Ca/P gaps=1
+- 2. Belcando: priority=89; customer_impact=77; title_cleanup; rows=20; title identities=26; title issues=57; duplicates=0; Ca/P gaps=0
+- 3. Brit: priority=80; customer_impact=77; title_cleanup; rows=46; title identities=19; title issues=39; duplicates=0; Ca/P gaps=0
+- 4. Royal Canin: priority=79; customer_impact=76; dedupe_before_import; rows=29; title identities=6; title issues=12; duplicates=1; Ca/P gaps=21
+- 5. Hills: priority=60; customer_impact=59; title_cleanup; rows=37; title identities=8; title issues=16; duplicates=0; Ca/P gaps=0
+- 6. Josera: priority=59; customer_impact=56; dedupe_before_import; rows=54; title identities=1; title issues=1; duplicates=1; Ca/P gaps=15
 - 7. Royal Canin Veterinary Diet: priority=54; customer_impact=50; title_cleanup; rows=5; title identities=4; title issues=8; duplicates=0; Ca/P gaps=4
 - 8. Hill's Prescription Diet: priority=52; customer_impact=46; title_cleanup; rows=8; title identities=9; title issues=14; duplicates=0; Ca/P gaps=0
 - 9. Happy Dog: priority=39; customer_impact=39; nutrient_backfill; rows=11; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
@@ -54,22 +54,22 @@ Generated: 2026-06-19T02:18:02.312Z
 
 Work these in order before the next broad customer-facing recommendation test.
 
-1. Royal Canin (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
-2. Ambrosia (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-3. Belcando (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-4. Brit (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-5. Josera (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+1. Ambrosia (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+2. Belcando (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+3. Brit (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+4. Royal Canin (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+5. Hills (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 
 ## Customer-Facing Risk Hotspots
 
 These brands are most likely to produce confusing customer recommendations because of visible title, duplicate or nutrition-confidence issues.
 
-- Royal Canin: customer_impact=136; title_risk=20; duplicate_risk=64; nutrition_gap=30; next=data/review/food_v2_duplicate_merge_risk_audit.csv
 - Ambrosia: customer_impact=82; title_risk=82; duplicate_risk=7; nutrition_gap=11; next=data/review/food_v2_title_quality_audit.csv
 - Belcando: customer_impact=77; title_risk=63; duplicate_risk=8; nutrition_gap=17; next=data/review/food_v2_title_quality_audit.csv
 - Brit: customer_impact=77; title_risk=47; duplicate_risk=10; nutrition_gap=8; next=data/review/food_v2_title_quality_audit.csv
+- Royal Canin: customer_impact=76; title_risk=20; duplicate_risk=10; nutrition_gap=30; next=data/review/food_v2_duplicate_merge_risk_audit.csv
 - Hills: customer_impact=59; title_risk=24; duplicate_risk=9; nutrition_gap=21; next=data/review/food_v2_title_quality_audit.csv
-- Josera: customer_impact=58; title_risk=9; duplicate_risk=14; nutrition_gap=11; next=data/review/food_v2_duplicate_merge_risk_audit.csv
+- Josera: customer_impact=56; title_risk=9; duplicate_risk=12; nutrition_gap=11; next=data/review/food_v2_duplicate_merge_risk_audit.csv
 - Royal Canin Veterinary Diet: customer_impact=50; title_risk=16; duplicate_risk=6; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
 - Hill's Prescription Diet: customer_impact=46; title_risk=24; duplicate_risk=7; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
 - Happy Dog: customer_impact=39; title_risk=8; duplicate_risk=7; nutrition_gap=13; next=data/review/food_v2_nutrient_gap_priorities.csv
@@ -92,9 +92,9 @@ These brands are most likely to produce confusing customer recommendations becau
 
 ## Duplicate Cleanup Hotspots
 
-- Royal Canin: duplicate_risk=64; duplicate groups=35; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
-- Josera: duplicate_risk=14; duplicate groups=2; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+- Josera: duplicate_risk=12; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
 - Brit: duplicate_risk=10; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+- Royal Canin: duplicate_risk=10; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
 - Hills: duplicate_risk=9; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Belcando: duplicate_risk=8; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Acana: duplicate_risk=8; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.

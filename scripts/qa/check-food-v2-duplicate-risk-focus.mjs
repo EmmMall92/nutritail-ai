@@ -56,6 +56,9 @@ const queueRows = parseCsv(
 const officialOverlapRows = duplicateRows.filter(
   (row) => row.risk_reason === "official_and_lower_priority_sources_overlap"
 );
+const officialSurvivorRows = duplicateRows.filter(
+  (row) => row.risk_reason === "official_survivor_with_lower_priority_backfill"
+);
 const riskyRows = duplicateRows.filter((row) =>
   ["high", "medium"].includes(row.risk_level)
 );
@@ -66,12 +69,27 @@ if (officialOverlapRows.length === 0) {
   process.exit(1);
 }
 
+if (officialSurvivorRows.length === 0) {
+  console.error("Expected official-survivor rows for duplicate candidate source overlaps.");
+  process.exit(1);
+}
+
 const nonLowOfficialOverlap = officialOverlapRows.filter(
   (row) => row.risk_level !== "low"
 );
 if (nonLowOfficialOverlap.length > 0) {
   console.error(
     "Official/lower-priority overlaps should be low risk unless there is a material conflict."
+  );
+  process.exit(1);
+}
+
+const nonLowOfficialSurvivor = officialSurvivorRows.filter(
+  (row) => row.risk_level !== "low"
+);
+if (nonLowOfficialSurvivor.length > 0) {
+  console.error(
+    "Official survivor/backfill overlaps should be low risk unless there is a material nutrition conflict."
   );
   process.exit(1);
 }
@@ -86,7 +104,7 @@ if (!royalQueue) {
   process.exit(1);
 }
 
-if (Number(royalQueue.duplicate_risk_groups) >= 56) {
+if (Number(royalQueue.duplicate_risk_groups) >= 35) {
   console.error(
     `Royal Canin duplicate risk should ignore low evidence overlaps, got ${royalQueue.duplicate_risk_groups}.`
   );
