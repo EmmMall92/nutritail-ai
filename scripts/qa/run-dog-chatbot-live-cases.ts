@@ -101,12 +101,10 @@ type CaseResult = {
 };
 
 const SITE_URL = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
-const REPORT_PATH =
-  process.env.NUTRITAIL_QA_REPORT_PATH ||
-  "reports/dog_chatbot_200_live_cases.md";
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const RUN_OPENAI = process.env.NUTRITAIL_QA_OPENAI !== "0";
 const STRICT = process.env.NUTRITAIL_QA_STRICT === "1";
+const DEFAULT_REPORT_PATH = "reports/dog_chatbot_200_live_cases.md";
 
 const CASES: DogQaCase[] = [
   { id: 1, message: "Έχω ημίαιμο κουτάβι 4 μηνών, 8kg, θα γίνει περίπου 15kg. Θέλω ξηρά τροφή.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 8, ageYears: 0.33 }, checks: { puppyGrowth: true, foodV2Candidates: true } },
@@ -350,6 +348,18 @@ function selectedCases() {
 
   if (Number.isInteger(limit) && limit > 0) return cases.slice(0, limit);
   return cases;
+}
+
+function resolveReportPath(casesToRun: DogQaCase[]) {
+  if (process.env.NUTRITAIL_QA_REPORT_PATH?.trim()) {
+    return process.env.NUTRITAIL_QA_REPORT_PATH.trim();
+  }
+
+  if (casesToRun.length === ALL_CASES.length) return DEFAULT_REPORT_PATH;
+
+  const first = casesToRun[0]?.id ?? "none";
+  const last = casesToRun.at(-1)?.id ?? first;
+  return `reports/dog_chatbot_live_cases_${first}-${last}_${casesToRun.length}.md`;
 }
 
 function assertCaseCoverage() {
@@ -991,6 +1001,7 @@ async function main() {
   const results: CaseResult[] = [];
 
   const casesToRun = selectedCases();
+  const reportPath = resolveReportPath(casesToRun);
 
   for (const testCase of casesToRun) {
     let extraction: ExtractionResult | null = null;
@@ -1030,8 +1041,8 @@ async function main() {
     });
   }
 
-  await mkdir(path.dirname(REPORT_PATH), { recursive: true });
-  await writeFile(REPORT_PATH, renderReport(results), "utf8");
+  await mkdir(path.dirname(reportPath), { recursive: true });
+  await writeFile(reportPath, renderReport(results), "utf8");
 
   const passed = results.filter((item) => item.status === "pass").length;
   const review = results.length - passed;
@@ -1043,7 +1054,7 @@ async function main() {
         checked: results.length,
         passed,
         review,
-        report: REPORT_PATH,
+        report: reportPath,
       },
       null,
       2
