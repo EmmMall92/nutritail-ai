@@ -22,6 +22,14 @@ const descriptiveTitlePatterns = [
   /εν[ηή]λικ[αα]\s+και\s+ηλικιωμ[εέ]να/iu,
 ];
 
+const packOrOfferPatterns = [
+  /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/iu,
+  /\b\d+\s*x\s*\d+(?:[,.]\d+)?\s*(?:kg|g|gr)\b/iu,
+  /\b(?:economy\s+pack|saver\s+pack|trial\s+pack|try\s+now|offer|promo|gift)\b/iu,
+  /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\s*(?:free|gratis)\b/iu,
+  /\+\s*\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\s*(?:free|gratis)\b/iu,
+];
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -233,6 +241,9 @@ function titleRiskReason(row) {
   const displayName = normalizedDisplayText(row.display_name);
 
   if (!formulaName) return "missing_formula_name";
+  if (packOrOfferPatterns.some((pattern) => pattern.test(formulaName))) {
+    return "formula_contains_pack_or_offer";
+  }
   if (wordCount(formulaName) > 10 || formulaName.length > 80) {
     return "formula_name_too_long";
   }

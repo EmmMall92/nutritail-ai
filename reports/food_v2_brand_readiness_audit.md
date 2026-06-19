@@ -1,6 +1,6 @@
 # Food V2 Brand Readiness Audit
 
-Generated: 2026-06-18T20:42:58.361Z
+Generated: 2026-06-19T03:07:13.115Z
 
 ## Summary
 
@@ -66,12 +66,12 @@ Generated: 2026-06-18T20:42:58.361Z
 - Prince: 1 rows, avg score 100, recommendable 0
 - Vet Expert: 1 rows, avg score 100, recommendable 0
 - Bozita: 2 rows, avg score 95, recommendable 0
-- Briantos: 2 rows, avg score 95, recommendable 0
 - Cibau: 2 rows, avg score 95, recommendable 0
 - Trovet: 2 rows, avg score 95, recommendable 0
 - Wellfed: 2 rows, avg score 95, recommendable 0
 - Belcando Mastercraft: 1 rows, avg score 95, recommendable 0
 - Black Olympus: 1 rows, avg score 95, recommendable 0
+- Briantos: 1 rows, avg score 95, recommendable 0
 - Burns: 1 rows, avg score 95, recommendable 0
 - Cat Vital: 1 rows, avg score 95, recommendable 0
 - Meradog: 1 rows, avg score 95, recommendable 0

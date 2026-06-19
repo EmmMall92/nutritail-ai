@@ -33,12 +33,12 @@ Eukanuba,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF sou
 GranataPet,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Hill's Science Plan,3,0,0,3,0,3,0,3,0,3,0,0,2,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
 Bozita,2,0,0,2,0,2,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
-Briantos,2,0,0,2,1,1,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Cibau,2,0,0,2,2,0,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Trovet,2,0,0,2,2,0,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Wellfed,2,0,0,2,0,2,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Belcando Mastercraft,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Black Olympus,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
+Briantos,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Burns,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Cat Vital,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Markus Mühle,1,0,0,1,0,1,0,1,0,1,0,0,1,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."

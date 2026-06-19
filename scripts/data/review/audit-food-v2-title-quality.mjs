@@ -147,6 +147,13 @@ function stripBrandPrefix(value, brand) {
   return cleaned;
 }
 
+function titleForQualityChecks(value, brand) {
+  const title = normalizeText(value);
+  const brandlessTitle = stripBrandPrefix(title, brand);
+
+  return brandlessTitle || title;
+}
+
 function wordCount(value) {
   return normalizeText(value).split(/\s+/u).filter(Boolean).length;
 }
@@ -173,10 +180,16 @@ function isLowPrioritySourceRegistryFallback(row) {
   if (row.audit_source !== "category_product_sources_registry") return false;
 
   const sourceText = normalizeComparable(
-    `${row.formula_key ?? ""} ${row.source_group ?? ""} ${row.product_url ?? ""}`
+    `${row.formula_key ?? ""} ${row.source_group ?? ""} ${row.product_url ?? ""} ${row.formula_name ?? ""}`
   );
 
-  return sourceText.includes("petsamolis.gr");
+  return (
+    sourceText.includes("petsamolis.gr") ||
+    sourceText.includes("trial_pack") ||
+    sourceText.includes("saver_packs") ||
+    sourceText.includes("economy pack") ||
+    sourceText.includes("try now")
+  );
 }
 
 function sourceRegistryFallbackIssueType(row, issueType) {
@@ -236,6 +249,7 @@ function findTitleIssues(row) {
   const issues = [];
   const formulaName = normalizeText(row.formula_name);
   const displayName = normalizeText(row.display_name);
+  const checkFormulaName = titleForQualityChecks(formulaName, row.brand);
   const normalizedFormula = normalizeComparable(formulaName);
   const normalizedBrand = normalizeComparable(row.brand);
 
@@ -254,7 +268,7 @@ function findTitleIssues(row) {
     );
   }
 
-  if (wordCount(formulaName) > 10 || formulaName.length > 80) {
+  if (wordCount(checkFormulaName) > 10 || checkFormulaName.length > 80) {
     addIssue(
       issues,
       row,
@@ -309,7 +323,7 @@ function findTitleIssues(row) {
   }
 
   for (const pattern of descriptiveTitlePatterns) {
-    if (pattern.test(formulaName)) {
+    if (pattern.test(checkFormulaName)) {
       addIssue(
         issues,
         row,
@@ -322,8 +336,8 @@ function findTitleIssues(row) {
   }
 
   for (const pattern of medicalDescriptionPatterns) {
-    if (pattern.test(formulaName) && wordCount(formulaName) > 5) {
-      const conciseProductTitle = isConciseMedicalProductTitle(formulaName);
+    if (pattern.test(checkFormulaName) && wordCount(checkFormulaName) > 5) {
+      const conciseProductTitle = isConciseMedicalProductTitle(checkFormulaName);
       addIssue(
         issues,
         row,
