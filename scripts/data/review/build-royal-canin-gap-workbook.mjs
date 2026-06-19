@@ -3,6 +3,7 @@ import path from "node:path";
 
 const paths = {
   queue: "data/review/royal_canin_photo_gap_queue.csv",
+  foodV2Gaps: "data/review/food_v2_nutrient_gap_priorities.csv",
   workbook: "data/review/royal_canin_gap_workbook.csv",
   report: "reports/royal_canin_gap_workbook.md",
 };
@@ -176,7 +177,53 @@ function renderCounts(counts) {
     .join("\n");
 }
 
-function renderReport(rows) {
+function brandMatchesRoyalCanin(value) {
+  return value === "Royal Canin" || value === "Royal Canin Veterinary Diet";
+}
+
+function buildFoodV2RoyalCaninRows(rows) {
+  return rows
+    .filter((row) => brandMatchesRoyalCanin(row.brand))
+    .sort(
+      (a, b) =>
+        priorityRank(a.priority) - priorityRank(b.priority) ||
+        Number(b.gap_score ?? 0) - Number(a.gap_score ?? 0) ||
+        a.display_name.localeCompare(b.display_name)
+    );
+}
+
+function renderFoodV2GapSummary(rows) {
+  if (rows.length === 0) return "- No current Food V2 Royal Canin nutrient gaps found.";
+
+  const high = rows.filter((row) => row.priority === "high").length;
+  const medium = rows.filter((row) => row.priority === "medium").length;
+  const calciumGaps = rows.filter((row) => String(row.missing_blockers).includes("calcium_percent")).length;
+  const phosphorusGaps = rows.filter((row) => String(row.missing_blockers).includes("phosphorus_percent")).length;
+  const estimatedKcal = rows.filter((row) =>
+    String(row.estimated_fields_to_replace).includes("kcal_per_100g")
+  ).length;
+  const topRows = rows
+    .slice(0, 12)
+    .map(
+      (row) =>
+        `- ${row.brand} - ${row.display_name}: ${row.priority}; blockers=${row.missing_blockers || "none"}; estimated=${row.estimated_fields_to_replace || "none"}; context=${row.health_context || "none"}`
+    )
+    .join("\n");
+
+  return [
+    `- Food V2 Royal Canin gap rows: ${rows.length}`,
+    `- High priority: ${high}`,
+    `- Medium priority: ${medium}`,
+    `- Calcium gaps: ${calciumGaps}`,
+    `- Phosphorus gaps: ${phosphorusGaps}`,
+    `- Estimated kcal to replace: ${estimatedKcal}`,
+    "",
+    "First Food V2 rows to resolve:",
+    topRows,
+  ].join("\n");
+}
+
+function renderReport(rows, foodV2RoyalCaninRows) {
   return `# Royal Canin Gap Workbook
 
 Generated: ${new Date().toISOString()}
@@ -185,6 +232,7 @@ Generated: ${new Date().toISOString()}
 
 - Workbook rows: ${rows.length}
 - Source queue: ${paths.queue}
+- Food V2 nutrient gaps: ${paths.foodV2Gaps}
 - Output workbook: ${paths.workbook}
 
 ## By Species
@@ -198,17 +246,30 @@ ${renderCounts(countBy(rows, "priority"))}
 ## First Actions
 
 ${rows.slice(0, 10).map((row) => `- ${row.formula_name} (${row.species}): ${row.next_best_action}`).join("\n")}
+
+## Food V2 Recommendation-Impact Gaps
+
+${renderFoodV2GapSummary(foodV2RoyalCaninRows)}
+
+## Practical Order
+
+1. Resolve Food V2 rows first when they already appear in the recommendation preview.
+2. Use photo workbook rows to backfill missing label evidence for formulas not yet ready for Food V2 import.
+3. Prioritize puppy, urinary, renal, senior, sterilised and weight-care formulas before ordinary adult maintenance rows.
 `;
 }
 
 async function main() {
   const queueRows = parseCsv(await readFile(paths.queue, "utf8"));
+  const foodV2GapRows = parseCsv(await readFile(paths.foodV2Gaps, "utf8"));
   const rows = buildWorkbookRows(queueRows);
+  const foodV2RoyalCaninRows = buildFoodV2RoyalCaninRows(foodV2GapRows);
   await mkdir(path.dirname(paths.workbook), { recursive: true });
   await mkdir(path.dirname(paths.report), { recursive: true });
   await writeFile(paths.workbook, writeCsv(rows), "utf8");
-  await writeFile(paths.report, renderReport(rows), "utf8");
+  await writeFile(paths.report, renderReport(rows, foodV2RoyalCaninRows), "utf8");
   console.log(`Royal Canin gap workbook rows: ${rows.length}`);
+  console.log(`Royal Canin Food V2 nutrient gap rows: ${foodV2RoyalCaninRows.length}`);
   console.log(`Wrote ${paths.workbook}`);
   console.log(`Wrote ${paths.report}`);
 }
