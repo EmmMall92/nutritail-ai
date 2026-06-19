@@ -290,6 +290,12 @@ function scoreLabel() {
   return "";
 }
 
+function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
+  return locale === "el"
+    ? `\u0393\u03b9\u03b1 \u03b1\u03c5\u03c4\u03cc \u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9 \u03ba\u03bf\u03b9\u03c4\u03ac\u03bc\u03b5 \u03ba\u03c5\u03c1\u03af\u03c9\u03c2: ${goalLabel}.`
+    : `For this pet, I am prioritising: ${goalLabel}.`;
+}
+
 function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
   const nutrition = food.nutrition;
   const kcal = formatNumber(nutrition?.kcal_per_100g, 1);
@@ -515,7 +521,7 @@ function compactCardsIntro({
     return cleanOutput(
       [
         "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
-        `Στόχος: ${goalLabel}.`,
+        recommendationFocusLine(locale, goalLabel),
         `Πρώτη κατεύθυνση: ${name}, γιατί ${reason}.`,
         snapshot,
         "Πάτησε μία κάρτα για να υπολογίσουμε περίπου γραμμάρια/ημέρα.",
@@ -529,7 +535,7 @@ function compactCardsIntro({
   return cleanOutput(
     [
       "Done. I placed the best options below as cards.",
-      `Goal: ${goalLabel}.`,
+      recommendationFocusLine(locale, goalLabel),
       `First direction: ${name}, because it ${reason}.`,
       snapshot,
       "Tap one card to estimate grams/day.",
@@ -605,7 +611,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     return cleanOutput([
       intro,
       "",
-      `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
+      recommendationFocusLine(locale, goalLabel ?? goal),
       excludedBrands.length > 0
         ? locale === "el"
           ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
@@ -630,7 +636,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   const blocks = [
     intro,
     "",
-    `${locale === "el" ? "Στόχος" : "Goal"}: ${goalLabel ?? goal}`,
+    recommendationFocusLine(locale, goalLabel ?? goal),
     top
       ? locale === "el"
         ? `Πρώτη κατεύθυνση: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
