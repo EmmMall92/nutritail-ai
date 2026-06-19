@@ -1999,7 +1999,7 @@ function formatLatestAnalysisSummary(
       : null,
     typeof getHistoryFoodScore(latest) === "number"
       ? language === "el"
-        ? `Fit τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
+        ? `Ταίριασμα τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
         : `Food fit: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
       : null,
   ].filter(Boolean);
