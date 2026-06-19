@@ -240,7 +240,11 @@ if (leakedTerms.length > 0) {
 }
 
 for (const scenario of coreScenarioSamples) {
-  if (!scenario.text.includes(`Goal: ${scenario.expectedGoalLabel}`)) {
+  if (
+    !scenario.text.includes(
+      `For this pet, I am prioritising: ${scenario.expectedGoalLabel}.`
+    )
+  ) {
     console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
     console.error(scenario.text);
     process.exit(1);
