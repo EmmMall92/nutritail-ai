@@ -4192,8 +4192,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα: περίπου ${gramsPerDay}g/ημέρα.\n\nΑν το χωρίσεις:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές μέσα στο ημερήσιο όριο και κάνε έλεγχο σε 3-4 εβδομάδες για βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
-          `Great, we will keep ${choice.name}.\n\nFirst amount: about ${gramsPerDay}g/day.\n\nIf you split it:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats inside the daily allowance and recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ημερήσια ποσότητα: περίπου ${gramsPerDay}g.\n\nΑν το χωρίσεις:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές μέσα στο ημερήσιο όριο και κάνε έλεγχο σε 3-4 εβδομάδες για βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
+          `Great, we will keep ${choice.name}.\n\nFirst daily amount: about ${gramsPerDay}g.\n\nIf you split it:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats inside the daily allowance and recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
         )
       : botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για αξιόπιστα γραμμάρια σε αυτή τη ροή. Μπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες για πιο πρακτική ποσότητα.`,
@@ -4565,7 +4565,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
                 "Πάτησε την τροφή που σου αρέσει για να δεις περίπου γραμμάρια/ημέρα και να την κρατήσουμε στο πλάνο.",
-                "Tap the food you like to see estimated grams/day and keep it in the plan."
+                "Tap the food you like to see a daily amount and keep it in the plan."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
@@ -4588,7 +4588,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("2. Υπολόγισε", "2. Calculate")}
                 </span>
                 <span className="font-normal text-sky-950">
-                  {botText("περίπου γραμμάρια/ημέρα", "estimated grams/day")}
+                  {botText("περίπου ποσότητα/ημέρα", "daily amount")}
                 </span>
               </div>
               <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
@@ -4768,7 +4768,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             {latestAnalysis && (
               <div className="rounded-xl border border-gray-200 bg-white p-4">
                 <p className="font-semibold text-black">
-                  {botText("Σύνοψη πλάνου", "Plan summary")}
+                  {botText("Το σημερινό πλάνο", "Today's plan")}
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
                   {botText(
@@ -4836,8 +4836,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {analysisMetadata?.feedingGramsPerDay
                         ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
                         : botText(
-                            "Διάλεξε τροφή για γραμμάρια",
-                            "Choose a food for grams"
+                            "Διάλεξε τροφή για ποσότητα",
+                            "Choose a food for portions"
                           )}
                     </p>
                     {analysisMetadata?.feedingGramsPerDay && (
