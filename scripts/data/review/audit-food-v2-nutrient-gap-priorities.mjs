@@ -61,6 +61,20 @@ const highSensitivityTags = {
   senior: ["phosphorus_percent", "sodium_percent", "epa_percent", "dha_percent", "epa_dha_percent"],
 };
 
+const focusBrands = [
+  "Royal Canin",
+  "Royal Canin Veterinary Diet",
+  "Josera",
+  "Ambrosia",
+  "Happy Dog",
+  "Purina Pro Plan",
+  "Monge",
+  "Acana",
+  "Orijen",
+  "Farmina",
+  "Brit",
+];
+
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -324,6 +338,53 @@ function renderTopRows(queue) {
   );
 }
 
+function renderBrandFocus(queue) {
+  return focusBrands
+    .map((brand) => {
+      const rows = queue.filter((row) => row.brand === brand);
+      if (rows.length === 0) return null;
+
+      const high = rows.filter((row) => row.priority === "high").length;
+      const medium = rows.filter((row) => row.priority === "medium").length;
+      const blockers = countBy(rows, "missing_blockers");
+      const estimated = countBy(rows, "estimated_fields_to_replace");
+      const topRows = rows
+        .slice(0, 3)
+        .map(
+          (row) =>
+            `  - ${row.display_name}: ${row.priority}; blockers=${row.missing_blockers.join(", ") || "none"}; estimated=${row.estimated_fields_to_replace.join(", ") || "none"}`
+        )
+        .join("\n");
+
+      return [
+        `### ${brand}`,
+        "",
+        `- Rows needing backfill/review: ${rows.length}`,
+        `- High priority: ${high}`,
+        `- Medium priority: ${medium}`,
+        `- Most common blockers: ${
+          Object.entries(blockers)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([key, count]) => `${key} (${count})`)
+            .join(", ") || "none"
+        }`,
+        `- Estimated/default values to replace: ${
+          Object.entries(estimated)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([key, count]) => `${key} (${count})`)
+            .join(", ") || "none"
+        }`,
+        "",
+        "First rows to work:",
+        topRows || "- none",
+      ].join("\n");
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 async function main() {
   const rows = parseCsv(await readFile(paths.input, "utf8"));
   const queue = buildQueue(rows);
@@ -366,6 +427,12 @@ async function main() {
       "## Top Priority Rows",
       "",
       renderTopRows(queue),
+      "",
+      "## Brand Focus Sprint",
+      "",
+      "Use this section to work brand-by-brand without scanning the full CSV. It follows the current commercial/data priorities for recommendation quality.",
+      "",
+      renderBrandFocus(queue),
       "",
       "## Workflow",
       "",
