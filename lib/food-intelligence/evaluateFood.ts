@@ -166,6 +166,32 @@ function hasFussyPalatabilitySupport(input: FoodIntelligenceInput) {
   );
 }
 
+function hasChewingEaseContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "easy_chewing",
+    "easy_to_chew",
+    "small_kibble",
+    "kibble_size",
+    "dental",
+    "oral",
+    "tooth",
+    "teeth",
+    "senior_dental",
+  ]);
+}
+
+function hasChewingEaseSupport(input: FoodIntelligenceInput) {
+  const size = String(input.dog_size ?? "").toLowerCase();
+
+  return (
+    hasChewingEaseContext(input) &&
+    (hasTag(input, ["small_kibble", "mini", "xsmall", "small_breed", "easy_chewing", "easy_to_chew"]) ||
+      size.includes("mini") ||
+      size.includes("small") ||
+      size.includes("xsmall"))
+  );
+}
+
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   const size = String(input.dog_size ?? "").toLowerCase();
 
@@ -317,6 +343,9 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasFussyPalatabilitySupport(input)) {
     addUnique(result, "Palatability signals can help fussy-eater trials.");
   }
+  if (hasChewingEaseSupport(input)) {
+    addUnique(result, "Small-breed or easy-chew positioning can help pets that struggle with large kibble.");
+  }
   if (
     input.species === "cat" &&
     hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
@@ -413,6 +442,9 @@ function cautions(input: FoodIntelligenceInput) {
   }
   if (hasFussyEaterContext(input) && !hasFussyPalatabilitySupport(input)) {
     result.push("Fussy-eater positioning is weaker without clear palatability or animal-protein signals.");
+  }
+  if (hasChewingEaseContext(input) && !hasChewingEaseSupport(input)) {
+    result.push("Chewing-ease use is weaker without small-kibble or easy-chew positioning.");
   }
 
   return [...new Set(result)].slice(0, 8);
@@ -530,6 +562,9 @@ function bestUseCases(input: FoodIntelligenceInput) {
   if (hasFussyPalatabilitySupport(input)) {
     addUnique(result, "fussy_eater_palatability_trial");
   }
+  if (hasChewingEaseSupport(input)) {
+    addUnique(result, "easy_chewing_kibble_review");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -602,6 +637,9 @@ function notIdealCases(input: FoodIntelligenceInput) {
   }
   if (hasFussyEaterContext(input) && !hasFussyPalatabilitySupport(input)) {
     cases.push("fussy_eater_without_palatability_support");
+  }
+  if (hasChewingEaseContext(input) && !hasChewingEaseSupport(input)) {
+    cases.push("chewing_difficulty_without_small_kibble_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 

@@ -539,4 +539,72 @@ assert(
   weakFussyFood
 );
 
+const seniorSmallKibbleFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "senior",
+  dog_size: "small",
+  health_tags: ["senior", "easy_chewing", "small_kibble"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 345,
+    protein_percent: 25,
+    fat_percent: 11,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  seniorSmallKibbleFood.best_use_cases.includes("easy_chewing_kibble_review"),
+  "Expected easy_chewing_kibble_review for senior/small-kibble positioning.",
+  seniorSmallKibbleFood
+);
+
+assert(
+  seniorSmallKibbleFood.food_strengths.some((item) =>
+    item.includes("easy-chew positioning")
+  ),
+  "Expected a customer-useful chewing-ease strength.",
+  seniorSmallKibbleFood
+);
+
+const dentalLargeKibbleMismatch = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "senior",
+  dog_size: "large",
+  health_tags: ["dental"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 365,
+    protein_percent: 24,
+    fat_percent: 13,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  dentalLargeKibbleMismatch.not_ideal_cases.includes(
+    "chewing_difficulty_without_small_kibble_support"
+  ),
+  "Expected chewing_difficulty_without_small_kibble_support when dental positioning lacks small-kibble/easy-chew support.",
+  dentalLargeKibbleMismatch
+);
+
+assert(
+  dentalLargeKibbleMismatch.food_cautions.some((item) =>
+    item.includes("Chewing-ease use is weaker")
+  ),
+  "Expected chewing-ease caution when support is weak.",
+  dentalLargeKibbleMismatch
+);
+
 console.log("Food intelligence use-case QA passed.");
