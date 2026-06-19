@@ -1,6 +1,16 @@
 import { formatFoodV2ChatbotRecommendationSummary } from "@/lib/food-v2/chatbotRecommendationSummary";
 import { readFileSync } from "node:fs";
 
+function toEscapedUnicode(value: string) {
+  return value.replace(/[^\x00-\x7F]/g, (char) =>
+    `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`
+  );
+}
+
+function sourceIncludesTextOrEscapedUnicode(source: string, text: string) {
+  return source.includes(text) || source.includes(toEscapedUnicode(text));
+}
+
 const sampleResponse = {
   goal: "sterilised" as const,
   total_candidates: 2,
@@ -418,6 +428,46 @@ const missingCardFlowCopy = requiredCardFlowCopy.filter(
 if (missingCardFlowCopy.length > 0) {
   console.error("Chatbot food cards are missing customer-facing flow copy:");
   console.error(missingCardFlowCopy.join(", "));
+  process.exit(1);
+}
+
+const requiredGreekCardFlowCopy = [
+  "1. Διάλεξε",
+  "2. Υπολόγισε",
+  "3. Αποθήκευσε",
+  "Υπολόγισε γραμμάρια",
+  "Πάτησε για γραμμάρια/ημέρα και επόμενο βήμα.",
+  "Πάτησε για να κρατήσουμε αυτή την επιλογή στο πλάνο.",
+  "Πάτησε μία κάρτα για να δεις γραμμάρια/ημέρα",
+  "Η πρώτη κάρτα είναι η πιο δυνατή επιλογή",
+  "Πρώτη επιλογή",
+  "Πιο value επιλογή",
+  "Καλή εναλλακτική",
+  "Η πιο δυνατή πρώτη επιλογή για το προφίλ που έδωσες.",
+  "Πιο απλή/value εναλλακτική",
+  "Καλή εναλλακτική, αν θέλεις να δεις κι άλλη σωστή κατεύθυνση.",
+  "Πώς να το διαβάσεις:",
+  "Επόμενο βήμα: πες μου ποια από αυτές σε ενδιαφέρει",
+  "Καλύτερες επιλογές",
+  "Value εναλλακτικές",
+  "Το πλάνο σου είναι έτοιμο",
+  "Σύνοψη πλάνου",
+  "Αποθήκευσέ το για να κρατήσεις θερμίδες",
+  "Υπολογισμός μερίδας",
+  "Αν το χωρίσεις:",
+  "2 γεύματα: περίπου",
+  "3 γεύματα: περίπου",
+  "πρωτεΐνη",
+  "λιπαρά",
+  "ίνες",
+];
+const missingGreekCardFlowCopy = requiredGreekCardFlowCopy.filter(
+  (term) => !sourceIncludesTextOrEscapedUnicode(chatbotPage, term)
+);
+
+if (missingGreekCardFlowCopy.length > 0) {
+  console.error("Chatbot food cards are missing Greek customer-facing flow copy:");
+  console.error(missingGreekCardFlowCopy.join(", "));
   process.exit(1);
 }
 
