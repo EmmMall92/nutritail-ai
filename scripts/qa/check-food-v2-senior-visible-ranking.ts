@@ -147,6 +147,23 @@ const mobilitySenior = rankFoodV2ForPet({
   goal: "senior",
 });
 
+const ingredientOnlyJointSignals = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Chicken",
+    display_name: "Senior Chicken",
+    life_stage: "senior",
+    dog_size: "medium",
+    commercial_tags: ["senior"],
+    medical_tags: [],
+    ingredients: ["chicken", "rice", "glucosamine", "chondroitin", "minerals"],
+    ingredient_text: "chicken, rice, glucosamine, chondroitin, minerals",
+    formula_key: "test-brand|senior-ingredient-only-joint|dog|dry",
+  }),
+  nutrients,
+  pet: jointPet,
+  goal: "senior",
+});
+
 if (mobilitySenior.total_score <= plainSenior.total_score) {
   console.error("Senior joint/mobility food should outrank plain senior food for joint-support context.");
   console.error(
@@ -177,6 +194,16 @@ if (
 ) {
   console.error("Expected senior_joint_mobility_positioning for senior joint context.");
   console.error(mobilitySenior.signals);
+  process.exit(1);
+}
+
+if (
+  ingredientOnlyJointSignals.signals.some(
+    (signal) => signal.code === "senior_joint_mobility_positioning"
+  )
+) {
+  console.error("Ingredient-only glucosamine/chondroitin should not count as visible joint/mobility positioning.");
+  console.error(ingredientOnlyJointSignals.signals);
   process.exit(1);
 }
 
