@@ -345,6 +345,7 @@ const requiredCardFlowCopy = [
   "3. Save",
   "Estimate grams",
   "Tap for grams/day and the next step.",
+  "Tap to calculate grams and keep this food in the plan.",
   "Tap one card to see grams/day and keep that food in the plan.",
   "The first card is the strongest fit for the profile.",
   "Value options are simpler alternatives when they still fit well.",
