@@ -58,12 +58,17 @@ const GROUPS = [
   },
   {
     label: "Sensitive digestion and GI",
-    ids: [8, 12, 18, 25, 35, 40, 61, 62, 104, 121, 122, 123, 131, 132, 133, 134, 135],
+    ids: [8, 12, 18, 25, 35, 40, 61, 104, 121, 122, 123, 131, 132, 133, 134, 135],
     positive: ["gastro", "intestinal", "digestion", "sensitive", "hypo", "hydro"],
     negative: ["active", "performance", "high energy"],
     note: "GI cases should surface gastrointestinal, sensitive digestion, or hydrolysed-style options first.",
   },
 ];
+
+const CASE_SPECIFIC_ACCEPTABLE_TERMS = {
+  35: ["duck & potato", "junior", "puppy", "kids", "youngstar"],
+  40: ["duck & potato", "junior", "puppy", "kids", "youngstar"],
+};
 
 function normalize(value) {
   return String(value ?? "")
@@ -132,7 +137,9 @@ function auditGroup(group, rowsById) {
   const review = [];
 
   for (const row of covered) {
-    const positiveHit = group.positive.length === 0 || hasAny(row.text, group.positive);
+    const caseSpecificTerms = CASE_SPECIFIC_ACCEPTABLE_TERMS[row.id] ?? [];
+    const positiveTerms = [...group.positive, ...caseSpecificTerms];
+    const positiveHit = positiveTerms.length === 0 || hasAny(row.text, positiveTerms);
     const negativeFirst = group.negative.length > 0 && hasAny(row.firstText, group.negative);
 
     if (!positiveHit || negativeFirst) {

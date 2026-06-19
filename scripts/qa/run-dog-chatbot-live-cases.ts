@@ -490,6 +490,9 @@ function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | n
     ...(messageText.includes("χάνει μυς") || messageText.includes("χανει μυς")
       ? ["muscle loss"]
       : []),
+    ...(messageText.includes("ψυχρ") || messageText.includes("κρυο") || messageText.includes("κρύο")
+      ? ["cold climate"]
+      : []),
   ];
 
   return {

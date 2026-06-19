@@ -967,6 +967,79 @@ if (
   process.exit(1);
 }
 
+const coldClimatePet = {
+  ...pet,
+  weight: 22,
+  age: 4,
+  activityLevel: "normal" as const,
+  neutered: false,
+  healthIssues: ["cold climate", "winter outdoor energy needs"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const coldClimateEnergyFood = food({
+  id: "cold-climate-energy",
+  formula_key: "qa|cold-climate-energy|dog|dry",
+  display_name: "Adult Active Energy Chicken",
+  dog_size: "medium",
+  commercial_tags: ["active"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 386,
+});
+const coldClimateSterilisedFood = food({
+  id: "cold-climate-sterilised",
+  formula_key: "qa|cold-climate-sterilised|dog|dry",
+  display_name: "Adult Sterilised Light Chicken",
+  dog_size: "medium",
+  commercial_tags: ["sterilised", "light"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const coldClimateEnergyRanking = rankFoodV2ForPet({
+  food: coldClimateEnergyFood,
+  nutrients: {
+    ...nutrients(coldClimateEnergyFood),
+    fat_percent: 16,
+    fiber_percent: 2.5,
+  },
+  pet: coldClimatePet,
+  goal: "general",
+});
+const coldClimateSterilisedRanking = rankFoodV2ForPet({
+  food: coldClimateSterilisedFood,
+  nutrients: {
+    ...nutrients(coldClimateSterilisedFood),
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet: coldClimatePet,
+  goal: "general",
+});
+
+if (coldClimateSterilisedRanking.bucket !== "hold") {
+  console.error("Light/sterilised food should be held for cold-climate energy contexts.");
+  console.error(coldClimateSterilisedRanking);
+  process.exit(1);
+}
+
+if (coldClimateEnergyRanking.total_score <= coldClimateSterilisedRanking.total_score) {
+  console.error("Cold-climate context should prefer energy-aware food over light sterilised food.");
+  console.error({ coldClimateEnergyRanking, coldClimateSterilisedRanking });
+  process.exit(1);
+}
+
+if (
+  !coldClimateEnergyRanking.signals.some(
+    (signal) => signal.code === "cold_climate_energy_context"
+  )
+) {
+  console.error("Expected cold_climate_energy_context for cold-climate energy food.");
+  console.error(coldClimateEnergyRanking.signals);
+  process.exit(1);
+}
+
 const seniorPet = {
   ...pet,
   weight: 15,

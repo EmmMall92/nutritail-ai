@@ -129,6 +129,12 @@ function isReducedAppetiteContext(healthText: string) {
   );
 }
 
+function isColdClimateContext(healthText: string) {
+  return /cold climate|very cold|cold weather|winter|snow|mountain cold|ψυχρ|κρυο|κρύο|χιον|χειμων/.test(
+    healthText
+  );
+}
+
 export function isWeightSensitiveFeedingContext(input: {
   goal: FeedingFitGoal;
   pet: FeedingFitInput["pet"];
@@ -174,7 +180,9 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     isReducedAppetiteContext(activityText) &&
     !strictWeightContext &&
     !weightGainContext;
+  const coldClimate = isColdClimateContext(activityText) && !strictWeightContext;
   const highActivity =
+    coldClimate ||
     pet.activityLevel === "high" ||
     /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
       activityText
@@ -332,6 +340,16 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
   }
 
   if (highActivity && !strictWeightContext && !positioning.weightControl) {
+    if (coldClimate) {
+      signals.push({
+        type: "boost",
+        code: "cold_climate_energy_context",
+        points: 8,
+        message:
+          "Cold-climate context can increase practical energy needs, especially for outdoor dogs.",
+      });
+    }
+
     if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g >= 380) {
       signals.push({
         type: "boost",
@@ -392,9 +410,9 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
 
   if (highActivity && !strictWeightContext && positioning.weightControl && !positioning.active) {
     signals.push({
-      type: weightGainContext ? "exclude" : "caution",
+      type: weightGainContext || coldClimate ? "exclude" : "caution",
       code: "weight_control_formula_for_active_pet",
-      points: weightGainContext ? -100 : -24,
+      points: weightGainContext || coldClimate ? -100 : -24,
       message:
         "Weight-control positioning may underserve a highly active pet unless weight loss is the goal.",
     });
