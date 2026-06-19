@@ -113,8 +113,62 @@ function normalizeComparable(value) {
     .trim();
 }
 
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripBrandPrefix(value, brand) {
+  let cleaned = normalizeText(value);
+  const normalizedBrand = normalizeComparable(brand);
+
+  if (!cleaned || !normalizedBrand) return cleaned;
+
+  while (normalizeComparable(cleaned).startsWith(`${normalizedBrand} `)) {
+    cleaned = cleaned.slice(normalizeText(brand).length).trim();
+  }
+
+  return cleaned;
+}
+
 function wordCount(value) {
   return String(value ?? "").trim().split(/\s+/u).filter(Boolean).length;
+}
+
+const descriptiveTitlePatterns = [
+  /\b(?:dietetic|dietary|complete|complementary)\s+(?:food|feed)\b/i,
+  /\b(?:food|feed)\s+for\b/i,
+  /\b(?:support|management|treatment|reduction)\s+of\b/i,
+  /τροφή\s+για/iu,
+  /υποστήριξη/iu,
+  /αντιμετώπιση/iu,
+];
+
+const packOrOfferPatterns = [
+  /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/iu,
+  /\b(?:offer|promo|gift|δώρο|προσφορά)\b/iu,
+];
+
+function hasAutoCleanableBrandPrefix(row) {
+  const formulaName = normalizeText(row.formula_name);
+  const brand = normalizeText(row.brand);
+  const normalizedBrand = normalizeComparable(brand);
+  const normalizedFormula = normalizeComparable(formulaName);
+
+  if (!formulaName || !normalizedBrand || !normalizedFormula.startsWith(`${normalizedBrand} `)) {
+    return false;
+  }
+
+  const brandlessFormula = stripBrandPrefix(formulaName, brand);
+
+  return (
+    brandlessFormula &&
+    normalizeComparable(brandlessFormula) !== normalizedFormula &&
+    !descriptiveTitlePatterns.some((pattern) => pattern.test(brandlessFormula)) &&
+    !packOrOfferPatterns.some((pattern) => pattern.test(brandlessFormula))
+  );
 }
 
 function hasTitleRisk(row) {
@@ -122,13 +176,15 @@ function hasTitleRisk(row) {
   const displayName = String(row.display_name ?? "").trim();
   const brand = normalizeComparable(row.brand);
   const formula = normalizeComparable(formulaName);
+  const brandPrefixRisk =
+    brand && formula.startsWith(`${brand} `) && !hasAutoCleanableBrandPrefix(row);
 
   return (
     !formulaName ||
     formulaName.length > 80 ||
     displayName.length > 100 ||
     wordCount(formulaName) > 10 ||
-    (brand && formula.startsWith(`${brand} `)) ||
+    brandPrefixRisk ||
     repeatedProductTermPattern.test(formulaName) ||
     repeatedProductTermPattern.test(displayName)
   );

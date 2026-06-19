@@ -52,6 +52,9 @@ const titleRows = parseCsv(
 const queueRows = parseCsv(
   readFileSync("data/review/food_v2_brand_cleanup_queue.csv", "utf8")
 );
+const readinessRows = parseCsv(
+  readFileSync("data/review/food_v2_brand_readiness_audit.csv", "utf8")
+);
 
 const autoCleanRows = titleRows.filter(
   (row) => row.issue_type === "formula_name_brand_prefix_auto_cleaned"
@@ -60,6 +63,7 @@ const manualBrandPrefixRows = titleRows.filter(
   (row) => row.issue_type === "formula_name_starts_with_brand"
 );
 const joseraQueue = queueRows.find((row) => row.brand === "Josera");
+const joseraReadiness = readinessRows.find((row) => row.brand === "Josera");
 const topQueue = queueRows[0];
 
 if (autoCleanRows.length < 100) {
@@ -81,9 +85,21 @@ if (!joseraQueue) {
   process.exit(1);
 }
 
+if (!joseraReadiness) {
+  console.error("Josera should remain present in the brand readiness audit.");
+  process.exit(1);
+}
+
 if (Number(joseraQueue.title_issue_rows) > 5) {
   console.error(
     `Josera manual title issues should be low after auto-cleanup, got ${joseraQueue.title_issue_rows}.`
+  );
+  process.exit(1);
+}
+
+if (Number(joseraReadiness.title_risk_rows) > 0) {
+  console.error(
+    `Josera readiness title risks should ignore auto-cleanable brand prefixes, got ${joseraReadiness.title_risk_rows}.`
   );
   process.exit(1);
 }
