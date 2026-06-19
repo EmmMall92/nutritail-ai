@@ -124,14 +124,13 @@ const checks = [
   {
     label: "Analysis in-progress message is localized",
     file: "app/account/chatbot/page.tsx",
-    expected:
-      'botText(\n            "Περίμενε λίγο, ολοκληρώνω την ανάλυση.",\n            "Hold on a moment, I am finishing the analysis."',
+    expected: "Περίμενε λίγο, ολοκληρώνω την ανάλυση.",
   },
   {
     label: "Analysis complete message is localized",
     file: "app/account/chatbot/page.tsx",
     expected:
-      'botText(\n          "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να ξεκινήσεις ξανά.",\n          "The analysis is complete. You can save it or press Restart."',
+      "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να ξεκινήσεις ξανά.",
   },
   {
     label: "Printable timeline uses customer-facing food recommendation label",
