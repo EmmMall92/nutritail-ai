@@ -112,6 +112,16 @@ assert(
   seniorMobility
 );
 assert(
+  seniorMobility.best_use_cases.includes("epa_omega_review"),
+  "Expected epa_omega_review when senior/mobility positioning has combined EPA-DHA data.",
+  seniorMobility
+);
+assert(
+  seniorMobility.not_ideal_cases.includes("omega_detail_combined_not_split"),
+  "Expected combined EPA-DHA data to be flagged as useful but less precise than split EPA/DHA.",
+  seniorMobility
+);
+assert(
   seniorMobility.best_use_cases.includes("senior_muscle_monitoring"),
   "Expected senior_muscle_monitoring when senior food has useful protein data.",
   seniorMobility
@@ -140,6 +150,20 @@ const puppyGrowth = evaluateFoodIntelligence({
 assert(
   puppyGrowth.best_use_cases.includes("growth_development"),
   "Expected growth_development for puppy food with DHA.",
+  puppyGrowth
+);
+
+assert(
+  puppyGrowth.best_use_cases.includes("dha_growth_review"),
+  "Expected dha_growth_review for puppy food with declared DHA.",
+  puppyGrowth
+);
+
+assert(
+  puppyGrowth.food_strengths.some((item) =>
+    item.includes("Declared DHA supports growth")
+  ),
+  "Expected declared DHA strength for puppy growth interpretation.",
   puppyGrowth
 );
 
@@ -378,6 +402,46 @@ assert(
   skinCoatOmegaReview.best_use_cases.includes("skin_coat_omega_review"),
   "Expected skin_coat_omega_review when skin/coat positioning has declared EPA-DHA data.",
   skinCoatOmegaReview
+);
+
+const splitEpaDhaSkinFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["skin"],
+  ingredient_tags: ["salmon", "rice"],
+  medical_tags: ["dermatosis"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 365,
+    protein_percent: 26,
+    fat_percent: 14,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+    epa_percent: 0.18,
+    dha_percent: 0.12,
+  },
+});
+
+assert(
+  splitEpaDhaSkinFood.food_strengths.some((item) =>
+    item.includes("EPA and DHA are declared separately")
+  ),
+  "Expected split EPA/DHA strength when both values are declared separately.",
+  splitEpaDhaSkinFood
+);
+
+assert(
+  splitEpaDhaSkinFood.best_use_cases.includes("epa_omega_review"),
+  "Expected epa_omega_review for skin/coat food with declared EPA.",
+  splitEpaDhaSkinFood
+);
+
+assert(
+  !splitEpaDhaSkinFood.not_ideal_cases.includes("omega_detail_combined_not_split"),
+  "Did not expect combined-only caution when EPA and DHA are declared separately.",
+  splitEpaDhaSkinFood
 );
 
 const skinCoatWithoutOmegaDetail = evaluateFoodIntelligence({

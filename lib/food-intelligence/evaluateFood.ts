@@ -110,6 +110,30 @@ function hasOmegaDetail(input: FoodIntelligenceInput) {
   );
 }
 
+function hasSplitEpaDhaDetail(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return hasNumber(nutrients.epa_percent) && hasNumber(nutrients.dha_percent);
+}
+
+function hasCombinedOnlyEpaDhaDetail(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasNumber(nutrients.epa_dha_percent) &&
+    !hasNumber(nutrients.epa_percent) &&
+    !hasNumber(nutrients.dha_percent)
+  );
+}
+
+function hasEpaRelevantContext(input: FoodIntelligenceInput) {
+  return hasTag(input, ["senior", "mature", "joint", "mobility", "skin", "coat", "dermatosis", "renal", "kidney"]);
+}
+
+function hasDhaRelevantContext(input: FoodIntelligenceInput) {
+  return ["puppy", "kitten"].includes(input.life_stage ?? "") || hasTag(input, ["puppy", "kitten", "growth"]);
+}
+
 function hasWeightAwareNutrition(input: FoodIntelligenceInput) {
   const nutrients = input.nutrients ?? {};
 
@@ -369,6 +393,18 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasOmegaDetail(input)) {
     addUnique(result, "Declared EPA/DHA improves omega-3 reasoning.");
   }
+  if (hasSplitEpaDhaDetail(input)) {
+    addUnique(result, "EPA and DHA are declared separately, which gives stronger omega-3 interpretation.");
+  }
+  if (hasCombinedOnlyEpaDhaDetail(input)) {
+    addUnique(result, "Combined EPA/DHA is declared, so omega-3 support can still be considered.");
+  }
+  if (hasEpaRelevantContext(input) && hasNumber(nutrients.epa_percent)) {
+    addUnique(result, "Declared EPA supports skin, mobility, or renal omega-3 review.");
+  }
+  if (hasDhaRelevantContext(input) && hasNumber(nutrients.dha_percent)) {
+    addUnique(result, "Declared DHA supports growth and neuro-visual development review.");
+  }
   if (hasNumber(nutrients.calcium_percent) && hasNumber(nutrients.phosphorus_percent)) {
     addUnique(result, "Calcium and phosphorus are available for mineral review.");
   }
@@ -479,6 +515,12 @@ function cautions(input: FoodIntelligenceInput) {
     result.push("Skin/coat positioning is weaker without declared EPA/DHA detail.");
   }
   if (
+    hasCombinedOnlyEpaDhaDetail(input) &&
+    (hasEpaRelevantContext(input) || hasDhaRelevantContext(input))
+  ) {
+    result.push("EPA/DHA is combined rather than split, so omega interpretation is useful but less precise.");
+  }
+  if (
     hasTag(input, ["hairball"]) &&
     (!hasNumber(input.nutrients?.fiber_percent) || input.nutrients.fiber_percent < 4)
   ) {
@@ -543,6 +585,12 @@ function bestUseCases(input: FoodIntelligenceInput) {
     addUnique(result, "senior_mobility");
   }
   if (
+    hasEpaRelevantContext(input) &&
+    (hasNumber(nutrients.epa_percent) || hasNumber(nutrients.epa_dha_percent))
+  ) {
+    addUnique(result, "epa_omega_review");
+  }
+  if (
     (input.life_stage === "senior" || hasTag(input, ["senior", "mature"])) &&
     hasNumber(nutrients.protein_percent) &&
     nutrients.protein_percent >= 24
@@ -554,6 +602,12 @@ function bestUseCases(input: FoodIntelligenceInput) {
     (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent))
   ) {
     addUnique(result, "growth_development");
+  }
+  if (
+    hasDhaRelevantContext(input) &&
+    (hasNumber(nutrients.dha_percent) || hasNumber(nutrients.epa_dha_percent))
+  ) {
+    addUnique(result, "dha_growth_review");
   }
   const caPRatio = calciumPhosphorusRatio(input);
   if (
@@ -678,6 +732,12 @@ function notIdealCases(input: FoodIntelligenceInput) {
     !hasOmegaDetail(input)
   ) {
     cases.push("skin_coat_without_omega_detail");
+  }
+  if (
+    hasCombinedOnlyEpaDhaDetail(input) &&
+    (hasEpaRelevantContext(input) || hasDhaRelevantContext(input))
+  ) {
+    cases.push("omega_detail_combined_not_split");
   }
   if (
     input.life_stage === "senior" &&
