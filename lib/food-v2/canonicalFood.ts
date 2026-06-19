@@ -9,6 +9,9 @@ import type {
 const PACK_SIZE_PATTERN =
   /\b\d+(?:[.,]\d+)?\s*(?:g|gr|gram|grams|kg|kgs|kilogram|kilograms|lb|lbs)\b/gi;
 
+const MULTIPACK_SIZE_PATTERN =
+  /\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr|gram|grams|kilogram|kilograms|lb|lbs)\b/gi;
+
 const SOURCE_SUFFIX_PATTERN =
   /(?:^|[-_\s|])(?:official|retailer|document|spreadsheet|pdf|ods|html|mhtml|photo|manual|source|gatoskilo|petshop88|zooplus|petsamolis|royal-canin-gr|gr|eu|uk)(?=$|[-_\s|])/gi;
 
@@ -36,6 +39,9 @@ const NOISE_WORDS = [
   "gata",
   "gamma",
   "eshop",
+  "doro",
+  "dwro",
+  "gift",
 ];
 
 const DOG_SIZE_LABELS: Record<DogSize, string> = {
@@ -219,16 +225,35 @@ function removeNoiseWords(value: string) {
   return cleaned;
 }
 
+function removePackAndPromoText(value: string) {
+  return value
+    .replace(MULTIPACK_SIZE_PATTERN, " ")
+    .replace(/\+\s*\d+(?:[.,]\d+)?\s*(?:g|gr|kg)\b/gi, " ")
+    .replace(PACK_SIZE_PATTERN, " ")
+    .replace(/\b\d+\s*x\b/gi, " ")
+    .replace(/\b\d+(?:[.,]\d+)?\s*(?:\+?\s*free|pack|bags?)\b/gi, " ")
+    .replace(/(?:\u03b4\u03c9\u03c1\u03bf|\u03b4\u03ce\u03c1\u03bf|\u0394\u03a9\u03a1\u039f|\u0394\u03c9\u03c1\u03bf)/gu, " ")
+    .replace(/\b(?:δωρο|δώρο|ΔΩΡΟ|doro|dwro|gift|free\s+pack|try\s+now)\b/gi, " ")
+    .replace(/\s*[-!]\s*$/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function normalizeCanonicalFormulaName(value: unknown) {
   return titleCase(
-    removeLabelPanelTitleTail(
-      removeFeedingTableTitleTail(
-        dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+    removePackAndPromoText(
+      removeLabelPanelTitleTail(
+        removeFeedingTableTitleTail(
+          dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+        )
       )
     )
+      .replace(MULTIPACK_SIZE_PATTERN, " ")
       .replace(PACK_SIZE_PATTERN, " ")
-      .replace(/\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr)\b/gi, " ")
+      .replace(/\b\d+\s*x\b/gi, " ")
       .replace(/\b\d+(?:[.,]\d+)?\s*(?:\+?\s*free|pack|bags?)\b/gi, " ")
+      .replace(/\+\s*\d+(?:[.,]\d+)?\s*(?:g|gr|kg)\b/gi, " ")
+      .replace(/\b(?:δωρο|δώρο|doro|dwro|gift|free\s+pack|try\s+now)\b/gi, " ")
       .replace(/[|_]+/g, " ")
       .replace(/\s*[-–—]\s*$/g, " ")
       .replace(/\s+/g, " ")
