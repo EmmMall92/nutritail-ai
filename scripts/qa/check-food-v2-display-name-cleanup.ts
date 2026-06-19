@@ -32,6 +32,28 @@ const cases = [
     expected: "Vetsolution Urinary Oxalate",
   },
   {
+    label: "Purina registered mark and mojibake salmon token",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name:
+        "Purina Pro Plan PRO PlanΒ® MEDIUM & LARGE ADULT 7+ Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
+      formula_name:
+        "PRO PlanΒ® MEDIUM & LARGE ADULT 7+ Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
+    },
+    expected: "PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+  },
+  {
+    label: "Purina mojibake chicken token",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name:
+        "Purina Pro Plan PRO PlanΒ® SMALL&MINI ADULT LIGHT/STERILISED ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+      formula_name:
+        "PRO PlanΒ® SMALL&MINI ADULT LIGHT/STERILISED ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+    },
+    expected: "PRO Plan® SMALL&MINI ADULT LIGHT/STERILISED Chicken",
+  },
+  {
     label: "AATU repeated adult term",
     input: {
       brand: "AATU",

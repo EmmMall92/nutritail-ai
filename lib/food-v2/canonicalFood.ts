@@ -60,6 +60,10 @@ const LIFE_STAGE_LABELS: Record<LifeStage, string> = {
 function cleanText(value: unknown) {
   return String(value ?? "")
     .normalize("NFKC")
+    .replace(/Β®/g, "®")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Salmon")
+    .replace(/ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ/g, "Chicken")
+    .replace(/Ξ\S*ξ»ξώ/gi, "Chicken")
     .replace(/[’‘]/g, "'")
     .replace(/[“”]/g, '"')
     .replace(/\s+/g, " ")
