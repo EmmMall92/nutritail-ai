@@ -450,6 +450,30 @@ function hasSeniorPositioning(food: FoodProductV2, foodText: string) {
   );
 }
 
+function titleTextFor(food: FoodProductV2) {
+  return normalizeText([food.brand, food.formula_name, food.display_name].join(" "));
+}
+
+function hasExplicitSeniorTitle(food: FoodProductV2) {
+  return hasAny(titleTextFor(food), [
+    "senior",
+    "mature",
+    "ageing",
+    "aging",
+    "7+",
+    "8+",
+    "10+",
+    "12+",
+    "joint",
+    "mobility",
+  ]);
+}
+
+function hasAdultOnlySeniorTitleConflict(food: FoodProductV2) {
+  const titleText = titleTextFor(food);
+  return hasWord(titleText, "adult") && !hasExplicitSeniorTitle(food);
+}
+
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -939,6 +963,16 @@ function scoreFit(input: FoodV2RankingInput) {
         },
       })
     );
+
+    if (stage === "senior" && hasAdultOnlySeniorTitleConflict(food)) {
+      addSignal(
+        signals,
+        "caution",
+        "adult_title_for_senior_shortlist",
+        -28,
+        "Adult-labelled food should not outrank clear senior options for a senior pet."
+      );
+    }
   }
 
   let adjustedScore = score;
