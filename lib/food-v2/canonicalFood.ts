@@ -93,6 +93,7 @@ function titleCase(value: string) {
 function dedupeRepeatedDisplayTerms(value: string) {
   return value
     .replace(/\b(active nature|sensi plus)(?:\s+\1)+\b/gi, "$1")
+    .replace(/\b(happy)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(veterinary)(?:\s+\1)+\b/gi, "$1")
     .replace(
