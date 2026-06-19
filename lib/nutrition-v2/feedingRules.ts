@@ -347,6 +347,22 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
       });
     }
 
+    if (
+      !positioning.active &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g <= 350 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent <= 11
+    ) {
+      signals.push({
+        type: weightGainContext ? "exclude" : "caution",
+        code: "low_energy_formula_for_high_activity_pet",
+        points: weightGainContext ? -100 : -18,
+        message:
+          "Low energy and fat make this a weaker first choice for a highly active pet.",
+      });
+    }
+
     if (weightGainContext && !positioning.active) {
       signals.push({
         type: "caution",

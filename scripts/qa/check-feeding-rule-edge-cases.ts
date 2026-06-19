@@ -87,6 +87,23 @@ const activePerformance = rankFoodV2ForPet({
   goal: "general",
 });
 
+const lowEnergyMaintenance = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "low-energy-maintenance",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 340,
+  },
+  nutrients: {
+    protein_percent: 23,
+    fat_percent: 10,
+    fiber_percent: 3,
+  },
+  pet: highActivityDog,
+  goal: "general",
+});
+
 const weightGainHighActivityDog = {
   ...highActivityDog,
   healthIssues: ["working dog", "daily training", "needs weight gain"],
@@ -126,6 +143,23 @@ const lowFatActiveForGain = rankFoodV2ForPet({
   goal: "general",
 });
 
+const lowEnergyMaintenanceForGain = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "low-energy-maintenance-gain",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 340,
+  },
+  nutrients: {
+    protein_percent: 24,
+    fat_percent: 10,
+    fiber_percent: 3,
+  },
+  pet: weightGainHighActivityDog,
+  goal: "general",
+});
+
 assert(
   lightSterilised.bucket === "hold",
   "Light/sterilised formula should be held for a high-activity dog when weight loss is not the goal."
@@ -147,6 +181,14 @@ assert(
   "High-activity formula should receive energy-density support."
 );
 assert(
+  signalCodes(lowEnergyMaintenance).includes("low_energy_formula_for_high_activity_pet"),
+  "Low-energy maintenance food should be marked as weaker for high-activity dogs."
+);
+assert(
+  activePerformance.total_score > lowEnergyMaintenance.total_score,
+  "Active/performance formula should outrank low-energy maintenance food for high-activity dogs."
+);
+assert(
   lightSterilisedForGain.bucket === "hold",
   "Light/sterilised formula should be held for high-activity dogs that need weight gain."
 );
@@ -162,12 +204,20 @@ assert(
   signalCodes(lowFatActiveForGain).includes("low_fat_formula_for_active_gain_pet"),
   "Active weight-gain low-fat mismatch should emit a clear blocking signal."
 );
+assert(
+  lowEnergyMaintenanceForGain.bucket === "hold",
+  "Low-energy maintenance food should be held for active dogs that need weight gain."
+);
+assert(
+  signalCodes(lowEnergyMaintenanceForGain).includes("low_energy_formula_for_high_activity_pet"),
+  "Low-energy weight-gain mismatch should emit a clear blocking signal."
+);
 
 console.log(
   JSON.stringify(
     {
-      checked: 4,
-      passed: 4,
+      checked: 6,
+      passed: 6,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -178,6 +228,11 @@ console.log(
         score: activePerformance.total_score,
         signals: signalCodes(activePerformance),
       },
+      low_energy_maintenance: {
+        bucket: lowEnergyMaintenance.bucket,
+        score: lowEnergyMaintenance.total_score,
+        signals: signalCodes(lowEnergyMaintenance),
+      },
       light_sterilised_for_gain: {
         bucket: lightSterilisedForGain.bucket,
         score: lightSterilisedForGain.total_score,
@@ -187,6 +242,11 @@ console.log(
         bucket: lowFatActiveForGain.bucket,
         score: lowFatActiveForGain.total_score,
         signals: signalCodes(lowFatActiveForGain),
+      },
+      low_energy_maintenance_for_gain: {
+        bucket: lowEnergyMaintenanceForGain.bucket,
+        score: lowEnergyMaintenanceForGain.total_score,
+        signals: signalCodes(lowEnergyMaintenanceForGain),
       },
     },
     null,
