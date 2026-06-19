@@ -289,11 +289,21 @@ function customerReason(
       : "is closer to sensitive-digestion needs";
   }
   if (goal === "urinary") {
+    if (text.includes("urinary_complete_mineral_review")) {
+      return locale === "el"
+        ? "έχει ουρολογική λογική και διαθέσιμα βασικά στοιχεία μετάλλων για πιο σωστή αξιολόγηση"
+        : "has urinary-support positioning with the key mineral context available";
+    }
     return locale === "el"
       ? "έχει ουρολογική λογική και θέλει χρήση μαζί με κτηνιατρική καθοδήγηση"
       : "has urinary-support logic and should be used with veterinary guidance";
   }
   if (goal === "renal") {
+    if (text.includes("renal_mineral_review")) {
+      return locale === "el"
+        ? "έχει νεφρική λογική και διαθέσιμα στοιχεία φωσφόρου/νατρίου για πιο σωστή αξιολόγηση"
+        : "has renal-support positioning with phosphorus and sodium context available";
+    }
     return locale === "el"
       ? "έχει νεφρική λογική και η τελική επιλογή πρέπει να γίνεται με κτηνίατρο"
       : "has renal-support logic and final choice should be vet-guided";
@@ -333,11 +343,6 @@ function customerCaution(value: string, locale: "el" | "en") {
       ? "Σε ιστορικό παγκρεατίτιδας, η τελική επιλογή τροφής πρέπει να γίνεται με κτηνιατρική καθοδήγηση και προσοχή στα λιπαρά."
       : "For pancreatitis history, final diet choice should be veterinarian-guided and fat level needs careful review.";
   }
-  if (text.includes("large breed") || text.includes("calcium") || text.includes("phosphorus")) {
-    return locale === "el"
-      ? "Σε μεγαλόσωμο κουτάβι θέλουμε έλεγχο ασβεστίου και φωσφόρου."
-      : "Large-breed puppies need calcium and phosphorus checked.";
-  }
   if (text.includes("senior")) {
     return locale === "el"
       ? "Σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση."
@@ -352,6 +357,11 @@ function customerCaution(value: string, locale: "el" | "en") {
     return locale === "el"
       ? "Σε ουρολογικό ιστορικό χρειάζεται επιβεβαίωση από κτηνίατρο."
       : "Urinary history should be confirmed with a veterinarian.";
+  }
+  if (text.includes("large breed") || text.includes("calcium") || text.includes("phosphorus")) {
+    return locale === "el"
+      ? "Σε μεγαλόσωμο κουτάβι θέλουμε έλεγχο ασβεστίου και φωσφόρου."
+      : "Large-breed puppies need calcium and phosphorus checked.";
   }
 
   return "";
@@ -446,6 +456,28 @@ function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
     : "This is nutrition guidance and does not replace veterinary advice.";
 }
 
+function customerMedicalContextLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
+  if (goal === "urinary") {
+    return locale === "el"
+      ? "Για ουρολογικό ιστορικό κοιτάω πρώτα ουρολογικές τροφές και στοιχεία όπως μαγνήσιο, φώσφορο και νάτριο."
+      : "For urinary history, I prioritise urinary-positioned foods and look for magnesium, phosphorus and sodium context before sounding confident.";
+  }
+
+  if (goal === "renal") {
+    return locale === "el"
+      ? "Για νεφρικό ιστορικό κοιτάω πρώτα renal τροφές και στοιχεία όπως φώσφορο και νάτριο."
+      : "For kidney history, I prioritise renal-positioned foods and look for phosphorus and sodium context before sounding confident.";
+  }
+
+  if (goal === "senior") {
+    return locale === "el"
+      ? "Για senior ζώα δεν κοιτάω μόνο την ηλικία: βάρος, όρεξη, μυϊκή κατάσταση και κινητικότητα έχουν σημασία."
+      : "For senior pets, I look beyond age: appetite, weight trend, muscle condition and mobility all matter.";
+  }
+
+  return "";
+}
+
 function compactCardsIntro({
   goal,
   goalLabel,
@@ -466,6 +498,7 @@ function compactCardsIntro({
       [
         "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         recommendationFocusLine(locale, goalLabel),
+        customerMedicalContextLine(locale, goal),
         `Ξεκίνα από: ${name}, γιατί ${reason}.`,
         snapshot,
         "Πάτησε μία κάρτα για να δεις περίπου ποσότητα/ημέρα.",
@@ -480,6 +513,7 @@ function compactCardsIntro({
     [
       "Done. I placed the best options below as cards.",
       recommendationFocusLine(locale, goalLabel),
+      customerMedicalContextLine(locale, goal),
       `Start with: ${name}, because it ${reason}.`,
       snapshot,
       "Tap one card to estimate portions/day.",
@@ -605,6 +639,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     intro,
     "",
     recommendationFocusLine(locale, goalLabel ?? goal),
+    customerMedicalContextLine(locale, goal),
     top
       ? locale === "el"
         ? `Ξεκίνα από: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
