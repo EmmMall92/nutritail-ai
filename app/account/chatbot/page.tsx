@@ -4123,7 +4123,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "analysis") {
       addMessages(
-        createMessage("bot", "Hold on a moment, I am finishing the analysis.")
+        createMessage(
+          "bot",
+          botText(
+            "Περίμενε λίγο, ολοκληρώνω την ανάλυση.",
+            "Hold on a moment, I am finishing the analysis."
+          )
+        )
       );
 
       return;
@@ -4132,7 +4138,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     addMessages(
       createMessage(
         "bot",
-        "The analysis is complete. You can save it or press Restart."
+        botText(
+          "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να ξεκινήσεις ξανά.",
+          "The analysis is complete. You can save it or press Restart."
+        )
       )
     );
   }
