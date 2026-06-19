@@ -246,14 +246,14 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose one food card")) {
+  if (!scenario.text.includes("Next step: choose a food card")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
   }
 }
 
-if (!sample.includes("Recommended foods") || !sample.includes("Happy Dog")) {
+if (!sample.includes("Food picks for this pet") || !sample.includes("Happy Dog")) {
   console.error("Customer-facing recommendation did not include the expected shortlist.");
   console.error(sample);
   process.exit(1);
@@ -289,7 +289,7 @@ if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
   process.exit(1);
 }
 
-if (compactCardsSample.includes("Best nutrition fits:") || /\n1\./.test(compactCardsSample)) {
+if (compactCardsSample.includes("Best options for this pet:") || /\n1\./.test(compactCardsSample)) {
   console.error("Compact card-facing recommendation should not duplicate the card list.");
   console.error(compactCardsSample);
   process.exit(1);
