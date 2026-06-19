@@ -382,7 +382,7 @@ async function main() {
   const titleIssueFormulaKeysByBrand = new Map();
   const duplicateGroupsByBrand = new Map();
 
-  for (const row of titleRows) {
+  for (const row of titleRows.filter((row) => row.severity !== "info")) {
     addCount(titleIssuesByBrand, row.brand);
     addSetValue(
       titleIssueFormulaKeysByBrand,

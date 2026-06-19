@@ -132,6 +132,19 @@ function normalizeComparable(value) {
     .replace(/[\u0300-\u036f]/gu, "");
 }
 
+function stripBrandPrefix(value, brand) {
+  let cleaned = normalizeText(value);
+  const normalizedBrand = normalizeComparable(brand);
+
+  if (!cleaned || !normalizedBrand) return cleaned;
+
+  while (normalizeComparable(cleaned).startsWith(`${normalizedBrand} `)) {
+    cleaned = cleaned.slice(normalizeText(brand).length).trim();
+  }
+
+  return cleaned;
+}
+
 function wordCount(value) {
   return normalizeText(value).split(/\s+/u).filter(Boolean).length;
 }
@@ -203,12 +216,26 @@ function findTitleIssues(row) {
   }
 
   if (normalizedBrand && normalizedFormula.startsWith(`${normalizedBrand} `)) {
+    const brandlessFormula = stripBrandPrefix(formulaName, row.brand);
+    const autoCleanable =
+      brandlessFormula &&
+      normalizeComparable(brandlessFormula) !== normalizedFormula &&
+      !descriptiveTitlePatterns.some((pattern) => pattern.test(brandlessFormula)) &&
+      !packOrOfferPatterns.some((pattern) => pattern.test(brandlessFormula));
+
     addIssue(
       issues,
-      row,
-      "medium",
-      "formula_name_starts_with_brand",
-      "Remove duplicated brand from formula_name; display_name should carry the brand."
+      {
+        ...row,
+        formula_name: autoCleanable ? brandlessFormula : row.formula_name,
+      },
+      autoCleanable ? "info" : "medium",
+      autoCleanable
+        ? "formula_name_brand_prefix_auto_cleaned"
+        : "formula_name_starts_with_brand",
+      autoCleanable
+        ? "Import preview strips this duplicated brand prefix automatically; keep watching display_name only."
+        : "Remove duplicated brand from formula_name; display_name should carry the brand."
     );
   }
 
@@ -354,8 +381,10 @@ async function main() {
     .map(normalizeSourceRegistryRow);
   const rows = [...candidateRows, ...sourceRegistryRows];
   const issues = rows.flatMap(findTitleIssues);
+  const manualIssues = issues.filter((issue) => issue.severity !== "info");
   const highIssueRows = rowsWithHighIssues(issues);
-  const issueFreeRows = rows.length - new Set(issues.map((issue) => issue.formula_key)).size;
+  const manualIssueRows = new Set(manualIssues.map((issue) => issue.formula_key)).size;
+  const issueFreeRows = rows.length - manualIssueRows;
 
   await mkdir("data/review", { recursive: true });
   await mkdir("reports", { recursive: true });
@@ -372,9 +401,11 @@ async function main() {
       `- Rows reviewed: ${rows.length}`,
       `- Food V2 candidate rows reviewed: ${candidateRows.length}`,
       `- Source registry rows reviewed: ${sourceRegistryRows.length}`,
-      `- Issue rows: ${issues.length}`,
+      `- Audit findings: ${issues.length}`,
+      `- Manual cleanup findings: ${manualIssues.length}`,
+      `- Auto-cleanup/info findings: ${issues.length - manualIssues.length}`,
       `- Rows with high/critical title issues: ${highIssueRows}`,
-      `- Rows without title issues: ${issueFreeRows}`,
+      `- Rows without manual title issues: ${issueFreeRows}`,
       `- Output CSV: ${paths.output}`,
       "",
       "## Issues By Severity",
@@ -420,9 +451,12 @@ async function main() {
         rowsReviewed: rows.length,
         foodV2CandidateRows: candidateRows.length,
         sourceRegistryRows: sourceRegistryRows.length,
-        issueRows: issues.length,
-        highIssueRows,
-        issueFreeRows,
+      auditFindings: issues.length,
+      manualCleanupFindings: manualIssues.length,
+      autoCleanupInfoFindings: issues.length - manualIssues.length,
+      highIssueRows,
+      manualIssueRows,
+      rowsWithoutManualTitleIssues: issueFreeRows,
         output: paths.output,
         report: paths.report,
       },
