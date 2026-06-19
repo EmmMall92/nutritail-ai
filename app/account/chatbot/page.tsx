@@ -2672,7 +2672,12 @@ Tell me:
 4. Any visible change in body shape, appetite, stool, or energy
 
 Then I can help decide whether the plan is working or needs adjustment.`
-          )
+          ) +
+            "\n\n" +
+            botText(
+              "Μπορείς να ξεκινήσεις μόνο με το τωρινό βάρος, π.χ. 7 kg. Μετά θα σου ζητήσω μόνο ό,τι λείπει.",
+              "You can start with only the current weight, for example 7 kg. After that I will ask only for what is missing."
+            )
         )
       );
       return;
@@ -2793,6 +2798,8 @@ Tell me:
 4. Any visible change in body shape, appetite, stool, or energy
 
 Then I can help decide whether the plan is working or needs adjustment.`
+            +
+            "\n\nYou can start with only the current weight, for example 7 kg. After that I will ask only for what is missing."
         )
       );
       return;
