@@ -98,6 +98,7 @@
     "qa:food-intelligence-use-cases": "tsx scripts/qa/check-food-intelligence-use-cases.ts",
     "qa:food-v2-display-name-cleanup": "tsx scripts/qa/check-food-v2-display-name-cleanup.ts",
     "qa:food-v2-title-audit-auto-cleanup": "node scripts/qa/check-food-v2-title-audit-auto-cleanup.mjs",
+    "qa:food-v2-source-title-priority": "node scripts/qa/check-food-v2-source-title-priority.mjs",
     "qa:food-v2-duplicate-risk-focus": "node scripts/qa/check-food-v2-duplicate-risk-focus.mjs",
     "qa:food-v2-product-form-guards": "tsx scripts/qa/check-food-v2-product-form-guards.ts",
     "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
