@@ -186,6 +186,24 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "struvite_top_pick") {
+      if (!hasAnyTerm(firstText, ["struvite"])) {
+        warnings.push("Top pick does not look struvite-specific.");
+      }
+      if (hasAnyTerm(firstText, ["oxalate"]) && !hasAnyTerm(firstText, ["struvite"])) {
+        warnings.push("Struvite scenario returned oxalate-only positioning.");
+      }
+    }
+
+    if (expectation === "oxalate_top_pick") {
+      if (!hasAnyTerm(firstText, ["oxalate"])) {
+        warnings.push("Top pick does not look oxalate-specific.");
+      }
+      if (hasAnyTerm(firstText, ["struvite"]) && !hasAnyTerm(firstText, ["oxalate"])) {
+        warnings.push("Oxalate scenario returned struvite-only positioning.");
+      }
+    }
+
     if (expectation === "renal_top_pick") {
       if (!hasAnyTerm(firstText, ["renal", "kidney"])) {
         warnings.push("Top pick does not look renal focused.");
