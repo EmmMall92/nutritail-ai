@@ -1456,6 +1456,49 @@ if (
   process.exit(1);
 }
 
+const greekSeniorPoorAppetitePet = {
+  ...seniorPet,
+  healthIssues: ["ηλικιωμένο", "χαμηλή όρεξη", "χάνει βάρος"],
+};
+const greekSeniorMaintenanceRanking = rankFoodV2ForPet({
+  food: seniorMaintenanceFood,
+  nutrients: {
+    ...nutrients(seniorMaintenanceFood),
+    protein_percent: 26,
+    fat_percent: 13,
+    fiber_percent: 3,
+  },
+  pet: greekSeniorPoorAppetitePet,
+  goal: "senior",
+});
+const greekSeniorLightRanking = rankFoodV2ForPet({
+  food: seniorLightFood,
+  nutrients: {
+    ...nutrients(seniorLightFood),
+    protein_percent: 24,
+    fat_percent: 8,
+    fiber_percent: 6,
+  },
+  pet: greekSeniorPoorAppetitePet,
+  goal: "senior",
+});
+
+if (greekSeniorMaintenanceRanking.total_score <= greekSeniorLightRanking.total_score) {
+  console.error("Greek senior appetite/weight-loss context should not default to light food.");
+  console.error({ greekSeniorMaintenanceRanking, greekSeniorLightRanking });
+  process.exit(1);
+}
+
+if (
+  !greekSeniorLightRanking.signals.some(
+    (signal) => signal.code === "senior_appetite_weight_loss_avoid_light_default"
+  )
+) {
+  console.error("Expected senior_appetite_weight_loss_avoid_light_default for Greek senior light food.");
+  console.error(greekSeniorLightRanking.signals);
+  process.exit(1);
+}
+
 const puppyPet = {
   ...pet,
   age: 0.5,
