@@ -357,6 +357,9 @@ function formatRecommendationChoiceReason(
     if (text.includes("skin_coat_omega_review")) {
       return "Έχει λογική για δέρμα/τρίχωμα, ειδικά όταν υπάρχουν διαθέσιμα στοιχεία για EPA/DHA ή ωμέγα λιπαρά.";
     }
+    if (text.includes("summer_low_appetite_feeding_review")) {
+      return "Ταιριάζει σε περίοδο ζέστης όπου το ζώο τρώει λιγότερο, με πιο πρακτική θερμιδική πυκνότητα.";
+    }
     if (
       text.includes("high_activity_energy_support") ||
       text.includes("active_working") ||
@@ -414,6 +417,9 @@ function formatRecommendationChoiceReason(
   if (text.includes("skin_coat_omega_review")) {
     return "It has skin/coat logic, especially when EPA/DHA or omega details are available.";
   }
+  if (text.includes("summer_low_appetite_feeding_review")) {
+    return "It fits hot-weather periods when the pet eats less, with more practical calorie density.";
+  }
   if (
     text.includes("high_activity_energy_support") ||
     text.includes("active_working") ||
@@ -451,6 +457,9 @@ function formatRecommendationChoiceCaution(
     if (text.includes("senior")) {
       return "Σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση.";
     }
+    if (text.includes("hot-weather") || text.includes("seasonal low appetite")) {
+      return "Σε ζέστη ή χαμηλή όρεξη παρακολουθούμε ενυδάτωση, βάρος και αν τρώει αρκετά.";
+    }
     if (text.includes("renal") || text.includes("kidney")) {
       return "Σε νεφρικό θέμα η επιλογή τροφής πρέπει να γίνεται με κτηνίατρο.";
     }
@@ -469,6 +478,9 @@ function formatRecommendationChoiceCaution(
   }
   if (text.includes("senior")) {
     return "For senior pets, monitor weight, appetite, and muscle condition.";
+  }
+  if (text.includes("hot-weather") || text.includes("seasonal low appetite")) {
+    return "In hot weather or low appetite, monitor hydration, weight, and whether the pet eats enough.";
   }
   if (text.includes("renal") || text.includes("kidney")) {
     return "Renal cases should be diet-guided with a veterinarian.";
@@ -514,6 +526,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     skin_coat_without_omega_detail: {
       el: "δέρμα/τρίχωμα χωρίς πλήρη omega στοιχεία",
       en: "skin/coat cases without full omega detail",
+    },
+    summer_low_appetite_feeding_review: {
+      el: "ζέστη / χαμηλή όρεξη",
+      en: "hot weather and low appetite",
+    },
+    summer_low_appetite_without_energy_support: {
+      el: "ζέστη / χαμηλή όρεξη χωρίς αρκετή ενεργειακή στήριξη",
+      en: "hot-weather low appetite without enough energy support",
     },
     small_breed: { el: "μικρόσωμο ζώο", en: "small breeds" },
     sterilised: { el: "στειρωμένο ζώο", en: "sterilised pets" },
@@ -637,6 +657,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     skin_coat_without_omega_detail: {
       el: "δέρμα/τρίχωμα χωρίς καθαρά EPA/DHA",
       en: "skin and coat without clear EPA/DHA detail",
+    },
+    summer_low_appetite_feeding_review: {
+      el: "ζέστη / χαμηλή όρεξη",
+      en: "hot weather and low appetite",
+    },
+    summer_low_appetite_without_energy_support: {
+      el: "ζέστη / χαμηλή όρεξη χωρίς αρκετή ενέργεια",
+      en: "hot-weather low appetite without enough energy support",
     },
     strict_allergy_trial_with_many_proteins: {
       el: "αυστηρή δοκιμή αλλεργίας με πολλές πρωτεΐνες",
