@@ -198,6 +198,24 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "no_low_fat_active_gain_top_picks") {
+      const lowFatPicks = picks
+        .map((pick, index) => ({
+          index: index + 1,
+          fat: pick?.nutrition?.fat_percent,
+          label: pick?.display_name ?? "unknown",
+        }))
+        .filter((pick) => typeof pick.fat === "number" && pick.fat < 10);
+
+      if (lowFatPicks.length > 0) {
+        warnings.push(
+          `Active/weight-gain top picks include low-fat candidates: ${lowFatPicks
+            .map((pick) => `#${pick.index} ${pick.label} (${pick.fat}% fat)`)
+            .join(", ")}.`
+        );
+      }
+    }
+
     if (expectation === "value_first_for_budget") {
       const valuePositioned =
         first?.ranking?.bucket === "value" ||
