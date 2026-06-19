@@ -121,6 +121,40 @@ if (
   process.exit(1);
 }
 
+const dislikedProteinHighScoreFood = food({
+  id: "high-score-lamb-beef",
+  formula_key: "qa|high-score-lamb-beef|dog|dry",
+  display_name: "Premium Small Adult Lamb & Beef",
+  primary_animal_proteins: ["lamb", "beef"],
+  ingredients: ["lamb", "beef", "rice", "beet pulp"],
+  commercial_tags: ["premium", "sensitive"],
+  kcal_per_100g: 332,
+});
+const dislikedProteinRanking = rankFoodV2ForPet({
+  food: dislikedProteinHighScoreFood,
+  nutrients: nutrients(dislikedProteinHighScoreFood),
+  pet,
+  goal: "sterilised",
+});
+
+if (dislikedProteinRanking.bucket !== "hold") {
+  console.error(
+    "A food containing disliked lamb/beef should stay on hold even if it otherwise looks like a strong sterilised fit."
+  );
+  console.error(dislikedProteinRanking);
+  process.exit(1);
+}
+
+if (
+  !dislikedProteinRanking.signals.some(
+    (signal) => signal.code.startsWith("excluded_ingredient_preference")
+  )
+) {
+  console.error("Expected excluded_ingredient_preference for disliked lamb/beef.");
+  console.error(dislikedProteinRanking.signals);
+  process.exit(1);
+}
+
 const contradictoryPreferencePet = {
   ...pet,
   excludedIngredients: ["salmon"],
