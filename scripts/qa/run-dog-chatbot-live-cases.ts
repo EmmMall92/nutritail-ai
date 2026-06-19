@@ -961,13 +961,19 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
     }
   }
 
-  if ((testCase.checks?.activeFit || testCase.expected.activityLevel === "high") && testCase.goal === "general" && top.length > 0) {
+  const activeCaseShouldPreferEnergy =
+    (testCase.checks?.activeFit || testCase.expected.activityLevel === "high") &&
+    !["weight_control", "sterilised", "renal", "urinary", "sensitive_digestion", "allergy"].includes(
+      testCase.goal
+    );
+
+  if (activeCaseShouldPreferEnergy && top.length > 0) {
     const first = top[0];
     const lowEnergyOrDietPositioned =
       /sterilised|sterilized|light|weight|satiety|obesity|renal|urinary/i.test(itemDecisionText(first)) ||
       (typeof first.nutrition?.kcal_per_100g === "number" && first.nutrition.kcal_per_100g < 340);
     if (lowEnergyOrDietPositioned && !isClearlyHighEnergy(first)) {
-      warnings.push(`High-activity general case top candidate looks diet/medical or too low-energy: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}`);
+      warnings.push(`High-activity case top candidate looks diet/medical or too low-energy: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}`);
     }
   }
 
