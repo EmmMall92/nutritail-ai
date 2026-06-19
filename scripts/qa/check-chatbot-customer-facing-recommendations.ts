@@ -24,6 +24,7 @@ const sampleResponse = {
           "Retailer source should be worded cautiously.",
           "Fat looks high for a sterilised or weight-prone pet.",
           "Fat is not low enough to be a first pick for a sterilised or weight-control case.",
+          "Pancreatitis history needs veterinarian-directed diet selection.",
         ],
       },
       nutrition: {
@@ -127,6 +128,12 @@ if (!greekSample.includes("Προτεινόμενες τροφές") || !greekSa
 
 if (!greekSample.includes("Επόμενο βήμα")) {
   console.error("Greek customer-facing recommendation did not include a clear next step.");
+  console.error(greekSample);
+  process.exit(1);
+}
+
+if (!greekSample.includes("\u03c0\u03b1\u03b3\u03ba\u03c1\u03b5\u03b1\u03c4\u03af\u03c4\u03b9\u03b4\u03b1\u03c2")) {
+  console.error("Greek customer-facing recommendation should translate pancreatitis cautions.");
   console.error(greekSample);
   process.exit(1);
 }

@@ -145,6 +145,24 @@ const SIGNAL_GUARDS: Record<
     severity: "warning",
     fallbackMessage: "Renal cases need veterinarian-directed diet selection.",
   },
+  pancreatitis_high_fat_mismatch: {
+    code: "pancreatitis_high_fat_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Pancreatitis history should not start from higher-fat foods.",
+  },
+  pancreatitis_missing_fat: {
+    code: "pancreatitis_missing_fat",
+    severity: "warning",
+    fallbackMessage:
+      "Pancreatitis context needs fat data before confident shortlisting.",
+  },
+  pancreatitis_requires_vet: {
+    code: "pancreatitis_requires_vet",
+    severity: "warning",
+    fallbackMessage:
+      "Pancreatitis history needs veterinarian-directed diet selection.",
+  },
 };
 
 function flagFromSignal(signal: FoodV2RankingSignal) {

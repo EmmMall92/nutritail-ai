@@ -214,6 +214,12 @@ function simpleCaution(
       : "large-breed puppies need extra care around calcium and phosphorus";
   }
 
+  if (text.includes("pancreatitis") || text.includes("pancreatic")) {
+    return locale === "el"
+      ? "σε ιστορικό παγκρεατίτιδας η επιλογή τροφής πρέπει να γίνει με κτηνιατρική καθοδήγηση και προσοχή στα λιπαρά"
+      : "pancreatitis history needs veterinarian-guided diet choice and careful fat review";
+  }
+
   if (text.includes("senior")) {
     return locale === "el"
       ? "σε senior ζώο παρακολουθούμε βάρος, όρεξη και μυϊκή κατάσταση"

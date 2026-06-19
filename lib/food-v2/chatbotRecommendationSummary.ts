@@ -148,9 +148,12 @@ export function goalFromPetContext(
       "sensitive stomach",
       "diarrhea",
       "gas",
+      "pancreatitis",
+      "pancreatic",
       "πέψη",
       "διάρροια",
       "αέρια",
+      "παγκρεατ",
     ])
   ) {
     return "sensitive_digestion";
@@ -291,6 +294,11 @@ function customerCaution(value: string, locale: "el" | "en") {
     return locale === "el"
       ? "Θέλει μετρημένη μερίδα, ειδικά αν υπάρχει τάση για βάρος."
       : "Portions should be measured carefully, especially if weight is a concern.";
+  }
+  if (text.includes("pancreatitis") || text.includes("pancreatic")) {
+    return locale === "el"
+      ? "Σε ιστορικό παγκρεατίτιδας, η τελική επιλογή τροφής πρέπει να γίνεται με κτηνιατρική καθοδήγηση και προσοχή στα λιπαρά."
+      : "For pancreatitis history, final diet choice should be veterinarian-guided and fat level needs careful review.";
   }
   if (text.includes("large breed") || text.includes("calcium") || text.includes("phosphorus")) {
     return locale === "el"
