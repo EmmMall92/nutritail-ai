@@ -80,6 +80,23 @@
       "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick", "no_excluded_protein_top_picks", "no_active_performance_top_pick"]
     },
     {
+      "label": "Small sterilised dog likes chicken avoids salmon",
+      "goal": "sterilised",
+      "pet": {
+        "species": "dog",
+        "breed": "Small mixed breed",
+        "age": 6,
+        "weight": 6,
+        "activityLevel": "low",
+        "neutered": true,
+        "allergies": [],
+        "excludedIngredients": ["salmon"],
+        "preferredProteins": ["chicken"],
+        "healthIssues": ["sterilised", "does not like salmon"]
+      },
+      "expectations": ["premium_or_value", "weight_or_sterilised_fit", "moderate_calorie_fat_top_pick", "no_excluded_protein_top_picks", "no_active_performance_top_pick"]
+    },
+    {
       "label": "Dog likes chicken avoids salmon by taste",
       "goal": "general",
       "pet": {
