@@ -108,11 +108,15 @@ function hasNumber(value: unknown): value is number {
 }
 
 function normalizedHealthText(healthIssues: string[] | undefined) {
-  return (healthIssues ?? []).join(" ").toLowerCase();
+  return (healthIssues ?? [])
+    .join(" ")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 function isWeightGainContext(healthText: string) {
-  return /weight gain|gain weight|needs? to gain|underweight|muscle gain|gain muscle/.test(
+  return /weight gain|gain weight|needs? to gain|underweight|muscle gain|gain muscle|να παρει βαρος|αυξηση βαρους|πολυ αδυνατ|υποσιτισ/.test(
     healthText
   );
 }
@@ -181,7 +185,10 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     !strictWeightContext &&
     !weightGainContext;
   const coldClimate = isColdClimateContext(activityText) && !strictWeightContext;
+  const cleanGreekHighActivity =
+    /κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|δουλευ|εργασια|εργαζ/.test(activityText);
   const highActivity =
+    cleanGreekHighActivity ||
     coldClimate ||
     pet.activityLevel === "high" ||
     /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
