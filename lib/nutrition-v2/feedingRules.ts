@@ -328,19 +328,6 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         points: weightGainContext ? 8 : 5,
         message: "Fat level can support higher energy needs in an active pet.",
       });
-    } else if (
-      !positioning.active &&
-      weightGainContext &&
-      hasNumber(nutrients.fat_percent) &&
-      nutrients.fat_percent < 10
-    ) {
-      signals.push({
-        type: "exclude",
-        code: "low_fat_formula_for_active_gain_pet",
-        points: -100,
-        message:
-          "Excluded because a weight-gain active pet needs a formula with more credible energy/fat support.",
-      });
     }
   }
 
