@@ -4571,6 +4571,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </p>
             </div>
 
+            <div className="rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-green-950">
+              <p className="font-semibold">
+                {botText("Προτεινόμενη συνέχεια", "Recommended next step")}
+              </p>
+              <p className="mt-1 text-green-900">
+                {botText(
+                  "Άνοιξε πρώτα το report για να κρατήσεις τις θερμίδες, τη μερίδα και την επιλογή τροφής. Μετά από 2-4 εβδομάδες κάνε έλεγχο προόδου με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.",
+                  "Open the report first to keep calories, portion, and food choice in one place. After 2-4 weeks, run a progress check with updated weight, grams/day, and treats."
+                )}
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <a
                 href={`/account/pets/${savedPetId}`}
