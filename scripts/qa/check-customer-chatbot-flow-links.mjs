@@ -121,6 +121,16 @@ const checks = [
     file: "app/account/chatbot/page.tsx",
     expected: "You can start with only the current weight, for example 7 kg.",
   },
+  {
+    label: "Printable timeline uses customer-facing food recommendation label",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Food recommendation:",
+  },
+  {
+    label: "Pet detail analysis history uses customer-facing food recommendation label",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Food recommendation:",
+  },
 ];
 
 const forbiddenChecks = [
@@ -143,6 +153,16 @@ const forbiddenChecks = [
     label: "Recommendation cards no longer use old match-label helper",
     file: "app/account/chatbot/page.tsx",
     forbidden: "getRecommendationChoiceMatchLabel",
+  },
+  {
+    label: "Printable timeline does not expose raw recommended food ids",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Recommended Food IDs",
+  },
+  {
+    label: "Pet detail page does not expose legacy food signal ids",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Legacy food signal ids",
   },
 ];
 
