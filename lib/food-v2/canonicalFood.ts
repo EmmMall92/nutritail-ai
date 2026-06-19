@@ -90,7 +90,10 @@ function dedupeRepeatedDisplayTerms(value: string) {
   return value
     .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(veterinary)(?:\s+\1)+\b/gi, "$1")
-    .replace(/\b(urinary|renal|senior|puppy|kitten|adult)(?:\s+\1)+\b/gi, "$1")
+    .replace(
+      /\b(urinary|renal|senior|puppy|kitten|junior|adult|mature|maintenance|mini|small|medium|large|giant|maxi|xsmall|light|sterilised|sterilized|neutered|sensitive|digestive)(?:\s+\1)+\b/gi,
+      "$1"
+    )
     .replace(/\s+/g, " ")
     .trim();
 }
