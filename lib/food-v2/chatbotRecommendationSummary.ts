@@ -474,13 +474,13 @@ function sectionTitle(
     return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο απλές / value επιλογές:";
   }
 
-  return role === "premium" ? "Best nutrition fits:" : "Simpler / value options:";
+  return role === "premium" ? "Best options for this pet:" : "Value-friendly alternatives:";
 }
 
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
     ? "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να υπολογίσουμε περίπου γραμμάρια/ημέρα."
-    : "Next step: choose one food card and I can estimate daily grams.";
+    : "Next step: choose a food card to calculate daily grams.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
@@ -589,7 +589,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
         : "Alternative foods worth considering:"
       : locale === "el"
         ? "Προτεινόμενες τροφές:"
-        : "Recommended foods:";
+        : "Food picks for this pet:";
   const topForCards = premium[0] ?? value[0];
 
   if (options.compactForCards && topForCards) {
