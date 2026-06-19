@@ -1,13 +1,13 @@
-# Dog Chatbot 200 Live Cases
+# Dog Chatbot 100 Live Cases
 
-Generated: 2026-06-19T20:50:14.451Z
+Generated: 2026-06-19T20:45:31.553Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
 ## Summary
 
-- Cases checked: 200
-- Passed: 200
+- Cases checked: 100
+- Passed: 100
 - Needs review: 0
 
 Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity mismatch guards.
@@ -18,106 +18,6 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 
 | # | Status | Top foods | Review notes |
 | --- | --- | --- | --- |
-| 1 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera MINI JUNIOR DUCK & SALMON | - |
-| 2 | pass | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi | - |
-| 3 | pass | Purina Pro Plan PRO Plan® SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο; ACANA Prairie Poultry; Purina Pro Plan PRO Plan® SMALL&MINI ADULT Everyday Nutrition Κοτόπουλο | - |
-| 4 | pass | N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed; Orijen Puppy Large | - |
-| 5 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 6 | pass | Acana Senior; Orijen Senior; Josera MINI SENIOR SALMON | - |
-| 7 | pass | Orijen Senior; Royal Canin Medium Adult 7+; Royal Canin Maxi Joint Care | - |
-| 8 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 9 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
-| 10 | pass | Monge VetSolution An Hydro; Josera HYPOALLERGENIC DRY; ACANA Classic Red Meat | - |
-| 11 | pass | Monge VetSolution An Hydro; Josera HYPOALLERGENIC DRY; ACANA Classic Red Meat | - |
-| 12 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 13 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 14 | pass | Monge VetSolution Renal And Oxalate; Josera RENAL DRY; Royal Canin Vet Diet Small Renal | - |
-| 15 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
-| 16 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
-| 17 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 18 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 19 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Monge VetSolution An Hydro; Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός | - |
-| 20 | pass | Monge VetSolution An Hydro; Josera HYPOALLERGENIC DRY; Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός | - |
-| 21 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Happy Dog Naturcroq Adult Chicken; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο | - |
-| 22 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
-| 23 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 24 | pass | Happy Dog Profi High Energy 30/20; Josera Medi/maxi Adult Chicken & Rice; N&D Low Grain Chicken & Pomegranate Adult Med/maxi | - |
-| 25 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 26 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera YOUNGSTAR | - |
-| 27 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
-| 28 | pass | Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός; Monge Hypo With Salmon And Tuna; Josera Medi/maxi Adult Chicken & Rice | - |
-| 29 | pass | Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός; Purina Pro Plan Veterinary Diets PRO Plan® VETERINARY DIETS CANINE DRM DERMATOSISTM; Josera HYPOALLERGENIC DRY | - |
-| 30 | pass | Monge BWild Bwild Grain Free All Breeds Lamb With Potatoes And Peas; ACANA Classic Red Meat; Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Digestion Αρνί | - |
-| 31 | pass | Monge BWild Bwild Low Grain All Breeds Puppy And Junior Deer; Purina Pro Plan PRO Plan® SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Acana Wild Coast | - |
-| 32 | pass | N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed; Orijen Puppy Large | - |
-| 33 | pass | N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed; Orijen Puppy Large | - |
-| 34 | pass | Monge BWild Bwild Low Grain All Breeds Puppy And Junior Deer; Purina Pro Plan PRO Plan® SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Acana Wild Coast | - |
-| 35 | pass | Josera DUCK & POTATO; Josera KIDS; Josera MINI JUNIOR DUCK & SALMON | - |
-| 36 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera MINI JUNIOR DUCK & SALMON | - |
-| 37 | pass | Acana Wild Coast; Josera KIDS; Happy Dog Fit & Vital Junior | - |
-| 38 | pass | N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed; Orijen Puppy Large | - |
-| 39 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera YOUNGSTAR | - |
-| 40 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
-| 41 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 42 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
-| 43 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
-| 44 | pass | Happy Dog Profi High Energy 30/20; Josera Medi/maxi Adult Chicken & Rice; N&D Low Grain Chicken & Pomegranate Adult Med/maxi | - |
-| 45 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 46 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Medi/maxi Adult Chicken & Rice; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
-| 47 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 48 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Medi/maxi Adult Chicken & Rice; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
-| 49 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 50 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 51 | pass | Josera MINI SENIOR SALMON; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
-| 52 | pass | Orijen Senior; Royal Canin Medium Adult 7+; Royal Canin Maxi Joint Care | - |
-| 53 | pass | Acana Senior; Orijen Senior; Josera MINI SENIOR SALMON | - |
-| 54 | pass | Orijen Senior; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο; Royal Canin Medium Adult 7+ | - |
-| 55 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
-| 56 | pass | Monge VetSolution Renal And Oxalate | - |
-| 57 | pass | Orijen Senior; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο; Royal Canin Medium Adult 7+ | - |
-| 58 | pass | Acana Senior; Orijen Senior; Royal Canin Maxi Joint Care | - |
-| 59 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
-| 60 | pass | Acana Senior; Orijen Senior; Royal Canin Medium Adult 7+ | - |
-| 61 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 62 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 63 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 64 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 65 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 66 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
-| 67 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 68 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 69 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 70 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 71 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
-| 72 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera MINI JUNIOR DUCK & SALMON | - |
-| 73 | pass | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi | - |
-| 74 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera YOUNGSTAR | - |
-| 75 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 76 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 77 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 78 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 79 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 80 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 81 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 82 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 83 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 84 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 85 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 86 | pass | Josera DUCK & POTATO; Brit Premium By Nature Junior Small; Josera YOUNGSTAR | - |
-| 87 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 88 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 89 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 90 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
-| 91 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 92 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 93 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 94 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
-| 95 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat | - |
-| 96 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Happy Dog Naturcroq Adult Chicken; Purina Pro Plan PRO Plan® MEDIUM ADULT Everyday Nutrition Κοτόπουλο | - |
-| 97 | pass | N&D Quinoa Grain Free Neutered Duck Adult Mini; Royal Canin Medium Sterilised Adult; Happy Dog Naturcroq Σολομός & Ρύζι | - |
-| 98 | pass | Monge Hypo With Salmon And Tuna; Orijen Adult 6 Fish; Royal Canin Medium Adult | - |
-| 99 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Monge VetSolution An Hydro; Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός | - |
-| 100 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Medi/maxi Adult Chicken & Rice; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
 | 101 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Medi/maxi Adult Chicken & Rice; Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
 | 102 | pass | Josera ACTIVE NATURE; Royal Canin Sporting Life Trail 4300; Happy Dog Profi High Energy 30/20 | - |
 | 103 | pass | Purina Pro Plan PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός; Monge VetSolution An Hydro; Purina Pro Plan PRO Plan® LARGE ATHLETIC ADULT Sensitive Skin Σολομός | - |
