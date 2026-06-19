@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-19T00:48:40.882Z
+Generated: 2026-06-19T01:19:15.512Z
 
 ## Summary
 
@@ -73,7 +73,7 @@ Dog edge case fixture QA passed.
 ### Live dog chatbot 200 cases
 
 - Status: pass
-- Duration: 218.7s
+- Duration: 229.0s
 - Command: `npm.cmd run qa:dog-chatbot-live-cases`
 
 ```text
