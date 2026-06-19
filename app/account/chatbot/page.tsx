@@ -1513,6 +1513,7 @@ async function getFoodV2RecommendationMessage(
         ? getExcludedBrandsForAlternative(pet.currentFoodName)
         : [],
     maxItemsPerSection: 2,
+    compactForCards: foodChoices.length > 0,
   });
   const compactFallbackText =
     foodChoices.length > 0
