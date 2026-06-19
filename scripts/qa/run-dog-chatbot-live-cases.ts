@@ -1,6 +1,7 @@
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
+import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 
 type SafetyExpectation = "normal" | "vet_referral" | "emergency";
 type RecommendationGoal =
@@ -1088,7 +1089,7 @@ async function main() {
       ...(recommendations.data.value ?? []),
     ]
       .slice(0, 3)
-      .map((item) => `${item.brand} ${item.display_name}`);
+      .map((item) => customerFoodName(item, " "));
     const warnings = [
       ...factsWarnings,
       ...flowWarnings,
