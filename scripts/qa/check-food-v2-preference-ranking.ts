@@ -599,6 +599,81 @@ if (sterilisedRicherRanking.bucket === "hold") {
   process.exit(1);
 }
 
+const activeMaintenancePet = {
+  ...pet,
+  weight: 25,
+  age: 2,
+  neutered: false,
+  activityLevel: "high" as const,
+  healthIssues: ["works in mountain", "runs daily"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const activeMaintenanceFood = food({
+  id: "active-maintenance-performance",
+  formula_key: "qa|active-maintenance-performance|dog|dry",
+  display_name: "Performance Active Chicken",
+  dog_size: "large",
+  commercial_tags: ["active", "performance"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 392,
+});
+const lightSterilisedForActiveFood = food({
+  id: "light-sterilised-active-mismatch",
+  formula_key: "qa|light-sterilised-active-mismatch|dog|dry",
+  display_name: "Adult Light Sterilised Chicken",
+  dog_size: "large",
+  commercial_tags: ["light", "sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 330,
+});
+const activeMaintenanceRanking = rankFoodV2ForPet({
+  food: activeMaintenanceFood,
+  nutrients: {
+    ...nutrients(activeMaintenanceFood),
+    protein_percent: 28,
+    fat_percent: 17,
+    fiber_percent: 2.2,
+  },
+  pet: activeMaintenancePet,
+  goal: "general",
+});
+const lightSterilisedForActiveRanking = rankFoodV2ForPet({
+  food: lightSterilisedForActiveFood,
+  nutrients: {
+    ...nutrients(lightSterilisedForActiveFood),
+    protein_percent: 24,
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet: activeMaintenancePet,
+  goal: "general",
+});
+
+if (lightSterilisedForActiveRanking.bucket !== "hold") {
+  console.error("Light/sterilised food should be held for genuinely high-activity dogs without a weight-loss goal.");
+  console.error(lightSterilisedForActiveRanking);
+  process.exit(1);
+}
+
+if (
+  !lightSterilisedForActiveRanking.signals.some(
+    (signal) => signal.code === "light_formula_for_high_activity_pet"
+  )
+) {
+  console.error("Expected light_formula_for_high_activity_pet for high-activity maintenance dog.");
+  console.error(lightSterilisedForActiveRanking.signals);
+  process.exit(1);
+}
+
+if (activeMaintenanceRanking.total_score <= lightSterilisedForActiveRanking.total_score) {
+  console.error("Active/performance food should outrank light sterilised food for high-activity maintenance dogs.");
+  console.error({ activeMaintenanceRanking, lightSterilisedForActiveRanking });
+  process.exit(1);
+}
+
 if (sterilisedLeanRanking.total_score - sterilisedRicherRanking.total_score > 30) {
   console.error("Mildly richer sterilised foods should not be buried far below lean sterilised options.");
   console.error({ sterilisedLeanRanking, sterilisedRicherRanking });
