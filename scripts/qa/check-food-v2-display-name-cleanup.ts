@@ -129,6 +129,24 @@ const cases = [
     expected: "Mini Adult",
   },
   {
+    label: "Royal Canin Veterinary Diet alias prefix",
+    input: {
+      brand: "Royal Canin Veterinary Diet",
+      display_name: "Royal Canin Veterinary Canine Gastrointestinal Low Fat",
+      formula_name: "Royal Canin Veterinary Canine Gastrointestinal Low Fat",
+    },
+    expected: "Canine Gastrointestinal Low Fat",
+  },
+  {
+    label: "Royal Canin Vet Diet alias prefix",
+    input: {
+      brand: "Royal Canin Veterinary Diet",
+      display_name: "Royal Canin Vet Diet Dog Urinary UC Low P",
+      formula_name: "Royal Canin Vet Diet Dog Urinary UC Low P",
+    },
+    expected: "Urinary UC Low P",
+  },
+  {
     label: "Monge composition panel title tail",
     input: {
       brand: "Monge",

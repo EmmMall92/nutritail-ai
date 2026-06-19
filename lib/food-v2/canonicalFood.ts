@@ -77,6 +77,22 @@ function normalizeSearchText(value: unknown) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function brandPrefixVariants(brand: string) {
+  const variants = [brand];
+  const normalizedBrand = normalizeSearchText(brand);
+
+  if (normalizedBrand === "royal canin veterinary diet") {
+    variants.push(
+      "Royal Canin Veterinary Diet",
+      "Royal Canin Veterinary",
+      "Royal Canin Vet Diet",
+      "Royal Canin"
+    );
+  }
+
+  return [...new Set(variants.filter(Boolean))];
+}
+
 function titleCaseToken(token: string) {
   if (/^[A-Z0-9+&/-]{2,}$/.test(token)) return token;
   return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
@@ -235,15 +251,25 @@ export function normalizeBrandlessFoodDisplayName({
 
   if (!cleanedDisplay) return "";
 
-  const normalizedBrand = normalizeSearchText(cleanedBrand);
   let normalizedDisplay = normalizeSearchText(cleanedDisplay);
+  const brandPrefixes = brandPrefixVariants(cleanedBrand);
+  let changed = true;
 
-  while (
-    normalizedBrand &&
-    (normalizedDisplay === normalizedBrand ||
-      normalizedDisplay.startsWith(`${normalizedBrand} `))
-  ) {
-    cleanedDisplay = cleanedDisplay.slice(cleanedBrand.length).trim();
+  while (changed) {
+    changed = false;
+    for (const prefix of brandPrefixes) {
+      const normalizedPrefix = normalizeSearchText(prefix);
+      if (
+        normalizedPrefix &&
+        (normalizedDisplay === normalizedPrefix ||
+          normalizedDisplay.startsWith(`${normalizedPrefix} `))
+      ) {
+        cleanedDisplay = cleanedDisplay.slice(prefix.length).trim();
+        normalizedDisplay = normalizeSearchText(cleanedDisplay);
+        changed = true;
+        break;
+      }
+    }
     normalizedDisplay = normalizeSearchText(cleanedDisplay);
   }
 
