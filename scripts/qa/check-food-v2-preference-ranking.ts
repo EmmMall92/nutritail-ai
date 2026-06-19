@@ -2111,6 +2111,27 @@ const unrelatedLiverFood = food({
   formula_name: "LIVER DRY",
   ingredients: ["poultry", "rice"],
 });
+const skinCoatSalmonFood = food({
+  id: "skin-coat-salmon",
+  formula_key: "qa|skin-coat-salmon|dog|dry",
+  brand: "QA Skin",
+  display_name: "Adult Salmon Skin & Coat",
+  formula_name: "Adult Salmon Skin & Coat",
+  commercial_tags: ["skin_coat"],
+  ingredients: ["salmon", "rice", "fish oil"],
+  primary_animal_proteins: ["salmon"],
+  kcal_per_100g: 368,
+});
+const genericChickenFoodForSkin = food({
+  id: "generic-chicken-skin-context",
+  formula_key: "qa|generic-chicken-skin-context|dog|dry",
+  brand: "QA Generic",
+  display_name: "Adult Chicken",
+  formula_name: "Adult Chicken",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
 
 for (const item of [unrelatedGastroFood, unrelatedLiverFood]) {
   const ranking = rankFoodV2ForPet({
@@ -2135,6 +2156,45 @@ for (const item of [unrelatedGastroFood, unrelatedLiverFood]) {
     console.error(ranking.signals);
     process.exit(1);
   }
+}
+
+const skinCoatSalmonRanking = rankFoodV2ForPet({
+  food: skinCoatSalmonFood,
+  nutrients: {
+    ...nutrients(skinCoatSalmonFood),
+    protein_percent: 28,
+    fat_percent: 15,
+    omega3_percent: 1.1,
+    epa_dha_percent: 0.35,
+  },
+  pet: generalSkinPet,
+  goal: "general",
+});
+const genericChickenSkinRanking = rankFoodV2ForPet({
+  food: genericChickenFoodForSkin,
+  nutrients: {
+    ...nutrients(genericChickenFoodForSkin),
+    protein_percent: 25,
+    fat_percent: 12,
+  },
+  pet: generalSkinPet,
+  goal: "general",
+});
+
+if (skinCoatSalmonRanking.total_score <= genericChickenSkinRanking.total_score) {
+  console.error("Skin/coat salmon food should outrank generic chicken for itchy-skin salmon preference.");
+  console.error({ skinCoatSalmonRanking, genericChickenSkinRanking });
+  process.exit(1);
+}
+
+if (
+  !skinCoatSalmonRanking.signals.some(
+    (signal) => signal.code === "skin_coat_omega_fit"
+  )
+) {
+  console.error("Expected skin_coat_omega_fit for skin/coat salmon food.");
+  console.error(skinCoatSalmonRanking.signals);
+  process.exit(1);
 }
 
 const budgetPet = {
