@@ -1,6 +1,6 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-19T05:07:15.260Z
+Generated: 2026-06-19T12:24:22.457Z
 
 ## Summary
 
@@ -78,29 +78,11 @@ These brands are most likely to produce confusing customer recommendations becau
 
 ## Title Cleanup Hotspots
 
-- Royal Canin: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Josera: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Royal Canin Veterinary Diet: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Hills: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Brit: title_risk=8; title issues=0; identities=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
-- Ambrosia: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Happy Dog: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Belcando: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Farmina: title_risk=8; title issues=0; identities=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
-- Hill's Prescription Diet: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- No current title cleanup hotspots with actual title issues. Use Customer-Facing Risk Hotspots for strategic brand order.
 
 ## Duplicate Cleanup Hotspots
 
-- Josera: duplicate_risk=10; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Brit: duplicate_risk=10; duplicate groups=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
-- Hills: duplicate_risk=9; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Royal Canin: duplicate_risk=8; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Belcando: duplicate_risk=8; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Acana: duplicate_risk=8; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
-- Ambrosia: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Happy Dog: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Farmina: duplicate_risk=7; duplicate groups=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
-- Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 
 ## Nutrition Confidence Hotspots
 
