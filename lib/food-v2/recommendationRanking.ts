@@ -1016,6 +1016,26 @@ function scoreFit(input: FoodV2RankingInput) {
 
   let adjustedScore = score;
   if (goal === "sterilised") {
+    if (!hasWeightControlPositioning(haystack)) {
+      adjustedScore -= 18;
+      addSignal(
+        signals,
+        "caution",
+        "sterilised_goal_without_visible_positioning",
+        -18,
+        "Sterilised pets should start from visibly sterilised, light or weight-aware foods when good options exist."
+      );
+    }
+    if (!lifeStageMatches(food, stage)) {
+      adjustedScore -= 12;
+      addSignal(
+        signals,
+        "caution",
+        "sterilised_goal_without_exact_life_stage",
+        -12,
+        "Sterilised shortlists should prefer exact life-stage matches over generic lean foods."
+      );
+    }
     if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 340) {
       adjustedScore -= 30;
     }
