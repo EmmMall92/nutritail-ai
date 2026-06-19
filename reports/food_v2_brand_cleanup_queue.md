@@ -1,6 +1,6 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-19T02:33:56.845Z
+Generated: 2026-06-19T02:37:29.116Z
 
 ## Summary
 
@@ -11,26 +11,26 @@ Generated: 2026-06-19T02:33:56.845Z
 
 ## Queue By Phase
 
-- nutrient_backfill: 52
-- title_cleanup: 9
-- controlled_import_ready: 9
+- nutrient_backfill: 57
+- controlled_import_ready: 10
 - small_batch_review: 9
+- title_cleanup: 3
 - dedupe_before_import: 1
 
 ## Top Cleanup Priorities
 
-- 1. Royal Canin: priority=76; customer_impact=73; title_cleanup; rows=29; title identities=6; title issues=12; duplicates=0; Ca/P gaps=21
-- 2. Hills: priority=60; customer_impact=59; title_cleanup; rows=37; title identities=8; title issues=16; duplicates=0; Ca/P gaps=0
-- 3. Josera: priority=56; customer_impact=53; title_cleanup; rows=54; title identities=1; title issues=1; duplicates=0; Ca/P gaps=15
-- 4. Royal Canin Veterinary Diet: priority=54; customer_impact=50; title_cleanup; rows=5; title identities=4; title issues=8; duplicates=0; Ca/P gaps=4
-- 5. Brit: priority=44; customer_impact=50; title_cleanup; rows=46; title identities=1; title issues=2; duplicates=0; Ca/P gaps=0
-- 6. Hill's Prescription Diet: priority=44; customer_impact=40; title_cleanup; rows=8; title identities=5; title issues=10; duplicates=0; Ca/P gaps=0
-- 7. Ambrosia: priority=41; customer_impact=40; nutrient_backfill; rows=8; title identities=0; title issues=0; duplicates=0; Ca/P gaps=1
-- 8. Happy Dog: priority=39; customer_impact=39; nutrient_backfill; rows=11; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 1. Royal Canin: priority=64; customer_impact=64; nutrient_backfill; rows=29; title identities=0; title issues=0; duplicates=0; Ca/P gaps=21
+- 2. Josera: priority=54; customer_impact=52; nutrient_backfill; rows=54; title identities=0; title issues=0; duplicates=0; Ca/P gaps=15
+- 3. Royal Canin Veterinary Diet: priority=46; customer_impact=44; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=4
+- 4. Hills: priority=44; customer_impact=47; nutrient_backfill; rows=37; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 5. Brit: priority=42; customer_impact=48; controlled_import_ready; rows=46; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 6. Ambrosia: priority=41; customer_impact=40; nutrient_backfill; rows=8; title identities=0; title issues=0; duplicates=0; Ca/P gaps=1
+- 7. Happy Dog: priority=39; customer_impact=39; nutrient_backfill; rows=11; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 8. Hill's Prescription Diet: priority=38; customer_impact=36; title_cleanup; rows=8; title identities=2; title issues=4; duplicates=0; Ca/P gaps=0
 - 9. Belcando: priority=37; customer_impact=38; nutrient_backfill; rows=20; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 10. Farmina: priority=35; customer_impact=37; controlled_import_ready; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 11. Acana: priority=33; customer_impact=37; dedupe_before_import; rows=4; title identities=0; title issues=0; duplicates=1; Ca/P gaps=0
-- 12. Purina Pro Plan: priority=33; customer_impact=37; title_cleanup; rows=4; title identities=1; title issues=2; duplicates=0; Ca/P gaps=2
+- 12. Purina Pro Plan: priority=31; customer_impact=36; nutrient_backfill; rows=4; title identities=0; title issues=0; duplicates=0; Ca/P gaps=2
 - 13. Orijen: priority=30; customer_impact=34; small_batch_review; rows=4; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 14. Monge: priority=30; customer_impact=34; nutrient_backfill; rows=3; title identities=0; title issues=0; duplicates=0; Ca/P gaps=3
 - 15. Reflex: priority=23; customer_impact=23; nutrient_backfill; rows=19; title identities=0; title issues=0; duplicates=0; Ca/P gaps=13
@@ -54,53 +54,53 @@ Generated: 2026-06-19T02:33:56.845Z
 
 Work these in order before the next broad customer-facing recommendation test.
 
-1. Royal Canin (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-2. Hills (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-3. Josera (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-4. Royal Canin Veterinary Diet (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-5. Brit (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+1. Royal Canin (nutrient_backfill) - Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations. Open `data/review/food_v2_nutrient_gap_priorities.csv`; Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+2. Josera (nutrient_backfill) - Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations. Open `data/review/food_v2_nutrient_gap_priorities.csv`; Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+3. Royal Canin Veterinary Diet (nutrient_backfill) - Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations. Open `data/review/food_v2_nutrient_gap_priorities.csv`; Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+4. Hills (nutrient_backfill) - Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations. Open `data/review/food_v2_nutrient_gap_priorities.csv`; Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+5. Ambrosia (nutrient_backfill) - Backfill calcium/phosphorus, ash or estimated kcal where possible before confident recommendations. Open `data/review/food_v2_nutrient_gap_priorities.csv`; Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 
 ## Customer-Facing Risk Hotspots
 
 These brands are most likely to produce confusing customer recommendations because of visible title, duplicate or nutrition-confidence issues.
 
-- Royal Canin: customer_impact=73; title_risk=20; duplicate_risk=8; nutrition_gap=30; next=data/review/food_v2_title_quality_audit.csv
-- Hills: customer_impact=59; title_risk=24; duplicate_risk=9; nutrition_gap=21; next=data/review/food_v2_title_quality_audit.csv
-- Josera: customer_impact=53; title_risk=9; duplicate_risk=10; nutrition_gap=11; next=data/review/food_v2_title_quality_audit.csv
-- Royal Canin Veterinary Diet: customer_impact=50; title_risk=16; duplicate_risk=6; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
-- Brit: customer_impact=50; title_risk=10; duplicate_risk=10; nutrition_gap=8; next=data/review/food_v2_title_quality_audit.csv
-- Hill's Prescription Diet: customer_impact=40; title_risk=18; duplicate_risk=7; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
+- Royal Canin: customer_impact=64; title_risk=8; duplicate_risk=8; nutrition_gap=30; next=data/review/food_v2_nutrient_gap_priorities.csv
+- Josera: customer_impact=52; title_risk=8; duplicate_risk=10; nutrition_gap=11; next=data/review/food_v2_nutrient_gap_priorities.csv
+- Brit: customer_impact=48; title_risk=8; duplicate_risk=10; nutrition_gap=8; next=data/review/food_v2_brand_cleanup_queue.csv
+- Hills: customer_impact=47; title_risk=8; duplicate_risk=9; nutrition_gap=21; next=data/review/food_v2_nutrient_gap_priorities.csv
+- Royal Canin Veterinary Diet: customer_impact=44; title_risk=8; duplicate_risk=6; nutrition_gap=12; next=data/review/food_v2_nutrient_gap_priorities.csv
 - Ambrosia: customer_impact=40; title_risk=8; duplicate_risk=7; nutrition_gap=11; next=data/review/food_v2_nutrient_gap_priorities.csv
 - Happy Dog: customer_impact=39; title_risk=8; duplicate_risk=7; nutrition_gap=13; next=data/review/food_v2_nutrient_gap_priorities.csv
 - Belcando: customer_impact=38; title_risk=8; duplicate_risk=8; nutrition_gap=17; next=data/review/food_v2_nutrient_gap_priorities.csv
 - Farmina: customer_impact=37; title_risk=8; duplicate_risk=7; nutrition_gap=8; next=data/review/food_v2_brand_cleanup_queue.csv
 - Acana: customer_impact=37; title_risk=8; duplicate_risk=8; nutrition_gap=8; next=data/review/food_v2_duplicate_merge_risk_audit.csv
-- Purina Pro Plan: customer_impact=37; title_risk=10; duplicate_risk=6; nutrition_gap=10; next=data/review/food_v2_title_quality_audit.csv
+- Hill's Prescription Diet: customer_impact=36; title_risk=12; duplicate_risk=7; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
+- Purina Pro Plan: customer_impact=36; title_risk=8; duplicate_risk=6; nutrition_gap=10; next=data/review/food_v2_nutrient_gap_priorities.csv
 
 ## Title Cleanup Hotspots
 
-- Hills: title_risk=24; title issues=16; identities=8; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Royal Canin: title_risk=20; title issues=12; identities=6; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Hill's Prescription Diet: title_risk=18; title issues=10; identities=5; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Royal Canin Veterinary Diet: title_risk=16; title issues=8; identities=4; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Brit: title_risk=10; title issues=2; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Purina Pro Plan: title_risk=10; title issues=2; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Josera: title_risk=9; title issues=1; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+- Hill's Prescription Diet: title_risk=12; title issues=4; identities=2; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+- Royal Canin: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Josera: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Royal Canin Veterinary Diet: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Hills: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Brit: title_risk=8; title issues=0; identities=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
 - Ambrosia: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Happy Dog: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Belcando: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Farmina: title_risk=8; title issues=0; identities=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
 
 ## Duplicate Cleanup Hotspots
 
-- Josera: duplicate_risk=10; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Brit: duplicate_risk=10; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Hills: duplicate_risk=9; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Royal Canin: duplicate_risk=8; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+- Josera: duplicate_risk=10; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Brit: duplicate_risk=10; duplicate groups=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
+- Hills: duplicate_risk=9; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Royal Canin: duplicate_risk=8; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Belcando: duplicate_risk=8; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Acana: duplicate_risk=8; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
-- Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Ambrosia: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Happy Dog: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
+- Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Farmina: duplicate_risk=7; duplicate groups=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
 
 ## Nutrition Confidence Hotspots

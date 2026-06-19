@@ -159,6 +159,16 @@ function hasMojibake(value) {
   return mojibakeTitlePattern.test(String(value ?? ""));
 }
 
+function isConciseMedicalProductTitle(value) {
+  const title = normalizeText(value);
+  if (!title || wordCount(title) > 9 || title.length > 90) return false;
+  if (/\b(?:for|support|management|treatment|reduction)\s+of\b/i.test(title)) {
+    return false;
+  }
+  if (/τροφ[ηή]\s+για/iu.test(title)) return false;
+  return !descriptiveTitlePatterns.some((pattern) => pattern.test(title));
+}
+
 function isLowPrioritySourceRegistryFallback(row) {
   if (row.audit_source !== "category_product_sources_registry") return false;
 
@@ -313,12 +323,17 @@ function findTitleIssues(row) {
 
   for (const pattern of medicalDescriptionPatterns) {
     if (pattern.test(formulaName) && wordCount(formulaName) > 5) {
+      const conciseProductTitle = isConciseMedicalProductTitle(formulaName);
       addIssue(
         issues,
         row,
-        "medium",
-        "medical_claim_used_as_name",
-        "Keep the medical claim in tags/notes; formula_name should be the official product line."
+        conciseProductTitle ? "info" : "medium",
+        conciseProductTitle
+          ? "medical_claim_product_line_ok"
+          : "medical_claim_used_as_name",
+        conciseProductTitle
+          ? "Concise veterinary/condition wording looks like a product line; keep visible but do not treat as a title cleanup blocker."
+          : "Keep the medical claim in tags/notes; formula_name should be the official product line."
       );
       break;
     }
