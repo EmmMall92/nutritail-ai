@@ -81,6 +81,15 @@ const cases = [
     expected: "Naturcroq Duck & Rice Sterilised",
   },
   {
+    label: "Happy Dog repeated Happy title token",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised",
+      formula_name: "Happy Happy Naturcroq Duck & Rice Sterilised",
+    },
+    expected: "Naturcroq Duck & Rice Sterilised",
+  },
+  {
     label: "Josera feeding table title tail",
     input: {
       brand: "Josera",
