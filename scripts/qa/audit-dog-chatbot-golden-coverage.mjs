@@ -183,6 +183,51 @@ function missingRequiredCoverage(coverageCases) {
   ];
 }
 
+function topicCoverageProblems(coverageCases) {
+  const ids = new Set(coverageCases.map((item) => item.id));
+  const topics = [
+    { label: "breed_activity_101_115", from: 101, to: 115, minimum: 15 },
+    { label: "sterilised_weight_behaviour_116_120", from: 116, to: 120, minimum: 5 },
+    { label: "gi_skin_allergy_121_150", from: 121, to: 150, minimum: 30 },
+    { label: "medical_conditions_151_170", from: 151, to: 170, minimum: 20 },
+    { label: "reproduction_growth_171_180", from: 171, to: 180, minimum: 10 },
+    { label: "senior_accessibility_181_190", from: 181, to: 190, minimum: 10 },
+    { label: "environment_rescue_191_200", from: 191, to: 200, minimum: 10 },
+  ];
+
+  return topics
+    .map((topic) => {
+      const count = Array.from(
+        { length: topic.to - topic.from + 1 },
+        (_, index) => topic.from + index
+      ).filter((id) => ids.has(id)).length;
+
+      return { ...topic, count };
+    })
+    .filter((topic) => topic.count < topic.minimum)
+    .map(
+      (topic) =>
+        `topic coverage too low for ${topic.label}: ${topic.count}/${topic.minimum}`
+    );
+}
+
+function topicCoverageCounts(coverageCases) {
+  const ids = new Set(coverageCases.map((item) => item.id));
+  return [
+    ["breed_activity_101_115", 101, 115],
+    ["sterilised_weight_behaviour_116_120", 116, 120],
+    ["gi_skin_allergy_121_150", 121, 150],
+    ["medical_conditions_151_170", 151, 170],
+    ["reproduction_growth_171_180", 171, 180],
+    ["senior_accessibility_181_190", 181, 190],
+    ["environment_rescue_191_200", 191, 200],
+  ].map(([label, from, to]) => [
+    label,
+    Array.from({ length: Number(to) - Number(from) + 1 }, (_, index) => Number(from) + index)
+      .filter((id) => ids.has(id)).length,
+  ]);
+}
+
 function summarizeIds(cases, from, to) {
   const ids = cases.map((item) => item.id);
   const uniqueIds = new Set(ids);
@@ -250,6 +295,7 @@ async function main() {
       : null,
     ...missingRequiredCoverage(liveCoverageCases),
     ...minimumCoverageProblems(liveCoverageCases),
+    ...topicCoverageProblems(liveCoverageCases),
   ].filter(Boolean);
 
   await mkdir(path.dirname(reportPath), { recursive: true });
@@ -287,6 +333,10 @@ async function main() {
           (item) => item.check
         )
       ),
+      "",
+      "## Topic Coverage For User Cases 101-200",
+      "",
+      renderCounts(topicCoverageCounts(liveCoverageCases)),
       "",
       "## Damaged Prompt Cleanup",
       "",
