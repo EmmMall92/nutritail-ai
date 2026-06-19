@@ -4468,6 +4468,26 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </div>
             </div>
+            <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
+                <span className="block font-semibold text-emerald-950">
+                  {botText("ΞΞ±Ξ»ΟΟ„ΞµΟΞµΟ‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚", "Best nutrition fits")}
+                </span>
+                <span className="text-xs text-emerald-800">
+                  {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
+                  {botText("ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ ΞΌΞµ Ο€ΟΟΟ„Ξ± Ο„ΞΏ fit", "options prioritised for fit")}
+                </span>
+              </div>
+              <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
+                <span className="block font-semibold text-sky-950">
+                  {botText("Value ΞµΞ½Ξ±Ξ»Ξ»Ξ±ΞΊΟ„ΞΉΞΊΞ­Ο‚", "Value options")}
+                </span>
+                <span className="text-xs text-sky-800">
+                  {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
+                  {botText("ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ Ξ±Ξ½ Ο„Ξ±ΞΉΟΞΉΞ¬Ξ¶ΞΏΟ…Ξ½", "alternatives when they still fit")}
+                </span>
+              </div>
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {recommendedFoodChoices.map((choice, index) => (
                 <button
