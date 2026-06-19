@@ -58,6 +58,66 @@ function renderCounts(counts) {
   return counts.map(([key, count]) => `- ${key}: ${count}`).join("\n");
 }
 
+function mapCounts(items, selector) {
+  return new Map(countBy(items, selector));
+}
+
+function minimumCoverageProblems(coverageCases) {
+  const goalCounts = mapCounts(coverageCases, (item) => item.goal);
+  const safetyCounts = mapCounts(coverageCases, (item) => item.safety);
+  const checkCounts = mapCounts(
+    coverageCases.flatMap((item) => item.checks.map((check) => ({ check }))),
+    (item) => item.check
+  );
+  const minimumGoals = {
+    allergy: 20,
+    growth: 20,
+    senior: 20,
+    sensitive_digestion: 15,
+    weight_control: 10,
+    renal: 5,
+    urinary: 5,
+    sterilised: 3,
+    value: 2,
+    premium: 5,
+  };
+  const minimumChecks = {
+    allergyReject: 10,
+    puppyGrowth: 20,
+    largeBreedPuppy: 8,
+    obesityLogic: 15,
+    activeFit: 10,
+    medicalNoTreatment: 90,
+    foodV2Candidates: 150,
+  };
+  const minimumSafeties = {
+    normal: 80,
+    vet_referral: 80,
+    emergency: 5,
+  };
+
+  return [
+    ...Object.entries(minimumGoals)
+      .filter(([goal, minimum]) => (goalCounts.get(goal) ?? 0) < minimum)
+      .map(
+        ([goal, minimum]) =>
+          `goal coverage too low for ${goal}: ${goalCounts.get(goal) ?? 0}/${minimum}`
+      ),
+    ...Object.entries(minimumChecks)
+      .filter(([check, minimum]) => (checkCounts.get(check) ?? 0) < minimum)
+      .map(
+        ([check, minimum]) =>
+          `check coverage too low for ${check}: ${checkCounts.get(check) ?? 0}/${minimum}`
+      ),
+    ...Object.entries(minimumSafeties)
+      .filter(([safety, minimum]) => (safetyCounts.get(safety) ?? 0) < minimum)
+      .map(
+        ([safety, minimum]) =>
+          `safety coverage too low for ${safety}: ${safetyCounts.get(safety) ?? 0}/${minimum}`
+      ),
+  ];
+}
+
 function missingRequiredCoverage(coverageCases) {
   const goals = new Set(coverageCases.map((item) => item.goal));
   const checks = new Set(coverageCases.flatMap((item) => item.checks));
@@ -165,6 +225,7 @@ async function main() {
       ? `Live coverage parser should find 200 cases, found ${liveCoverageCases.length}.`
       : null,
     ...missingRequiredCoverage(liveCoverageCases),
+    ...minimumCoverageProblems(liveCoverageCases),
   ].filter(Boolean);
 
   await mkdir(path.dirname(reportPath), { recursive: true });
