@@ -404,4 +404,75 @@ assert(
   skinCoatWithoutOmegaDetail
 );
 
+const indoorSterilisedHairballCat = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "adult",
+  health_tags: ["indoor", "sterilised", "hairball"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 338,
+    protein_percent: 34,
+    fat_percent: 11,
+    fiber_percent: 6.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.9,
+    magnesium_percent: 0.08,
+  },
+});
+
+assert(
+  indoorSterilisedHairballCat.best_use_cases.includes("hairball_fiber_support"),
+  "Expected hairball_fiber_support for hairball-positioned cat food with useful fiber data.",
+  indoorSterilisedHairballCat
+);
+
+assert(
+  indoorSterilisedHairballCat.best_use_cases.includes("indoor_sterilised_weight_management"),
+  "Expected indoor_sterilised_weight_management for indoor/sterilised cat food with weight-aware nutrition.",
+  indoorSterilisedHairballCat
+);
+
+assert(
+  indoorSterilisedHairballCat.food_strengths.some((item) =>
+    item.includes("hairball-control positioning")
+  ),
+  "Expected a customer-useful hairball fiber strength.",
+  indoorSterilisedHairballCat
+);
+
+const weakHairballCat = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "adult",
+  health_tags: ["hairball"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 370,
+    protein_percent: 33,
+    fat_percent: 14,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.9,
+  },
+});
+
+assert(
+  weakHairballCat.not_ideal_cases.includes("hairball_without_fiber_support"),
+  "Expected hairball_without_fiber_support when hairball positioning lacks useful fiber support.",
+  weakHairballCat
+);
+
+assert(
+  weakHairballCat.food_cautions.some((item) =>
+    item.includes("Hairball positioning is weaker")
+  ),
+  "Expected hairball caution when fiber support is weak.",
+  weakHairballCat
+);
+
 console.log("Food intelligence use-case QA passed.");

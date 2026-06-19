@@ -132,6 +132,16 @@ function hasEnergyDenseNutrition(input: FoodIntelligenceInput) {
   );
 }
 
+function hasHairballFiberSupport(input: FoodIntelligenceInput) {
+  const fiber = input.nutrients?.fiber_percent;
+
+  return (
+    hasTag(input, ["hairball"]) &&
+    hasNumber(fiber) &&
+    fiber >= 4
+  );
+}
+
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   const size = String(input.dog_size ?? "").toLowerCase();
 
@@ -277,6 +287,16 @@ function strengths(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "Single clear animal protein can support ingredient-avoidance planning.");
   }
+  if (hasHairballFiberSupport(input)) {
+    addUnique(result, "Fiber level supports hairball-control positioning.");
+  }
+  if (
+    input.species === "cat" &&
+    hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
+    hasWeightAwareNutrition(input)
+  ) {
+    addUnique(result, "Calorie and fat profile fits indoor or sterilised cat feeding.");
+  }
 
   for (const profile of nutrientProfiles) {
     const field = profile.field as keyof NonNullable<FoodIntelligenceInput["nutrients"]>;
@@ -357,6 +377,12 @@ function cautions(input: FoodIntelligenceInput) {
     !hasOmegaDetail(input)
   ) {
     result.push("Skin/coat positioning is weaker without declared EPA/DHA detail.");
+  }
+  if (
+    hasTag(input, ["hairball"]) &&
+    (!hasNumber(input.nutrients?.fiber_percent) || input.nutrients.fiber_percent < 4)
+  ) {
+    result.push("Hairball positioning is weaker without a clear fiber-support level.");
   }
 
   return [...new Set(result)].slice(0, 8);
@@ -461,6 +487,16 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "skin_coat_omega_review");
   }
+  if (hasHairballFiberSupport(input)) {
+    addUnique(result, "hairball_fiber_support");
+  }
+  if (
+    input.species === "cat" &&
+    hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
+    hasWeightAwareNutrition(input)
+  ) {
+    addUnique(result, "indoor_sterilised_weight_management");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -524,6 +560,12 @@ function notIdealCases(input: FoodIntelligenceInput) {
     !hasOmegaDetail(input)
   ) {
     cases.push("senior_without_clear_senior_or_mobility_support");
+  }
+  if (
+    hasTag(input, ["hairball"]) &&
+    (!hasNumber(input.nutrients?.fiber_percent) || input.nutrients.fiber_percent < 4)
+  ) {
+    cases.push("hairball_without_fiber_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
