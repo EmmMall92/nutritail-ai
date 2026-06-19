@@ -1,28 +1,32 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-18T21:07:00.751Z
+Generated: 2026-06-19T02:14:09.788Z
 
 ## Summary
 
 - Rows reviewed: 758
 - Food V2 candidate rows reviewed: 553
 - Source registry rows reviewed: 205
-- Issue rows: 574
+- Audit findings: 574
+- Manual cleanup findings: 433
+- Auto-cleanup/info findings: 141
 - Rows with high/critical title issues: 64
-- Rows without title issues: 489
+- Rows without manual title issues: 580
 - Output CSV: data/review/food_v2_title_quality_audit.csv
 
 ## Issues By Severity
 
-- medium: 484
+- medium: 343
+- info: 141
 - high: 90
 
 ## Issues By Type
 
-- formula_name_starts_with_brand: 190
 - retailer_title_needs_human_review: 177
+- formula_name_brand_prefix_auto_cleaned: 141
 - formula_contains_pack_or_offer: 87
 - formula_name_too_long: 59
+- formula_name_starts_with_brand: 49
 - formula_name_looks_like_description: 30
 - medical_claim_used_as_name: 30
 - display_name_too_long: 1
@@ -44,21 +48,21 @@ Generated: 2026-06-18T21:07:00.751Z
 
 ## Medium Cleanup Focus By Brand
 
-- Ambrosia: 69
-- Josera: 69
-- Belcando: 55
+- Ambrosia: 64
+- Belcando: 44
 - Brit: 39
 - Calibra: 26
-- JosiDog: 24
-- Hill's Prescription Diet: 21
 - Hills: 16
 - Black Olympus: 15
-- Amity: 14
-- Wolf of Wilderness: 14
+- Hill's Prescription Diet: 13
+- Wolf of Wilderness: 13
 - Royal Canin: 12
-- Cennamo: 11
 - Amanova: 10
 - Anima: 10
+- Briantos: 10
+- Leonardo: 8
+- Royal Canin Veterinary Diet: 8
+- Amity: 7
 
 ## Recommended Next Step
 
