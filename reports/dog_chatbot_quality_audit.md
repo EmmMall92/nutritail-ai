@@ -1,13 +1,13 @@
 # Dog Chatbot Quality Audit
 
-Generated: 2026-06-19T21:24:19.482Z
+Generated: 2026-06-19T21:46:25.047Z
 Source report: reports/dog_chatbot_200_live_cases.md
 
 ## Summary
 
 - Parsed cases: 200
 - Groups checked: 8
-- Quality review items: 5
+- Quality review items: 0
 - Missing expected group rows: 0
 
 This is a qualitative audit over the generated live-case report. It does not replace the endpoint-level guards; it highlights cases that technically pass but may not be the best customer-facing recommendation.
@@ -37,11 +37,9 @@ No qualitative review items found for this group.
 Active dogs should not start with diet, renal, urinary, or low-energy formulas.
 
 - Covered expected cases: 17/17
-- Review items: 1
+- Review items: 0
 
-| Case | Reason | Visible top foods |
-| --- | --- | --- |
-| 192 | no expected positioning in visible foods; first food has conflicting positioning | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat |
+No qualitative review items found for this group.
 
 ### Renal
 
@@ -66,11 +64,9 @@ No qualitative review items found for this group.
 Senior/mobility cases should surface senior, ageing, joint, or mobility-aware options.
 
 - Covered expected cases: 26/26
-- Review items: 1
+- Review items: 0
 
-| Case | Reason | Visible top foods |
-| --- | --- | --- |
-| 54 | no expected positioning in visible foods | - |
+No qualitative review items found for this group.
 
 ### Allergy and skin
 
@@ -85,12 +81,8 @@ No qualitative review items found for this group.
 
 GI cases should surface gastrointestinal, sensitive digestion, or hydrolysed-style options first.
 
-- Covered expected cases: 17/17
-- Review items: 3
+- Covered expected cases: 16/16
+- Review items: 0
 
-| Case | Reason | Visible top foods |
-| --- | --- | --- |
-| 35 | no expected positioning in visible foods | Josera DUCK & POTATO; Josera KIDS; Josera MINI JUNIOR DUCK & SALMON |
-| 40 | no expected positioning in visible foods | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR |
-| 62 | no expected positioning in visible foods | Happy Dog Naturcroq Duck & Rice Sterilised; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat |
+No qualitative review items found for this group.
 
