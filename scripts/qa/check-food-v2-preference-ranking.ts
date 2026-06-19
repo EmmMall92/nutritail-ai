@@ -967,6 +967,106 @@ if (
   process.exit(1);
 }
 
+const activeSalmonPerformanceFood = food({
+  id: "active-salmon-performance",
+  formula_key: "qa|active-salmon-performance|dog|dry",
+  display_name: "Performance Active Salmon",
+  dog_size: "large",
+  commercial_tags: ["active", "performance"],
+  ingredients: ["salmon", "rice", "fish oil"],
+  primary_animal_proteins: ["salmon"],
+  kcal_per_100g: 392,
+});
+const activeChickenPerformanceFood = food({
+  id: "active-chicken-performance",
+  formula_key: "qa|active-chicken-performance|dog|dry",
+  display_name: "Performance Active Chicken",
+  dog_size: "large",
+  commercial_tags: ["active", "performance"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 392,
+});
+const activePreferencePet = {
+  ...highActivityPet,
+  healthIssues: ["daily agility", "runs 10km"],
+  preferredProteins: ["salmon"],
+  excludedIngredients: [],
+};
+const activeSalmonPreferenceRanking = rankFoodV2ForPet({
+  food: activeSalmonPerformanceFood,
+  nutrients: {
+    ...nutrients(activeSalmonPerformanceFood),
+    protein_percent: 29,
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: activePreferencePet,
+  goal: "general",
+});
+const activeChickenPreferenceRanking = rankFoodV2ForPet({
+  food: activeChickenPerformanceFood,
+  nutrients: {
+    ...nutrients(activeChickenPerformanceFood),
+    protein_percent: 29,
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: activePreferencePet,
+  goal: "general",
+});
+
+if (activeSalmonPreferenceRanking.total_score <= activeChickenPreferenceRanking.total_score) {
+  console.error("Among active/performance fits, the preferred protein should break the tie.");
+  console.error({ activeSalmonPreferenceRanking, activeChickenPreferenceRanking });
+  process.exit(1);
+}
+
+if (
+  !activeSalmonPreferenceRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_match"
+  )
+) {
+  console.error("Expected preferred_protein_match for active salmon preference.");
+  console.error(activeSalmonPreferenceRanking.signals);
+  process.exit(1);
+}
+
+const activeChickenAvoidanceRanking = rankFoodV2ForPet({
+  food: activeChickenPerformanceFood,
+  nutrients: {
+    ...nutrients(activeChickenPerformanceFood),
+    protein_percent: 29,
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: {
+    ...activePreferencePet,
+    preferredProteins: ["salmon"],
+    excludedIngredients: ["chicken"],
+    allergies: ["chicken"],
+  },
+  goal: "general",
+});
+
+if (activeChickenAvoidanceRanking.bucket !== "hold") {
+  console.error("Active/performance fit must not override chicken allergy or avoidance.");
+  console.error(activeChickenAvoidanceRanking);
+  process.exit(1);
+}
+
+if (
+  !activeChickenAvoidanceRanking.signals.some(
+    (signal) =>
+      signal.code.startsWith("allergen_conflict") ||
+      signal.code.startsWith("excluded_ingredient_preference")
+  )
+) {
+  console.error("Expected allergy or excluded ingredient signal for avoided active chicken food.");
+  console.error(activeChickenAvoidanceRanking.signals);
+  process.exit(1);
+}
+
 const summerLowAppetitePet = {
   ...pet,
   breed: "Husky",
