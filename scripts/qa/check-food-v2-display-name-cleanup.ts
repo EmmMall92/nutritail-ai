@@ -79,6 +79,25 @@ const cases = [
     expected: "Sensi Plus",
   },
   {
+    label: "Royal Canin analytical panel title tail",
+    input: {
+      brand: "Royal Canin",
+      display_name:
+        "Royal Canin Mini Adult Analytical Constituents Protein 27% Fat content 16%",
+      formula_name: "Mini Adult Analytical Constituents Protein 27% Fat content 16%",
+    },
+    expected: "Mini Adult",
+  },
+  {
+    label: "Monge composition panel title tail",
+    input: {
+      brand: "Monge",
+      display_name: "Monge Vetsolution Renal Composition: rice, dried chicken",
+      formula_name: "Vetsolution Renal Composition: rice, dried chicken",
+    },
+    expected: "Vetsolution Renal",
+  },
+  {
     label: "Formula-only display remains unchanged",
     input: {
       brand: "Royal Canin",
