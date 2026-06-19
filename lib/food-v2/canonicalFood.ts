@@ -104,6 +104,17 @@ function dedupeRepeatedDisplayTerms(value: string) {
     .trim();
 }
 
+function dedupeRepeatedLeadingToken(value: string) {
+  const tokens = value.split(/\s+/).filter(Boolean);
+  if (tokens.length < 2) return value;
+
+  const first = normalizeSearchText(tokens[0]);
+  const second = normalizeSearchText(tokens[1]);
+  if (!first || first !== second) return value;
+
+  return tokens.slice(1).join(" ");
+}
+
 function removeFeedingTableTitleTail(value: string) {
   return value
     .replace(/\b(?:weight\s+)?activity\s*\/?\s*day\b[\s\S]*$/i, " ")
@@ -236,7 +247,7 @@ export function normalizeBrandlessFoodDisplayName({
     normalizedDisplay = normalizeSearchText(cleanedDisplay);
   }
 
-  return dedupeRepeatedDisplayTerms(cleanedDisplay)
+  return dedupeRepeatedDisplayTerms(dedupeRepeatedLeadingToken(cleanedDisplay))
     .replace(/\s+/g, " ")
     .trim();
 }
