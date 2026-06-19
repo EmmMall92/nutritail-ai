@@ -178,6 +178,15 @@ function classifyGroup(rows) {
     };
   }
 
+  if (duplicateCandidates && mixedSourceRank && priorities.includes("official")) {
+    return {
+      risk_level: "low",
+      risk_reason: "official_survivor_with_lower_priority_backfill",
+      recommended_action:
+        "Use the official row as survivor; keep retailer/photo rows only for missing nutrient backfill or evidence after a quick spot-check.",
+    };
+  }
+
   if (duplicateCandidates) {
     return {
       risk_level: "medium",
