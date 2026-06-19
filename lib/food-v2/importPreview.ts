@@ -2,6 +2,7 @@ import {
   createCanonicalFoodIdentity,
   ensureBrandInDisplayName,
   groupByCanonicalFormula,
+  normalizeBrandlessFormulaName,
   normalizeCanonicalFormulaName,
 } from "@/lib/food-v2/canonicalFood";
 import {
@@ -268,9 +269,10 @@ export function normalizeFoodV2RawRow(
   raw: Record<string, unknown>
 ): FoodImportRowV2 {
   const brand = normalizeBrand(raw.brand);
-  const formulaName = normalizeCanonicalFormulaName(
-    normalizeFormulaName(raw.formula_name)
-  );
+  const formulaName = normalizeBrandlessFormulaName({
+    brand,
+    formula_name: normalizeCanonicalFormulaName(normalizeFormulaName(raw.formula_name)),
+  });
   const species = normalizeSpecies(raw.species);
   const format = normalizeFoodFormat(raw.format);
   const ingredientText = normalizeIngredientText(raw.ingredient_text);
