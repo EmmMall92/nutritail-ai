@@ -527,23 +527,36 @@ function getRecommendationChoiceFacts(
   return facts.filter((fact) => fact.value);
 }
 
-function getRecommendationChoiceMatchLabel(
+function getRecommendationChoiceBadgeLabel(
+  choice: RecommendedFoodChoice,
+  index: number,
+  language: ChatLanguage
+) {
+  if (index === 0) {
+    return language === "el" ? "Πρώτη επιλογή" : "Top pick";
+  }
+  if (choice.role === "value") {
+    return language === "el" ? "Πιο value επιλογή" : "Value option";
+  }
+
+  return language === "el" ? "Καλή εναλλακτική" : "Good alternative";
+}
+
+function getRecommendationChoiceActionHint(
   choice: RecommendedFoodChoice,
   language: ChatLanguage
 ) {
-  const score = choice.score ?? 0;
+  const hasPortionData = choice.kcalPer100g != null && Number.isFinite(choice.kcalPer100g);
 
-  if (choice.role === "value") {
-    return language === "el" ? "Καλή value επιλογή" : "Good value pick";
-  }
-  if (score >= 82) {
-    return language === "el" ? "Πολύ δυνατό ταίριασμα" : "Strong match";
-  }
-  if (score >= 68) {
-    return language === "el" ? "Καλή επιλογή" : "Good match";
+  if (hasPortionData) {
+    return language === "el"
+      ? "Διάλεξέ τη για να δεις γραμμάρια ανά ημέρα."
+      : "Choose it to estimate grams per day.";
   }
 
-  return language === "el" ? "Χρήσιμη εναλλακτική" : "Useful alternative";
+  return language === "el"
+    ? "Διάλεξέ τη για να συνεχίσουμε με πρακτικές οδηγίες."
+    : "Choose it to continue with practical guidance.";
 }
 
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
@@ -4160,14 +4173,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             : "bg-emerald-100 text-emerald-900"
                       }`}
                     >
-                      {index === 0
-                        ? botText("Πρώτη πρόταση", "Top pick")
-                        : choice.role === "value"
-                        ? botText("Value επιλογή", "Value pick")
-                        : botText("Καλύτερο fit", "Best fit")}
+                      {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {getRecommendationChoiceMatchLabel(choice, chatLanguage)}
+                      {botText("Υπολογισμός μερίδας", "Portion estimate")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -4256,10 +4265,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     </span>
                   )}
                   <span className="mt-3 text-xs text-gray-500">
-                    {botText(
-                      "Πάτησέ τη για να υπολογίσουμε γραμμάρια/ημέρα.",
-                      "Tap to calculate grams per day."
-                    )}
+                    {getRecommendationChoiceActionHint(choice, chatLanguage)}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Επιλογή και υπολογισμός", "Choose and calculate")}
