@@ -487,6 +487,21 @@ function hasUrinaryPositioning(foodText: string) {
   return hasAny(foodText, ["urinary", "struvite", "oxalate"]);
 }
 
+type UrinarySubtype = "struvite" | "oxalate";
+
+function urinarySubtypeFromText(value: unknown): UrinarySubtype | null {
+  const text = normalizeText(value);
+
+  if (hasAny(text, ["struvite", "struvit", "στρουβι"])) return "struvite";
+  if (hasAny(text, ["oxalate", "oxalat", "οξαλ"])) return "oxalate";
+
+  return null;
+}
+
+function urinarySubtypeFromPet(pet: FoodV2RankingInput["pet"]) {
+  return urinarySubtypeFromText((pet.healthIssues ?? []).join(" "));
+}
+
 function hasPancreatitisContext(values: string[] | undefined) {
   return hasAny(normalizeText((values ?? []).join(" ")), [
     "pancreatitis",
@@ -868,13 +883,38 @@ function scoreFit(input: FoodV2RankingInput) {
     );
   }
 
-  if (goal === "urinary" || hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), ["urinary", "struvite", "crystal"])) {
+  if (
+    goal === "urinary" ||
+    hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+      "urinary",
+      "struvite",
+      "oxalate",
+      "crystal",
+      "stone",
+      "urolith",
+      "ουρολογ",
+      "κρυσταλλ",
+      "οξαλ",
+    ])
+  ) {
     const hasUrinary = hasUrinaryPositioning(haystack);
     const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
+    const petUrinarySubtype = urinarySubtypeFromPet(pet);
+    const foodUrinarySubtype = urinarySubtypeFromText(haystack);
 
     if (hasUrinary) {
       score += 20;
       addSignal(signals, "boost", "urinary_positioning", 20, "Positioned for urinary support.");
+      if (petUrinarySubtype && foodUrinarySubtype === petUrinarySubtype) {
+        score += 10;
+        addSignal(
+          signals,
+          "boost",
+          `urinary_${petUrinarySubtype}_match`,
+          10,
+          `Matches the stated ${petUrinarySubtype} urinary context.`
+        );
+      }
     } else if (goal === "urinary") {
       addSignal(
         signals,
@@ -891,6 +931,20 @@ function scoreFit(input: FoodV2RankingInput) {
         "urinary_renal_mismatch",
         -100,
         "Excluded because renal positioning does not replace urinary/stone-specific diet support."
+      );
+    }
+    if (
+      goal === "urinary" &&
+      petUrinarySubtype &&
+      foodUrinarySubtype &&
+      foodUrinarySubtype !== petUrinarySubtype
+    ) {
+      addSignal(
+        signals,
+        "exclude",
+        "urinary_subtype_mismatch",
+        -100,
+        `Excluded because a ${foodUrinarySubtype} urinary formula does not replace a ${petUrinarySubtype}-specific shortlist.`
       );
     }
     if (!hasNumber(nutrients.magnesium_percent) || !hasNumber(nutrients.phosphorus_percent)) {

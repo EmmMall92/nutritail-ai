@@ -130,7 +130,21 @@ export function goalFromPetContext(
   ) {
     return "allergy";
   }
-  if (hasAny(pet.healthIssues, ["urinary", "struvite", "crystal", "pee", "ουρολογ"])) {
+  if (
+    hasAny(pet.healthIssues, [
+      "urinary",
+      "struvite",
+      "oxalate",
+      "crystal",
+      "stone",
+      "urolith",
+      "pee",
+      "ουρολογ",
+      "κρυσταλλ",
+      "οξαλ",
+      "λιθ",
+    ])
+  ) {
     return "urinary";
   }
   if (hasAny(pet.healthIssues, ["renal", "kidney", "ckd", "νεφρ"])) return "renal";

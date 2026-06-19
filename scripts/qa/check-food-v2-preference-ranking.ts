@@ -1131,6 +1131,95 @@ if (!renalOnlyUrinaryRanking.signals.some((signal) => signal.code === "urinary_r
   process.exit(1);
 }
 
+const urinaryOxalateFood = food({
+  id: "urinary-oxalate",
+  formula_key: "qa|urinary-oxalate|cat|dry",
+  brand: "QA Vet",
+  display_name: "Urinary Oxalate",
+  species: "cat",
+  life_stage: "adult",
+  ingredients: ["chicken", "rice"],
+  medical_tags: ["urinary"],
+});
+const struviteContextOxalateRanking = rankFoodV2ForPet({
+  food: urinaryOxalateFood,
+  nutrients: {
+    ...nutrients(urinaryOxalateFood),
+    magnesium_percent: 0.07,
+    phosphorus_percent: 0.75,
+  },
+  pet: urinaryPet,
+  goal: "urinary",
+});
+const struviteContextOxalateGuards = detectFoodV2RecommendationGuardFlags(struviteContextOxalateRanking);
+
+if (struviteContextOxalateRanking.bucket !== "hold") {
+  console.error("Oxalate-positioned urinary food should be held for explicit struvite history.");
+  console.error(struviteContextOxalateRanking);
+  process.exit(1);
+}
+
+if (!struviteContextOxalateRanking.signals.some((signal) => signal.code === "urinary_subtype_mismatch")) {
+  console.error("Expected urinary_subtype_mismatch when oxalate food is evaluated for struvite history.");
+  console.error(struviteContextOxalateRanking.signals);
+  process.exit(1);
+}
+
+if (!struviteContextOxalateGuards.some((flag) => flag.code === "urinary_subtype_mismatch" && flag.severity === "block")) {
+  console.error("Expected urinary_subtype_mismatch to be exposed as a block guard.");
+  console.error(struviteContextOxalateGuards);
+  process.exit(1);
+}
+
+if (!urinaryRanking.signals.some((signal) => signal.code === "urinary_struvite_match")) {
+  console.error("Expected urinary_struvite_match for a struvite food in a struvite history context.");
+  console.error(urinaryRanking.signals);
+  process.exit(1);
+}
+
+const oxalatePet = {
+  ...urinaryPet,
+  healthIssues: ["urinary", "oxalate history"],
+};
+const oxalateRanking = rankFoodV2ForPet({
+  food: urinaryOxalateFood,
+  nutrients: {
+    ...nutrients(urinaryOxalateFood),
+    magnesium_percent: 0.07,
+    phosphorus_percent: 0.75,
+  },
+  pet: oxalatePet,
+  goal: "urinary",
+});
+const oxalateContextStruviteRanking = rankFoodV2ForPet({
+  food: urinaryFood,
+  nutrients: {
+    ...nutrients(urinaryFood),
+    magnesium_percent: 0.07,
+    phosphorus_percent: 0.75,
+  },
+  pet: oxalatePet,
+  goal: "urinary",
+});
+
+if (oxalateRanking.bucket === "hold") {
+  console.error("Oxalate-positioned urinary food should remain usable for explicit oxalate history.");
+  console.error(oxalateRanking);
+  process.exit(1);
+}
+
+if (oxalateContextStruviteRanking.bucket !== "hold") {
+  console.error("Struvite-positioned urinary food should be held for explicit oxalate history.");
+  console.error(oxalateContextStruviteRanking);
+  process.exit(1);
+}
+
+if (!oxalateRanking.signals.some((signal) => signal.code === "urinary_oxalate_match")) {
+  console.error("Expected urinary_oxalate_match for an oxalate food in an oxalate history context.");
+  console.error(oxalateRanking.signals);
+  process.exit(1);
+}
+
 const pancreatitisPet = {
   ...pet,
   healthIssues: ["pancreatitis history"],
