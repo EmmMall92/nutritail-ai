@@ -473,16 +473,27 @@ function hasSeniorPositioning(food: FoodProductV2, foodText: string) {
   );
 }
 
-function hasMobilityPositioning(foodText: string) {
-  return hasAny(foodText, [
+function mobilityPositioningTextFor(food: FoodProductV2) {
+  return normalizeText(
+    [
+      food.brand,
+      food.formula_name,
+      food.display_name,
+      food.life_stage,
+      food.breed_target,
+      ...(food.medical_tags ?? []),
+      ...(food.commercial_tags ?? []),
+    ].join(" ")
+  );
+}
+
+function hasMobilityPositioning(food: FoodProductV2) {
+  return hasAny(mobilityPositioningTextFor(food), [
     "joint",
     "mobility",
     "arthritis",
     "arthro",
-    "glucosamine",
-    "chondroitin",
     "c2p",
-    "collagen",
   ]);
 }
 
@@ -1009,7 +1020,7 @@ function scoreFit(input: FoodV2RankingInput) {
             : "general",
         positioning: {
           active: hasActivePositioning(haystack),
-          mobility: hasMobilityPositioning(haystack),
+          mobility: hasMobilityPositioning(food),
           senior: hasSeniorPositioning(food, haystack),
           weightControl: hasWeightControlPositioning(haystack),
         },
