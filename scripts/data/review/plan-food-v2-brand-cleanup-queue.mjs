@@ -264,6 +264,13 @@ function customerImpactScore(row) {
 
 function renderReport(rows) {
   const topRows = rows.slice(0, 30);
+  const nextSprintRows = rows
+    .filter((row) =>
+      ["dedupe_before_import", "title_cleanup", "nutrient_backfill"].includes(
+        row.recommended_phase
+      )
+    )
+    .slice(0, 5);
   const customerHotspots = [...rows]
     .sort((a, b) => b.customer_impact_score - a.customer_impact_score)
     .slice(0, 12);
@@ -307,6 +314,15 @@ function renderReport(rows) {
     ...topRows.map(
       (row) =>
         `- ${row.priority_rank}. ${row.brand}: priority=${row.priority_score}; customer_impact=${row.customer_impact_score}; ${row.recommended_phase}; rows=${row.total_rows}; title identities=${row.title_issue_identities}; title issues=${row.title_issue_rows}; duplicates=${row.duplicate_risk_groups}; Ca/P gaps=${row.missing_calcium_phosphorus_rows}`
+    ),
+    "",
+    "## Next Cleanup Sprint",
+    "",
+    "Work these in order before the next broad customer-facing recommendation test.",
+    "",
+    ...nextSprintRows.map(
+      (row, index) =>
+        `${index + 1}. ${row.brand} (${row.recommended_phase}) - ${row.recommended_action} Open \`${row.next_cleanup_file}\`; ${row.next_cleanup_step}`
     ),
     "",
     "## Customer-Facing Risk Hotspots",

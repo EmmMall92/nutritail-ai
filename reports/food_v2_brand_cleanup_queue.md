@@ -1,6 +1,6 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-18T22:24:39.051Z
+Generated: 2026-06-19T02:01:28.181Z
 
 ## Summary
 
@@ -49,6 +49,16 @@ Generated: 2026-06-18T22:24:39.051Z
 - 28. Taste of the Wild: priority=14; customer_impact=12; nutrient_backfill; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=7
 - 29. Brekkies: priority=14; customer_impact=12; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=4
 - 30. Trainer: priority=14; customer_impact=12; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=5
+
+## Next Cleanup Sprint
+
+Work these in order before the next broad customer-facing recommendation test.
+
+1. Josera (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+2. Royal Canin (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+3. Belcando (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+4. Ambrosia (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+5. Brit (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 
 ## Customer-Facing Risk Hotspots
 
