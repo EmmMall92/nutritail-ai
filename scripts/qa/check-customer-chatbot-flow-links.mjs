@@ -152,6 +152,21 @@ const checks = [
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "Latest Saved Food Insights",
   },
+  {
+    label: "Printable report gives a customer follow-up plan",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Follow-up Plan",
+  },
+  {
+    label: "Printable report explains when to ask for a new shortlist",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "When to ask for a new shortlist",
+  },
+  {
+    label: "Printable timeline asks for grams and food refusal notes",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
+  },
 ];
 
 const forbiddenChecks = [

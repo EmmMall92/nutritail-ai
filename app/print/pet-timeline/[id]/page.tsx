@@ -82,6 +82,7 @@ function getTimelineUseNotes(
   const notes = [
     "Compare weight, appetite, stool, treats, and energy between check-ins instead of judging from one day.",
     "Use the same scale and similar weighing conditions whenever possible.",
+    "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
   ];
 
   if (progressLogs.length === 0) {
