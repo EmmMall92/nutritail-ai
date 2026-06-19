@@ -1,6 +1,6 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-19T02:37:29.116Z
+Generated: 2026-06-19T05:07:15.260Z
 
 ## Summary
 
@@ -11,10 +11,9 @@ Generated: 2026-06-19T02:37:29.116Z
 
 ## Queue By Phase
 
-- nutrient_backfill: 57
+- nutrient_backfill: 59
 - controlled_import_ready: 10
-- small_batch_review: 9
-- title_cleanup: 3
+- small_batch_review: 10
 - dedupe_before_import: 1
 
 ## Top Cleanup Priorities
@@ -26,9 +25,9 @@ Generated: 2026-06-19T02:37:29.116Z
 - 5. Brit: priority=42; customer_impact=48; controlled_import_ready; rows=46; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 6. Ambrosia: priority=41; customer_impact=40; nutrient_backfill; rows=8; title identities=0; title issues=0; duplicates=0; Ca/P gaps=1
 - 7. Happy Dog: priority=39; customer_impact=39; nutrient_backfill; rows=11; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
-- 8. Hill's Prescription Diet: priority=38; customer_impact=36; title_cleanup; rows=8; title identities=2; title issues=4; duplicates=0; Ca/P gaps=0
-- 9. Belcando: priority=37; customer_impact=38; nutrient_backfill; rows=20; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
-- 10. Farmina: priority=35; customer_impact=37; controlled_import_ready; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 8. Belcando: priority=37; customer_impact=38; nutrient_backfill; rows=20; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 9. Farmina: priority=35; customer_impact=37; controlled_import_ready; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 10. Hill's Prescription Diet: priority=34; customer_impact=33; nutrient_backfill; rows=8; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 11. Acana: priority=33; customer_impact=37; dedupe_before_import; rows=4; title identities=0; title issues=0; duplicates=1; Ca/P gaps=0
 - 12. Purina Pro Plan: priority=31; customer_impact=36; nutrient_backfill; rows=4; title identities=0; title issues=0; duplicates=0; Ca/P gaps=2
 - 13. Orijen: priority=30; customer_impact=34; small_batch_review; rows=4; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
@@ -46,9 +45,9 @@ Generated: 2026-06-19T02:37:29.116Z
 - 25. Equilibrio: priority=13; customer_impact=12; nutrient_backfill; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 26. Kudo: priority=13; customer_impact=12; nutrient_backfill; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 27. Canagan: priority=13; customer_impact=12; nutrient_backfill; rows=6; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
-- 28. Pedigree: priority=13; customer_impact=12; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=3
-- 29. Club 4 Paws: priority=11; customer_impact=14; controlled_import_ready; rows=18; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
-- 30. Gemon: priority=11; customer_impact=13; nutrient_backfill; rows=10; title identities=0; title issues=0; duplicates=0; Ca/P gaps=4
+- 28. Dr. Clauder: priority=13; customer_impact=12; nutrient_backfill; rows=6; title identities=0; title issues=0; duplicates=0; Ca/P gaps=1
+- 29. Pedigree: priority=13; customer_impact=12; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=3
+- 30. Club 4 Paws: priority=11; customer_impact=14; controlled_import_ready; rows=18; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 
 ## Next Cleanup Sprint
 
@@ -74,12 +73,11 @@ These brands are most likely to produce confusing customer recommendations becau
 - Belcando: customer_impact=38; title_risk=8; duplicate_risk=8; nutrition_gap=17; next=data/review/food_v2_nutrient_gap_priorities.csv
 - Farmina: customer_impact=37; title_risk=8; duplicate_risk=7; nutrition_gap=8; next=data/review/food_v2_brand_cleanup_queue.csv
 - Acana: customer_impact=37; title_risk=8; duplicate_risk=8; nutrition_gap=8; next=data/review/food_v2_duplicate_merge_risk_audit.csv
-- Hill's Prescription Diet: customer_impact=36; title_risk=12; duplicate_risk=7; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
 - Purina Pro Plan: customer_impact=36; title_risk=8; duplicate_risk=6; nutrition_gap=10; next=data/review/food_v2_nutrient_gap_priorities.csv
+- Orijen: customer_impact=34; title_risk=8; duplicate_risk=6; nutrition_gap=8; next=data/review/food_v2_brand_readiness_audit.csv
 
 ## Title Cleanup Hotspots
 
-- Hill's Prescription Diet: title_risk=12; title issues=4; identities=2; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Royal Canin: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Josera: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Royal Canin Veterinary Diet: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
@@ -89,6 +87,7 @@ These brands are most likely to produce confusing customer recommendations becau
 - Happy Dog: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Belcando: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Farmina: title_risk=8; title issues=0; identities=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
+- Hill's Prescription Diet: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 
 ## Duplicate Cleanup Hotspots
 
@@ -100,8 +99,8 @@ These brands are most likely to produce confusing customer recommendations becau
 - Acana: duplicate_risk=8; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
 - Ambrosia: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Happy Dog: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
-- Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Farmina: duplicate_risk=7; duplicate groups=0; next step: Run admin preview, Check Existing, import a selected controlled batch, then rerun this queue.
+- Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 
 ## Nutrition Confidence Hotspots
 

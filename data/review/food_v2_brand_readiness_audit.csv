@@ -25,13 +25,13 @@ Leonardo,10,0,0,10,0,10,0,10,0,10,0,0,0,0,95,review_before_import,"Export select
 Hill's Prescription Diet,8,0,0,8,0,8,0,8,0,8,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Equilibrio,7,0,0,7,0,7,0,7,0,7,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
 Kudo,7,0,0,7,1,6,0,7,0,7,0,0,0,0,95,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."
-Dr. Clauder,6,0,0,6,0,6,0,6,0,5,1,0,6,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
+Dr. Clauder,6,0,0,6,0,6,0,6,0,5,1,0,0,0,95,review_before_import,"Backfill kcal and Ca/P from official page, PDF, or label photo before confident recommendations."
 Pro-Nutrition (Flatazor),6,0,0,6,6,0,0,5,1,6,0,1,0,0,95,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Matisse,5,0,0,5,5,0,0,5,0,5,0,0,0,0,95,ready_for_controlled_import,"Filter this brand in admin preview, run Check Existing, then import selected rows."
 Anima,3,0,0,3,3,0,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Eukanuba,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 GranataPet,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
-Hill's Science Plan,3,0,0,3,0,3,0,3,0,3,0,0,2,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
+Hill's Science Plan,3,0,0,3,0,3,0,3,0,3,0,0,0,0,95,needs_data_cleanup,Find official/PDF source or stronger retailer evidence before broad import.
 Bozita,2,0,0,2,0,2,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Cibau,2,0,0,2,2,0,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Trovet,2,0,0,2,2,0,0,2,0,2,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
@@ -41,7 +41,7 @@ Black Olympus,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually;
 Briantos,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Burns,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Cat Vital,1,0,0,1,1,0,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
-Markus Mühle,1,0,0,1,0,1,0,1,0,1,0,0,1,0,95,needs_data_cleanup,"Clean title risks and possible duplicate identities before import, then rerun Check Existing."
+Markus Mühle,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Meradog,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Whiskas,1,0,0,1,0,1,0,1,0,1,0,0,0,0,95,small_batch_review,Review manually; batch is small enough to import only after source/title spot-check.
 Hills,37,0,0,37,12,25,0,32,5,37,0,2,0,0,94,review_before_import,"Export selected review CSV, spot-check titles and kcal/ash provenance, then import a small batch."

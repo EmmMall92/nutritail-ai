@@ -1,15 +1,15 @@
 # Food V2 Brand Readiness Audit
 
-Generated: 2026-06-19T03:07:13.115Z
+Generated: 2026-06-19T05:06:34.406Z
 
 ## Summary
 
 - Brands reviewed: 80
 - Ready for controlled import: 15
-- Review before import: 20
-- Small batch review: 27
-- Needs cleanup/source backfill: 18
-- Brands with title risks: 3
+- Review before import: 21
+- Small batch review: 28
+- Needs cleanup/source backfill: 16
+- Brands with title risks: 0
 - Brands with possible duplicate identities: 0
 - Brands missing kcal in at least one row: 0
 - Brands missing calcium/phosphorus in at least one row: 36
@@ -44,6 +44,7 @@ Generated: 2026-06-19T03:07:13.115Z
 - Hill's Prescription Diet: 8 rows, avg score 95, recommendable 0
 - Equilibrio: 7 rows, avg score 95, recommendable 0
 - Kudo: 7 rows, avg score 95, recommendable 0
+- Dr. Clauder: 6 rows, avg score 95, recommendable 0
 - Hills: 37 rows, avg score 94, recommendable 0
 - Ambrosia: 8 rows, avg score 94, recommendable 0
 - Royal Canin: 29 rows, avg score 91, recommendable 0
@@ -55,7 +56,6 @@ Generated: 2026-06-19T03:07:13.115Z
 - Royal Canin Veterinary Diet: 5 rows, avg score 87, recommendable 0
 - Tonus Dog Chow: 5 rows, avg score 87, recommendable 0
 - Amanova: 10 rows, avg score 86, recommendable 0
-- Taste of the Wild: 7 rows, avg score 85, recommendable 0
 
 ## Small Batch Review
 
@@ -74,11 +74,11 @@ Generated: 2026-06-19T03:07:13.115Z
 - Briantos: 1 rows, avg score 95, recommendable 0
 - Burns: 1 rows, avg score 95, recommendable 0
 - Cat Vital: 1 rows, avg score 95, recommendable 0
+- Markus Mühle: 1 rows, avg score 95, recommendable 0
 - Meradog: 1 rows, avg score 95, recommendable 0
 - Whiskas: 1 rows, avg score 95, recommendable 0
 - Fish4Dogs: 1 rows, avg score 90, recommendable 0
 - Meowing Heads: 1 rows, avg score 90, recommendable 0
-- Royal Canin Breed: 1 rows, avg score 90, recommendable 0
 
 ## Needs Cleanup Or Source Backfill
 
@@ -86,12 +86,10 @@ Generated: 2026-06-19T03:07:13.115Z
 - Orijen: 4 rows, avg score 100, recommendable 0
 - Calibra: 3 rows, avg score 100, recommendable 0
 - Optima Nova: 3 rows, avg score 100, recommendable 0
-- Dr. Clauder: 6 rows, avg score 95, recommendable 0
 - Anima: 3 rows, avg score 95, recommendable 0
 - Eukanuba: 3 rows, avg score 95, recommendable 0
 - GranataPet: 3 rows, avg score 95, recommendable 0
 - Hill's Science Plan: 3 rows, avg score 95, recommendable 0
-- Markus Mühle: 1 rows, avg score 95, recommendable 0
 - Purina Pro Plan: 4 rows, avg score 94, recommendable 0
 - Bedog: 3 rows, avg score 92, recommendable 0
 - Wolf of Wilderness: 3 rows, avg score 92, recommendable 0
@@ -104,9 +102,7 @@ Generated: 2026-06-19T03:07:13.115Z
 ## Brand Cleanup Focus
 
 Title risks:
-- Dr. Clauder: 6 rows, avg score 95, recommendable 0
-- Hill's Science Plan: 3 rows, avg score 95, recommendable 0
-- Markus Mühle: 1 rows, avg score 95, recommendable 0
+- none
 
 Possible duplicate identities:
 - none
