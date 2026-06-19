@@ -245,6 +245,7 @@ const forbiddenChatbotPageCopy = [
   "Review before saving",
   "Analysis summary",
   "Save when the pet details, calorie target, and food context look right.",
+  "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα",
   "Score: ${getHistoryFoodScore",
   "Strong match",
   "Good match",
@@ -259,6 +260,13 @@ const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
 if (leakedChatbotPageCopy.length > 0) {
   console.error("Account chatbot still exposes report-style score/confidence copy:");
   console.error(leakedChatbotPageCopy.join(", "));
+  process.exit(1);
+}
+
+if (!chatbotPage.includes("if (analysisFoodChoices.length === 0)")) {
+  console.error(
+    "Fallback next-step copy should only appear when no selectable food cards were returned."
+  );
   process.exit(1);
 }
 

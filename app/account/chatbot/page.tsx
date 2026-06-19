@@ -3189,13 +3189,14 @@ ${guardrailText}`
         );
       }
 
+      let analysisFoodChoices: RecommendedFoodChoice[] = [];
+
       try {
-        let foodChoices: RecommendedFoodChoice[] = [];
         const foodV2Message = await getFoodV2RecommendationMessage(nextPet, {
           mode: recommendationMode,
           language: chatLanguage,
           onChoices: (choices) => {
-            foodChoices = choices;
+            analysisFoodChoices = choices;
             setRecommendedFoodChoices(choices);
           },
         });
@@ -3204,7 +3205,7 @@ ${guardrailText}`
           addMessages(createMessage("bot", foodV2Message));
         }
 
-        if (foodChoices.length === 0) {
+        if (analysisFoodChoices.length === 0) {
           setRecommendedFoodChoices([]);
         }
       } catch (error) {
@@ -3436,15 +3437,17 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       setShowSave(true);
       setStep("done");
 
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα για να συνεχίσουμε με γραμμάρια/ημέρα ή αποθήκευσε την ανάλυση αν σου φαίνεται σωστή.",
-            ""
+      if (analysisFoodChoices.length === 0) {
+        addMessages(
+          createMessage(
+            "bot",
+            botText(
+              "Επόμενο βήμα: αποθήκευσε την ανάλυση αν σου φαίνεται σωστή ή στείλε την ακριβή τροφή από τη συσκευασία για πιο συγκεκριμένα γραμμάρια/ημέρα.",
+              "Next step: save the analysis if it looks right, or send the exact food from the bag for a more specific grams/day estimate."
+            )
           )
-        )
-      );
+        );
+      }
     } catch (error) {
       console.error(error);
 
