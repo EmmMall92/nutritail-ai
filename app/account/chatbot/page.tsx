@@ -491,6 +491,18 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     hairball: { el: "τριχόμπαλες", en: "hairball support" },
     kitten: { el: "γατάκι", en: "kitten" },
     large_breed: { el: "μεγαλόσωμο ζώο", en: "large breeds" },
+    large_breed_growth_mineral_review: {
+      el: "μεγαλόσωμο κουτάβι με έλεγχο ασβεστίου/φωσφόρου",
+      en: "large-breed puppy mineral check",
+    },
+    low_fat_pancreatitis_review: {
+      el: "χαμηλότερα λιπαρά με κτηνιατρική καθοδήγηση",
+      en: "lower-fat vet-guided review",
+    },
+    pancreatitis_without_low_fat_review: {
+      el: "παγκρεατικό ιστορικό χωρίς ξεκάθαρα χαμηλά λιπαρά",
+      en: "pancreatitis history without clear low-fat fit",
+    },
     puppy: { el: "κουτάβι", en: "puppy" },
     renal: { el: "νεφρική υποστήριξη", en: "renal support" },
     renal_decision_without_phosphorus: {
