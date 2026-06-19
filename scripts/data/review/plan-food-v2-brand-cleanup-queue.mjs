@@ -275,12 +275,19 @@ function renderReport(rows) {
     .sort((a, b) => b.customer_impact_score - a.customer_impact_score)
     .slice(0, 12);
   const titleHotspots = [...rows]
+    .filter(
+      (row) =>
+        toNumber(row.title_issue_rows) > 0 ||
+        toNumber(row.title_issue_identities) > 0
+    )
     .sort((a, b) => b.customer_title_risk_score - a.customer_title_risk_score)
     .slice(0, 10);
   const duplicateHotspots = [...rows]
+    .filter((row) => toNumber(row.duplicate_risk_groups) > 0)
     .sort((a, b) => b.duplicate_customer_risk_score - a.duplicate_customer_risk_score)
     .slice(0, 10);
   const nutritionHotspots = [...rows]
+    .filter((row) => row.nutrition_confidence_gap_score > 0)
     .sort((a, b) => b.nutrition_confidence_gap_score - a.nutrition_confidence_gap_score)
     .slice(0, 10);
   const byPhase = rows.reduce((counts, row) => {
@@ -336,17 +343,25 @@ function renderReport(rows) {
     "",
     "## Title Cleanup Hotspots",
     "",
-    ...titleHotspots.map(
-      (row) =>
-        `- ${row.brand}: title_risk=${row.customer_title_risk_score}; title issues=${row.title_issue_rows}; identities=${row.title_issue_identities}; next step: ${row.next_cleanup_step}`
-    ),
+    titleHotspots.length > 0
+      ? titleHotspots
+          .map(
+            (row) =>
+              `- ${row.brand}: title_risk=${row.customer_title_risk_score}; title issues=${row.title_issue_rows}; identities=${row.title_issue_identities}; next step: ${row.next_cleanup_step}`
+          )
+          .join("\n")
+      : "- No current title cleanup hotspots with actual title issues. Use Customer-Facing Risk Hotspots for strategic brand order.",
     "",
     "## Duplicate Cleanup Hotspots",
     "",
-    ...duplicateHotspots.map(
-      (row) =>
-        `- ${row.brand}: duplicate_risk=${row.duplicate_customer_risk_score}; duplicate groups=${row.duplicate_risk_groups}; next step: ${row.next_cleanup_step}`
-    ),
+    duplicateHotspots.length > 0
+      ? duplicateHotspots
+          .map(
+            (row) =>
+              `- ${row.brand}: duplicate_risk=${row.duplicate_customer_risk_score}; duplicate groups=${row.duplicate_risk_groups}; next step: ${row.next_cleanup_step}`
+          )
+          .join("\n")
+      : "- No current duplicate cleanup hotspots with actionable duplicate groups.",
     "",
     "## Nutrition Confidence Hotspots",
     "",
