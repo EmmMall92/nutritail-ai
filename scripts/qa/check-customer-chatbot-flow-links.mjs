@@ -72,6 +72,16 @@ const checks = [
     expected: "Estimated portion",
   },
   {
+    label: "Chosen recommendation points user to save the plan",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Next: review the summary below and save it to keep this plan on the pet profile.",
+  },
+  {
+    label: "Recommendation cards use qualitative match labels",
+    file: "app/account/chatbot/page.tsx",
+    expected: "getRecommendationChoiceMatchLabel",
+  },
+  {
     label: "Recommendation composer has compact customer fallback",
     file: "app/account/chatbot/page.tsx",
     expected: "formatCompactFoodV2RecommendationFallback",
@@ -103,6 +113,11 @@ const forbiddenChecks = [
     label: "Current-food quality note does not expose data-quality label",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Data quality:",
+  },
+  {
+    label: "Recommendation card badge does not expose raw internal score",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Math.round(choice.score)}/100",
   },
 ];
 

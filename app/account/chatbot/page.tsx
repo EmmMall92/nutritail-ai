@@ -497,6 +497,25 @@ function formatChoiceNumber(value: number | null | undefined, digits = 1) {
   return Number(value).toFixed(digits).replace(/\.0$/, "");
 }
 
+function getRecommendationChoiceMatchLabel(
+  choice: RecommendedFoodChoice,
+  language: ChatLanguage
+) {
+  const score = choice.score ?? 0;
+
+  if (choice.role === "value") {
+    return language === "el" ? "Καλή value επιλογή" : "Good value pick";
+  }
+  if (score >= 82) {
+    return language === "el" ? "Πολύ δυνατό ταίριασμα" : "Strong match";
+  }
+  if (score >= 68) {
+    return language === "el" ? "Καλή επιλογή" : "Good match";
+  }
+
+  return language === "el" ? "Χρήσιμη εναλλακτική" : "Useful alternative";
+}
+
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
   const emphasis =
     index === 0
@@ -3767,12 +3786,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         "bot",
         gramsPerDay
           ? botText(
-              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τις θερμίδες της κύριας τροφής, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΑυτό αφήνει χώρο για λίγες λιχουδιές μέσα στον ημερήσιο στόχο. Χώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.`,
-              `Great, we will use ${choice.name}.\n\nBased on the main-food calorie allowance, the first estimate is about ${gramsPerDay}g/day.\n\nThis leaves room for a small treat allowance inside the daily target. Split it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.`
+              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τις θερμίδες της κύριας τροφής, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΑυτό αφήνει χώρο για λίγες λιχουδιές μέσα στον ημερήσιο στόχο. Χώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.\n\nΕπόμενο: έλεγξε τη σύνοψη από κάτω και πάτησε αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
+              `Great, we will use ${choice.name}.\n\nBased on the main-food calorie allowance, the first estimate is about ${gramsPerDay}g/day.\n\nThis leaves room for a small treat allowance inside the daily target. Split it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
             )
           : botText(
-              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια από αυτή τη ροή, αλλά μπορώ να συνεχίσω με γενική καθοδήγηση ή να δοκιμάσουμε άλλη τροφή από τη λίστα.`,
-              `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.`
+              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια από αυτή τη ροή, αλλά μπορώ να συνεχίσω με γενική καθοδήγηση ή να δοκιμάσουμε άλλη τροφή από τη λίστα.\n\nΕπόμενο: έλεγξε τη σύνοψη από κάτω και πάτησε αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
+              `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
             )
       )
     );
@@ -4194,11 +4213,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         ? botText("Value επιλογή", "Value pick")
                         : botText("Καλύτερο fit", "Best fit")}
                     </span>
-                    {choice.score != null && (
-                      <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                        {botText("Καταλληλότητα", "Fit")} {Math.round(choice.score)}/100
-                      </span>
-                    )}
+                    <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
+                      {getRecommendationChoiceMatchLabel(choice, chatLanguage)}
+                    </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
                     {choice.name}

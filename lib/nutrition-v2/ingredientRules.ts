@@ -351,14 +351,14 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
       signals.push({
         type: "boost",
         code: "preferred_protein_match",
-        points: 14,
+        points: 20,
         message: "Matches a preferred protein or flavor.",
       });
     } else {
       signals.push({
         type: "caution",
         code: "preferred_protein_missing",
-        points: -4,
+        points: -10,
         message: "Does not clearly match the pet's preferred protein or flavor.",
       });
     }

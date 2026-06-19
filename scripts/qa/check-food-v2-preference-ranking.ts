@@ -701,6 +701,63 @@ if (!largeBreedPuppyRanking.signals.some((signal) => signal.code === "large_bree
   process.exit(1);
 }
 
+const pickySmallDog = {
+  ...pet,
+  weight: 6,
+  age: 4,
+  activityLevel: "normal" as const,
+  neutered: false,
+  healthIssues: ["picky eater", "likes fish"],
+  excludedIngredients: [],
+  preferredProteins: ["salmon"],
+};
+const preferredSalmonFood = food({
+  id: "preferred-salmon",
+  formula_key: "qa|preferred-salmon|dog|dry",
+  display_name: "Small Adult Salmon",
+  dog_size: "small",
+  ingredients: ["salmon", "potato", "fish oil"],
+  primary_animal_proteins: ["salmon"],
+});
+const genericChickenFood = food({
+  id: "generic-chicken",
+  formula_key: "qa|generic-chicken|dog|dry",
+  display_name: "Small Adult Chicken",
+  dog_size: "small",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const preferredSalmonRanking = rankFoodV2ForPet({
+  food: preferredSalmonFood,
+  nutrients: nutrients(preferredSalmonFood),
+  pet: pickySmallDog,
+  goal: "general",
+});
+const genericChickenRanking = rankFoodV2ForPet({
+  food: genericChickenFood,
+  nutrients: nutrients(genericChickenFood),
+  pet: pickySmallDog,
+  goal: "general",
+});
+
+if (preferredSalmonRanking.total_score <= genericChickenRanking.total_score) {
+  console.error("Preferred protein should materially influence the customer-facing shortlist.");
+  console.error({ preferredSalmonRanking, genericChickenRanking });
+  process.exit(1);
+}
+
+if (!preferredSalmonRanking.signals.some((signal) => signal.code === "preferred_protein_match")) {
+  console.error("Expected preferred_protein_match for salmon preference.");
+  console.error(preferredSalmonRanking.signals);
+  process.exit(1);
+}
+
+if (!genericChickenRanking.signals.some((signal) => signal.code === "preferred_protein_missing")) {
+  console.error("Expected preferred_protein_missing for a non-preferred alternative.");
+  console.error(genericChickenRanking.signals);
+  process.exit(1);
+}
+
 const renalPet = {
   ...pet,
   species: "cat" as const,
