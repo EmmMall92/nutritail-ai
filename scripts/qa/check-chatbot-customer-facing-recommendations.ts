@@ -194,6 +194,9 @@ const forbiddenTerms = [
   "ingredient data is available",
   "role:",
   "use case:",
+  "For this pet, I am prioritising:",
+  "Food picks for this pet",
+  "calculate daily grams",
   "candidate kept out",
   "kept foods out of the shortlist",
   "value ranking is a proxy",
@@ -219,7 +222,7 @@ if (leakedTerms.length > 0) {
 for (const scenario of coreScenarioSamples) {
   if (
     !scenario.text.includes(
-      `For this pet, I am prioritising: ${scenario.expectedGoalLabel}.`
+      `Main need we are covering: ${scenario.expectedGoalLabel}.`
     )
   ) {
     console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
@@ -227,14 +230,14 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose a food card")) {
+  if (!scenario.text.includes("Next step: tap one food card to estimate portions/day")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
   }
 }
 
-if (!sample.includes("Food picks for this pet") || !sample.includes("Happy Dog")) {
+if (!sample.includes("Recommended foods") || !sample.includes("Happy Dog")) {
   console.error("Customer-facing recommendation did not include the expected shortlist.");
   console.error(sample);
   process.exit(1);
@@ -264,7 +267,7 @@ if (!compactCardsSample.includes("I placed the best options below as cards")) {
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
+if (!compactCardsSample.includes("Tap one card to estimate portions/day")) {
   console.error("Compact card-facing recommendation should include a clear card action.");
   console.error(compactCardsSample);
   process.exit(1);
@@ -295,7 +298,7 @@ if (compactCardsSample.includes("Best options for this pet:") || /\n1\./.test(co
   process.exit(1);
 }
 
-if (!valueGoalSample.includes("First value picks:")) {
+if (!valueGoalSample.includes("Practical first picks:")) {
   console.error("Value goal should label the first section as value picks.");
   console.error(valueGoalSample);
   process.exit(1);
