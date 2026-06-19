@@ -3840,12 +3840,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1, \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03c9\u03c2 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03b7\u03bd ${choice.name}.\n\n\u03a0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03ba\u03c4\u03af\u03bc\u03b7\u03c3\u03b7 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerDay}g/\u03b7\u03bc\u03ad\u03c1\u03b1.\n\n\u03a0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ac:\n- 2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerMealTwoMeals}g/\u03b3\u03b5\u03cd\u03bc\u03b1\n- 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerMealThreeMeals}g/\u03b3\u03b5\u03cd\u03bc\u03b1\n\n\u0391\u03c5\u03c4\u03cc \u03b1\u03c6\u03ae\u03bd\u03b5\u03b9 \u03c7\u03ce\u03c1\u03bf \u03b3\u03b9\u03b1 \u03bb\u03af\u03b3\u03b5\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03bc\u03ad\u03c3\u03b1 \u03c3\u03c4\u03bf\u03bd \u03b7\u03bc\u03b5\u03c1\u03ae\u03c3\u03b9\u03bf \u03c3\u03c4\u03cc\u03c7\u03bf. \u039e\u03b1\u03bd\u03b1\u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ba\u03b1\u03b9 \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1 \u03c3\u03b5 3-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2.\n\n\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf: \u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03c4\u03b7 \u03c3\u03cd\u03bd\u03bf\u03c8\u03b7 \u03b1\u03c0\u03cc \u03ba\u03ac\u03c4\u03c9 \u03ba\u03b1\u03b9 \u03c0\u03ac\u03c4\u03b7\u03c3\u03b5 \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03c1\u03b1\u03c4\u03b7\u03b8\u03b5\u03af \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03c3\u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb.`,
-          `Great, we will use ${choice.name}.\n\nFirst portion estimate: about ${gramsPerDay}g/day.\n\nPractical split:\n- 2 meals: about ${gramsPerMealTwoMeals}g/meal\n- 3 meals: about ${gramsPerMealThreeMeals}g/meal\n\nThis leaves room for a small treat allowance inside the daily target. Recheck weight, appetite, and stool in 3-4 weeks.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
+          `Τέλεια, κρατάμε την ${choice.name} ως πρώτη επιλογή.\n\nΠρώτη ημερήσια ποσότητα: περίπου ${gramsPerDay}g/ημέρα.\n\nΠρακτικά:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές λίγες και μέσα στον ημερήσιο στόχο. Σε 3-4 εβδομάδες ξαναδείτε βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
+          `Great, we will use ${choice.name} as the first choice.\n\nFirst daily amount: about ${gramsPerDay}g/day.\n\nPractical split:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats small and inside the daily target. Recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
         )
       : botText(
-          `\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1, \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03c9\u03c2 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03b7\u03bd ${choice.name}.\n\n\u0394\u03b5\u03bd \u03ad\u03c7\u03c9 \u03b1\u03c1\u03ba\u03b5\u03c4\u03ad\u03c2 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03b1\u03c0\u03cc \u03b1\u03c5\u03c4\u03ae \u03c4\u03b7 \u03c1\u03bf\u03ae, \u03b1\u03bb\u03bb\u03ac \u03bc\u03c0\u03bf\u03c1\u03ce \u03bd\u03b1 \u03c3\u03c5\u03bd\u03b5\u03c7\u03af\u03c3\u03c9 \u03bc\u03b5 \u03b3\u03b5\u03bd\u03b9\u03ba\u03ae \u03ba\u03b1\u03b8\u03bf\u03b4\u03ae\u03b3\u03b7\u03c3\u03b7 \u03ae \u03bd\u03b1 \u03b4\u03bf\u03ba\u03b9\u03bc\u03ac\u03c3\u03bf\u03c5\u03bc\u03b5 \u03ac\u03bb\u03bb\u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b1\u03c0\u03cc \u03c4\u03b7 \u03bb\u03af\u03c3\u03c4\u03b1.\n\n\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf: \u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03c4\u03b7 \u03c3\u03cd\u03bd\u03bf\u03c8\u03b7 \u03b1\u03c0\u03cc \u03ba\u03ac\u03c4\u03c9 \u03ba\u03b1\u03b9 \u03c0\u03ac\u03c4\u03b7\u03c3\u03b5 \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03c1\u03b1\u03c4\u03b7\u03b8\u03b5\u03af \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03c3\u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb.`,
-          `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
+          `Τέλεια, κρατάμε την ${choice.name} ως πρώτη επιλογή.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια σε αυτή τη ροή. Μπορείς να αποθηκεύσεις την επιλογή τώρα ή να διαλέξεις άλλη τροφή από τις κάρτες αν θέλεις ποσότητα με μεγαλύτερη ακρίβεια.`,
+          `Great, we will use ${choice.name} as the first choice.\n\nI do not have enough calorie data for exact grams in this flow. You can save this choice now or pick another card if you want a more precise portion estimate.`
         );
 
     addMessages(createMessage("bot", selectedFoodReply));
@@ -4368,12 +4368,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
             <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
               <p className="font-semibold text-blue-950">
-                {botText("Έλεγχος πριν την αποθήκευση", "Review before saving")}
+                {botText("Το πλάνο σου είναι έτοιμο", "Your plan is ready")}
               </p>
               <p className="mt-1 text-sm text-blue-900">
                 {botText(
-                  "Αποθήκευσε όταν τα στοιχεία, οι θερμίδες και η επιλογή τροφής φαίνονται σωστά. Μπορείς να κάνεις νέα ανάλυση αν αλλάξει βάρος, συμπτώματα ή τροφή.",
-                  "Save when the pet details, calorie target, and food context look right. You can run a new analysis later if weight, symptoms, or food choice changes."
+                  "Αποθήκευσέ το για να κρατήσεις θερμίδες, τροφή και πρώτη ποσότητα στο προφίλ. Αν αλλάξει βάρος, όρεξη, κόπρανα ή τροφή, μπορείς να κάνεις νέο έλεγχο προόδου.",
+                  "Save it to keep calories, food choice, and first portion on the profile. If weight, appetite, stool, or food choice changes, you can run a new progress check."
                 )}
               </p>
             </div>
@@ -4381,12 +4381,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             {latestAnalysis && (
               <div className="rounded-xl border border-gray-200 bg-white p-4">
                 <p className="font-semibold text-black">
-                  {botText("Σύνοψη ανάλυσης", "Analysis summary")}
+                  {botText("Σύνοψη πλάνου", "Plan summary")}
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
                   {botText(
-                    "Έλεγξε γρήγορα τα βασικά πριν το αποθηκεύσεις στον λογαριασμό σου.",
-                    "Quickly review the essentials before saving this to your account."
+                    "Τα βασικά που θα κρατηθούν στο προφίλ του κατοικιδίου.",
+                    "The essentials that will be saved to the pet profile."
                   )}
                 </p>
                 <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
