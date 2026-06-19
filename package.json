@@ -109,6 +109,7 @@
     "qa:dog-chatbot-live-smoke": "node scripts/qa/run-dog-chatbot-live-smoke.mjs",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
     "qa:chatbot-golden-suite": "node scripts/qa/run-chatbot-golden-suite.mjs",
+    "qa:dog-chatbot-golden-audit": "npm run audit:dog-chatbot-golden-coverage && npm run audit:dog-chatbot-quality",
     "audit:dog-chatbot-golden-coverage": "node scripts/qa/audit-dog-chatbot-golden-coverage.mjs",
     "audit:dog-chatbot-quality": "node scripts/qa/audit-dog-chatbot-quality.mjs",
     "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
