@@ -16,7 +16,6 @@ import { calculateTreatsAllowance } from "@/lib/treatsCalculator";
 import { buildFoodTransitionGuide } from "@/lib/foodTransitionGuide";
 import { calculateFoodScore } from "@/lib/foodScore";
 import { generateChatGuardrails } from "@/lib/nutrition/chatGuardrails";
-import { getFoodScoreLabel } from "@/lib/foodScoreExplanation";
 import {
   formatFoodV2ChatbotRecommendationSummary,
   goalFromPetContext,
@@ -1257,6 +1256,101 @@ function formatFoodMatchCandidates(candidates: unknown) {
         `- ${getFoodCandidateLabel(candidate as FoodMatchCandidate)}`
     )
     .join("\n");
+}
+
+function formatCustomerBulletSection(title: string, items: string[]) {
+  const visibleItems = items.filter((item) => item.trim());
+  if (visibleItems.length === 0) return "";
+
+  return `${title}\n${visibleItems.map((item) => `- ${item}`).join("\n")}`;
+}
+
+function formatCurrentFoodMatchMessage(params: {
+  language: ChatLanguage;
+  brand: unknown;
+  name: unknown;
+  foodScore: number;
+  qualityNote: string;
+  nutritionSummary: string;
+  nutritionPositives: string[];
+  nutritionCautions: string[];
+  ingredientPositives: string[];
+  ingredientCautions: string[];
+  explanation: string[];
+  grams?: {
+    dailyCalories: number;
+    gramsPerDay: number;
+    gramsPerMealTwoMeals: number;
+    gramsPerMealThreeMeals: number;
+  } | null;
+  treatCalories?: number | null;
+  weightGoal?: WeightGoal;
+}) {
+  const foodName = [params.brand, params.name].map((value) => String(value ?? "").trim()).filter(Boolean).join(" - ");
+  const fit = formatCustomerFoodFit(params.foodScore, params.language);
+  const isGreek = params.language === "el";
+
+  const sections = [
+    isGreek
+      ? `Βρήκα πιθανό match για την τωρινή τροφή:\n${foodName}`
+      : `I found a likely match for the current food:\n${foodName}`,
+    params.qualityNote,
+    isGreek ? `Πώς τη βλέπω για το προφίλ: ${fit}.` : `How it fits this profile: ${fit}.`,
+    params.nutritionSummary,
+    formatCustomerBulletSection(
+      isGreek ? "Θετικά σημεία" : "Positive points",
+      [...params.nutritionPositives, ...params.ingredientPositives].slice(0, 4)
+    ),
+    formatCustomerBulletSection(
+      isGreek ? "Τι να παρακολουθείς" : "What to monitor",
+      [...params.nutritionCautions, ...params.ingredientCautions, ...params.explanation].slice(0, 4)
+    ),
+  ];
+
+  if (params.grams) {
+    sections.push(
+      isGreek
+        ? `Με στόχο ${getWeightGoalLabel(params.weightGoal, "el")} και ${params.grams.dailyCalories} kcal/ημέρα:\n\nΠρώτη εκτίμηση ποσότητας: περίπου ${params.grams.gramsPerDay}g/ημέρα.\n- Σε 2 γεύματα: περίπου ${params.grams.gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${params.grams.gramsPerMealThreeMeals}g ανά γεύμα`
+        : `Based on ${getWeightGoalLabel(params.weightGoal)} and ${params.grams.dailyCalories} kcal/day:\n\nFirst portion estimate: about ${params.grams.gramsPerDay}g/day.\n- 2 meals: about ${params.grams.gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${params.grams.gramsPerMealThreeMeals}g per meal`
+    );
+  } else {
+    sections.push(
+      isGreek
+        ? "Δεν έχω αρκετά καθαρή θερμιδική τιμή για αυτή την τροφή, οπότε δεν θα δώσω γραμμάρια με ψεύτικη ακρίβεια."
+        : "I do not have a clear calorie value for this food yet, so I will not give grams with false precision."
+    );
+  }
+
+  if (params.treatCalories) {
+    sections.push(
+      isGreek
+        ? `Αν δίνεις λιχουδιές, κράτησέ τες περίπου μέχρι ${params.treatCalories} kcal/ημέρα.`
+        : `If you give treats, keep them around ${params.treatCalories} kcal/day.`
+    );
+  }
+
+  return sections.filter((section) => section.trim()).join("\n\n");
+}
+
+function formatCurrentFoodNoMatchMessage(params: {
+  language: ChatLanguage;
+  candidates: unknown;
+  canShowCandidates: boolean;
+}) {
+  const isGreek = params.language === "el";
+  const candidatesText = params.canShowCandidates
+    ? `\n\n${
+        isGreek ? "Πιθανές κοντινές τροφές στη βάση:" : "Closest database candidates:"
+      }\n${formatFoodMatchCandidates(params.candidates)}\n\n${
+        isGreek
+          ? "Αν μία από αυτές είναι σωστή, επίλεξέ την ή στείλε το ακριβές όνομα από τη συσκευασία."
+          : "If one of these is correct, choose it or send the exact bag name."
+      }`
+    : "";
+
+  return isGreek
+    ? `Δεν μπορώ να ταιριάξω με σιγουριά την τωρινή τροφή, οπότε δεν θα βασίσω την ανάλυση σε λάθος προϊόν.${candidatesText}\n\nΣυνεχίζω κανονικά με τις θερμίδες και τις γενικές οδηγίες.`
+    : `I could not confidently match the current food, so I will not base the analysis on the wrong product.${candidatesText}\n\nI can still continue with the calorie target and general guidance.`;
 }
 
 function parseCompareQueries(text: string) {
@@ -3190,59 +3284,22 @@ const ingredientInsights = generateIngredientInsights(
                 addMessages(
                   createMessage(
                     "bot",
-                    `I found a likely match for the current food:
-${matchedFood.brand} - ${matchedFood.name}
-
-${getFoodQualityNote(matchedFood)}
-
-Food fit: ${formatCustomerFoodFit(foodScore, chatLanguage)} (${getFoodScoreLabel(foodScore)})
-${nutritionInsights.summary}
-
-${
-  nutritionInsights.positives.length > 0
-    ? `Positive nutrition points:
-${nutritionInsights.positives.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}
-
-${
-  nutritionInsights.cautions.length > 0
-    ? `Things to monitor:
-${nutritionInsights.cautions.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}
-${
-  ingredientInsights.positives.length > 0
-    ? `Ingredient positives:
-${ingredientInsights.positives.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}
-
-${
-  ingredientInsights.cautions.length > 0
-    ? `Ingredient cautions:
-${ingredientInsights.cautions.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}
-Based on ${getWeightGoalLabel(nextPet.weightGoal)} and ${grams.dailyCalories} kcal/day:
-
-Main food amount: about ${grams.gramsPerDay}g/day
-If feeding 2 meals: about ${grams.gramsPerMealTwoMeals}g per meal
-If feeding 3 meals: about ${grams.gramsPerMealThreeMeals}g per meal
-
-${
-  treats
-    ? `If you give treats, keep them within about ${treats.maxTreatCalories} kcal/day.
-The food amount above leaves room for treats.`
-    : ""
-}
-
-${
-  explanation.length > 0
-    ? `Food notes:
-${explanation.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}`
+                    formatCurrentFoodMatchMessage({
+                      language: chatLanguage,
+                      brand: matchedFood.brand,
+                      name: matchedFood.name,
+                      foodScore,
+                      qualityNote: getFoodQualityNote(matchedFood),
+                      nutritionSummary: nutritionInsights.summary,
+                      nutritionPositives: nutritionInsights.positives,
+                      nutritionCautions: nutritionInsights.cautions,
+                      ingredientPositives: ingredientInsights.positives,
+                      ingredientCautions: ingredientInsights.cautions,
+                      explanation,
+                      grams,
+                      treatCalories: treats?.maxTreatCalories ?? null,
+                      weightGoal: nextPet.weightGoal,
+                    })
                   )
                 );
               }
@@ -3257,32 +3314,26 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
               addMessages(
                 createMessage(
                   "bot",
-                  `I found a likely food match:
-${matchedFood.brand} - ${matchedFood.name}
-
-${getFoodQualityNote(matchedFood)}
-
-Food fit: ${formatCustomerFoodFit(foodScore, chatLanguage)} (${getFoodScoreLabel(foodScore)})
-
-I did not find kcal per 100g in the database, so I cannot calculate exact grams for this food yet.
-
-${
-  explanation.length > 0
-    ? `Food notes:
-${explanation.map((item) => `- ${item}`).join("\n")}`
-    : ""
-}`
+                  formatCurrentFoodMatchMessage({
+                    language: chatLanguage,
+                    brand: matchedFood.brand,
+                    name: matchedFood.name,
+                    foodScore,
+                    qualityNote: getFoodQualityNote(matchedFood),
+                    nutritionSummary: nutritionInsights.summary,
+                    nutritionPositives: nutritionInsights.positives,
+                    nutritionCautions: nutritionInsights.cautions,
+                    ingredientPositives: ingredientInsights.positives,
+                    ingredientCautions: ingredientInsights.cautions,
+                    explanation,
+                    grams: null,
+                    treatCalories: null,
+                    weightGoal: nextPet.weightGoal,
+                  })
                 )
               );
             }
           } else {
-            const candidatesText =
-              matchResponse.ok && matchResult?.candidates
-                ? `\n\nClosest database candidates:\n${formatFoodMatchCandidates(
-                    matchResult.candidates
-                  )}\n\nPlease send the exact brand and formula from the bag if one of these is not correct.`
-                : "";
-
             void submitChatFeedback({
               eventType: "failed_food_match",
               rating: "needs_review",
@@ -3297,7 +3348,11 @@ ${explanation.map((item) => `- ${item}`).join("\n")}`
             addMessages(
               createMessage(
                 "bot",
-                `I could not confidently match the current food in the database, so I will not attach a specific formula to this analysis yet.${candidatesText}\n\nI can still continue with the general calorie guidance.`
+                formatCurrentFoodNoMatchMessage({
+                  language: chatLanguage,
+                  candidates: matchResult?.candidates,
+                  canShowCandidates: Boolean(matchResponse.ok && matchResult?.candidates),
+                })
               )
             );
           }
