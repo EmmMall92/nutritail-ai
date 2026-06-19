@@ -129,7 +129,11 @@ function hasNumber(value: unknown): value is number {
 }
 
 function healthText(healthIssues: string[] | undefined) {
-  return (healthIssues ?? []).join(" ").toLowerCase();
+  return (healthIssues ?? [])
+    .join(" ")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 export function evaluateSeniorFitRules(input: SeniorFitInput) {
@@ -138,10 +142,12 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
   const seniorContext = goal === "senior" || stage === "senior";
   const text = healthText(pet.healthIssues);
   const hasMobilityContext = /joint|arthritis|mobility|hip|elbow|αρθρ|ισχι|χιαστ/.test(text);
+  const hasGreekMobilityContext = /αρθρ|κινητικ|ισχι|αγκων|χιαστ|δυσπλασ/.test(text);
+  const detectedMobilityContext = hasMobilityContext || hasGreekMobilityContext;
   const lowActivitySenior = seniorContext && pet.activityLevel === "low";
   const appetiteOrWeightLossConcern = /appetite|anorexia|not eating|weight loss|losing weight|ορεξ|ανορεξ|χανει/.test(text);
 
-  if (!seniorContext && !hasMobilityContext) return signals;
+  if (!seniorContext && !detectedMobilityContext) return signals;
 
   if (seniorContext && positioning.senior) {
     signals.push({
@@ -159,7 +165,7 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
     });
   }
 
-  if (hasMobilityContext && positioning.mobility) {
+  if (detectedMobilityContext && positioning.mobility) {
     signals.push({
       type: "boost",
       code: "senior_joint_mobility_positioning",
@@ -177,10 +183,10 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
     signals.push({
       type: "boost",
       code: "senior_mobility_support_signal",
-      points: hasMobilityContext ? 10 : 6,
+      points: detectedMobilityContext ? 10 : 6,
       message: "Declared mobility-support nutrients improve senior fit.",
     });
-  } else if (hasMobilityContext && !positioning.mobility) {
+  } else if (detectedMobilityContext && !positioning.mobility) {
     signals.push({
       type: "caution",
       code: "senior_joint_context_without_mobility_signal",
