@@ -38,7 +38,6 @@ function compactFood(
   return {
     brand: food.brand ?? null,
     name: food.display_name ?? null,
-    score: food.ranking?.total_score ?? null,
     customer_reason: simpleReason(food, locale),
     customer_caution: simpleCaution(food, locale),
     nutrition_snapshot: nutritionLine(food, locale),
@@ -238,13 +237,12 @@ function foodBullet(
   locale: ComposerLocale
 ) {
   const name = displayFoodName(food);
-  const score = formatNumber(food.ranking?.total_score, 0);
   const nutrition = nutritionLine(food, locale);
   const reason = simpleReason(food, locale);
 
   if (locale === "el") {
     return [
-      `${index}. ${name}${score !== null ? ` (${score}/100)` : ""}`,
+      `${index}. ${name}`,
       `   Γιατί: ${reason}.`,
       nutrition ? `   Με μια ματιά: ${nutrition}.` : "",
     ]
@@ -253,7 +251,7 @@ function foodBullet(
   }
 
   return [
-    `${index}. ${name}${score !== null ? ` (${score}/100)` : ""}`,
+    `${index}. ${name}`,
     `   Why: ${reason}.`,
     nutrition ? `   At a glance: ${nutrition}.` : "",
   ]
@@ -400,7 +398,7 @@ export async function composeChatbotRecommendationResponse(
           },
           {
             role: "user",
-            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not over-explain the internal score. If you mention a score, keep it secondary.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
+            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not mention internal scores or numeric ranking labels.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
           },
         ],
         temperature: 0.2,

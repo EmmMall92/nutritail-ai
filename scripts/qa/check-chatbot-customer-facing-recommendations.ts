@@ -188,6 +188,21 @@ const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
 );
 
+const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
+const forbiddenComposerCopy = [
+  "score: food.ranking?.total_score",
+  "(${score}/100)",
+];
+const leakedComposerCopy = forbiddenComposerCopy.filter((term) =>
+  responseComposer.includes(term)
+);
+
+if (leakedComposerCopy.length > 0) {
+  console.error("Customer-facing response composer still exposes internal score copy:");
+  console.error(leakedComposerCopy.join(", "));
+  process.exit(1);
+}
+
 if (missingCardFlowCopy.length > 0) {
   console.error("Chatbot food cards are missing customer-facing flow copy:");
   console.error(missingCardFlowCopy.join(", "));
