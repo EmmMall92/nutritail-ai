@@ -10,7 +10,7 @@ type RecommendationFood = {
   data_source_url?: string | null;
   ranking?: Pick<
     FoodV2RankingResult,
-    "total_score" | "confidence" | "reasons" | "cautions" | "bucket" | "value_score"
+    "confidence" | "reasons" | "cautions" | "bucket" | "value_score"
   > | null;
   nutrition?: {
     kcal_per_100g?: number | null;
@@ -81,14 +81,9 @@ function compactReasons(food: RecommendationFood, locale: "el" | "en") {
   const reasons = food.ranking?.reasons?.slice(0, 2) ?? [];
   if (reasons.length > 0) return reasons.join("; ");
 
-  const score = food.ranking?.total_score;
-  if (typeof score === "number") {
-    return locale === "el"
-      ? `ταιριάζει με score ${score}/100`
-      : `matches with score ${score}/100`;
-  }
-
-  return locale === "el" ? "έχει αρκετά δεδομένα για σύγκριση" : "has enough data to compare";
+  return locale === "el"
+    ? "ταιριάζει στο βασικό προφίλ του κατοικιδίου"
+    : "fits the pet's basic profile";
 }
 
 function confidencePhrase(food: RecommendationFood, locale: "el" | "en") {
@@ -96,14 +91,14 @@ function confidencePhrase(food: RecommendationFood, locale: "el" | "en") {
   const quality = food.data_quality_status;
 
   if (locale === "el") {
-    if (confidence === "high" || quality === "verified") return "υψηλή εμπιστοσύνη";
-    if (confidence === "low") return "χαμηλή εμπιστοσύνη";
-    return "μέτρια εμπιστοσύνη";
+    if (confidence === "high" || quality === "verified") return "δυνατή επιλογή";
+    if (confidence === "low") return "πιο προσεκτική επιλογή";
+    return "καλή επιλογή";
   }
 
-  if (confidence === "high" || quality === "verified") return "high confidence";
-  if (confidence === "low") return "low confidence";
-  return "medium confidence";
+  if (confidence === "high" || quality === "verified") return "strong fit";
+  if (confidence === "low") return "cautious fit";
+  return "good fit";
 }
 
 function renderFoodItem(food: RecommendationFood, index: number, locale: "el" | "en") {
