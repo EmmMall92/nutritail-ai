@@ -183,10 +183,11 @@ const requiredCardFlowCopy = [
   "1. Pick",
   "2. Calculate",
   "3. Save",
-  "Choose and calculate",
-  "Choose it to estimate grams per day.",
-  "Start with the first pick for the strongest nutrition fit",
-  "choose a value option if you prefer something simpler",
+  "Estimate grams",
+  "Tap for grams/day and the next step.",
+  "Tap one card to see grams/day and keep that food in the plan.",
+  "The first card is the strongest fit for the profile.",
+  "Value options are simpler alternatives when they still fit well.",
   "Best nutrition fits",
   "options prioritised for fit",
   "Value options",
@@ -195,7 +196,7 @@ const requiredCardFlowCopy = [
   "Plan summary",
   "Save it to keep calories, food choice, and first portion on the profile.",
   "Portion estimate",
-  "Practical split:",
+  "If you split it:",
   "2 meals: about",
   "3 meals: about",
   "analysisMetadata.feedingGramsPerDay / 2",
@@ -298,7 +299,7 @@ const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
 );
-const cardCtaIndex = chatbotPage.indexOf("Choose and calculate", recommendedChoicesIndex);
+const cardCtaIndex = chatbotPage.indexOf("Estimate grams", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||

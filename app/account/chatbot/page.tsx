@@ -757,13 +757,13 @@ function getRecommendationChoiceActionHint(
 
   if (hasPortionData) {
     return language === "el"
-      ? "Διάλεξέ τη για να δεις γραμμάρια ανά ημέρα."
-      : "Choose it to estimate grams per day.";
+      ? "Πάτησε για γραμμάρια/ημέρα και επόμενο βήμα."
+      : "Tap for grams/day and the next step.";
   }
 
   return language === "el"
-    ? "Διάλεξέ τη για να συνεχίσουμε με πρακτικές οδηγίες."
-    : "Choose it to continue with practical guidance.";
+    ? "Πάτησε για να κρατήσουμε αυτή την επιλογή στο πλάνο."
+    : "Tap to keep this choice in the plan.";
 }
 
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
@@ -4060,12 +4060,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name} ως πρώτη επιλογή.\n\nΠρώτη ημερήσια ποσότητα: περίπου ${gramsPerDay}g/ημέρα.\n\nΠρακτικά:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές λίγες και μέσα στον ημερήσιο στόχο. Σε 3-4 εβδομάδες ξαναδείτε βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
-          `Great, we will use ${choice.name} as the first choice.\n\nFirst daily amount: about ${gramsPerDay}g/day.\n\nPractical split:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats small and inside the daily target. Recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα: περίπου ${gramsPerDay}g/ημέρα.\n\nΑν το χωρίσεις:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές μέσα στο ημερήσιο όριο και κάνε έλεγχο σε 3-4 εβδομάδες για βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
+          `Great, we will keep ${choice.name}.\n\nFirst amount: about ${gramsPerDay}g/day.\n\nIf you split it:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats inside the daily allowance and recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
         )
       : botText(
-          `Τέλεια, κρατάμε την ${choice.name} ως πρώτη επιλογή.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια σε αυτή τη ροή. Μπορείς να αποθηκεύσεις την επιλογή τώρα ή να διαλέξεις άλλη τροφή από τις κάρτες αν θέλεις ποσότητα με μεγαλύτερη ακρίβεια.`,
-          `Great, we will use ${choice.name} as the first choice.\n\nI do not have enough calorie data for exact grams in this flow. You can save this choice now or pick another card if you want a more precise portion estimate.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για αξιόπιστα γραμμάρια σε αυτή τη ροή. Μπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες για πιο πρακτική ποσότητα.`,
+          `Great, we will keep ${choice.name}.\n\nI do not have enough calorie data for reliable grams in this flow. You can save it as the chosen food or pick another card with calories for a more practical portion estimate.`
         );
 
     addMessages(createMessage("bot", selectedFoodReply));
@@ -4432,14 +4432,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Πάτησε μία επιλογή για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την επιλογή στην ανάλυση.",
-                "Tap one option to estimate daily grams and keep it in this analysis."
+                "Πάτησε μία κάρτα για να δεις γραμμάρια/ημέρα και να κρατήσουμε την τροφή στο πλάνο.",
+                "Tap one card to see grams/day and keep that food in the plan."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "ΞΞµΞΊΞ―Ξ½Ξ± Ξ±Ο€Ο Ο„Ξ·Ξ½ Ο€ΟΟΟ„Ξ· ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ® Ξ³ΞΉΞ± Ο„ΞΏ ΊΞ±Ξ»ΟΟ„ΞµΟΞΏ Ξ΄ΞΉΞ±Ο„ΟΞΏΟ†ΞΉΞΊΟ fit, Ξ® Ξ΄ΞΉΞ¬Ξ»ΞµΞΎΞµ value ΞµΞ½Ξ±Ξ»Ξ»Ξ±ΞΊΟ„ΞΉΞΊΞ® Ξ±Ξ½ ΞΈΞ­Ξ»ΞµΞΉΟ‚ ΞΊΞ¬Ο„ΞΉ Ο€ΞΉΞΏ Ξ±Ο€Ξ»Ο.",
-                "Start with the first pick for the strongest nutrition fit, or choose a value option if you prefer something simpler."
+                "Η πρώτη κάρτα είναι η πιο δυνατή επιλογή για το προφίλ. Οι value επιλογές είναι πιο απλές εναλλακτικές όταν ταιριάζουν αρκετά.",
+                "The first card is the strongest fit for the profile. Value options are simpler alternatives when they still fit well."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
@@ -4471,20 +4471,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("ΞΞ±Ξ»ΟΟ„ΞµΟΞµΟ‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚", "Best nutrition fits")}
+                  {botText("Καλύτερες επιλογές", "Best nutrition fits")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ ΞΌΞµ Ο€ΟΟΟ„Ξ± Ο„ΞΏ fit", "options prioritised for fit")}
+                  {botText("επιλογές με προτεραιότητα στο fit", "options prioritised for fit")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Value ΞµΞ½Ξ±Ξ»Ξ»Ξ±ΞΊΟ„ΞΉΞΊΞ­Ο‚", "Value options")}
+                  {botText("Value εναλλακτικές", "Value options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ Ξ±Ξ½ Ο„Ξ±ΞΉΟΞΉΞ¬Ξ¶ΞΏΟ…Ξ½", "alternatives when they still fit")}
+                  {botText("επιλογές όταν ταιριάζουν αρκετά", "alternatives when they still fit")}
                 </span>
               </div>
             </div>
@@ -4602,7 +4602,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     {getRecommendationChoiceActionHint(choice, chatLanguage)}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Επιλογή και υπολογισμός", "Choose and calculate")}
+                    {botText("Υπολόγισε γραμμάρια", "Estimate grams")}
                   </span>
                 </button>
               ))}
