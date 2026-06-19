@@ -326,6 +326,7 @@ function formatRecommendationChoiceReason(
     }
     if (
       text.includes("calorie_aware_feeding") ||
+      text.includes("sterilised_weight_management") ||
       text.includes("weight") ||
       text.includes("sterilised") ||
       text.includes("sterilized") ||
@@ -351,13 +352,18 @@ function formatRecommendationChoiceReason(
     if (text.includes("senior_mobility") || text.includes("senior")) {
       return "Είναι πιο κοντά σε ανάγκες senior κατοικιδίου, όπου κοιτάμε βάρος, όρεξη, μυϊκή κατάσταση και κινητικότητα.";
     }
-    if (text.includes("digest") || text.includes("sensitive")) {
+    if (text.includes("digestive_tolerance_review") || text.includes("digest") || text.includes("sensitive")) {
       return "Έχει λογική για πιο ευαίσθητη πέψη.";
     }
     if (text.includes("skin_coat_omega_review")) {
       return "Έχει λογική για δέρμα/τρίχωμα, ειδικά όταν υπάρχουν διαθέσιμα στοιχεία για EPA/DHA ή ωμέγα λιπαρά.";
     }
-    if (text.includes("active_working") || text.includes("active") || text.includes("performance")) {
+    if (
+      text.includes("high_activity_energy_support") ||
+      text.includes("active_working") ||
+      text.includes("active") ||
+      text.includes("performance")
+    ) {
       return proteinText ?? "Ταιριάζει καλύτερα σε πιο δραστήριο ζώο που χρειάζεται περισσότερη διατροφική υποστήριξη.";
     }
     if (text.includes("urinary")) {
@@ -377,6 +383,7 @@ function formatRecommendationChoiceReason(
   }
   if (
     text.includes("calorie_aware_feeding") ||
+    text.includes("sterilised_weight_management") ||
     text.includes("weight") ||
     text.includes("sterilised") ||
     text.includes("sterilized") ||
@@ -402,13 +409,18 @@ function formatRecommendationChoiceReason(
   if (text.includes("senior_mobility") || text.includes("senior")) {
     return "It is closer to senior needs, where weight, appetite, muscle condition, and mobility matter.";
   }
-  if (text.includes("digest") || text.includes("sensitive")) {
+  if (text.includes("digestive_tolerance_review") || text.includes("digest") || text.includes("sensitive")) {
     return "It has better logic for sensitive digestion.";
   }
   if (text.includes("skin_coat_omega_review")) {
     return "It has skin/coat logic, especially when EPA/DHA or omega details are available.";
   }
-  if (text.includes("active_working") || text.includes("active") || text.includes("performance")) {
+  if (
+    text.includes("high_activity_energy_support") ||
+    text.includes("active_working") ||
+    text.includes("active") ||
+    text.includes("performance")
+  ) {
     return proteinText ?? "It fits a more active pet that needs stronger nutrition support.";
   }
   if (text.includes("urinary")) {
@@ -508,6 +520,34 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
   };
 
   const supplementalLabels: Record<string, { el: string; en: string }> = {
+    active_working_without_energy_support: {
+      el: "δραστήριο ζώο χωρίς αρκετή ενεργειακή υποστήριξη",
+      en: "active pets without enough energy support",
+    },
+    digestive_tolerance_review: {
+      el: "ευαίσθητη πέψη",
+      en: "digestive tolerance review",
+    },
+    high_activity_energy_support: {
+      el: "υψηλή δραστηριότητα",
+      en: "high-activity energy support",
+    },
+    senior_muscle_monitoring: {
+      el: "senior μυϊκή κατάσταση",
+      en: "senior muscle monitoring",
+    },
+    senior_without_clear_senior_or_mobility_support: {
+      el: "senior χωρίς καθαρή senior/mobility στήριξη",
+      en: "senior pets without clear senior or mobility support",
+    },
+    sterilised_weight_management: {
+      el: "στειρωμένο ζώο με έλεγχο βάρους",
+      en: "sterilised weight management",
+    },
+    sterilised_weight_control_energy_mismatch: {
+      el: "στειρωμένο ζώο με υψηλή ενεργειακή πυκνότητα",
+      en: "sterilised pets with too much energy density",
+    },
     active_working: { el: "πολύ δραστήριο ζώο", en: "active or working pets" },
     calorie_aware_feeding: { el: "ελεγχόμενες θερμίδες", en: "calorie-aware feeding" },
     growth_development: { el: "ανάπτυξη κουταβιού/γατιού", en: "puppy/kitten development" },
