@@ -548,6 +548,43 @@ function titleTextFor(food: FoodProductV2) {
   return normalizeText([food.brand, food.formula_name, food.display_name].join(" "));
 }
 
+function visibleDogSizeFromTitle(food: FoodProductV2) {
+  const text = titleTextFor(food);
+
+  if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
+  if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"]) || hasWord(text, "large")) {
+    return "large";
+  }
+  if (hasAny(text, ["medium breed", "medium dog", "medium adult"]) || hasWord(text, "medium")) {
+    return "medium";
+  }
+  if (hasAny(text, ["xsmall", "x-small", "extra small", "x small", "mini breed", "mini dog", "mini adult"]) || hasWord(text, "mini")) {
+    return "mini";
+  }
+  if (hasAny(text, ["small breed", "small dog", "small adult"]) || hasWord(text, "small")) return "small";
+
+  return null;
+}
+
+function isCustomerVisibleHardDogSizeMismatch(
+  pet: FoodV2RankingInput["pet"],
+  expectedSize: string | null,
+  visibleTitleSize: string | null
+) {
+  if (!visibleTitleSize) return false;
+
+  if (
+    pet.species === "dog" &&
+    hasNumber(pet.weight) &&
+    expectedSize === "small" &&
+    visibleTitleSize === "mini"
+  ) {
+    return pet.weight >= 9.5;
+  }
+
+  return isHardDogSizeMismatch(pet, expectedSize, visibleTitleSize);
+}
+
 function hasExplicitSeniorTitle(food: FoodProductV2) {
   return hasAny(titleTextFor(food), [
     "senior",
@@ -720,6 +757,7 @@ function scoreFit(input: FoodV2RankingInput) {
       food.dog_size && food.dog_size !== "unknown" && food.dog_size !== "all"
         ? food.dog_size
         : inferDogSizeFromFoodText(food);
+    const visibleTitleSize = visibleDogSizeFromTitle(food);
     const sizeTerms =
       DOG_SIZE_TERMS[declaredSize as keyof typeof DOG_SIZE_TERMS] ?? [];
     const sizeDistance =
@@ -753,6 +791,36 @@ function scoreFit(input: FoodV2RankingInput) {
         "adjacent_dog_size_mismatch",
         -12,
         `Breed-size positioning is ${declaredSize}, while this dog looks ${expectedSize}.`
+      );
+    }
+
+    if (
+      visibleTitleSize &&
+      visibleTitleSize !== declaredSize &&
+      isCustomerVisibleHardDogSizeMismatch(pet, expectedSize, visibleTitleSize)
+    ) {
+      score -= 35;
+      addSignal(
+        signals,
+        "exclude",
+        "customer_visible_dog_size_mismatch",
+        -100,
+        `Excluded because the visible product title targets ${visibleTitleSize} dogs, while this dog looks ${expectedSize}.`
+      );
+    } else if (
+      goal === "sterilised" &&
+      expectedSize &&
+      visibleTitleSize &&
+      visibleTitleSize !== expectedSize &&
+      dogSizeDistance(expectedSize, visibleTitleSize) === 1
+    ) {
+      score -= 10;
+      addSignal(
+        signals,
+        "caution",
+        "customer_visible_adjacent_size_mismatch",
+        -10,
+        `Visible product title targets ${visibleTitleSize} dogs, while this dog looks ${expectedSize}.`
       );
     }
   }
