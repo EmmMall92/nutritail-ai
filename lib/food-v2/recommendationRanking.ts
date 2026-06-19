@@ -295,7 +295,7 @@ function petLifeStage(pet: FoodV2RankingInput["pet"]) {
     pet.age < 1 ||
     (pet.age <= 1 &&
       (pet.weight >= 25 ||
-        ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? "")))
+        ["large", "giant"].includes(breedSizeFromText(petSizeContextText(pet)) ?? "")))
   ) {
     return "puppy";
   }
@@ -308,7 +308,7 @@ function isLargeBreedDog(pet: FoodV2RankingInput["pet"]) {
     pet.species === "dog" &&
     (pet.weight >= 25 ||
       (pet.age < 1 && pet.weight >= 18) ||
-      ["large", "giant"].includes(breedSizeFromText(pet.breed) ?? ""))
+      ["large", "giant"].includes(breedSizeFromText(petSizeContextText(pet)) ?? ""))
   );
 }
 
@@ -317,12 +317,19 @@ function breedSizeFromText(value: unknown) {
   for (const [size, terms] of Object.entries(BREED_SIZE_TERMS)) {
     if (hasAny(text, terms)) return size;
   }
+  for (const [size, terms] of Object.entries(DOG_SIZE_TERMS)) {
+    if (hasAny(text, terms)) return size;
+  }
   return null;
+}
+
+function petSizeContextText(pet: FoodV2RankingInput["pet"]) {
+  return [pet.breed, ...(pet.healthIssues ?? [])].join(" ");
 }
 
 function expectedDogSize(pet: FoodV2RankingInput["pet"]) {
   if (pet.species !== "dog") return null;
-  const breedSize = breedSizeFromText(pet.breed);
+  const breedSize = breedSizeFromText(petSizeContextText(pet));
 
   if (!hasNumber(pet.weight) || pet.weight <= 0) return breedSize;
   if (pet.weight <= 5) return "mini";

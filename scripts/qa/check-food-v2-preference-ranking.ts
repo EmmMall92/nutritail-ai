@@ -790,6 +790,49 @@ if (!largeBreedPuppyRanking.signals.some((signal) => signal.code === "large_bree
   process.exit(1);
 }
 
+const largeBreedContextPuppy = {
+  ...pet,
+  breed: "",
+  age: 0.5,
+  weight: 0,
+  healthIssues: ["large breed puppy", "bone growth"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const smallPuppyFood = food({
+  id: "small-puppy",
+  formula_key: "qa|small-puppy|dog|dry",
+  display_name: "Small Junior Chicken",
+  life_stage: "puppy",
+  dog_size: "small",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
+const largeContextSmallPuppyRanking = rankFoodV2ForPet({
+  food: smallPuppyFood,
+  nutrients: nutrients(smallPuppyFood),
+  pet: largeBreedContextPuppy,
+  goal: "growth",
+});
+const largeContextLargePuppyRanking = rankFoodV2ForPet({
+  food: largeBreedPuppyFood,
+  nutrients: nutrients(largeBreedPuppyFood),
+  pet: largeBreedContextPuppy,
+  goal: "growth",
+});
+
+if (largeContextSmallPuppyRanking.bucket !== "hold") {
+  console.error("Small puppy food should be held when user context says large-breed puppy.");
+  console.error(largeContextSmallPuppyRanking);
+  process.exit(1);
+}
+
+if (largeContextLargePuppyRanking.total_score <= largeContextSmallPuppyRanking.total_score) {
+  console.error("Large-breed puppy context should prefer large-breed puppy food over small puppy food.");
+  console.error({ largeContextLargePuppyRanking, largeContextSmallPuppyRanking });
+  process.exit(1);
+}
+
 const pickySmallDog = {
   ...pet,
   weight: 6,
