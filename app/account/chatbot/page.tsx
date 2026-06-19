@@ -793,13 +793,13 @@ function getRecommendationChoiceBadgeLabel(
   language: ChatLanguage
 ) {
   if (index === 0) {
-    return language === "el" ? "Πρώτη επιλογή" : "Top pick";
+    return language === "el" ? "Πρόταση 1" : "Pick 1";
   }
   if (choice.role === "value") {
-    return language === "el" ? "Πιο value επιλογή" : "Value option";
+    return language === "el" ? "Πιο απλή επιλογή" : "Simple option";
   }
 
-  return language === "el" ? "Καλή εναλλακτική" : "Good alternative";
+  return language === "el" ? "Εναλλακτική" : "Alternative";
 }
 
 function getRecommendationChoiceActionHint(
@@ -810,8 +810,8 @@ function getRecommendationChoiceActionHint(
 
   if (hasPortionData) {
     return language === "el"
-      ? "Πάτησε για γραμμάρια/ημέρα και επόμενο βήμα."
-      : "Tap for grams/day and the next step.";
+      ? "Πάτησε για ποσότητα/ημέρα και επόμενο βήμα."
+      : "Tap for portions/day and the next step.";
   }
 
   return language === "el"
@@ -4560,18 +4560,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {showSave && recommendedFoodChoices.length > 0 && (
           <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
-              {botText("Διάλεξε τροφή για να συνεχίσουμε", "Choose a food to continue")}
+              {botText("Διάλεξε τροφή και δες ποσότητα", "Choose a food and see portions")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Πάτησε μία κάρτα για να δεις γραμμάρια/ημέρα και να κρατήσουμε την τροφή στο πλάνο.",
-                "Tap one card to see grams/day and keep that food in the plan."
+                "Πάτησε την τροφή που σου αρέσει για να δεις περίπου γραμμάρια/ημέρα και να την κρατήσουμε στο πλάνο.",
+                "Tap the food you like to see estimated grams/day and keep it in the plan."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Η πρώτη κάρτα είναι η πιο δυνατή επιλογή για το προφίλ. Οι value επιλογές είναι πιο απλές εναλλακτικές όταν ταιριάζουν αρκετά.",
-                "The first card is the strongest fit for the profile. Value options are simpler alternatives when they still fit well."
+                "Οι πρώτες προτάσεις είναι οι πιο ταιριαστές. Οι πιο απλές επιλογές είναι καλές εναλλακτικές όταν θέλεις κάτι πιο πρακτικό.",
+                "The first picks are the strongest fits. Simple options are good alternatives when you want something more practical."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
@@ -4603,20 +4603,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("Καλύτερες επιλογές", "Best nutrition fits")}
+                  {botText("Πρώτες προτάσεις", "First picks")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("επιλογές με προτεραιότητα στο fit", "options prioritised for fit")}
+                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "food option(s) with the strongest fit")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Value εναλλακτικές", "Value options")}
+                  {botText("Πιο απλές επιλογές", "Simple options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("επιλογές όταν ταιριάζουν αρκετά", "alternatives when they still fit")}
+                  {botText("πρακτικές εναλλακτικές όταν ταιριάζουν αρκετά", "practical alternatives when they still fit")}
                 </span>
               </div>
             </div>
@@ -4642,7 +4642,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Υπολογισμός μερίδας", "Portion estimate")}
+                      {botText("Ποσότητα", "Portion")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -4738,12 +4738,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </span>
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
-                      "Πάτησε για να υπολογίσεις ποσότητα και να κρατήσεις αυτή την τροφή.",
-                      "Tap to calculate grams and keep this food in the plan."
+                      "Πάτησε για ποσότητα και επόμενο βήμα.",
+                      "Tap for portions and the next step."
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Υπολόγισε γραμμάρια", "Estimate grams")}
+                    {botText("Υπολόγισε ποσότητα", "Estimate portions")}
                   </span>
                 </button>
               ))}
