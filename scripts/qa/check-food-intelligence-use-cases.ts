@@ -475,4 +475,68 @@ assert(
   weakHairballCat
 );
 
+const fussyPalatabilityFood = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "adult",
+  health_tags: ["fussy_eater"],
+  ingredient_tags: ["chicken", "fresh"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 385,
+    protein_percent: 34,
+    fat_percent: 15,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.9,
+  },
+});
+
+assert(
+  fussyPalatabilityFood.best_use_cases.includes("fussy_eater_palatability_trial"),
+  "Expected fussy_eater_palatability_trial for fussy-positioned food with palatability support.",
+  fussyPalatabilityFood
+);
+
+assert(
+  fussyPalatabilityFood.food_strengths.some((item) =>
+    item.includes("Palatability signals")
+  ),
+  "Expected a customer-useful palatability strength for fussy-eater food.",
+  fussyPalatabilityFood
+);
+
+const weakFussyFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  health_tags: ["picky"],
+  ingredient_tags: ["rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 330,
+    protein_percent: 20,
+    fat_percent: 7,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  weakFussyFood.not_ideal_cases.includes("fussy_eater_without_palatability_support"),
+  "Expected fussy_eater_without_palatability_support when fussy positioning has weak palatability signals.",
+  weakFussyFood
+);
+
+assert(
+  weakFussyFood.food_cautions.some((item) =>
+    item.includes("Fussy-eater positioning is weaker")
+  ),
+  "Expected fussy-eater caution when palatability support is weak.",
+  weakFussyFood
+);
+
 console.log("Food intelligence use-case QA passed.");
