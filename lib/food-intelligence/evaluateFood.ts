@@ -142,6 +142,30 @@ function hasHairballFiberSupport(input: FoodIntelligenceInput) {
   );
 }
 
+function hasFussyEaterContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "fussy",
+    "picky",
+    "appetite",
+    "palatable",
+    "palatability",
+    "aroma",
+    "savoury",
+    "savory",
+  ]);
+}
+
+function hasFussyPalatabilitySupport(input: FoodIntelligenceInput) {
+  const fat = input.nutrients?.fat_percent;
+
+  return (
+    hasFussyEaterContext(input) &&
+    (animalProteinCount(input) >= 1 ||
+      hasTag(input, ["fresh", "hydrolysed", "hydrolyzed", "digest", "fish_oil"]) ||
+      (hasNumber(fat) && fat >= 12))
+  );
+}
+
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   const size = String(input.dog_size ?? "").toLowerCase();
 
@@ -290,6 +314,9 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasHairballFiberSupport(input)) {
     addUnique(result, "Fiber level supports hairball-control positioning.");
   }
+  if (hasFussyPalatabilitySupport(input)) {
+    addUnique(result, "Palatability signals can help fussy-eater trials.");
+  }
   if (
     input.species === "cat" &&
     hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
@@ -383,6 +410,9 @@ function cautions(input: FoodIntelligenceInput) {
     (!hasNumber(input.nutrients?.fiber_percent) || input.nutrients.fiber_percent < 4)
   ) {
     result.push("Hairball positioning is weaker without a clear fiber-support level.");
+  }
+  if (hasFussyEaterContext(input) && !hasFussyPalatabilitySupport(input)) {
+    result.push("Fussy-eater positioning is weaker without clear palatability or animal-protein signals.");
   }
 
   return [...new Set(result)].slice(0, 8);
@@ -497,6 +527,9 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "indoor_sterilised_weight_management");
   }
+  if (hasFussyPalatabilitySupport(input)) {
+    addUnique(result, "fussy_eater_palatability_trial");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -566,6 +599,9 @@ function notIdealCases(input: FoodIntelligenceInput) {
     (!hasNumber(input.nutrients?.fiber_percent) || input.nutrients.fiber_percent < 4)
   ) {
     cases.push("hairball_without_fiber_support");
+  }
+  if (hasFussyEaterContext(input) && !hasFussyPalatabilitySupport(input)) {
+    cases.push("fussy_eater_without_palatability_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
