@@ -781,6 +781,81 @@ if (
   process.exit(1);
 }
 
+const visibleSmallSterilisedFood = food({
+  id: "visible-small-sterilised",
+  formula_key: "qa|visible-small-sterilised|dog|dry",
+  display_name: "Adult Small Sterilised Chicken",
+  dog_size: "small",
+  commercial_tags: ["sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const allBreedsSterilisedFood = food({
+  id: "all-breeds-sterilised",
+  formula_key: "qa|all-breeds-sterilised|dog|dry",
+  display_name: "All Breeds Adult Sterilised Chicken",
+  dog_size: "all",
+  commercial_tags: ["sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const visibleSmallSterilisedRanking = rankFoodV2ForPet({
+  food: visibleSmallSterilisedFood,
+  nutrients: {
+    ...nutrients(visibleSmallSterilisedFood),
+    protein_percent: 22,
+    fat_percent: 9,
+    fiber_percent: 2.5,
+  },
+  pet: {
+    ...pet,
+    weight: 6,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+const allBreedsSterilisedRanking = rankFoodV2ForPet({
+  food: allBreedsSterilisedFood,
+  nutrients: {
+    ...nutrients(allBreedsSterilisedFood),
+    protein_percent: 22,
+    fat_percent: 9,
+    fiber_percent: 2.5,
+  },
+  pet: {
+    ...pet,
+    weight: 6,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+
+if (visibleSmallSterilisedRanking.total_score <= allBreedsSterilisedRanking.total_score) {
+  console.error("Exact visible small-size sterilised food should outrank an otherwise equal all-breeds option.");
+  console.error({ visibleSmallSterilisedRanking, allBreedsSterilisedRanking });
+  process.exit(1);
+}
+
+if (
+  !visibleSmallSterilisedRanking.signals.some(
+    (signal) => signal.code === "customer_visible_dog_size_match"
+  )
+) {
+  console.error("Expected customer_visible_dog_size_match for exact visible small-size sterilised food.");
+  console.error(visibleSmallSterilisedRanking.signals);
+  process.exit(1);
+}
+
 const highActivityPet = {
   ...pet,
   weight: 25,
