@@ -322,4 +322,73 @@ if (
   process.exit(1);
 }
 
+const seniorCatPet = {
+  species: "cat" as const,
+  breed: "European shorthair",
+  age: 12,
+  weight: 4.8,
+  activityLevel: "low" as const,
+  neutered: true,
+  allergies: [],
+  healthIssues: ["senior", "low activity"],
+};
+const hiddenSterilisedCatSenior = rankFoodV2ForPet({
+  food: makeFood({
+    brand: "Monge BWild",
+    formula_name: "BWild Grain Free Sterilised Tuna With Peas",
+    display_name: "BWild Grain Free Sterilised Tuna With Peas",
+    species: "cat",
+    life_stage: "adult",
+    dog_size: "unknown",
+    commercial_tags: ["senior", "sterilised"],
+    formula_key: "monge-bwild|sterilised-tuna-hidden-senior|cat|dry",
+  }),
+  nutrients,
+  pet: seniorCatPet,
+  goal: "senior",
+});
+const visibleSeniorCat = rankFoodV2ForPet({
+  food: makeFood({
+    brand: "Monge",
+    formula_name: "Senior Rich In Chicken",
+    display_name: "Senior Rich In Chicken",
+    species: "cat",
+    life_stage: "senior",
+    dog_size: "unknown",
+    commercial_tags: ["senior"],
+    formula_key: "monge|senior-rich-in-chicken|cat|dry",
+  }),
+  nutrients,
+  pet: seniorCatPet,
+  goal: "senior",
+});
+
+if (hiddenSterilisedCatSenior.bucket !== "hold") {
+  console.error("Adult sterilised cat food with hidden senior metadata should be held for senior-cat shortlists.");
+  console.error(hiddenSterilisedCatSenior);
+  process.exit(1);
+}
+
+if (
+  !hiddenSterilisedCatSenior.signals.some(
+    (signal) => signal.code === "senior_positioning_not_customer_visible"
+  )
+) {
+  console.error("Expected senior_positioning_not_customer_visible for hidden senior cat metadata.");
+  console.error(hiddenSterilisedCatSenior.signals);
+  process.exit(1);
+}
+
+if (visibleSeniorCat.bucket === "hold") {
+  console.error("Customer-visible senior cat food should remain selectable for senior-cat shortlists.");
+  console.error(visibleSeniorCat);
+  process.exit(1);
+}
+
+if (visibleSeniorCat.total_score <= hiddenSterilisedCatSenior.total_score) {
+  console.error("Visible senior cat food should outrank hidden senior adult sterilised food.");
+  console.error({ hiddenSterilisedCatSenior, visibleSeniorCat });
+  process.exit(1);
+}
+
 console.log("Food V2 senior visible ranking QA passed.");
