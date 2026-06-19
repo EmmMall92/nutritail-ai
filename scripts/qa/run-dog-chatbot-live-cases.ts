@@ -2,6 +2,7 @@ import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
+import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 
 type SafetyExpectation = "normal" | "vet_referral" | "emergency";
 type RecommendationGoal =
@@ -593,7 +594,18 @@ async function extractWithOpenAi(
   const text = response.output_text ?? "";
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) return null;
-  return JSON.parse(match[0]) as ExtractionResult;
+  const parsed = JSON.parse(match[0]) as ExtractionResult;
+  return validateAiIntakeExtraction(parsed).data as ExtractionResult;
+}
+
+function findPreferenceOverlaps(extraction: ExtractionResult) {
+  const excluded = new Set(
+    (extraction.excludedIngredients ?? []).map((item) => normalize(item))
+  );
+
+  return (extraction.preferredProteins ?? []).filter((item) =>
+    excluded.has(normalize(item))
+  );
 }
 
 function validateFacts(testCase: DogQaCase, extraction: ExtractionResult | null) {
@@ -601,6 +613,14 @@ function validateFacts(testCase: DogQaCase, extraction: ExtractionResult | null)
 
   const warnings: string[] = [];
   const expected = testCase.expected;
+  const preferenceOverlaps = findPreferenceOverlaps(extraction);
+
+  if (preferenceOverlaps.length > 0) {
+    warnings.push(
+      `preferredProteins and excludedIngredients overlap: ${preferenceOverlaps.join(", ")}`
+    );
+  }
+
   if (expected.species && extraction.species !== expected.species) {
     warnings.push(`species expected ${expected.species}, got ${String(extraction.species)}`);
   }
