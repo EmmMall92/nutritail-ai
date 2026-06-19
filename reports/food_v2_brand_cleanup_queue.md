@@ -1,6 +1,6 @@
 # Food V2 Brand Cleanup Queue
 
-Generated: 2026-06-19T02:29:57.841Z
+Generated: 2026-06-19T02:33:56.845Z
 
 ## Summary
 
@@ -12,16 +12,16 @@ Generated: 2026-06-19T02:29:57.841Z
 ## Queue By Phase
 
 - nutrient_backfill: 52
+- title_cleanup: 9
 - controlled_import_ready: 9
 - small_batch_review: 9
-- title_cleanup: 6
-- dedupe_before_import: 4
+- dedupe_before_import: 1
 
 ## Top Cleanup Priorities
 
-- 1. Royal Canin: priority=79; customer_impact=76; dedupe_before_import; rows=29; title identities=6; title issues=12; duplicates=1; Ca/P gaps=21
+- 1. Royal Canin: priority=76; customer_impact=73; title_cleanup; rows=29; title identities=6; title issues=12; duplicates=0; Ca/P gaps=21
 - 2. Hills: priority=60; customer_impact=59; title_cleanup; rows=37; title identities=8; title issues=16; duplicates=0; Ca/P gaps=0
-- 3. Josera: priority=59; customer_impact=56; dedupe_before_import; rows=54; title identities=1; title issues=1; duplicates=1; Ca/P gaps=15
+- 3. Josera: priority=56; customer_impact=53; title_cleanup; rows=54; title identities=1; title issues=1; duplicates=0; Ca/P gaps=15
 - 4. Royal Canin Veterinary Diet: priority=54; customer_impact=50; title_cleanup; rows=5; title identities=4; title issues=8; duplicates=0; Ca/P gaps=4
 - 5. Brit: priority=44; customer_impact=50; title_cleanup; rows=46; title identities=1; title issues=2; duplicates=0; Ca/P gaps=0
 - 6. Hill's Prescription Diet: priority=44; customer_impact=40; title_cleanup; rows=8; title identities=5; title issues=10; duplicates=0; Ca/P gaps=0
@@ -47,16 +47,16 @@ Generated: 2026-06-19T02:29:57.841Z
 - 26. Kudo: priority=13; customer_impact=12; nutrient_backfill; rows=7; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 27. Canagan: priority=13; customer_impact=12; nutrient_backfill; rows=6; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
 - 28. Pedigree: priority=13; customer_impact=12; nutrient_backfill; rows=5; title identities=0; title issues=0; duplicates=0; Ca/P gaps=3
-- 29. Briantos: priority=12; customer_impact=14; dedupe_before_import; rows=2; title identities=2; title issues=5; duplicates=1; Ca/P gaps=0
-- 30. Club 4 Paws: priority=11; customer_impact=14; controlled_import_ready; rows=18; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 29. Club 4 Paws: priority=11; customer_impact=14; controlled_import_ready; rows=18; title identities=0; title issues=0; duplicates=0; Ca/P gaps=0
+- 30. Gemon: priority=11; customer_impact=13; nutrient_backfill; rows=10; title identities=0; title issues=0; duplicates=0; Ca/P gaps=4
 
 ## Next Cleanup Sprint
 
 Work these in order before the next broad customer-facing recommendation test.
 
-1. Royal Canin (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+1. Royal Canin (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 2. Hills (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-3. Josera (dedupe_before_import) - Review duplicate groups first, pick one canonical survivor per formula, then import. Open `data/review/food_v2_duplicate_merge_risk_audit.csv`; Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+3. Josera (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 4. Royal Canin Veterinary Diet (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 5. Brit (title_cleanup) - Clean customer-facing formula names before wider chatbot exposure. Open `data/review/food_v2_title_quality_audit.csv`; Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 
@@ -64,9 +64,9 @@ Work these in order before the next broad customer-facing recommendation test.
 
 These brands are most likely to produce confusing customer recommendations because of visible title, duplicate or nutrition-confidence issues.
 
-- Royal Canin: customer_impact=76; title_risk=20; duplicate_risk=10; nutrition_gap=30; next=data/review/food_v2_duplicate_merge_risk_audit.csv
+- Royal Canin: customer_impact=73; title_risk=20; duplicate_risk=8; nutrition_gap=30; next=data/review/food_v2_title_quality_audit.csv
 - Hills: customer_impact=59; title_risk=24; duplicate_risk=9; nutrition_gap=21; next=data/review/food_v2_title_quality_audit.csv
-- Josera: customer_impact=56; title_risk=9; duplicate_risk=12; nutrition_gap=11; next=data/review/food_v2_duplicate_merge_risk_audit.csv
+- Josera: customer_impact=53; title_risk=9; duplicate_risk=10; nutrition_gap=11; next=data/review/food_v2_title_quality_audit.csv
 - Royal Canin Veterinary Diet: customer_impact=50; title_risk=16; duplicate_risk=6; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
 - Brit: customer_impact=50; title_risk=10; duplicate_risk=10; nutrition_gap=8; next=data/review/food_v2_title_quality_audit.csv
 - Hill's Prescription Diet: customer_impact=40; title_risk=18; duplicate_risk=7; nutrition_gap=12; next=data/review/food_v2_title_quality_audit.csv
@@ -80,22 +80,22 @@ These brands are most likely to produce confusing customer recommendations becau
 ## Title Cleanup Hotspots
 
 - Hills: title_risk=24; title issues=16; identities=8; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Royal Canin: title_risk=20; title issues=12; identities=6; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+- Royal Canin: title_risk=20; title issues=12; identities=6; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Hill's Prescription Diet: title_risk=18; title issues=10; identities=5; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Royal Canin Veterinary Diet: title_risk=16; title issues=8; identities=4; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Brit: title_risk=10; title issues=2; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Purina Pro Plan: title_risk=10; title issues=2; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
-- Josera: title_risk=9; title issues=1; identities=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+- Josera: title_risk=9; title issues=1; identities=1; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Ambrosia: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Happy Dog: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Belcando: title_risk=8; title issues=0; identities=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 
 ## Duplicate Cleanup Hotspots
 
-- Josera: duplicate_risk=12; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
-- Royal Canin: duplicate_risk=10; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
+- Josera: duplicate_risk=10; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Brit: duplicate_risk=10; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Hills: duplicate_risk=9; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
+- Royal Canin: duplicate_risk=8; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.
 - Belcando: duplicate_risk=8; duplicate groups=0; next step: Filter nutrient gaps by brand and backfill kcal, ash, calcium/phosphorus from official pages, PDFs, labels or trusted retailers.
 - Acana: duplicate_risk=8; duplicate groups=1; next step: Filter duplicate audit by brand/canonical identity, choose one customer-facing survivor, then keep other rows as evidence/backfill only.
 - Hill's Prescription Diet: duplicate_risk=7; duplicate groups=0; next step: Filter title audit by brand and rewrite names into Brand + line + life stage/size + protein/flavor + condition.

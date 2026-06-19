@@ -1,13 +1,13 @@
 # Food V2 Duplicate Merge Risk Audit
 
-Generated: 2026-06-19T02:22:23.778Z
+Generated: 2026-06-19T02:33:56.467Z
 
 ## Summary
 
 - Groups analyzed: 337
 - High risk groups: 0
-- Medium risk groups: 6
-- Low risk groups: 75
+- Medium risk groups: 3
+- Low risk groups: 78
 - Hold groups: 256
 - Output CSV: data/review/food_v2_duplicate_merge_risk_audit.csv
 
@@ -20,9 +20,6 @@ Generated: 2026-06-19T02:22:23.778Z
 - Schesir Dry Medium Maintenance Chicken: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Schesir Dry Small Maintenance με κοτόπουλο: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 - Acana Prairie Poultry 9.7kg: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-- Briantos Adult Grain-Free Duck & Potato: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-- Josera Active Nature: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
-- Royal Canin Yorkshire Terrier Adult: multiple_importable_candidates; action=Use conflict check before commit. Import only one survivor for this canonical identity.
 
 ## Operating Rule
 

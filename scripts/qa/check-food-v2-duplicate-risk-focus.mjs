@@ -59,10 +59,14 @@ const officialOverlapRows = duplicateRows.filter(
 const officialSurvivorRows = duplicateRows.filter(
   (row) => row.risk_reason === "official_survivor_with_lower_priority_backfill"
 );
+const exactDuplicateRows = duplicateRows.filter(
+  (row) => row.risk_reason === "duplicate_candidate_same_formula_key"
+);
 const riskyRows = duplicateRows.filter((row) =>
   ["high", "medium"].includes(row.risk_level)
 );
 const royalQueue = queueRows.find((row) => row.brand === "Royal Canin");
+const joseraQueue = queueRows.find((row) => row.brand === "Josera");
 
 if (officialOverlapRows.length === 0) {
   console.error("Expected official/lower-priority evidence overlap rows.");
@@ -71,6 +75,11 @@ if (officialOverlapRows.length === 0) {
 
 if (officialSurvivorRows.length === 0) {
   console.error("Expected official-survivor rows for duplicate candidate source overlaps.");
+  process.exit(1);
+}
+
+if (exactDuplicateRows.length === 0) {
+  console.error("Expected exact duplicate candidate rows to be classified separately.");
   process.exit(1);
 }
 
@@ -107,6 +116,25 @@ if (!royalQueue) {
 if (Number(royalQueue.duplicate_risk_groups) >= 35) {
   console.error(
     `Royal Canin duplicate risk should ignore low evidence overlaps, got ${royalQueue.duplicate_risk_groups}.`
+  );
+  process.exit(1);
+}
+
+if (Number(royalQueue.duplicate_risk_groups) !== 0) {
+  console.error(
+    `Royal Canin exact duplicate candidates should not remain duplicate blockers, got ${royalQueue.duplicate_risk_groups}.`
+  );
+  process.exit(1);
+}
+
+if (!joseraQueue) {
+  console.error("Josera should remain in the brand cleanup queue.");
+  process.exit(1);
+}
+
+if (Number(joseraQueue.duplicate_risk_groups) !== 0) {
+  console.error(
+    `Josera exact duplicate candidates should not remain duplicate blockers, got ${joseraQueue.duplicate_risk_groups}.`
   );
   process.exit(1);
 }
