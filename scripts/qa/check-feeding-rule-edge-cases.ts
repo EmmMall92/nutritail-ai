@@ -109,6 +109,23 @@ const lightSterilisedForGain = rankFoodV2ForPet({
   goal: "general",
 });
 
+const lowFatActiveForGain = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "low-fat-active-gain",
+    display_name: "Large Adult Sport",
+    commercial_tags: ["active", "performance"],
+    kcal_per_100g: 420,
+  },
+  nutrients: {
+    protein_percent: 28,
+    fat_percent: 2.5,
+    fiber_percent: 3,
+  },
+  pet: weightGainHighActivityDog,
+  goal: "general",
+});
+
 assert(
   lightSterilised.bucket === "hold",
   "Light/sterilised formula should be held for a high-activity dog when weight loss is not the goal."
@@ -137,12 +154,20 @@ assert(
   !signalCodes(lightSterilisedForGain).includes("sterilised_fit"),
   "Weight-gain context must not be treated as a weight-control or sterilised fit."
 );
+assert(
+  lowFatActiveForGain.bucket === "hold",
+  "Low-fat formula should be held for active dogs that need weight gain, even when the title says sport."
+);
+assert(
+  signalCodes(lowFatActiveForGain).includes("low_fat_formula_for_active_gain_pet"),
+  "Active weight-gain low-fat mismatch should emit a clear blocking signal."
+);
 
 console.log(
   JSON.stringify(
     {
-      checked: 3,
-      passed: 3,
+      checked: 4,
+      passed: 4,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -157,6 +182,11 @@ console.log(
         bucket: lightSterilisedForGain.bucket,
         score: lightSterilisedForGain.total_score,
         signals: signalCodes(lightSterilisedForGain),
+      },
+      low_fat_active_for_gain: {
+        bucket: lowFatActiveForGain.bucket,
+        score: lowFatActiveForGain.total_score,
+        signals: signalCodes(lowFatActiveForGain),
       },
     },
     null,

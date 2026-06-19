@@ -93,6 +93,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Light/sterilised energy positioning is a poor first choice for a high-activity pet.",
   },
+  low_fat_formula_for_active_gain_pet: {
+    code: "low_fat_formula_for_active_gain_pet",
+    severity: "block",
+    fallbackMessage:
+      "Low-fat formulas are not a credible first pick for active weight-gain cases.",
+  },
   senior_active_energy_mismatch: {
     code: "senior_active_energy_mismatch",
     severity: "block",

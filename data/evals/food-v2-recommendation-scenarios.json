@@ -176,6 +176,22 @@
       "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick"]
     },
     {
+      "label": "High activity dog needs weight gain",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Small athletic mixed breed",
+        "age": 3,
+        "weight": 6,
+        "activityLevel": "high",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": ["salmon"],
+        "healthIssues": ["daily training", "needs to gain weight", "skin itch"]
+      },
+      "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick", "no_low_fat_active_gain_top_picks"]
+    },
+    {
       "label": "Low activity weight-loss dog",
       "goal": "weight_control",
       "pet": {
