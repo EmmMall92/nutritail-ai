@@ -54,6 +54,7 @@ type RecommendationSummaryOptions = {
   excludedBrands?: string[];
   locale?: "el" | "en";
   maxItemsPerSection?: number;
+  compactForCards?: boolean;
 };
 
 const GOAL_LABELS_EN: Record<FoodV2RecommendationGoal, string> = {
@@ -388,6 +389,50 @@ function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
     : "This is nutrition guidance and does not replace veterinary advice.";
 }
 
+function compactCardsIntro({
+  goal,
+  goalLabel,
+  top,
+  locale,
+}: {
+  goal: FoodV2RecommendationGoal;
+  goalLabel: string;
+  top: FoodV2ChatbotRecommendationItem;
+  locale: "el" | "en";
+}) {
+  const name = foodName(top);
+  const reason = customerReason(top, goal, locale);
+  const snapshot = nutritionSnapshot(top, locale);
+
+  if (locale === "el") {
+    return cleanOutput(
+      [
+        "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
+        `Στόχος: ${goalLabel}.`,
+        `Πρώτη κατεύθυνση: ${name}, γιατί ${reason}.`,
+        snapshot,
+        "Πάτησε μία κάρτα για να υπολογίσουμε περίπου γραμμάρια/ημέρα.",
+        vetSafetyLine(locale, goal),
+      ]
+        .filter(Boolean)
+        .join("\n")
+    );
+  }
+
+  return cleanOutput(
+    [
+      "Done. I placed the best options below as cards.",
+      `Goal: ${goalLabel}.`,
+      `First direction: ${name}, because it ${reason}.`,
+      snapshot,
+      "Tap one card to estimate grams/day.",
+      vetSafetyLine(locale, goal),
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+}
+
 function cleanOutput(text: string) {
   return text
     .split(/\r?\n/)
@@ -417,6 +462,16 @@ export function formatFoodV2ChatbotRecommendationSummary(
       : locale === "el"
         ? "Προτεινόμενες τροφές:"
         : "Recommended foods:";
+  const topForCards = premium[0] ?? value[0];
+
+  if (options.compactForCards && topForCards) {
+    return compactCardsIntro({
+      goal,
+      goalLabel: goalLabel ?? goal,
+      top: topForCards,
+      locale,
+    });
+  }
 
   if (premium.length === 0 && value.length === 0) {
     return cleanOutput([

@@ -50,6 +50,18 @@ const greekSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
   maxItemsPerSection: 2,
 });
 
+const compactCardsSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
+  locale: "en",
+  maxItemsPerSection: 2,
+  compactForCards: true,
+});
+
+const compactGreekCardsSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
+  locale: "el",
+  maxItemsPerSection: 2,
+  compactForCards: true,
+});
+
 const forbiddenTerms = [
   "needs_review",
   "needs review",
@@ -70,7 +82,7 @@ const forbiddenTerms = [
   "Ο‡",
 ];
 
-const lowerSample = `${sample}\n${greekSample}`.toLowerCase();
+const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}`.toLowerCase();
 const leakedTerms = forbiddenTerms.filter((term) =>
   lowerSample.includes(term.toLowerCase())
 );
@@ -80,6 +92,8 @@ if (leakedTerms.length > 0) {
   console.error(leakedTerms.join(", "));
   console.error(sample);
   console.error(greekSample);
+  console.error(compactCardsSample);
+  console.error(compactGreekCardsSample);
   process.exit(1);
 }
 
@@ -101,12 +115,38 @@ if (!greekSample.includes("Επόμενο βήμα")) {
   process.exit(1);
 }
 
+if (!compactCardsSample.includes("I placed the best options below as cards")) {
+  console.error("Compact card-facing recommendation should point to the cards.");
+  console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
+  console.error("Compact card-facing recommendation should include a clear card action.");
+  console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (compactCardsSample.includes("Best nutrition fits:") || /\n1\./.test(compactCardsSample)) {
+  console.error("Compact card-facing recommendation should not duplicate the card list.");
+  console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (!compactGreekCardsSample.includes("κάρτες από κάτω")) {
+  console.error("Compact Greek card-facing recommendation should point to the cards.");
+  console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 
 if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
   console.error("Customer-facing recommendation should not expose raw internal score labels.");
   console.error(sample);
   console.error(greekSample);
+  console.error(compactCardsSample);
+  console.error(compactGreekCardsSample);
   process.exit(1);
 }
 
