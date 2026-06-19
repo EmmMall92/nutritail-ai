@@ -29,6 +29,7 @@ export type SeniorFitInput = {
     senior: boolean;
     active: boolean;
     weightControl: boolean;
+    mobility: boolean;
   };
 };
 
@@ -158,6 +159,15 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
     });
   }
 
+  if (hasMobilityContext && positioning.mobility) {
+    signals.push({
+      type: "boost",
+      code: "senior_joint_mobility_positioning",
+      points: 22,
+      message: "Joint or mobility positioning is useful for a senior pet with mobility context.",
+    });
+  }
+
   if (
     hasNumber(nutrients.epa_percent) ||
     hasNumber(nutrients.epa_dha_percent) ||
@@ -169,6 +179,13 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
       code: "senior_mobility_support_signal",
       points: hasMobilityContext ? 10 : 6,
       message: "Declared mobility-support nutrients improve senior fit.",
+    });
+  } else if (hasMobilityContext && !positioning.mobility) {
+    signals.push({
+      type: "caution",
+      code: "senior_joint_context_without_mobility_signal",
+      points: -28,
+      message: "Joint-support senior cases are stronger when the food has mobility positioning or declared EPA/glucosamine/chondroitin.",
     });
   }
 

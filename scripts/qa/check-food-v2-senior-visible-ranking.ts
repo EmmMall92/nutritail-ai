@@ -46,6 +46,13 @@ const pet = {
   healthIssues: ["senior", "low activity"],
 };
 
+const jointPet = {
+  ...pet,
+  breed: "Mixed breed",
+  weight: 18,
+  healthIssues: ["senior", "joint support"],
+};
+
 const adultHiddenSenior = rankFoodV2ForPet({
   food: makeFood({}),
   nutrients,
@@ -103,6 +110,83 @@ if (visibleSenior.total_score <= adultHiddenSenior.total_score) {
       2
     )
   );
+  process.exit(1);
+}
+
+const plainSenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Chicken",
+    display_name: "Senior Chicken",
+    life_stage: "senior",
+    dog_size: "medium",
+    commercial_tags: ["senior"],
+    formula_key: "test-brand|senior-chicken|dog|dry",
+  }),
+  nutrients,
+  pet: jointPet,
+  goal: "senior",
+});
+
+const mobilitySenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Joint Mobility Chicken",
+    display_name: "Senior Joint Mobility Chicken",
+    life_stage: "senior",
+    dog_size: "medium",
+    commercial_tags: ["senior", "mobility"],
+    medical_tags: ["mobility"],
+    formula_key: "test-brand|senior-joint-mobility|dog|dry",
+  }),
+  nutrients: {
+    ...nutrients,
+    epa_dha_percent: 0.3,
+    glucosamine_mgkg: 450,
+    chondroitin_mgkg: 350,
+  },
+  pet: jointPet,
+  goal: "senior",
+});
+
+if (mobilitySenior.total_score <= plainSenior.total_score) {
+  console.error("Senior joint/mobility food should outrank plain senior food for joint-support context.");
+  console.error(
+    JSON.stringify(
+      {
+        plainSenior: {
+          total_score: plainSenior.total_score,
+          fit_score: plainSenior.fit_score,
+          cautions: plainSenior.cautions,
+        },
+        mobilitySenior: {
+          total_score: mobilitySenior.total_score,
+          fit_score: mobilitySenior.fit_score,
+          reasons: mobilitySenior.reasons,
+        },
+      },
+      null,
+      2
+    )
+  );
+  process.exit(1);
+}
+
+if (
+  !mobilitySenior.signals.some(
+    (signal) => signal.code === "senior_joint_mobility_positioning"
+  )
+) {
+  console.error("Expected senior_joint_mobility_positioning for senior joint context.");
+  console.error(mobilitySenior.signals);
+  process.exit(1);
+}
+
+if (
+  !plainSenior.signals.some(
+    (signal) => signal.code === "senior_joint_context_without_mobility_signal"
+  )
+) {
+  console.error("Expected senior_joint_context_without_mobility_signal for plain senior joint context.");
+  console.error(plainSenior.signals);
   process.exit(1);
 }
 
