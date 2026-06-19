@@ -122,6 +122,18 @@ const checks = [
     expected: "You can start with only the current weight, for example 7 kg.",
   },
   {
+    label: "Analysis in-progress message is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected:
+      'botText(\n            "Περίμενε λίγο, ολοκληρώνω την ανάλυση.",\n            "Hold on a moment, I am finishing the analysis."',
+  },
+  {
+    label: "Analysis complete message is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected:
+      'botText(\n          "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να ξεκινήσεις ξανά.",\n          "The analysis is complete. You can save it or press Restart."',
+  },
+  {
     label: "Printable timeline uses customer-facing food recommendation label",
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "Food recommendation:",
@@ -183,6 +195,18 @@ const forbiddenChecks = [
     label: "Printable timeline does not expose legacy food analysis wording",
     file: "app/print/pet-timeline/[id]/page.tsx",
     forbidden: "Legacy Food Analysis Signals",
+  },
+  {
+    label: "Analysis in-progress message is not raw English-only",
+    file: "app/account/chatbot/page.tsx",
+    forbidden:
+      'createMessage("bot", "Hold on a moment, I am finishing the analysis.")',
+  },
+  {
+    label: "Analysis complete message is not raw English-only",
+    file: "app/account/chatbot/page.tsx",
+    forbidden:
+      'createMessage(\n        "bot",\n        "The analysis is complete. You can save it or press Restart."',
   },
 ];
 
