@@ -75,6 +75,129 @@ const valueGoalSample = formatFoodV2ChatbotRecommendationSummary(
   }
 );
 
+const coreScenarioSamples = [
+  {
+    label: "sterilised small dog",
+    expectedGoalLabel: "sterilised pet",
+    text: sample,
+  },
+  {
+    label: "chicken allergy",
+    expectedGoalLabel: "ingredient avoidance",
+    text: formatFoodV2ChatbotRecommendationSummary(
+      {
+        ...sampleResponse,
+        goal: "allergy" as const,
+        premium: [
+          {
+            ...sampleResponse.premium[0],
+            brand: "Ambrosia",
+            display_name: "Mediterranean Diet Grain Free Adult Fresh Sardine & Tuna",
+            ranking: {
+              ...sampleResponse.premium[0].ranking,
+              reasons: ["Allergens were not detected.", "Excluded ingredients are respected."],
+              cautions: ["Data is usable but still needs review."],
+            },
+          },
+        ],
+      },
+      { locale: "en", maxItemsPerSection: 2 }
+    ),
+  },
+  {
+    label: "urinary cat",
+    expectedGoalLabel: "urinary support",
+    text: formatFoodV2ChatbotRecommendationSummary(
+      {
+        ...sampleResponse,
+        goal: "urinary" as const,
+        premium: [
+          {
+            ...sampleResponse.premium[0],
+            brand: "Monge",
+            display_name: "VetSolution Urinary Struvite Feline",
+            ranking: {
+              ...sampleResponse.premium[0].ranking,
+              reasons: ["Urinary subtype matches the request."],
+              cautions: ["Magnesium data is missing for urinary review."],
+            },
+          },
+        ],
+      },
+      { locale: "en", maxItemsPerSection: 2 }
+    ),
+  },
+  {
+    label: "renal senior cat",
+    expectedGoalLabel: "renal support",
+    text: formatFoodV2ChatbotRecommendationSummary(
+      {
+        ...sampleResponse,
+        goal: "renal" as const,
+        premium: [
+          {
+            ...sampleResponse.premium[0],
+            brand: "Monge",
+            display_name: "VetSolution Renal Feline",
+            ranking: {
+              ...sampleResponse.premium[0].ranking,
+              reasons: ["Renal support positioning."],
+              cautions: ["Phosphorus data is missing for renal review."],
+            },
+          },
+        ],
+      },
+      { locale: "en", maxItemsPerSection: 2 }
+    ),
+  },
+  {
+    label: "large breed puppy",
+    expectedGoalLabel: "growth",
+    text: formatFoodV2ChatbotRecommendationSummary(
+      {
+        ...sampleResponse,
+        goal: "growth" as const,
+        premium: [
+          {
+            ...sampleResponse.premium[0],
+            brand: "Acana",
+            display_name: "Puppy Large Breed",
+            ranking: {
+              ...sampleResponse.premium[0].ranking,
+              reasons: ["Large-breed puppy mineral review is available."],
+              cautions: ["Calcium/phosphorus ratio needs closer review for growth."],
+            },
+          },
+        ],
+      },
+      { locale: "en", maxItemsPerSection: 2 }
+    ),
+  },
+  {
+    label: "active dog",
+    expectedGoalLabel: "general fit",
+    text: formatFoodV2ChatbotRecommendationSummary(
+      {
+        ...sampleResponse,
+        goal: "general" as const,
+        premium: [
+          {
+            ...sampleResponse.premium[0],
+            brand: "Josera",
+            display_name: "High Energy Adult",
+            ranking: {
+              ...sampleResponse.premium[0].ranking,
+              reasons: ["High activity energy support."],
+              cautions: [],
+            },
+          },
+        ],
+      },
+      { locale: "en", maxItemsPerSection: 2 }
+    ),
+  },
+];
+
 const forbiddenTerms = [
   "needs_review",
   "needs review",
@@ -98,7 +221,9 @@ const forbiddenTerms = [
   "Ο‡",
 ];
 
-const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}`.toLowerCase();
+const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${coreScenarioSamples
+  .map((scenario) => scenario.text)
+  .join("\n")}`.toLowerCase();
 const leakedTerms = forbiddenTerms.filter((term) =>
   lowerSample.includes(term.toLowerCase())
 );
@@ -112,6 +237,20 @@ if (leakedTerms.length > 0) {
   console.error(compactGreekCardsSample);
   console.error(valueGoalSample);
   process.exit(1);
+}
+
+for (const scenario of coreScenarioSamples) {
+  if (!scenario.text.includes(`Goal: ${scenario.expectedGoalLabel}`)) {
+    console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
+    console.error(scenario.text);
+    process.exit(1);
+  }
+
+  if (!scenario.text.includes("Next step: choose one food card")) {
+    console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
+    console.error(scenario.text);
+    process.exit(1);
+  }
 }
 
 if (!sample.includes("Recommended foods") || !sample.includes("Happy Dog")) {
