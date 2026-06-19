@@ -189,16 +189,22 @@ const missingCardFlowCopy = requiredCardFlowCopy.filter(
 );
 
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
+const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
 const forbiddenComposerCopy = [
   "score: food.ranking?.total_score",
   "(${score}/100)",
+  "matches with score",
+  "ταιριάζει με score",
+  "high confidence",
+  "medium confidence",
+  "low confidence",
 ];
 const leakedComposerCopy = forbiddenComposerCopy.filter((term) =>
-  responseComposer.includes(term)
+  `${responseComposer}\n${responseAdapter}`.includes(term)
 );
 
 if (leakedComposerCopy.length > 0) {
-  console.error("Customer-facing response composer still exposes internal score copy:");
+  console.error("Customer-facing recommendation copy still exposes internal score/confidence wording:");
   console.error(leakedComposerCopy.join(", "));
   process.exit(1);
 }
