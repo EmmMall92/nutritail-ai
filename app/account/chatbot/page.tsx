@@ -2637,7 +2637,6 @@ export default function AccountChatbotPage() {
     const species = parseSpeciesInput(text);
 
     setSelectedPetId(null);
-    setPendingCompareQueries([]);
     setFollowUpMode(null);
     setRecommendationMode("default");
     setAnalysisMetadata({});

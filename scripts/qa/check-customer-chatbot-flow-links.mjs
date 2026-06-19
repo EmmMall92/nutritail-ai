@@ -186,6 +186,22 @@ const forbiddenChecks = [
   },
 ];
 
+async function runPreserveCompareIntentCheck() {
+  const file = "app/account/chatbot/page.tsx";
+  const content = await readFile(file, "utf8");
+  const start = content.indexOf("function startNewPetFromPetChoice");
+  const end = content.indexOf("async function extractIntakeFactsFromMessage", start);
+  const body = start >= 0 && end > start ? content.slice(start, end) : "";
+
+  return {
+    label: "Starting a new pet preserves pending compare intent",
+    file,
+    ok:
+      body.includes("function startNewPetFromPetChoice") &&
+      !body.includes("setPendingCompareQueries([])"),
+  };
+}
+
 async function runCheck(check) {
   const content = await readFile(check.file, "utf8");
   const ok = content.includes(check.expected);
@@ -226,6 +242,8 @@ async function main() {
   for (const check of forbiddenChecks) {
     rows.push(await runForbiddenCheck(check));
   }
+
+  rows.push(await runPreserveCompareIntentCheck());
 
   const passed = rows.filter((row) => row.ok).length;
   const failed = rows.length - passed;
