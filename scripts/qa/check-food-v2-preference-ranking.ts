@@ -390,6 +390,18 @@ if (sterilisedLeanRanking.total_score <= sterilisedRicherRanking.total_score) {
   process.exit(1);
 }
 
+if (sterilisedRicherRanking.bucket === "hold") {
+  console.error("Mildly richer but visibly sterilised foods should remain selectable candidates.");
+  console.error(sterilisedRicherRanking);
+  process.exit(1);
+}
+
+if (sterilisedLeanRanking.total_score - sterilisedRicherRanking.total_score > 30) {
+  console.error("Mildly richer sterilised foods should not be buried far below lean sterilised options.");
+  console.error({ sterilisedLeanRanking, sterilisedRicherRanking });
+  process.exit(1);
+}
+
 if (
   !sterilisedLeanRanking.signals.some(
     (signal) => signal.code === "sterilised_lower_fat_density"
