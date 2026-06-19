@@ -1,6 +1,6 @@
 # Dog Chatbot Golden Coverage Audit
 
-Generated: 2026-06-19T03:23:34.694Z
+Generated: 2026-06-19T12:18:56.975Z
 
 ## Summary
 
@@ -39,6 +39,7 @@ Generated: 2026-06-19T03:23:34.694Z
 - medicalNoTreatment: 103
 - puppyGrowth: 25
 - obesityLogic: 17
+- activeFit: 11
 - allergyReject: 10
 - largeBreedPuppy: 9
 

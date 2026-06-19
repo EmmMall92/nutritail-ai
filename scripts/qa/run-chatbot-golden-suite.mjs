@@ -69,6 +69,39 @@ const checks = [
   },
 ];
 
+const objectiveCoverage = [
+  {
+    objective: "1. Recommendation accuracy",
+    evidence:
+      "Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-breed puppy, and active-dog logic.",
+  },
+  {
+    objective: "2. Customer-facing answer quality",
+    evidence:
+      "Customer recommendation copy and customer chatbot flow links guard against back-office wording and verify food-card action flow.",
+  },
+  {
+    objective: "3. 200 live chatbot cases",
+    evidence:
+      "Dog edge fixture and dog golden coverage audit prove ids 1-200 exist, are unique, and include required safety/recommendation checks.",
+  },
+  {
+    objective: "4. Brand data cleanup",
+    evidence:
+      "Title/source/duplicate/product-form QA scripts keep customer-facing food names, duplicate risks, and non-complete-food guards visible.",
+  },
+  {
+    objective: "5. Food Intelligence",
+    evidence:
+      "Food Intelligence use-case QA checks strengths, cautions, best use cases, and not-ideal cases for major nutrition contexts.",
+  },
+  {
+    objective: "6. End-to-end user experience",
+    evidence:
+      "Customer flow links and live route checks cover login/account chatbot, report, timeline, progress, and food-selection next steps.",
+  },
+];
+
 function runCheck(check) {
   return new Promise((resolve) => {
     const startedAt = Date.now();
@@ -148,6 +181,12 @@ async function main() {
     "## Coverage",
     "",
     ...checks.map((check) => `- ${check.name}: ${check.covers}`),
+    "",
+    "## Objective Coverage",
+    "",
+    ...objectiveCoverage.map(
+      (item) => `- ${item.objective}: ${item.evidence}`
+    ),
     "",
     "## Results",
     "",

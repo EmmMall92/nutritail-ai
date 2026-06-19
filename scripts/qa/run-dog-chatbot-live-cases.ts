@@ -40,6 +40,7 @@ type DogQaCase = {
     puppyGrowth?: boolean;
     largeBreedPuppy?: boolean;
     obesityLogic?: boolean;
+    activeFit?: boolean;
     medicalNoTreatment?: boolean;
     foodV2Candidates?: boolean;
   };
@@ -115,7 +116,7 @@ const CASES: DogQaCase[] = [
   { id: 6, message: "Έχω Chihuahua 2kg, 8 ετών, δεν μασάει καλά μεγάλες κροκέτες.", goal: "senior", safety: "normal", expected: { species: "dog", weightKg: 2, ageYears: 8 }, checks: { foodV2Candidates: true } },
   { id: 7, message: "Έχω Golden Retriever 9 ετών, 34kg, έχει αρθρώσεις και παίρνει βάρος.", goal: "senior", safety: "vet_referral", expected: { species: "dog", weightKg: 34, ageYears: 9, weightGoal: "loss" }, checks: { obesityLogic: true, medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 8, message: "Έχω γαλλικό bulldog 12kg, 3 ετών, έχει ευαίσθητο στομάχι και αέρια.", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog", weightKg: 12, ageYears: 3 }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
-  { id: 9, message: "Έχω Border Collie 20kg, 4 ετών, πολύ δραστήριο, κάνει agility.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 20, ageYears: 4, activityLevel: "high" }, checks: { foodV2Candidates: true } },
+  { id: 9, message: "Έχω Border Collie 20kg, 4 ετών, πολύ δραστήριο, κάνει agility.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 20, ageYears: 4, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
   { id: 10, message: "Έχω Maltese 5kg, 5 ετών, έχει δακρύρροια και ευαισθησία στο κοτόπουλο.", goal: "allergy", safety: "vet_referral", expected: { species: "dog", weightKg: 5, ageYears: 5, allergies: ["chicken"], excludedIngredients: ["chicken"] }, checks: { allergyReject: ["chicken"], medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 11, message: "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο. Είναι 12kg, 4 ετών.", goal: "allergy", safety: "vet_referral", expected: { species: "dog", weightKg: 12, ageYears: 4, allergies: ["chicken"], excludedIngredients: ["chicken"] }, checks: { allergyReject: ["chicken"], medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 12, message: "Έχω σκύλο 25kg με χρόνια διάρροια. Τι τροφή να πάρω;", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog", weightKg: 25 }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
@@ -148,9 +149,9 @@ const CASES: DogQaCase[] = [
   { id: 39, message: "Έχω κουτάβι που τρώει πολύ γρήγορα και φουσκώνει.", goal: "growth", safety: "emergency", expected: { species: "dog" }, checks: { puppyGrowth: true, medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 40, message: "Έχω κουτάβι με ευαίσθητο έντερο μετά από αλλαγή τροφής.", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog" }, checks: { puppyGrowth: true, medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 41, message: "Έχω ενήλικο σκύλο 8kg, στειρωμένο, μένει μέσα στο σπίτι.", goal: "sterilised", safety: "normal", expected: { species: "dog", weightKg: 8, neutered: true, activityLevel: "low" }, checks: { obesityLogic: true, foodV2Candidates: true } },
-  { id: 42, message: "Έχω ενήλικο σκύλο 22kg, κάνει καθημερινά μεγάλες βόλτες.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 22, activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 43, message: "Έχω κυνηγόσκυλο 25kg, δουλεύει έντονα.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 25, activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 44, message: "Έχω σκύλο φύλακα 40kg, ζει έξω και έχει πολλή δραστηριότητα.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 40, activityLevel: "high" }, checks: { foodV2Candidates: true } },
+  { id: 42, message: "Έχω ενήλικο σκύλο 22kg, κάνει καθημερινά μεγάλες βόλτες.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 22, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 43, message: "Έχω κυνηγόσκυλο 25kg, δουλεύει έντονα.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 25, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 44, message: "Έχω σκύλο φύλακα 40kg, ζει έξω και έχει πολλή δραστηριότητα.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 40, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
   { id: 45, message: "Έχω σκύλο 6kg, καναπέ, δεν κινείται πολύ.", goal: "weight_control", safety: "normal", expected: { species: "dog", weightKg: 6, activityLevel: "low" }, checks: { obesityLogic: true, foodV2Candidates: true } },
   { id: 46, message: "Έχω σκύλο 50kg, γιγαντόσωμο, 4 ετών.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 50, ageYears: 4 }, checks: { foodV2Candidates: true } },
   { id: 47, message: "Έχω σκύλο 16kg, κανονικό βάρος, θέλω συντήρηση.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 16, weightGoal: "maintain" }, checks: { foodV2Candidates: true } },
@@ -211,20 +212,20 @@ const CASES: DogQaCase[] = [
 
 const EXTRA_CASES_101_200: DogQaCase[] = [
   { id: 101, message: "Έχω Husky 2 ετών, 25kg, τρώει ελάχιστα το καλοκαίρι.", goal: "general", safety: "vet_referral", expected: { species: "dog", weightKg: 25, ageYears: 2 }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
-  { id: 102, message: "Έχω Husky 25kg που δουλεύει σε βουνό.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 25, activityLevel: "high" }, checks: { foodV2Candidates: true } },
+  { id: 102, message: "Έχω Husky 25kg που δουλεύει σε βουνό.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 25, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
   { id: 103, message: "Έχω Akita 38kg με ευαισθησία στο κοτόπουλο.", goal: "allergy", safety: "vet_referral", expected: { species: "dog", weightKg: 38, excludedIngredients: ["chicken"] }, checks: { allergyReject: ["chicken"], medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 104, message: "Έχω Boxer 28kg με χρόνια αέρια.", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog", weightKg: 28 }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 105, message: "Έχω Rottweiler 45kg 8 μηνών.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 45, ageYears: 0.67 }, checks: { puppyGrowth: true, largeBreedPuppy: true, foodV2Candidates: true } },
   { id: 106, message: "Έχω Cane Corso 55kg 12 μηνών.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 55, ageYears: 1 }, checks: { puppyGrowth: true, largeBreedPuppy: true, foodV2Candidates: true } },
   { id: 107, message: "Έχω Great Dane 60kg 7 μηνών.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 60, ageYears: 0.58 }, checks: { puppyGrowth: true, largeBreedPuppy: true, foodV2Candidates: true } },
   { id: 108, message: "Έχω Saint Bernard 65kg κουτάβι.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 65 }, checks: { puppyGrowth: true, largeBreedPuppy: true, foodV2Candidates: true } },
-  { id: 109, message: "Έχω Doberman 35kg πολύ αθλητικό.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 35, activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 110, message: "Έχω Belgian Malinois που εκπαιδεύεται καθημερινά.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 111, message: "Έχω σκύλο 18kg που κυνηγάει και καίει πολλές θερμίδες.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 18, activityLevel: "high" }, checks: { foodV2Candidates: true } },
+  { id: 109, message: "Έχω Doberman 35kg πολύ αθλητικό.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 35, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 110, message: "Έχω Belgian Malinois που εκπαιδεύεται καθημερινά.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 111, message: "Έχω σκύλο 18kg που κυνηγάει και καίει πολλές θερμίδες.", goal: "general", safety: "normal", expected: { species: "dog", weightKg: 18, activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
   { id: 112, message: "Έχω σκύλο 20kg που ζει αποκλειστικά σε διαμέρισμα.", goal: "weight_control", safety: "normal", expected: { species: "dog", weightKg: 20, activityLevel: "low" }, checks: { obesityLogic: true, foodV2Candidates: true } },
-  { id: 113, message: "Έχω σκύλο που κάνει agility 4 φορές την εβδομάδα.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 114, message: "Έχω σκύλο που κολυμπάει καθημερινά.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { foodV2Candidates: true } },
-  { id: 115, message: "Έχω σκύλο που τρέχει μαζί μου 10km.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { foodV2Candidates: true } },
+  { id: 113, message: "Έχω σκύλο που κάνει agility 4 φορές την εβδομάδα.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 114, message: "Έχω σκύλο που κολυμπάει καθημερινά.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
+  { id: 115, message: "Έχω σκύλο που τρέχει μαζί μου 10km.", goal: "general", safety: "normal", expected: { species: "dog", activityLevel: "high" }, checks: { activeFit: true, foodV2Candidates: true } },
   { id: 116, message: "Έχω σκύλο που μόλις στειρώθηκε.", goal: "sterilised", safety: "normal", expected: { species: "dog", neutered: true }, checks: { obesityLogic: true, foodV2Candidates: true } },
   { id: 117, message: "Έχω σκύλο που πήρε 3kg μετά τη στείρωση.", goal: "weight_control", safety: "normal", expected: { species: "dog", neutered: true, weightGoal: "loss" }, checks: { obesityLogic: true, foodV2Candidates: true } },
   { id: 118, message: "Έχω σκύλο που χάνει βάρος χωρίς λόγο.", goal: "general", safety: "vet_referral", expected: { species: "dog", weightGoal: "gain" }, checks: { medicalNoTreatment: true } },
@@ -930,7 +931,7 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
     }
   }
 
-  if (testCase.expected.activityLevel === "high" && testCase.goal === "general" && top.length > 0) {
+  if ((testCase.checks?.activeFit || testCase.expected.activityLevel === "high") && testCase.goal === "general" && top.length > 0) {
     const first = top[0];
     const lowEnergyOrDietPositioned =
       /sterilised|sterilized|light|weight|satiety|obesity|renal|urinary/i.test(itemDecisionText(first)) ||
@@ -963,7 +964,7 @@ function renderReport(results: CaseResult[]) {
     `- Passed: ${passed}`,
     `- Needs review: ${review}`,
     "",
-    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and high-activity mismatch guards.",
+    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity mismatch guards.",
     "",
     results.some((item) => item.extractionSource === "openai")
       ? "OpenAI fact extraction was checked for each case."

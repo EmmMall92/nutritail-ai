@@ -80,6 +80,7 @@ function missingRequiredCoverage(coverageCases) {
     "puppyGrowth",
     "largeBreedPuppy",
     "obesityLogic",
+    "activeFit",
     "medicalNoTreatment",
     "foodV2Candidates",
   ];
