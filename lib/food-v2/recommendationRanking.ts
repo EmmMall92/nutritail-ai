@@ -535,6 +535,38 @@ function hasUrinaryContext(pet: FoodV2RankingInput["pet"]) {
   ]);
 }
 
+function hasSkinCoatContext(pet: FoodV2RankingInput["pet"]) {
+  return hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+    "skin",
+    "coat",
+    "itch",
+    "itchy",
+    "scratching",
+    "derma",
+    "dermatitis",
+    "ear infection",
+    "otitis",
+    "\u03b4\u03b5\u03c1\u03bc",
+    "\u03c6\u03b1\u03b3\u03bf\u03c5\u03c1",
+    "\u03ba\u03bd\u03b7\u03c3",
+    "\u03c9\u03c4\u03b9\u03c4",
+  ]);
+}
+
+function hasSkinCoatPositioning(foodText: string) {
+  return hasAny(foodText, [
+    "skin",
+    "coat",
+    "derma",
+    "dermatosis",
+    "salmon",
+    "fish",
+    "omega",
+    "epa",
+    "dha",
+  ]);
+}
+
 function hasPancreatitisContext(values: string[] | undefined) {
   return hasAny(normalizeText((values ?? []).join(" ")), [
     "pancreatitis",
@@ -1063,6 +1095,34 @@ function scoreFit(input: FoodV2RankingInput) {
       preferredProteins: pet.preferredProteins,
     })
   );
+
+  if (hasSkinCoatContext(pet)) {
+    const hasDeclaredOmegaSupport =
+      hasNumber(nutrients.omega3_percent) ||
+      hasNumber(nutrients.epa_percent) ||
+      hasNumber(nutrients.dha_percent) ||
+      hasNumber(nutrients.epa_dha_percent);
+    const skinCoatPositioning = hasSkinCoatPositioning(haystack);
+
+    if (skinCoatPositioning || hasDeclaredOmegaSupport) {
+      score += 16;
+      addSignal(
+        signals,
+        "boost",
+        "skin_coat_omega_fit",
+        16,
+        "Fish, omega or skin/coat positioning supports a skin-coat shortlist."
+      );
+    } else if (goal === "allergy") {
+      addSignal(
+        signals,
+        "caution",
+        "skin_coat_context_without_visible_support",
+        -8,
+        "Skin-coat context is stronger with visible fish, omega or skin-support positioning."
+      );
+    }
+  }
 
   if (goal === "sensitive_digestion") {
     const hasDigestiveFit = hasSensitiveDigestivePositioning(haystack);
