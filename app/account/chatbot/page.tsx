@@ -4738,8 +4738,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  <span className="mt-3 text-xs text-gray-500">
+                  <span className="mt-3 text-xs font-medium text-gray-600">
                     {getRecommendationChoiceActionHint(choice, chatLanguage)}
+                  </span>
+                  <span className="mt-1 text-xs font-semibold text-emerald-800">
+                    {botText(
+                      "Πάτησε για να υπολογίσεις ποσότητα και να κρατήσεις αυτή την τροφή.",
+                      "Tap to calculate grams and keep this food in the plan."
+                    )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Υπολόγισε γραμμάρια", "Estimate grams")}
