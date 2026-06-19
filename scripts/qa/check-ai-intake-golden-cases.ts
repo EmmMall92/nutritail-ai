@@ -73,6 +73,36 @@ function checkUiHelpers() {
     failures.push("taste preferences: salmon must not appear in preferredProteins");
   }
 
+  const mixedPreferences = parseTastePreferences(
+    "\u03c4\u03bf\u03c5 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03c1\u03c9\u03b5\u03b9 \u03b1\u03c1\u03bd\u03b9 \u03ba\u03b1\u03b9 \u03bc\u03bf\u03c3\u03c7\u03b1\u03c1\u03b9"
+  );
+
+  if (!mixedPreferences.preferredProteins.includes("chicken")) {
+    failures.push("mixed Greek preferences: expected chicken in preferredProteins");
+  }
+
+  if (!mixedPreferences.excludedIngredients.includes("lamb")) {
+    failures.push("mixed Greek preferences: expected lamb in excludedIngredients");
+  }
+
+  if (!mixedPreferences.excludedIngredients.includes("beef")) {
+    failures.push("mixed Greek preferences: expected beef in excludedIngredients");
+  }
+
+  const englishAvoidance = parseTastePreferences("likes salmon, no chicken");
+
+  if (!englishAvoidance.preferredProteins.includes("salmon")) {
+    failures.push("English avoidance: expected salmon in preferredProteins");
+  }
+
+  if (!englishAvoidance.excludedIngredients.includes("chicken")) {
+    failures.push("English avoidance: expected chicken in excludedIngredients");
+  }
+
+  if (englishAvoidance.preferredProteins.includes("chicken")) {
+    failures.push("English avoidance: chicken must not appear in preferredProteins");
+  }
+
   return {
     id: "ui_helper_regressions",
     status: failures.length === 0 ? "pass" : "fail",
