@@ -412,6 +412,52 @@ if (
   process.exit(1);
 }
 
+const visibleMiniButMetadataSmallFood = food({
+  id: "visible-mini-metadata-small",
+  formula_key: "qa|visible-mini-metadata-small|dog|dry",
+  display_name: "N&D Quinoa Grain Free Neutered Duck Adult Mini",
+  dog_size: "small",
+  commercial_tags: ["sterilised"],
+  ingredients: ["duck", "quinoa", "pea fiber"],
+  primary_animal_proteins: ["duck"],
+  kcal_per_100g: 344.4,
+});
+const visibleMiniForTenKgRanking = rankFoodV2ForPet({
+  food: visibleMiniButMetadataSmallFood,
+  nutrients: {
+    ...nutrients(visibleMiniButMetadataSmallFood),
+    protein_percent: 30,
+    fat_percent: 11,
+    fiber_percent: 5.7,
+  },
+  pet: {
+    ...pet,
+    weight: 10,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+
+if (visibleMiniForTenKgRanking.bucket !== "hold") {
+  console.error("Visible Mini title should be held for a 10kg sterilised dog even if metadata says small.");
+  console.error(visibleMiniForTenKgRanking);
+  process.exit(1);
+}
+
+if (
+  !visibleMiniForTenKgRanking.signals.some(
+    (signal) => signal.code === "customer_visible_dog_size_mismatch"
+  )
+) {
+  console.error("Expected customer_visible_dog_size_mismatch for visible Mini title on a 10kg dog.");
+  console.error(visibleMiniForTenKgRanking.signals);
+  process.exit(1);
+}
+
 const highActivityPet = {
   ...pet,
   weight: 25,
