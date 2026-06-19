@@ -156,6 +156,11 @@ const requiredCardFlowCopy = [
   "3. Save",
   "Choose and calculate",
   "Tap to calculate grams per day.",
+  "getRecommendationChoiceFacts(choice, chatLanguage)",
+  "kcal/100g",
+  "protein",
+  "fat",
+  "fiber",
 ];
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
@@ -173,6 +178,11 @@ const recommendationBlockIndex = chatbotPage.lastIndexOf(
   recommendedChoicesIndex
 );
 const pickStepIndex = chatbotPage.lastIndexOf("1. Pick", recommendedChoicesIndex);
+const nutritionFactsIndex = chatbotPage.indexOf(
+  "getRecommendationChoiceFacts(choice, chatLanguage).map",
+  recommendedChoicesIndex
+);
+const cardCtaIndex = chatbotPage.indexOf("Choose and calculate", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||
@@ -182,6 +192,17 @@ if (
 ) {
   console.error(
     "Customer-facing Pick/Calculate/Save flow must appear inside the recommended food card area."
+  );
+  process.exit(1);
+}
+
+if (
+  nutritionFactsIndex === -1 ||
+  cardCtaIndex === -1 ||
+  nutritionFactsIndex > cardCtaIndex
+) {
+  console.error(
+    "Recommendation cards should show customer-facing nutrition chips before the calculate CTA."
   );
   process.exit(1);
 }
