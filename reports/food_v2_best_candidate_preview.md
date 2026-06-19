@@ -1,20 +1,20 @@
 # Food V2 Best Candidate Preview Export
 
-Generated: 2026-06-18T20:42:50.427Z
+Generated: 2026-06-19T03:06:33.161Z
 
 ## Summary
 
-- Importable best candidate rows exported: 553
+- Importable best candidate rows exported: 552
 - Candidate groups considered: 831
 - Already-imported canonical rows skipped: 257
-- High title-risk rows skipped: 20
+- High title-risk rows skipped: 21
 - Missing source rows skipped: 1
 - Existing DB canonical check: enabled
 - Output CSV: data/imports/food_v2_best_candidate_preview.csv
 
 ## By Source Priority
 
-- retailer: 480
+- retailer: 479
 - official: 73
 
 ## By Brand
@@ -72,7 +72,6 @@ Generated: 2026-06-18T20:42:50.427Z
 - Royal Canin Size: 3
 - Wolf of Wilderness: 3
 - Bozita: 2
-- Briantos: 2
 - Cibau: 2
 - Enjoy: 2
 - Nature: 2
@@ -86,6 +85,7 @@ Generated: 2026-06-18T20:42:50.427Z
 - Banters: 1
 - Belcando Mastercraft: 1
 - Black Olympus: 1
+- Briantos: 1
 - Burns: 1
 - Cat Vital: 1
 - Fish4Dogs: 1
@@ -103,7 +103,7 @@ Generated: 2026-06-18T20:42:50.427Z
 ## By Dataset
 
 - data/imports/gatoskilo_local_html_batch_v2.csv: 421
-- data/imports/category_product_sources_extract_v2.csv: 106
+- data/imports/category_product_sources_extract_v2.csv: 105
 - data/imports/gatoskilo_royal_canin_dog_html_batch_v2.csv: 24
 - data/imports/external_product_sources_extract_v2.csv: 2
 
@@ -156,10 +156,11 @@ Generated: 2026-06-18T20:42:50.427Z
 - calibra|διαιτητικη υποαλεργικη τροφη για ενηλικα σκυλια για την υποστηριξη δερματος and τριχωματος|dog|dry: Calibra Διαιτητική υποαλεργική τροφή για ενήλικα σκυλιά για την υποστήριξη δέρματος και τριχώματος (formula_name_too_long)
 - calibra|κτηνιατρικητροφη για υποστηριξη του ταβολισμου των αρθρωσεων σε περιπτωση οστεοαρθριτιδας|dog|dry: Calibra κτηνιατρικήτροφή για υποστήριξη του μεταβολισμού των αρθρώσεων σε περίπτωση οστεοαρθρίτιδας (formula_name_too_long)
 - carnilove|τροφη για σκυλους true φρεσκο κρεας turkey ς χωρις δημητριακα and πατατα|dog|dry: Carnilove τροφή για σκύλους True με φρέσκο κρέας γαλοπούλας χωρίς δημητριακά και πατάτα (formula_name_too_long)
+- briantos|grain free economy pack 2 x|dog|dry: Briantos Grain-Free Economy Pack 2 x 12kg (formula_contains_pack_or_offer)
 - carnilove|adult duck διατροφη πλουσια σε πρωτεινες υψηλης ποιοτητας σε συνδυασμο λιπαρα οξεα|dog|dry: Carnilove Adult Duck διατροφή, πλούσια σε πρωτεΐνες υψηλής ποιότητας σε συνδυασμό με λιπαρά οξέα (formula_name_too_long)
 - carnilove|adult salmon διατροφη πλουσια σε πρωτεινες υψηλης ποιοτητας σε συνδυασμο λιπαρα οξεα|dog|dry: Carnilove Adult Salmon διατροφή, πλούσια σε πρωτεΐνες υψηλής ποιότητας σε συνδυασμό με λιπαρά οξέα (formula_name_too_long)
 - carnilove|puppy large salmon πληρες διατροφη πλουσια σε θρεπτικα συστατικα πρωτεινες and λιπαρα|dog|dry: Carnilove Puppy Large Salmon πλήρες διατροφή, πλούσια σε θρεπτικά συστατικά, πρωτεΐνες και λιπαρά (formula_name_too_long)
-- wolf of wilderness|2 x wolf of wilderness dry dog food try now|dog|dry: 2 x 1kg Wolf of Wilderness Dry Dog Food - Try Now! (formula_name_too_long)
+- wolf of wilderness|2 x wolf of wilderness dry dog food try now|dog|dry: 2 x 1kg Wolf of Wilderness Dry Dog Food - Try Now! (formula_contains_pack_or_offer)
 - hills|hill s sp adult sensitive stomach and skin small and mini chicken|dog|dry: Hill's SP Adult Sensitive Stomach & Skin Small & Mini Κοτόπουλο 3kg (formula_name_too_long)
 - ambrosia|πληρης ολιστικη τροφη για γαλοσωμα κουταβια chicken and salmon|dog|dry: Ambrosia Πλήρης ολιστική τροφή για μεγαλόσωμα κουτάβια με κοτόπουλο και σολομό (formula_name_looks_like_description)
 - ambrosia|πληρης τροφη χωρις σιτηρα ιδανικη για ολες τις φυλες turkey and duck|dog|dry: Ambrosia Πλήρης τροφή χωρίς σιτηρά ιδανική για όλες τις φυλές με γαλοπούλα και πάπια (formula_name_too_long)
