@@ -42,6 +42,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Urinary/oxalate positioning does not replace renal diet support.",
   },
+  urinary_subtype_mismatch: {
+    code: "urinary_subtype_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Struvite and oxalate urinary contexts should not be treated as interchangeable.",
+  },
   growth_food_for_adult_pet: {
     code: "growth_food_for_adult_pet",
     severity: "block",
