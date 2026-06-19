@@ -52,6 +52,12 @@ const jointPet = {
   weight: 18,
   healthIssues: ["senior", "joint support"],
 };
+const greekJointPet = {
+  ...pet,
+  breed: "Mixed breed",
+  weight: 18,
+  healthIssues: ["αρθρίτιδα", "δυσπλασία ισχίου"],
+};
 
 const adultHiddenSenior = rankFoodV2ForPet({
   food: makeFood({}),
@@ -264,6 +270,55 @@ if (
 ) {
   console.error("Expected senior_joint_context_without_mobility_signal for plain senior joint context.");
   console.error(plainSenior.signals);
+  process.exit(1);
+}
+
+const greekPlainSenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Chicken",
+    display_name: "Senior Chicken",
+    life_stage: "senior",
+    dog_size: "medium",
+    commercial_tags: ["senior"],
+    formula_key: "test-brand|senior-greek-plain|dog|dry",
+  }),
+  nutrients,
+  pet: greekJointPet,
+  goal: "senior",
+});
+
+const greekMobilitySenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Joint Mobility Chicken",
+    display_name: "Senior Joint Mobility Chicken",
+    life_stage: "senior",
+    dog_size: "medium",
+    commercial_tags: ["senior", "mobility"],
+    medical_tags: ["mobility"],
+    formula_key: "test-brand|senior-greek-mobility|dog|dry",
+  }),
+  nutrients: {
+    ...nutrients,
+    epa_dha_percent: 0.3,
+    glucosamine_mgkg: 450,
+  },
+  pet: greekJointPet,
+  goal: "senior",
+});
+
+if (greekMobilitySenior.total_score <= greekPlainSenior.total_score) {
+  console.error("Greek arthritis/hip dysplasia context should prefer senior mobility food over plain senior food.");
+  console.error({ greekPlainSenior, greekMobilitySenior });
+  process.exit(1);
+}
+
+if (
+  !greekMobilitySenior.signals.some(
+    (signal) => signal.code === "senior_joint_mobility_positioning"
+  )
+) {
+  console.error("Expected senior_joint_mobility_positioning for Greek mobility context.");
+  console.error(greekMobilitySenior.signals);
   process.exit(1);
 }
 
