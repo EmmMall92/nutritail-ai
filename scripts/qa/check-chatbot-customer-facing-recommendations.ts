@@ -215,6 +215,7 @@ const forbiddenTerms = [
   "role:",
   "use case:",
   "candidate kept out",
+  "kept foods out of the shortlist",
   "value ranking is a proxy",
   "data is usable",
   "Ο",
@@ -290,6 +291,22 @@ if (!compactCardsSample.includes("I placed the best options below as cards")) {
 if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
   console.error("Compact card-facing recommendation should include a clear card action.");
   console.error(compactCardsSample);
+  process.exit(1);
+}
+
+const noMatchSample = formatFoodV2ChatbotRecommendationSummary(
+  {
+    ...sampleResponse,
+    premium: [],
+    value: [],
+    hold: sampleResponse.premium,
+  },
+  { locale: "en", maxItemsPerSection: 2 }
+);
+
+if (!noMatchSample.includes("Some foods were skipped because")) {
+  console.error("No-match recommendation copy should explain skipped foods in customer language.");
+  console.error(noMatchSample);
   process.exit(1);
 }
 
