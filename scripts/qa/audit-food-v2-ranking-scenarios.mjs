@@ -327,14 +327,14 @@ function checkExpectations(scenario, data) {
 
     if (expectation === "senior_or_joint_fit") {
       if (
-        !hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "joint", "mobility", "7+", "8+", "10+", "12+"])
+        !hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "joint", "mobility", "7+", "8+", "10+", "11+", "12+"])
       ) {
         warnings.push("Top pick does not show clear senior/joint fit.");
       }
     }
 
     if (expectation === "senior_top_pick") {
-      if (!hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "7+", "8+", "10+", "12+"])) {
+      if (!hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "7+", "8+", "10+", "11+", "12+"])) {
         warnings.push("Top pick is not clearly senior-positioned.");
       }
     }

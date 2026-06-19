@@ -1197,13 +1197,31 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "senior" || stage === "senior") {
-    if (hasCustomerVisibleSeniorPositioning(food)) {
+    if (goal === "senior" && hasCustomerVisibleSeniorPositioning(food)) {
       score += 18;
       addSignal(
         signals,
         "boost",
         "customer_visible_senior_positioning",
         18,
+        "Clear senior positioning is visible to the customer."
+      );
+    } else if (goal === "senior") {
+      score -= 100;
+      addSignal(
+        signals,
+        "exclude",
+        "senior_positioning_not_customer_visible",
+        -100,
+        "Senior shortlists should prefer foods whose senior positioning is visible to the customer."
+      );
+    } else if (hasCustomerVisibleSeniorPositioning(food)) {
+      score += 8;
+      addSignal(
+        signals,
+        "boost",
+        "customer_visible_senior_positioning",
+        8,
         "Clear senior positioning is visible to the customer."
       );
     }

@@ -79,6 +79,21 @@ const hiddenAdultSignal = adultHiddenSenior.signals.find(
 const visibleSeniorSignal = visibleSenior.signals.find(
   (signal) => signal.code === "customer_visible_senior_positioning"
 );
+const hiddenSterilisedSenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Sterilised Tuna With Peas",
+    display_name: "Sterilised Tuna With Peas",
+    life_stage: "adult",
+    commercial_tags: ["senior", "sterilised"],
+    formula_key: "test-brand|sterilised-tuna-hidden-senior|dog|dry",
+  }),
+  nutrients,
+  pet,
+  goal: "senior",
+});
+const hiddenSterilisedSeniorSignal = hiddenSterilisedSenior.signals.find(
+  (signal) => signal.code === "senior_positioning_not_customer_visible"
+);
 
 if (!hiddenAdultSignal || hiddenAdultSignal.points > -40) {
   console.error("Adult-labelled senior candidate did not receive the stronger visible-title penalty.");
@@ -99,6 +114,41 @@ if (visibleSenior.total_score <= adultHiddenSenior.total_score) {
           total_score: adultHiddenSenior.total_score,
           fit_score: adultHiddenSenior.fit_score,
           cautions: adultHiddenSenior.cautions,
+        },
+        visibleSenior: {
+          total_score: visibleSenior.total_score,
+          fit_score: visibleSenior.fit_score,
+          reasons: visibleSenior.reasons,
+        },
+      },
+      null,
+      2
+    )
+  );
+  process.exit(1);
+}
+
+if (!hiddenSterilisedSeniorSignal || hiddenSterilisedSeniorSignal.points > -25) {
+  console.error("Hidden senior metadata without a customer-visible senior title should be penalized.");
+  console.error(hiddenSterilisedSenior.signals);
+  process.exit(1);
+}
+
+if (hiddenSterilisedSenior.bucket !== "hold") {
+  console.error("Hidden senior metadata without a customer-visible senior title should be held.");
+  console.error(hiddenSterilisedSenior);
+  process.exit(1);
+}
+
+if (visibleSenior.total_score <= hiddenSterilisedSenior.total_score) {
+  console.error("Visible senior food should outrank a hidden senior-tagged sterilised candidate.");
+  console.error(
+    JSON.stringify(
+      {
+        hiddenSterilisedSenior: {
+          total_score: hiddenSterilisedSenior.total_score,
+          fit_score: hiddenSterilisedSenior.fit_score,
+          cautions: hiddenSterilisedSenior.cautions,
         },
         visibleSenior: {
           total_score: visibleSenior.total_score,
