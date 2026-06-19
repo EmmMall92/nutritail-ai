@@ -108,6 +108,18 @@ function removeFeedingTableTitleTail(value: string) {
     .trim();
 }
 
+function removeLabelPanelTitleTail(value: string) {
+  return value
+    .replace(/\b(?:analytical\s+constituents?|guaranteed\s+analysis)\b[\s\S]*$/i, " ")
+    .replace(/\b(?:composition|ingredients?|additives?)\s*[:\-]\s*[\s\S]*$/i, " ")
+    .replace(
+      /\b(?:protein|fat\s+content|crude\s+fat|crude\s+fibre|crude\s+fiber|crude\s+ash|moisture)\s+\d/i,
+      " "
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function slugify(value: string) {
   return normalizeFoodTokenAliases(normalizeSearchText(value))
     .replace(/&/g, " and ")
@@ -177,8 +189,10 @@ function removeNoiseWords(value: string) {
 
 export function normalizeCanonicalFormulaName(value: unknown) {
   return titleCase(
-    removeFeedingTableTitleTail(
-      dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+    removeLabelPanelTitleTail(
+      removeFeedingTableTitleTail(
+        dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+      )
     )
       .replace(PACK_SIZE_PATTERN, " ")
       .replace(/\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr)\b/gi, " ")
