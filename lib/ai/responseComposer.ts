@@ -31,58 +31,6 @@ export type ChatbotRecommendationComposerResult = {
   warnings: string[];
 };
 
-function compactFood(
-  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
-  locale: ComposerLocale
-) {
-  return {
-    brand: food.brand ?? null,
-    name: food.display_name ?? null,
-    customer_reason: simpleReason(food, locale),
-    customer_caution: simpleCaution(food, locale),
-    nutrition_snapshot: nutritionLine(food, locale),
-    nutrition: {
-      kcal_per_100g: food.nutrition?.kcal_per_100g ?? null,
-      protein_percent: food.nutrition?.protein_percent ?? null,
-      fat_percent: food.nutrition?.fat_percent ?? null,
-      fiber_percent: food.nutrition?.fiber_percent ?? null,
-      calcium_percent: food.nutrition?.calcium_percent ?? null,
-      phosphorus_percent: food.nutrition?.phosphorus_percent ?? null,
-    },
-  };
-}
-
-function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
-  const premium = input.recommendation.premium ?? [];
-  const value = input.recommendation.value ?? [];
-  const locale = input.locale ?? "el";
-
-  return {
-    locale,
-    pet: input.petSummary ?? {},
-    goal: input.recommendation.goal ?? "general",
-    premium: premium.slice(0, 3).map((food) => compactFood(food, locale)),
-    value: value.slice(0, 3).map((food) => compactFood(food, locale)),
-    notes: input.recommendation.notes?.slice(0, 4) ?? [],
-    cards_follow: Boolean(input.cardsFollow),
-    deterministic_text: input.deterministicText,
-  };
-}
-
-function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
-  const locale = input.locale ?? "el";
-  const customerText = polishCustomerFacingLanguage(
-    buildCustomerFallbackText(input),
-    locale
-  );
-
-  return {
-    text: customerText || input.deterministicText,
-    source: "fallback",
-    warnings,
-  };
-}
-
 const GOAL_LABELS_EL: Record<string, string> = {
   allergy: "αποφυγή συστατικών",
   general: "γενική επιλογή",
@@ -156,7 +104,7 @@ function simpleReason(
 
   if (reasons.includes("preferred protein") || reasons.includes("preferred flavor")) {
     return locale === "el"
-      ? "ταιριάζει με προτίμηση γεύσης/πρωτεΐνης"
+      ? "ταιριάζει με την προτίμηση γεύσης ή πρωτεΐνης"
       : "matches a preferred flavour or protein";
   }
 
@@ -241,6 +189,44 @@ function simpleCaution(
   return null;
 }
 
+function compactFood(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  locale: ComposerLocale
+) {
+  return {
+    brand: food.brand ?? null,
+    name: food.display_name ?? null,
+    customer_reason: simpleReason(food, locale),
+    customer_caution: simpleCaution(food, locale),
+    nutrition_snapshot: nutritionLine(food, locale),
+    nutrition: {
+      kcal_per_100g: food.nutrition?.kcal_per_100g ?? null,
+      protein_percent: food.nutrition?.protein_percent ?? null,
+      fat_percent: food.nutrition?.fat_percent ?? null,
+      fiber_percent: food.nutrition?.fiber_percent ?? null,
+      calcium_percent: food.nutrition?.calcium_percent ?? null,
+      phosphorus_percent: food.nutrition?.phosphorus_percent ?? null,
+    },
+  };
+}
+
+function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
+  const premium = input.recommendation.premium ?? [];
+  const value = input.recommendation.value ?? [];
+  const locale = input.locale ?? "el";
+
+  return {
+    locale,
+    pet: input.petSummary ?? {},
+    goal: input.recommendation.goal ?? "general",
+    premium: premium.slice(0, 3).map((food) => compactFood(food, locale)),
+    value: value.slice(0, 3).map((food) => compactFood(food, locale)),
+    notes: input.recommendation.notes?.slice(0, 4) ?? [],
+    cards_follow: Boolean(input.cardsFollow),
+    deterministic_text: input.deterministicText,
+  };
+}
+
 function foodBullet(
   food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
   index: number,
@@ -279,15 +265,15 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
 
   if (foods.length === 0) return "";
 
-  if (input.cardsFollow) {
-    const goal = String(input.recommendation.goal ?? "general");
-    const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
-    const topFood = displayFoodName(foods[0]);
-    const topReason = simpleReason(foods[0], locale);
+  const goal = String(input.recommendation.goal ?? "general");
+  const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
+  const topFood = displayFoodName(foods[0]);
+  const topReason = simpleReason(foods[0], locale);
 
+  if (input.cardsFollow) {
     if (locale === "el") {
       return [
-        "Έτοιμο. Με βάση τα στοιχεία του κατοικιδίου, έβαλα τις καλύτερες επιλογές από κάτω σε κάρτες.",
+        "Έτοιμο. Με βάση τα στοιχεία του κατοικιδίου, έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         "",
         `Στόχος: ${goalLabel}.`,
         `Πρώτη κατεύθυνση: ${topFood}, γιατί ${topReason}.`,
@@ -306,8 +292,6 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     ].join("\n");
   }
 
-  const goal = String(input.recommendation.goal ?? "general");
-  const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
   const petName = input.petSummary?.name?.trim();
 
   if (locale === "el") {
@@ -351,7 +335,6 @@ function removeBackOfficeLines(text: string) {
         "quality:",
         "needs review",
         "missing nutrition",
-        "data quality",
         "confidence internals",
         "πηγή:",
         "ποιότητα:",
@@ -368,23 +351,37 @@ function polishCustomerFacingLanguage(text: string, locale: ComposerLocale) {
   if (locale !== "el") return text;
 
   return text
-    .replace(/\bWeight Control\b/g, "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2")
-    .replace(/\bSenior Nutrition\b/g, "\u0394\u03b9\u03b1\u03c4\u03c1\u03bf\u03c6\u03ae senior")
-    .replace(/\bHigh Activity\b/g, "\u03a5\u03c8\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1")
+    .replace(/\bWeight Control\b/g, "Έλεγχος βάρους")
+    .replace(/\bSenior Nutrition\b/g, "Διατροφή senior")
+    .replace(/\bHigh Activity\b/g, "Υψηλή δραστηριότητα")
     .replace(
       /Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi,
-      "\u03a4\u03b1 \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03c1\u03ba\u03b5\u03c4\u03ac \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c3\u03b5 \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03bf \u03ae \u03b5\u03c0\u03b9\u03c1\u03c1\u03b5\u03c0\u03ad\u03c2 \u03c3\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2 \u03b6\u03ce\u03bf."
+      "Τα λιπαρά δεν είναι αρκετά χαμηλά για να είναι πρώτη επιλογή σε στειρωμένο ή επιρρεπές σε βάρος ζώο."
     )
     .replace(
       /Active\/performance food does not fit this weight-loss context\./gi,
-      "\u03a4\u03c1\u03bf\u03c6\u03ae active/performance \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03bb\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c3\u03c4\u03cc\u03c7\u03bf \u03b1\u03c0\u03ce\u03bb\u03b5\u03b9\u03b1\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+      "Τροφή active/performance δεν είναι καλή πρώτη επιλογή για στόχο απώλειας βάρους."
     )
     .replace(
       /Low-fat formulas are not a credible first pick for active weight-gain cases\./gi,
-      "\u03a4\u03c1\u03bf\u03c6\u03ad\u03c2 \u03bc\u03b5 \u03c0\u03bf\u03bb\u03cd \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b9\u03b4\u03b1\u03bd\u03b9\u03ba\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03b4\u03c1\u03b1\u03c3\u03c4\u03ae\u03c1\u03b9\u03bf \u03b6\u03ce\u03bf \u03c0\u03bf\u03c5 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b1\u03cd\u03be\u03b7\u03c3\u03b7 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+      "Τροφές με πολύ χαμηλά λιπαρά δεν είναι ιδανική πρώτη επιλογή για δραστήριο ζώο που χρειάζεται αύξηση βάρους."
     )
-    .replace(/\bMatches adult life stage\b/gi, "\u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03b5\u03b9 \u03c3\u03b5 \u03b5\u03bd\u03ae\u03bb\u03b9\u03ba\u03bf \u03b6\u03ce\u03bf")
-    .replace(/\bIngredient data is available\b/gi, "\u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03c3\u03c5\u03c3\u03c4\u03b1\u03c4\u03b9\u03ba\u03ce\u03bd");
+    .replace(/\bMatches adult life stage\b/gi, "ταιριάζει σε ενήλικο ζώο")
+    .replace(/\bIngredient data is available\b/gi, "υπάρχουν στοιχεία συστατικών");
+}
+
+function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
+  const locale = input.locale ?? "el";
+  const customerText = polishCustomerFacingLanguage(
+    buildCustomerFallbackText(input),
+    locale
+  );
+
+  return {
+    text: customerText || input.deterministicText,
+    source: "fallback",
+    warnings,
+  };
 }
 
 function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationComposerInput) {
