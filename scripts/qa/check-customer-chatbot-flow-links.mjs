@@ -101,6 +101,11 @@ const checks = [
     file: "app/account/chatbot/page.tsx",
     expected: "Weight, grams, treats, and results.",
   },
+  {
+    label: "Progress check accepts weight-only first reply",
+    file: "app/account/chatbot/page.tsx",
+    expected: "You can start with only the current weight, for example 7 kg.",
+  },
 ];
 
 const forbiddenChecks = [
