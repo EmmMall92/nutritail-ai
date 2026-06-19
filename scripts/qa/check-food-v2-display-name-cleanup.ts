@@ -29,6 +29,33 @@ const cases = [
     expected: "Vetsolution Urinary Oxalate",
   },
   {
+    label: "AATU repeated adult term",
+    input: {
+      brand: "AATU",
+      display_name: "Aatu Adult Adult Grain Free 80/20 με Oστρακόδερμα",
+      formula_name: "Adult Adult Grain Free 80/20 με Oστρακόδερμα",
+    },
+    expected: "Adult Grain Free 80/20 Με Oστρακόδερμα",
+  },
+  {
+    label: "Royal Canin repeated size term",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin Mini Mini Adult",
+      formula_name: "Mini Mini Adult",
+    },
+    expected: "Mini Adult",
+  },
+  {
+    label: "Happy Dog repeated sterilised term",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Naturcroq Duck & Rice Sterilised Sterilised",
+      formula_name: "Naturcroq Duck & Rice Sterilised Sterilised",
+    },
+    expected: "Naturcroq Duck & Rice Sterilised",
+  },
+  {
     label: "Formula-only display remains unchanged",
     input: {
       brand: "Royal Canin",
