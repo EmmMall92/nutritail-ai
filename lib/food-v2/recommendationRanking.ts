@@ -1443,6 +1443,20 @@ function scoreFit(input: FoodV2RankingInput) {
     if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 10) {
       adjustedScore -= mildlyRicherSterilisedFit ? 10 : 20;
     }
+    if (
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g >= 365 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent >= 13.5
+    ) {
+      addSignal(
+        signals,
+        "exclude",
+        "sterilised_rich_formula_mismatch",
+        -100,
+        "Excluded because calories and fat are too rich for a first sterilised-pet shortlist."
+      );
+    }
   }
   if (goal === "sensitive_digestion" && !hasSensitiveDigestivePositioning(haystack)) {
     adjustedScore -= hasWeightControlPositioning(haystack) ? 50 : 30;
