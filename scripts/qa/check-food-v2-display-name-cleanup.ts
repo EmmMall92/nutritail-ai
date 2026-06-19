@@ -3,6 +3,10 @@ import {
   normalizeBrandlessFoodDisplayName,
   normalizeBrandlessFormulaName,
 } from "@/lib/food-v2/canonicalFood";
+import {
+  customerFoodDisplayName,
+  customerFoodName,
+} from "@/lib/food-v2/customerFoodName";
 
 const cases = [
   {
@@ -264,6 +268,37 @@ const descriptiveTitleCases = [
   },
 ] as const;
 
+const customerFoodNameCases = [
+  {
+    label: "Purina Pro Plan customer label removes repeated line name",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "PRO Plan® MEDIUM ADULT Sensitive Skin Salmon",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Skin Salmon",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Salmon",
+  },
+  {
+    label: "Purina veterinary customer label removes repeated Pro Plan prefix",
+    input: {
+      brand: "Purina Pro Plan Veterinary Diets",
+      display_name: "PRO Plan® VETERINARY DIETS CANINE OM OBESITY MANAGEMENT",
+    },
+    expectedDisplay: "CANINE OM OBESITY MANAGEMENT",
+    expectedName:
+      "Purina Pro Plan Veterinary Diets - CANINE OM OBESITY MANAGEMENT",
+  },
+  {
+    label: "Regular brand and display name stays readable",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Naturcroq Duck & Rice Sterilised",
+    },
+    expectedDisplay: "Naturcroq Duck & Rice Sterilised",
+    expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
+  },
+] as const;
+
 for (const testCase of brandlessFormulaCases) {
   const actual = normalizeBrandlessFormulaName(testCase.input);
   if (actual !== testCase.expected) {
@@ -280,6 +315,21 @@ for (const testCase of descriptiveTitleCases) {
   if (actual !== expected) {
     failures.push(
       `${testCase.label}: expected descriptive=${expected}, got ${actual}`
+    );
+  }
+}
+
+for (const testCase of customerFoodNameCases) {
+  const actualDisplay = customerFoodDisplayName(testCase.input);
+  const actualName = customerFoodName(testCase.input);
+  if (actualDisplay !== testCase.expectedDisplay) {
+    failures.push(
+      `${testCase.label}: expected customer display "${testCase.expectedDisplay}", got "${actualDisplay}"`
+    );
+  }
+  if (actualName !== testCase.expectedName) {
+    failures.push(
+      `${testCase.label}: expected customer name "${testCase.expectedName}", got "${actualName}"`
     );
   }
 }

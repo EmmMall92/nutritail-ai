@@ -1,4 +1,5 @@
 import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
+import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 
 export type FoodV2ChatbotRecommendationItem = {
   brand?: string | null;
@@ -259,26 +260,7 @@ export function goalFromPetContext(
 }
 
 function foodName(food: FoodV2ChatbotRecommendationItem) {
-  const brand = String(food.brand ?? "").replace(/\s+/g, " ").trim();
-  let displayName = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
-
-  if (brand && displayName.toLowerCase().startsWith(brand.toLowerCase())) {
-    return displayName;
-  }
-
-  const firstBrandWord = brand.split(/\s+/)[0];
-  if (firstBrandWord) {
-    displayName = displayName.replace(
-      new RegExp(`^${escapeRegExp(firstBrandWord)}\\s+${escapeRegExp(firstBrandWord)}\\s+`, "i"),
-      firstBrandWord + " "
-    );
-  }
-
-  return [brand, displayName].filter(Boolean).join(" - ");
-}
-
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return customerFoodName(food);
 }
 
 function formatNumber(value: number | null | undefined, digits = 1) {

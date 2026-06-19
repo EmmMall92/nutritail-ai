@@ -22,6 +22,7 @@ import {
   type FoodV2ChatbotRecommendationItem,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
 import { formatPetDisplayName } from "@/lib/petName";
 import {
@@ -309,13 +310,7 @@ const KNOWN_FOOD_BRANDS = [
 ];
 
 function formatRecommendationChoiceName(food: FoodV2ChatbotRecommendationItem) {
-  const brand = String(food.brand ?? "").trim();
-  const displayName = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
-
-  if (!brand) return displayName;
-  if (displayName.toLowerCase().startsWith(brand.toLowerCase())) return displayName;
-
-  return [brand, displayName].filter(Boolean).join(" - ");
+  return customerFoodName(food);
 }
 
 function formatRecommendationChoiceReason(
