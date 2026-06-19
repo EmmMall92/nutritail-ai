@@ -209,6 +209,21 @@ if (leakedComposerCopy.length > 0) {
   process.exit(1);
 }
 
+const forbiddenChatbotPageCopy = [
+  "Food score:",
+  "Nutrition confidence:",
+  "Score: ${getHistoryFoodScore",
+];
+const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
+  chatbotPage.includes(term)
+);
+
+if (leakedChatbotPageCopy.length > 0) {
+  console.error("Account chatbot still exposes report-style score/confidence copy:");
+  console.error(leakedChatbotPageCopy.join(", "));
+  process.exit(1);
+}
+
 if (missingCardFlowCopy.length > 0) {
   console.error("Chatbot food cards are missing customer-facing flow copy:");
   console.error(missingCardFlowCopy.join(", "));

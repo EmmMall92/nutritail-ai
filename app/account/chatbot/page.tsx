@@ -16,10 +16,7 @@ import { calculateTreatsAllowance } from "@/lib/treatsCalculator";
 import { buildFoodTransitionGuide } from "@/lib/foodTransitionGuide";
 import { calculateFoodScore } from "@/lib/foodScore";
 import { generateChatGuardrails } from "@/lib/nutrition/chatGuardrails";
-import {
-  buildFoodScoreExplanation,
-  getFoodScoreLabel,
-} from "@/lib/foodScoreExplanation";
+import { getFoodScoreLabel } from "@/lib/foodScoreExplanation";
 import {
   formatFoodV2ChatbotRecommendationSummary,
   goalFromPetContext,
@@ -1706,6 +1703,16 @@ function getHistoryFoodScore(item?: AccountPetAnalysisHistoryItem | null) {
   return item?.foodScore ?? item?.food_score ?? null;
 }
 
+function formatCustomerFoodFit(score?: number | null, language: ChatLanguage = "en") {
+  if (typeof score !== "number" || !Number.isFinite(score)) {
+    return language === "el" ? "χρήσιμη ένδειξη" : "useful context";
+  }
+
+  if (score >= 80) return language === "el" ? "πολύ δυνατή επιλογή" : "strong fit";
+  if (score >= 60) return language === "el" ? "καλή επιλογή" : "good fit";
+  return language === "el" ? "πιο προσεκτική επιλογή" : "cautious fit";
+}
+
 function parseSavedWeightGoal(value?: string | null): WeightGoal | undefined {
   if (!value) return undefined;
 
@@ -1756,7 +1763,9 @@ function formatLatestAnalysisSummary(
         : `Feeding: ${getHistoryFeedingGrams(latest)}g/day`
       : null,
     typeof getHistoryFoodScore(latest) === "number"
-      ? `Score: ${getHistoryFoodScore(latest)}/100`
+      ? language === "el"
+        ? `Fit τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
+        : `Food fit: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
       : null,
   ].filter(Boolean);
 
@@ -3045,9 +3054,7 @@ ${matchedFood.brand} - ${matchedFood.name}
 
 ${getFoodQualityNote(matchedFood)}
 
-Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
-${buildFoodScoreExplanation(foodScore)}
-Nutrition confidence: ${nutritionInsights.confidence.toUpperCase()}
+Food fit: ${formatCustomerFoodFit(foodScore, chatLanguage)} (${getFoodScoreLabel(foodScore)})
 ${nutritionInsights.summary}
 
 ${
@@ -3114,8 +3121,7 @@ ${matchedFood.brand} - ${matchedFood.name}
 
 ${getFoodQualityNote(matchedFood)}
 
-Food score: ${foodScore}/100 - ${getFoodScoreLabel(foodScore)}
-${buildFoodScoreExplanation(foodScore)}
+Food fit: ${formatCustomerFoodFit(foodScore, chatLanguage)} (${getFoodScoreLabel(foodScore)})
 
 I did not find kcal per 100g in the database, so I cannot calculate exact grams for this food yet.
 
