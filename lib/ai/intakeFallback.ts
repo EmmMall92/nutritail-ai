@@ -80,8 +80,8 @@ function parseAgeYears(text: string) {
 }
 
 function detectSpecies(text: string): ExtractedSpecies | null {
-  if (includesAny(text, ["dog", "skyl", "skil", "σκυλ", "σκυλο", "σκύλο"])) return "dog";
-  if (includesAny(text, ["cat", "gat", "γατ", "γάτ"])) return "cat";
+  if (includesAny(text, ["dog", "puppy", "skyl", "skil", "σκυλ", "σκυλο", "σκύλο", "κουταβ"])) return "dog";
+  if (includesAny(text, ["cat", "kitten", "gat", "γατ", "γάτ", "γατακ"])) return "cat";
   return null;
 }
 
@@ -247,6 +247,7 @@ export function fallbackExtractIntake(
       [["renal", "kidney", "νεφρ"], "renal"],
       [["pancreatitis", "παγκρεατ"], "pancreatitis"],
       [["diabetes", "diabetic", "διαβητ"], "diabetes"],
+      [["large breed", "giant breed", "large-breed puppy", "giant-breed puppy", "μεγαλόσωμ", "μεγαλοσωμ", "γιγαντόσωμ", "γιγαντοσωμ"], "large_breed_growth"],
     ]),
     allergies: detectTerms(text, [[["allerg", "αλλεργ"], "suspected_allergy"]]),
     preferredProteins: proteinPreferences.preferred,
