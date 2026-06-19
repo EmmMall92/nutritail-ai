@@ -102,34 +102,6 @@ const INTERNAL_NOTE_PATTERNS = [
   /detailed mineral data is incomplete/i,
 ];
 
-const legacyGreekMojibakePattern =
-  /(?:\?{3,}|\u0392\u00ae|\ufffd|[\u039e\u039f][\u0080-\u00ff\u0370-\u03ff])/gu;
-const isoGreekDecoder = new TextDecoder("iso-8859-7");
-const isoGreekReverseMap = new Map<string, number>();
-
-for (let byte = 0; byte <= 255; byte += 1) {
-  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
-}
-
-function repairLegacyGreekMojibake(value: string) {
-  const markers = value.match(legacyGreekMojibakePattern) ?? [];
-  if (markers.length < 2) return value;
-
-  const bytes: number[] = [];
-  for (const char of value) {
-    const byte = isoGreekReverseMap.get(char);
-    if (byte !== undefined) {
-      bytes.push(byte);
-    } else if (char.charCodeAt(0) <= 255) {
-      bytes.push(char.charCodeAt(0));
-    } else {
-      return value;
-    }
-  }
-
-  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
-}
-
 function normalizeText(value: unknown) {
   return String(value ?? "")
     .toLowerCase()
@@ -153,12 +125,10 @@ export function goalFromPetContext(
       "itch",
       "skin",
       "derma",
-      "\u03c6\u03b1\u03b3\u03bf\u03c5\u03c1",
-      "\u03ba\u03bd\u03b7\u03c3",
-      "\u03b4\u03b5\u03c1\u03bc",
-      "\u03c9\u03c4\u03b9\u03c4",
       "φαγουρ",
+      "κνησ",
       "δερμ",
+      "ωτιτ",
     ])
   ) {
     return "allergy";
@@ -172,13 +142,9 @@ export function goalFromPetContext(
       "stone",
       "urolith",
       "pee",
-      "\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3",
-      "\u03bf\u03c5\u03c1\u03b7\u03c4",
-      "\u03c3\u03c4\u03c1\u03bf\u03c5\u03b2",
-      "\u03ba\u03c1\u03c5\u03c3\u03c4\u03b1\u03bb\u03bb",
-      "\u03bf\u03be\u03b1\u03bb",
-      "\u03bb\u03b9\u03b8",
       "ουρολογ",
+      "ουρητ",
+      "στρουβ",
       "κρυσταλλ",
       "οξαλ",
       "λιθ",
@@ -191,10 +157,10 @@ export function goalFromPetContext(
       "renal",
       "kidney",
       "ckd",
-      "\u03bd\u03b5\u03c6\u03c1",
-      "\u03bf\u03c5\u03c1\u03b9\u03b1",
-      "\u03bf\u03c5\u03c1\u03af\u03b1",
-      "\u03ba\u03c1\u03b5\u03b1\u03c4\u03b9\u03bd",
+      "νεφρ",
+      "ουρια",
+      "ουρία",
+      "κρεατιν",
     ])
   ) {
     return "renal";
@@ -205,11 +171,11 @@ export function goalFromPetContext(
       "weight",
       "obesity",
       "overweight",
-      "\u03b2\u03b1\u03c1\u03bf\u03c2",
-      "\u03b2\u03ac\u03c1\u03bf\u03c2",
-      "\u03c0\u03b1\u03c7\u03c5",
-      "\u03c0\u03b1\u03c7\u03cd",
-      "\u03c0\u03b1\u03c7\u03b1\u03b9\u03bd",
+      "βαρος",
+      "βάρος",
+      "παχυ",
+      "παχύ",
+      "παχαιν",
     ])
   ) {
     return "weight_control";
@@ -224,19 +190,15 @@ export function goalFromPetContext(
       "gas",
       "pancreatitis",
       "pancreatic",
-      "\u03c0\u03b5\u03c8\u03b7",
-      "\u03c0\u03ad\u03c8\u03b7",
-      "\u03b4\u03b9\u03b1\u03c1\u03c1\u03bf\u03b9\u03b1",
-      "\u03b4\u03b9\u03ac\u03c1\u03c1\u03bf\u03b9\u03b1",
-      "\u03b1\u03b5\u03c1\u03b9\u03b1",
-      "\u03b1\u03ad\u03c1\u03b9\u03b1",
-      "\u03b5\u03bc\u03b5\u03c4",
-      "\u03bc\u03b1\u03bb\u03b1\u03ba\u03b1 \u03ba\u03bf\u03c0\u03c1\u03b1\u03bd\u03b1",
-      "\u03bc\u03b1\u03bb\u03b1\u03ba\u03ac \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1",
-      "\u03c0\u03b1\u03b3\u03ba\u03c1\u03b5\u03b1\u03c4",
+      "πεψη",
       "πέψη",
+      "διαρροια",
       "διάρροια",
+      "αερια",
       "αέρια",
+      "εμετ",
+      "μαλακα κοπρανα",
+      "μαλακά κόπρανα",
       "παγκρεατ",
     ])
   ) {
@@ -274,7 +236,7 @@ function scoreLabel() {
 
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
-    ? `\u0393\u03b9\u03b1 \u03b1\u03c5\u03c4\u03cc \u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9 \u03ba\u03bf\u03b9\u03c4\u03ac\u03bc\u03b5 \u03ba\u03c5\u03c1\u03af\u03c9\u03c2: ${goalLabel}.`
+    ? `Για αυτό το κατοικίδιο κοιτάμε κυρίως: ${goalLabel}.`
     : `For this pet, I am prioritising: ${goalLabel}.`;
 }
 
@@ -529,7 +491,7 @@ function compactCardsIntro({
 }
 
 function cleanOutput(text: string) {
-  return polishGreekCustomerText(repairLegacyGreekMojibake(text))
+  return polishGreekCustomerText(text)
     .split(/\r?\n/)
     .filter((line) => !isInternalLine(line))
     .join("\n")
@@ -539,23 +501,23 @@ function cleanOutput(text: string) {
 
 function polishGreekCustomerText(text: string) {
   return text
-    .replace(/\bWeight Control\b/g, "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2")
-    .replace(/\bSenior Nutrition\b/g, "\u0394\u03b9\u03b1\u03c4\u03c1\u03bf\u03c6\u03ae senior")
-    .replace(/\bHigh Activity\b/g, "\u03a5\u03c8\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1")
+    .replace(/\bWeight Control\b/g, "Έλεγχος βάρους")
+    .replace(/\bSenior Nutrition\b/g, "Διατροφή senior")
+    .replace(/\bHigh Activity\b/g, "Υψηλή δραστηριότητα")
     .replace(
       /Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi,
-      "\u0398\u03ad\u03bb\u03b5\u03b9 \u03bc\u03b5\u03c4\u03c1\u03b7\u03bc\u03ad\u03bd\u03b7 \u03bc\u03b5\u03c1\u03af\u03b4\u03b1, \u03b5\u03b9\u03b4\u03b9\u03ba\u03ac \u03b1\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03c4\u03ac\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03b2\u03ac\u03c1\u03bf\u03c2."
+      "Θέλει μετρημένη μερίδα, ειδικά αν υπάρχει τάση για βάρος."
     )
     .replace(
       /Active\/performance food does not fit this weight-loss context\./gi,
-      "\u03a4\u03c1\u03bf\u03c6\u03ae active/performance \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03bb\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c3\u03c4\u03cc\u03c7\u03bf \u03b1\u03c0\u03ce\u03bb\u03b5\u03b9\u03b1\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+      "Τροφή active/performance δεν είναι καλή πρώτη επιλογή για στόχο απώλειας βάρους."
     )
     .replace(
       /Low-fat formulas are not a credible first pick for active weight-gain cases\./gi,
-      "\u03a4\u03c1\u03bf\u03c6\u03ad\u03c2 \u03bc\u03b5 \u03c0\u03bf\u03bb\u03cd \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b9\u03b4\u03b1\u03bd\u03b9\u03ba\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03b4\u03c1\u03b1\u03c3\u03c4\u03ae\u03c1\u03b9\u03bf \u03b6\u03ce\u03bf \u03c0\u03bf\u03c5 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b1\u03cd\u03be\u03b7\u03c3\u03b7 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
+      "Τροφές με πολύ χαμηλά λιπαρά δεν είναι ιδανική πρώτη επιλογή για δραστήριο ζώο που χρειάζεται αύξηση βάρους."
     )
-    .replace(/\bMatches adult life stage\b/gi, "\u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03b5\u03b9 \u03c3\u03b5 \u03b5\u03bd\u03ae\u03bb\u03b9\u03ba\u03bf \u03b6\u03ce\u03bf")
-    .replace(/\bIngredient data is available\b/gi, "\u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03c3\u03c5\u03c3\u03c4\u03b1\u03c4\u03b9\u03ba\u03ce\u03bd");
+    .replace(/\bMatches adult life stage\b/gi, "ταιριάζει σε ενήλικο ζώο")
+    .replace(/\bIngredient data is available\b/gi, "υπάρχουν στοιχεία συστατικών");
 }
 
 export function formatFoodV2ChatbotRecommendationSummary(
@@ -609,7 +571,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
         : "",
       "",
       locale === "el"
-        ? "Καλύτερο επόμενο βήμα: δώσε μου άλλη προτίμηση γεύσης ή πρόσθεσε πιο ακριβή στοιχεία για το κατοικίδιο."
+        ? "Καλύτερο επόμενο βήμα: δώσε μου άλλη προτίμηση γεύσης ή πιο ακριβή στοιχεία για το κατοικίδιο."
         : "Best next step: share another flavour preference or more precise pet details.",
     ].filter(Boolean).join("\n"));
   }

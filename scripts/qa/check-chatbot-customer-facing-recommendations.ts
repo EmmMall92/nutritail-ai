@@ -42,38 +42,23 @@ const sampleResponse = {
   notes: [],
 };
 
-const sample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
-  locale: "en",
-  maxItemsPerSection: 2,
-});
-
-const greekSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
-  locale: "el",
-  maxItemsPerSection: 2,
-});
-
-const compactCardsSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
-  locale: "en",
-  maxItemsPerSection: 2,
-  compactForCards: true,
-});
-
-const compactGreekCardsSample = formatFoodV2ChatbotRecommendationSummary(sampleResponse, {
-  locale: "el",
-  maxItemsPerSection: 2,
-  compactForCards: true,
-});
-
-const valueGoalSample = formatFoodV2ChatbotRecommendationSummary(
-  {
-    ...sampleResponse,
-    goal: "value" as const,
-  },
-  {
-    locale: "en",
+function summary(
+  response: Parameters<typeof formatFoodV2ChatbotRecommendationSummary>[0],
+  locale: "el" | "en" = "en",
+  compactForCards = false
+) {
+  return formatFoodV2ChatbotRecommendationSummary(response, {
+    locale,
     maxItemsPerSection: 2,
-  }
-);
+    compactForCards,
+  });
+}
+
+const sample = summary(sampleResponse);
+const greekSample = summary(sampleResponse, "el");
+const compactCardsSample = summary(sampleResponse, "en", true);
+const compactGreekCardsSample = summary(sampleResponse, "el", true);
+const valueGoalSample = summary({ ...sampleResponse, goal: "value" as const });
 
 const coreScenarioSamples = [
   {
@@ -84,117 +69,102 @@ const coreScenarioSamples = [
   {
     label: "chicken allergy",
     expectedGoalLabel: "ingredient avoidance",
-    text: formatFoodV2ChatbotRecommendationSummary(
-      {
-        ...sampleResponse,
-        goal: "allergy" as const,
-        premium: [
-          {
-            ...sampleResponse.premium[0],
-            brand: "Ambrosia",
-            display_name: "Mediterranean Diet Grain Free Adult Fresh Sardine & Tuna",
-            ranking: {
-              ...sampleResponse.premium[0].ranking,
-              reasons: ["Allergens were not detected.", "Excluded ingredients are respected."],
-              cautions: ["Data is usable but still needs review."],
-            },
+    text: summary({
+      ...sampleResponse,
+      goal: "allergy" as const,
+      premium: [
+        {
+          ...sampleResponse.premium[0],
+          brand: "Ambrosia",
+          display_name: "Mediterranean Diet Grain Free Adult Fresh Sardine & Tuna",
+          ranking: {
+            ...sampleResponse.premium[0].ranking,
+            reasons: ["Allergens were not detected.", "Excluded ingredients are respected."],
+            cautions: ["Data is usable but still needs review."],
           },
-        ],
-      },
-      { locale: "en", maxItemsPerSection: 2 }
-    ),
+        },
+      ],
+    }),
   },
   {
     label: "urinary cat",
     expectedGoalLabel: "urinary support",
-    text: formatFoodV2ChatbotRecommendationSummary(
-      {
-        ...sampleResponse,
-        goal: "urinary" as const,
-        premium: [
-          {
-            ...sampleResponse.premium[0],
-            brand: "Monge",
-            display_name: "VetSolution Urinary Struvite Feline",
-            ranking: {
-              ...sampleResponse.premium[0].ranking,
-              reasons: ["Urinary subtype matches the request."],
-              cautions: ["Magnesium data is missing for urinary review."],
-            },
+    text: summary({
+      ...sampleResponse,
+      goal: "urinary" as const,
+      premium: [
+        {
+          ...sampleResponse.premium[0],
+          brand: "Monge",
+          display_name: "VetSolution Urinary Struvite Feline",
+          ranking: {
+            ...sampleResponse.premium[0].ranking,
+            reasons: ["Urinary subtype matches the request."],
+            cautions: ["Magnesium data is missing for urinary review."],
           },
-        ],
-      },
-      { locale: "en", maxItemsPerSection: 2 }
-    ),
+        },
+      ],
+    }),
   },
   {
     label: "renal senior cat",
     expectedGoalLabel: "renal support",
-    text: formatFoodV2ChatbotRecommendationSummary(
-      {
-        ...sampleResponse,
-        goal: "renal" as const,
-        premium: [
-          {
-            ...sampleResponse.premium[0],
-            brand: "Monge",
-            display_name: "VetSolution Renal Feline",
-            ranking: {
-              ...sampleResponse.premium[0].ranking,
-              reasons: ["Renal support positioning."],
-              cautions: ["Phosphorus data is missing for renal review."],
-            },
+    text: summary({
+      ...sampleResponse,
+      goal: "renal" as const,
+      premium: [
+        {
+          ...sampleResponse.premium[0],
+          brand: "Monge",
+          display_name: "VetSolution Renal Feline",
+          ranking: {
+            ...sampleResponse.premium[0].ranking,
+            reasons: ["Renal support positioning."],
+            cautions: ["Phosphorus data is missing for renal review."],
           },
-        ],
-      },
-      { locale: "en", maxItemsPerSection: 2 }
-    ),
+        },
+      ],
+    }),
   },
   {
     label: "large breed puppy",
     expectedGoalLabel: "growth",
-    text: formatFoodV2ChatbotRecommendationSummary(
-      {
-        ...sampleResponse,
-        goal: "growth" as const,
-        premium: [
-          {
-            ...sampleResponse.premium[0],
-            brand: "Acana",
-            display_name: "Puppy Large Breed",
-            ranking: {
-              ...sampleResponse.premium[0].ranking,
-              reasons: ["Large-breed puppy mineral review is available."],
-              cautions: ["Calcium/phosphorus ratio needs closer review for growth."],
-            },
+    text: summary({
+      ...sampleResponse,
+      goal: "growth" as const,
+      premium: [
+        {
+          ...sampleResponse.premium[0],
+          brand: "Acana",
+          display_name: "Puppy Large Breed",
+          ranking: {
+            ...sampleResponse.premium[0].ranking,
+            reasons: ["Large-breed puppy mineral review is available."],
+            cautions: ["Calcium/phosphorus ratio needs closer review for growth."],
           },
-        ],
-      },
-      { locale: "en", maxItemsPerSection: 2 }
-    ),
+        },
+      ],
+    }),
   },
   {
     label: "active dog",
     expectedGoalLabel: "general fit",
-    text: formatFoodV2ChatbotRecommendationSummary(
-      {
-        ...sampleResponse,
-        goal: "general" as const,
-        premium: [
-          {
-            ...sampleResponse.premium[0],
-            brand: "Josera",
-            display_name: "High Energy Adult",
-            ranking: {
-              ...sampleResponse.premium[0].ranking,
-              reasons: ["High activity energy support."],
-              cautions: [],
-            },
+    text: summary({
+      ...sampleResponse,
+      goal: "general" as const,
+      premium: [
+        {
+          ...sampleResponse.premium[0],
+          brand: "Josera",
+          display_name: "High Energy Adult",
+          ranking: {
+            ...sampleResponse.premium[0].ranking,
+            reasons: ["High activity energy support."],
+            cautions: [],
           },
-        ],
-      },
-      { locale: "en", maxItemsPerSection: 2 }
-    ),
+        },
+      ],
+    }),
   },
 ];
 
@@ -218,25 +188,21 @@ const forbiddenTerms = [
   "kept foods out of the shortlist",
   "value ranking is a proxy",
   "data is usable",
+  "�",
   "Ο",
-  "Ο‡",
 ];
 
-const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${coreScenarioSamples
+const allSummaries = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${coreScenarioSamples
   .map((scenario) => scenario.text)
-  .join("\n")}`.toLowerCase();
+  .join("\n")}`;
 const leakedTerms = forbiddenTerms.filter((term) =>
-  lowerSample.includes(term.toLowerCase())
+  allSummaries.toLowerCase().includes(term.toLowerCase())
 );
 
 if (leakedTerms.length > 0) {
   console.error("Customer-facing recommendation leaked back-office or mojibake terms:");
   console.error(leakedTerms.join(", "));
-  console.error(sample);
-  console.error(greekSample);
-  console.error(compactCardsSample);
-  console.error(compactGreekCardsSample);
-  console.error(valueGoalSample);
+  console.error(allSummaries);
   process.exit(1);
 }
 
@@ -276,7 +242,7 @@ if (!greekSample.includes("Επόμενο βήμα")) {
   process.exit(1);
 }
 
-if (!greekSample.includes("\u03c0\u03b1\u03b3\u03ba\u03c1\u03b5\u03b1\u03c4\u03af\u03c4\u03b9\u03b4\u03b1\u03c2")) {
+if (!greekSample.includes("παγκρεατίτιδας")) {
   console.error("Greek customer-facing recommendation should translate pancreatitis cautions.");
   console.error(greekSample);
   process.exit(1);
@@ -294,15 +260,18 @@ if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
   process.exit(1);
 }
 
-const noMatchSample = formatFoodV2ChatbotRecommendationSummary(
-  {
-    ...sampleResponse,
-    premium: [],
-    value: [],
-    hold: sampleResponse.premium,
-  },
-  { locale: "en", maxItemsPerSection: 2 }
-);
+if (!compactGreekCardsSample.includes("κάρτες από κάτω")) {
+  console.error("Compact Greek card-facing recommendation should point to the cards.");
+  console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
+const noMatchSample = summary({
+  ...sampleResponse,
+  premium: [],
+  value: [],
+  hold: sampleResponse.premium,
+});
 
 if (!noMatchSample.includes("Some foods were skipped because")) {
   console.error("No-match recommendation copy should explain skipped foods in customer language.");
@@ -322,20 +291,65 @@ if (!valueGoalSample.includes("First value picks:")) {
   process.exit(1);
 }
 
-if (!compactGreekCardsSample.includes("κάρτες από κάτω")) {
-  console.error("Compact Greek card-facing recommendation should point to the cards.");
-  console.error(compactGreekCardsSample);
-  process.exit(1);
-}
-
-const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
-
 if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
   console.error("Customer-facing recommendation should not expose raw internal score labels.");
   console.error(sample);
   console.error(greekSample);
-  console.error(compactCardsSample);
-  console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
+const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
+const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
+
+const forbiddenComposerCopy = [
+  "score: food.ranking?.total_score",
+  "(${score}/100)",
+  "matches with score",
+  "ταιριάζει με score",
+  "high confidence",
+  "medium confidence",
+  "low confidence",
+  "�",
+];
+const leakedComposerCopy = forbiddenComposerCopy.filter((term) =>
+  `${responseComposer}\n${responseAdapter}`.includes(term)
+);
+
+if (leakedComposerCopy.length > 0) {
+  console.error("Customer-facing recommendation copy still exposes internal score/confidence wording:");
+  console.error(leakedComposerCopy.join(", "));
+  process.exit(1);
+}
+
+const forbiddenChatbotPageCopy = [
+  "Food score:",
+  "Nutrition confidence:",
+  "Review before saving",
+  "Analysis summary",
+  "Save when the pet details, calorie target, and food context look right.",
+  "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα",
+  "Score: ${getHistoryFoodScore",
+  "Strong match",
+  "Good match",
+  "Useful alternative",
+  "getRecommendationChoiceMatchLabel",
+  "const reason = food.ranking?.reasons?.find",
+];
+const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
+  chatbotPage.includes(term)
+);
+
+if (leakedChatbotPageCopy.length > 0) {
+  console.error("Account chatbot still exposes report-style score/confidence copy:");
+  console.error(leakedChatbotPageCopy.join(", "));
+  process.exit(1);
+}
+
+if (!chatbotPage.includes("if (analysisFoodChoices.length === 0)")) {
+  console.error(
+    "Fallback next-step copy should only appear when no selectable food cards were returned."
+  );
   process.exit(1);
 }
 
@@ -400,58 +414,6 @@ const requiredCardFlowCopy = [
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
 );
-
-const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
-const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
-const forbiddenComposerCopy = [
-  "score: food.ranking?.total_score",
-  "(${score}/100)",
-  "matches with score",
-  "ταιριάζει με score",
-  "high confidence",
-  "medium confidence",
-  "low confidence",
-];
-const leakedComposerCopy = forbiddenComposerCopy.filter((term) =>
-  `${responseComposer}\n${responseAdapter}`.includes(term)
-);
-
-if (leakedComposerCopy.length > 0) {
-  console.error("Customer-facing recommendation copy still exposes internal score/confidence wording:");
-  console.error(leakedComposerCopy.join(", "));
-  process.exit(1);
-}
-
-const forbiddenChatbotPageCopy = [
-  "Food score:",
-  "Nutrition confidence:",
-  "Review before saving",
-  "Analysis summary",
-  "Save when the pet details, calorie target, and food context look right.",
-  "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα",
-  "Score: ${getHistoryFoodScore",
-  "Strong match",
-  "Good match",
-  "Useful alternative",
-  "getRecommendationChoiceMatchLabel",
-  "const reason = food.ranking?.reasons?.find",
-];
-const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
-  chatbotPage.includes(term)
-);
-
-if (leakedChatbotPageCopy.length > 0) {
-  console.error("Account chatbot still exposes report-style score/confidence copy:");
-  console.error(leakedChatbotPageCopy.join(", "));
-  process.exit(1);
-}
-
-if (!chatbotPage.includes("if (analysisFoodChoices.length === 0)")) {
-  console.error(
-    "Fallback next-step copy should only appear when no selectable food cards were returned."
-  );
-  process.exit(1);
-}
 
 if (missingCardFlowCopy.length > 0) {
   console.error("Chatbot food cards are missing customer-facing flow copy:");
