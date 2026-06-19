@@ -548,6 +548,16 @@ const sterilisedRicherFood = food({
   primary_animal_proteins: ["duck"],
   kcal_per_100g: 344.4,
 });
+const sterilisedTooRichFood = food({
+  id: "sterilised-too-rich",
+  formula_key: "qa|sterilised-too-rich|dog|dry",
+  display_name: "Sterilised Adult Energy Rich Chicken",
+  dog_size: "small",
+  commercial_tags: ["sterilised"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 372,
+});
 const sterilisedLeanRanking = rankFoodV2ForPet({
   food: sterilisedLeanFood,
   nutrients: {
@@ -555,6 +565,25 @@ const sterilisedLeanRanking = rankFoodV2ForPet({
     protein_percent: 22,
     fat_percent: 9,
     fiber_percent: 2.5,
+  },
+  pet: {
+    ...pet,
+    weight: 8,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+const sterilisedTooRichRanking = rankFoodV2ForPet({
+  food: sterilisedTooRichFood,
+  nutrients: {
+    ...nutrients(sterilisedTooRichFood),
+    protein_percent: 27,
+    fat_percent: 14,
+    fiber_percent: 2.2,
   },
   pet: {
     ...pet,
@@ -596,6 +625,22 @@ if (sterilisedLeanRanking.total_score <= sterilisedRicherRanking.total_score) {
 if (sterilisedRicherRanking.bucket === "hold") {
   console.error("Mildly richer but visibly sterilised foods should remain selectable candidates.");
   console.error(sterilisedRicherRanking);
+  process.exit(1);
+}
+
+if (sterilisedTooRichRanking.bucket !== "hold") {
+  console.error("Rich sterilised food should be held for a first sterilised shortlist.");
+  console.error(sterilisedTooRichRanking);
+  process.exit(1);
+}
+
+if (
+  !sterilisedTooRichRanking.signals.some(
+    (signal) => signal.code === "sterilised_rich_formula_mismatch"
+  )
+) {
+  console.error("Expected sterilised_rich_formula_mismatch for rich sterilised food.");
+  console.error(sterilisedTooRichRanking.signals);
   process.exit(1);
 }
 
