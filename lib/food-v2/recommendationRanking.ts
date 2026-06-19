@@ -665,6 +665,14 @@ function hasSpecialCareFoodPositioning(
     return true;
   }
 
+  if (
+    context === "recovery" &&
+    hasCustomerVisibleSeniorPositioning(food) &&
+    (!hasNumber(nutrients.protein_percent) || nutrients.protein_percent >= 24)
+  ) {
+    return true;
+  }
+
   return false;
 }
 

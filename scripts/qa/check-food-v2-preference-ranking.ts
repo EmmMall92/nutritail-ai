@@ -1072,6 +1072,77 @@ if (!seniorRanking.signals.some((signal) => signal.code === "senior_mobility_sup
   process.exit(1);
 }
 
+const seniorMuscleLossPet = {
+  ...seniorPet,
+  healthIssues: ["muscle loss", "senior"],
+};
+const seniorMuscleSupportFood = food({
+  id: "senior-muscle-support",
+  formula_key: "qa|senior-muscle-support|dog|dry",
+  display_name: "Senior 8+ Muscle Support Chicken",
+  life_stage: "senior",
+  dog_size: "medium",
+  commercial_tags: ["senior"],
+  ingredients: ["chicken", "rice", "fish oil"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 352,
+});
+const seniorLowProteinFood = food({
+  id: "senior-low-protein",
+  formula_key: "qa|senior-low-protein|dog|dry",
+  display_name: "Senior 8+ Light Low Protein Chicken",
+  life_stage: "senior",
+  dog_size: "medium",
+  commercial_tags: ["senior", "light"],
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 330,
+});
+const seniorMuscleSupportRanking = rankFoodV2ForPet({
+  food: seniorMuscleSupportFood,
+  nutrients: {
+    ...nutrients(seniorMuscleSupportFood),
+    protein_percent: 26,
+    fat_percent: 12,
+    fiber_percent: 3,
+  },
+  pet: seniorMuscleLossPet,
+  goal: "senior",
+});
+const seniorLowProteinRanking = rankFoodV2ForPet({
+  food: seniorLowProteinFood,
+  nutrients: {
+    ...nutrients(seniorLowProteinFood),
+    protein_percent: 20,
+    fat_percent: 8,
+    fiber_percent: 5,
+  },
+  pet: seniorMuscleLossPet,
+  goal: "senior",
+});
+
+if (seniorMuscleSupportRanking.bucket === "hold") {
+  console.error("Senior muscle-loss context should keep suitable senior foods usable.");
+  console.error(seniorMuscleSupportRanking);
+  process.exit(1);
+}
+
+if (seniorMuscleSupportRanking.total_score <= seniorLowProteinRanking.total_score) {
+  console.error("Senior muscle-loss context should prefer adequate-protein senior foods over low-protein light foods.");
+  console.error({ seniorMuscleSupportRanking, seniorLowProteinRanking });
+  process.exit(1);
+}
+
+if (
+  !seniorMuscleSupportRanking.signals.some(
+    (signal) => signal.code === "recovery_special_care_positioning"
+  )
+) {
+  console.error("Expected recovery_special_care_positioning for adequate-protein senior muscle-loss food.");
+  console.error(seniorMuscleSupportRanking.signals);
+  process.exit(1);
+}
+
 const seniorPoorAppetitePet = {
   ...seniorPet,
   healthIssues: ["senior", "low appetite", "losing weight"],
