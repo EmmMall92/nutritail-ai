@@ -1839,9 +1839,9 @@ function formatCompactFoodV2RecommendationFallback({
 
     return `${intro}
 
-Πρώτη επιλογή: ${topChoice.name}.${reason}
+Ξεκίνα από: ${topChoice.name}.${reason}
 
-Πάτησε μία κάρτα από κάτω για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την τροφή στην ανάλυση.`;
+Πάτησε μία κάρτα από κάτω για να δεις περίπου ποσότητα/ημέρα και να κρατήσω την τροφή στην ανάλυση.`;
   }
 
   const intro =
@@ -1852,9 +1852,9 @@ function formatCompactFoodV2RecommendationFallback({
 
   return `${intro}
 
-Top pick: ${topChoice.name}.${reason}
+Start with: ${topChoice.name}.${reason}
 
-Choose one card below and I will estimate grams/day and keep that food in the analysis.`;
+Choose one card below and I will estimate portions/day and keep that food in the analysis.`;
 }
 
 async function getFoodV2RecommendationMessage(
