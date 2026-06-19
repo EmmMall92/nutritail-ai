@@ -152,6 +152,10 @@ export function goalFromPetContext(
       "itch",
       "skin",
       "derma",
+      "\u03c6\u03b1\u03b3\u03bf\u03c5\u03c1",
+      "\u03ba\u03bd\u03b7\u03c3",
+      "\u03b4\u03b5\u03c1\u03bc",
+      "\u03c9\u03c4\u03b9\u03c4",
       "φαγουρ",
       "δερμ",
     ])
@@ -167,6 +171,12 @@ export function goalFromPetContext(
       "stone",
       "urolith",
       "pee",
+      "\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3",
+      "\u03bf\u03c5\u03c1\u03b7\u03c4",
+      "\u03c3\u03c4\u03c1\u03bf\u03c5\u03b2",
+      "\u03ba\u03c1\u03c5\u03c3\u03c4\u03b1\u03bb\u03bb",
+      "\u03bf\u03be\u03b1\u03bb",
+      "\u03bb\u03b9\u03b8",
       "ουρολογ",
       "κρυσταλλ",
       "οξαλ",
@@ -175,10 +185,31 @@ export function goalFromPetContext(
   ) {
     return "urinary";
   }
-  if (hasAny(pet.healthIssues, ["renal", "kidney", "ckd", "νεφρ"])) return "renal";
+  if (
+    hasAny(pet.healthIssues, [
+      "renal",
+      "kidney",
+      "ckd",
+      "\u03bd\u03b5\u03c6\u03c1",
+      "\u03bf\u03c5\u03c1\u03b9\u03b1",
+      "\u03bf\u03c5\u03c1\u03af\u03b1",
+      "\u03ba\u03c1\u03b5\u03b1\u03c4\u03b9\u03bd",
+    ])
+  ) {
+    return "renal";
+  }
   if (
     pet.weightGoal === "loss" ||
-    hasAny(pet.healthIssues, ["weight", "obesity", "overweight", "βάρος", "παχυ"])
+    hasAny(pet.healthIssues, [
+      "weight",
+      "obesity",
+      "overweight",
+      "\u03b2\u03b1\u03c1\u03bf\u03c2",
+      "\u03b2\u03ac\u03c1\u03bf\u03c2",
+      "\u03c0\u03b1\u03c7\u03c5",
+      "\u03c0\u03b1\u03c7\u03cd",
+      "\u03c0\u03b1\u03c7\u03b1\u03b9\u03bd",
+    ])
   ) {
     return "weight_control";
   }
@@ -192,6 +223,16 @@ export function goalFromPetContext(
       "gas",
       "pancreatitis",
       "pancreatic",
+      "\u03c0\u03b5\u03c8\u03b7",
+      "\u03c0\u03ad\u03c8\u03b7",
+      "\u03b4\u03b9\u03b1\u03c1\u03c1\u03bf\u03b9\u03b1",
+      "\u03b4\u03b9\u03ac\u03c1\u03c1\u03bf\u03b9\u03b1",
+      "\u03b1\u03b5\u03c1\u03b9\u03b1",
+      "\u03b1\u03ad\u03c1\u03b9\u03b1",
+      "\u03b5\u03bc\u03b5\u03c4",
+      "\u03bc\u03b1\u03bb\u03b1\u03ba\u03b1 \u03ba\u03bf\u03c0\u03c1\u03b1\u03bd\u03b1",
+      "\u03bc\u03b1\u03bb\u03b1\u03ba\u03ac \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1",
+      "\u03c0\u03b1\u03b3\u03ba\u03c1\u03b5\u03b1\u03c4",
       "πέψη",
       "διάρροια",
       "αέρια",
