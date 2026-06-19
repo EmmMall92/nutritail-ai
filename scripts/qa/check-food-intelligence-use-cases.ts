@@ -121,6 +121,37 @@ assert(
   puppyGrowth
 );
 
+assert(
+  puppyGrowth.best_use_cases.includes("large_breed_growth_mineral_review"),
+  "Expected large_breed_growth_mineral_review for large-breed puppy food with Ca/P data.",
+  puppyGrowth
+);
+
+const largeBreedPuppyMissingMinerals = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "puppy",
+  dog_size: "large",
+  health_tags: ["puppy", "large_breed"],
+  ingredient_tags: ["chicken"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 390,
+    protein_percent: 31,
+    fat_percent: 16,
+    fiber_percent: 2.5,
+  },
+});
+
+assert(
+  largeBreedPuppyMissingMinerals.not_ideal_cases.includes(
+    "large_breed_growth_without_mineral_review"
+  ),
+  "Expected large_breed_growth_without_mineral_review when large-breed puppy mineral data is missing.",
+  largeBreedPuppyMissingMinerals
+);
+
 const renalFood = evaluateFoodIntelligence({
   species: "cat",
   life_stage: "senior",

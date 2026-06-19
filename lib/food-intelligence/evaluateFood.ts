@@ -85,6 +85,29 @@ function animalProteinCount(input: FoodIntelligenceInput) {
   return animalProteinTags.filter((tag) => tags.has(tag)).length;
 }
 
+function calciumPhosphorusRatio(input: FoodIntelligenceInput) {
+  const calcium = input.nutrients?.calcium_percent;
+  const phosphorus = input.nutrients?.phosphorus_percent;
+
+  if (!hasNumber(calcium) || !hasNumber(phosphorus) || phosphorus <= 0) {
+    return null;
+  }
+
+  return calcium / phosphorus;
+}
+
+function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
+  const size = String(input.dog_size ?? "").toLowerCase();
+
+  return (
+    input.species === "dog" &&
+    input.life_stage === "puppy" &&
+    (size.includes("large") ||
+      size.includes("giant") ||
+      hasTag(input, ["large_breed", "giant_breed", "maxi"]))
+  );
+}
+
 function proteinQuality(input: FoodIntelligenceInput) {
   const protein = input.nutrients?.protein_percent;
   const ingredientTags = input.ingredient_tags ?? [];
@@ -311,6 +334,15 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "growth_development");
   }
+  const caPRatio = calciumPhosphorusRatio(input);
+  if (
+    isLargeBreedGrowthContext(input) &&
+    caPRatio !== null &&
+    caPRatio >= 1 &&
+    caPRatio <= 1.8
+  ) {
+    addUnique(result, "large_breed_growth_mineral_review");
+  }
   if (
     hasTag(input, ["urinary", "struvite", "oxalate"]) &&
     hasNumber(nutrients.magnesium_percent) &&
@@ -363,6 +395,13 @@ function notIdealCases(input: FoodIntelligenceInput) {
     (!hasNumber(input.nutrients?.calcium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))
   ) {
     cases.push("growth_without_mineral_review");
+  }
+  const caPRatio = calciumPhosphorusRatio(input);
+  if (
+    isLargeBreedGrowthContext(input) &&
+    (caPRatio === null || caPRatio < 1 || caPRatio > 1.8)
+  ) {
+    cases.push("large_breed_growth_without_mineral_review");
   }
   if (
     hasTag(input, ["pancreatitis", "pancreatic"]) &&
