@@ -973,6 +973,20 @@ function scoreFit(input: FoodV2RankingInput) {
         `Excluded because the visible product title targets ${visibleTitleSize} dogs, while this dog looks ${expectedSize}.`
       );
     } else if (
+      expectedSize &&
+      visibleTitleSize &&
+      visibleTitleSize === expectedSize &&
+      ["sterilised", "weight_control", "senior", "growth"].includes(goal)
+    ) {
+      score += 8;
+      addSignal(
+        signals,
+        "boost",
+        "customer_visible_dog_size_match",
+        8,
+        `Visible product title targets ${expectedSize} dogs, matching this pet's size.`
+      );
+    } else if (
       goal === "sterilised" &&
       expectedSize &&
       visibleTitleSize &&
@@ -1583,7 +1597,7 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
   const qualityScore = quality.score;
   const valueScore = scoreValue(input.food, fitScore, qualityScore);
   const excludes = signals.some((signal) => signal.type === "exclude");
-  const totalScore = excludes
+  const baseTotalScore = excludes
     ? 0
     : weightedTotalScore({
         goal: input.goal,
@@ -1591,6 +1605,12 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
         qualityScore,
         valueScore,
       });
+  const customerVisibleTieBreaker = signals.some(
+    (signal) => signal.code === "customer_visible_dog_size_match"
+  )
+    ? 2
+    : 0;
+  const totalScore = excludes ? 0 : baseTotalScore + customerVisibleTieBreaker;
   const tier = valueTier(input.food, valueScore, fitScore, qualityScore);
   const confidence = confidenceFor({ fitScore, qualityScore, signals });
 
