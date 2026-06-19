@@ -622,8 +622,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
         : "I did not find a suitable enough recommendation with the current context.",
       hold.length > 0
         ? locale === "el"
-          ? "Κράτησα εκτός shortlist τροφές που δεν ταίριαζαν αρκετά σε μέγεθος, ηλικία, στόχο ή δηλωμένες αποφυγές."
-          : "I kept foods out of the shortlist when they did not fit size, life stage, goal, or declared avoidances closely enough."
+          ? "Μερικές τροφές απορρίφθηκαν γιατί δεν ταίριαζαν αρκετά σε μέγεθος, ηλικία, στόχο ή δηλωμένες αποφυγές."
+          : "Some foods were skipped because they did not fit the pet's size, life stage, goal, or declared avoidances closely enough."
         : "",
       "",
       locale === "el"
