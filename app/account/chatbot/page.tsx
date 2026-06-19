@@ -1660,6 +1660,48 @@ function finalDailyCaloriesForAnalysis(
   });
 }
 
+function formatCompareCustomerTakeaway(
+  result: FoodCompareResponse,
+  language: ChatLanguage
+) {
+  const summary = result.summary;
+  if (!summary) return "";
+
+  if (language === "el") {
+    const lowCalorie =
+      summary.lowest_calorie ??
+      "\u03b4\u03b5\u03bd \u03c6\u03b1\u03af\u03bd\u03b5\u03c4\u03b1\u03b9 \u03ba\u03b1\u03b8\u03b1\u03c1\u03ac";
+    const protein =
+      summary.highest_protein ??
+      "\u03b4\u03b5\u03bd \u03c6\u03b1\u03af\u03bd\u03b5\u03c4\u03b1\u03b9 \u03ba\u03b1\u03b8\u03b1\u03c1\u03ac";
+    const fiber =
+      summary.highest_fiber ??
+      "\u03b4\u03b5\u03bd \u03c6\u03b1\u03af\u03bd\u03b5\u03c4\u03b1\u03b9 \u03ba\u03b1\u03b8\u03b1\u03c1\u03ac";
+
+    return `
+
+\u03a0\u03ce\u03c2 \u03bd\u03b1 \u03c4\u03bf \u03b4\u03b9\u03b1\u03b2\u03ac\u03c3\u03b5\u03b9\u03c2:
+- \u0391\u03bd \u03bf \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2, \u03b4\u03b5\u03c2 \u03c0\u03c1\u03ce\u03c4\u03b1: ${lowCalorie}.
+- \u0391\u03bd \u03c8\u03ac\u03c7\u03bd\u03b5\u03b9\u03c2 \u03c0\u03b9\u03bf \u03b4\u03c5\u03bd\u03b1\u03c4\u03ae \u03bc\u03c5\u03ca\u03ba\u03ae/\u03b5\u03bd\u03b5\u03c1\u03b3\u03b5\u03b9\u03b1\u03ba\u03ae \u03c5\u03c0\u03bf\u03c3\u03c4\u03ae\u03c1\u03b9\u03be\u03b7, \u03b4\u03b5\u03c2 \u03c0\u03c1\u03ce\u03c4\u03b1: ${protein}.
+- \u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ba\u03bf\u03c1\u03b5\u03c3\u03bc\u03cc \u03ae \u03ba\u03b1\u03bb\u03cd\u03c4\u03b5\u03c1\u03b1 \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1, \u03b4\u03b5\u03c2 \u03c4\u03b9\u03c2 \u03af\u03bd\u03b5\u03c2: ${fiber}.
+
+\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf \u03b2\u03ae\u03bc\u03b1: \u03c0\u03b5\u03c2 \u03bc\u03bf\u03c5 \u03c0\u03bf\u03b9\u03b1 \u03b1\u03c0\u03cc \u03b1\u03c5\u03c4\u03ad\u03c2 \u03c3\u03b5 \u03b5\u03bd\u03b4\u03b9\u03b1\u03c6\u03ad\u03c1\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03bc\u03c0\u03bf\u03c1\u03ce \u03bd\u03b1 \u03c4\u03b7 \u03b4\u03ad\u03c3\u03c9 \u03bc\u03b5 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1 \u03ae \u03bc\u03b5 \u03bd\u03ad\u03b1 \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7.`;
+  }
+
+  const lowCalorie = summary.lowest_calorie ?? "not clear yet";
+  const protein = summary.highest_protein ?? "not clear yet";
+  const fiber = summary.highest_fiber ?? "not clear yet";
+
+  return `
+
+How to choose:
+- If the goal is weight control, look first at: ${lowCalorie}.
+- If you want stronger muscle or energy support, look first at: ${protein}.
+- If satiety or stool quality matters, check fiber first: ${fiber}.
+
+Next step: tell me which one you prefer and I can connect it to grams/day or suggest a better-fit alternative.`;
+}
+
 function formatFoodComparison(
   result: FoodCompareResponse,
   language: ChatLanguage = "en"
@@ -1745,6 +1787,7 @@ Quick read:
 - ${result.summary.note ?? "Use this as a structured comparison aid."}`
     : "";
 
+  const customerTakeaway = formatCompareCustomerTakeaway(result, language);
   const followUp =
     missedMatches.length > 0 || partialMatches.length > 0
       ? greek
@@ -1774,7 +1817,7 @@ What this means:
 
   return `${greek ? "Σύγκριση τροφών" : "Food comparison"}:
 
-${rows.join("\n\n")}${summary}${followUp}`;
+${rows.join("\n\n")}${summary}${customerTakeaway}${followUp}`;
 }
 
 function formatCompactFoodV2RecommendationFallback({
