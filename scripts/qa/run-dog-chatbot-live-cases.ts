@@ -316,6 +316,42 @@ const EXTRA_CASES_101_200: DogQaCase[] = [
 
 const ALL_CASES = [...CASES, ...EXTRA_CASES_101_200];
 
+function parseCaseIds(value: string | undefined) {
+  if (!value?.trim()) return null;
+
+  const ids = new Set<number>();
+  for (const token of value.split(",")) {
+    const cleaned = token.trim();
+    if (!cleaned) continue;
+
+    const range = cleaned.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (range) {
+      const start = Number(range[1]);
+      const end = Number(range[2]);
+      const min = Math.min(start, end);
+      const max = Math.max(start, end);
+      for (let id = min; id <= max; id += 1) ids.add(id);
+      continue;
+    }
+
+    const id = Number(cleaned);
+    if (Number.isInteger(id) && id > 0) ids.add(id);
+  }
+
+  return ids.size > 0 ? ids : null;
+}
+
+function selectedCases() {
+  const selectedIds = parseCaseIds(process.env.NUTRITAIL_QA_CASE_IDS);
+  const limit = Number(process.env.NUTRITAIL_QA_CASE_LIMIT ?? 0);
+  const cases = selectedIds
+    ? ALL_CASES.filter((testCase) => selectedIds.has(testCase.id))
+    : ALL_CASES;
+
+  if (Number.isInteger(limit) && limit > 0) return cases.slice(0, limit);
+  return cases;
+}
+
 function assertCaseCoverage() {
   const ids = ALL_CASES.map((testCase) => testCase.id);
   const uniqueIds = new Set(ids);
@@ -954,7 +990,9 @@ async function main() {
 
   const results: CaseResult[] = [];
 
-  for (const testCase of ALL_CASES) {
+  const casesToRun = selectedCases();
+
+  for (const testCase of casesToRun) {
     let extraction: ExtractionResult | null = null;
     try {
       extraction = await extractWithOpenAi(client, testCase);
