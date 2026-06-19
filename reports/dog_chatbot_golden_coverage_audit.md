@@ -1,6 +1,6 @@
 # Dog Chatbot Golden Coverage Audit
 
-Generated: 2026-06-19T17:08:31.392Z
+Generated: 2026-06-19T17:27:10.851Z
 
 ## Summary
 
@@ -42,6 +42,16 @@ Generated: 2026-06-19T17:08:31.392Z
 - activeFit: 11
 - allergyReject: 10
 - largeBreedPuppy: 9
+
+## Topic Coverage For User Cases 101-200
+
+- breed_activity_101_115: 15
+- sterilised_weight_behaviour_116_120: 5
+- gi_skin_allergy_121_150: 30
+- medical_conditions_151_170: 20
+- reproduction_growth_171_180: 10
+- senior_accessibility_181_190: 10
+- environment_rescue_191_200: 10
 
 ## Damaged Prompt Cleanup
 
