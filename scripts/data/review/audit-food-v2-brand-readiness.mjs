@@ -270,11 +270,16 @@ function summarizeBrand(brand, rows, duplicateIdentityKeys) {
     scores.length > 0
       ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
       : 0;
+  const hasRecommendableFlag = rows.some((row) =>
+    Object.prototype.hasOwnProperty.call(row, "is_recommendable")
+  );
 
   const summary = {
     brand,
     total_rows: rows.length,
-    recommendable_rows: rows.filter((row) => row.is_recommendable === "true").length,
+    recommendable_rows: hasRecommendableFlag
+      ? rows.filter((row) => row.is_recommendable === "true").length
+      : "unknown",
     official_rows: rows.filter((row) => row.source_priority === "official").length,
     retailer_rows: rows.filter((row) => row.source_priority === "retailer").length,
     label_kcal_rows: rows.filter(
@@ -328,7 +333,7 @@ function renderReport(rows) {
       .slice(0, 20)
       .map(
         (row) =>
-          `- ${row.brand}: ${row.total_rows} rows, avg score ${row.avg_core_score}, recommendable ${row.recommendable_rows}`
+          `- ${row.brand}: ${row.total_rows} rows, avg score ${row.avg_core_score}, visible/recommendable flag ${row.recommendable_rows}`
       )
       .join("\n") || "- none";
 
@@ -349,6 +354,7 @@ Generated: ${new Date().toISOString()}
 - Brands missing calcium/phosphorus in at least one row: ${mineralGaps.length}
 - Input: ${paths.input}
 - CSV: ${paths.output}
+- Note: visible/recommendable flag counts the current recommendation-visibility flag in the preview file. It is not a data-quality score.
 
 ## Ready For Controlled Import
 
