@@ -628,6 +628,71 @@ if (!seniorRanking.signals.some((signal) => signal.code === "senior_mobility_sup
   process.exit(1);
 }
 
+const seniorPoorAppetitePet = {
+  ...seniorPet,
+  healthIssues: ["senior", "low appetite", "losing weight"],
+};
+const seniorMaintenanceFood = food({
+  id: "senior-maintenance",
+  formula_key: "qa|senior-maintenance|dog|dry",
+  display_name: "Senior 8+ Maintenance Chicken",
+  life_stage: "senior",
+  dog_size: "medium",
+  commercial_tags: ["senior"],
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 365,
+});
+const seniorLightFood = food({
+  id: "senior-light",
+  formula_key: "qa|senior-light|dog|dry",
+  display_name: "Senior Light Weight Control Chicken",
+  life_stage: "senior",
+  dog_size: "medium",
+  commercial_tags: ["senior", "light", "weight_control"],
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 330,
+});
+const seniorMaintenanceRanking = rankFoodV2ForPet({
+  food: seniorMaintenanceFood,
+  nutrients: {
+    ...nutrients(seniorMaintenanceFood),
+    protein_percent: 26,
+    fat_percent: 13,
+    fiber_percent: 3,
+  },
+  pet: seniorPoorAppetitePet,
+  goal: "senior",
+});
+const seniorLightRanking = rankFoodV2ForPet({
+  food: seniorLightFood,
+  nutrients: {
+    ...nutrients(seniorLightFood),
+    protein_percent: 24,
+    fat_percent: 8,
+    fiber_percent: 6,
+  },
+  pet: seniorPoorAppetitePet,
+  goal: "senior",
+});
+
+if (seniorMaintenanceRanking.total_score <= seniorLightRanking.total_score) {
+  console.error("Senior pets with low appetite or weight loss should not default to light food.");
+  console.error({ seniorMaintenanceRanking, seniorLightRanking });
+  process.exit(1);
+}
+
+if (
+  !seniorLightRanking.signals.some(
+    (signal) => signal.code === "senior_appetite_weight_loss_avoid_light_default"
+  )
+) {
+  console.error("Expected senior_appetite_weight_loss_avoid_light_default for senior light food.");
+  console.error(seniorLightRanking.signals);
+  process.exit(1);
+}
+
 const puppyPet = {
   ...pet,
   age: 0.5,
