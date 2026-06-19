@@ -4368,6 +4368,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "Tap one option to estimate daily grams and keep it in this analysis."
               )}
             </p>
+            <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
+              {botText(
+                "ΞΞµΞΊΞ―Ξ½Ξ± Ξ±Ο€Ο Ο„Ξ·Ξ½ Ο€ΟΟΟ„Ξ· ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ® Ξ³ΞΉΞ± Ο„ΞΏ ΊΞ±Ξ»ΟΟ„ΞµΟΞΏ Ξ΄ΞΉΞ±Ο„ΟΞΏΟ†ΞΉΞΊΟ fit, Ξ® Ξ΄ΞΉΞ¬Ξ»ΞµΞΎΞµ value ΞµΞ½Ξ±Ξ»Ξ»Ξ±ΞΊΟ„ΞΉΞΊΞ® Ξ±Ξ½ ΞΈΞ­Ξ»ΞµΞΉΟ‚ ΞΊΞ¬Ο„ΞΉ Ο€ΞΉΞΏ Ξ±Ο€Ξ»Ο.",
+                "Start with the first pick for the strongest nutrition fit, or choose a value option if you prefer something simpler."
+              )}
+            </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block text-emerald-800">

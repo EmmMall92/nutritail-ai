@@ -185,6 +185,8 @@ const requiredCardFlowCopy = [
   "3. Save",
   "Choose and calculate",
   "Choose it to estimate grams per day.",
+  "Start with the first pick for the strongest nutrition fit",
+  "choose a value option if you prefer something simpler",
   "Your plan is ready",
   "Plan summary",
   "Save it to keep calories, food choice, and first portion on the profile.",
