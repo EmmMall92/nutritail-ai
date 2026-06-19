@@ -77,9 +77,14 @@ const checks = [
     expected: "Next: review the summary below and save it to keep this plan on the pet profile.",
   },
   {
-    label: "Recommendation cards use qualitative match labels",
+    label: "Recommendation cards use customer role badges",
     file: "app/account/chatbot/page.tsx",
-    expected: "getRecommendationChoiceMatchLabel",
+    expected: "getRecommendationChoiceBadgeLabel",
+  },
+  {
+    label: "Recommendation cards expose portion estimate badge",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Portion estimate",
   },
   {
     label: "Recommendation composer has compact customer fallback",
@@ -95,6 +100,16 @@ const checks = [
     label: "Saved chatbot analysis frames next steps as ready",
     file: "app/account/chatbot/page.tsx",
     expected: "Your pet profile, report, timeline, and progress check are ready. Choose what you want to do next.",
+  },
+  {
+    label: "Saved chatbot analysis explains recommended next step",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Open the report first to keep calories, portion, and food choice in one place.",
+  },
+  {
+    label: "Saved chatbot analysis sets progress check timing",
+    file: "app/account/chatbot/page.tsx",
+    expected: "After 2-4 weeks, run a progress check with updated weight, grams/day, and treats.",
   },
   {
     label: "Saved chatbot analysis exposes progress check action",
@@ -123,6 +138,11 @@ const forbiddenChecks = [
     label: "Recommendation card badge does not expose raw internal score",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Math.round(choice.score)}/100",
+  },
+  {
+    label: "Recommendation cards no longer use old match-label helper",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "getRecommendationChoiceMatchLabel",
   },
 ];
 
