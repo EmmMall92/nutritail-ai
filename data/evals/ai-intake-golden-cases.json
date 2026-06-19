@@ -105,5 +105,13 @@
       "species": "dog",
       "weightKg": null
     }
+  },
+  {
+    "id": "greek_large_breed_puppy_context",
+    "message": "Έχω κουτάβι μεγαλόσωμο, θέλω να αποφύγω πρόβλημα στα κόκαλα.",
+    "expect": {
+      "species": "dog",
+      "healthIssues": ["large_breed_growth"]
+    }
   }
 ]

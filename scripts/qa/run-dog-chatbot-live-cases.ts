@@ -405,6 +405,7 @@ function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | n
     ...(testCase.goal === "renal" ? ["renal"] : []),
     ...(testCase.goal === "urinary" ? ["urinary"] : []),
     ...(testCase.goal === "allergy" ? ["allergy"] : []),
+    ...(testCase.checks?.largeBreedPuppy ? ["large breed puppy", "bone growth"] : []),
     ...(messageText.includes("χάνει μυς") || messageText.includes("χανει μυς")
       ? ["muscle loss"]
       : []),
@@ -420,7 +421,10 @@ function inferPetFromCase(testCase: DogQaCase, extraction?: ExtractionResult | n
       extraction?.ageYears ??
       expected.ageYears ??
       (messageText.includes("κουταβ") ? 0.5 : defaultAgeForGoal(testCase.goal)),
-    weight: extraction?.weightKg ?? expected.weightKg ?? defaultWeightForGoal(testCase.goal),
+    weight:
+      extraction?.weightKg ??
+      expected.weightKg ??
+      (testCase.checks?.largeBreedPuppy ? 30 : defaultWeightForGoal(testCase.goal)),
     activityLevel:
       extraction?.activityLevel ??
       expected.activityLevel ??
