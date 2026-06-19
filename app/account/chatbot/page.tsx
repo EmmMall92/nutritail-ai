@@ -497,6 +497,39 @@ function formatChoiceNumber(value: number | null | undefined, digits = 1) {
   return Number(value).toFixed(digits).replace(/\.0$/, "");
 }
 
+function getRecommendationChoiceFacts(
+  choice: RecommendedFoodChoice,
+  language: ChatLanguage
+) {
+  const facts = [
+    {
+      value: formatChoiceNumber(choice.kcalPer100g),
+      label: "kcal/100g",
+      tone: "bg-white text-gray-900 ring-gray-200",
+    },
+    {
+      value: formatChoiceNumber(choice.proteinPercent),
+      label: language === "el" ? "πρωτεΐνη" : "protein",
+      suffix: "%",
+      tone: "bg-emerald-50 text-emerald-950 ring-emerald-100",
+    },
+    {
+      value: formatChoiceNumber(choice.fatPercent),
+      label: language === "el" ? "λιπαρά" : "fat",
+      suffix: "%",
+      tone: "bg-amber-50 text-amber-950 ring-amber-100",
+    },
+    {
+      value: formatChoiceNumber(choice.fiberPercent),
+      label: language === "el" ? "ίνες" : "fiber",
+      suffix: "%",
+      tone: "bg-sky-50 text-sky-950 ring-sky-100",
+    },
+  ];
+
+  return facts.filter((fact) => fact.value);
+}
+
 function getRecommendationChoiceMatchLabel(
   choice: RecommendedFoodChoice,
   language: ChatLanguage
@@ -4228,6 +4261,19 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
                     {choice.name}
                   </span>
+                  {getRecommendationChoiceFacts(choice, chatLanguage).length > 0 && (
+                    <span className="mt-3 flex flex-wrap gap-1.5 text-xs font-semibold">
+                      {getRecommendationChoiceFacts(choice, chatLanguage).map((fact) => (
+                        <span
+                          key={`${fact.label}-${fact.value}`}
+                          className={`rounded-full px-2 py-1 ring-1 ${fact.tone}`}
+                        >
+                          {fact.suffix ? `${fact.value}${fact.suffix}` : fact.value}{" "}
+                          {fact.label}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                   {choice.reason && (
                     <span className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100">
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
@@ -4297,35 +4343,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  <span className="mt-3 text-xs font-semibold uppercase text-gray-500">
-                    {botText("Με μια ματιά", "At a glance")}
-                  </span>
-                  <span className="mt-2 flex flex-wrap gap-1.5 text-xs text-gray-700">
-                    {formatChoiceNumber(choice.kcalPer100g) && (
-                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
-                        {formatChoiceNumber(choice.kcalPer100g)} kcal/100g
-                      </span>
-                    )}
-                    {formatChoiceNumber(choice.proteinPercent) && (
-                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
-                        {formatChoiceNumber(choice.proteinPercent)}%{" "}
-                        {botText("πρωτεΐνη", "protein")}
-                      </span>
-                    )}
-                    {formatChoiceNumber(choice.fatPercent) && (
-                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
-                        {formatChoiceNumber(choice.fatPercent)}%{" "}
-                        {botText("λιπαρά", "fat")}
-                      </span>
-                    )}
-                    {formatChoiceNumber(choice.fiberPercent) && (
-                      <span className="rounded-full bg-white px-2 py-1 ring-1 ring-gray-200">
-                        {formatChoiceNumber(choice.fiberPercent)}%{" "}
-                        {botText("ίνες", "fiber")}
-                      </span>
-                    )}
-                  </span>
-                  <span className="mt-2 text-xs text-gray-500">
+                  <span className="mt-3 text-xs text-gray-500">
                     {botText(
                       "Πάτησέ τη για να υπολογίσουμε γραμμάρια/ημέρα.",
                       "Tap to calculate grams per day."
