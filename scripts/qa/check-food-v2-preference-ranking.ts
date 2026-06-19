@@ -1131,6 +1131,90 @@ if (!renalOnlyUrinaryRanking.signals.some((signal) => signal.code === "urinary_r
   process.exit(1);
 }
 
+const pancreatitisPet = {
+  ...pet,
+  healthIssues: ["pancreatitis history"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const lowFatPancreatitisFood = food({
+  id: "low-fat-pancreatitis",
+  formula_key: "qa|low-fat-pancreatitis|dog|dry",
+  display_name: "Digestive Low Fat Adult",
+  commercial_tags: ["digestive", "low_fat"],
+  ingredients: ["chicken", "rice"],
+  kcal_per_100g: 330,
+});
+const highFatPancreatitisFood = food({
+  id: "high-fat-pancreatitis",
+  formula_key: "qa|high-fat-pancreatitis|dog|dry",
+  display_name: "Adult Energy Rich Chicken",
+  commercial_tags: ["active", "energy"],
+  ingredients: ["chicken", "rice"],
+  kcal_per_100g: 405,
+});
+const lowFatPancreatitisRanking = rankFoodV2ForPet({
+  food: lowFatPancreatitisFood,
+  nutrients: {
+    ...nutrients(lowFatPancreatitisFood),
+    fat_percent: 8,
+  },
+  pet: pancreatitisPet,
+  goal: "sensitive_digestion",
+});
+const highFatPancreatitisRanking = rankFoodV2ForPet({
+  food: highFatPancreatitisFood,
+  nutrients: {
+    ...nutrients(highFatPancreatitisFood),
+    fat_percent: 18,
+  },
+  pet: pancreatitisPet,
+  goal: "sensitive_digestion",
+});
+const highFatPancreatitisGuards = detectFoodV2RecommendationGuardFlags(
+  highFatPancreatitisRanking
+);
+
+if (highFatPancreatitisRanking.bucket !== "hold") {
+  console.error("High-fat food should be held for pancreatitis history.");
+  console.error(highFatPancreatitisRanking);
+  process.exit(1);
+}
+
+if (lowFatPancreatitisRanking.bucket === "hold") {
+  console.error("Low-fat food should remain usable for pancreatitis-sensitive review.");
+  console.error(lowFatPancreatitisRanking);
+  process.exit(1);
+}
+
+if (
+  lowFatPancreatitisRanking.total_score <= highFatPancreatitisRanking.total_score
+) {
+  console.error("Low-fat pancreatitis candidate should outrank high-fat candidate.");
+  console.error({ lowFatPancreatitisRanking, highFatPancreatitisRanking });
+  process.exit(1);
+}
+
+if (
+  !lowFatPancreatitisRanking.signals.some(
+    (signal) => signal.code === "pancreatitis_low_fat_fit"
+  )
+) {
+  console.error("Expected pancreatitis_low_fat_fit for low-fat pancreatitis candidate.");
+  console.error(lowFatPancreatitisRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !highFatPancreatitisGuards.some(
+    (flag) => flag.code === "pancreatitis_high_fat_mismatch" && flag.severity === "block"
+  )
+) {
+  console.error("Expected pancreatitis_high_fat_mismatch block guard.");
+  console.error(highFatPancreatitisGuards);
+  process.exit(1);
+}
+
 const generalSkinPet = {
   ...pet,
   weight: 6,

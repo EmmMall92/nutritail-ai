@@ -487,6 +487,17 @@ function hasUrinaryPositioning(foodText: string) {
   return hasAny(foodText, ["urinary", "struvite", "oxalate"]);
 }
 
+function hasPancreatitisContext(values: string[] | undefined) {
+  return hasAny(normalizeText((values ?? []).join(" ")), [
+    "pancreatitis",
+    "pancreatic",
+    "pancreas",
+    "pagkreat",
+    "pagkreatit",
+    "παγκρεατ",
+  ]);
+}
+
 function hasSeniorPositioning(food: FoodProductV2, foodText: string) {
   return (
     food.life_stage === "senior" ||
@@ -993,6 +1004,52 @@ function scoreFit(input: FoodV2RankingInput) {
         },
       }
     );
+  }
+
+  if (hasPancreatitisContext(pet.healthIssues)) {
+    const fat = nutrients.fat_percent;
+    const lowFatPositioning = hasAny(haystack, [
+      "low fat",
+      "gastro low fat",
+      "pancreatic",
+      "pancreatitis",
+      "digestive low fat",
+    ]);
+
+    addSignal(
+      signals,
+      "caution",
+      "pancreatitis_requires_vet",
+      -10,
+      "Pancreatitis history needs veterinarian-directed diet selection."
+    );
+
+    if (!hasNumber(fat)) {
+      addSignal(
+        signals,
+        "caution",
+        "pancreatitis_missing_fat",
+        -18,
+        "Pancreatitis context needs fat data before confident shortlisting."
+      );
+    } else if (fat > 12 && !lowFatPositioning) {
+      addSignal(
+        signals,
+        "exclude",
+        "pancreatitis_high_fat_mismatch",
+        -100,
+        "Excluded because pancreatitis history should not start from higher-fat foods."
+      );
+    } else if (fat <= 10 || lowFatPositioning) {
+      score += 14;
+      addSignal(
+        signals,
+        "boost",
+        "pancreatitis_low_fat_fit",
+        14,
+        "Lower fat profile is more appropriate for pancreatitis-sensitive review."
+      );
+    }
   }
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
