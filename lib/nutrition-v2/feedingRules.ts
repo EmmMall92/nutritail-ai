@@ -50,6 +50,11 @@ export const FEEDING_SCIENTIFIC_PRINCIPLES = [
     principle:
       "Working and highly active pets may need more energy-dense formulas, but that logic should not spill into sedentary pets.",
   },
+  {
+    id: "seasonal_heat_can_reduce_intake",
+    principle:
+      "Hot weather can reduce voluntary food intake, so feeding guidance should watch hydration, body-weight trend and energy density before defaulting to light foods.",
+  },
 ] as const;
 
 export const FEEDING_DECISION_RULES = [
@@ -68,12 +73,18 @@ export const FEEDING_DECISION_RULES = [
     when: ["high activity pet", "active or performance formula"],
     then: "Allow higher kcal and fat as a useful signal when there is no weight-loss goal.",
   },
+  {
+    id: "summer_low_appetite_needs_energy_density_review",
+    when: ["hot weather or summer", "reduced appetite", "no weight-loss goal"],
+    then: "Prefer practical energy density and hydration monitoring; avoid defaulting to low-energy/light formulas.",
+  },
 ] as const;
 
 export const FEEDING_RECOMMENDATION_LOGIC = [
   "Separate maintenance, loss and gain goals before ranking foods.",
   "Use lower kcal and moderate fat as first-line signals for sterilised or weight-prone pets.",
   "Use active/performance positioning only when activity is genuinely high.",
+  "For seasonal low appetite in hot weather, keep the advice focused on hydration, body-weight monitoring and a realistic amount of food the pet will eat.",
 ] as const;
 
 export const FEEDING_CONTRAINDICATIONS = [
@@ -102,6 +113,18 @@ function normalizedHealthText(healthIssues: string[] | undefined) {
 
 function isWeightGainContext(healthText: string) {
   return /weight gain|gain weight|needs? to gain|underweight|muscle gain|gain muscle/.test(
+    healthText
+  );
+}
+
+function isHotWeatherContext(healthText: string) {
+  return /summer|hot weather|hot climate|heat|heatwave|very warm|καλοκαιρ|ζεστ|καυσωνα|καύσωνα/.test(
+    healthText
+  );
+}
+
+function isReducedAppetiteContext(healthText: string) {
+  return /low appetite|reduced appetite|poor appetite|eats little|eating little|picky in summer|τρωει λιγο|τρώει λίγο|τρωει ελαχιστα|τρώει ελάχιστα|μειωμενη ορεξη|μειωμένη όρεξη/.test(
     healthText
   );
 }
@@ -146,6 +169,11 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
   const strictWeightContext = isStrictWeightControlFeedingContext({ goal, pet });
   const activityText = normalizedHealthText(pet.healthIssues);
   const weightGainContext = isWeightGainContext(activityText);
+  const hotWeatherLowAppetite =
+    isHotWeatherContext(activityText) &&
+    isReducedAppetiteContext(activityText) &&
+    !strictWeightContext &&
+    !weightGainContext;
   const highActivity =
     pet.activityLevel === "high" ||
     /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
@@ -395,6 +423,40 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         points: -100,
         message:
           "Excluded because light/sterilised energy positioning is a poor first choice for a high-activity pet.",
+      });
+    }
+  }
+
+  if (hotWeatherLowAppetite) {
+    signals.push({
+      type: "caution",
+      code: "summer_low_appetite_hydration_monitoring",
+      points: 0,
+      message:
+        "Hot-weather appetite dips need hydration and body-weight monitoring before changing food aggressively.",
+    });
+
+    if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g >= 360) {
+      signals.push({
+        type: "boost",
+        code: "summer_low_appetite_energy_density",
+        points: 10,
+        message:
+          "A little more calorie density can help when seasonal heat reduces how much the pet eats.",
+      });
+    }
+
+    if (
+      positioning.weightControl ||
+      (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 335) ||
+      (hasNumber(nutrients.fat_percent) && nutrients.fat_percent <= 9)
+    ) {
+      signals.push({
+        type: "caution",
+        code: "summer_low_appetite_light_formula_mismatch",
+        points: -18,
+        message:
+          "Light or low-energy formulas are weaker first picks when a pet already eats very little in hot weather.",
       });
     }
   }
