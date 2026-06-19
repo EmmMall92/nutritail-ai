@@ -3716,6 +3716,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       kcalPer100g: choice.kcalPer100g,
     });
     const gramsPerDay = portionEstimate?.gramsPerDay ?? null;
+    const gramsPerMealTwoMeals = portionEstimate?.gramsPerMealTwoMeals ?? null;
+    const gramsPerMealThreeMeals = portionEstimate?.gramsPerMealThreeMeals ?? null;
 
     setPet((prev) => ({
       ...prev,
@@ -3729,20 +3731,17 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       weightGoal: pet.weightGoal ?? "maintain",
     }));
 
-    addMessages(
-      createMessage(
-        "bot",
-        gramsPerDay
-          ? botText(
-              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΜε βάση τις θερμίδες της κύριας τροφής, η πρώτη εκτίμηση είναι περίπου ${gramsPerDay}g/ημέρα.\n\nΑυτό αφήνει χώρο για λίγες λιχουδιές μέσα στον ημερήσιο στόχο. Χώρισέ το σε 2 γεύματα αν σε βολεύει και ξαναέλεγξε βάρος/όρεξη/κόπρανα σε 3-4 εβδομάδες.\n\nΕπόμενο: έλεγξε τη σύνοψη από κάτω και πάτησε αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
-              `Great, we will use ${choice.name}.\n\nBased on the main-food calorie allowance, the first estimate is about ${gramsPerDay}g/day.\n\nThis leaves room for a small treat allowance inside the daily target. Split it into 2 meals if convenient, and recheck weight, appetite, and stool in 3-4 weeks.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
-            )
-          : botText(
-              `Τέλεια, κρατάμε ως επιλογή την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για ακριβή γραμμάρια από αυτή τη ροή, αλλά μπορώ να συνεχίσω με γενική καθοδήγηση ή να δοκιμάσουμε άλλη τροφή από τη λίστα.\n\nΕπόμενο: έλεγξε τη σύνοψη από κάτω και πάτησε αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
-              `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
-            )
-      )
-    );
+    const selectedFoodReply = gramsPerDay
+      ? botText(
+          `\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1, \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03c9\u03c2 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03b7\u03bd ${choice.name}.\n\n\u03a0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03ba\u03c4\u03af\u03bc\u03b7\u03c3\u03b7 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerDay}g/\u03b7\u03bc\u03ad\u03c1\u03b1.\n\n\u03a0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ac:\n- 2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerMealTwoMeals}g/\u03b3\u03b5\u03cd\u03bc\u03b1\n- 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${gramsPerMealThreeMeals}g/\u03b3\u03b5\u03cd\u03bc\u03b1\n\n\u0391\u03c5\u03c4\u03cc \u03b1\u03c6\u03ae\u03bd\u03b5\u03b9 \u03c7\u03ce\u03c1\u03bf \u03b3\u03b9\u03b1 \u03bb\u03af\u03b3\u03b5\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03bc\u03ad\u03c3\u03b1 \u03c3\u03c4\u03bf\u03bd \u03b7\u03bc\u03b5\u03c1\u03ae\u03c3\u03b9\u03bf \u03c3\u03c4\u03cc\u03c7\u03bf. \u039e\u03b1\u03bd\u03b1\u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ba\u03b1\u03b9 \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1 \u03c3\u03b5 3-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2.\n\n\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf: \u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03c4\u03b7 \u03c3\u03cd\u03bd\u03bf\u03c8\u03b7 \u03b1\u03c0\u03cc \u03ba\u03ac\u03c4\u03c9 \u03ba\u03b1\u03b9 \u03c0\u03ac\u03c4\u03b7\u03c3\u03b5 \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03c1\u03b1\u03c4\u03b7\u03b8\u03b5\u03af \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03c3\u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb.`,
+          `Great, we will use ${choice.name}.\n\nFirst portion estimate: about ${gramsPerDay}g/day.\n\nPractical split:\n- 2 meals: about ${gramsPerMealTwoMeals}g/meal\n- 3 meals: about ${gramsPerMealThreeMeals}g/meal\n\nThis leaves room for a small treat allowance inside the daily target. Recheck weight, appetite, and stool in 3-4 weeks.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
+        )
+      : botText(
+          `\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1, \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03c9\u03c2 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03b7\u03bd ${choice.name}.\n\n\u0394\u03b5\u03bd \u03ad\u03c7\u03c9 \u03b1\u03c1\u03ba\u03b5\u03c4\u03ad\u03c2 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03b1\u03c0\u03cc \u03b1\u03c5\u03c4\u03ae \u03c4\u03b7 \u03c1\u03bf\u03ae, \u03b1\u03bb\u03bb\u03ac \u03bc\u03c0\u03bf\u03c1\u03ce \u03bd\u03b1 \u03c3\u03c5\u03bd\u03b5\u03c7\u03af\u03c3\u03c9 \u03bc\u03b5 \u03b3\u03b5\u03bd\u03b9\u03ba\u03ae \u03ba\u03b1\u03b8\u03bf\u03b4\u03ae\u03b3\u03b7\u03c3\u03b7 \u03ae \u03bd\u03b1 \u03b4\u03bf\u03ba\u03b9\u03bc\u03ac\u03c3\u03bf\u03c5\u03bc\u03b5 \u03ac\u03bb\u03bb\u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b1\u03c0\u03cc \u03c4\u03b7 \u03bb\u03af\u03c3\u03c4\u03b1.\n\n\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf: \u03ad\u03bb\u03b5\u03b3\u03be\u03b5 \u03c4\u03b7 \u03c3\u03cd\u03bd\u03bf\u03c8\u03b7 \u03b1\u03c0\u03cc \u03ba\u03ac\u03c4\u03c9 \u03ba\u03b1\u03b9 \u03c0\u03ac\u03c4\u03b7\u03c3\u03b5 \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03c1\u03b1\u03c4\u03b7\u03b8\u03b5\u03af \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03c3\u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb.`,
+          `Great, we will use ${choice.name}.\n\nI do not have enough calorie data for exact grams in this flow, but I can continue with general guidance or we can choose another food from the list.\n\nNext: review the summary below and save it to keep this plan on the pet profile.`
+        );
+
+    addMessages(createMessage("bot", selectedFoodReply));
   }
 
   async function saveToMyAccount() {
@@ -4354,6 +4353,22 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             "Choose a food for grams"
                           )}
                     </p>
+                    {analysisMetadata?.feedingGramsPerDay && (
+                      <p className="mt-1 text-xs text-gray-600">
+                        {botText(
+                          `2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${Math.round(
+                            analysisMetadata.feedingGramsPerDay / 2
+                          )}g/\u03b3\u03b5\u03cd\u03bc\u03b1 - 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${Math.round(
+                            analysisMetadata.feedingGramsPerDay / 3
+                          )}g/\u03b3\u03b5\u03cd\u03bc\u03b1`,
+                          `2 meals: about ${Math.round(
+                            analysisMetadata.feedingGramsPerDay / 2
+                          )}g/meal - 3 meals: about ${Math.round(
+                            analysisMetadata.feedingGramsPerDay / 3
+                          )}g/meal`
+                        )}
+                      </p>
+                    )}
                     <p className="mt-1 text-xs text-gray-500">
                       {botText(
                         "Η εκτίμηση αφήνει χώρο για μικρή ποσότητα λιχουδιών.",
