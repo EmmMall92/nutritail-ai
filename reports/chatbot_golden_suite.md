@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-19T01:19:15.512Z
+Generated: 2026-06-19T01:57:27.334Z
 
 ## Summary
 
@@ -54,7 +54,7 @@ Dog edge case fixture QA passed.
 ### Dog golden coverage audit
 
 - Status: pass
-- Duration: 0.3s
+- Duration: 0.4s
 - Command: `npm.cmd run audit:dog-chatbot-golden-coverage`
 
 ```text
@@ -63,6 +63,7 @@ Dog edge case fixture QA passed.
 {
   "liveCases": 200,
   "edgeCases": 100,
+  "coverageCases": 200,
   "liveDamagedPrompts": 0,
   "edgeDamagedPrompts": 0,
   "blockingProblems": 0,
@@ -73,7 +74,7 @@ Dog edge case fixture QA passed.
 ### Live dog chatbot 200 cases
 
 - Status: pass
-- Duration: 229.0s
+- Duration: 217.1s
 - Command: `npm.cmd run qa:dog-chatbot-live-cases`
 
 ```text
