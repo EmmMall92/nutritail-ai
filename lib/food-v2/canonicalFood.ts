@@ -88,12 +88,22 @@ function titleCase(value: string) {
 
 function dedupeRepeatedDisplayTerms(value: string) {
   return value
+    .replace(/\b(active nature|sensi plus)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(veterinary)(?:\s+\1)+\b/gi, "$1")
     .replace(
       /\b(urinary|renal|senior|puppy|kitten|junior|adult|mature|maintenance|mini|small|medium|large|giant|maxi|xsmall|light|sterilised|sterilized|neutered|sensitive|digestive)(?:\s+\1)+\b/gi,
       "$1"
     )
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function removeFeedingTableTitleTail(value: string) {
+  return value
+    .replace(/\b(?:weight\s+)?activity\s*\/?\s*day\b[\s\S]*$/i, " ")
+    .replace(/\bfeeding\s+(?:amount|guide|recommendation|table)\b[\s\S]*$/i, " ")
+    .replace(/\b(?:daily\s+)?ration\b[\s\S]*$/i, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -167,7 +177,9 @@ function removeNoiseWords(value: string) {
 
 export function normalizeCanonicalFormulaName(value: unknown) {
   return titleCase(
-    dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+    removeFeedingTableTitleTail(
+      dedupeRepeatedDisplayTerms(removeNoiseWords(cleanText(value)))
+    )
       .replace(PACK_SIZE_PATTERN, " ")
       .replace(/\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr)\b/gi, " ")
       .replace(/\b\d+(?:[.,]\d+)?\s*(?:\+?\s*free|pack|bags?)\b/gi, " ")
