@@ -408,6 +408,36 @@
       "expectations": ["premium_or_value", "urinary_top_pick"]
     },
     {
+      "label": "Struvite history cat",
+      "goal": "urinary",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 5,
+        "weight": 5.2,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["urinary", "struvite history"]
+      },
+      "expectations": ["premium_or_value", "urinary_top_pick", "struvite_top_pick"]
+    },
+    {
+      "label": "Oxalate history cat",
+      "goal": "urinary",
+      "pet": {
+        "species": "cat",
+        "breed": "European shorthair",
+        "age": 6,
+        "weight": 5.4,
+        "activityLevel": "normal",
+        "neutered": true,
+        "allergies": [],
+        "healthIssues": ["urinary", "oxalate history"]
+      },
+      "expectations": ["premium_or_value", "urinary_top_pick", "oxalate_top_pick"]
+    },
+    {
       "label": "Urinary adult dog",
       "goal": "urinary",
       "pet": {
