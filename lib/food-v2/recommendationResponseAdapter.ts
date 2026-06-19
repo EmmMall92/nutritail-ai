@@ -2,6 +2,7 @@ import type {
   FoodV2RecommendationGoal,
   FoodV2RankingResult,
 } from "@/lib/food-v2/recommendationRanking";
+import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 
 type RecommendationFood = {
   brand?: string | null;
@@ -106,7 +107,7 @@ function customerText(value: string) {
 }
 
 function foodName(food: RecommendationFood) {
-  return [food.brand, food.display_name].filter(Boolean).join(" ").trim() || "Unknown food";
+  return customerFoodName(food, " ");
 }
 
 function compactReasons(food: RecommendationFood, locale: "el" | "en") {
