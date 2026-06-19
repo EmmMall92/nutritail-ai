@@ -82,6 +82,28 @@ function hasAnyTerm(text, terms) {
   return terms.some((term) => text.includes(term));
 }
 
+const VALUE_FRIENDLY_TERMS = [
+  "briantos",
+  "brit premium",
+  "dog chow",
+  "happy dog naturcroq",
+  "josera",
+  "maintenance",
+  "naturcroq",
+  "premium by nature",
+  "sensi plus",
+];
+
+const PREMIUM_BRAND_TERMS = [
+  "acana",
+  "orijen",
+  "farmina",
+  "n&d",
+  "royal canin",
+  "hill's",
+  "hills",
+];
+
 const INGREDIENT_ALIASES = {
   beef: ["beef", "μοσχαρι", "μοσχάρι", "moschari", "moshari"],
   chicken: ["chicken", "poultry", "κοτοπου", "κοτόπου", "kotopoulo"],
@@ -232,6 +254,7 @@ function checkExpectations(scenario, data) {
     if (expectation === "value_first_for_budget") {
       const valuePositioned =
         first?.ranking?.bucket === "value" ||
+        hasAnyTerm(positioningText(first), VALUE_FRIENDLY_TERMS) ||
         hasAnyTerm(firstText, [
           "classic",
           "regular",
@@ -244,6 +267,7 @@ function checkExpectations(scenario, data) {
           "balance",
         ]);
       const premiumPositioned = hasAnyTerm(positioningText(first), [
+        ...PREMIUM_BRAND_TERMS,
         "grain free",
         "monoprotein",
         "veterinary",

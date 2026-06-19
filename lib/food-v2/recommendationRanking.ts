@@ -229,6 +229,29 @@ const VALUE_PENALTY_MARKERS = [
   "junior",
 ];
 
+const VALUE_FRIENDLY_MARKERS = [
+  "briantos",
+  "brit premium",
+  "dog chow",
+  "happy dog naturcroq",
+  "josera",
+  "maintenance",
+  "naturcroq",
+  "premium by nature",
+  "sensi plus",
+];
+
+const PREMIUM_BRAND_MARKERS = [
+  "acana",
+  "orijen",
+  "farmina",
+  "n&d",
+  "nd quinoa",
+  "royal canin",
+  "hill's",
+  "hills",
+];
+
 function normalizeText(value: unknown) {
   return String(value ?? "")
     .toLowerCase()
@@ -1015,7 +1038,9 @@ function scoreValue(food: FoodProductV2, fitScore: number, qualityScore: number)
   let score = Math.round(fitScore * 0.55 + qualityScore * 0.35);
 
   if (hasAny(haystack, VALUE_MARKERS)) score += 10;
+  if (hasAny(haystack, VALUE_FRIENDLY_MARKERS)) score += 16;
   if (hasAny(haystack, PREMIUM_MARKERS)) score -= 6;
+  if (hasAny(haystack, PREMIUM_BRAND_MARKERS)) score -= 16;
   if (hasAny(haystack, VALUE_PENALTY_MARKERS)) score -= 14;
   if (food.source_priority === "retailer") score += 2;
   if (food.source_priority === "official") score += 2;
@@ -1055,10 +1080,13 @@ function valueTier(
   if (hasAny(haystack, VALUE_PENALTY_MARKERS)) {
     return "premium_candidate";
   }
+  if (hasAny(haystack, PREMIUM_BRAND_MARKERS) && !hasAny(haystack, VALUE_FRIENDLY_MARKERS)) {
+    return "premium_candidate";
+  }
   if (hasAny(haystack, PREMIUM_MARKERS) && valueScore < 82) {
     return "premium_candidate";
   }
-  if (valueScore >= 72 && hasAny(haystack, VALUE_MARKERS)) {
+  if (valueScore >= 68 && hasAny(haystack, [...VALUE_MARKERS, ...VALUE_FRIENDLY_MARKERS])) {
     return "value_candidate";
   }
   return "standard";
@@ -1082,6 +1110,12 @@ function weightedTotalScore(input: {
   qualityScore: number;
   valueScore: number;
 }) {
+  if (input.goal === "value") {
+    return Math.round(
+      input.fitScore * 0.35 + input.qualityScore * 0.2 + input.valueScore * 0.45
+    );
+  }
+
   const weights = scoringWeightsForScenario(scenarioForGoal(input.goal));
   const fitWeight = weights.clinical_fit + weights.life_stage_size_fit;
   const qualityWeight = weights.nutrient_fit + weights.data_quality;

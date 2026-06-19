@@ -1074,23 +1074,23 @@ const budgetPet = {
 };
 const valueAdultFood = food({
   id: "value-adult",
-  formula_key: "qa|value-adult|dog|dry",
-  brand: "Value Brand",
-  display_name: "Classic Adult Complete",
-  formula_name: "Classic Adult Complete",
+  formula_key: "qa|happy-dog-naturcroq-adult-chicken|dog|dry",
+  brand: "Happy Dog",
+  display_name: "Naturcroq Adult Chicken",
+  formula_name: "Naturcroq Adult Chicken",
   dog_size: "medium",
-  commercial_tags: ["classic", "complete"],
+  commercial_tags: ["adult", "complete"],
   data_quality_status: "verified",
   source_priority: "official",
 });
 const premiumAdultFood = food({
   id: "premium-adult",
-  formula_key: "qa|premium-adult|dog|dry",
-  brand: "Premium Brand",
-  display_name: "Grain Free Monoprotein Adult Salmon",
-  formula_name: "Grain Free Monoprotein Adult Salmon",
+  formula_key: "qa|acana-classic-red-meat|dog|dry",
+  brand: "ACANA",
+  display_name: "Classic Red Meat",
+  formula_name: "Classic Red Meat",
   dog_size: "medium",
-  commercial_tags: ["grain_free", "monoprotein"],
+  commercial_tags: ["classic", "adult"],
   data_quality_status: "verified",
   source_priority: "official",
 });
