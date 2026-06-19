@@ -1,4 +1,5 @@
 import {
+  isLikelyDescriptiveFoodTitle,
   normalizeBrandlessFoodDisplayName,
   normalizeBrandlessFormulaName,
 } from "@/lib/food-v2/canonicalFood";
@@ -240,11 +241,45 @@ const brandlessFormulaCases = [
   },
 ] as const;
 
+const descriptiveTitleCases = [
+  {
+    label: "Ambrosia retailer SEO description title",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia ολιστική τροφή για ενήλικους σκύλους όλων των φυλών με κοτόπουλο και λαχανικά grain free",
+      formula_name:
+        "ολιστική τροφή για ενήλικους σκύλους όλων των φυλών με κοτόπουλο και λαχανικά grain free",
+    },
+  },
+  {
+    label: "Concise Ambrosia official-style formula title",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia Mediterranean Diet Grain Free Adult Fresh Chicken & Vegetables",
+      formula_name: "Mediterranean Diet Grain Free Adult Fresh Chicken & Vegetables",
+    },
+    expectedDescriptive: false,
+  },
+] as const;
+
 for (const testCase of brandlessFormulaCases) {
   const actual = normalizeBrandlessFormulaName(testCase.input);
   if (actual !== testCase.expected) {
     failures.push(
       `${testCase.label}: expected "${testCase.expected}", got "${actual}"`
+    );
+  }
+}
+
+for (const testCase of descriptiveTitleCases) {
+  const actual = isLikelyDescriptiveFoodTitle(testCase.input);
+  const expected =
+    "expectedDescriptive" in testCase ? testCase.expectedDescriptive : true;
+  if (actual !== expected) {
+    failures.push(
+      `${testCase.label}: expected descriptive=${expected}, got ${actual}`
     );
   }
 }
