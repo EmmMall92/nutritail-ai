@@ -164,6 +164,53 @@ const cases = [
     },
     expected: "Mini Adult",
   },
+  {
+    label: "Royal Canin pack size suffix removed",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin Shih Tzu Adult 1.5kg",
+      formula_name: "Shih Tzu Adult 1.5kg",
+    },
+    expected: "Shih Tzu Adult",
+  },
+  {
+    label: "Royal Canin senior plus age is preserved while grams are removed",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin Sterilised +7 400g",
+      formula_name: "Sterilised +7 400g",
+    },
+    expected: "Sterilised +7",
+  },
+  {
+    label: "Royal Canin age plus formula remains intact",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin Mini Adult 8+",
+      formula_name: "Mini Adult 8+",
+    },
+    expected: "Mini Adult 8+",
+  },
+  {
+    label: "Multipack prefix and try-now promo are removed",
+    input: {
+      brand: "Wolf of Wilderness",
+      display_name:
+        "2 x 1kg Wolf of Wilderness Appalachian Valley Small Breed - Try Now!",
+      formula_name:
+        "2 x 1kg Wolf of Wilderness Appalachian Valley Small Breed - Try Now!",
+    },
+    expected: "Appalachian Valley Small Breed",
+  },
+  {
+    label: "Greek gift pack promo is removed",
+    input: {
+      brand: "Ecopet Natural",
+      display_name: "Ecopet Natural Adult Medium 12kg + 2kg ΔΩΡΟ",
+      formula_name: "Adult Medium 12kg + 2kg ΔΩΡΟ",
+    },
+    expected: "Adult Medium",
+  },
 ] as const;
 
 const failures = cases.flatMap((testCase) => {
