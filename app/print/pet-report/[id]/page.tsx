@@ -113,6 +113,40 @@ function getMonitoringChecklist(analysis?: AnalysisHistoryItem | null) {
   return checklist;
 }
 
+function getFollowUpPlan(analysis?: AnalysisHistoryItem | null) {
+  const plan = [
+    {
+      label: "When to check again",
+      value: getRecheckWindow(analysis),
+      detail:
+        "Use the chatbot Progress check with the new weight, daily grams, treats, appetite, stool, and energy.",
+    },
+    {
+      label: "What to keep stable",
+      value: "Food amount and treats",
+      detail:
+        "Avoid changing portions every few days. Track the same plan long enough to see a real trend.",
+    },
+    {
+      label: "When to ask for a new shortlist",
+      value: "Taste, stool, or weight is not improving",
+      detail:
+        "If the pet refuses the food, gets soft stool, or weight is not moving, run a new analysis before switching randomly.",
+    },
+  ];
+
+  if (!analysis?.matched_food_name || !analysis?.feeding_grams_per_day) {
+    plan.unshift({
+      label: "Before relying on grams",
+      value: "Confirm the exact formula",
+      detail:
+        "Send the bag name or label photo so Nutritail can calculate portions from the correct calories.",
+    });
+  }
+
+  return plan;
+}
+
 function getReportSummary(analysis?: AnalysisHistoryItem | null) {
   if (!analysis) {
     return "This report needs a saved analysis before it can show calories, portions, and food fit.";
@@ -624,6 +658,33 @@ export default function PrintablePetReportPage() {
                   className="break-inside-avoid rounded-xl border border-blue-100 bg-white p-4 text-sm text-blue-950 print:border-gray-300"
                 >
                   {index + 1}. {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {latestAnalysis && (
+          <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-6 print:border-gray-300">
+            <h2 className="text-xl font-semibold text-amber-950">
+              Follow-up Plan
+            </h2>
+            <p className="mt-2 text-sm text-amber-900">
+              This is the simple plan to follow before changing food or portions
+              again.
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {getFollowUpPlan(latestAnalysis).map((item) => (
+                <div
+                  key={item.label}
+                  className="break-inside-avoid rounded-xl border border-amber-100 bg-white p-4 text-sm text-amber-950 print:border-gray-300"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 font-semibold">{item.value}</p>
+                  <p className="mt-1 text-xs text-amber-900">{item.detail}</p>
                 </div>
               ))}
             </div>
