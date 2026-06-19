@@ -51,6 +51,19 @@ function positioningText(food) {
     .toLowerCase();
 }
 
+function customerVisibleFoodText(food) {
+  return [
+    food?.brand,
+    food?.display_name,
+    food?.formula_key,
+    food?.life_stage,
+    food?.dog_size,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
 function nutritionHas(food, fields) {
   return fields.some((field) => {
     const value = food?.nutrition?.[field];
@@ -290,14 +303,14 @@ function checkExpectations(scenario, data) {
 
     if (expectation === "senior_or_joint_fit") {
       if (
-        !hasAnyTerm(firstText, ["senior", "mature", "joint", "mobility"])
+        !hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "joint", "mobility", "7+", "8+", "10+", "12+"])
       ) {
         warnings.push("Top pick does not show clear senior/joint fit.");
       }
     }
 
     if (expectation === "senior_top_pick") {
-      if (!hasAnyTerm(firstText, ["senior", "mature", "7+", "8+", "10+", "12+"])) {
+      if (!hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "7+", "8+", "10+", "12+"])) {
         warnings.push("Top pick is not clearly senior-positioned.");
       }
     }

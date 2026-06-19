@@ -474,6 +474,10 @@ function hasAdultOnlySeniorTitleConflict(food: FoodProductV2) {
   return hasWord(titleText, "adult") && !hasExplicitSeniorTitle(food);
 }
 
+function hasCustomerVisibleSeniorPositioning(food: FoodProductV2) {
+  return food.life_stage === "senior" || hasExplicitSeniorTitle(food);
+}
+
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -946,6 +950,17 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "senior" || stage === "senior") {
+    if (hasCustomerVisibleSeniorPositioning(food)) {
+      score += 18;
+      addSignal(
+        signals,
+        "boost",
+        "customer_visible_senior_positioning",
+        18,
+        "Clear senior positioning is visible to the customer."
+      );
+    }
+
     applyRuleSignals(
       evaluateSeniorFitRules({
         food,
@@ -965,11 +980,12 @@ function scoreFit(input: FoodV2RankingInput) {
     );
 
     if (stage === "senior" && hasAdultOnlySeniorTitleConflict(food)) {
+      score -= 42;
       addSignal(
         signals,
         "caution",
         "adult_title_for_senior_shortlist",
-        -28,
+        -42,
         "Adult-labelled food should not outrank clear senior options for a senior pet."
       );
     }
