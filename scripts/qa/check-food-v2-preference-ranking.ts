@@ -325,6 +325,81 @@ if (!weightControlRanking.signals.some((signal) => signal.code === "obesity_sati
   process.exit(1);
 }
 
+const activeGainPet = {
+  ...pet,
+  weight: 22,
+  age: 3,
+  neutered: false,
+  activityLevel: "high" as const,
+  healthIssues: ["training daily", "needs to gain weight"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const activeEnergyFood = food({
+  id: "active-energy",
+  formula_key: "qa|active-energy|dog|dry",
+  display_name: "Performance Active High Energy Chicken",
+  dog_size: "medium",
+  commercial_tags: ["active", "performance"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 402,
+});
+const maintenanceAdultFood = food({
+  id: "maintenance-adult",
+  formula_key: "qa|maintenance-adult|dog|dry",
+  display_name: "Adult Maintenance Chicken",
+  dog_size: "medium",
+  commercial_tags: ["adult"],
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 342,
+});
+const activeEnergyRanking = rankFoodV2ForPet({
+  food: activeEnergyFood,
+  nutrients: {
+    ...nutrients(activeEnergyFood),
+    protein_percent: 28,
+    fat_percent: 18,
+    fiber_percent: 2.2,
+  },
+  pet: activeGainPet,
+  goal: "general",
+});
+const maintenanceAdultRanking = rankFoodV2ForPet({
+  food: maintenanceAdultFood,
+  nutrients: {
+    ...nutrients(maintenanceAdultFood),
+    protein_percent: 24,
+    fat_percent: 10,
+    fiber_percent: 3,
+  },
+  pet: activeGainPet,
+  goal: "general",
+});
+
+if (activeEnergyRanking.total_score <= maintenanceAdultRanking.total_score) {
+  console.error("Active high-energy food should outrank maintenance food for active weight-gain dogs.");
+  console.error({ activeEnergyRanking, maintenanceAdultRanking });
+  process.exit(1);
+}
+
+if (
+  !activeEnergyRanking.signals.some(
+    (signal) => signal.code === "active_formula_activity_fit"
+  )
+) {
+  console.error("Expected active_formula_activity_fit for active high-energy food.");
+  console.error(activeEnergyRanking.signals);
+  process.exit(1);
+}
+
+if (maintenanceAdultRanking.bucket !== "hold") {
+  console.error("Plain low-energy maintenance food should be held for active weight-gain dogs.");
+  console.error(maintenanceAdultRanking);
+  process.exit(1);
+}
+
 const sterilisedLeanFood = food({
   id: "sterilised-lean",
   formula_key: "qa|sterilised-lean|dog|dry",
