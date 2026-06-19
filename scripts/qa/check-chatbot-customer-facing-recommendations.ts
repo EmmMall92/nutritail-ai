@@ -339,6 +339,8 @@ const forbiddenChatbotPageCopy = [
   "Analysis summary",
   "Save when the pet details, calorie target, and food context look right.",
   "Επόμενο βήμα: διάλεξε μία τροφή από τη λίστα",
+  "Top pick:",
+  "Πρώτη επιλογή:",
   "Score: ${getHistoryFoodScore",
   "Strong match",
   "Good match",
