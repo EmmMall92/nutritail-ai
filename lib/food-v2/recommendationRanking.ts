@@ -450,6 +450,20 @@ function hasWeightControlPositioning(foodText: string) {
   return hasAny(foodText, ["light", "weight", "satiety", "obesity", "sterilised", "sterilized", "neutered"]);
 }
 
+function isMildlyRicherSterilisedFit(
+  foodText: string,
+  kcal: number | null | undefined,
+  nutrients: FoodNutrientsV2
+) {
+  const fat = nutrients.fat_percent;
+
+  return (
+    hasWeightControlPositioning(foodText) &&
+    (!hasNumber(kcal) || kcal <= 355) &&
+    (!hasNumber(fat) || fat <= 12)
+  );
+}
+
 function hasSensitiveDigestivePositioning(foodText: string) {
   return hasAny(foodText, [
     "gastro",
@@ -1048,7 +1062,14 @@ function scoreFit(input: FoodV2RankingInput) {
 
   let adjustedScore = score;
   if (goal === "sterilised") {
-    if (!hasWeightControlPositioning(haystack)) {
+    const hasWeightPositioning = hasWeightControlPositioning(haystack);
+    const mildlyRicherSterilisedFit = isMildlyRicherSterilisedFit(
+      haystack,
+      food.kcal_per_100g,
+      nutrients
+    );
+
+    if (!hasWeightPositioning) {
       adjustedScore -= 18;
       addSignal(
         signals,
@@ -1069,10 +1090,10 @@ function scoreFit(input: FoodV2RankingInput) {
       );
     }
     if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 340) {
-      adjustedScore -= 30;
+      adjustedScore -= mildlyRicherSterilisedFit ? 15 : 30;
     }
     if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 10) {
-      adjustedScore -= 20;
+      adjustedScore -= mildlyRicherSterilisedFit ? 10 : 20;
     }
   }
   if (goal === "sensitive_digestion" && !hasSensitiveDigestivePositioning(haystack)) {
