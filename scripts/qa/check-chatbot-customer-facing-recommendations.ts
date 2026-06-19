@@ -173,7 +173,8 @@ const requiredCardFlowCopy = [
   "2. Calculate",
   "3. Save",
   "Choose and calculate",
-  "Tap to calculate grams per day.",
+  "Choose it to estimate grams per day.",
+  "Portion estimate",
   "Practical split:",
   "2 meals: about",
   "3 meals: about",
@@ -213,6 +214,10 @@ const forbiddenChatbotPageCopy = [
   "Food score:",
   "Nutrition confidence:",
   "Score: ${getHistoryFoodScore",
+  "Strong match",
+  "Good match",
+  "Useful alternative",
+  "getRecommendationChoiceMatchLabel",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)
