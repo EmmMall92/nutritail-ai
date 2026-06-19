@@ -1,4 +1,7 @@
-import { normalizeBrandlessFoodDisplayName } from "@/lib/food-v2/canonicalFood";
+import {
+  normalizeBrandlessFoodDisplayName,
+  normalizeBrandlessFormulaName,
+} from "@/lib/food-v2/canonicalFood";
 
 const cases = [
   {
@@ -73,6 +76,34 @@ const failures = cases.flatMap((testCase) => {
   }
   return [];
 });
+
+const brandlessFormulaCases = [
+  {
+    label: "Josera formula brand prefix",
+    input: {
+      brand: "Josera",
+      formula_name: "Josera Active Nature",
+    },
+    expected: "Active Nature",
+  },
+  {
+    label: "Royal Canin formula without brand",
+    input: {
+      brand: "Royal Canin",
+      formula_name: "Mini Adult",
+    },
+    expected: "Mini Adult",
+  },
+] as const;
+
+for (const testCase of brandlessFormulaCases) {
+  const actual = normalizeBrandlessFormulaName(testCase.input);
+  if (actual !== testCase.expected) {
+    failures.push(
+      `${testCase.label}: expected "${testCase.expected}", got "${actual}"`
+    );
+  }
+}
 
 if (failures.length > 0) {
   console.error("Food V2 display-name cleanup QA failed:");

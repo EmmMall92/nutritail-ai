@@ -210,6 +210,25 @@ export function normalizeBrandlessFoodDisplayName({
     .trim();
 }
 
+export function normalizeBrandlessFormulaName({
+  brand,
+  formula_name,
+}: {
+  brand: string;
+  formula_name?: string | null;
+}) {
+  const cleanedFormula = normalizeCanonicalFormulaName(formula_name);
+  if (!cleanedFormula) return "";
+
+  return (
+    normalizeBrandlessFoodDisplayName({
+      brand,
+      display_name: cleanedFormula,
+      formula_name: cleanedFormula,
+    }) || cleanedFormula
+  );
+}
+
 export function normalizeCanonicalFormulaKeyPart(value: unknown) {
   return slugify(
     normalizeCanonicalFormulaName(value)
