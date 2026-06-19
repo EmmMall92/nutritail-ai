@@ -1,6 +1,6 @@
 # Dog Chatbot 200 Live Cases
 
-Generated: 2026-06-19T01:57:26.803Z
+Generated: 2026-06-19T03:27:25.597Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
@@ -23,7 +23,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 3 | pass | Purina Pro Plan PRO Plan® SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο; Monge BWild Bwild Low Grain All Breeds Adult Deer; Purina Pro Plan PRO Plan® SMALL&MINI ADULT Everyday Nutrition Κοτόπουλο | - |
 | 4 | pass | N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed; Orijen Puppy Large | - |
 | 5 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 6 | pass | Acana Senior; Orijen Senior; Purina Pro Plan PRO Plan® SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο | - |
+| 6 | pass | Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini; Orijen Senior | - |
 | 7 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; Happy Dog Fit & Vital Light | - |
 | 8 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge BWild Bwild Low Grain All Breeds Adult Deer | - |
 | 9 | pass | Josera ACTIVE NATURE; Happy Dog Profi High Energy 30/20; Monge BWild Bwild Low Grain All Breeds Adult Deer | - |
@@ -33,7 +33,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 13 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 14 | pass | Monge VetSolution Renal And Oxalate; Josera RENAL DRY; Royal Canin Vet Diet Small Renal | - |
 | 15 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
-| 16 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 16 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 17 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 18 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge BWild Bwild Low Grain All Breeds Adult Deer | - |
 | 19 | pass | Monge BWild Bwild Low Grain All Breeds Adult Deer; Monge VetSolution An Hydro; Purina Pro Plan PRO Plan® MEDIUM ADULT Sensitive Skin Σολομός | - |
@@ -68,16 +68,16 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 48 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 49 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 50 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
-| 51 | pass | N&D Low Grain Chicken & Pomegranate Senior Mini; Josera CHICKEN & RICE; Josera SENSIPLUS | - |
-| 52 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 53 | pass | Acana Senior; Orijen Senior; Purina Pro Plan PRO Plan® SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο | - |
-| 54 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 55 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 51 | pass | Josera BALANCE; Josera CHICKEN & RICE; Josera SENSIPLUS | - |
+| 52 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; Josera BALANCE | - |
+| 53 | pass | Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini; Orijen Senior | - |
+| 54 | pass | Josera BALANCE; Josera CHICKEN & RICE; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 55 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 56 | pass | Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Renal | - |
-| 57 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 58 | pass | Royal Canin Maxi Ageing 8+; Acana Senior; Farmina Team Breeder Top Με Κοτόπουλο | - |
-| 59 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 60 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 57 | pass | Josera BALANCE; Josera CHICKEN & RICE; Josera LIGHT & VITAL | - |
+| 58 | pass | Farmina Team Breeder Top Με Κοτόπουλο; Acana Senior; Orijen Senior | - |
+| 59 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 60 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 61 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge BWild Bwild Low Grain All Breeds Adult Deer | - |
 | 62 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 63 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
@@ -178,11 +178,11 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 158 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 159 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 160 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
-| 161 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 161 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 162 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 163 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 164 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
-| 165 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 165 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 166 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 167 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 168 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
@@ -198,16 +198,16 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 178 | pass | N&D Pumpkin Grain Free Lamb & Blueberry Puppy Mini; N&D White Grain Free Sea Bass & Spirulina Puppy Mini; Josera DUCK & POTATO | - |
 | 179 | pass | N&D Pumpkin Grain Free Lamb & Blueberry Puppy Mini; N&D White Grain Free Sea Bass & Spirulina Puppy Mini; Josera DUCK & POTATO | - |
 | 180 | pass | N&D Pumpkin Grain Free Lamb & Blueberry Puppy Mini; N&D White Grain Free Sea Bass & Spirulina Puppy Mini; Josera DUCK & POTATO | - |
-| 181 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 182 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 183 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 184 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 185 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 186 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 187 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 188 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
-| 189 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
-| 190 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; Orijen Senior | - |
+| 181 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 182 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 183 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 184 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 185 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 186 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 187 | pass | Happy Dog Fit & Vital Light; Josera BALANCE; Josera CHICKEN & RICE | - |
+| 188 | pass | N&D Low Grain Chicken & Pomegranate Senior Mini; Josera BALANCE; Josera CHICKEN & RICE | - |
+| 189 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
+| 190 | pass | Josera MEDI/MAXI CHICKEN & SWEET POTATO; Acana Senior; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 191 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 192 | pass | ACANA Classic Red Meat; ACANA Prairie Poultry; Happy Dog Naturcroq Duck & Rice Sterilised | - |
 | 193 | pass | Josera ACTIVE NATURE; Happy Dog Profi High Energy 30/20; Monge BWild Bwild Low Grain All Breeds Adult Deer | - |

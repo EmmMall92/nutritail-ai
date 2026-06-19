@@ -26,6 +26,36 @@ const checks = [
     covers: "200 live runner ids, fixture coverage, duplicates, and damaged prompt detection.",
   },
   {
+    name: "Food Intelligence use cases",
+    command: "npm.cmd",
+    args: ["run", "qa:food-intelligence-use-cases"],
+    covers: "Strengths, cautions, best use cases, and not-ideal cases for weight, growth, senior, renal, allergy, skin/coat, and active-food logic.",
+  },
+  {
+    name: "Food V2 ranking scenarios",
+    command: "npm.cmd",
+    args: ["run", "audit:food-v2-ranking-scenarios"],
+    covers: "Condition-specific recommendation accuracy for sterilised, senior, allergy, urinary, renal, growth, and active-dog scenarios.",
+  },
+  {
+    name: "Chatbot portion estimates",
+    command: "npm.cmd",
+    args: ["run", "qa:chatbot-portions"],
+    covers: "Choose food -> estimate grams/day using main-food calories after treat allowance.",
+  },
+  {
+    name: "Customer chatbot flow links",
+    command: "npm.cmd",
+    args: ["run", "qa:customer-chatbot-flow-links"],
+    covers: "Saved analysis next steps, pet profile/report/timeline/progress links, and customer-facing recommendation card actions.",
+  },
+  {
+    name: "Account progress live routes",
+    command: "npm.cmd",
+    args: ["run", "qa:account-progress-live-routes"],
+    covers: "Live account chatbot/report/timeline/progress routes respond safely on production.",
+  },
+  {
     name: "Live dog chatbot 200 cases",
     command: "npm.cmd",
     args: ["run", "qa:dog-chatbot-live-cases"],
