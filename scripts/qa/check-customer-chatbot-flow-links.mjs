@@ -72,6 +72,11 @@ const checks = [
     expected: "Estimated portion",
   },
   {
+    label: "Chosen recommendation points user to save the plan",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Next: review the summary below and save it to keep this plan on the pet profile.",
+  },
+  {
     label: "Recommendation cards use qualitative match labels",
     file: "app/account/chatbot/page.tsx",
     expected: "getRecommendationChoiceMatchLabel",
