@@ -541,6 +541,17 @@ const genericAdultFood = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 360,
 });
+const adultLabelledSeniorMetadataFood = food({
+  id: "adult-labelled-senior-metadata",
+  formula_key: "qa|adult-labelled-senior-metadata|dog|dry",
+  display_name: "Neutered Adult Duck Medium",
+  life_stage: "senior",
+  dog_size: "medium",
+  commercial_tags: ["senior", "sterilised"],
+  ingredients: ["duck", "rice", "pea fiber"],
+  primary_animal_proteins: ["duck"],
+  kcal_per_100g: 335,
+});
 const seniorRanking = rankFoodV2ForPet({
   food: seniorFood,
   nutrients: {
@@ -565,10 +576,37 @@ const genericAdultSeniorRanking = rankFoodV2ForPet({
   pet: seniorPet,
   goal: "senior",
 });
+const adultLabelledSeniorMetadataRanking = rankFoodV2ForPet({
+  food: adultLabelledSeniorMetadataFood,
+  nutrients: {
+    ...nutrients(adultLabelledSeniorMetadataFood),
+    protein_percent: 27,
+    fat_percent: 10,
+    fiber_percent: 6,
+  },
+  pet: seniorPet,
+  goal: "senior",
+});
 
 if (seniorRanking.total_score <= genericAdultSeniorRanking.total_score) {
   console.error("Senior-positioned food should outrank generic adult food for senior cases.");
   console.error({ seniorRanking, genericAdultSeniorRanking });
+  process.exit(1);
+}
+
+if (seniorRanking.total_score <= adultLabelledSeniorMetadataRanking.total_score) {
+  console.error("Clear senior title should outrank adult-labelled food with senior metadata.");
+  console.error({ seniorRanking, adultLabelledSeniorMetadataRanking });
+  process.exit(1);
+}
+
+if (
+  !adultLabelledSeniorMetadataRanking.signals.some(
+    (signal) => signal.code === "adult_title_for_senior_shortlist"
+  )
+) {
+  console.error("Expected adult_title_for_senior_shortlist for adult-labelled senior metadata.");
+  console.error(adultLabelledSeniorMetadataRanking.signals);
   process.exit(1);
 }
 
