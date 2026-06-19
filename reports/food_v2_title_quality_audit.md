@@ -1,23 +1,23 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-19T02:29:57.426Z
+Generated: 2026-06-19T02:37:28.721Z
 
 ## Summary
 
 - Rows reviewed: 758
 - Food V2 candidate rows reviewed: 553
 - Source registry rows reviewed: 205
-- Audit findings: 359
-- Manual cleanup findings: 59
-- Auto-cleanup/info findings: 300
+- Audit findings: 336
+- Manual cleanup findings: 12
+- Auto-cleanup/info findings: 324
 - Rows with high/critical title issues: 2
-- Rows without manual title issues: 729
+- Rows without manual title issues: 753
 - Output CSV: data/review/food_v2_title_quality_audit.csv
 
 ## Issues By Severity
 
-- info: 300
-- medium: 57
+- info: 324
+- medium: 10
 - high: 2
 
 ## Issues By Type
@@ -26,13 +26,14 @@ Generated: 2026-06-19T02:29:57.426Z
 - source_registry_fallback_formula_name_too_long: 57
 - source_registry_fallback_formula_name_starts_with_brand: 45
 - source_registry_fallback_formula_name_looks_like_description: 30
-- retailer_title_needs_human_review: 28
-- medical_claim_used_as_name: 25
+- medical_claim_product_line_ok: 24
 - source_registry_fallback_formula_contains_pack_or_offer: 18
+- retailer_title_needs_human_review: 5
 - source_registry_fallback_medical_claim_used_as_name: 5
 - formula_contains_pack_or_offer: 3
 - formula_name_too_long: 2
 - formula_name_starts_with_brand: 1
+- medical_claim_used_as_name: 1
 - source_registry_fallback_display_name_too_long: 1
 
 ## High/Critical Issues By Brand
@@ -42,15 +43,9 @@ Generated: 2026-06-19T02:29:57.426Z
 
 ## Medium Cleanup Focus By Brand
 
-- Hills: 16
-- Royal Canin: 12
-- Hill's Prescription Diet: 9
-- Royal Canin Veterinary Diet: 8
 - Briantos: 5
-- Brit: 2
-- Purina Pro Plan: 2
+- Hill's Prescription Diet: 3
 - Wolf of Wilderness: 2
-- Josera: 1
 
 ## Recommended Next Step
 
