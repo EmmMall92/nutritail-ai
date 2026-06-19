@@ -607,4 +607,72 @@ assert(
   dentalLargeKibbleMismatch
 );
 
+const summerLowAppetiteFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: ["summer", "hot_weather", "low_appetite"],
+  ingredient_tags: ["salmon", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 368,
+    protein_percent: 27,
+    fat_percent: 13,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  summerLowAppetiteFood.best_use_cases.includes("summer_low_appetite_feeding_review"),
+  "Expected summer_low_appetite_feeding_review for hot-weather low-appetite context with usable energy density.",
+  summerLowAppetiteFood
+);
+
+assert(
+  summerLowAppetiteFood.food_strengths.some((item) =>
+    item.includes("seasonal heat reduces")
+  ),
+  "Expected customer-useful summer low-appetite strength.",
+  summerLowAppetiteFood
+);
+
+assert(
+  summerLowAppetiteFood.food_cautions.some((item) =>
+    item.includes("hydration and body-weight monitoring")
+  ),
+  "Expected hydration/body-weight monitoring caution for seasonal low appetite.",
+  summerLowAppetiteFood
+);
+
+const summerLowEnergyFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: ["summer", "hot_weather", "low_appetite"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 320,
+    protein_percent: 23,
+    fat_percent: 8,
+    fiber_percent: 3,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  summerLowEnergyFood.not_ideal_cases.includes(
+    "summer_low_appetite_without_energy_support"
+  ),
+  "Expected low-energy food to be not ideal for summer low-appetite context.",
+  summerLowEnergyFood
+);
+
 console.log("Food intelligence use-case QA passed.");
