@@ -916,6 +916,37 @@ if (!workingDogContextRanking.signals.some((signal) => signal.code === "active_f
   process.exit(1);
 }
 
+const greekWorkingDogContextRanking = rankFoodV2ForPet({
+  food: activeHighFat,
+  nutrients: {
+    ...nutrients(activeHighFat),
+    fat_percent: 18,
+    fiber_percent: 2,
+  },
+  pet: {
+    ...highActivityPet,
+    activityLevel: "normal" as const,
+    healthIssues: ["κυνηγάει", "τρέχει σε βουνό", "εκπαιδεύεται καθημερινά"],
+  },
+  goal: "general",
+});
+
+if (greekWorkingDogContextRanking.bucket === "hold") {
+  console.error("Greek working-dog context should keep active foods usable even when activityLevel is not explicit.");
+  console.error(greekWorkingDogContextRanking);
+  process.exit(1);
+}
+
+if (
+  !greekWorkingDogContextRanking.signals.some(
+    (signal) => signal.code === "active_formula_activity_fit"
+  )
+) {
+  console.error("Expected active_formula_activity_fit from Greek working-dog context.");
+  console.error(greekWorkingDogContextRanking.signals);
+  process.exit(1);
+}
+
 const workingDogWeightGainPet = {
   ...highActivityPet,
   healthIssues: ["working dog", "daily mountain training", "needs weight gain"],
