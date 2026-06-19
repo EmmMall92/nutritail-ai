@@ -497,6 +497,25 @@ function formatChoiceNumber(value: number | null | undefined, digits = 1) {
   return Number(value).toFixed(digits).replace(/\.0$/, "");
 }
 
+function getRecommendationChoiceMatchLabel(
+  choice: RecommendedFoodChoice,
+  language: ChatLanguage
+) {
+  const score = choice.score ?? 0;
+
+  if (choice.role === "value") {
+    return language === "el" ? "Καλή value επιλογή" : "Good value pick";
+  }
+  if (score >= 82) {
+    return language === "el" ? "Πολύ δυνατό ταίριασμα" : "Strong match";
+  }
+  if (score >= 68) {
+    return language === "el" ? "Καλή επιλογή" : "Good match";
+  }
+
+  return language === "el" ? "Χρήσιμη εναλλακτική" : "Useful alternative";
+}
+
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
   const emphasis =
     index === 0
@@ -4194,11 +4213,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         ? botText("Value επιλογή", "Value pick")
                         : botText("Καλύτερο fit", "Best fit")}
                     </span>
-                    {choice.score != null && (
-                      <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                        {botText("Καταλληλότητα", "Fit")} {Math.round(choice.score)}/100
-                      </span>
-                    )}
+                    <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
+                      {getRecommendationChoiceMatchLabel(choice, chatLanguage)}
+                    </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
                     {choice.name}
