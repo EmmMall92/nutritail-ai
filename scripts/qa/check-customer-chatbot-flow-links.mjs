@@ -131,6 +131,16 @@ const checks = [
     file: "app/account/pets/[id]/page.tsx",
     expected: "Food recommendation:",
   },
+  {
+    label: "Printable report uses customer-facing saved food insights heading",
+    file: "app/print/pet-report/page.tsx",
+    expected: "Saved Food Insights",
+  },
+  {
+    label: "Printable timeline uses customer-facing saved food insights heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Latest Saved Food Insights",
+  },
 ];
 
 const forbiddenChecks = [
@@ -163,6 +173,16 @@ const forbiddenChecks = [
     label: "Pet detail page does not expose legacy food signal ids",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: "Legacy food signal ids",
+  },
+  {
+    label: "Printable report does not expose legacy food analysis wording",
+    file: "app/print/pet-report/page.tsx",
+    forbidden: "Legacy Food Analysis Signals",
+  },
+  {
+    label: "Printable timeline does not expose legacy food analysis wording",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Legacy Food Analysis Signals",
   },
 ];
 

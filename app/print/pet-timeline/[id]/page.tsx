@@ -484,11 +484,11 @@ export default function PetTimelineReportPage() {
         </div>
       </Section>
 
-      <Section title="Latest Legacy Food Analysis Signals">
+      <Section title="Latest Saved Food Insights">
         <p className="mb-4 text-sm text-gray-600">
-          These are legacy analysis signals saved with the timeline. Use the
-          Food V2 shortlist in the chatbot for current shopping
-          recommendations.
+          These foods were saved with the latest timeline analysis as useful
+          nutrition context. For a fresh shopping shortlist, run a new chatbot
+          recommendation with the pet&apos;s current weight, food, and preferences.
         </p>
         <div className="space-y-4">
           {recommendedFoods.map((item) => (
@@ -504,7 +504,7 @@ export default function PetTimelineReportPage() {
                 {item.food.protein}% - fat {item.food.fat}%
               </p>
               <p className="mt-2 text-sm">
-                <span className="font-semibold">Analysis reasons:</span>{" "}
+                <span className="font-semibold">Why it appeared:</span>{" "}
                 {item.reasons.join(", ")}
               </p>
             </div>
