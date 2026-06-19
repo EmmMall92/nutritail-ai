@@ -409,6 +409,21 @@ function strengths(input: FoodIntelligenceInput) {
     addUnique(result, "Calcium and phosphorus are available for mineral review.");
   }
   if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    hasNumber(nutrients.magnesium_percent) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    addUnique(result, "Magnesium, phosphorus and sodium are available for urinary mineral review.");
+  }
+  if (
+    hasTag(input, ["renal", "kidney"]) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    addUnique(result, "Phosphorus and sodium are available for renal mineral review.");
+  }
+  if (
     animalProteinCount(input) === 1 &&
     hasTag(input, ["allergy", "hypoallergenic", "monoprotein", "sensitive", "dermatosis"])
   ) {
@@ -503,10 +518,25 @@ function cautions(input: FoodIntelligenceInput) {
     result.push("Renal-positioned use needs phosphorus data.");
   }
   if (
+    hasTag(input, ["renal", "kidney"]) &&
+    hasNumber(input.nutrients?.phosphorus_percent) &&
+    !hasNumber(input.nutrients?.sodium_percent)
+  ) {
+    result.push("Renal-positioned use is stronger with sodium context as well as phosphorus.");
+  }
+  if (
     hasTag(input, ["urinary", "struvite", "oxalate"]) &&
     (!hasNumber(input.nutrients?.magnesium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))
   ) {
     result.push("Urinary-positioned use needs magnesium and phosphorus context.");
+  }
+  if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    hasNumber(input.nutrients?.magnesium_percent) &&
+    hasNumber(input.nutrients?.phosphorus_percent) &&
+    !hasNumber(input.nutrients?.sodium_percent)
+  ) {
+    result.push("Urinary-positioned use is stronger when sodium is available too.");
   }
   if (
     hasTag(input, ["skin", "coat", "dermatosis", "itch"]) &&
@@ -626,10 +656,25 @@ function bestUseCases(input: FoodIntelligenceInput) {
     addUnique(result, "urinary_mineral_review");
   }
   if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    hasNumber(nutrients.magnesium_percent) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    addUnique(result, "urinary_complete_mineral_review");
+  }
+  if (
     hasTag(input, ["renal", "kidney"]) &&
     hasNumber(nutrients.phosphorus_percent)
   ) {
     addUnique(result, "renal_phosphorus_review");
+  }
+  if (
+    hasTag(input, ["renal", "kidney"]) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    addUnique(result, "renal_mineral_review");
   }
   if (
     hasTag(input, ["pancreatitis", "pancreatic", "low_fat"]) &&
@@ -701,6 +746,21 @@ function notIdealCases(input: FoodIntelligenceInput) {
   }
   if (!hasNumber(input.nutrients?.phosphorus_percent)) cases.push("renal_decision_without_phosphorus");
   if (!hasNumber(input.nutrients?.magnesium_percent)) cases.push("urinary_decision_without_magnesium");
+  if (
+    hasTag(input, ["renal", "kidney"]) &&
+    hasNumber(input.nutrients?.phosphorus_percent) &&
+    !hasNumber(input.nutrients?.sodium_percent)
+  ) {
+    cases.push("renal_decision_without_sodium_context");
+  }
+  if (
+    hasTag(input, ["urinary", "struvite", "oxalate"]) &&
+    (!hasNumber(input.nutrients?.magnesium_percent) ||
+      !hasNumber(input.nutrients?.phosphorus_percent) ||
+      !hasNumber(input.nutrients?.sodium_percent))
+  ) {
+    cases.push("urinary_decision_without_full_mineral_review");
+  }
   if (
     ["puppy", "kitten"].includes(input.life_stage ?? "") &&
     (!hasNumber(input.nutrients?.calcium_percent) || !hasNumber(input.nutrients?.phosphorus_percent))

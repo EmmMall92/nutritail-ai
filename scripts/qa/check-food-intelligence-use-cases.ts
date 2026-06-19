@@ -221,6 +221,115 @@ assert(
   renalFood
 );
 
+assert(
+  renalFood.not_ideal_cases.includes("renal_decision_without_sodium_context"),
+  "Expected renal_decision_without_sodium_context when renal-positioned food has phosphorus but no sodium data.",
+  renalFood
+);
+
+const renalCompleteMineralFood = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "senior",
+  health_tags: ["senior"],
+  ingredient_tags: ["fish"],
+  medical_tags: ["renal"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 374,
+    protein_percent: 26,
+    fat_percent: 15,
+    fiber_percent: 2.4,
+    phosphorus_percent: 0.42,
+    sodium_percent: 0.28,
+  },
+});
+
+assert(
+  renalCompleteMineralFood.best_use_cases.includes("renal_mineral_review"),
+  "Expected renal_mineral_review when renal-positioned food has phosphorus and sodium data.",
+  renalCompleteMineralFood
+);
+
+assert(
+  renalCompleteMineralFood.food_strengths.some((item) =>
+    item.includes("Phosphorus and sodium")
+  ),
+  "Expected renal strength explaining phosphorus and sodium availability.",
+  renalCompleteMineralFood
+);
+
+const urinaryCompleteMineralFood = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "adult",
+  health_tags: ["urinary"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: ["urinary", "struvite"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 355,
+    protein_percent: 32,
+    fat_percent: 12,
+    fiber_percent: 3,
+    phosphorus_percent: 0.72,
+    magnesium_percent: 0.07,
+    sodium_percent: 0.55,
+  },
+});
+
+assert(
+  urinaryCompleteMineralFood.best_use_cases.includes("urinary_mineral_review"),
+  "Expected urinary_mineral_review when urinary food has magnesium and phosphorus data.",
+  urinaryCompleteMineralFood
+);
+
+assert(
+  urinaryCompleteMineralFood.best_use_cases.includes("urinary_complete_mineral_review"),
+  "Expected urinary_complete_mineral_review when urinary food has magnesium, phosphorus and sodium data.",
+  urinaryCompleteMineralFood
+);
+
+assert(
+  urinaryCompleteMineralFood.food_strengths.some((item) =>
+    item.includes("Magnesium, phosphorus and sodium")
+  ),
+  "Expected urinary strength explaining magnesium, phosphorus and sodium availability.",
+  urinaryCompleteMineralFood
+);
+
+const urinaryMissingSodiumFood = evaluateFoodIntelligence({
+  species: "cat",
+  life_stage: "adult",
+  health_tags: ["urinary"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: ["urinary", "oxalate"],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 360,
+    protein_percent: 31,
+    fat_percent: 13,
+    fiber_percent: 3,
+    phosphorus_percent: 0.7,
+    magnesium_percent: 0.08,
+  },
+});
+
+assert(
+  urinaryMissingSodiumFood.not_ideal_cases.includes(
+    "urinary_decision_without_full_mineral_review"
+  ),
+  "Expected urinary_decision_without_full_mineral_review when urinary food lacks sodium data.",
+  urinaryMissingSodiumFood
+);
+
+assert(
+  urinaryMissingSodiumFood.food_cautions.some((item) => item.includes("sodium")),
+  "Expected urinary caution mentioning sodium when sodium data is missing.",
+  urinaryMissingSodiumFood
+);
+
 const lowFatPancreatitisReview = evaluateFoodIntelligence({
   species: "dog",
   life_stage: "adult",
