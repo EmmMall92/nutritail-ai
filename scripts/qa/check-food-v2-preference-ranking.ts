@@ -727,18 +727,18 @@ if (seniorRanking.total_score <= genericAdultSeniorRanking.total_score) {
   process.exit(1);
 }
 
-if (seniorRanking.total_score <= adultLabelledSeniorMetadataRanking.total_score) {
-  console.error("Clear senior title should outrank adult-labelled food with senior metadata.");
+if (adultLabelledSeniorMetadataRanking.bucket !== "hold") {
+  console.error("Adult-labelled food should be held for senior shortlists even if metadata says senior.");
   console.error({ seniorRanking, adultLabelledSeniorMetadataRanking });
   process.exit(1);
 }
 
 if (
   !adultLabelledSeniorMetadataRanking.signals.some(
-    (signal) => signal.code === "adult_title_for_senior_shortlist"
+    (signal) => signal.code === "senior_positioning_not_customer_visible"
   )
 ) {
-  console.error("Expected adult_title_for_senior_shortlist for adult-labelled senior metadata.");
+  console.error("Expected senior_positioning_not_customer_visible for adult-labelled senior metadata.");
   console.error(adultLabelledSeniorMetadataRanking.signals);
   process.exit(1);
 }
@@ -1536,6 +1536,83 @@ if (budgetSplit.premium[0]?.formula_key !== valueAdultFood.formula_key) {
 if (budgetSplit.premium[0]?.bucket !== "value") {
   console.error("Value-first presentation should preserve value bucket metadata.");
   console.error(budgetSplit.premium[0]);
+  process.exit(1);
+}
+
+const struviteCatPet = {
+  species: "cat" as const,
+  breed: "European shorthair",
+  weight: 5.2,
+  age: 5,
+  activityLevel: "normal" as const,
+  neutered: true,
+  healthIssues: ["urinary", "struvite history"],
+  allergies: [],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const oxalateOnlyCatFood = food({
+  id: "oxalate-only-cat",
+  formula_key: "qa|cat-urinary-oxalate|cat|dry",
+  species: "cat",
+  display_name: "Urinary Oxalate Cat",
+  formula_name: "Urinary Oxalate Cat",
+  life_stage: "adult",
+  medical_tags: ["urinary", "struvite dissolution claim"],
+  ingredients: ["chicken", "rice"],
+});
+const struviteCatFood = food({
+  id: "struvite-cat",
+  formula_key: "qa|cat-urinary-struvite|cat|dry",
+  species: "cat",
+  display_name: "Urinary Struvite Cat",
+  formula_name: "Urinary Struvite Cat",
+  life_stage: "adult",
+  medical_tags: ["urinary"],
+  ingredients: ["chicken", "rice"],
+});
+const oxalateOnlyForStruviteRanking = rankFoodV2ForPet({
+  food: oxalateOnlyCatFood,
+  nutrients: nutrients(oxalateOnlyCatFood),
+  pet: struviteCatPet,
+  goal: "urinary",
+});
+const struviteForStruviteRanking = rankFoodV2ForPet({
+  food: struviteCatFood,
+  nutrients: nutrients(struviteCatFood),
+  pet: struviteCatPet,
+  goal: "urinary",
+});
+
+if (oxalateOnlyForStruviteRanking.bucket !== "hold") {
+  console.error("Visible oxalate-only food should be held for struvite history.");
+  console.error(oxalateOnlyForStruviteRanking);
+  process.exit(1);
+}
+
+if (
+  !oxalateOnlyForStruviteRanking.signals.some(
+    (signal) => signal.code === "urinary_subtype_mismatch"
+  )
+) {
+  console.error("Expected urinary_subtype_mismatch for visible oxalate-only food in struvite case.");
+  console.error(oxalateOnlyForStruviteRanking.signals);
+  process.exit(1);
+}
+
+if (struviteForStruviteRanking.bucket === "hold") {
+  console.error("Visible struvite food should remain selectable for struvite history.");
+  console.error(struviteForStruviteRanking);
+  process.exit(1);
+}
+
+if (
+  !struviteForStruviteRanking.signals.some(
+    (signal) => signal.code === "urinary_struvite_match"
+  )
+) {
+  console.error("Expected urinary_struvite_match for visible struvite food.");
+  console.error(struviteForStruviteRanking.signals);
   process.exit(1);
 }
 
