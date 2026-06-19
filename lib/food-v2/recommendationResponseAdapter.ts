@@ -73,6 +73,38 @@ const GOAL_LABELS_EN: Record<string, string> = {
   senior: "senior pet",
 };
 
+const legacyGreekMojibakePattern =
+  /(?:\?{3,}|\u0392\u00ae|\ufffd|[\u039e\u039f][\u0080-\u00ff\u0370-\u03ff])/gu;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map<string, number>();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
+
+function repairLegacyGreekMojibake(value: string) {
+  const markers = value.match(legacyGreekMojibakePattern) ?? [];
+  if (markers.length < 2) return value;
+
+  const bytes: number[] = [];
+  for (const char of value) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return value;
+    }
+  }
+
+  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+}
+
+function customerText(value: string) {
+  return repairLegacyGreekMojibake(value);
+}
+
 function foodName(food: RecommendationFood) {
   return [food.brand, food.display_name].filter(Boolean).join(" ").trim() || "Unknown food";
 }
@@ -191,10 +223,13 @@ export function planFoodV2RecommendationResponse(
 
   return {
     locale,
-    title,
-    summary,
-    sections,
-    cautions: collectCautions(input, locale),
-    followUpQuestion: followUpFor(goal, locale),
+    title: customerText(title),
+    summary: customerText(summary),
+    sections: sections.map((section) => ({
+      title: customerText(section.title),
+      items: section.items.map(customerText),
+    })),
+    cautions: collectCautions(input, locale).map(customerText),
+    followUpQuestion: customerText(followUpFor(goal, locale)),
   };
 }
