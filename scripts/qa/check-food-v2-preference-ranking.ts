@@ -1619,6 +1619,124 @@ if (!oxalateRanking.signals.some((signal) => signal.code === "urinary_oxalate_ma
   process.exit(1);
 }
 
+const hepaticPet = {
+  ...pet,
+  weight: 18,
+  age: 8,
+  healthIssues: ["hepatic disease", "elevated liver enzymes"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const hepaticFood = food({
+  id: "hepatic-food",
+  formula_key: "qa|hepatic|dog|dry",
+  brand: "QA Vet",
+  display_name: "Hepatic Veterinary Diet",
+  ingredients: ["rice", "egg", "fish oil"],
+  medical_tags: ["hepatic"],
+});
+const genericAdultForHepaticFood = food({
+  id: "generic-adult-hepatic-context",
+  formula_key: "qa|generic-adult-hepatic-context|dog|dry",
+  brand: "QA Generic",
+  display_name: "Adult Chicken Maintenance",
+  ingredients: ["chicken", "rice"],
+});
+const hepaticRanking = rankFoodV2ForPet({
+  food: hepaticFood,
+  nutrients: nutrients(hepaticFood),
+  pet: hepaticPet,
+  goal: "general",
+});
+const genericAdultForHepaticRanking = rankFoodV2ForPet({
+  food: genericAdultForHepaticFood,
+  nutrients: nutrients(genericAdultForHepaticFood),
+  pet: hepaticPet,
+  goal: "general",
+});
+
+if (hepaticRanking.bucket === "hold") {
+  console.error("Hepatic-positioned food should remain usable for hepatic contexts.");
+  console.error(hepaticRanking);
+  process.exit(1);
+}
+
+if (genericAdultForHepaticRanking.bucket !== "hold") {
+  console.error("Generic adult food should be held for hepatic contexts.");
+  console.error(genericAdultForHepaticRanking);
+  process.exit(1);
+}
+
+if (!hepaticRanking.signals.some((signal) => signal.code === "hepatic_special_care_positioning")) {
+  console.error("Expected hepatic_special_care_positioning for hepatic food.");
+  console.error(hepaticRanking.signals);
+  process.exit(1);
+}
+
+if (!genericAdultForHepaticRanking.signals.some((signal) => signal.code === "hepatic_special_care_mismatch")) {
+  console.error("Expected hepatic_special_care_mismatch for generic hepatic-context food.");
+  console.error(genericAdultForHepaticRanking.signals);
+  process.exit(1);
+}
+
+const mobilityPet = {
+  ...pet,
+  weight: 32,
+  age: 9,
+  healthIssues: ["arthritis", "hip dysplasia"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const mobilityFood = food({
+  id: "mobility-food",
+  formula_key: "qa|mobility|dog|dry",
+  brand: "QA Vet",
+  display_name: "Joint Mobility Adult",
+  dog_size: "large",
+  ingredients: ["chicken", "rice", "fish oil"],
+  commercial_tags: ["mobility"],
+});
+const genericAdultForMobilityFood = food({
+  id: "generic-adult-mobility-context",
+  formula_key: "qa|generic-adult-mobility-context|dog|dry",
+  brand: "QA Generic",
+  display_name: "Adult Maintenance Chicken",
+  ingredients: ["chicken", "rice"],
+});
+const mobilityRanking = rankFoodV2ForPet({
+  food: mobilityFood,
+  nutrients: {
+    ...nutrients(mobilityFood),
+    epa_dha_percent: 0.35,
+  },
+  pet: mobilityPet,
+  goal: "senior",
+});
+const genericAdultForMobilityRanking = rankFoodV2ForPet({
+  food: genericAdultForMobilityFood,
+  nutrients: nutrients(genericAdultForMobilityFood),
+  pet: mobilityPet,
+  goal: "senior",
+});
+
+if (mobilityRanking.bucket === "hold") {
+  console.error("Mobility-positioned food should remain usable for arthritis contexts.");
+  console.error(mobilityRanking);
+  process.exit(1);
+}
+
+if (genericAdultForMobilityRanking.bucket !== "hold") {
+  console.error("Generic adult food should be held for arthritis/mobility contexts.");
+  console.error(genericAdultForMobilityRanking);
+  process.exit(1);
+}
+
+if (!mobilityRanking.signals.some((signal) => signal.code === "mobility_special_care_positioning")) {
+  console.error("Expected mobility_special_care_positioning for mobility food.");
+  console.error(mobilityRanking.signals);
+  process.exit(1);
+}
+
 const pancreatitisPet = {
   ...pet,
   healthIssues: ["pancreatitis history"],

@@ -577,6 +577,101 @@ function hasMobilityPositioning(food: FoodProductV2) {
   ]);
 }
 
+type SpecialCareContext =
+  | "hepatic"
+  | "diabetic"
+  | "cardiac"
+  | "mobility"
+  | "recovery";
+
+const SPECIAL_CARE_CONTEXT_TERMS: Record<SpecialCareContext, readonly string[]> = {
+  hepatic: [
+    "hepatic",
+    "liver",
+    "cholangitis",
+    "\u03b7\u03c0\u03b1\u03c4",
+    "\u03c7\u03bf\u03bb\u03bf",
+    "\u03b7\u03c0\u03b1\u03c1",
+  ],
+  diabetic: ["diabetic", "diabetes", "\u03b4\u03b9\u03b1\u03b2\u03b7\u03c4"],
+  cardiac: ["cardiac", "heart", "cardio", "\u03ba\u03b1\u03c1\u03b4\u03b9"],
+  mobility: [
+    "arthritis",
+    "arthrosis",
+    "joint",
+    "mobility",
+    "hip dysplasia",
+    "elbow dysplasia",
+    "cruciate",
+    "\u03b1\u03c1\u03b8\u03c1",
+    "\u03b4\u03c5\u03c3\u03c0\u03bb\u03b1\u03c3",
+    "\u03c7\u03b9\u03b1\u03c3\u03c4",
+  ],
+  recovery: [
+    "recovery",
+    "convalescence",
+    "surgery",
+    "hospital",
+    "hospitalization",
+    "muscle loss",
+    "\u03b1\u03bd\u03b1\u03c1\u03c1\u03c9\u03c3",
+    "\u03b5\u03c0\u03b5\u03bc\u03b2\u03b1\u03c3",
+    "\u03bd\u03bf\u03c3\u03b7\u03bb",
+    "\u03bc\u03c5\u03b9\u03ba",
+  ],
+};
+
+const SPECIAL_CARE_FOOD_TERMS: Record<SpecialCareContext, readonly string[]> = {
+  hepatic: ["hepatic", "liver"],
+  diabetic: ["diabetic", "diabetes", "glucose", "glycemic", "obesity"],
+  cardiac: ["cardiac", "heart", "cardio"],
+  mobility: ["joint", "mobility", "arthritis", "arthro", "c2p"],
+  recovery: [
+    "recovery",
+    "convalescence",
+    "gastrointestinal",
+    "puppy",
+    "junior",
+    "active",
+    "performance",
+    "high energy",
+  ],
+};
+
+function specialCareContextsFromPet(pet: FoodV2RankingInput["pet"]) {
+  const text = normalizeText((pet.healthIssues ?? []).join(" "));
+  return (Object.keys(SPECIAL_CARE_CONTEXT_TERMS) as SpecialCareContext[]).filter(
+    (context) => hasAny(text, SPECIAL_CARE_CONTEXT_TERMS[context])
+  );
+}
+
+function hasSpecialCareFoodPositioning(
+  food: FoodProductV2,
+  nutrients: FoodNutrientsV2,
+  foodText: string,
+  context: SpecialCareContext
+) {
+  if (hasAny(foodText, SPECIAL_CARE_FOOD_TERMS[context])) return true;
+
+  if (
+    context === "mobility" &&
+    hasCustomerVisibleSeniorPositioning(food) &&
+    (hasNumber(nutrients.epa_percent) ||
+      hasNumber(nutrients.dha_percent) ||
+      hasNumber(nutrients.epa_dha_percent) ||
+      hasNumber(nutrients.glucosamine_mgkg) ||
+      hasNumber(nutrients.chondroitin_mgkg))
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function specialCareLabel(context: SpecialCareContext) {
+  return context.replace("_", " ");
+}
+
 function titleTextFor(food: FoodProductV2) {
   return normalizeText([food.brand, food.formula_name, food.display_name].join(" "));
 }
@@ -784,6 +879,35 @@ function scoreFit(input: FoodV2RankingInput) {
     }
   }
 
+  const specialCareContexts = specialCareContextsFromPet(pet);
+  for (const context of specialCareContexts) {
+    const hasPositioning = hasSpecialCareFoodPositioning(
+      food,
+      nutrients,
+      haystack,
+      context
+    );
+
+    if (hasPositioning) {
+      score += 24;
+      addSignal(
+        signals,
+        "boost",
+        `${context}_special_care_positioning`,
+        24,
+        `Positioned for ${specialCareLabel(context)} support.`
+      );
+    } else {
+      addSignal(
+        signals,
+        "exclude",
+        `${context}_special_care_mismatch`,
+        -100,
+        `Excluded because ${specialCareLabel(context)} cases should start from a visibly matching veterinary or special-care formula.`
+      );
+    }
+  }
+
   if (pet.species === "dog") {
     const expectedSize = expectedDogSize(pet);
     const declaredSize =
@@ -862,7 +986,10 @@ function scoreFit(input: FoodV2RankingInput) {
     hasTherapeuticPositioning(haystack) &&
     !therapeuticPositioningFitsGoal(haystack, goal, pet.healthIssues ?? []) &&
     !(hasRenalContext(pet) && hasRenalPositioning(haystack)) &&
-    !(hasUrinaryContext(pet) && hasUrinaryPositioning(haystack))
+    !(hasUrinaryContext(pet) && hasUrinaryPositioning(haystack)) &&
+    !specialCareContexts.some((context) =>
+      hasSpecialCareFoodPositioning(food, nutrients, haystack, context)
+    )
   ) {
     addSignal(
       signals,
