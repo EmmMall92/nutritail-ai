@@ -581,7 +581,75 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     },
   };
 
-  return labels[key]?.[language] ?? supplementalLabels[key]?.[language] ?? value.replace(/_/g, " ");
+  const customerLabels: Record<string, { el: string; en: string }> = {
+    chewing_difficulty_without_small_kibble_support: {
+      el: "δυσκολία μάσησης χωρίς μικρή κροκέτα",
+      en: "chewing difficulty without small-kibble support",
+    },
+    easy_chewing_kibble_review: {
+      el: "εύκολη μάσηση ή μικρή κροκέτα",
+      en: "easy chewing or small kibble",
+    },
+    fussy_eater_palatability_trial: {
+      el: "εκλεκτικό ζώο / δοκιμή νοστιμιάς",
+      en: "fussy eater palatability trial",
+    },
+    fussy_eater_without_palatability_support: {
+      el: "εκλεκτικό ζώο χωρίς καθαρά στοιχεία νοστιμιάς",
+      en: "fussy eater without clear palatability support",
+    },
+    hairball_fiber_support: {
+      el: "τριχόμπαλες με στήριξη ινών",
+      en: "hairball fiber support",
+    },
+    hairball_without_fiber_support: {
+      el: "τριχόμπαλες χωρίς καθαρή στήριξη ινών",
+      en: "hairball without clear fiber support",
+    },
+    indoor_sterilised_weight_management: {
+      el: "indoor/στειρωμένη γάτα με έλεγχο βάρους",
+      en: "indoor or sterilised cat weight management",
+    },
+    large_breed_growth_mineral_review: {
+      el: "κουτάβι μεγαλόσωμης φυλής με έλεγχο μετάλλων",
+      en: "large-breed puppy mineral review",
+    },
+    large_breed_growth_without_mineral_review: {
+      el: "κουτάβι μεγαλόσωμης φυλής χωρίς πλήρη μεταλλική εικόνα",
+      en: "large-breed puppy without full mineral review",
+    },
+    limited_protein_allergy_review: {
+      el: "αλλεργία / έλεγχος πρωτεΐνης",
+      en: "allergy or limited-protein review",
+    },
+    low_fat_pancreatitis_review: {
+      el: "χαμηλά λιπαρά με κτηνιατρικό έλεγχο",
+      en: "low-fat veterinary review",
+    },
+    pancreatitis_without_low_fat_review: {
+      el: "ιστορικό παγκρεατίτιδας χωρίς καθαρό low-fat fit",
+      en: "pancreatitis without clear low-fat fit",
+    },
+    skin_coat_omega_review: {
+      el: "δέρμα/τρίχωμα με omega στοιχεία",
+      en: "skin and coat omega review",
+    },
+    skin_coat_without_omega_detail: {
+      el: "δέρμα/τρίχωμα χωρίς καθαρά EPA/DHA",
+      en: "skin and coat without clear EPA/DHA detail",
+    },
+    strict_allergy_trial_with_many_proteins: {
+      el: "αυστηρή δοκιμή αλλεργίας με πολλές πρωτεΐνες",
+      en: "strict allergy trial with many proteins",
+    },
+  };
+
+  return (
+    customerLabels[key]?.[language] ??
+    labels[key]?.[language] ??
+    supplementalLabels[key]?.[language] ??
+    value.replace(/_/g, " ")
+  );
 }
 
 function formatFoodIntelligenceLabels(values: string[] | undefined, language: ChatLanguage) {
