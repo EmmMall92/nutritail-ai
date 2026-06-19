@@ -59,6 +59,26 @@ const cases = [
     expected: "Naturcroq Duck & Rice Sterilised",
   },
   {
+    label: "Josera feeding table title tail",
+    input: {
+      brand: "Josera",
+      display_name:
+        "Josera Active Nature Active Nature Weight Activity / day up to 1 hour Activity / day up to 3 hrs",
+      formula_name:
+        "Active Nature Active Nature Weight Activity / day up to 1 hour Activity / day up to 3 hrs",
+    },
+    expected: "Active Nature",
+  },
+  {
+    label: "Josera feeding recommendation title tail",
+    input: {
+      brand: "Josera",
+      display_name: "Josera Sensi Plus Sensi Plus Feeding Recommendation Adult 10kg",
+      formula_name: "Sensi Plus Sensi Plus Feeding Recommendation Adult 10kg",
+    },
+    expected: "Sensi Plus",
+  },
+  {
     label: "Formula-only display remains unchanged",
     input: {
       brand: "Royal Canin",
