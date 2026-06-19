@@ -362,7 +362,23 @@ function formatFood(
   ].filter(Boolean).join("\n");
 }
 
-function sectionTitle(role: "premium" | "value", locale: "el" | "en") {
+function sectionTitle(
+  role: "premium" | "value",
+  locale: "el" | "en",
+  goal?: FoodV2RecommendationGoal
+) {
+  if (goal === "value") {
+    if (locale === "el") {
+      return role === "premium"
+        ? "Πρώτες value επιλογές:"
+        : "Πιο δυνατές διατροφικά εναλλακτικές:";
+    }
+
+    return role === "premium"
+      ? "First value picks:"
+      : "Stronger nutrition alternatives:";
+  }
+
   if (locale === "el") {
     return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο απλές / value επιλογές:";
   }
@@ -518,7 +534,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (premium.length > 0) {
     blocks.push(
       "",
-      sectionTitle("premium", locale),
+      sectionTitle("premium", locale, goal),
       premium
         .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale, goal))
@@ -529,7 +545,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (value.length > 0) {
     blocks.push(
       "",
-      sectionTitle("value", locale),
+      sectionTitle("value", locale, goal),
       value
         .slice(0, maxItemsPerSection)
         .map((food, index) => formatFood(food, index + 1, locale, goal))

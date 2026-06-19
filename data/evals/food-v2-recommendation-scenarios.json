@@ -157,7 +157,7 @@
         "preferredProteins": [],
         "healthIssues": []
       },
-      "expectations": ["premium_or_value"]
+      "expectations": ["premium_or_value", "value_first_for_budget"]
     },
     {
       "label": "Active working dog",

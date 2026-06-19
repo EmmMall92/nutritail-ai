@@ -62,6 +62,17 @@ const compactGreekCardsSample = formatFoodV2ChatbotRecommendationSummary(sampleR
   compactForCards: true,
 });
 
+const valueGoalSample = formatFoodV2ChatbotRecommendationSummary(
+  {
+    ...sampleResponse,
+    goal: "value" as const,
+  },
+  {
+    locale: "en",
+    maxItemsPerSection: 2,
+  }
+);
+
 const forbiddenTerms = [
   "needs_review",
   "needs review",
@@ -82,7 +93,7 @@ const forbiddenTerms = [
   "Ο‡",
 ];
 
-const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}`.toLowerCase();
+const lowerSample = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}`.toLowerCase();
 const leakedTerms = forbiddenTerms.filter((term) =>
   lowerSample.includes(term.toLowerCase())
 );
@@ -94,6 +105,7 @@ if (leakedTerms.length > 0) {
   console.error(greekSample);
   console.error(compactCardsSample);
   console.error(compactGreekCardsSample);
+  console.error(valueGoalSample);
   process.exit(1);
 }
 
@@ -130,6 +142,12 @@ if (!compactCardsSample.includes("Tap one card to estimate grams/day")) {
 if (compactCardsSample.includes("Best nutrition fits:") || /\n1\./.test(compactCardsSample)) {
   console.error("Compact card-facing recommendation should not duplicate the card list.");
   console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (!valueGoalSample.includes("First value picks:")) {
+  console.error("Value goal should label the first section as value picks.");
+  console.error(valueGoalSample);
   process.exit(1);
 }
 
