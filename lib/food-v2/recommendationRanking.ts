@@ -606,7 +606,7 @@ function hasAdultOnlySeniorTitleConflict(food: FoodProductV2) {
 }
 
 function hasCustomerVisibleSeniorPositioning(food: FoodProductV2) {
-  return food.life_stage === "senior" || hasExplicitSeniorTitle(food);
+  return hasExplicitSeniorTitle(food);
 }
 
 function therapeuticPositioningFitsGoal(
@@ -968,7 +968,9 @@ function scoreFit(input: FoodV2RankingInput) {
     const hasUrinary = hasUrinaryPositioning(haystack);
     const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
     const petUrinarySubtype = urinarySubtypeFromPet(pet);
-    const foodUrinarySubtype = urinarySubtypeFromText(haystack);
+    const visibleFoodUrinarySubtype = urinarySubtypeFromText(titleTextFor(food));
+    const foodUrinarySubtype =
+      visibleFoodUrinarySubtype ?? urinarySubtypeFromText(haystack);
 
     if (hasUrinary) {
       score += 20;
