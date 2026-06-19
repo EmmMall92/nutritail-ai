@@ -198,6 +198,36 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "value_first_for_budget") {
+      const valuePositioned =
+        first?.ranking?.bucket === "value" ||
+        hasAnyTerm(firstText, [
+          "classic",
+          "regular",
+          "basic",
+          "daily",
+          "everyday",
+          "essential",
+          "maintenance",
+          "complete",
+          "balance",
+        ]);
+      const premiumPositioned = hasAnyTerm(positioningText(first), [
+        "grain free",
+        "monoprotein",
+        "veterinary",
+        "vet",
+        "renal",
+        "urinary",
+        "hypoallergenic",
+        "breed specific",
+      ]);
+
+      if (!valuePositioned || premiumPositioned) {
+        warnings.push("Budget/value scenario top pick does not look like a first value option.");
+      }
+    }
+
     if (expectation === "moderate_calorie_fat_top_pick") {
       const kcal = first?.nutrition?.kcal_per_100g;
       const fat = first?.nutrition?.fat_percent;

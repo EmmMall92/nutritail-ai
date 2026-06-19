@@ -315,7 +315,8 @@ export async function POST(request: Request) {
 
     const split = splitFoodV2Recommendations(
       rankedRows.map((row) => row.ranking),
-      limitPerBucket
+      limitPerBucket,
+      goal
     );
     const rowsByFormulaKey = new Map(
       rankedRows.map((row) => [row.product.formula_key, row])

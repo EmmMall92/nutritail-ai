@@ -1128,20 +1128,30 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
 
 export function splitFoodV2Recommendations(
   rankings: FoodV2RankingResult[],
-  limitPerBucket = 3
+  limitPerBucket = 3,
+  goal?: FoodV2RecommendationGoal
 ) {
   const usable = rankings
     .filter((ranking) => ranking.bucket !== "hold")
     .sort((a, b) => b.total_score - a.total_score);
+  const premium = usable.filter((ranking) => ranking.bucket === "premium");
+  const value = usable
+    .filter((ranking) => ranking.bucket === "value")
+    .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score);
+
+  if (goal === "value") {
+    return {
+      premium: value.slice(0, limitPerBucket),
+      value: premium.slice(0, limitPerBucket),
+      hold: rankings
+        .filter((ranking) => ranking.bucket === "hold")
+        .sort((a, b) => b.quality_score - a.quality_score),
+    };
+  }
 
   return {
-    premium: usable
-      .filter((ranking) => ranking.bucket === "premium")
-      .slice(0, limitPerBucket),
-    value: usable
-      .filter((ranking) => ranking.bucket === "value")
-      .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score)
-      .slice(0, limitPerBucket),
+    premium: premium.slice(0, limitPerBucket),
+    value: value.slice(0, limitPerBucket),
     hold: rankings
       .filter((ranking) => ranking.bucket === "hold")
       .sort((a, b) => b.quality_score - a.quality_score),

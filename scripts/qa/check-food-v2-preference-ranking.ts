@@ -1063,4 +1063,66 @@ for (const item of [unrelatedGastroFood, unrelatedLiverFood]) {
   }
 }
 
+const budgetPet = {
+  ...pet,
+  weight: 16,
+  age: 4,
+  neutered: false,
+  healthIssues: [],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const valueAdultFood = food({
+  id: "value-adult",
+  formula_key: "qa|value-adult|dog|dry",
+  brand: "Value Brand",
+  display_name: "Classic Adult Complete",
+  formula_name: "Classic Adult Complete",
+  dog_size: "medium",
+  commercial_tags: ["classic", "complete"],
+  data_quality_status: "verified",
+  source_priority: "official",
+});
+const premiumAdultFood = food({
+  id: "premium-adult",
+  formula_key: "qa|premium-adult|dog|dry",
+  brand: "Premium Brand",
+  display_name: "Grain Free Monoprotein Adult Salmon",
+  formula_name: "Grain Free Monoprotein Adult Salmon",
+  dog_size: "medium",
+  commercial_tags: ["grain_free", "monoprotein"],
+  data_quality_status: "verified",
+  source_priority: "official",
+});
+const budgetSplit = splitFoodV2Recommendations(
+  [
+    rankFoodV2ForPet({
+      food: premiumAdultFood,
+      nutrients: nutrients(premiumAdultFood),
+      pet: budgetPet,
+      goal: "value",
+    }),
+    rankFoodV2ForPet({
+      food: valueAdultFood,
+      nutrients: nutrients(valueAdultFood),
+      pet: budgetPet,
+      goal: "value",
+    }),
+  ],
+  3,
+  "value"
+);
+
+if (budgetSplit.premium[0]?.formula_key !== valueAdultFood.formula_key) {
+  console.error("Value goal should present value-positioned foods first.");
+  console.error(budgetSplit);
+  process.exit(1);
+}
+
+if (budgetSplit.premium[0]?.bucket !== "value") {
+  console.error("Value-first presentation should preserve value bucket metadata.");
+  console.error(budgetSplit.premium[0]);
+  process.exit(1);
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");
