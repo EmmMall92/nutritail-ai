@@ -51,7 +51,9 @@ const medicalDescriptionPatterns = [
 const packOrOfferPatterns = [
   /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\b/iu,
   /\b\d+\s*x\s*\d+(?:[,.]\d+)?\s*(?:kg|g|gr)\b/iu,
-  /\b(?:offer|promo|gift|free|δ[ωώ]ρο|προσφορ[αά])\b/iu,
+  /\b(?:offer|promo|gift|δ[ωώ]ρο|προσφορ[αά])\b/iu,
+  /\b\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\s*(?:free|gratis)\b/iu,
+  /\+\s*\d+(?:[,.]\d+)?\s*(?:kg|g|gr|grams?)\s*(?:free|gratis)\b/iu,
 ];
 
 const repeatedProductTermPattern =
@@ -157,11 +159,58 @@ function hasMojibake(value) {
   return mojibakeTitlePattern.test(String(value ?? ""));
 }
 
+function isLowPrioritySourceRegistryFallback(row) {
+  if (row.audit_source !== "category_product_sources_registry") return false;
+
+  const sourceText = normalizeComparable(
+    `${row.formula_key ?? ""} ${row.source_group ?? ""} ${row.product_url ?? ""}`
+  );
+
+  return sourceText.includes("petsamolis.gr");
+}
+
+function sourceRegistryFallbackIssueType(row, issueType) {
+  if (!isLowPrioritySourceRegistryFallback(row)) return issueType;
+  if (
+    [
+      "formula_name_too_long",
+      "display_name_too_long",
+      "formula_name_starts_with_brand",
+      "formula_name_looks_like_description",
+      "medical_claim_used_as_name",
+      "formula_contains_pack_or_offer",
+      "retailer_title_needs_human_review",
+    ].includes(issueType)
+  ) {
+    return `source_registry_fallback_${issueType}`;
+  }
+
+  return issueType;
+}
+
+function sourceRegistryFallbackSeverity(row, severity, issueType) {
+  if (!isLowPrioritySourceRegistryFallback(row)) return severity;
+  if (severity === "critical") return severity;
+
+  const fallbackIssueType = sourceRegistryFallbackIssueType(row, issueType);
+  return fallbackIssueType.startsWith("source_registry_fallback_")
+    ? "info"
+    : severity;
+}
+
+function sourceRegistryFallbackAction(row, suggestedAction) {
+  if (!isLowPrioritySourceRegistryFallback(row)) return suggestedAction;
+
+  return `${suggestedAction} Low-priority source-registry fallback only; keep it as evidence/backfill and do not count it as a customer-facing cleanup blocker.`;
+}
+
 function addIssue(issues, row, severity, issueType, suggestedAction) {
+  const finalIssueType = sourceRegistryFallbackIssueType(row, issueType);
+  const finalSeverity = sourceRegistryFallbackSeverity(row, severity, issueType);
   issues.push({
     audit_source: row.audit_source,
-    severity,
-    issue_type: issueType,
+    severity: finalSeverity,
+    issue_type: finalIssueType,
     brand: row.brand,
     formula_name: row.formula_name,
     display_name: row.display_name,
@@ -169,7 +218,7 @@ function addIssue(issues, row, severity, issueType, suggestedAction) {
     format: row.format,
     source_priority: row.source_priority,
     formula_key: row.formula_key,
-    suggested_action: suggestedAction,
+    suggested_action: sourceRegistryFallbackAction(row, suggestedAction),
   });
 }
 
@@ -288,7 +337,10 @@ function findTitleIssues(row) {
     }
   }
 
-  if (row.source_priority === "retailer" && issues.length > 0) {
+  if (
+    row.source_priority === "retailer" &&
+    issues.some((issue) => issue.severity !== "info")
+  ) {
     addIssue(
       issues,
       row,
@@ -321,6 +373,8 @@ function normalizeSourceRegistryRow(row) {
     format: row.format,
     source_priority: row.source_tier,
     formula_key: `${row.source_group || "source"}|${row.product_url || productTitle}`,
+    product_url: row.product_url,
+    source_group: row.source_group,
   };
 }
 

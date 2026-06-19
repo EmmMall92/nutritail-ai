@@ -1,68 +1,56 @@
 # Food V2 Title Quality Audit
 
-Generated: 2026-06-19T02:14:09.788Z
+Generated: 2026-06-19T02:29:57.426Z
 
 ## Summary
 
 - Rows reviewed: 758
 - Food V2 candidate rows reviewed: 553
 - Source registry rows reviewed: 205
-- Audit findings: 574
-- Manual cleanup findings: 433
-- Auto-cleanup/info findings: 141
-- Rows with high/critical title issues: 64
-- Rows without manual title issues: 580
+- Audit findings: 359
+- Manual cleanup findings: 59
+- Auto-cleanup/info findings: 300
+- Rows with high/critical title issues: 2
+- Rows without manual title issues: 729
 - Output CSV: data/review/food_v2_title_quality_audit.csv
 
 ## Issues By Severity
 
-- medium: 343
-- info: 141
-- high: 90
+- info: 300
+- medium: 57
+- high: 2
 
 ## Issues By Type
 
-- retailer_title_needs_human_review: 177
-- formula_name_brand_prefix_auto_cleaned: 141
-- formula_contains_pack_or_offer: 87
-- formula_name_too_long: 59
-- formula_name_starts_with_brand: 49
-- formula_name_looks_like_description: 30
-- medical_claim_used_as_name: 30
-- display_name_too_long: 1
+- formula_name_brand_prefix_auto_cleaned: 144
+- source_registry_fallback_formula_name_too_long: 57
+- source_registry_fallback_formula_name_starts_with_brand: 45
+- source_registry_fallback_formula_name_looks_like_description: 30
+- retailer_title_needs_human_review: 28
+- medical_claim_used_as_name: 25
+- source_registry_fallback_formula_contains_pack_or_offer: 18
+- source_registry_fallback_medical_claim_used_as_name: 5
+- formula_contains_pack_or_offer: 3
+- formula_name_too_long: 2
+- formula_name_starts_with_brand: 1
+- source_registry_fallback_display_name_too_long: 1
 
 ## High/Critical Issues By Brand
 
-- Ambrosia: 25
-- Calibra: 18
-- Belcando: 13
-- Anima: 10
-- Black Olympus: 7
-- Carnilove: 6
-- Amity: 5
-- Akvatera: 2
-- ACANA: 1
-- Affinity: 1
 - Hill's Prescription Diet: 1
 - Wolf of Wilderness: 1
 
 ## Medium Cleanup Focus By Brand
 
-- Ambrosia: 64
-- Belcando: 44
-- Brit: 39
-- Calibra: 26
 - Hills: 16
-- Black Olympus: 15
-- Hill's Prescription Diet: 13
-- Wolf of Wilderness: 13
 - Royal Canin: 12
-- Amanova: 10
-- Anima: 10
-- Briantos: 10
-- Leonardo: 8
+- Hill's Prescription Diet: 9
 - Royal Canin Veterinary Diet: 8
-- Amity: 7
+- Briantos: 5
+- Brit: 2
+- Purina Pro Plan: 2
+- Wolf of Wilderness: 2
+- Josera: 1
 
 ## Recommended Next Step
 
