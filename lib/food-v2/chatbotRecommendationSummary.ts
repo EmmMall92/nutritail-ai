@@ -491,12 +491,36 @@ function compactCardsIntro({
 }
 
 function cleanOutput(text: string) {
-  return polishGreekCustomerText(text)
+  return polishEnglishCustomerText(polishGreekCustomerText(text))
     .split(/\r?\n/)
     .filter((line) => !isInternalLine(line))
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+function polishEnglishCustomerText(text: string) {
+  return text
+    .replace(/\bRecommended foods:/g, "Your food shortlist:")
+    .replace(/\bFirst picks:/g, "Best matches:")
+    .replace(/\bSimple alternatives:/g, "Practical alternatives:")
+    .replace(/\bPractical first picks:/g, "Budget-friendly options:")
+    .replace(/\bStronger nutrition alternatives:/g, "Stronger nutrition options:")
+    .replace(/\bAt a glance:/g, "Quick nutrition:")
+    .replace(/\bWhy it fits:/g, "Why this one:")
+    .replace(/\bStart with:/g, "Best first step:")
+    .replace(
+      /Next step: tap one food card to estimate portions\/day\./g,
+      "Next step: choose one food below and I will estimate daily portions."
+    )
+    .replace(
+      "Done. I placed the best options below as cards.",
+      "Done. I placed the strongest matches below as cards."
+    )
+    .replace(
+      "Tap one card to estimate portions/day.",
+      "Choose one card below to estimate daily portions."
+    );
 }
 
 function polishGreekCustomerText(text: string) {

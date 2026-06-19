@@ -196,6 +196,14 @@ const forbiddenTerms = [
   "use case:",
   "For this pet, I am prioritising:",
   "Food picks for this pet",
+  "Recommended foods:",
+  "First picks:",
+  "Simple alternatives:",
+  "Practical first picks:",
+  "Stronger nutrition alternatives:",
+  "At a glance:",
+  "Why it fits:",
+  "Start with:",
   "calculate daily grams",
   "candidate kept out",
   "kept foods out of the shortlist",
@@ -230,14 +238,14 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: tap one food card to estimate portions/day")) {
+  if (!scenario.text.includes("Next step: choose one food below and I will estimate daily portions")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
   }
 }
 
-if (!sample.includes("Recommended foods") || !sample.includes("Happy Dog")) {
+if (!sample.includes("Your food shortlist") || !sample.includes("Happy Dog")) {
   console.error("Customer-facing recommendation did not include the expected shortlist.");
   console.error(sample);
   process.exit(1);
@@ -261,13 +269,13 @@ if (!greekSample.includes("παγκρεατίτιδας")) {
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("I placed the best options below as cards")) {
+if (!compactCardsSample.includes("I placed the strongest matches below as cards")) {
   console.error("Compact card-facing recommendation should point to the cards.");
   console.error(compactCardsSample);
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("Tap one card to estimate portions/day")) {
+if (!compactCardsSample.includes("Choose one card below to estimate daily portions")) {
   console.error("Compact card-facing recommendation should include a clear card action.");
   console.error(compactCardsSample);
   process.exit(1);
@@ -298,9 +306,18 @@ if (compactCardsSample.includes("Best options for this pet:") || /\n1\./.test(co
   process.exit(1);
 }
 
-if (!valueGoalSample.includes("Practical first picks:")) {
+if (!valueGoalSample.includes("Budget-friendly options:")) {
   console.error("Value goal should label the first section as value picks.");
   console.error(valueGoalSample);
+  process.exit(1);
+}
+
+if (
+  !sample.includes("Best matches:") ||
+  (!sample.includes("Practical alternatives:") && sampleResponse.value.length > 0)
+) {
+  console.error("Customer-facing recommendation should use polished section labels.");
+  console.error(sample);
   process.exit(1);
 }
 
