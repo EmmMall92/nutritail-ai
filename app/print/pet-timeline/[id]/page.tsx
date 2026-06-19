@@ -461,10 +461,8 @@ export default function PetTimelineReportPage() {
                 </p>
 
                 <p className="mt-1">
-                  <span className="font-semibold">Recommended Food IDs:</span>{" "}
-                  {item.recommendedFoodIds.length > 0
-                    ? item.recommendedFoodIds.join(", ")
-                    : "None"}
+                  <span className="font-semibold">Food recommendation:</span>{" "}
+                  Saved with this analysis in the chatbot report.
                 </p>
               </div>
             ))}

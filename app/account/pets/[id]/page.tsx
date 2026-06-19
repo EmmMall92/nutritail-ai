@@ -985,10 +985,10 @@ export default function AccountPetDetailPage() {
                   </p>
                 )}
                   <p className="mt-1 text-xs text-gray-500">
-                    Legacy food signal ids:{" "}
-                    {item.recommendedFoodIds?.length
-                      ? item.recommendedFoodIds.join(", ")
-                      : "-"}
+                    Food recommendation:{" "}
+                    {item.matched_food_name
+                      ? "saved with this analysis"
+                      : "choose a food in the chatbot to make this more specific"}
                   </p>
                 </div>
               ))}
