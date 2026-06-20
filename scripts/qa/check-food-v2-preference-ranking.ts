@@ -1783,6 +1783,39 @@ if (adultGiRanking.bucket !== "hold") {
   process.exit(1);
 }
 
+const visiblePuppyStageFood = food({
+  id: "visible-puppy-stage",
+  formula_key: "qa|visible-puppy-stage|dog|dry",
+  display_name: "Club 4 Paws Puppies All Breeds",
+  life_stage: "adult",
+  kcal_per_100g: 385,
+  ingredients: ["chicken", "rice", "corn", "salmon oil"],
+  commercial_tags: ["puppy", "all_breeds"],
+  primary_animal_proteins: ["chicken"],
+});
+const visiblePuppyStageRanking = rankFoodV2ForPet({
+  food: visiblePuppyStageFood,
+  nutrients: {
+    ...nutrients(visiblePuppyStageFood),
+    calcium_percent: 1.3,
+    phosphorus_percent: 1,
+  },
+  pet: puppyPet,
+  goal: "growth",
+});
+
+if (visiblePuppyStageRanking.bucket === "hold") {
+  console.error("Food visibly titled as puppy should not be held just because stored life_stage says adult.");
+  console.error(visiblePuppyStageRanking);
+  process.exit(1);
+}
+
+if (!visiblePuppyStageRanking.signals.some((signal) => signal.code === "life_stage_match")) {
+  console.error("Expected visible puppy title/tags to produce life_stage_match for puppy pet.");
+  console.error(visiblePuppyStageRanking.signals);
+  process.exit(1);
+}
+
 const adultSensitivePet = {
   ...pet,
   weight: 16,
