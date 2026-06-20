@@ -177,6 +177,7 @@ const BROAD_ANIMAL_TERMS = [
 ];
 
 const ALLERGY_POSITIONING_TERMS = [
+  "hypo",
   "monoprotein",
   "single protein",
   "hypoallergenic",

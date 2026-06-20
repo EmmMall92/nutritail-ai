@@ -277,7 +277,7 @@ const hypoSkinAllergyFood = food({
   formula_key: "qa|hypo-skin-allergy|dog|dry",
   display_name: "Hypo With Salmon And Tuna",
   formula_name: "Hypo With Salmon And Tuna",
-  commercial_tags: ["hypoallergenic", "skin_coat"],
+  commercial_tags: ["skin_coat"],
   ingredients: ["salmon", "tuna", "rice", "fish oil"],
   primary_animal_proteins: ["salmon", "tuna"],
 });
