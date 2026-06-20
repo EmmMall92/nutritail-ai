@@ -163,6 +163,35 @@ const INGREDIENT_ALIASES: Record<string, string[]> = {
   ],
 };
 
+const ADDITIONAL_INGREDIENT_ALIASES: Record<string, string[]> = {
+  kotopoulo: ["chicken", "kotopulo"],
+  kotopulo: ["chicken", "kotopoulo"],
+  chicken: ["kotopulo", "κοτοπουλο", "κοτόπουλο"],
+  poultry: ["πουλερικα", "πουλερικά"],
+  galopoula: ["turkey"],
+  turkey: ["γαλοπουλα", "γαλοπούλα"],
+  papia: ["duck"],
+  duck: ["παπια", "πάπια"],
+  mosxari: ["beef", "moschari", "moshari"],
+  moschari: ["beef", "mosxari", "moshari"],
+  moshari: ["beef", "mosxari", "moschari"],
+  beef: ["mosxari", "μοσχαρι", "μοσχάρι"],
+  arni: ["lamb", "arnaki"],
+  arnaki: ["lamb", "arni"],
+  lamb: ["arnaki", "αρνι", "αρνί", "αρνακι", "αρνάκι"],
+  pork: ["choirino", "χοιρινο", "χοιρινό"],
+  psari: ["fish"],
+  fish: ["ψαρι", "ψάρι"],
+  solomos: ["salmon"],
+  salmon: ["σολομος", "σολομός"],
+  tonos: ["tuna"],
+  tuna: ["τονος", "τόνος"],
+  cod: ["μπακαλιαρος", "μπακαλιάρος"],
+  sardine: ["σαρδελα", "σαρδέλα"],
+  herring: ["ρεγγα", "ρέγγα"],
+  trout: ["πεστροφα", "πέστροφα"],
+};
+
 const BROAD_ANIMAL_TERMS = [
   "poultry",
   "animal protein",
@@ -218,6 +247,30 @@ function normalizeText(value: unknown) {
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[αά]/g, "a")
+    .replace(/[β]/g, "v")
+    .replace(/[γ]/g, "g")
+    .replace(/[δ]/g, "d")
+    .replace(/[εέ]/g, "e")
+    .replace(/[ζ]/g, "z")
+    .replace(/[ηή]/g, "i")
+    .replace(/[θ]/g, "th")
+    .replace(/[ιίϊΐ]/g, "i")
+    .replace(/[κ]/g, "k")
+    .replace(/[λ]/g, "l")
+    .replace(/[μ]/g, "m")
+    .replace(/[ν]/g, "n")
+    .replace(/[ξ]/g, "x")
+    .replace(/[οό]/g, "o")
+    .replace(/[π]/g, "p")
+    .replace(/[ρ]/g, "r")
+    .replace(/[σς]/g, "s")
+    .replace(/[τ]/g, "t")
+    .replace(/[υύϋΰ]/g, "u")
+    .replace(/[φ]/g, "f")
+    .replace(/[χ]/g, "ch")
+    .replace(/[ψ]/g, "ps")
+    .replace(/[ωώ]/g, "o")
     .replace(/[^a-z0-9α-ω]+/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -225,7 +278,11 @@ function normalizeText(value: unknown) {
 
 function termsFor(value: string) {
   const normalized = normalizeText(value);
-  return INGREDIENT_ALIASES[normalized] ?? [normalized];
+  return [
+    normalized,
+    ...(INGREDIENT_ALIASES[normalized] ?? []),
+    ...(ADDITIONAL_INGREDIENT_ALIASES[normalized] ?? []),
+  ];
 }
 
 function includesAny(text: string, terms: readonly string[]) {

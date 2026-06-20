@@ -155,6 +155,74 @@ if (
   process.exit(1);
 }
 
+const greekDislikedProteinFood = food({
+  id: "greek-lamb-beef",
+  formula_key: "qa|greek-lamb-beef|dog|dry",
+  display_name: "Adult Με Αρνί Και Μοσχάρι",
+  primary_animal_proteins: ["αρνί", "μοσχάρι"],
+  ingredients: ["αρνί", "μοσχάρι", "ρύζι"],
+});
+const greekDislikedProteinRanking = rankFoodV2ForPet({
+  food: greekDislikedProteinFood,
+  nutrients: nutrients(greekDislikedProteinFood),
+  pet: {
+    ...pet,
+    excludedIngredients: ["αρνάκι", "mosxari"],
+    preferredProteins: ["chicken"],
+  },
+  goal: "sterilised",
+});
+
+if (greekDislikedProteinRanking.bucket !== "hold") {
+  console.error("Greek/Greeklish disliked proteins should hold matching foods.");
+  console.error(greekDislikedProteinRanking);
+  process.exit(1);
+}
+
+if (
+  !greekDislikedProteinRanking.signals.some((signal) =>
+    signal.code.startsWith("excluded_ingredient_preference")
+  )
+) {
+  console.error("Expected excluded_ingredient_preference for Greek lamb/beef terms.");
+  console.error(greekDislikedProteinRanking.signals);
+  process.exit(1);
+}
+
+const turkeyFoodForChickenAvoidance = food({
+  id: "turkey-not-chicken",
+  formula_key: "qa|turkey-not-chicken|dog|dry",
+  display_name: "Adult Turkey",
+  primary_animal_proteins: ["turkey"],
+  ingredients: ["turkey", "rice"],
+});
+const turkeyForChickenAvoidanceRanking = rankFoodV2ForPet({
+  food: turkeyFoodForChickenAvoidance,
+  nutrients: nutrients(turkeyFoodForChickenAvoidance),
+  pet: {
+    ...pet,
+    excludedIngredients: ["κοτόπουλο"],
+    preferredProteins: ["γαλοπούλα"],
+  },
+  goal: "general",
+});
+
+if (turkeyForChickenAvoidanceRanking.bucket === "hold") {
+  console.error("Chicken dislike should not automatically hold a clearly turkey-only food.");
+  console.error(turkeyForChickenAvoidanceRanking);
+  process.exit(1);
+}
+
+if (
+  turkeyForChickenAvoidanceRanking.signals.some((signal) =>
+    signal.code.startsWith("excluded_ingredient_preference")
+  )
+) {
+  console.error("Turkey-only food should not receive chicken exclusion signal.");
+  console.error(turkeyForChickenAvoidanceRanking.signals);
+  process.exit(1);
+}
+
 const contradictoryPreferencePet = {
   ...pet,
   excludedIngredients: ["salmon"],
