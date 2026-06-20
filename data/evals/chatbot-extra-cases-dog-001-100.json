@@ -1,0 +1,1359 @@
+{
+    "source":  "user_supplied_chatobot_cases_odt",
+    "purpose":  "Dog chatbot live QA cases 1-100 for OpenAI fact extraction, NutriTail rule checks, Food V2 grounding, and customer-facing answer quality.",
+    "batch":  {
+                  "id":  "dog-live-cases-001-100",
+                  "species_scope":  [
+                                        "dog"
+                                    ],
+                  "case_id_range":  "dog-001..dog-100",
+                  "status":  "ready_for_live_qa",
+                  "notes":  "Extracted from C:\\Users\\NIOstb\\Desktop\\chatobot cases.odt. Expected signals are intentionally broad regression checks, not final answer scripts."
+              },
+    "cases":  [
+                  {
+                      "id":  "dog-001-έχω-ημίαιμο-κουτάβι-4-μηνών-8kg-θα-γίνει-περίπου-15kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω ημίαιμο κουτάβι 4 μηνών, 8kg, θα γίνει περίπου 15kg. Θέλω ξηρά τροφή.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-002-έχω-labrador-10-ετών-32kg-στειρωμένο-bcs-7-9-θέλω-να-χ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Labrador 10 ετών, 32kg, στειρωμένο, BCS 7/9, θέλω να χάσει βάρος.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "weight",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-003-έχω-yorkshire-3kg-6-ετών-πολύ-ιδιότροπο-τρώει-μόνο-κοτ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Yorkshire 3kg, 6 ετών, πολύ ιδιότροπο, τρώει μόνο κοτόπουλο.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-004-έχω-german-shepherd-7-μηνών-28kg-μεγαλόσωμο-κουτάβι-θέ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω German Shepherd 7 μηνών, 28kg, μεγαλόσωμο κουτάβι. Θέλω σωστή ανάπτυξη.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "large_breed"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-005-έχω-beagle-5-ετών-18kg-τρώει-συνέχεια-και-παχαίνει-εύκ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Beagle 5 ετών, 18kg, τρώει συνέχεια και παχαίνει εύκολα.",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-006-έχω-chihuahua-2kg-8-ετών-δεν-μασάει-καλά-μεγάλες-κροκέ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Chihuahua 2kg, 8 ετών, δεν μασάει καλά μεγάλες κροκέτες.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-007-έχω-golden-retriever-9-ετών-34kg-έχει-αρθρώσεις-και-πα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Golden Retriever 9 ετών, 34kg, έχει αρθρώσεις και παίρνει βάρος.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "weight",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-008-έχω-γαλλικό-bulldog-12kg-3-ετών-έχει-ευαίσθητο-στομάχι",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω γαλλικό bulldog 12kg, 3 ετών, έχει ευαίσθητο στομάχι και αέρια.",
+                      "expectedSignals":  [
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-009-έχω-border-collie-20kg-4-ετών-πολύ-δραστήριο-κάνει-agi",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Border Collie 20kg, 4 ετών, πολύ δραστήριο, κάνει agility.",
+                      "expectedSignals":  [
+                                              "active"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-010-έχω-maltese-5kg-5-ετών-έχει-δακρύρροια-και-ευαισθησία",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω Maltese 5kg, 5 ετών, έχει δακρύρροια και ευαισθησία στο κοτόπουλο.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-011-ο-σκύλος-μου-έχει-αλλεργία-στο-κοτόπουλο-είναι-12kg-4",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο. Είναι 12kg, 4 ετών.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-012-έχω-σκύλο-25kg-με-χρόνια-διάρροια-τι-τροφή-να-πάρω",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 25kg με χρόνια διάρροια. Τι τροφή να πάρω;",
+                      "expectedSignals":  [
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-013-έχω-σκύλο-με-παγκρεατίτιδα-παλιά-είναι-14kg-7-ετών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με παγκρεατίτιδα παλιά. Είναι 14kg, 7 ετών.",
+                      "expectedSignals":  [
+                                              "medical"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-014-έχω-σκύλο-με-νεφρική-ανεπάρκεια-είναι-11-ετών-και-9kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με νεφρική ανεπάρκεια. Είναι 11 ετών και 9kg.",
+                      "expectedSignals":  [
+                                              "renal",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-015-έχω-σκύλο-με-ουρολιθίαση-θέλω-ξηρά-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με ουρολιθίαση. Θέλω ξηρά τροφή.",
+                      "expectedSignals":  [
+                                              "urinary"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-016-έχω-σκύλο-με-διαβήτη-είναι-20kg-και-8-ετών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με διαβήτη. Είναι 20kg και 8 ετών.",
+                      "expectedSignals":  [
+                                              "medical",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-017-έχω-σκύλο-με-καρδιακό-πρόβλημα-και-παίρνει-φάρμακα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με καρδιακό πρόβλημα και παίρνει φάρμακα.",
+                      "expectedSignals":  [
+                                              "medical"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-018-έχω-σκύλο-που-κάνει-εμετούς-με-πολλές-τροφές",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο που κάνει εμετούς με πολλές τροφές.",
+                      "expectedSignals":  [
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-019-έχω-σκύλο-με-φαγούρα-και-κοκκινίλες-στο-δέρμα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με φαγούρα και κοκκινίλες στο δέρμα.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-020-έχω-σκύλο-με-αλλεργία-σε-μοσχάρι-και-κοτόπουλο",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με αλλεργία σε μοσχάρι και κοτόπουλο.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-021-θέλω-οικονομική-τροφή-για-ενήλικο-σκύλο-15kg-χωρίς-πρό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω οικονομική τροφή για ενήλικο σκύλο 15kg χωρίς πρόβλημα υγείας.",
+                      "expectedSignals":  [
+                                              "budget"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-022-θέλω-premium-τροφή-για-σκύλο-20kg-3-ετών-δραστήριο",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω premium τροφή για σκύλο 20kg, 3 ετών, δραστήριο.",
+                      "expectedSignals":  [
+                                              "active",
+                                              "premium"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-023-royal-canin-ή-acana-για-ενήλικο-σκύλο-12kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Royal Canin ή Acana για ενήλικο σκύλο 12kg;",
+                      "expectedSignals":  [
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-024-farmina-ή-orijen-για-σκύλο-30kg-που-είναι-πολύ-δραστήρ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Farmina ή Orijen για σκύλο 30kg που είναι πολύ δραστήριος;",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "active",
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-025-josera-ή-brit-για-σκύλο-18kg-με-ευαίσθητη-πέψη",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Josera ή Brit για σκύλο 18kg με ευαίσθητη πέψη;",
+                      "expectedSignals":  [
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-026-monge-ή-pro-plan-για-κουτάβι-μεσαίου-μεγέθους",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Monge ή Pro Plan για κουτάβι μεσαίου μεγέθους;",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-027-θέλω-grain-free-για-σκύλο-10kg-2-ετών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω grain free για σκύλο 10kg, 2 ετών.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-028-θέλω-τροφή-με-σολομό-για-τρίχωμα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω τροφή με σολομό για τρίχωμα.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-029-θέλω-τροφή-χωρίς-σιτηρά-και-χωρίς-κοτόπουλο",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω τροφή χωρίς σιτηρά και χωρίς κοτόπουλο.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-030-θέλω-τροφή-με-αρνί-γιατί-το-κοτόπουλο-τον-πειράζει",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω τροφή με αρνί γιατί το κοτόπουλο τον πειράζει.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-031-έχω-κουτάβι-mini-2-μηνών-1-2kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι mini 2 μηνών, 1.2kg.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-032-έχω-κουτάβι-5-μηνών-20kg-μάλλον-θα-γίνει-40kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι 5 μηνών, 20kg, μάλλον θα γίνει 40kg.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "large_breed"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-033-έχω-κουτάβι-cane-corso-6-μηνών-35kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι Cane Corso 6 μηνών, 35kg.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "large_breed"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-034-έχω-κουτάβι-jack-russell-4-μηνών-4kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι Jack Russell 4 μηνών, 4kg.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-035-έχω-κουτάβι-cocker-7-μηνών-9kg-κάνει-μαλακά-κακά",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι Cocker 7 μηνών, 9kg, κάνει μαλακά κακά.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-036-έχω-κουτάβι-3-μηνών-δεν-ξέρω-ράτσα-τώρα-είναι-6kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι 3 μηνών, δεν ξέρω ράτσα, τώρα είναι 6kg.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-037-έχω-κουτάβι-9-μηνών-12kg-στειρώθηκε-πρόσφατα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι 9 μηνών, 12kg, στειρώθηκε πρόσφατα.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-038-έχω-κουτάβι-μεγαλόσωμο-θέλω-να-αποφύγω-πρόβλημα-στα-κό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι μεγαλόσωμο, θέλω να αποφύγω πρόβλημα στα κόκαλα.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "large_breed"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-039-έχω-κουτάβι-που-τρώει-πολύ-γρήγορα-και-φουσκώνει",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι που τρώει πολύ γρήγορα και φουσκώνει.",
+                      "expectedSignals":  [
+                                              "growth"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-040-έχω-κουτάβι-με-ευαίσθητο-έντερο-μετά-από-αλλαγή-τροφής",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κουτάβι με ευαίσθητο έντερο μετά από αλλαγή τροφής.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη",
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-041-έχω-ενήλικο-σκύλο-8kg-στειρωμένο-μένει-μέσα-στο-σπίτι",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω ενήλικο σκύλο 8kg, στειρωμένο, μένει μέσα στο σπίτι.",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-042-έχω-ενήλικο-σκύλο-22kg-κάνει-καθημερινά-μεγάλες-βόλτες",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω ενήλικο σκύλο 22kg, κάνει καθημερινά μεγάλες βόλτες.",
+                      "expectedSignals":  [
+                                              "active"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-043-έχω-κυνηγόσκυλο-25kg-δουλεύει-έντονα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω κυνηγόσκυλο 25kg, δουλεύει έντονα.",
+                      "expectedSignals":  [
+                                              "active"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-044-έχω-σκύλο-φύλακα-40kg-ζει-έξω-και-έχει-πολλή-δραστηριό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο φύλακα 40kg, ζει έξω και έχει πολλή δραστηριότητα.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "active"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-045-έχω-σκύλο-6kg-καναπέ-δεν-κινείται-πολύ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 6kg, καναπέ, δεν κινείται πολύ.",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-046-έχω-σκύλο-50kg-γιγαντόσωμο-4-ετών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 50kg, γιγαντόσωμο, 4 ετών.",
+                      "expectedSignals":  [
+                                              "large_breed"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-047-έχω-σκύλο-16kg-κανονικό-βάρος-θέλω-συντήρηση",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 16kg, κανονικό βάρος, θέλω συντήρηση.",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-048-έχω-σκύλο-28kg-τρώει-ξηρά-αλλά-θέλω-να-βάλω-και-υγρή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 28kg, τρώει ξηρά αλλά θέλω να βάλω και υγρή.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-049-έχω-σκύλο-13kg-δεν-πίνει-πολύ-νερό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 13kg, δεν πίνει πολύ νερό.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-050-έχω-σκύλο-17kg-βγάζει-πολλή-τρίχα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 17kg, βγάζει πολλή τρίχα.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-051-έχω-senior-σκύλο-12-ετών-7kg-έχει-μειωμένη-όρεξη",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 12 ετών, 7kg, έχει μειωμένη όρεξη.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-052-έχω-senior-labrador-11-ετών-παχύ-και-με-αρθρίτιδα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior Labrador 11 ετών, παχύ και με αρθρίτιδα.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-053-έχω-senior-σκύλο-14-ετών-5kg-θέλω-εύπεπτη-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 14 ετών, 5kg, θέλω εύπεπτη τροφή.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-054-έχω-senior-σκύλο-10-ετών-18kg-αρχίζει-να-χάνει-μυς",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 10 ετών, 18kg, αρχίζει να χάνει μυς.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-055-έχω-senior-σκύλο-με-δόντια-χαλασμένα-αλλά-θέλω-ξηρά",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο με δόντια χαλασμένα, αλλά θέλω ξηρά.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-056-έχω-senior-σκύλο-με-ήπιο-νεφρικό-τι-να-προσέξω",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο με ήπιο νεφρικό, τι να προσέξω;",
+                      "expectedSignals":  [
+                                              "renal",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-057-έχω-senior-σκύλο-που-κοιμάται-πολύ-και-πήρε-βάρος",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο που κοιμάται πολύ και πήρε βάρος.",
+                      "expectedSignals":  [
+                                              "weight",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-058-έχω-senior-σκύλο-9-ετών-30kg-θέλω-τροφή-για-αρθρώσεις",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 9 ετών, 30kg, θέλω τροφή για αρθρώσεις.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-059-έχω-senior-σκύλο-13-ετών-κάνει-δυσκοιλιότητα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 13 ετών, κάνει δυσκοιλιότητα.",
+                      "expectedSignals":  [
+                                              "digestive",
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-060-έχω-senior-σκύλο-11-ετών-θέλω-πιο-νόστιμη-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω senior σκύλο 11 ετών, θέλω πιο νόστιμη τροφή.",
+                      "expectedSignals":  [
+                                              "senior"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-061-ο-σκύλος-μου-έχει-μαλακά-κόπρανα-με-acana",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει μαλακά κόπρανα με Acana.",
+                      "expectedSignals":  [
+                                              "digestive",
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-062-ο-σκύλος-μου-τρώει-royal-canin-αλλά-θέλω-κάτι-πιο-φυσι",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου τρώει Royal Canin αλλά θέλω κάτι πιο φυσικό.",
+                      "expectedSignals":  [
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-063-ο-σκύλος-μου-τρώει-orijen-και-πάχυνε",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου τρώει Orijen και πάχυνε.",
+                      "expectedSignals":  [
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-064-ο-σκύλος-μου-τρώει-josera-και-πάει-καλά-αλλά-θέλω-αναβ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου τρώει Josera και πάει καλά, αλλά θέλω αναβάθμιση.",
+                      "expectedSignals":  [
+                                              "premium",
+                                              "brand_compare"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-065-ο-σκύλος-μου-τρώει-φθηνή-τροφή-και-έχει-θαμπό-τρίχωμα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου τρώει φθηνή τροφή και έχει θαμπό τρίχωμα.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-066-ο-σκύλος-μου-άλλαξε-τροφή-και-έχει-διάρροια-2-μέρες",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου άλλαξε τροφή και έχει διάρροια 2 μέρες.",
+                      "expectedSignals":  [
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-067-ο-σκύλος-μου-δεν-τρώει-τη-νέα-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου δεν τρώει τη νέα τροφή.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-068-πώς-να-αλλάξω-τροφή-χωρίς-να-τον-πειράξει",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πώς να αλλάξω τροφή χωρίς να τον πειράξει;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-069-να-ανακατεύω-παλιά-και-νέα-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Να ανακατεύω παλιά και νέα τροφή;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-070-πόσες-μέρες-θέλει-μετάβαση-τροφής",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσες μέρες θέλει μετάβαση τροφής;",
+                      "expectedSignals":  [
+                                              "digestive"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-071-πόσα-γραμμάρια-να-δίνω-σε-σκύλο-10kg-3-ετών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσα γραμμάρια να δίνω σε σκύλο 10kg, 3 ετών;",
+                      "expectedSignals":  [
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-072-πόσα-γραμμάρια-σε-κουτάβι-8kg-4-μηνών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσα γραμμάρια σε κουτάβι 8kg, 4 μηνών;",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη",
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-073-πόσα-γραμμάρια-σε-labrador-30kg-που-πρέπει-να-αδυνατίσ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσα γραμμάρια σε Labrador 30kg που πρέπει να αδυνατίσει;",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "weight",
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες",
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-074-πόσα-γεύματα-την-ημέρα-για-κουτάβι-3-μηνών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσα γεύματα την ημέρα για κουτάβι 3 μηνών;",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη",
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-075-πόσα-γεύματα-για-ενήλικο-σκύλο",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πόσα γεύματα για ενήλικο σκύλο;",
+                      "expectedSignals":  [
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-076-ο-σκύλος-μου-ζητάει-συνέχεια-φαγητό-να-αυξήσω-ποσότητα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου ζητάει συνέχεια φαγητό, να αυξήσω ποσότητα;",
+                      "expectedSignals":  [
+                                              "weight",
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες",
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-077-του-δίνω-λιχουδιές-κάθε-μέρα-επηρεάζει",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Του δίνω λιχουδιές κάθε μέρα, επηρεάζει;",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-078-τρώει-και-μαγειρευτό-μαζί-με-ξηρά-πώς-το-υπολογίζω",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Τρώει και μαγειρευτό μαζί με ξηρά. Πώς το υπολογίζω;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-079-θέλω-να-δίνω-50-ξηρά-και-50-υγρή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Θέλω να δίνω 50% ξηρά και 50% υγρή.",
+                      "expectedSignals":  [
+                                              "feeding_amount"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "γραμμάρια"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-080-πίνει-πολύ-νερό-τελευταία-μπορεί-να-φταίει-η-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Πίνει πολύ νερό τελευταία. Μπορεί να φταίει η τροφή;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-081-έχω-σκύλο-με-αίμα-στα-κόπρανα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο με αίμα στα κόπρανα.",
+                      "expectedSignals":  [
+                                              "digestive",
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο",
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-082-ο-σκύλος-μου-δεν-τρώει-2-μέρες",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου δεν τρώει 2 μέρες.",
+                      "expectedSignals":  [
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-083-ο-σκύλος-μου-κάνει-εμετό-συνέχεια",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου κάνει εμετό συνέχεια.",
+                      "expectedSignals":  [
+                                              "digestive",
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο",
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-084-ο-σκύλος-μου-έχει-έντονο-πόνο-στην-κοιλιά",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει έντονο πόνο στην κοιλιά.",
+                      "expectedSignals":  [
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-085-ο-σκύλος-μου-κατέρρευσε-μετά-το-φαγητό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου κατέρρευσε μετά το φαγητό.",
+                      "expectedSignals":  [
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-086-ο-σκύλος-μου-έχει-διάρροια-με-αίμα-και-είναι-κουτάβι",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει διάρροια με αίμα και είναι κουτάβι.",
+                      "expectedSignals":  [
+                                              "growth",
+                                              "digestive",
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "ανάπτυξη",
+                                                          "κτηνίατρο",
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-087-ο-σκύλος-μου-έχει-φουσκώσει-μετά-το-φαγητό",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει φουσκώσει μετά το φαγητό.",
+                      "expectedSignals":  [
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-088-ο-σκύλος-μου-έχει-χάσει-πολλά-κιλά-γρήγορα",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου έχει χάσει πολλά κιλά γρήγορα.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "caution",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-089-ο-σκύλος-μου-πίνει-πάρα-πολύ-και-ουρεί-πολύ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου πίνει πάρα πολύ και ουρεί πολύ.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-090-ο-σκύλος-μου-δεν-μπορεί-να-ουρήσει-καλά",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Ο σκύλος μου δεν μπορεί να ουρήσει καλά.",
+                      "expectedSignals":  [
+                                              "urinary",
+                                              "urgent"
+                                          ],
+                      "expectedSafetyLevel":  "urgent",
+                      "expectedResponseMustMention":  [
+                                                          "κτηνίατρο",
+                                                          "άμεσα"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-091-έχω-δύο-σκύλους-έναν-5kg-και-έναν-25kg-μπορούν-να-τρών",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω δύο σκύλους, έναν 5kg και έναν 25kg. Μπορούν να τρώνε ίδια τροφή;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-092-έχω-σκύλο-15kg-και-γάτα-θέλω-τροφή-που-να-μη-μπερδεύον",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 15kg και γάτα, θέλω τροφή που να μη μπερδεύονται.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-093-έχω-σκύλο-σε-νησί-με-πολλή-ζέστη-τι-να-προσέξω",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο σε νησί με πολλή ζέστη, τι να προσέξω;",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-094-έχω-σκύλο-που-ζει-έξω-τον-χειμώνα-χρειάζεται-άλλη-τροφ",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο που ζει έξω τον χειμώνα, χρειάζεται άλλη τροφή;",
+                      "expectedSignals":  [
+                                              "active"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-095-έχω-σκύλο-rescue-δεν-ξέρω-ηλικία-είναι-περίπου-12kg",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο rescue, δεν ξέρω ηλικία, είναι περίπου 12kg.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-096-έχω-ημίαιμο-20kg-δεν-ξέρω-ράτσα-θέλω-απλή-καλή-τροφή",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω ημίαιμο 20kg, δεν ξέρω ράτσα, θέλω απλή καλή τροφή.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-097-έχω-σκύλο-9kg-στειρωμένο-με-τάση-για-πέτρα-στα-δόντια",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 9kg, στειρωμένο, με τάση για πέτρα στα δόντια.",
+                      "expectedSignals":  [
+                                              "weight"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "θερμίδες"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-098-έχω-σκύλο-18kg-πολύ-επιλεκτικό-του-αρέσει-ψάρι",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 18kg, πολύ επιλεκτικό, του αρέσει ψάρι.",
+                      "expectedSignals":  [
+                                              "general_recommendation"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-099-έχω-σκύλο-24kg-με-αλλεργία-και-θέλω-μονοπρωτεϊνική-τρο",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 24kg με αλλεργία και θέλω μονοπρωτεϊνική τροφή.",
+                      "expectedSignals":  [
+                                              "allergy"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "συστατικά"
+                                                      ]
+                  },
+                  {
+                      "id":  "dog-100-έχω-σκύλο-35kg-ενήλικο-θέλω-την-καλύτερη-τροφή-χωρίς-ν",
+                      "species":  "dog",
+                      "locale":  "el-GR",
+                      "prompt":  "Έχω σκύλο 35kg, ενήλικο, θέλω την καλύτερη τροφή χωρίς να με νοιάζει το κόστος.",
+                      "expectedSignals":  [
+                                              "large_breed",
+                                              "premium"
+                                          ],
+                      "expectedSafetyLevel":  "normal",
+                      "expectedResponseMustMention":  [
+                                                          "τροφή"
+                                                      ]
+                  }
+              ]
+}
