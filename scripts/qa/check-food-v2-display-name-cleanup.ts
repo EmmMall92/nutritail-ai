@@ -266,6 +266,25 @@ const descriptiveTitleCases = [
     },
     expectedDescriptive: false,
   },
+  {
+    label: "English complete dry food retailer SEO title",
+    input: {
+      brand: "Example Brand",
+      display_name:
+        "Example Brand Complete dry food for adult dogs of all breeds with chicken and rice",
+      formula_name:
+        "Complete dry food for adult dogs of all breeds with chicken and rice",
+    },
+  },
+  {
+    label: "Concise English official-style dry formula title",
+    input: {
+      brand: "Example Brand",
+      display_name: "Example Brand Adult Chicken & Rice",
+      formula_name: "Adult Chicken & Rice",
+    },
+    expectedDescriptive: false,
+  },
 ] as const;
 
 const customerFoodNameCases = [
