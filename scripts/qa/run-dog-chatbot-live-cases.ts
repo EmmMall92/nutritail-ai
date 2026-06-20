@@ -924,7 +924,16 @@ function isClearlyHighEnergy(item: FoodV2Item) {
   return (
     (typeof kcal === "number" && kcal >= 375) ||
     (typeof fat === "number" && fat >= 16) ||
-    /active|performance|working|sport|energy/i.test(itemDecisionText(item))
+    /active|performance|working|sport|energy|endurance|trail|profi|athletic/i.test(itemDecisionText(item))
+  );
+}
+
+function isCredibleActiveProteinFit(item: FoodV2Item) {
+  const protein = item.nutrition?.protein_percent;
+
+  return (
+    (typeof protein === "number" && protein >= 22) ||
+    (protein == null && /active|performance|working|sport|energy|endurance|trail|profi|athletic/i.test(itemDecisionText(item)))
   );
 }
 
@@ -1029,6 +1038,9 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
     if (lowEnergyOrDietPositioned && !isClearlyHighEnergy(first)) {
       warnings.push(`High-activity case top candidate looks diet/medical or too low-energy: kcal=${first.nutrition?.kcal_per_100g}, fat=${first.nutrition?.fat_percent}`);
     }
+    if (!isCredibleActiveProteinFit(first)) {
+      warnings.push(`High-activity case top candidate lacks credible protein support: protein=${first.nutrition?.protein_percent}`);
+    }
   }
 
   return warnings;
@@ -1054,7 +1066,7 @@ function renderReport(results: CaseResult[]) {
     `- Passed: ${passed}`,
     `- Needs review: ${review}`,
     "",
-    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity mismatch guards.",
+    "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity energy/protein mismatch guards.",
     "",
     results.some((item) => item.extractionSource === "openai")
       ? "OpenAI fact extraction was checked for each case."

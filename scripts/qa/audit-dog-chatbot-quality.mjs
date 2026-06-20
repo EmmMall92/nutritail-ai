@@ -29,7 +29,7 @@ const GROUPS = [
   {
     label: "High activity and working dogs",
     ids: [9, 22, 24, 42, 43, 44, 94, 102, 109, 110, 111, 113, 114, 115, 192, 193, 195],
-    positive: ["active", "performance", "energy", "sporting", "trail", "working", "profi", "high energy"],
+    positive: ["active", "performance", "energy", "sport", "sporting", "trail", "working", "profi", "high energy"],
     negative: ["light", "sterilised", "sterilized", "neutered", "renal", "urinary", "satiety", "obesity"],
     top3Positive: true,
     note: "Active dogs should not start with diet, renal, urinary, or low-energy formulas.",
