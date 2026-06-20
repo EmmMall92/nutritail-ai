@@ -285,7 +285,7 @@
         "allergies": [],
         "healthIssues": ["joint support"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "senior_visible_top_picks"]
     },
     {
       "label": "Real senior small dog low activity",
@@ -300,7 +300,7 @@
         "allergies": [],
         "healthIssues": ["senior", "low activity"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "senior_visible_top_picks", "moderate_calorie_fat_top_pick", "no_active_performance_top_pick"]
     },
     {
       "label": "Senior dog low appetite",
@@ -315,7 +315,7 @@
         "allergies": [],
         "healthIssues": ["senior", "low appetite", "not eating much"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "no_weight_control_top_pick"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "senior_visible_top_picks", "no_weight_control_top_pick"]
     },
     {
       "label": "Sterilised cat",
@@ -405,7 +405,7 @@
         "allergies": [],
         "healthIssues": ["senior", "low activity"]
       },
-      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "no_unrelated_therapeutic_top_picks"]
+      "expectations": ["premium_or_value", "senior_or_joint_fit", "senior_top_pick", "senior_visible_top_picks", "no_unrelated_therapeutic_top_picks"]
     },
     {
       "label": "Urinary cat",
