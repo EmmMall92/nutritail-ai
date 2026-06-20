@@ -148,6 +148,11 @@ const checks = [
     expected: "Worth rechecking",
   },
   {
+    label: "Pet detail uses customer-facing food-fit card label",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Food fit",
+  },
+  {
     label: "Pet detail weight edit uses species-aware customer limit",
     file: "app/account/pets/[id]/page.tsx",
     expected: 'const maxPetWeightKg = pet.species === "cat" ? 15 : 90;',
@@ -229,6 +234,16 @@ const forbiddenChecks = [
     label: "Pet detail food score does not expose back-office review wording",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: "Needs review",
+  },
+  {
+    label: "Pet detail does not expose raw food-score wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Food score",
+  },
+  {
+    label: "Pet detail does not expose raw score fraction",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "/100",
   },
   {
     label: "Pet detail weight edit does not allow unrealistic legacy limit",

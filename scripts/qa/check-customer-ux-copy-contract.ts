@@ -23,12 +23,20 @@ const bannedCustomerCopy = [
     pattern: /\brecommendation confidence\b/i,
     reason: "Use nutrition-plan/customer wording instead of model or ranking confidence.",
   },
+  {
+    pattern: /\bScore \d+\/100\b/i,
+    reason: "Use customer food-fit wording instead of raw score badges.",
+  },
 ];
 
 const requiredCustomerCopy = [
   {
     file: "app/account/page.tsx",
     text: "Nutrition plan status",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Food fit:",
   },
   {
     file: "app/account/page.tsx",

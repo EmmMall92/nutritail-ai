@@ -792,14 +792,12 @@ export default function AccountPetDetailPage() {
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Food score</p>
+                <p className="text-sm text-gray-600">Food fit</p>
                 <p className="mt-1 text-xl font-semibold text-black">
-                  {hasValidFoodScore(latest.food_score)
-                    ? `${latest.food_score}/100`
-                    : "-"}
+                  {getFoodScoreLabel(latest.food_score)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
-                  {getFoodScoreLabel(latest.food_score)}
+                  Based on the saved food and pet profile.
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
@@ -970,7 +968,7 @@ export default function AccountPetDetailPage() {
                   </p>
                   {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">
-                    Food score: {item.food_score}/100
+                    Food fit: {getFoodScoreLabel(item.food_score)}
                   </p>
                 )}
 

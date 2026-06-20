@@ -82,6 +82,17 @@ function getRecommendationConfidenceCopy(score?: number | null) {
   };
 }
 
+function getFoodFitLabel(score?: number | null) {
+  if (typeof score !== "number" || !Number.isFinite(score)) {
+    return "General guidance";
+  }
+
+  if (score >= 80) return "Strong fit";
+  if (score >= 60) return "Useful fit";
+  if (score >= 40) return "Worth rechecking";
+  return "Fresh analysis suggested";
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -364,7 +375,7 @@ export default function AccountPage() {
             {latestAnalysis.food_score !== null &&
               latestAnalysis.food_score !== undefined && (
                 <span className="rounded-full bg-gray-100 px-3 py-1">
-                  Score {latestAnalysis.food_score}/100
+                  Food fit: {getFoodFitLabel(latestAnalysis.food_score)}
                 </span>
               )}
             {latestAnalysis.feeding_grams_per_day && (
