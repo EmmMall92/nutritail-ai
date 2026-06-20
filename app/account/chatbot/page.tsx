@@ -4265,8 +4265,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ημερήσια ποσότητα: περίπου ${gramsPerDay}g.\n\nΑν το χωρίσεις:\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΚράτα τις λιχουδιές μέσα στο ημερήσιο όριο και κάνε έλεγχο σε 3-4 εβδομάδες για βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνει αυτό το πλάνο στο προφίλ.`,
-          `Great, we will keep ${choice.name}.\n\nFirst daily amount: about ${gramsPerDay}g.\n\nIf you split it:\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nKeep treats inside the daily allowance and recheck weight, appetite, and stool in 3-4 weeks.\n\nPress save to keep this plan on the pet profile.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΤο σημερινό πλάνο:\n- Ποσότητα: περίπου ${gramsPerDay}g/ημέρα\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΧρησιμοποίησέ το ως αρχικό πλάνο για 2-4 εβδομάδες. Κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και παρακολούθησε βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνουν στο προφίλ οι θερμίδες, η τροφή και η πρώτη ποσότητα.`,
+          `Great, we will keep ${choice.name}.\n\nToday's plan:\n- Portion: about ${gramsPerDay}g/day\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nUse this as the first 2-4 week starting point. Keep treats inside the daily allowance and monitor weight, appetite, and stool.\n\nPress save to keep calories, food choice, and first portion on the profile.`
         )
       : botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για αξιόπιστα γραμμάρια σε αυτή τη ροή. Μπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες για πιο πρακτική ποσότητα.`,
