@@ -193,6 +193,21 @@ const checks = [
     expected: "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
   },
   {
+    label: "Printable timeline explains resting calories in customer language",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Resting calories",
+  },
+  {
+    label: "Printable timeline explains daily target in customer language",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Practical calories for the current plan",
+  },
+  {
+    label: "Printable timeline uses customer nutrition-notes heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Latest Nutrition Notes",
+  },
+  {
     label: "Greek chatbot guardrail copy uses customer-friendly caution heading",
     file: "app/account/chatbot/page.tsx",
     expected: "Μικρή προσοχή πριν δούμε τις τροφές:",
@@ -279,6 +294,11 @@ const forbiddenChecks = [
     label: "Printable timeline does not expose legacy food analysis wording",
     file: "app/print/pet-timeline/[id]/page.tsx",
     forbidden: "Legacy Food Analysis Signals",
+  },
+  {
+    label: "Printable timeline does not expose AI-branded nutrition heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Latest AI Nutrition Advice",
   },
   {
     label: "Analysis in-progress message is not raw English-only",

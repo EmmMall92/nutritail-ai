@@ -964,7 +964,7 @@ export default function AccountPetDetailPage() {
                     {new Date(item.createdAt).toLocaleString()}
                   </p>
                   <p className="mt-1 text-sm text-gray-700">
-                    RER {item.rer} kcal - MER {item.mer} kcal
+                    Resting calories {item.rer} kcal - daily target {item.mer} kcal
                   </p>
                   {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">

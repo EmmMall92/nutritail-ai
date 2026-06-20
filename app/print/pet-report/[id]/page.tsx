@@ -107,7 +107,7 @@ function getMonitoringChecklist(analysis?: AnalysisHistoryItem | null) {
   }
 
   if (!analysis?.matched_food_name || !analysis?.feeding_grams_per_day) {
-    checklist.push("Send the exact bag name or label photo to improve formula-specific confidence.");
+    checklist.push("Send the exact bag name or label photo to make portion guidance more specific.");
   }
 
   return checklist;
@@ -187,8 +187,8 @@ function getGoalLabel(value?: string | null) {
 function getCalorieExplanation(analysis?: AnalysisHistoryItem | null) {
   if (!analysis) {
     return {
-      rest: "RER is the resting calorie estimate before lifestyle adjustments.",
-      daily: "MER/DER is the practical daily target after lifestyle and goal adjustments.",
+      rest: "Resting calories are the basic energy estimate before lifestyle adjustments.",
+      daily: "Daily target is the practical food-energy goal after activity, neuter status, and weight goal adjustments.",
     };
   }
 
