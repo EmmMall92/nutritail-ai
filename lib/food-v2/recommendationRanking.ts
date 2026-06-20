@@ -567,6 +567,23 @@ function hasSkinCoatPositioning(foodText: string) {
   ]);
 }
 
+function hasVisibleAllergySkinPositioning(foodText: string) {
+  return hasAny(foodText, [
+    "hypo",
+    "hypoallergenic",
+    "anallergenic",
+    "hydrolysed",
+    "hydrolyzed",
+    "dermatosis",
+    "sensitive skin",
+    "skin",
+    "coat",
+    "derma",
+    "monoprotein",
+    "single protein",
+  ]);
+}
+
 function hasPancreatitisContext(values: string[] | undefined) {
   return hasAny(normalizeText((values ?? []).join(" ")), [
     "pancreatitis",
@@ -1103,6 +1120,7 @@ function scoreFit(input: FoodV2RankingInput) {
       hasNumber(nutrients.dha_percent) ||
       hasNumber(nutrients.epa_dha_percent);
     const skinCoatPositioning = hasSkinCoatPositioning(haystack);
+    const visibleAllergySkinPositioning = hasVisibleAllergySkinPositioning(haystack);
 
     if (skinCoatPositioning || hasDeclaredOmegaSupport) {
       score += 16;
@@ -1113,7 +1131,9 @@ function scoreFit(input: FoodV2RankingInput) {
         16,
         "Fish, omega or skin/coat positioning supports a skin-coat shortlist."
       );
-    } else if (goal === "allergy") {
+    }
+
+    if (goal === "allergy" && !visibleAllergySkinPositioning) {
       score -= 12;
       addSignal(
         signals,
