@@ -735,6 +735,54 @@ if (
   process.exit(1);
 }
 
+const moderateActiveForSterilisedFood = food({
+  id: "moderate-active-for-sterilised",
+  formula_key: "qa|josera-active-nature-style|dog|dry",
+  display_name: "Active Nature Adult Chicken",
+  dog_size: "small",
+  commercial_tags: ["active"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 365,
+});
+const moderateActiveForSterilisedRanking = rankFoodV2ForPet({
+  food: moderateActiveForSterilisedFood,
+  nutrients: {
+    ...nutrients(moderateActiveForSterilisedFood),
+    protein_percent: 25,
+    fat_percent: 13,
+    fiber_percent: 2.4,
+  },
+  pet: {
+    ...pet,
+    weight: 7,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "sterilised",
+});
+
+if (moderateActiveForSterilisedRanking.bucket !== "hold") {
+  console.error(
+    "Active-positioned foods should be held for sterilised low-activity pets even when calories are only moderately high."
+  );
+  console.error(moderateActiveForSterilisedRanking);
+  process.exit(1);
+}
+
+if (
+  !moderateActiveForSterilisedRanking.signals.some(
+    (signal) => signal.code === "active_formula_for_weight_sensitive_pet"
+  )
+) {
+  console.error("Expected active_formula_for_weight_sensitive_pet for moderate active sterilised mismatch.");
+  console.error(moderateActiveForSterilisedRanking.signals);
+  process.exit(1);
+}
+
 const visibleMiniButMetadataSmallFood = food({
   id: "visible-mini-metadata-small",
   formula_key: "qa|visible-mini-metadata-small|dog|dry",
