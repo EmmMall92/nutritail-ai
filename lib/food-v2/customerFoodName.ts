@@ -51,10 +51,21 @@ function collapseRepeatedCustomerTokens(value: string) {
   );
 }
 
+function repairPossessiveBrandTail(brand: string, displayName: string) {
+  if (!brand) return displayName;
+
+  const possessiveMatch = displayName.match(/^,?\s*['’]s\s+(.+)$/i);
+  if (!possessiveMatch) return displayName;
+
+  return `${brand}'s ${possessiveMatch[1]}`.replace(/\s+/g, " ").trim();
+}
+
 export function customerFoodDisplayName(food: FoodNameInput) {
   const brand = cleanNamePart(food.brand);
   let displayName = cleanNamePart(food.display_name);
   if (!displayName) return "";
+
+  displayName = repairPossessiveBrandTail(brand, displayName);
 
   const normalizedBrand = normalizeForCompare(brand);
   const normalizedDisplay = normalizeForCompare(displayName);

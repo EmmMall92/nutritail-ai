@@ -352,6 +352,15 @@ const customerFoodNameCases = [
     expectedDisplay: "Adult Grain Free 80/20 Shellfish",
     expectedName: "AATU - Adult Grain Free 80/20 Shellfish",
   },
+  {
+    label: "Customer possessive brand tail is joined",
+    input: {
+      brand: "Nature",
+      display_name: ",'s Protection Dark Coat Poultry Adult All Breeds",
+    },
+    expectedDisplay: "Nature's Protection Dark Coat Poultry Adult All Breeds",
+    expectedName: "Nature's Protection Dark Coat Poultry Adult All Breeds",
+  },
 ] as const;
 
 for (const testCase of brandlessFormulaCases) {
