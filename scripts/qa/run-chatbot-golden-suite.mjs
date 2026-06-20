@@ -50,6 +50,12 @@ const fullChecks = [
     covers: "Condition-specific recommendation accuracy for sterilised, senior, allergy, urinary, renal, growth, and active-dog scenarios.",
   },
   {
+    name: "Food V2 guard coverage",
+    command: "npm.cmd",
+    args: ["run", "qa:food-v2-guard-coverage"],
+    covers: "Every blocking Food V2 ranking signal is exposed through recommendation guard diagnostics.",
+  },
+  {
     name: "Chatbot portion estimates",
     command: "npm.cmd",
     args: ["run", "qa:chatbot-portions"],
@@ -100,6 +106,7 @@ const fastCheckNames = new Set([
   "Dog golden coverage audit",
   "Food Intelligence use cases",
   "Food V2 ranking scenarios",
+  "Food V2 guard coverage",
   "Chatbot portion estimates",
   "Customer chatbot flow links",
   "Customer recommendation smoke",
