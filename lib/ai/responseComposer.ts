@@ -2,6 +2,10 @@ import "server-only";
 
 import { getOpenAiClient, getOpenAiModel, isOpenAiConfigured } from "@/lib/ai/openaiServer";
 import type { FoodV2ChatbotRecommendationResponse } from "@/lib/food-v2/chatbotRecommendationSummary";
+import {
+  customerFoodDisplayName,
+  customerFoodName,
+} from "@/lib/food-v2/customerFoodName";
 
 type ComposerLocale = "el" | "en";
 
@@ -60,14 +64,7 @@ const GOAL_LABELS_EN: Record<string, string> = {
 };
 
 function displayFoodName(food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]) {
-  const brand = String(food.brand ?? "").trim();
-  const name = String(food.display_name ?? "").replace(/\s+/g, " ").trim();
-
-  if (!brand) return name;
-  if (!name) return brand;
-  if (name.toLowerCase().startsWith(brand.toLowerCase())) return name;
-
-  return `${brand} - ${name}`;
+  return customerFoodName(food);
 }
 
 function formatNumber(value: unknown, digits = 1) {
@@ -195,7 +192,8 @@ function compactFood(
 ) {
   return {
     brand: food.brand ?? null,
-    name: food.display_name ?? null,
+    name: customerFoodDisplayName(food) || food.display_name || null,
+    customer_name: customerFoodName(food),
     customer_reason: simpleReason(food, locale),
     customer_caution: simpleCaution(food, locale),
     nutrition_snapshot: nutritionLine(food, locale),
