@@ -54,32 +54,43 @@ function getPetLabel(pet: AccountPet) {
   return `${pet.name ?? "Unnamed pet"}${species}${weight}`;
 }
 
-function getRecommendationConfidenceCopy(score?: number | null) {
+function getNutritionPlanStatusCopy(score?: number | null) {
   if (typeof score !== "number") {
     return {
-      label: "General guidance",
-      text: "No food score is saved yet. Run an analysis with the exact food name or label details for more specific guidance.",
+      label: "Ready for first guidance",
+      text: "Run a nutrition analysis to get calories, a food shortlist, and a simple first portion estimate for this pet.",
     };
   }
 
   if (score >= 80) {
     return {
-      label: "Strong food fit",
-      text: "The latest saved recommendation looks strong. Recheck only if weight, appetite, stool, allergies, or the current food changed.",
+      label: "Strong latest fit",
+      text: "The latest plan looks solid. Recheck it if weight, appetite, stool, allergies, or the current food changes.",
     };
   }
 
   if (score >= 60) {
     return {
-      label: "Useful shortlist",
-      text: "The latest food fit is usable, but it is worth reviewing missing nutrition fields or exact formula details before relying on it fully.",
+      label: "Useful latest shortlist",
+      text: "The latest food choice is a good starting point. If anything feels off, run a quick progress check with the newest weight and feeding amount.",
     };
   }
 
   return {
-    label: "Review recommended",
-    text: "The latest match is cautious. Use the chatbot again with the exact bag name, label photo, or updated pet context.",
+    label: "Fresh check recommended",
+    text: "The last match was cautious. Use the chatbot again with the exact bag name, a label photo, or updated pet details.",
   };
+}
+
+function getFoodFitLabel(score?: number | null) {
+  if (typeof score !== "number" || !Number.isFinite(score)) {
+    return "General guidance";
+  }
+
+  if (score >= 80) return "Strong fit";
+  if (score >= 60) return "Useful fit";
+  if (score >= 40) return "Worth rechecking";
+  return "Fresh analysis suggested";
 }
 
 export default function AccountPage() {
@@ -198,7 +209,7 @@ export default function AccountPage() {
   const latestAnalysis = latestAnalysisEntry?.analysis;
   const latestPet = latestAnalysisEntry?.pet;
   const nextPetToAnalyze = petsNeedingAnalysis[0];
-  const confidenceCopy = getRecommendationConfidenceCopy(
+  const planStatusCopy = getNutritionPlanStatusCopy(
     latestAnalysis?.food_score
   );
 
@@ -364,7 +375,7 @@ export default function AccountPage() {
             {latestAnalysis.food_score !== null &&
               latestAnalysis.food_score !== undefined && (
                 <span className="rounded-full bg-gray-100 px-3 py-1">
-                  Score {latestAnalysis.food_score}/100
+                  Food fit: {getFoodFitLabel(latestAnalysis.food_score)}
                 </span>
               )}
             {latestAnalysis.feeding_grams_per_day && (
@@ -380,23 +391,23 @@ export default function AccountPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-              Recommendation confidence
+              Nutrition plan status
             </p>
             <h2 className="mt-2 text-xl font-bold text-blue-950">
-              {confidenceCopy.label}
+              {planStatusCopy.label}
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-blue-900">
-              {confidenceCopy.text}
+              {planStatusCopy.text}
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-blue-900">
               <span className="rounded-full bg-white px-3 py-1">
-                Food data comes from the catalog
+                Food choices come from the NutriTail food list
               </span>
               <span className="rounded-full bg-white px-3 py-1">
-                Missing nutrients lower confidence
+                Better label details improve the answer
               </span>
               <span className="rounded-full bg-white px-3 py-1">
-                Medical issues need vet-safe wording
+                Health issues get extra-care guidance
               </span>
             </div>
           </div>

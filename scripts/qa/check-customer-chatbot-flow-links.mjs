@@ -143,6 +143,21 @@ const checks = [
     expected: "Food recommendation:",
   },
   {
+    label: "Pet detail food score uses customer-facing recheck wording",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Worth rechecking",
+  },
+  {
+    label: "Pet detail uses customer-facing food-fit card label",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Food fit",
+  },
+  {
+    label: "Pet detail weight edit uses species-aware customer limit",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: 'const maxPetWeightKg = pet.species === "cat" ? 15 : 90;',
+  },
+  {
     label: "Printable report uses customer-facing saved food insights heading",
     file: "app/print/pet-report/page.tsx",
     expected: "Saved Food Insights",
@@ -158,6 +173,16 @@ const checks = [
     expected: "Follow-up Plan",
   },
   {
+    label: "Printable report uses customer-facing plan status wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Plan status",
+  },
+  {
+    label: "Printable report uses customer-facing food-fit wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Fresh analysis suggested",
+  },
+  {
     label: "Printable report explains when to ask for a new shortlist",
     file: "app/print/pet-report/[id]/page.tsx",
     expected: "When to ask for a new shortlist",
@@ -166,6 +191,26 @@ const checks = [
     label: "Printable timeline asks for grams and food refusal notes",
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
+  },
+  {
+    label: "Printable timeline explains resting calories in customer language",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Resting calories",
+  },
+  {
+    label: "Printable timeline explains daily target in customer language",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Practical calories for the current plan",
+  },
+  {
+    label: "Printable timeline uses customer nutrition-notes heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Latest Nutrition Notes",
+  },
+  {
+    label: "Chat guardrails use customer-facing practical notes",
+    file: "lib/nutrition/chatGuardrails.ts",
+    expected: "Practical notes:",
   },
   {
     label: "Greek chatbot guardrail copy uses customer-friendly caution heading",
@@ -206,14 +251,59 @@ const forbiddenChecks = [
     forbidden: "Legacy food signal ids",
   },
   {
+    label: "Pet detail food score does not expose back-office review wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Needs review",
+  },
+  {
+    label: "Pet detail does not expose raw food-score wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Food score",
+  },
+  {
+    label: "Pet detail does not expose raw score fraction",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "/100",
+  },
+  {
+    label: "Pet detail weight edit does not allow unrealistic legacy limit",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: 'max="150"',
+  },
+  {
     label: "Printable report does not expose legacy food analysis wording",
     file: "app/print/pet-report/page.tsx",
     forbidden: "Legacy Food Analysis Signals",
   },
   {
+    label: "Printable saved report does not expose back-office review wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Needs review",
+  },
+  {
+    label: "Printable saved report does not expose model-confidence wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "High confidence",
+  },
+  {
+    label: "Printable saved report does not expose moderate-confidence wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Moderate confidence",
+  },
+  {
+    label: "Printable saved report does not expose raw food-score wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Food score:",
+  },
+  {
     label: "Printable timeline does not expose legacy food analysis wording",
     file: "app/print/pet-timeline/[id]/page.tsx",
     forbidden: "Legacy Food Analysis Signals",
+  },
+  {
+    label: "Printable timeline does not expose AI-branded nutrition heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Latest AI Nutrition Advice",
   },
   {
     label: "Analysis in-progress message is not raw English-only",
@@ -231,6 +321,11 @@ const forbiddenChecks = [
     label: "Greek chatbot guardrail copy does not use old English wrapper",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Before food-specific advice, here are the guardrails I would keep in mind:",
+  },
+  {
+    label: "Chat guardrails do not expose confidence heading",
+    file: "lib/nutrition/chatGuardrails.ts",
+    forbidden: "Confidence notes:",
   },
 ];
 

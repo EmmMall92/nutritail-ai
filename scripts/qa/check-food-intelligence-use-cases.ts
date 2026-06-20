@@ -889,4 +889,70 @@ assert(
   summerLowEnergyFood
 );
 
+const smallBreedFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "small",
+  health_tags: ["small_breed"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 350,
+    protein_percent: 26,
+    fat_percent: 12,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  smallBreedFood.best_use_cases.includes("small_breed_formula_review"),
+  "Expected small_breed_formula_review for small-breed positioned dog food.",
+  smallBreedFood
+);
+
+assert(
+  smallBreedFood.food_strengths.some((item) =>
+    item.includes("Small-breed positioning")
+  ),
+  "Expected customer-useful small-breed positioning strength.",
+  smallBreedFood
+);
+
+const giantBreedFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "giant",
+  health_tags: ["giant_breed"],
+  ingredient_tags: ["lamb", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 365,
+    protein_percent: 25,
+    fat_percent: 13,
+    fiber_percent: 2.5,
+    calcium_percent: 1.2,
+    phosphorus_percent: 0.9,
+  },
+});
+
+assert(
+  giantBreedFood.best_use_cases.includes("large_breed_formula_review"),
+  "Expected large_breed_formula_review for giant/large-breed positioned dog food.",
+  giantBreedFood
+);
+
+assert(
+  giantBreedFood.food_strengths.some((item) =>
+    item.includes("Large-breed positioning")
+  ),
+  "Expected customer-useful large-breed positioning strength.",
+  giantBreedFood
+);
+
 console.log("Food intelligence use-case QA passed.");

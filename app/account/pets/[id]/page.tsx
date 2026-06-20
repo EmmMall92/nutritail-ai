@@ -90,12 +90,12 @@ function hasValidFoodScore(score?: number | null) {
 }
 
 function getFoodScoreLabel(score?: number | null) {
-  if (!hasValidFoodScore(score)) return "Not scored";
+  if (!hasValidFoodScore(score)) return "General guidance";
   const numericScore = Number(score);
-  if (numericScore >= 80) return "Strong match";
-  if (numericScore >= 60) return "Good match";
-  if (numericScore >= 40) return "Needs review";
-  return "Low match";
+  if (numericScore >= 80) return "Strong fit";
+  if (numericScore >= 60) return "Useful fit";
+  if (numericScore >= 40) return "Worth rechecking";
+  return "Fresh analysis suggested";
 }
 
 function getReportReadiness(item?: AnalysisHistoryItem) {
@@ -373,6 +373,7 @@ export default function AccountPetDetailPage() {
   const { pet, analysisHistory, progressLogs = [] } = data;
   const latest = analysisHistory[0];
   const progressSummary = getLatestProgressSummary(progressLogs, pet);
+  const maxPetWeightKg = pet.species === "cat" ? 15 : 90;
 
   return (
       <section className="mx-auto max-w-4xl space-y-6">
@@ -674,7 +675,7 @@ export default function AccountPetDetailPage() {
                 <input
                   type="number"
                   min="0.1"
-                  max="150"
+                  max={maxPetWeightKg}
                   step="0.1"
                   value={editForm.weight}
                   onChange={(event) =>
@@ -791,14 +792,12 @@ export default function AccountPetDetailPage() {
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Food score</p>
+                <p className="text-sm text-gray-600">Food fit</p>
                 <p className="mt-1 text-xl font-semibold text-black">
-                  {hasValidFoodScore(latest.food_score)
-                    ? `${latest.food_score}/100`
-                    : "-"}
+                  {getFoodScoreLabel(latest.food_score)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
-                  {getFoodScoreLabel(latest.food_score)}
+                  Based on the saved food and pet profile.
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
@@ -965,11 +964,11 @@ export default function AccountPetDetailPage() {
                     {new Date(item.createdAt).toLocaleString()}
                   </p>
                   <p className="mt-1 text-sm text-gray-700">
-                    RER {item.rer} kcal - MER {item.mer} kcal
+                    Resting calories {item.rer} kcal - daily target {item.mer} kcal
                   </p>
                   {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">
-                    Food score: {item.food_score}/100
+                    Food fit: {getFoodScoreLabel(item.food_score)}
                   </p>
                 )}
 

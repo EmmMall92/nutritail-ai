@@ -269,6 +269,30 @@ function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   );
 }
 
+function isSmallBreedPositioning(input: FoodIntelligenceInput) {
+  const size = String(input.dog_size ?? "").toLowerCase();
+
+  return (
+    input.species === "dog" &&
+    (size.includes("mini") ||
+      size.includes("small") ||
+      size.includes("xsmall") ||
+      hasTag(input, ["mini", "small_breed", "xsmall", "toy"]))
+  );
+}
+
+function isLargeBreedPositioning(input: FoodIntelligenceInput) {
+  const size = String(input.dog_size ?? "").toLowerCase();
+
+  return (
+    input.species === "dog" &&
+    (size.includes("large") ||
+      size.includes("giant") ||
+      size.includes("maxi") ||
+      hasTag(input, ["large_breed", "giant_breed", "maxi"]))
+  );
+}
+
 function proteinQuality(input: FoodIntelligenceInput) {
   const protein = input.nutrients?.protein_percent;
   const ingredientTags = input.ingredient_tags ?? [];
@@ -437,6 +461,12 @@ function strengths(input: FoodIntelligenceInput) {
   }
   if (hasChewingEaseSupport(input)) {
     addUnique(result, "Small-breed or easy-chew positioning can help pets that struggle with large kibble.");
+  }
+  if (isSmallBreedPositioning(input)) {
+    addUnique(result, "Small-breed positioning helps avoid recommending oversized formulas to small dogs.");
+  }
+  if (isLargeBreedPositioning(input)) {
+    addUnique(result, "Large-breed positioning helps match bigger dogs more safely than small-breed formulas.");
   }
   if (hasSummerLowAppetiteSupport(input)) {
     addUnique(result, "Moderate energy density can help when seasonal heat reduces how much the pet eats.");
@@ -720,6 +750,12 @@ function bestUseCases(input: FoodIntelligenceInput) {
   }
   if (hasChewingEaseSupport(input)) {
     addUnique(result, "easy_chewing_kibble_review");
+  }
+  if (isSmallBreedPositioning(input)) {
+    addUnique(result, "small_breed_formula_review");
+  }
+  if (isLargeBreedPositioning(input)) {
+    addUnique(result, "large_breed_formula_review");
   }
   if (hasSummerLowAppetiteSupport(input)) {
     addUnique(result, "summer_low_appetite_feeding_review");

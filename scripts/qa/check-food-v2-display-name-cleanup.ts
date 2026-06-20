@@ -297,6 +297,42 @@ const customerFoodNameCases = [
     expectedDisplay: "Naturcroq Duck & Rice Sterilised",
     expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
   },
+  {
+    label: "Customer Happy Dog duplicated happy token is removed",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised",
+    },
+    expectedDisplay: "Naturcroq Duck & Rice Sterilised",
+    expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
+  },
+  {
+    label: "Customer Royal Canin repeated size token is cleaned",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin Mini Mini Adult",
+    },
+    expectedDisplay: "Mini Adult",
+    expectedName: "Royal Canin - Mini Adult",
+  },
+  {
+    label: "Customer Monge repeated veterinary line token is cleaned",
+    input: {
+      brand: "Monge",
+      display_name: "Monge Vetsolution Vetsolution Urinary Oxalate",
+    },
+    expectedDisplay: "Vetsolution Urinary Oxalate",
+    expectedName: "Monge - Vetsolution Urinary Oxalate",
+  },
+  {
+    label: "Customer AATU repeated life-stage token is cleaned",
+    input: {
+      brand: "AATU",
+      display_name: "AATU Adult Adult Grain Free 80/20 Shellfish",
+    },
+    expectedDisplay: "Adult Grain Free 80/20 Shellfish",
+    expectedName: "AATU - Adult Grain Free 80/20 Shellfish",
+  },
 ] as const;
 
 for (const testCase of brandlessFormulaCases) {

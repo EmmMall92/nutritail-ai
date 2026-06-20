@@ -570,6 +570,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       el: "δέρμα/τρίχωμα χωρίς πλήρη omega στοιχεία",
       en: "skin/coat cases without full omega detail",
     },
+    small_breed_formula_review: {
+      el: "μικρόσωμη φυλή / κατάλληλη κροκέτα",
+      en: "small-breed formula fit",
+    },
+    large_breed_formula_review: {
+      el: "μεγαλόσωμη φυλή / σωστό μέγεθος φόρμουλας",
+      en: "large-breed formula fit",
+    },
     summer_low_appetite_feeding_review: {
       el: "ζέστη / χαμηλή όρεξη",
       en: "hot weather and low appetite",
@@ -704,6 +712,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     skin_coat_without_omega_detail: {
       el: "δέρμα/τρίχωμα χωρίς καθαρά EPA/DHA",
       en: "skin and coat without clear EPA/DHA detail",
+    },
+    small_breed_formula_review: {
+      el: "μικρόσωμη φυλή / κατάλληλη κροκέτα",
+      en: "small-breed formula fit",
+    },
+    large_breed_formula_review: {
+      el: "μεγαλόσωμη φυλή / σωστό μέγεθος φόρμουλας",
+      en: "large-breed formula fit",
     },
     summer_low_appetite_feeding_review: {
       el: "ζέστη / χαμηλή όρεξη",
@@ -2113,7 +2129,7 @@ function localizeGuardrailText(text: string, language: ChatLanguage) {
       "Σημειώσεις ασφάλειας:"
     )
     .replace(
-      "Confidence notes:",
+      "Practical notes:",
       "Σημειώσεις σιγουριάς:"
     )
     .replace(

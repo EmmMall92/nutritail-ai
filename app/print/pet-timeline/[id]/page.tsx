@@ -264,8 +264,16 @@ export default function PetTimelineReportPage() {
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <InfoCard label="Pet" value={pet.name} detail={pet.species} />
         <InfoCard label="Weight" value={`${pet.weight} kg`} />
-        <InfoCard label="RER" value={`${nutrition.rer} kcal`} />
-        <InfoCard label="MER/DER" value={`${nutrition.der} kcal`} />
+        <InfoCard
+          label="Resting calories"
+          value={`${nutrition.rer} kcal`}
+          detail="Basic energy before lifestyle adjustments"
+        />
+        <InfoCard
+          label="Daily target"
+          value={`${nutrition.der} kcal`}
+          detail="Practical calories for the current plan"
+        />
       </section>
 
       <Section title="Pet Profile">
@@ -439,8 +447,14 @@ export default function PetTimelineReportPage() {
                   {formatDate(item.createdAt)}
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-                  <p><span className="font-semibold">RER:</span> {item.rer}</p>
-                  <p><span className="font-semibold">MER:</span> {item.mer}</p>
+                  <p>
+                    <span className="font-semibold">Resting calories:</span>{" "}
+                    {item.rer}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Daily target:</span>{" "}
+                    {item.mer}
+                  </p>
                   <p><span className="font-semibold">Weight:</span> {item.weight ?? "-"} kg</p>
                   <p><span className="font-semibold">Age:</span> {item.age ?? "-"}</p>
                   <p><span className="font-semibold">Activity:</span> {item.activityLevel ?? "-"}</p>
@@ -471,7 +485,7 @@ export default function PetTimelineReportPage() {
         )}
       </Section>
 
-      <Section title="Latest AI Nutrition Advice">
+      <Section title="Latest Nutrition Notes">
         <div className="space-y-3">
           {advice.map((item, index) => (
             <div
