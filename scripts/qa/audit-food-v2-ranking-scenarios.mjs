@@ -343,6 +343,26 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "skin_allergy_fit") {
+      if (
+        !hasAnyTerm(customerVisibleFoodText(first), [
+          "skin",
+          "coat",
+          "derma",
+          "dermatosis",
+          "hypo",
+          "hypoallergenic",
+          "anallergenic",
+          "sensitive skin",
+          "salmon",
+          "fish",
+          "omega",
+        ])
+      ) {
+        warnings.push("Top pick does not show clear skin/allergy support.");
+      }
+    }
+
     if (expectation === "senior_or_joint_fit") {
       if (
         !hasAnyTerm(customerVisibleFoodText(first), ["senior", "mature", "joint", "mobility", "7+", "8+", "10+", "11+", "12+"])

@@ -128,7 +128,7 @@
         "healthIssues": ["skin allergy"],
         "preferredProteins": ["lamb", "duck", "salmon"]
       },
-      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_excluded_protein_top_picks"]
+      "expectations": ["premium_or_value", "no_chicken_top_pick", "no_excluded_protein_top_picks", "skin_allergy_fit"]
     },
     {
       "label": "Large breed puppy",
