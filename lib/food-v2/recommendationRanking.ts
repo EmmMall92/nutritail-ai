@@ -453,6 +453,11 @@ function hasActivePositioning(foodText: string) {
     "trail",
     "profi",
     "athletic",
+    "\u03b5\u03bd\u03b5\u03c1\u03b3\u03b5\u03b9\u03b1",
+    "\u03b5\u03bd\u03ad\u03c1\u03b3\u03b5\u03b9\u03b1",
+    "\u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9",
+    "\u03b1\u03b8\u03bb\u03b7\u03c4",
+    "\u03ba\u03c5\u03bd\u03b7\u03b3",
   ]);
 }
 
@@ -490,11 +495,24 @@ function hasSensitiveDigestivePositioning(foodText: string) {
 }
 
 function hasRenalPositioning(foodText: string) {
-  return hasAny(foodText, ["renal", "kidney"]);
+  return hasAny(foodText, [
+    "renal",
+    "kidney",
+    "\u03bd\u03b5\u03c6\u03c1",
+    "\u03bd\u03b5\u03c6\u03c1\u03b9\u03ba",
+  ]);
 }
 
 function hasUrinaryPositioning(foodText: string) {
-  return hasAny(foodText, ["urinary", "struvite", "oxalate"]);
+  return hasAny(foodText, [
+    "urinary",
+    "struvite",
+    "oxalate",
+    "\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3",
+    "\u03bf\u03c5\u03c1\u03b9\u03ba",
+    "\u03c3\u03c4\u03c1\u03bf\u03c5\u03b2\u03b9",
+    "\u03bf\u03be\u03b1\u03bb",
+  ]);
 }
 
 type UrinarySubtype = "struvite" | "oxalate";
@@ -1475,8 +1493,18 @@ function scoreFit(input: FoodV2RankingInput) {
             "giant",
             "large puppy",
             "puppy large",
+            "\u03bc\u03b5\u03b3\u03b1\u03bb\u03bf\u03c3\u03c9\u03bc",
+            "\u03b3\u03b9\u03b3\u03b1\u03bd\u03c4\u03bf\u03c3\u03c9\u03bc",
+            "\u03ba\u03bf\u03c5\u03c4\u03b1\u03b2\u03b9 \u03bc\u03b5\u03b3\u03b1\u03bb",
+            "\u03ba\u03bf\u03c5\u03c4\u03ac\u03b2\u03b9 \u03bc\u03b5\u03b3\u03b1\u03bb",
           ]),
-          genericGrowth: hasAny(haystack, ["puppy", "junior", "kitten"]),
+          genericGrowth: hasAny(haystack, [
+            "puppy",
+            "junior",
+            "kitten",
+            "\u03ba\u03bf\u03c5\u03c4\u03b1\u03b2",
+            "\u03b3\u03b1\u03c4\u03b1\u03ba",
+          ]),
         },
       })
     );
