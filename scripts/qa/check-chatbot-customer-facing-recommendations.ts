@@ -452,6 +452,7 @@ const forbiddenChatbotPageCopy = [
   "estimated grams/day",
   "Plan summary",
   "Choose a food for grams",
+  "keep that food in the analysis",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)

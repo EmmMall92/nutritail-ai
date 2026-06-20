@@ -1907,7 +1907,7 @@ function formatCompactFoodV2RecommendationFallback({
 
 Start with: ${topChoice.name}.${reason}
 
-Choose one card below and I will estimate portions/day and keep that food in the analysis.`;
+Choose one food card below to estimate daily portions. After that, you can save the plan.`;
 }
 
 async function getFoodV2RecommendationMessage(
