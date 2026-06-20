@@ -299,6 +299,21 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     }
   }
 
+  if (
+    !weightSensitive &&
+    !highActivity &&
+    positioning.weightControl &&
+    (goal === "general" || goal === "premium" || goal === "value")
+  ) {
+    signals.push({
+      type: "caution",
+      code: "weight_control_formula_without_weight_goal",
+      points: -26,
+      message:
+        "Weight-control or sterilised positioning should not be the first general pick when no weight context was given.",
+    });
+  }
+
   if (goal === "weight_control") {
     if (positioning.weightControl) {
       signals.push({
