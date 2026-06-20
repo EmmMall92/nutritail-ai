@@ -405,9 +405,10 @@ if (missingComposerNameCleanup.length > 0) {
 
 const requiredCompactComposerFlow = [
   "The strongest matches are in the cards below.",
-  "Tap one card to see estimated grams/day, then save the plan.",
+  "Tap one card to see estimated grams/day.",
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
+  "If cards_follow is true, do not tell the user to save the plan in this intro",
   "the cards are the recommendation UI",
 ];
 const missingCompactComposerFlow = requiredCompactComposerFlow.filter(
@@ -417,6 +418,19 @@ const missingCompactComposerFlow = requiredCompactComposerFlow.filter(
 if (missingCompactComposerFlow.length > 0) {
   console.error("OpenAI/fallback composer is missing compact customer card-flow rules:");
   console.error(missingCompactComposerFlow.join(", "));
+  process.exit(1);
+}
+
+const forbiddenCompactComposerFlow = [
+  "Tap one card to see estimated grams/day, then save the plan.",
+];
+const leakedCompactComposerFlow = forbiddenCompactComposerFlow.filter((term) =>
+  responseComposer.includes(term)
+);
+
+if (leakedCompactComposerFlow.length > 0) {
+  console.error("OpenAI/fallback composer still mixes card choice and save actions:");
+  console.error(leakedCompactComposerFlow.join(", "));
   process.exit(1);
 }
 
