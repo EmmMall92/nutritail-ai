@@ -11,6 +11,16 @@ export const URINARY_SCIENTIFIC_PRINCIPLES = [
     principle:
       "Possible urinary obstruction in cats is an emergency signal and should interrupt shopping-mode recommendations.",
   },
+  {
+    id: "stone_type_matters",
+    principle:
+      "Urinary diet interpretation is stronger when the known context distinguishes struvite, oxalate or unknown urinary support.",
+  },
+  {
+    id: "mineral_context_is_multi_factor",
+    principle:
+      "Magnesium alone is not enough for urinary reasoning; phosphorus, sodium, hydration and veterinary positioning also matter.",
+  },
 ] as const;
 
 export const URINARY_DECISION_RULES = [
@@ -23,6 +33,16 @@ export const URINARY_DECISION_RULES = [
     id: "urinary_food_needs_minerals",
     when: ["urinary recommendation"],
     then: "Check magnesium, phosphorus, sodium and veterinary positioning.",
+  },
+  {
+    id: "subtype_specificity",
+    when: ["known struvite or oxalate history"],
+    then: "Prefer subtype-matched urinary formulas and avoid presenting opposite-subtype formulas as interchangeable.",
+  },
+  {
+    id: "complete_mineral_context",
+    when: ["urinary-positioned formula", "magnesium, phosphorus and sodium are available"],
+    then: "Allow stronger urinary mineral-context explanation while keeping veterinary follow-up language.",
   },
 ] as const;
 
@@ -59,8 +79,24 @@ export function evaluateUrinaryRules(
   const cautions: string[] = [];
 
   if (food.medical_tags.includes("urinary")) boosts.push("urinary_formula_positioning");
+  if (
+    food.medical_tags.includes("urinary") &&
+    hasNumber(nutrients.magnesium_percent) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    boosts.push("urinary_complete_mineral_context");
+  }
   if (!hasNumber(nutrients.magnesium_percent)) cautions.push("missing_magnesium_for_urinary_review");
   if (!hasNumber(nutrients.phosphorus_percent)) cautions.push("missing_phosphorus_for_urinary_review");
+  if (
+    food.medical_tags.includes("urinary") &&
+    hasNumber(nutrients.magnesium_percent) &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    !hasNumber(nutrients.sodium_percent)
+  ) {
+    cautions.push("missing_sodium_for_urinary_context");
+  }
   if (food.source_priority !== "official") cautions.push("urinary_claim_needs_strong_source");
 
   return { boosts, cautions };

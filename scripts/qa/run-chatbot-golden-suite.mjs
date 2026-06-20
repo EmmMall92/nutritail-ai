@@ -50,6 +50,12 @@ const fullChecks = [
     covers: "Strengths, cautions, best use cases, and not-ideal cases for weight, growth, senior, renal, allergy, skin/coat, and active-food logic.",
   },
   {
+    name: "Medical nutrition rules",
+    command: "npm.cmd",
+    args: ["run", "qa:medical-rules"],
+    covers: "Renal and urinary mineral-context rules, veterinary safety notes, and Food V2 ranking signals.",
+  },
+  {
     name: "Nutrition source-map intake",
     command: "npm.cmd",
     args: ["run", "qa:nutrition-source-map-intake"],
@@ -118,6 +124,7 @@ const fastCheckNames = new Set([
   "Dog edge fixture 101-200",
   "Dog golden coverage audit",
   "Food Intelligence use cases",
+  "Medical nutrition rules",
   "Nutrition source-map intake",
   "Food V2 ranking scenarios",
   "Food V2 guard coverage",

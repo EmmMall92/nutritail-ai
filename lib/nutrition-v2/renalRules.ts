@@ -17,6 +17,16 @@ export const RENAL_SCIENTIFIC_PRINCIPLES = [
     principle:
       "EPA/DHA can be useful supportive signals in renal-support context, but they do not replace renal diagnosis, staging, phosphorus control or veterinary supervision.",
   },
+  {
+    id: "renal_food_fit_needs_mineral_context",
+    principle:
+      "Renal food fit is stronger when renal positioning is paired with phosphorus and sodium context instead of a vague kidney claim.",
+  },
+  {
+    id: "appetite_weight_and_gi_signs_change_priority",
+    principle:
+      "Reduced appetite, vomiting or unexplained weight loss in a renal context should shift the answer toward veterinary follow-up before a routine food swap.",
+  },
 ] as const;
 
 export const RENAL_DECISION_RULES = [
@@ -34,6 +44,16 @@ export const RENAL_DECISION_RULES = [
     id: "epa_dha_supports_renal_context",
     when: ["renal formula or renal question", "epa_percent, dha_percent, or epa_dha_percent exists"],
     then: "Mention EPA/DHA as supportive fatty-acid evidence while keeping veterinary supervision language.",
+  },
+  {
+    id: "phosphorus_and_sodium_raise_confidence",
+    when: ["renal-positioned formula", "phosphorus and sodium are available"],
+    then: "Allow stronger renal mineral-context explanation, still with veterinary framing.",
+  },
+  {
+    id: "high_phosphorus_is_not_renal_first_pick",
+    when: ["renal question", "formula is not renal-positioned", "phosphorus appears high"],
+    then: "Treat as a caution or mismatch rather than a renal-support choice.",
   },
 ] as const;
 
@@ -80,9 +100,26 @@ export function evaluateRenalRules(
 
   if (food.medical_tags.includes("renal")) boosts.push("renal_formula_positioning");
   if (hasLongChainOmega3Signal(nutrients)) boosts.push("epa_dha_renal_support_signal");
+  if (
+    food.medical_tags.includes("renal") &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    hasNumber(nutrients.sodium_percent)
+  ) {
+    boosts.push("renal_phosphorus_sodium_context");
+  }
   if (!hasNumber(nutrients.phosphorus_percent)) cautions.push("missing_phosphorus_for_renal_review");
+  if (
+    food.medical_tags.includes("renal") &&
+    hasNumber(nutrients.phosphorus_percent) &&
+    !hasNumber(nutrients.sodium_percent)
+  ) {
+    cautions.push("missing_sodium_for_renal_context");
+  }
   if (!food.medical_tags.includes("renal") && hasNumber(nutrients.protein_percent) && nutrients.protein_percent >= 30) {
     cautions.push("high_protein_not_renal_default");
+  }
+  if (!food.medical_tags.includes("renal") && hasNumber(nutrients.phosphorus_percent) && nutrients.phosphorus_percent >= 0.9) {
+    cautions.push("higher_phosphorus_not_renal_default");
   }
   if (food.source_priority !== "official") cautions.push("renal_claim_needs_strong_source");
 
