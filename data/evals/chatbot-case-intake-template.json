@@ -13,7 +13,7 @@
       "id": "bulk-001-001",
       "species": "dog",
       "locale": "el-GR",
-      "prompt": "Έχω σκύλο 10kg στειρωμένο και θέλω οικονομική τροφή για διατήρηση βάρους.",
+      "prompt": "Έχω σκύλο 10kg, στειρωμένο, και θέλω οικονομική τροφή για διατήρηση βάρους.",
       "expectedSignals": ["neutered", "weight", "budget"],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": ["calories", "portion"]
