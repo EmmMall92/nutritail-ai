@@ -237,7 +237,7 @@ function scoreLabel() {
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
     ? `Κύρια ανάγκη που καλύπτουμε: ${goalLabel}.`
-    : `Main need we are covering: ${goalLabel}.`;
+    : `What I matched for: ${goalLabel}.`;
 }
 
 function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
@@ -542,18 +542,18 @@ function polishEnglishCustomerText(text: string) {
     .replace(/\bStronger nutrition alternatives:/g, "Stronger nutrition options:")
     .replace(/\bAt a glance:/g, "Quick nutrition:")
     .replace(/\bWhy it fits:/g, "Why this one:")
-    .replace(/\bStart with:/g, "Best first step:")
+    .replace(/\bStart with:/g, "Start here:")
     .replace(
       /Next step: tap one food card to estimate portions\/day\./g,
-      "Next step: choose one food below and I will estimate daily portions."
+      "Next step: choose one food card below and I will estimate daily portions."
     )
     .replace(
       "Done. I placed the best options below as cards.",
-      "Done. I placed the strongest matches below as cards."
+      "Done. I found the strongest matches and placed them below as cards."
     )
     .replace(
       "Tap one card to estimate portions/day.",
-      "Choose one card below to estimate daily portions."
+      "Choose one food card below to estimate daily portions."
     );
 }
 

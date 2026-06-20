@@ -240,7 +240,7 @@ if (leakedTerms.length > 0) {
 for (const scenario of coreScenarioSamples) {
   if (
     !scenario.text.includes(
-      `Main need we are covering: ${scenario.expectedGoalLabel}.`
+      `What I matched for: ${scenario.expectedGoalLabel}.`
     )
   ) {
     console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
@@ -248,7 +248,7 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose one food below and I will estimate daily portions")) {
+  if (!scenario.text.includes("Next step: choose one food card below and I will estimate daily portions")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
@@ -303,13 +303,13 @@ if (!greekSample.includes("παγκρεατίτιδας")) {
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("I placed the strongest matches below as cards")) {
+if (!compactCardsSample.includes("I found the strongest matches and placed them below as cards")) {
   console.error("Compact card-facing recommendation should point to the cards.");
   console.error(compactCardsSample);
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("Choose one card below to estimate daily portions")) {
+if (!compactCardsSample.includes("Choose one food card below to estimate daily portions")) {
   console.error("Compact card-facing recommendation should include a clear card action.");
   console.error(compactCardsSample);
   process.exit(1);
