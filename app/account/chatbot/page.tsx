@@ -2560,10 +2560,10 @@ function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "e
   if (language === "el") {
     return `Η πρώτη διατροφική ανάλυση είναι έτοιμη:
 
-Θερμίδες ηρεμίας (RER): ${nutrition.rer} kcal/ημέρα
+Θερμίδες ηρεμίας: ${nutrition.rer} kcal/ημέρα
 Αυτό είναι περίπου το βασικό ποσό ενέργειας που χρειάζεται το σώμα σε πλήρη ηρεμία.
 
-Βασικός ημερήσιος στόχος (MER/DER): ${nutrition.der} kcal/ημέρα
+Βασικός ημερήσιος στόχος: ${nutrition.der} kcal/ημέρα
 Αυτός είναι ο στόχος πριν την τελική προσαρμογή για απώλεια ή αύξηση βάρους. Λαμβάνει υπόψη βάρος, ηλικία, δραστηριότητα και στείρωση.
 
 Βασικά σημεία:
@@ -2583,10 +2583,10 @@ ${
 
   return `Your first nutrition analysis is ready:
 
-Resting calories (RER): ${nutrition.rer} kcal/day
+Resting calories: ${nutrition.rer} kcal/day
 This is roughly the basic energy the body needs at complete rest.
 
-Base daily target (MER/DER): ${nutrition.der} kcal/day
+Base daily target: ${nutrition.der} kcal/day
 This is the target before the final weight-loss or weight-gain adjustment. It considers weight, age, activity, and neuter status.
 
 Key notes:

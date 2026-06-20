@@ -717,11 +717,11 @@ export default function PrintablePetReportPage() {
                       </p>
 
                       <p>
-                        <strong>RER:</strong> {item.rer} kcal
+                        <strong>Resting calories:</strong> {item.rer} kcal
                       </p>
 
                       <p>
-                        <strong>MER:</strong> {item.mer} kcal
+                        <strong>Daily target:</strong> {item.mer} kcal
                       </p>
 
                       {item.food_score !== null &&
