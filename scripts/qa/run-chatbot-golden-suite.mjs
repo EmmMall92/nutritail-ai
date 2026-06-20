@@ -6,12 +6,13 @@ const reportPath =
   process.env.NUTRITAIL_CHATBOT_GOLDEN_SUITE_REPORT ||
   "reports/chatbot_golden_suite.md";
 const strictMode = process.argv.includes("--strict");
+const fastMode = process.argv.includes("--fast");
 
 if (strictMode) {
   process.env.NUTRITAIL_QA_DOG_QUALITY_MAX_REVIEW ??= "0";
 }
 
-const checks = [
+const fullChecks = [
   {
     name: "AI intake golden cases",
     command: "npm.cmd",
@@ -92,7 +93,37 @@ const checks = [
   },
 ];
 
-const objectiveCoverage = [
+const fastCheckNames = new Set([
+  "AI intake golden cases",
+  "Chatbot intake cleanup",
+  "Dog edge fixture 101-200",
+  "Dog golden coverage audit",
+  "Food Intelligence use cases",
+  "Food V2 ranking scenarios",
+  "Chatbot portion estimates",
+  "Customer chatbot flow links",
+  "Customer recommendation smoke",
+  "Live dog chatbot smoke cases",
+  "Customer-facing recommendation copy",
+]);
+
+const checks = fastMode
+  ? fullChecks
+      .map((check) =>
+        check.name === "Live dog chatbot 200 cases"
+          ? {
+              ...check,
+              name: "Live dog chatbot smoke cases",
+              args: ["run", "qa:dog-chatbot-live-smoke"],
+              covers:
+                "Representative live dog chatbot smoke cases across growth, sterilised, allergy, urinary, renal, active, senior, and rescue contexts.",
+            }
+          : check
+      )
+      .filter((check) => fastCheckNames.has(check.name))
+  : fullChecks;
+
+const fullObjectiveCoverage = [
   {
     objective: "1. Recommendation accuracy",
     evidence:
@@ -124,6 +155,28 @@ const objectiveCoverage = [
       "Customer flow links and live route checks cover login/account chatbot, report, timeline, progress, and food-selection next steps.",
   },
 ];
+
+const fastObjectiveCoverage = fullObjectiveCoverage.map((item) => {
+  if (item.objective === "3. 200 live chatbot cases") {
+    return {
+      ...item,
+      evidence:
+        "Dog edge fixture and golden coverage audit prove ids 1-200 exist, are unique, and include required safety/recommendation checks. The fast suite runs representative live smoke cases for quick regression feedback; run the full or strict suite before release-level signoff.",
+    };
+  }
+
+  if (item.objective === "6. End-to-end user experience") {
+    return {
+      ...item,
+      evidence:
+        "Customer flow links cover account chatbot, report, timeline, progress, and food-selection next steps. The fast suite skips slower live route checks; run the full or strict suite for live route signoff.",
+    };
+  }
+
+  return item;
+});
+
+const objectiveCoverage = fastMode ? fastObjectiveCoverage : fullObjectiveCoverage;
 
 function runCheck(check) {
   return new Promise((resolve) => {
@@ -197,6 +250,7 @@ async function main() {
     "",
     "## Summary",
     "",
+    `- Mode: ${strictMode ? "strict" : fastMode ? "fast" : "full"}`,
     `- Checks run: ${results.length}/${checks.length}`,
     `- Passed: ${results.filter((result) => result.status === "pass").length}`,
     `- Failed: ${failed.length}`,
