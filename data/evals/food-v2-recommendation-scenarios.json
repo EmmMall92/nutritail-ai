@@ -435,7 +435,7 @@
         "allergies": [],
         "healthIssues": ["urinary", "struvite history"]
       },
-      "expectations": ["premium_or_value", "urinary_top_pick", "struvite_top_pick"]
+      "expectations": ["premium_or_value", "urinary_top_pick", "struvite_top_pick", "no_opposite_urinary_subtype_top3"]
     },
     {
       "label": "Oxalate history cat",
@@ -450,7 +450,7 @@
         "allergies": [],
         "healthIssues": ["urinary", "oxalate history"]
       },
-      "expectations": ["premium_or_value", "urinary_top_pick", "oxalate_top_pick"]
+      "expectations": ["premium_or_value", "urinary_top_pick", "oxalate_top_pick", "no_opposite_urinary_subtype_top3"]
     },
     {
       "label": "Urinary adult dog",
@@ -496,7 +496,7 @@
         "allergies": [],
         "healthIssues": ["renal", "kidney disease"]
       },
-      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
+      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "no_urinary_only_top3_for_renal", "phosphorus_caution_or_data"]
     },
     {
       "label": "Renal senior dog",
@@ -511,7 +511,7 @@
         "allergies": [],
         "healthIssues": ["renal", "kidney disease", "senior"]
       },
-      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "phosphorus_caution_or_data"]
+      "expectations": ["premium_or_value", "renal_top_pick", "no_urinary_only_for_renal", "no_urinary_only_top3_for_renal", "phosphorus_caution_or_data"]
     },
     {
       "label": "Active dog weight gain no unrelated medical diets",

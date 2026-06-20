@@ -19,6 +19,14 @@ function firstPicks(data) {
   return [...(data.premium ?? []), ...(data.value ?? [])].slice(0, 3);
 }
 
+function indexedPickTexts(picks, textSelector = foodText) {
+  return picks.map((pick, index) => ({
+    index: index + 1,
+    food: pick,
+    text: textSelector(pick),
+  }));
+}
+
 function foodText(food) {
   return [
     food?.brand,
@@ -192,6 +200,47 @@ function checkExpectations(scenario, data) {
       }
       if (hasAnyTerm(firstText, ["oxalate"]) && !hasAnyTerm(firstText, ["struvite"])) {
         warnings.push("Struvite scenario returned oxalate-only positioning.");
+      }
+    }
+
+    if (expectation === "no_opposite_urinary_subtype_top3") {
+      const petText = [
+        ...(scenario.pet?.healthIssues ?? []),
+        ...(scenario.pet?.allergies ?? []),
+        ...(scenario.pet?.excludedIngredients ?? []),
+      ]
+        .join(" ")
+        .toLowerCase();
+      const requestedSubtype = hasAnyTerm(petText, ["struvite", "στρουβι"])
+        ? "struvite"
+        : hasAnyTerm(petText, ["oxalate", "οξαλ"])
+          ? "oxalate"
+          : null;
+      const oppositeSubtype =
+        requestedSubtype === "struvite"
+          ? "oxalate"
+          : requestedSubtype === "oxalate"
+            ? "struvite"
+            : null;
+
+      if (requestedSubtype && oppositeSubtype) {
+        const visibleTexts = indexedPickTexts(picks, customerVisibleFoodText);
+        const hasRequestedSubtype = visibleTexts.some((pick) =>
+          hasAnyTerm(pick.text, [requestedSubtype])
+        );
+        const oppositeOnlyPicks = visibleTexts.filter(
+          (pick) =>
+            hasAnyTerm(pick.text, [oppositeSubtype]) &&
+            !hasAnyTerm(pick.text, [requestedSubtype])
+        );
+
+        if (oppositeOnlyPicks.length > 0 && !hasRequestedSubtype) {
+          warnings.push(
+            `Top picks surfaced ${oppositeSubtype}-only urinary foods without a ${requestedSubtype} option: #${oppositeOnlyPicks
+              .map((pick) => pick.index)
+              .join(", #")}.`
+          );
+        }
       }
     }
 
@@ -389,6 +438,22 @@ function checkExpectations(scenario, data) {
         !hasAnyTerm(firstText, ["renal", "kidney"])
       ) {
         warnings.push("Renal scenario returned urinary/oxalate positioning without renal/kidney positioning.");
+      }
+    }
+
+    if (expectation === "no_urinary_only_top3_for_renal") {
+      const urinaryOnlyPicks = indexedPickTexts(picks).filter(
+        (pick) =>
+          hasAnyTerm(pick.text, ["urinary", "struvite", "oxalate"]) &&
+          !hasAnyTerm(pick.text, ["renal", "kidney"])
+      );
+
+      if (urinaryOnlyPicks.length > 0) {
+        warnings.push(
+          `Renal top picks include urinary-only positioning: #${urinaryOnlyPicks
+            .map((pick) => pick.index)
+            .join(", #")}.`
+        );
       }
     }
 
