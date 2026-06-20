@@ -32,6 +32,7 @@ import type {
   FoodImportRowV2,
   FoodNutrientsV2,
   FoodProductV2,
+  LifeStage,
   SourcePriority,
 } from "@/types/food-v2";
 
@@ -144,6 +145,36 @@ function parseStringList(value: unknown) {
     .split(/[|,;]/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function normalizeLifeStageFromRowEvidence(
+  raw: Record<string, unknown>,
+  commercialTags: string[],
+  medicalTags: string[]
+): LifeStage {
+  const declaredStage = normalizeLifeStage(raw.life_stage);
+  const evidenceStage = normalizeLifeStage(
+    [
+      raw.formula_name,
+      raw.display_name,
+      raw.formula_key,
+      ...commercialTags,
+      ...medicalTags,
+    ].join(" ")
+  );
+
+  if (["puppy", "kitten", "senior", "all_life_stages"].includes(declaredStage)) {
+    return declaredStage;
+  }
+
+  if (
+    ["puppy", "kitten", "senior", "all_life_stages"].includes(evidenceStage) &&
+    ["adult", "unknown"].includes(declaredStage)
+  ) {
+    return evidenceStage;
+  }
+
+  return declaredStage;
 }
 
 function parseCsv(text: string) {
@@ -295,7 +326,7 @@ export function normalizeFoodV2RawRow(
   const nutrients = buildNutrients(raw);
   const energy = resolveFoodEnergy(raw, nutrients, format);
 
-  const lifeStage = normalizeLifeStage(raw.life_stage);
+  const lifeStage = normalizeLifeStageFromRowEvidence(raw, commercialTags, medicalTags);
   const dogSize = normalizeDogSize(raw.dog_size);
   const identity = createCanonicalFoodIdentity({
     brand,
