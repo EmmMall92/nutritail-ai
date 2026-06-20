@@ -829,6 +829,75 @@ if (
   process.exit(1);
 }
 
+const generalLargeDogPet = {
+  ...pet,
+  weight: 30,
+  age: 4,
+  activityLevel: "normal" as const,
+  neutered: false,
+  excludedIngredients: [],
+  preferredProteins: [],
+  healthIssues: [],
+};
+const generalSterilisedFood = food({
+  id: "general-sterilised-mismatch",
+  formula_key: "qa|general-sterilised-mismatch|dog|dry",
+  display_name: "Naturcroq Duck & Rice Sterilised",
+  dog_size: "large",
+  commercial_tags: ["sterilised", "weight_control"],
+  ingredients: ["duck", "rice", "beet pulp"],
+  primary_animal_proteins: ["duck"],
+  kcal_per_100g: 332,
+});
+const generalAdultFood = food({
+  id: "general-adult-fit",
+  formula_key: "qa|general-adult-fit|dog|dry",
+  display_name: "Medi/maxi Adult Chicken & Rice",
+  dog_size: "large",
+  commercial_tags: ["adult", "maintenance"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
+const generalSterilisedRanking = rankFoodV2ForPet({
+  food: generalSterilisedFood,
+  nutrients: {
+    ...nutrients(generalSterilisedFood),
+    protein_percent: 22,
+    fat_percent: 9,
+    fiber_percent: 2.5,
+  },
+  pet: generalLargeDogPet,
+  goal: "general",
+});
+const generalAdultRanking = rankFoodV2ForPet({
+  food: generalAdultFood,
+  nutrients: {
+    ...nutrients(generalAdultFood),
+    protein_percent: 24,
+    fat_percent: 13,
+    fiber_percent: 2.5,
+  },
+  pet: generalLargeDogPet,
+  goal: "general",
+});
+
+if (generalSterilisedRanking.total_score >= generalAdultRanking.total_score) {
+  console.error("Sterilised/weight-control food should not outrank normal adult food for a general non-neutered dog.");
+  console.error({ generalSterilisedRanking, generalAdultRanking });
+  process.exit(1);
+}
+
+if (
+  !generalSterilisedRanking.signals.some(
+    (signal) => signal.code === "weight_control_formula_without_weight_goal"
+  )
+) {
+  console.error("Expected weight_control_formula_without_weight_goal for general non-neutered dog.");
+  console.error(generalSterilisedRanking.signals);
+  process.exit(1);
+}
+
 const visibleSmallSterilisedFood = food({
   id: "visible-small-sterilised",
   formula_key: "qa|visible-small-sterilised|dog|dry",

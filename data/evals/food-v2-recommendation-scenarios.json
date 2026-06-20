@@ -13,7 +13,7 @@
         "allergies": [],
         "healthIssues": []
       },
-      "expectations": ["premium_or_value", "no_small_dog_top_pick"]
+      "expectations": ["premium_or_value", "no_small_dog_top_pick", "no_weight_control_top_pick"]
     },
     {
       "label": "Large sterilised dog weight control",
