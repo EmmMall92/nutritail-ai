@@ -86,6 +86,47 @@ assert(
   activeFood
 );
 
+const energyDenseGenericFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: [],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 405,
+    protein_percent: 28,
+    fat_percent: 18,
+    fiber_percent: 2.5,
+    calcium_percent: 1.2,
+    phosphorus_percent: 0.9,
+  },
+});
+
+assert(
+  !energyDenseGenericFood.best_use_cases.includes("active_working"),
+  "Did not expect generic energy-dense food to be treated as active/working without visible positioning.",
+  energyDenseGenericFood
+);
+
+assert(
+  energyDenseGenericFood.not_ideal_cases.includes(
+    "energy_dense_without_clear_active_positioning"
+  ),
+  "Expected energy-dense generic food to require active/working/weight-gain positioning review.",
+  energyDenseGenericFood
+);
+
+assert(
+  energyDenseGenericFood.food_cautions.some((item) =>
+    item.includes("visibly positioned")
+  ),
+  "Expected a caution explaining that energy-dense foods need visible active/working positioning.",
+  energyDenseGenericFood
+);
+
 const seniorMobility = evaluateFoodIntelligence({
   species: "dog",
   life_stage: "senior",
