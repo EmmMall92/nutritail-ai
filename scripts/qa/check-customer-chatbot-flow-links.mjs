@@ -167,6 +167,11 @@ const checks = [
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
   },
+  {
+    label: "Greek chatbot guardrail copy uses customer-friendly caution heading",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Μικρή προσοχή πριν δούμε τις τροφές:",
+  },
 ];
 
 const forbiddenChecks = [
@@ -221,6 +226,11 @@ const forbiddenChecks = [
     file: "app/account/chatbot/page.tsx",
     forbidden:
       'createMessage(\n        "bot",\n        "The analysis is complete. You can save it or press Restart."',
+  },
+  {
+    label: "Greek chatbot guardrail copy does not use old English wrapper",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Before food-specific advice, here are the guardrails I would keep in mind:",
   },
 ];
 
