@@ -848,13 +848,13 @@ function getRecommendationChoiceActionHint(
 
   if (hasPortionData) {
     return language === "el"
-      ? "Διάλεξε αυτή την τροφή για να υπολογίσουμε γραμμάρια/ημέρα."
-      : "Choose this food to calculate grams/day.";
+      ? "Επόμενο: υπολόγισε γραμμάρια/ημέρα."
+      : "Next: calculate grams/day.";
   }
 
   return language === "el"
-    ? "Διάλεξε αυτή την τροφή για να την κρατήσουμε στο πλάνο."
-    : "Choose this food to keep it in the plan.";
+    ? "Μπορείς να την κρατήσεις στο πλάνο. Για γραμμάρια χρειαζόμαστε καθαρή θερμιδική τιμή."
+    : "You can keep this food in the plan. Grams need a clear calorie value.";
 }
 
 function getRecommendationChoiceRoleSummary(
@@ -4715,7 +4715,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Εκτίμηση ποσότητας", "Portion estimate")}
+                      {botText("Πάτησε για ποσότητα", "Tap for grams")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -4770,7 +4770,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         {botText("Ιδανικό για", "Best for")}
                       </span>
                       <span className="mt-1 flex flex-wrap gap-1.5">
-                        {choice.bestUseCases.map((item) => (
+                        {choice.bestUseCases.slice(0, 2).map((item) => (
                           <span
                             key={item}
                             className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100"
@@ -4778,6 +4778,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             {item}
                           </span>
                         ))}
+                        {choice.bestUseCases.length > 2 && (
+                          <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100">
+                            +{choice.bestUseCases.length - 2}
+                          </span>
+                        )}
                       </span>
                     </span>
                   )}
@@ -4795,7 +4800,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         {botText("Όχι πρώτη επιλογή για", "Not first choice for")}
                       </span>
                       <span className="mt-1 flex flex-wrap gap-1.5">
-                        {choice.notIdealCases.map((item) => (
+                        {choice.notIdealCases.slice(0, 2).map((item) => (
                           <span
                             key={item}
                             className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100"
@@ -4803,6 +4808,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             {item}
                           </span>
                         ))}
+                        {choice.notIdealCases.length > 2 && (
+                          <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100">
+                            +{choice.notIdealCases.length - 2}
+                          </span>
+                        )}
                       </span>
                     </span>
                   )}
@@ -4811,12 +4821,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </span>
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
-                      "Διάλεξε για γραμμάρια/ημέρα.",
-                      "Choose for grams/day."
+                      "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
+                      "Next: calculate grams/day."
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Υπολόγισε ποσότητα", "Estimate portions")}
+                    {botText("Υπολόγισε γραμμάρια/ημέρα", "Calculate grams/day")}
                   </span>
                 </button>
               ))}
