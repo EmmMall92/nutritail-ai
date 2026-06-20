@@ -69,7 +69,7 @@ const checks = [
   {
     label: "Recommendation cards expose customer grams/day label",
     file: "app/account/chatbot/page.tsx",
-    expected: "Choose a food and see grams/day",
+    expected: "Foods worth checking first",
   },
   {
     label: "Chosen recommendation points user to save the plan",
