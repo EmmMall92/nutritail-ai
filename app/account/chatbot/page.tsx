@@ -4642,7 +4642,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Ποσότητα", "Portion")}
+                      {botText("Εκτίμηση ποσότητας", "Portion estimate")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">

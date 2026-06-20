@@ -5,6 +5,10 @@ const inputPath = process.env.NUTRITAIL_QA_DOG_REPORT_PATH || "reports/dog_chatb
 const outputPath =
   process.env.NUTRITAIL_QA_DOG_QUALITY_REPORT_PATH ||
   "reports/dog_chatbot_quality_audit.md";
+const maxReviewItems =
+  process.env.NUTRITAIL_QA_DOG_QUALITY_MAX_REVIEW === undefined
+    ? null
+    : Number(process.env.NUTRITAIL_QA_DOG_QUALITY_MAX_REVIEW);
 
 const GROUPS = [
   {
@@ -242,11 +246,22 @@ async function main() {
         report: outputPath,
         parsedCases: rows.length,
         reviewItems: groupResults.reduce((sum, group) => sum + group.review.length, 0),
+        maxReviewItems,
       },
       null,
       2
     )
   );
+
+  const reviewItems = groupResults.reduce((sum, group) => sum + group.review.length, 0);
+  if (
+    maxReviewItems !== null &&
+    (!Number.isFinite(maxReviewItems) || reviewItems > maxReviewItems)
+  ) {
+    throw new Error(
+      `Dog chatbot quality audit exceeded review budget: ${reviewItems}/${maxReviewItems}. See ${outputPath}.`
+    );
+  }
 }
 
 main().catch((error) => {
