@@ -1691,7 +1691,18 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
   )
     ? 2
     : 0;
-  const totalScore = excludes ? 0 : baseTotalScore + customerVisibleTieBreaker;
+  const skinAllergyTieBreaker =
+    input.goal === "allergy"
+      ? (signals.some((signal) => signal.code === "allergy_positioning") ? 5 : 0) -
+        (signals.some(
+          (signal) => signal.code === "skin_coat_context_without_visible_support"
+        )
+          ? 5
+          : 0)
+      : 0;
+  const totalScore = excludes
+    ? 0
+    : baseTotalScore + customerVisibleTieBreaker + skinAllergyTieBreaker;
   const tier = valueTier(input.food, valueScore, fitScore, qualityScore);
   const confidence = confidenceFor({ fitScore, qualityScore, signals });
 
