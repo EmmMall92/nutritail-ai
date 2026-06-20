@@ -177,6 +177,28 @@ const lowEnergyMaintenanceForGain = rankFoodV2ForPet({
   goal: "general",
 });
 
+const strictWeightControlModerateEnergy = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "strict-weight-moderate-energy",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 370,
+  },
+  nutrients: {
+    protein_percent: 25,
+    fat_percent: 12,
+    fiber_percent: 4,
+  },
+  pet: {
+    ...highActivityDog,
+    activityLevel: "low",
+    neutered: true,
+    healthIssues: ["recently sterilised", "weight maintenance"],
+  },
+  goal: "sterilised",
+});
+
 assert(
   lightSterilised.bucket === "hold",
   "Light/sterilised formula should be held for a high-activity dog when weight loss is not the goal."
@@ -241,12 +263,22 @@ assert(
   signalCodes(lowEnergyMaintenanceForGain).includes("low_energy_formula_for_high_activity_pet"),
   "Low-energy weight-gain mismatch should emit a clear blocking signal."
 );
+assert(
+  signalCodes(strictWeightControlModerateEnergy).includes(
+    "moderate_high_energy_strict_weight_context"
+  ),
+  "Strict sterilised/weight-control contexts should caution foods around 370 kcal/100g instead of boosting them as acceptable."
+);
+assert(
+  !signalCodes(strictWeightControlModerateEnergy).includes("acceptable_energy_neutered"),
+  "Strict sterilised/weight-control contexts should not give acceptable-energy boost above 360 kcal/100g."
+);
 
 console.log(
   JSON.stringify(
     {
-      checked: 8,
-      passed: 8,
+      checked: 9,
+      passed: 9,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -281,6 +313,11 @@ console.log(
         bucket: lowEnergyMaintenanceForGain.bucket,
         score: lowEnergyMaintenanceForGain.total_score,
         signals: signalCodes(lowEnergyMaintenanceForGain),
+      },
+      strict_weight_control_moderate_energy: {
+        bucket: strictWeightControlModerateEnergy.bucket,
+        score: strictWeightControlModerateEnergy.total_score,
+        signals: signalCodes(strictWeightControlModerateEnergy),
       },
     },
     null,

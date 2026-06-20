@@ -212,12 +212,27 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         points: strictWeightContext ? 12 : 10,
         message: "Lower calorie density fits a sterilised or weight-prone pet.",
       });
-    } else if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g <= 380) {
+    } else if (
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g <= (strictWeightContext ? 360 : 380)
+    ) {
       signals.push({
         type: "boost",
         code: "acceptable_energy_neutered",
         points: 4,
         message: "Calories look acceptable for a sterilised pet.",
+      });
+    } else if (
+      strictWeightContext &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g <= 380
+    ) {
+      signals.push({
+        type: "caution",
+        code: "moderate_high_energy_strict_weight_context",
+        points: -6,
+        message:
+          "Calories are a little high for a strict weight-control or low-activity sterilised shortlist.",
       });
     }
 
