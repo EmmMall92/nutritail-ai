@@ -527,6 +527,8 @@ const requiredCardFlowCopy = [
   "sterilised pets with too much energy density",
   "active pets without enough energy support",
   "energy-dense food without clear active use",
+  "Energy-dense foods need clear active or weight-gain use",
+  "food.food_intelligence?.not_ideal_cases",
   "senior pets without clear senior or mobility support",
   "kcal/100g",
   "protein",
