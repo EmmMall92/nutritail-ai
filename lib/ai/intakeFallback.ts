@@ -53,11 +53,20 @@ function unique(values: string[]) {
 
 function parseWeightKg(text: string) {
   const normalized = normalizeText(text).replace(",", ".");
-  const match = normalized.match(/(\d+(?:\.\d+)?)\s*(?:kg|κιλ|kila|κιλα)?/i);
+  const explicitWeightMatch = normalized.match(
+    /(\d+(?:\.\d+)?)\s*(?:kg|κιλ|kila|κιλα)(?:\s|$|[.,;!?)])/i
+  );
+  if (explicitWeightMatch) return Number(explicitWeightMatch[1]);
+
+  const weightWordMatch = normalized.match(
+    /(?:βαρος|βάρος|weight)\D{0,16}(\d+(?:\.\d+)?)/i
+  );
+  if (weightWordMatch) return Number(weightWordMatch[1]);
+
+  const match = normalized.match(/(\d+(?:\.\d+)?)/i);
   if (!match) return null;
 
-  const nearWeightWord = includesAny(normalized, ["kg", "κιλ", "kila", "βαρος", "βάρος", "weight"]);
-  if (!nearWeightWord && Number(match[1]) > 40) return null;
+  if (Number(match[1]) > 40) return null;
 
   return Number(match[1]);
 }

@@ -113,5 +113,29 @@
       "species": "dog",
       "healthIssues": ["large_breed_growth"]
     }
+  },
+  {
+    "id": "greek_full_sentence_new_pet",
+    "message": "Έχω σκύλο, την λένε Κύρκη, είναι 6 κιλά, 6 ετών, χαμηλή δραστηριότητα, είναι στειρωμένη, της αρέσει κοτόπουλο και δεν της αρέσει σολομός.",
+    "expect": {
+      "species": "dog",
+      "petName": "Κύρκη",
+      "weightKg": 6,
+      "ageYears": 6,
+      "activityLevel": "low",
+      "neutered": true,
+      "preferredProteins": ["chicken"],
+      "excludedIngredients": ["salmon"]
+    }
+  },
+  {
+    "id": "greek_age_before_weight",
+    "message": "Έχω σκύλο 3 ετών και 10 κιλά, κανονική δραστηριότητα.",
+    "expect": {
+      "species": "dog",
+      "ageYears": 3,
+      "weightKg": 10,
+      "activityLevel": "normal"
+    }
   }
 ]
