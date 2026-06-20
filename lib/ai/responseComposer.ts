@@ -271,22 +271,22 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   if (input.cardsFollow) {
     if (locale === "el") {
       return [
-        "Έτοιμο. Με βάση τα στοιχεία του κατοικιδίου, έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
+        "Έτοιμο. Οι πιο κατάλληλες επιλογές είναι στις κάρτες από κάτω.",
         "",
-        `Στόχος: ${goalLabel}.`,
-        `Πρώτη κατεύθυνση: ${topFood}, γιατί ${topReason}.`,
+        `Τι κοιτάμε: ${goalLabel}.`,
+        `Καλύτερη αφετηρία: ${topFood} - ${topReason}.`,
         "",
-        "Πάτησε μία κάρτα για να υπολογίσω περίπου γραμμάρια/ημέρα και να κρατήσω την επιλογή στην ανάλυση.",
+        "Πάτησε μία κάρτα για να δεις περίπου γραμμάρια/ημέρα και μετά αποθήκευσε το πλάνο.",
       ].join("\n");
     }
 
     return [
-      "Done. Based on this pet profile, I placed the best options below as cards.",
+      "Done. The strongest matches are in the cards below.",
       "",
-      `Goal: ${goalLabel}.`,
-      `First direction: ${topFood}, because it ${topReason}.`,
+      `What we are optimizing for: ${goalLabel}.`,
+      `Best starting point: ${topFood} - it ${topReason}.`,
       "",
-      "Tap one card to estimate grams/day and keep that food in the analysis.",
+      "Tap one card to see estimated grams/day, then save the plan.",
     ].join("\n");
   }
 
@@ -302,7 +302,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
       "",
       foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
       "",
-      "Το πιο πρακτικό επόμενο βήμα: πάτησε μία τροφή από τις επιλογές από κάτω για να υπολογίσω περίπου γραμμάρια/ημέρα.",
+      "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις περίπου γραμμάρια/ημέρα.",
       "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
     ].join("\n");
   }
@@ -314,7 +314,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     "",
     foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
     "",
-    "Best next step: tap one food below and I can estimate grams/day.",
+    "Next step: choose one food card to see estimated grams/day.",
     "For urinary, kidney, diabetes, pancreatitis, severe vomiting, diarrhea, blood, or not eating, speak with a veterinarian first.",
   ].join("\n");
 }
@@ -422,11 +422,11 @@ export async function composeChatbotRecommendationResponse(
           {
             role: "system",
             content:
-              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Prefer customer_reason, customer_caution, and nutrition_snapshot over raw internal wording. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear shortlist, not a back-office audit. Mention veterinary advice only for medical risk situations. Return plain text only.",
+              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Prefer customer_reason, customer_caution, and nutrition_snapshot over raw internal wording. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear customer shortlist, not a back-office audit. When selectable food cards follow, write only a short intro and next action; the cards are the recommendation UI. Mention veterinary advice only for medical risk situations. Return plain text only.",
           },
           {
             role: "user",
-            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not mention internal scores or numeric ranking labels.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
+            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is true, keep the answer under 90 words and do not repeat card details.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not mention internal scores or numeric ranking labels.\n- Keep customer wording simple: no backend wording, no audit language, no long caveat blocks.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
           },
         ],
         temperature: 0.2,
