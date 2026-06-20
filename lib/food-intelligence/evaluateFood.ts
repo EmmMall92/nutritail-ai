@@ -257,6 +257,82 @@ function hasSummerLowAppetiteSupport(input: FoodIntelligenceInput) {
   );
 }
 
+function hasColdOutdoorContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "cold_weather",
+    "cold_climate",
+    "winter",
+    "snow",
+    "mountain",
+    "outdoor",
+    "outside",
+    "farm",
+    "working_outdoor",
+    "κρυο",
+    "κρύο",
+    "ψυχρο",
+    "ψυχρό",
+    "χειμωνας",
+    "χειμώνας",
+    "χιονι",
+    "χιόνι",
+    "βουνο",
+    "βουνό",
+    "εξω",
+    "έξω",
+    "αγροκτημα",
+    "αγρόκτημα",
+  ]);
+}
+
+function hasColdOutdoorEnergySupport(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasColdOutdoorContext(input) &&
+    hasNumber(nutrients.kcal_per_100g) &&
+    nutrients.kcal_per_100g >= 360 &&
+    (!hasNumber(nutrients.fat_percent) || nutrients.fat_percent >= 12)
+  );
+}
+
+function hasRescueUndernutritionContext(input: FoodIntelligenceInput) {
+  return hasTag(input, [
+    "rescue",
+    "underweight",
+    "undernourished",
+    "malnourished",
+    "weight_gain",
+    "recovery",
+    "convalescence",
+    "low_body_condition",
+    "muscle_gain",
+    "υποσιτισ",
+    "αδυνατο",
+    "αδύνατο",
+    "λιποβαρες",
+    "λιποβαρές",
+    "αναρρωση",
+    "ανάρρωση",
+    "διασωση",
+    "διάσωση",
+  ]);
+}
+
+function hasRescueRecoveryNutrition(input: FoodIntelligenceInput) {
+  const nutrients = input.nutrients ?? {};
+
+  return (
+    hasRescueUndernutritionContext(input) &&
+    hasNumber(nutrients.kcal_per_100g) &&
+    nutrients.kcal_per_100g >= 360 &&
+    hasNumber(nutrients.protein_percent) &&
+    nutrients.protein_percent >= 24 &&
+    hasNumber(nutrients.fat_percent) &&
+    nutrients.fat_percent >= 12
+  );
+}
+
 function isLargeBreedGrowthContext(input: FoodIntelligenceInput) {
   const size = String(input.dog_size ?? "").toLowerCase();
 
@@ -471,6 +547,12 @@ function strengths(input: FoodIntelligenceInput) {
   if (hasSummerLowAppetiteSupport(input)) {
     addUnique(result, "Moderate energy density can help when seasonal heat reduces how much the pet eats.");
   }
+  if (hasColdOutdoorEnergySupport(input)) {
+    addUnique(result, "Energy and fat profile can support outdoor or cold-weather feeding when body condition is monitored.");
+  }
+  if (hasRescueRecoveryNutrition(input)) {
+    addUnique(result, "Energy, protein and fat profile can support controlled weight-gain or recovery feeding.");
+  }
   if (
     input.species === "cat" &&
     hasTag(input, ["indoor", "sterilised", "sterilized", "neutered"]) &&
@@ -607,6 +689,27 @@ function cautions(input: FoodIntelligenceInput) {
       (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent <= 9))
   ) {
     result.push("Light or very low-energy nutrition is weaker when the pet already eats little in hot weather.");
+  }
+  if (hasColdOutdoorContext(input)) {
+    result.push("Outdoor or cold-weather feeding still needs body-condition checks, shelter and hydration context.");
+  }
+  if (
+    hasColdOutdoorContext(input) &&
+    ((hasNumber(input.nutrients?.kcal_per_100g) && input.nutrients.kcal_per_100g <= 335) ||
+      (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent <= 9))
+  ) {
+    result.push("Light or low-fat nutrition is a weaker first pick for outdoor or cold-weather energy needs.");
+  }
+  if (hasRescueUndernutritionContext(input)) {
+    result.push("Rescue, underweight or recovery cases need gradual feeding and veterinary context if weight loss is unexplained.");
+  }
+  if (
+    hasRescueUndernutritionContext(input) &&
+    ((hasNumber(input.nutrients?.kcal_per_100g) && input.nutrients.kcal_per_100g < 350) ||
+      (hasNumber(input.nutrients?.protein_percent) && input.nutrients.protein_percent < 22) ||
+      (hasNumber(input.nutrients?.fat_percent) && input.nutrients.fat_percent < 10))
+  ) {
+    result.push("Recovery or controlled weight-gain use is weaker without enough energy, protein and fat support.");
   }
 
   return [...new Set(result)].slice(0, 8);
@@ -760,6 +863,12 @@ function bestUseCases(input: FoodIntelligenceInput) {
   if (hasSummerLowAppetiteSupport(input)) {
     addUnique(result, "summer_low_appetite_feeding_review");
   }
+  if (hasColdOutdoorEnergySupport(input)) {
+    addUnique(result, "cold_weather_outdoor_feeding_review");
+  }
+  if (hasRescueRecoveryNutrition(input)) {
+    addUnique(result, "controlled_weight_gain_recovery_review");
+  }
 
   return [...new Set(result)].slice(0, 8);
 }
@@ -868,6 +977,20 @@ function notIdealCases(input: FoodIntelligenceInput) {
     ((hasNumber(kcal) && kcal <= 335) || (hasNumber(fat) && fat <= 9))
   ) {
     cases.push("summer_low_appetite_without_energy_support");
+  }
+  if (
+    hasColdOutdoorContext(input) &&
+    ((hasNumber(kcal) && kcal <= 335) || (hasNumber(fat) && fat <= 9))
+  ) {
+    cases.push("cold_weather_outdoor_without_energy_support");
+  }
+  if (
+    hasRescueUndernutritionContext(input) &&
+    ((hasNumber(kcal) && kcal < 350) ||
+      (hasNumber(input.nutrients?.protein_percent) && input.nutrients.protein_percent < 22) ||
+      (hasNumber(fat) && fat < 10))
+  ) {
+    cases.push("recovery_weight_gain_without_energy_protein_support");
   }
   if (input.ingredient_tags?.includes("chicken")) cases.push("chicken_allergy");
 
