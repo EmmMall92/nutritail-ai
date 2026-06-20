@@ -1,19 +1,19 @@
 # Food V2 Import Candidate Queue
 
-Generated: 2026-06-05T16:28:40.625Z
+Generated: 2026-06-20T20:06:48.796Z
 
 ## Summary
 
-- Queue rows: 2448
-- Candidate rows: 872
-- Hold rows: 1576
+- Queue rows: 2613
+- Candidate rows: 1034
+- Hold rows: 1579
 - Reject rows: 0
 - Output CSV: data/review/food_v2_import_candidate_queue.csv
 
 ## By Decision
 
-- hold: 1576
-- candidate: 872
+- hold: 1579
+- candidate: 1034
 
 ## By Dataset
 
@@ -21,6 +21,7 @@ Generated: 2026-06-05T16:28:40.625Z
 - data/imports/mixed_eshop_spreadsheet_extract_v2.csv: 475
 - data/imports/category_product_sources_extract_v2.csv: 203
 - data/imports/dog_dry_eshop_spreadsheet_extract_v2.csv: 179
+- data/imports/gatoskilo_cat_local_html_batch_v2.csv: 165
 - data/imports/vet_eshop_document_extract_v2.csv: 154
 - data/imports/schesir_gheda_marketplace_ods_extract_v2.csv: 151
 - data/imports/gheda_schesir_spreadsheet_extract_v2.csv: 140

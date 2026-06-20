@@ -25,6 +25,7 @@ const inputs = [
   "data/imports/schesir_official_enrichment_extract_v2.csv",
   "data/imports/retailer_source_backfill_v2.csv",
   "data/imports/gatoskilo_local_html_batch_v2.csv",
+  "data/imports/gatoskilo_cat_local_html_batch_v2.csv",
   "data/imports/gatoskilo_product_extract_v2.csv",
   "data/imports/petshop88_product_extract_v2.csv",
   "data/imports/external_product_sources_extract_v2.csv",
