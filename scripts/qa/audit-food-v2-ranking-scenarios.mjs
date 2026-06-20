@@ -426,6 +426,33 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "senior_visible_top_picks") {
+      const nonSeniorPicks = indexedPickTexts(picks, customerVisibleFoodText).filter(
+        (pick) =>
+          !hasAnyTerm(pick.text, [
+            "senior",
+            "mature",
+            "ageing",
+            "aging",
+            "joint",
+            "mobility",
+            "7+",
+            "8+",
+            "10+",
+            "11+",
+            "12+",
+          ])
+      );
+
+      if (nonSeniorPicks.length > 0) {
+        warnings.push(
+          `Senior top picks include food without clear senior/joint positioning: #${nonSeniorPicks
+            .map((pick) => pick.index)
+            .join(", #")}.`
+        );
+      }
+    }
+
     if (expectation === "large_breed_growth_fit") {
       if (!hasAnyTerm(firstText, ["large breed", "large puppy", "puppy large", "maxi", "giant"])) {
         warnings.push("Top pick is not clearly large-breed puppy positioned.");
