@@ -5,6 +5,11 @@ import { spawn } from "node:child_process";
 const reportPath =
   process.env.NUTRITAIL_CHATBOT_GOLDEN_SUITE_REPORT ||
   "reports/chatbot_golden_suite.md";
+const strictMode = process.argv.includes("--strict");
+
+if (strictMode) {
+  process.env.NUTRITAIL_QA_DOG_QUALITY_MAX_REVIEW ??= "0";
+}
 
 const checks = [
   {
@@ -62,6 +67,12 @@ const checks = [
     covers: "Live extraction, safety expectations, Food V2 candidates, and recommendation guards.",
   },
   {
+    name: "Dog chatbot quality audit",
+    command: "npm.cmd",
+    args: ["run", "audit:dog-chatbot-quality"],
+    covers: "Qualitative review of the generated 200-case report for growth, renal, urinary, senior, allergy, GI, sterilised, and active-dog top-food positioning.",
+  },
+  {
     name: "Customer-facing recommendation copy",
     command: "npm.cmd",
     args: ["run", "qa:chatbot-customer-recommendations"],
@@ -83,7 +94,7 @@ const objectiveCoverage = [
   {
     objective: "3. 200 live chatbot cases",
     evidence:
-      "Dog edge fixture and dog golden coverage audit prove ids 1-200 exist, are unique, and include required safety/recommendation checks.",
+      "Dog edge fixture, dog golden coverage audit, live runner, and quality audit prove ids 1-200 exist, are unique, include required safety/recommendation checks, and are reviewed for visible top-food quality.",
   },
   {
     objective: "4. Brand data cleanup",
