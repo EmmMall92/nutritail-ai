@@ -276,7 +276,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
         `Τι κοιτάμε: ${goalLabel}.`,
         `Καλύτερη αφετηρία: ${topFood} - ${topReason}.`,
         "",
-        "Πάτησε μία κάρτα για να δεις περίπου γραμμάρια/ημέρα και μετά αποθήκευσε το πλάνο.",
+        "Πάτησε μία κάρτα για να δεις περίπου γραμμάρια/ημέρα.",
       ].join("\n");
     }
 
@@ -286,7 +286,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
       `What we are optimizing for: ${goalLabel}.`,
       `Best starting point: ${topFood} - it ${topReason}.`,
       "",
-      "Tap one card to see estimated grams/day, then save the plan.",
+      "Tap one card to see estimated grams/day.",
     ].join("\n");
   }
 
@@ -422,11 +422,11 @@ export async function composeChatbotRecommendationResponse(
           {
             role: "system",
             content:
-              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Prefer customer_reason, customer_caution, and nutrition_snapshot over raw internal wording. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear customer shortlist, not a back-office audit. When selectable food cards follow, write only a short intro and next action; the cards are the recommendation UI. Mention veterinary advice only for medical risk situations. Return plain text only.",
+              "You are NutriTail's customer-facing pet nutrition response composer. Database facts and deterministic rules are the only source of truth. Do not invent foods, scores, calories, nutrients, diagnoses, treatments, or medical claims. Hide backend fields such as source tier, needs_review, data quality, review status, source, confidence internals, and missing field lists. Prefer customer_reason, customer_caution, and nutrition_snapshot over raw internal wording. Write like an experienced petshop nutrition advisor: practical, warm, concise, and easy to scan. Give a clear customer shortlist, not a back-office audit. When selectable food cards follow, write only a short intro and next action; the cards are the recommendation UI. Do not tell the user to save in that intro because the save flow appears below the cards. Mention veterinary advice only for medical risk situations. Return plain text only.",
           },
           {
             role: "user",
-            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step. Do not list every food because selectable cards appear below.\n- If cards_follow is true, keep the answer under 90 words and do not repeat card details.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not mention internal scores or numeric ranking labels.\n- Keep customer wording simple: no backend wording, no audit language, no long caveat blocks.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
+            content: `Write the final chatbot recommendation in ${locale === "el" ? "Greek" : "English"}.\n\nRules:\n- Use only the foods and numbers in this JSON.\n- Preserve exact food names when you mention a food.\n- Do not add new brands, foods, scores, nutrients, or claims.\n- Do not include backend review/source-quality wording.\n- Do not say needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.\n- If cards_follow is true, write a compact intro only: goal, one top direction, and one clear next step to tap/choose a food card. Do not list every food because selectable cards appear below.\n- If cards_follow is true, keep the answer under 90 words and do not repeat card details.\n- If cards_follow is true, do not tell the user to save the plan in this intro.\n- If cards_follow is false, present 2-3 strongest options and up to 2 value alternatives only if available.\n- For each food you mention, explain one customer-friendly reason and one short nutrition snapshot if numbers exist.\n- Do not mention internal scores or numeric ranking labels.\n- Keep customer wording simple: no backend wording, no audit language, no long caveat blocks.\n- Explain RER/MER only if they already appear in deterministic_text.\n- End with one clear next step: tap/choose a food to calculate grams/day.\n\nGrounded JSON:\n${JSON.stringify(groundedPayload)}`,
           },
         ],
         temperature: 0.2,
