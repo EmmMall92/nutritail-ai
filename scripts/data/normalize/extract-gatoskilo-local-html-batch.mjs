@@ -402,6 +402,12 @@ function firstNumberAfter(text, labels, options = {}) {
 }
 
 function percentAfter(text, labels) {
+  const hasFatLabel = labels.some((label) => label === "Fat" || /λιπ|lip|fat/i.test(label));
+  if (hasFatLabel) {
+    const priorityLabels = [labels[0], labels[2], "Fat"].filter(Boolean);
+    return firstNumberAfter(text, priorityLabels) ?? firstNumberAfter(text, labels);
+  }
+
   return firstNumberAfter(text, labels);
 }
 
