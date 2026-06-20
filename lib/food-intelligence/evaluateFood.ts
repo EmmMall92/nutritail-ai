@@ -505,6 +505,12 @@ function cautions(input: FoodIntelligenceInput) {
     result.push("Weight-aware nutrition may underserve genuinely active or working dogs.");
   }
   if (
+    hasEnergyDenseNutrition(input) &&
+    !hasTag(input, ["active", "performance", "sport", "working"])
+  ) {
+    result.push("Energy is dense, so check whether the formula is visibly positioned for active, working, or weight-gain use.");
+  }
+  if (
     input.life_stage === "senior" &&
     !hasTag(input, ["senior", "mature", "joint", "mobility"]) &&
     !hasOmegaDetail(input)
@@ -596,10 +602,7 @@ function bestUseCases(input: FoodIntelligenceInput) {
   ) {
     addUnique(result, "sterilised_weight_management");
   }
-  if (
-    hasTag(input, ["active", "performance", "sport", "working"]) ||
-    hasEnergyDenseNutrition(input)
-  ) {
+  if (hasTag(input, ["active", "performance", "sport", "working"])) {
     addUnique(result, "active_working");
   }
   if (
@@ -743,6 +746,12 @@ function notIdealCases(input: FoodIntelligenceInput) {
     hasTag(input, ["active", "performance", "sport", "working"])
   ) {
     cases.push("active_working_without_energy_support");
+  }
+  if (
+    hasEnergyDenseNutrition(input) &&
+    !hasTag(input, ["active", "performance", "sport", "working"])
+  ) {
+    cases.push("energy_dense_without_clear_active_positioning");
   }
   if (!hasNumber(input.nutrients?.phosphorus_percent)) cases.push("renal_decision_without_phosphorus");
   if (!hasNumber(input.nutrients?.magnesium_percent)) cases.push("urinary_decision_without_magnesium");
