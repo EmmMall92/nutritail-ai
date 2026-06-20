@@ -193,6 +193,14 @@ export function normalizeFoodFormat(value: unknown): FoodFormat {
 
 export function normalizeLifeStage(value: unknown): LifeStage {
   const text = normalizeSearchText(value);
+  if (text.includes("puppies")) return "puppy";
+  if (
+    text.includes("ageing") ||
+    text.includes("aging") ||
+    /\b(?:7|8|10|11|12)\s*\+/.test(text)
+  ) {
+    return "senior";
+  }
   if (text.includes("puppy") || text.includes("junior") || text.includes("κουταβ")) {
     return "puppy";
   }
@@ -261,6 +269,15 @@ export function normalizeCommercialTags(text: unknown) {
 export function generateHealthTags(text: unknown) {
   const value = normalizeSearchText(text);
   const tags: string[] = [];
+
+  if (value.includes("puppies")) tags.push("puppy");
+  if (
+    value.includes("ageing") ||
+    value.includes("aging") ||
+    /\b(?:7|8|10|11|12)\s*\+/.test(value)
+  ) {
+    tags.push("senior");
+  }
 
   if (value.includes("sterilised") || value.includes("sterilized") || value.includes("neutered")) {
     tags.push("sterilised");
