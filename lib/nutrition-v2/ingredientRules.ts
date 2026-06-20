@@ -369,7 +369,7 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
       signals.push({
         type: "boost",
         code: "allergy_positioning",
-        points: 10,
+        points: 18,
         message: "Has allergy-friendly positioning.",
       });
     }

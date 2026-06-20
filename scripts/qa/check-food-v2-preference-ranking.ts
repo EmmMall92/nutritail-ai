@@ -254,6 +254,76 @@ if (
   process.exit(1);
 }
 
+const skinAllergyPet = {
+  ...pet,
+  weight: 18,
+  age: 3,
+  activityLevel: "normal" as const,
+  neutered: false,
+  allergies: ["chicken"],
+  excludedIngredients: ["chicken"],
+  preferredProteins: ["lamb", "salmon"],
+  healthIssues: ["skin allergy", "itchy skin"],
+};
+const plainRedMeatAllergyFood = food({
+  id: "plain-red-meat-allergy",
+  formula_key: "qa|plain-red-meat-allergy|dog|dry",
+  display_name: "Classic Red Meat",
+  ingredients: ["beef", "pork", "oats"],
+  primary_animal_proteins: ["beef", "pork"],
+});
+const hypoSkinAllergyFood = food({
+  id: "hypo-skin-allergy",
+  formula_key: "qa|hypo-skin-allergy|dog|dry",
+  display_name: "Hypo With Salmon And Tuna",
+  formula_name: "Hypo With Salmon And Tuna",
+  commercial_tags: ["hypoallergenic", "skin_coat"],
+  ingredients: ["salmon", "tuna", "rice", "fish oil"],
+  primary_animal_proteins: ["salmon", "tuna"],
+});
+const plainRedMeatAllergyRanking = rankFoodV2ForPet({
+  food: plainRedMeatAllergyFood,
+  nutrients: nutrients(plainRedMeatAllergyFood),
+  pet: skinAllergyPet,
+  goal: "allergy",
+});
+const hypoSkinAllergyRanking = rankFoodV2ForPet({
+  food: hypoSkinAllergyFood,
+  nutrients: {
+    ...nutrients(hypoSkinAllergyFood),
+    omega3_percent: 1.1,
+    epa_dha_percent: 0.35,
+  },
+  pet: skinAllergyPet,
+  goal: "allergy",
+});
+
+if (hypoSkinAllergyRanking.total_score <= plainRedMeatAllergyRanking.total_score) {
+  console.error("Hypo/skin-positioned food should outrank plain red-meat food for skin allergy context.");
+  console.error({ hypoSkinAllergyRanking, plainRedMeatAllergyRanking });
+  process.exit(1);
+}
+
+if (
+  !hypoSkinAllergyRanking.signals.some(
+    (signal) => signal.code === "allergy_positioning"
+  )
+) {
+  console.error("Expected allergy_positioning for hypo skin allergy food.");
+  console.error(hypoSkinAllergyRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !plainRedMeatAllergyRanking.signals.some(
+    (signal) => signal.code === "skin_coat_context_without_visible_support"
+  )
+) {
+  console.error("Expected skin_coat_context_without_visible_support for plain allergy food.");
+  console.error(plainRedMeatAllergyRanking.signals);
+  process.exit(1);
+}
+
 if (felineNamedDogFood?.bucket !== "hold") {
   console.error("Dog recommendations should hold products with feline/cat-specific titles.");
   console.error(felineNamedDogFood);

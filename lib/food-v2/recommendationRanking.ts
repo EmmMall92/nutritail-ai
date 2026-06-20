@@ -1114,11 +1114,12 @@ function scoreFit(input: FoodV2RankingInput) {
         "Fish, omega or skin/coat positioning supports a skin-coat shortlist."
       );
     } else if (goal === "allergy") {
+      score -= 12;
       addSignal(
         signals,
         "caution",
         "skin_coat_context_without_visible_support",
-        -8,
+        -12,
         "Skin-coat context is stronger with visible fish, omega or skin-support positioning."
       );
     }
