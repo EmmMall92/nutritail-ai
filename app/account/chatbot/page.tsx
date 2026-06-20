@@ -4826,7 +4826,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Υπολόγισε γραμμάρια/ημέρα", "Calculate grams/day")}
+                    {botText("Υπολόγισε γραμμάρια/ημέρα", "Estimate portions")}
                   </span>
                 </button>
               ))}
