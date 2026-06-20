@@ -889,6 +889,142 @@ assert(
   summerLowEnergyFood
 );
 
+const coldOutdoorEnergyFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: ["cold_weather", "outdoor", "working"],
+  ingredient_tags: ["beef", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 385,
+    protein_percent: 28,
+    fat_percent: 16,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  coldOutdoorEnergyFood.best_use_cases.includes("cold_weather_outdoor_feeding_review"),
+  "Expected cold_weather_outdoor_feeding_review for outdoor/cold context with useful energy and fat.",
+  coldOutdoorEnergyFood
+);
+
+assert(
+  coldOutdoorEnergyFood.food_strengths.some((item) =>
+    item.includes("outdoor or cold-weather feeding")
+  ),
+  "Expected customer-useful cold/outdoor energy strength.",
+  coldOutdoorEnergyFood
+);
+
+assert(
+  coldOutdoorEnergyFood.food_cautions.some((item) =>
+    item.includes("shelter and hydration")
+  ),
+  "Expected shelter/hydration caution for outdoor or cold-weather feeding.",
+  coldOutdoorEnergyFood
+);
+
+const coldOutdoorLightFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "large",
+  health_tags: ["cold_weather", "outdoor"],
+  ingredient_tags: ["chicken", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 320,
+    protein_percent: 23,
+    fat_percent: 8,
+    fiber_percent: 4,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  coldOutdoorLightFood.not_ideal_cases.includes(
+    "cold_weather_outdoor_without_energy_support"
+  ),
+  "Expected light/low-fat food to be not ideal for cold-weather outdoor context.",
+  coldOutdoorLightFood
+);
+
+const rescueRecoveryFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "medium",
+  health_tags: ["rescue", "underweight", "weight_gain"],
+  ingredient_tags: ["salmon", "rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 372,
+    protein_percent: 27,
+    fat_percent: 14,
+    fiber_percent: 2.5,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  rescueRecoveryFood.best_use_cases.includes("controlled_weight_gain_recovery_review"),
+  "Expected controlled_weight_gain_recovery_review for rescue/underweight context with energy, protein and fat support.",
+  rescueRecoveryFood
+);
+
+assert(
+  rescueRecoveryFood.food_strengths.some((item) =>
+    item.includes("controlled weight-gain or recovery")
+  ),
+  "Expected customer-useful recovery/weight-gain strength.",
+  rescueRecoveryFood
+);
+
+assert(
+  rescueRecoveryFood.food_cautions.some((item) =>
+    item.includes("gradual feeding")
+  ),
+  "Expected gradual feeding caution for rescue or underweight context.",
+  rescueRecoveryFood
+);
+
+const weakRescueRecoveryFood = evaluateFoodIntelligence({
+  species: "dog",
+  life_stage: "adult",
+  dog_size: "medium",
+  health_tags: ["rescue", "underweight"],
+  ingredient_tags: ["rice"],
+  medical_tags: [],
+  data_quality_status: "verified",
+  source_priority: "official",
+  nutrients: {
+    kcal_per_100g: 330,
+    protein_percent: 20,
+    fat_percent: 8,
+    fiber_percent: 4,
+    calcium_percent: 1.1,
+    phosphorus_percent: 0.8,
+  },
+});
+
+assert(
+  weakRescueRecoveryFood.not_ideal_cases.includes(
+    "recovery_weight_gain_without_energy_protein_support"
+  ),
+  "Expected weak recovery food to be flagged when energy, protein or fat support is low.",
+  weakRescueRecoveryFood
+);
+
 const smallBreedFood = evaluateFoodIntelligence({
   species: "dog",
   life_stage: "adult",
