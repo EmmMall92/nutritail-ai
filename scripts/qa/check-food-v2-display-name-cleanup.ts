@@ -298,6 +298,15 @@ const customerFoodNameCases = [
     expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
   },
   {
+    label: "Customer Happy Dog duplicated happy token is removed",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Happy Happy Naturcroq Duck & Rice Sterilised",
+    },
+    expectedDisplay: "Naturcroq Duck & Rice Sterilised",
+    expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
+  },
+  {
     label: "Customer Royal Canin repeated size token is cleaned",
     input: {
       brand: "Royal Canin",

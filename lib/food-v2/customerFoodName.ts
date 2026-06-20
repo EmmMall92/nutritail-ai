@@ -80,6 +80,10 @@ export function customerFoodDisplayName(food: FoodNameInput) {
       .trim();
   }
 
+  if (normalizedBrand === "happy dog") {
+    displayName = displayName.replace(/^happy\s+/i, "").trim();
+  }
+
   const firstBrandWord = brand.split(/\s+/)[0];
   if (firstBrandWord) {
     displayName = displayName.replace(
@@ -88,7 +92,13 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     );
   }
 
-  return collapseRepeatedCustomerTokens(displayName)
+  displayName = collapseRepeatedCustomerTokens(displayName);
+
+  if (normalizedBrand === "happy dog") {
+    displayName = displayName.replace(/^happy\s+/i, "").trim();
+  }
+
+  return displayName
     .replace(/\b(happy)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(pro\s*plan)(?:\s+\1)+\b/gi, "$1")
