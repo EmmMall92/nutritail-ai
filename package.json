@@ -94,6 +94,7 @@
     "qa:customer-chatbot-flow-links": "node scripts/qa/check-customer-chatbot-flow-links.mjs",
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
     "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
+    "qa:customer-recommendation-smoke": "tsx scripts/qa/check-customer-recommendation-smoke.ts",
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
     "qa:feeding-rules": "tsx scripts/qa/check-feeding-rule-edge-cases.ts",
     "qa:food-intelligence-use-cases": "tsx scripts/qa/check-food-intelligence-use-cases.ts",

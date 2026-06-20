@@ -55,6 +55,12 @@ const checks = [
     covers: "Saved analysis next steps, pet profile/report/timeline/progress links, and customer-facing recommendation card actions.",
   },
   {
+    name: "Customer recommendation smoke",
+    command: "npm.cmd",
+    args: ["run", "qa:customer-recommendation-smoke"],
+    covers: "Customer-facing summaries for sterilised, weight loss, allergy, GI, urinary, renal, growth, active, and senior scenarios stay simple and card-action oriented.",
+  },
+  {
     name: "Account progress live routes",
     command: "npm.cmd",
     args: ["run", "qa:account-progress-live-routes"],
@@ -89,7 +95,7 @@ const objectiveCoverage = [
   {
     objective: "2. Customer-facing answer quality",
     evidence:
-      "Customer recommendation copy and customer chatbot flow links guard against back-office wording and verify food-card action flow.",
+      "Customer recommendation copy, customer recommendation smoke, and customer chatbot flow links guard against back-office wording and verify food-card action flow.",
   },
   {
     objective: "3. 200 live chatbot cases",
