@@ -403,6 +403,23 @@ if (missingComposerNameCleanup.length > 0) {
   process.exit(1);
 }
 
+const requiredCompactComposerFlow = [
+  "The strongest matches are in the cards below.",
+  "Tap one card to see estimated grams/day, then save the plan.",
+  "When selectable food cards follow, write only a short intro and next action",
+  "If cards_follow is true, keep the answer under 90 words",
+  "the cards are the recommendation UI",
+];
+const missingCompactComposerFlow = requiredCompactComposerFlow.filter(
+  (term) => !responseComposer.includes(term)
+);
+
+if (missingCompactComposerFlow.length > 0) {
+  console.error("OpenAI/fallback composer is missing compact customer card-flow rules:");
+  console.error(missingCompactComposerFlow.join(", "));
+  process.exit(1);
+}
+
 const forbiddenChatbotPageCopy = [
   "Food score:",
   "Nutrition confidence:",
