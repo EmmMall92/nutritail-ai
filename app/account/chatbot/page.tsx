@@ -345,6 +345,13 @@ function formatRecommendationChoiceReason(
       : undefined;
 
   if (language === "el") {
+    if (
+      text.includes("customer_visible_dog_size_match") ||
+      text.includes("visible product title targets") ||
+      text.includes("matches size or breed-size positioning")
+    ) {
+      return "Ταιριάζει καλύτερα στο μέγεθος του σκύλου, με πιο σωστή λογική φυλής/μεγέθους για την επιλογή τροφής.";
+    }
     if (text.includes("preferred protein") || text.includes("preferred flavor")) {
       return "Ταιριάζει με γεύση ή πρωτεΐνη που δήλωσες ότι προτιμά.";
     }
@@ -405,6 +412,13 @@ function formatRecommendationChoiceReason(
       : "Δυνατή επιλογή με βάση το προφίλ του κατοικιδίου.";
   }
 
+  if (
+    text.includes("customer_visible_dog_size_match") ||
+    text.includes("visible product title targets") ||
+    text.includes("matches size or breed-size positioning")
+  ) {
+    return "It better matches this dog's size, with clearer breed-size positioning for the food choice.";
+  }
   if (text.includes("preferred protein") || text.includes("preferred flavor")) {
     return "It matches a flavour or protein preference you gave.";
   }
