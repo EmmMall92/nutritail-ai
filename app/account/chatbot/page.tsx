@@ -2581,15 +2581,16 @@ ${
 Σημείωση: Η καθοδήγηση είναι ενημερωτική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
   }
 
-  return `Your first nutrition analysis is ready:
+  return `Your nutrition plan is ready:
 
-Resting calories: ${nutrition.rer} kcal/day
-This is roughly the basic energy the body needs at complete rest.
+Daily calorie guide
+- Resting need: ${nutrition.rer} kcal/day
+  This is the basic energy the body needs at complete rest.
 
-Base daily target: ${nutrition.der} kcal/day
-This is the target before the final weight-loss or weight-gain adjustment. It considers weight, age, activity, and neuter status.
+- Starting daily target: ${nutrition.der} kcal/day
+  This is the practical starting point before the final weight goal adjustment. It considers weight, age, activity, and neuter status.
 
-Key notes:
+What matters for this pet:
 ${
   advice.length > 0
     ? advice
@@ -2597,6 +2598,8 @@ ${
         .join("\n")
     : "- No special notes for this analysis."
 }
+
+The food cards below are the next step. Choose one option to estimate the daily portion.
 
 Note: This guidance is educational and does not replace veterinary advice.`;
 }
