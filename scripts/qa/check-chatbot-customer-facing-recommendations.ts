@@ -386,6 +386,23 @@ if (leakedComposerCopy.length > 0) {
   process.exit(1);
 }
 
+const requiredComposerNameCleanup = [
+  "customerFoodName(food)",
+  "customerFoodDisplayName(food)",
+  "customer_name: customerFoodName(food)",
+];
+const missingComposerNameCleanup = requiredComposerNameCleanup.filter(
+  (term) => !responseComposer.includes(term)
+);
+
+if (missingComposerNameCleanup.length > 0) {
+  console.error(
+    "OpenAI recommendation composer must use the same customer food-name cleanup as chatbot cards:"
+  );
+  console.error(missingComposerNameCleanup.join(", "));
+  process.exit(1);
+}
+
 const forbiddenChatbotPageCopy = [
   "Food score:",
   "Nutrition confidence:",
