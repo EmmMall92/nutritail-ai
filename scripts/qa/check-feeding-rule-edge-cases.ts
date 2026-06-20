@@ -210,6 +210,10 @@ assert(
   "Modest-energy maintenance food should be marked as weaker for high-activity dogs."
 );
 assert(
+  signalCodes(modestEnergyMaintenance).includes("high_activity_without_active_positioning"),
+  "Generic maintenance food should be marked as weaker than visible active/performance foods for high-activity dogs."
+);
+assert(
   activePerformance.total_score > modestEnergyMaintenance.total_score,
   "Active/performance formula should outrank modest-energy maintenance food for high-activity dogs."
 );
@@ -241,8 +245,8 @@ assert(
 console.log(
   JSON.stringify(
     {
-      checked: 7,
-      passed: 7,
+      checked: 8,
+      passed: 8,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
