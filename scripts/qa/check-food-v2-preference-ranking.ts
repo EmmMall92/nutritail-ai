@@ -517,6 +517,17 @@ const activeEnergyFood = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 402,
 });
+const greekActiveEnergyFood = food({
+  id: "greek-active-energy",
+  formula_key: "qa|greek-active-energy|dog|dry",
+  display_name: "Υψηλή Ενέργεια Για Δραστήριους Σκύλους",
+  formula_name: "Υψηλή Ενέργεια Για Δραστήριους Σκύλους",
+  dog_size: "medium",
+  commercial_tags: [],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 401,
+});
 const maintenanceAdultFood = food({
   id: "maintenance-adult",
   formula_key: "qa|maintenance-adult|dog|dry",
@@ -534,6 +545,17 @@ const activeEnergyRanking = rankFoodV2ForPet({
     protein_percent: 28,
     fat_percent: 18,
     fiber_percent: 2.2,
+  },
+  pet: activeGainPet,
+  goal: "general",
+});
+const greekActiveEnergyRanking = rankFoodV2ForPet({
+  food: greekActiveEnergyFood,
+  nutrients: {
+    ...nutrients(greekActiveEnergyFood),
+    protein_percent: 28,
+    fat_percent: 18,
+    fiber_percent: 2,
   },
   pet: activeGainPet,
   goal: "general",
@@ -566,6 +588,16 @@ if (
   process.exit(1);
 }
 
+if (
+  !greekActiveEnergyRanking.signals.some(
+    (signal) => signal.code === "active_formula_activity_fit"
+  )
+) {
+  console.error("Greek active/energy title should produce active_formula_activity_fit.");
+  console.error(greekActiveEnergyRanking.signals);
+  process.exit(1);
+}
+
 if (maintenanceAdultRanking.bucket !== "hold") {
   console.error("Plain low-energy maintenance food should be held for active weight-gain dogs.");
   console.error(maintenanceAdultRanking);
@@ -589,6 +621,16 @@ const greekContextRenalFood = food({
   primary_animal_proteins: ["egg"],
   kcal_per_100g: 389,
 });
+const greekTitleRenalFood = food({
+  id: "greek-title-renal",
+  formula_key: "qa|greek-title-renal|dog|dry",
+  display_name: "Νεφρική Κτηνιατρική Τροφή",
+  formula_name: "Νεφρική Κτηνιατρική Τροφή",
+  medical_tags: [],
+  ingredients: ["rice", "egg", "fish oil"],
+  primary_animal_proteins: ["egg"],
+  kcal_per_100g: 386,
+});
 const greekContextUrinaryOnlyFood = food({
   id: "urinary-oxalate",
   formula_key: "qa|urinary-oxalate|dog|dry",
@@ -598,6 +640,16 @@ const greekContextUrinaryOnlyFood = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 372,
 });
+const greekTitleUrinaryFood = food({
+  id: "greek-title-urinary",
+  formula_key: "qa|greek-title-urinary|dog|dry",
+  display_name: "Ουρολογική Τροφή Στρουβίτη",
+  formula_name: "Ουρολογική Τροφή Στρουβίτη",
+  medical_tags: [],
+  ingredients: ["chicken", "rice", "fish oil"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 368,
+});
 const greekContextRenalRanking = rankFoodV2ForPet({
   food: greekContextRenalFood,
   nutrients: {
@@ -606,6 +658,16 @@ const greekContextRenalRanking = rankFoodV2ForPet({
     phosphorus_percent: 0.35,
     sodium_percent: 0.22,
     epa_dha_percent: 0.4,
+  },
+  pet: greekRenalPet,
+  goal: "general",
+});
+const greekTitleRenalRanking = rankFoodV2ForPet({
+  food: greekTitleRenalFood,
+  nutrients: {
+    ...nutrients(greekTitleRenalFood),
+    protein_percent: 18,
+    phosphorus_percent: 0.35,
   },
   pet: greekRenalPet,
   goal: "general",
@@ -644,12 +706,39 @@ if (
   process.exit(1);
 }
 
+if (
+  !greekTitleRenalRanking.signals.some(
+    (signal) => signal.code === "renal_positioning"
+  )
+) {
+  console.error("Greek renal product title should be recognized as renal positioning.");
+  console.error(greekTitleRenalRanking.signals);
+  process.exit(1);
+}
+
+if (greekTitleRenalRanking.bucket === "hold") {
+  console.error("Greek renal-positioned food should remain selectable for renal context.");
+  console.error(greekTitleRenalRanking);
+  process.exit(1);
+}
+
 const greekUrinaryRanking = rankFoodV2ForPet({
   food: greekContextUrinaryOnlyFood,
   nutrients: nutrients(greekContextUrinaryOnlyFood),
   pet: {
     ...pet,
     healthIssues: ["\u03bf\u03c5\u03c1\u03bf\u03bb\u03bf\u03b3\u03b9\u03ba\u03cc"],
+    excludedIngredients: [],
+    preferredProteins: [],
+  },
+  goal: "general",
+});
+const greekTitleUrinaryRanking = rankFoodV2ForPet({
+  food: greekTitleUrinaryFood,
+  nutrients: nutrients(greekTitleUrinaryFood),
+  pet: {
+    ...pet,
+    healthIssues: ["ουρολογικό", "ιστορικό στρουβίτη"],
     excludedIngredients: [],
     preferredProteins: [],
   },
@@ -663,6 +752,16 @@ if (
 ) {
   console.error("Greek urinary context should recognize urinary-positioned foods.");
   console.error(greekUrinaryRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !greekTitleUrinaryRanking.signals.some(
+    (signal) => signal.code === "urinary_positioning"
+  )
+) {
+  console.error("Greek urinary product title should be recognized as urinary positioning.");
+  console.error(greekTitleUrinaryRanking.signals);
   process.exit(1);
 }
 
@@ -2004,9 +2103,25 @@ const largeBreedPuppyFood = food({
   ingredients: ["chicken", "rice"],
   primary_animal_proteins: ["chicken"],
 });
+const greekLargeBreedPuppyFood = food({
+  id: "greek-large-breed-puppy",
+  formula_key: "qa|greek-large-breed-puppy|dog|dry",
+  display_name: "Κουτάβι Μεγαλόσωμης Φυλής Κοτόπουλο",
+  formula_name: "Κουτάβι Μεγαλόσωμης Φυλής Κοτόπουλο",
+  life_stage: "puppy",
+  dog_size: "large",
+  ingredients: ["chicken", "rice"],
+  primary_animal_proteins: ["chicken"],
+});
 const genericPuppyRanking = rankFoodV2ForPet({
   food: genericPuppyFood,
   nutrients: nutrients(genericPuppyFood),
+  pet: twelveMonthGiantPuppy,
+  goal: "growth",
+});
+const greekLargeBreedPuppyRanking = rankFoodV2ForPet({
+  food: greekLargeBreedPuppyFood,
+  nutrients: nutrients(greekLargeBreedPuppyFood),
   pet: twelveMonthGiantPuppy,
   goal: "growth",
 });
@@ -2026,6 +2141,16 @@ if (largeBreedPuppyRanking.total_score <= genericPuppyRanking.total_score) {
 if (!largeBreedPuppyRanking.signals.some((signal) => signal.code === "large_breed_puppy_fit")) {
   console.error("Expected large_breed_puppy_fit signal.");
   console.error(largeBreedPuppyRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !greekLargeBreedPuppyRanking.signals.some(
+    (signal) => signal.code === "large_breed_puppy_fit"
+  )
+) {
+  console.error("Greek large-breed puppy title should produce large_breed_puppy_fit.");
+  console.error(greekLargeBreedPuppyRanking.signals);
   process.exit(1);
 }
 
