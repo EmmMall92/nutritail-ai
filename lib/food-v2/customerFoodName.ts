@@ -3,6 +3,12 @@ type FoodNameInput = {
   display_name?: string | null;
 };
 
+const PACK_SIZE_PATTERN =
+  /\b\d+(?:[.,]\d+)?\s*(?:g|gr|gram|grams|kg|kgs|kilogram|kilograms|lb|lbs)\b/gi;
+
+const MULTIPACK_SIZE_PATTERN =
+  /\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr|gram|grams|kilogram|kilograms|lb|lbs)\b/gi;
+
 function cleanNamePart(value: unknown) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
 }
@@ -60,6 +66,19 @@ function repairPossessiveBrandTail(brand: string, displayName: string) {
   return `${brand}'s ${possessiveMatch[1]}`.replace(/\s+/g, " ").trim();
 }
 
+function removeCustomerPackAndPromoText(displayName: string) {
+  return displayName
+    .replace(MULTIPACK_SIZE_PATTERN, " ")
+    .replace(/\+\s*\d+(?:[.,]\d+)?\s*(?:g|gr|kg|kgs)\b/gi, " ")
+    .replace(PACK_SIZE_PATTERN, " ")
+    .replace(/\b\d+\s*x\b/gi, " ")
+    .replace(/\b(?:try\s+now|free\s+pack|gift|doro|dwro)\b/gi, " ")
+    .replace(/\s*[-!]\s*$/g, " ")
+    .replace(/\s+-\s*$/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function customerFoodDisplayName(food: FoodNameInput) {
   const brand = cleanNamePart(food.brand);
   let displayName = cleanNamePart(food.display_name);
@@ -109,12 +128,25 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     displayName = displayName.replace(/^happy\s+/i, "").trim();
   }
 
-  return displayName
-    .replace(/\b(happy)(?:\s+\1)+\b/gi, "$1")
-    .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
-    .replace(/\b(pro\s*plan)(?:\s+\1)+\b/gi, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
+  let cleanedDisplayName = removeCustomerPackAndPromoText(
+    displayName
+      .replace(/\b(happy)(?:\s+\1)+\b/gi, "$1")
+      .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
+      .replace(/\b(pro\s*plan)(?:\s+\1)+\b/gi, "$1")
+      .replace(/\s+\+\s*$/g, "")
+      .replace(/\s+-\s*$/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+
+  if (
+    brand &&
+    normalizeForCompare(cleanedDisplayName).startsWith(`${normalizedBrand} `)
+  ) {
+    cleanedDisplayName = cleanedDisplayName.slice(brand.length).trim();
+  }
+
+  return cleanedDisplayName;
 }
 
 export function customerFoodName(food: FoodNameInput, separator = " - ") {
