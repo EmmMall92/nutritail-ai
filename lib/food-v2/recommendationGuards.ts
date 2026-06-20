@@ -25,6 +25,16 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage: "Breed-size positioning does not fit this dog.",
   },
+  customer_visible_dog_size_mismatch: {
+    code: "customer_visible_dog_size_mismatch",
+    severity: "block",
+    fallbackMessage: "Customer-visible breed-size positioning does not fit this dog.",
+  },
+  contradicting_species_label: {
+    code: "contradicting_species_label",
+    severity: "block",
+    fallbackMessage: "Customer-visible product label appears to target a different species.",
+  },
   therapeutic_food_without_matching_condition: {
     code: "therapeutic_food_without_matching_condition",
     severity: "block",
@@ -41,6 +51,12 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage:
       "Urinary/oxalate positioning does not replace renal diet support.",
+  },
+  urinary_renal_mismatch: {
+    code: "urinary_renal_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Renal positioning does not replace urinary or stone-specific diet support.",
   },
   urinary_subtype_mismatch: {
     code: "urinary_subtype_mismatch",
@@ -122,6 +138,12 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage:
       "Active/high-energy food is not a first pick for a low-activity senior pet.",
+  },
+  senior_positioning_not_customer_visible: {
+    code: "senior_positioning_not_customer_visible",
+    severity: "block",
+    fallbackMessage:
+      "Senior shortlists should prefer foods with senior positioning visible to customers.",
   },
   adjacent_dog_size_mismatch: {
     code: "adjacent_dog_size_mismatch",
