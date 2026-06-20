@@ -104,6 +104,23 @@ const lowEnergyMaintenance = rankFoodV2ForPet({
   goal: "general",
 });
 
+const modestEnergyMaintenance = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "modest-energy-maintenance",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 348,
+  },
+  nutrients: {
+    protein_percent: 24,
+    fat_percent: 14,
+    fiber_percent: 2.5,
+  },
+  pet: highActivityDog,
+  goal: "general",
+});
+
 const weightGainHighActivityDog = {
   ...highActivityDog,
   healthIssues: ["working dog", "daily training", "needs weight gain"],
@@ -189,6 +206,14 @@ assert(
   "Active/performance formula should outrank low-energy maintenance food for high-activity dogs."
 );
 assert(
+  signalCodes(modestEnergyMaintenance).includes("modest_energy_formula_for_high_activity_pet"),
+  "Modest-energy maintenance food should be marked as weaker for high-activity dogs."
+);
+assert(
+  activePerformance.total_score > modestEnergyMaintenance.total_score,
+  "Active/performance formula should outrank modest-energy maintenance food for high-activity dogs."
+);
+assert(
   lightSterilisedForGain.bucket === "hold",
   "Light/sterilised formula should be held for high-activity dogs that need weight gain."
 );
@@ -216,8 +241,8 @@ assert(
 console.log(
   JSON.stringify(
     {
-      checked: 6,
-      passed: 6,
+      checked: 7,
+      passed: 7,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -232,6 +257,11 @@ console.log(
         bucket: lowEnergyMaintenance.bucket,
         score: lowEnergyMaintenance.total_score,
         signals: signalCodes(lowEnergyMaintenance),
+      },
+      modest_energy_maintenance: {
+        bucket: modestEnergyMaintenance.bucket,
+        score: modestEnergyMaintenance.total_score,
+        signals: signalCodes(modestEnergyMaintenance),
       },
       light_sterilised_for_gain: {
         bucket: lightSterilisedForGain.bucket,

@@ -418,6 +418,23 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
       });
     }
 
+    if (
+      !positioning.active &&
+      !weightGainContext &&
+      hasNumber(food.kcal_per_100g) &&
+      food.kcal_per_100g < 360 &&
+      hasNumber(nutrients.fat_percent) &&
+      nutrients.fat_percent < 15
+    ) {
+      signals.push({
+        type: "caution",
+        code: "modest_energy_formula_for_high_activity_pet",
+        points: -12,
+        message:
+          "Modest energy and fat make this less suitable as a first pick for a highly active pet.",
+      });
+    }
+
     if (weightGainContext && !positioning.active) {
       signals.push({
         type: "caution",
