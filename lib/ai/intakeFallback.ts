@@ -133,6 +133,24 @@ function detectLanguage(message: string) {
 
 function detectPetName(message: string) {
   const cleaned = message.replace(/\s+/g, " ").trim();
+  const greekNameToken = "[A-Za-z\\u0370-\\u03ff\\u1f00-\\u1fff-]{2,30}";
+  const safePatterns = [
+    new RegExp(
+      `(?:\\u03c4\\u03bf\\u03bd|\\u03c4\\u03b7\\u03bd|\\u03c4\\u03b7|\\u03c4\\u03bf)\\s+(?:\\u03bb\\u03b5\\u03bd\\u03b5|\\u03bb\\u03ad\\u03bd\\u03b5|\\u03bb\\u03b5\\u03b3\\u03b5\\u03c4\\u03b1\\u03b9|\\u03bb\\u03ad\\u03b3\\u03b5\\u03c4\\u03b1\\u03b9)\\s+(?:(?:\\u03c4\\u03bf\\u03bd|\\u03c4\\u03b7\\u03bd|\\u03c4\\u03b7|\\u03c4\\u03bf)\\s+)?(${greekNameToken})`,
+      "iu"
+    ),
+    new RegExp(
+      `(?:\\u03bf|\\u03b7)\\s+(?:\\u03c3\\u03ba\\u03c5\\u03bb\\u03bf\\u03c2|\\u03c3\\u03ba\\u03cd\\u03bb\\u03bf\\u03c2|\\u03b3\\u03b1\\u03c4\\u03b1|\\u03b3\\u03ac\\u03c4\\u03b1|\\u03b3\\u03b1\\u03c4\\u03bf\\u03c2|\\u03b3\\u03ac\\u03c4\\u03bf\\u03c2)\\s+\\u03bc\\u03bf\\u03c5\\s+(?:\\u03bb\\u03b5\\u03bd\\u03b5|\\u03bb\\u03ad\\u03bd\\u03b5|\\u03bb\\u03b5\\u03b3\\u03b5\\u03c4\\u03b1\\u03b9|\\u03bb\\u03ad\\u03b3\\u03b5\\u03c4\\u03b1\\u03b9)\\s+(${greekNameToken})`,
+      "iu"
+    ),
+    /(?:my\s+)?(?:dog|cat|pet)\s+is\s+(?:called|named)\s+([A-Za-z-]{2,30})/i,
+  ];
+
+  for (const pattern of safePatterns) {
+    const match = cleaned.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+
   const patterns = [
     /(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+([A-Za-zΑ-Ωα-ωΆ-ώϊϋΐΰ-]{2,30})/i,
     /(?:ονομαζεται|ονομάζεται|name is|called|named)\s+([A-Za-zΑ-Ωα-ωΆ-ώϊϋΐΰ-]{2,30})/i,

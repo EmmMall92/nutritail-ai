@@ -52,9 +52,32 @@ function checkCase(testCase: GoldenCase) {
 function checkUiHelpers() {
   const failures: string[] = [];
   const name = formatPetDisplayName("\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7");
+  const repeatedArticleName = formatPetDisplayName(
+    "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u03c4\u03b7\u03bd \u039a\u03cd\u03c1\u03ba\u03b7"
+  );
+  const speciesOwnerName = formatPetDisplayName(
+    "\u03bf \u03c3\u03ba\u03cd\u03bb\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9 \u03bb\u03ad\u03c9\u03bd\u03b9\u03b4\u03b1\u03c2"
+  );
+  const englishNamed = formatPetDisplayName("my dog is named luna");
 
   if (name !== "\u039a\u03cd\u03c1\u03ba\u03b7") {
     failures.push(`pet display name: expected \u039a\u03cd\u03c1\u03ba\u03b7 got ${name}`);
+  }
+
+  if (repeatedArticleName !== "\u039a\u03cd\u03c1\u03ba\u03b7") {
+    failures.push(
+      `pet display repeated article: expected \u039a\u03cd\u03c1\u03ba\u03b7 got ${repeatedArticleName}`
+    );
+  }
+
+  if (speciesOwnerName !== "\u039b\u03b5\u03c9\u03bd\u03af\u03b4\u03b1\u03c2") {
+    failures.push(
+      `pet display species-owner phrase: expected \u039b\u03b5\u03c9\u03bd\u03af\u03b4\u03b1\u03c2 got ${speciesOwnerName}`
+    );
+  }
+
+  if (englishNamed !== "Luna") {
+    failures.push(`pet display English named phrase: expected Luna got ${englishNamed}`);
   }
 
   const preferences = parseTastePreferences(
@@ -147,6 +170,42 @@ function checkValidatedOpenAiCleanup() {
   };
 }
 
+function checkFallbackPetNameCleanup() {
+  const failures: string[] = [];
+  const cases = [
+    {
+      message:
+        "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u03c4\u03b7\u03bd \u039a\u03cd\u03c1\u03ba\u03b7",
+      expected: "\u039a\u03cd\u03c1\u03ba\u03b7",
+    },
+    {
+      message:
+        "\u03bf \u03c3\u03ba\u03cd\u03bb\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9 \u03bb\u03ad\u03c9\u03bd\u03b9\u03b4\u03b1\u03c2",
+      expected: "\u039b\u03b5\u03c9\u03bd\u03af\u03b4\u03b1\u03c2",
+    },
+    {
+      message: "my dog is named luna",
+      expected: "Luna",
+    },
+  ];
+
+  for (const testCase of cases) {
+    const result = fallbackExtractIntake(testCase.message);
+    if (result.data.petName !== testCase.expected) {
+      failures.push(
+        `fallback pet name: expected ${testCase.expected} got ${result.data.petName} for "${testCase.message}"`
+      );
+    }
+  }
+
+  return {
+    id: "fallback_pet_name_cleanup",
+    status: failures.length === 0 ? "pass" : "fail",
+    failures,
+    source: "fallback",
+  };
+}
+
 async function main() {
   const raw = await readFile(goldenPath, "utf8");
   const cases = JSON.parse(raw) as GoldenCase[];
@@ -154,6 +213,7 @@ async function main() {
     ...cases.map(checkCase),
     checkUiHelpers(),
     checkValidatedOpenAiCleanup(),
+    checkFallbackPetNameCleanup(),
   ];
   const failed = results.filter((result) => result.status === "fail");
 
