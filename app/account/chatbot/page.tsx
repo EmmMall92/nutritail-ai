@@ -3449,19 +3449,7 @@ Main food calories: about ${treats.mainFoodCalories} kcal/day`
       const guardrailText = buildGuardrailText(nextPet, chatLanguage);
 
       if (guardrailText) {
-        addMessages(
-          createMessage(
-            "bot",
-            botText(
-              `Πριν από τις συγκεκριμένες προτάσεις τροφών, κρατάμε αυτά τα όρια ασφάλειας:
-
-${guardrailText}`,
-              `Before food-specific advice, here are the guardrails I would keep in mind:
-
-${guardrailText}`
-            )
-          )
-        );
+        addMessages(createMessage("bot", guardrailText));
       }
 
       let analysisFoodChoices: RecommendedFoodChoice[] = [];
