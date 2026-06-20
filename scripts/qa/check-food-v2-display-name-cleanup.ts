@@ -361,6 +361,24 @@ const customerFoodNameCases = [
     expectedDisplay: "Nature's Protection Dark Coat Poultry Adult All Breeds",
     expectedName: "Nature's Protection Dark Coat Poultry Adult All Breeds",
   },
+  {
+    label: "Customer pack size suffix is removed",
+    input: {
+      brand: "Nature",
+      display_name: "Nature's Protection Dark Coat Poultry Adult All Breeds 1.5kg",
+    },
+    expectedDisplay: "Nature's Protection Dark Coat Poultry Adult All Breeds",
+    expectedName: "Nature's Protection Dark Coat Poultry Adult All Breeds",
+  },
+  {
+    label: "Customer multipack promo title is simplified",
+    input: {
+      brand: "Wolf of Wilderness",
+      display_name: "2 x 1kg Wolf of Wilderness Appalachian Valley Small Breed - Try Now!",
+    },
+    expectedDisplay: "Appalachian Valley Small Breed",
+    expectedName: "Wolf of Wilderness - Appalachian Valley Small Breed",
+  },
 ] as const;
 
 for (const testCase of brandlessFormulaCases) {
