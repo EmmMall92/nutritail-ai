@@ -208,6 +208,11 @@ const checks = [
     expected: "Latest Nutrition Notes",
   },
   {
+    label: "Chat guardrails use customer-facing practical notes",
+    file: "lib/nutrition/chatGuardrails.ts",
+    expected: "Practical notes:",
+  },
+  {
     label: "Greek chatbot guardrail copy uses customer-friendly caution heading",
     file: "app/account/chatbot/page.tsx",
     expected: "Μικρή προσοχή πριν δούμε τις τροφές:",
@@ -316,6 +321,11 @@ const forbiddenChecks = [
     label: "Greek chatbot guardrail copy does not use old English wrapper",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Before food-specific advice, here are the guardrails I would keep in mind:",
+  },
+  {
+    label: "Chat guardrails do not expose confidence heading",
+    file: "lib/nutrition/chatGuardrails.ts",
+    forbidden: "Confidence notes:",
   },
 ];
 

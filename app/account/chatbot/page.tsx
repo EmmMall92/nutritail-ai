@@ -2129,7 +2129,7 @@ function localizeGuardrailText(text: string, language: ChatLanguage) {
       "Σημειώσεις ασφάλειας:"
     )
     .replace(
-      "Confidence notes:",
+      "Practical notes:",
       "Σημειώσεις σιγουριάς:"
     )
     .replace(

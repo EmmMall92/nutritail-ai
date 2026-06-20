@@ -54,7 +54,7 @@ function getPetLabel(pet: AccountPet) {
   return `${pet.name ?? "Unnamed pet"}${species}${weight}`;
 }
 
-function getRecommendationConfidenceCopy(score?: number | null) {
+function getNutritionPlanStatusCopy(score?: number | null) {
   if (typeof score !== "number") {
     return {
       label: "Ready for first guidance",
@@ -209,7 +209,7 @@ export default function AccountPage() {
   const latestAnalysis = latestAnalysisEntry?.analysis;
   const latestPet = latestAnalysisEntry?.pet;
   const nextPetToAnalyze = petsNeedingAnalysis[0];
-  const confidenceCopy = getRecommendationConfidenceCopy(
+  const planStatusCopy = getNutritionPlanStatusCopy(
     latestAnalysis?.food_score
   );
 
@@ -394,10 +394,10 @@ export default function AccountPage() {
               Nutrition plan status
             </p>
             <h2 className="mt-2 text-xl font-bold text-blue-950">
-              {confidenceCopy.label}
+              {planStatusCopy.label}
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-blue-900">
-              {confidenceCopy.text}
+              {planStatusCopy.text}
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-blue-900">
               <span className="rounded-full bg-white px-3 py-1">

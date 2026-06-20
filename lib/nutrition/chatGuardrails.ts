@@ -166,7 +166,7 @@ export function formatChatGuardrails(result: ChatGuardrailResult) {
 
   if (result.confidenceNotes.length > 0) {
     sections.push(
-      `Confidence notes:\n${result.confidenceNotes
+      `Practical notes:\n${result.confidenceNotes
         .map((item) => `- ${item}`)
         .join("\n")}`
     );
