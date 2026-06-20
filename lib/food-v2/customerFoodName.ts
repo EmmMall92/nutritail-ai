@@ -3,14 +3,67 @@ type FoodNameInput = {
   display_name?: string | null;
 };
 
+const LEGACY_GREEK_MOJIBAKE_PATTERN =
+  /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+
+let isoGreekReverseMap: Map<string, number> | null = null;
+
 const PACK_SIZE_PATTERN =
   /\b\d+(?:[.,]\d+)?\s*(?:g|gr|gram|grams|kg|kgs|kilogram|kilograms|lb|lbs)\b/gi;
 
 const MULTIPACK_SIZE_PATTERN =
   /\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr|gram|grams|kilogram|kilograms|lb|lbs)\b/gi;
 
+function getIsoGreekReverseMap() {
+  if (isoGreekReverseMap) return isoGreekReverseMap;
+
+  const decoder = new TextDecoder("iso-8859-7");
+  isoGreekReverseMap = new Map<string, number>();
+
+  for (let byte = 0; byte <= 255; byte += 1) {
+    isoGreekReverseMap.set(decoder.decode(Uint8Array.of(byte)), byte);
+  }
+
+  return isoGreekReverseMap;
+}
+
+function repairLegacyGreekMojibake(value: string) {
+  if (!LEGACY_GREEK_MOJIBAKE_PATTERN.test(value)) return value;
+
+  const candidatePattern = /[\u0080-\u00ff\u0370-\u03ff]+/gu;
+
+  return value.replace(candidatePattern, (candidate) => {
+    if (!LEGACY_GREEK_MOJIBAKE_PATTERN.test(candidate)) return candidate;
+
+    const repaired = repairLegacyGreekMojibakeSegment(candidate);
+    return repaired ?? candidate;
+  });
+}
+
+function repairLegacyGreekMojibakeSegment(value: string) {
+  const reverseMap = getIsoGreekReverseMap();
+  const bytes: number[] = [];
+
+  for (const char of value) {
+    const byte = reverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return null;
+    }
+  }
+
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? null : repaired;
+}
+
 function cleanNamePart(value: unknown) {
-  return String(value ?? "").replace(/\s+/g, " ").trim();
+  return repairLegacyGreekMojibake(String(value ?? ""))
+    .replace(/\u0392\u00ae/g, "\u00ae")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function escapeRegExp(value: string) {

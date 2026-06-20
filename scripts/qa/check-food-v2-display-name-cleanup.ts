@@ -287,7 +287,30 @@ const descriptiveTitleCases = [
   },
 ] as const;
 
+function legacyGreekMojibake(value: string) {
+  return new TextDecoder("iso-8859-7").decode(new TextEncoder().encode(value));
+}
+
 const customerFoodNameCases = [
+  {
+    label: "Customer Purina chicken token is repaired from legacy Greek mojibake",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `PRO Plan® SMALL&MINI ADULT Age Defence 9+ ${legacyGreekMojibake("Κοτόπουλο")}`,
+    },
+    expectedDisplay: "SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο",
+    expectedName:
+      "Purina Pro Plan - SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο",
+  },
+  {
+    label: "Customer Purina salmon token is repaired from legacy Greek mojibake",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `PRO Plan® MEDIUM ADULT Sensitive Skin ${legacyGreekMojibake("Σολομός")}`,
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Skin Σολομός",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Σολομός",
+  },
   {
     label: "Purina Pro Plan customer label removes repeated line name",
     input: {
