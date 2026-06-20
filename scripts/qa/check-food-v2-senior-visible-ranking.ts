@@ -134,6 +134,28 @@ if (visibleSenior.total_score <= adultHiddenSenior.total_score) {
   process.exit(1);
 }
 
+const elevenPlusSenior = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Adult 11+ Small",
+    display_name: "Adult 11+ Small",
+    life_stage: "adult",
+    commercial_tags: [],
+    formula_key: "test-brand|adult-11-plus-small|dog|dry",
+  }),
+  nutrients,
+  pet,
+  goal: "senior",
+});
+const elevenPlusSignal = elevenPlusSenior.signals.find(
+  (signal) => signal.code === "customer_visible_senior_positioning"
+);
+
+if (!elevenPlusSignal || elevenPlusSenior.bucket === "hold") {
+  console.error("Customer-visible 11+ title should count as senior positioning.");
+  console.error(elevenPlusSenior);
+  process.exit(1);
+}
+
 if (!hiddenSterilisedSeniorSignal || hiddenSterilisedSeniorSignal.points > -25) {
   console.error("Hidden senior metadata without a customer-visible senior title should be penalized.");
   console.error(hiddenSterilisedSenior.signals);

@@ -608,7 +608,7 @@ function hasPancreatitisContext(values: string[] | undefined) {
 function hasSeniorPositioning(food: FoodProductV2, foodText: string) {
   return (
     food.life_stage === "senior" ||
-    hasAny(foodText, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "12+"])
+    hasAny(foodText, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "11+", "12+"])
   );
 }
 
@@ -789,6 +789,7 @@ function hasExplicitSeniorTitle(food: FoodProductV2) {
     "7+",
     "8+",
     "10+",
+    "11+",
     "12+",
     "joint",
     "mobility",
@@ -816,7 +817,7 @@ function visibleLifeStageFromFood(food: FoodProductV2) {
 
   if (hasAny(text, ["puppy", "puppies", "junior"])) return "puppy";
   if (hasAny(text, ["kitten", "kittens"])) return "kitten";
-  if (hasAny(text, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "12+"])) {
+  if (hasAny(text, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "11+", "12+"])) {
     return "senior";
   }
   if (hasAny(text, ["adult", "maintenance"])) return "adult";
