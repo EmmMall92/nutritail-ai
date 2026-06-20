@@ -469,10 +469,22 @@ function formatRecommendationChoiceCaution(
   food: FoodV2ChatbotRecommendationItem,
   language: ChatLanguage
 ) {
-  const text = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+  const text = [
+    ...(food.ranking?.cautions ?? []),
+    ...(food.food_intelligence?.cautions ?? []),
+    ...(food.food_intelligence?.not_ideal_cases ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
   if (!text) return undefined;
 
   if (language === "el") {
+    if (
+      text.includes("energy_dense_without_clear_active_positioning") ||
+      text.includes("visibly positioned")
+    ) {
+      return "Έχει αρκετή ενέργεια, αλλά δεν φαίνεται ξεκάθαρα ως active τροφή. Δες τη με προσοχή αν ο στόχος είναι συντήρηση ή έλεγχος βάρους.";
+    }
     if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
       return "Έλεγξε τη μερίδα προσεκτικά, ειδικά αν υπάρχει τάση για βάρος.";
     }
@@ -495,6 +507,12 @@ function formatRecommendationChoiceCaution(
     return undefined;
   }
 
+  if (
+    text.includes("energy_dense_without_clear_active_positioning") ||
+    text.includes("visibly positioned")
+  ) {
+    return "Energy-dense foods need clear active or weight-gain use. Use extra care if the goal is maintenance or weight control.";
+  }
   if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
     return "Watch the daily portion carefully, especially if weight is a concern.";
   }
