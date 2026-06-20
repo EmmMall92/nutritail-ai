@@ -37,6 +37,21 @@ const checks = [
     expected: "/account/chatbot?petId=${pet.id}",
   },
   {
+    label: "Pets list explains resting calories in customer language",
+    file: "app/account/pets/page.tsx",
+    expected: "Resting calories",
+  },
+  {
+    label: "Pets list explains daily target in customer language",
+    file: "app/account/pets/page.tsx",
+    expected: "Daily target",
+  },
+  {
+    label: "Pets list uses customer-facing food-fit wording",
+    file: "app/account/pets/page.tsx",
+    expected: "Food fit:",
+  },
+  {
     label: "Pet detail progress action deep-links to saved pet",
     file: "app/account/pets/[id]/page.tsx",
     expected: "/account/chatbot?petId=${pet.id}&mode=progress",
@@ -274,6 +289,21 @@ const forbiddenChecks = [
     label: "Pet detail does not expose raw score fraction",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: "/100",
+  },
+  {
+    label: "Pets list does not expose RER card label",
+    file: "app/account/pets/page.tsx",
+    forbidden: "RER {latest.rer} kcal",
+  },
+  {
+    label: "Pets list does not expose MER card label",
+    file: "app/account/pets/page.tsx",
+    forbidden: "MER {latest.mer} kcal",
+  },
+  {
+    label: "Pets list does not expose raw score fraction",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Score {latest.food_score}/100",
   },
   {
     label: "Pet detail weight edit does not allow unrealistic legacy limit",

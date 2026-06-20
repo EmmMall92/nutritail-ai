@@ -34,8 +34,11 @@ function formatDate(value?: string) {
   return new Date(value).toLocaleDateString();
 }
 
-function hasValidFoodScore(score?: number | null) {
-  return typeof score === "number" && Number.isFinite(score);
+function getFoodFitLabel(score?: number | null) {
+  if (typeof score !== "number" || !Number.isFinite(score)) return null;
+  if (score >= 80) return "strong";
+  if (score >= 60) return "good";
+  return "worth rechecking";
 }
 
 function getReportReadiness(pet: AccountPet) {
@@ -262,14 +265,14 @@ export default function AccountPetsPage() {
                       {latest ? (
                         <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-700">
                           <span className="rounded-full bg-white px-3 py-1">
-                            RER {latest.rer} kcal
+                            Resting calories {latest.rer} kcal
                           </span>
                           <span className="rounded-full bg-white px-3 py-1">
-                            MER {latest.mer} kcal
+                            Daily target {latest.mer} kcal
                           </span>
-                          {hasValidFoodScore(latest.food_score) && (
+                          {getFoodFitLabel(latest.food_score) && (
                               <span className="rounded-full bg-white px-3 py-1">
-                                Score {latest.food_score}/100
+                                Food fit: {getFoodFitLabel(latest.food_score)}
                               </span>
                             )}
                           {latest.feeding_grams_per_day && (

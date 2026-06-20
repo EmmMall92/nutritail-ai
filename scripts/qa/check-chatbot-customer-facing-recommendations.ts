@@ -475,7 +475,7 @@ const requiredCardFlowCopy = [
   "Best match",
   "Practical option",
   "Good alternative",
-  "Calculate grams/day",
+  "Estimate portions",
   "Foods worth checking first",
   "Next: calculate grams/day.",
   "Tap for grams",
@@ -602,7 +602,7 @@ const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
 );
-const cardCtaIndex = chatbotPage.indexOf("Calculate grams/day", recommendedChoicesIndex);
+const cardCtaIndex = chatbotPage.indexOf("Estimate portions", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||
