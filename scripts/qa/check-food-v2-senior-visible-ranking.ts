@@ -322,6 +322,71 @@ if (
   process.exit(1);
 }
 
+const lowAppetiteSeniorPet = {
+  ...pet,
+  healthIssues: ["senior", "low appetite", "not eating much"],
+};
+
+const lightSeniorForLowAppetite = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Light Chicken",
+    display_name: "Senior Light Chicken",
+    life_stage: "senior",
+    dog_size: "small",
+    commercial_tags: ["senior", "light", "weight_control"],
+    formula_key: "test-brand|senior-light-chicken|dog|dry",
+    kcal_per_100g: 318,
+  }),
+  nutrients: {
+    ...nutrients,
+    fat_percent: 8,
+    fiber_percent: 7,
+  },
+  pet: lowAppetiteSeniorPet,
+  goal: "senior",
+});
+
+const regularSeniorForLowAppetite = rankFoodV2ForPet({
+  food: makeFood({
+    formula_name: "Senior Chicken",
+    display_name: "Senior Chicken",
+    life_stage: "senior",
+    dog_size: "small",
+    commercial_tags: ["senior"],
+    formula_key: "test-brand|senior-regular-chicken|dog|dry",
+    kcal_per_100g: 365,
+  }),
+  nutrients: {
+    ...nutrients,
+    fat_percent: 13,
+    fiber_percent: 3,
+  },
+  pet: lowAppetiteSeniorPet,
+  goal: "senior",
+});
+
+if (
+  !lightSeniorForLowAppetite.signals.some(
+    (signal) => signal.code === "senior_appetite_weight_loss_avoid_light_default"
+  )
+) {
+  console.error("Senior low-appetite light food should carry an avoid-light-default caution.");
+  console.error(lightSeniorForLowAppetite.signals);
+  process.exit(1);
+}
+
+if (lightSeniorForLowAppetite.bucket !== "hold") {
+  console.error("Senior low-appetite light food should be held rather than used as a first pick.");
+  console.error(lightSeniorForLowAppetite);
+  process.exit(1);
+}
+
+if (regularSeniorForLowAppetite.total_score <= lightSeniorForLowAppetite.total_score) {
+  console.error("Regular senior food should outrank light senior food for a low-appetite senior pet.");
+  console.error({ lightSeniorForLowAppetite, regularSeniorForLowAppetite });
+  process.exit(1);
+}
+
 const seniorCatPet = {
   species: "cat" as const,
   breed: "European shorthair",
