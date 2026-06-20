@@ -581,6 +581,35 @@ function hasSkinCoatContext(pet: FoodV2RankingInput["pet"]) {
   ]);
 }
 
+function hasGiSymptomContext(pet: FoodV2RankingInput["pet"]) {
+  return hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+    "soft stool",
+    "loose stool",
+    "diarrhea",
+    "diarrhoea",
+    "gas",
+    "flatulence",
+    "vomit",
+    "vomiting",
+    "morning vomiting",
+    "sensitive stomach",
+    "stomach",
+    "intestinal",
+    "ibd",
+    "constipation",
+    "coprophagia",
+    "\u03bc\u03b1\u03bb\u03b1\u03ba",
+    "\u03ba\u03bf\u03c0\u03c1",
+    "\u03b4\u03b9\u03b1\u03c1\u03c1",
+    "\u03b1\u03b5\u03c1\u03b9",
+    "\u03b1\u03ad\u03c1\u03b9",
+    "\u03b5\u03bc\u03b5\u03c4",
+    "\u03b5\u03bc\u03b5\u03c4\u03bf",
+    "\u03b4\u03c5\u03c3\u03ba\u03bf\u03b9\u03bb",
+    "\u03b5\u03c5\u03b1\u03b9\u03c3\u03b8",
+  ]);
+}
+
 function hasSkinCoatPositioning(foodText: string) {
   return hasAny(foodText, [
     "skin",
@@ -1195,7 +1224,7 @@ function scoreFit(input: FoodV2RankingInput) {
     }
   }
 
-  if (goal === "sensitive_digestion") {
+  if (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) {
     const hasDigestiveFit = hasSensitiveDigestivePositioning(haystack);
 
     if (hasDigestiveFit) {
@@ -1207,13 +1236,21 @@ function scoreFit(input: FoodV2RankingInput) {
         24,
         "Positioned for sensitive digestion."
       );
-    } else {
+    } else if (goal === "sensitive_digestion") {
       addSignal(
         signals,
         "caution",
         "sensitive_goal_without_digestive_positioning",
         -22,
         "Sensitive digestion cases should prefer digestive-positioned foods."
+      );
+    } else {
+      addSignal(
+        signals,
+        "caution",
+        "gi_symptoms_without_digestive_positioning",
+        -14,
+        "Digestive symptoms are stronger fits with digestive-positioned foods."
       );
     }
 
@@ -1250,11 +1287,29 @@ function scoreFit(input: FoodV2RankingInput) {
           points: 4,
           message: "Fiber context is available for digestive review.",
         },
+        digestibility_support_context: {
+          type: "boost",
+          code: "digestibility_support_context",
+          points: 8,
+          message: "Digestibility-support ingredients are available for GI review.",
+        },
+        measured_moderate_fiber_context: {
+          type: "boost",
+          code: "measured_moderate_fiber_context",
+          points: 6,
+          message: "Measured moderate fiber supports digestive-context review.",
+        },
         allergy_or_hydrolysed_context: {
           type: "boost",
           code: "allergy_or_hydrolysed_context",
           points: 4,
           message: "Hydrolysed or allergy-context protein can support GI-sensitive cases.",
+        },
+        very_high_fiber_for_gi_review: {
+          type: "caution",
+          code: "very_high_fiber_for_gi_review",
+          points: -8,
+          message: "Very high fiber needs GI-context review before being a default pick.",
         },
         missing_fiber_context: {
           type: "caution",
@@ -1694,7 +1749,10 @@ function scoreFit(input: FoodV2RankingInput) {
       );
     }
   }
-  if (goal === "sensitive_digestion" && !hasSensitiveDigestivePositioning(haystack)) {
+  if (
+    (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) &&
+    !hasSensitiveDigestivePositioning(haystack)
+  ) {
     adjustedScore -= hasWeightControlPositioning(haystack) ? 50 : 30;
   }
 

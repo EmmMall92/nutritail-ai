@@ -9,7 +9,7 @@ export type SeniorFitSignal = {
 };
 
 export type SeniorFitInput = {
-  food: Pick<FoodProductV2, "life_stage" | "kcal_per_100g" | "medical_tags">;
+  food: Pick<FoodProductV2, "format" | "life_stage" | "kcal_per_100g" | "medical_tags">;
   nutrients: Pick<
     FoodNutrientsV2,
     | "protein_percent"
@@ -155,6 +155,12 @@ function hasSeniorAppetiteOrWeightLossConcern(text: string) {
   );
 }
 
+function hasSeniorChewingConcern(text: string) {
+  return /chew|chewing|teeth|tooth|dental|kibble|choke|choking|soft food|wet food|δοντ|μαση|μασα|κροκετ|πνιγ/.test(
+    text
+  );
+}
+
 export function evaluateSeniorFitRules(input: SeniorFitInput) {
   const signals: SeniorFitSignal[] = [];
   const { food, goal, nutrients, pet, positioning, stage } = input;
@@ -165,6 +171,7 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
   const detectedMobilityContext = hasMobilityContext || hasGreekMobilityContext;
   const lowActivitySenior = seniorContext && pet.activityLevel === "low";
   const appetiteOrWeightLossConcern = /appetite|anorexia|not eating|weight loss|losing weight|ορεξ|ανορεξ|χανει/.test(text);
+  const chewingConcern = hasSeniorChewingConcern(text);
 
   if (!seniorContext && !detectedMobilityContext) return signals;
 
@@ -247,6 +254,45 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
       message:
         "Excluded because senior pets with reduced appetite or weight loss should not default to light or weight-loss foods.",
     });
+  }
+
+  if (appetiteOrWeightLossConcern && hasNumber(food.kcal_per_100g)) {
+    if (food.kcal_per_100g >= 360 && !positioning.weightControl) {
+      signals.push({
+        type: "boost",
+        code: "senior_low_appetite_energy_density_support",
+        points: 14,
+        message:
+          "Energy density can help a senior pet with low appetite or weight-loss context when veterinary causes are checked.",
+      });
+    } else if (food.kcal_per_100g < 340) {
+      signals.push({
+        type: "caution",
+        code: "senior_low_appetite_low_energy_density",
+        points: -18,
+        message:
+          "Lower energy density is not a first pick for a senior pet with low appetite or weight-loss context.",
+      });
+    }
+  }
+
+  if (chewingConcern) {
+    if (food.format === "wet") {
+      signals.push({
+        type: "boost",
+        code: "senior_chewing_soft_food_fit",
+        points: 14,
+        message: "Wet or soft-format food can help when chewing is difficult.",
+      });
+    } else {
+      signals.push({
+        type: "caution",
+        code: "senior_chewing_texture_review",
+        points: -14,
+        message:
+          "Chewing concerns need texture/kibble-size review; dry food may need soaking or a softer option.",
+      });
+    }
   }
 
   if (
