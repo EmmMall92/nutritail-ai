@@ -54,24 +54,24 @@ function formatWeightGoal(value?: string | null) {
 
 function getFoodScoreLabel(score?: number | null) {
   if (score === null || score === undefined || !Number.isFinite(score)) {
-    return "Not scored";
+    return "General guidance";
   }
 
-  if (score >= 80) return "Strong match";
-  if (score >= 60) return "Good match";
-  if (score >= 40) return "Needs review";
+  if (score >= 80) return "Strong fit";
+  if (score >= 60) return "Useful fit";
+  if (score >= 40) return "Worth rechecking";
 
-  return "Low match";
+  return "Fresh analysis suggested";
 }
 
-function getReportConfidence(score?: number | null) {
+function getPlanStatus(score?: number | null) {
   if (score === null || score === undefined || !Number.isFinite(score)) {
-    return "General guidance only";
+    return "General guidance";
   }
 
-  if (score >= 80) return "High confidence";
-  if (score >= 60) return "Moderate confidence";
-  return "Needs review";
+  if (score >= 80) return "Ready to follow";
+  if (score >= 60) return "Useful plan";
+  return "Fresh check suggested";
 }
 
 function getReportNextSteps(analysis?: AnalysisHistoryItem | null) {
@@ -382,13 +382,8 @@ export default function PrintablePetReportPage() {
           />
           <ReportCard
             label="Food fit"
-            value={
-              latestAnalysis?.food_score !== null &&
-              latestAnalysis?.food_score !== undefined
-                ? `${latestAnalysis.food_score}/100`
-                : "-"
-            }
-            detail={getFoodScoreLabel(latestAnalysis?.food_score)}
+            value={getFoodScoreLabel(latestAnalysis?.food_score)}
+            detail="Based on the saved pet profile and selected food."
           />
         </div>
 
@@ -408,10 +403,10 @@ export default function PrintablePetReportPage() {
           <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="rounded-xl border border-emerald-100 bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Plan confidence
+                Plan status
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-950">
-                {getReportConfidence(latestAnalysis?.food_score)}
+                {getPlanStatus(latestAnalysis?.food_score)}
               </p>
             </div>
             <div className="rounded-xl border border-emerald-100 bg-white p-4">
@@ -582,11 +577,11 @@ export default function PrintablePetReportPage() {
                 <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
                   <p className="text-gray-500">How to use this report</p>
                   <p className="mt-1 font-semibold text-black">
-                    {getReportConfidence(latestAnalysis.food_score)}
+                    {getPlanStatus(latestAnalysis.food_score)}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Confidence depends on pet context, the saved food match,
-                    and the nutrition data available for that formula.
+                    Use it as a starting plan, then update it with weight,
+                    appetite, stool, treats, and food acceptance.
                   </p>
                 </div>
 
@@ -732,9 +727,8 @@ export default function PrintablePetReportPage() {
                       {item.food_score !== null &&
                         item.food_score !== undefined && (
                           <p>
-                            <strong>Food score:</strong>{" "}
-                            {item.food_score}/100 (
-                            {getFoodScoreLabel(item.food_score)})
+                            <strong>Food fit:</strong>{" "}
+                            {getFoodScoreLabel(item.food_score)}
                           </p>
                         )}
 

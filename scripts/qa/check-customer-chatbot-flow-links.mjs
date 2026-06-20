@@ -168,6 +168,16 @@ const checks = [
     expected: "Follow-up Plan",
   },
   {
+    label: "Printable report uses customer-facing plan status wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Plan status",
+  },
+  {
+    label: "Printable report uses customer-facing food-fit wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Fresh analysis suggested",
+  },
+  {
     label: "Printable report explains when to ask for a new shortlist",
     file: "app/print/pet-report/[id]/page.tsx",
     expected: "When to ask for a new shortlist",
@@ -229,6 +239,26 @@ const forbiddenChecks = [
     label: "Printable report does not expose legacy food analysis wording",
     file: "app/print/pet-report/page.tsx",
     forbidden: "Legacy Food Analysis Signals",
+  },
+  {
+    label: "Printable saved report does not expose back-office review wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Needs review",
+  },
+  {
+    label: "Printable saved report does not expose model-confidence wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "High confidence",
+  },
+  {
+    label: "Printable saved report does not expose moderate-confidence wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Moderate confidence",
+  },
+  {
+    label: "Printable saved report does not expose raw food-score wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Food score:",
   },
   {
     label: "Printable timeline does not expose legacy food analysis wording",
