@@ -93,6 +93,7 @@
     "qa:account-progress-live-routes": "node scripts/qa/check-account-progress-live-routes.mjs",
     "qa:customer-chatbot-flow-links": "node scripts/qa/check-customer-chatbot-flow-links.mjs",
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
+    "qa:chatbot-case-intake": "tsx scripts/qa/check-chatbot-case-intake.ts",
     "qa:chatbot-intake-cleanup": "tsx scripts/qa/check-chatbot-intake-cleanup.ts",
     "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
     "qa:customer-recommendation-smoke": "tsx scripts/qa/check-customer-recommendation-smoke.ts",
@@ -123,6 +124,7 @@
     "audit:dog-chatbot-golden-coverage": "node scripts/qa/audit-dog-chatbot-golden-coverage.mjs",
     "audit:dog-chatbot-quality": "node scripts/qa/audit-dog-chatbot-quality.mjs",
     "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
+    "qa:nutrition-source-map-intake": "tsx scripts/qa/check-nutrition-source-map-intake.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs",
     "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs"

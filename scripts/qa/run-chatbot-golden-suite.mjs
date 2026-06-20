@@ -20,6 +20,12 @@ const fullChecks = [
     covers: "OpenAI/fallback fact extraction, pet name cleanup, preference parsing, weight limits.",
   },
   {
+    name: "Bulk chatbot case intake",
+    command: "npm.cmd",
+    args: ["run", "qa:chatbot-case-intake"],
+    covers: "Future dog/cat golden case batches have valid ids, prompts, species, locale, safety expectations, and duplicate checks.",
+  },
+  {
     name: "Chatbot intake cleanup",
     command: "npm.cmd",
     args: ["run", "qa:chatbot-intake-cleanup"],
@@ -42,6 +48,12 @@ const fullChecks = [
     command: "npm.cmd",
     args: ["run", "qa:food-intelligence-use-cases"],
     covers: "Strengths, cautions, best use cases, and not-ideal cases for weight, growth, senior, renal, allergy, skin/coat, and active-food logic.",
+  },
+  {
+    name: "Nutrition source-map intake",
+    command: "npm.cmd",
+    args: ["run", "qa:nutrition-source-map-intake"],
+    covers: "Book and training source maps define allowed uses, copyright policy, topics, and target rule files before rules are extracted.",
   },
   {
     name: "Food V2 ranking scenarios",
@@ -101,10 +113,12 @@ const fullChecks = [
 
 const fastCheckNames = new Set([
   "AI intake golden cases",
+  "Bulk chatbot case intake",
   "Chatbot intake cleanup",
   "Dog edge fixture 101-200",
   "Dog golden coverage audit",
   "Food Intelligence use cases",
+  "Nutrition source-map intake",
   "Food V2 ranking scenarios",
   "Food V2 guard coverage",
   "Chatbot portion estimates",

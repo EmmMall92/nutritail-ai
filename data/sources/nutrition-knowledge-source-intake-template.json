@@ -1,0 +1,26 @@
+{
+  "source_id": "NEW_NUTRITION_SOURCE",
+  "display_name": "New Nutrition Source",
+  "local_folder": "C:\\Users\\NIOstb\\Desktop\\nutrition source folder",
+  "policy": {
+    "allowed_use": [
+      "decision_rules",
+      "nutrition_logic",
+      "disease_nutrition",
+      "growth_nutrition",
+      "senior_nutrition"
+    ],
+    "copyright_rule": "Do not copy source text. Extract only NutriTail-owned structured decision logic, cautions, contraindications, and uncertainty rules.",
+    "ranking_rule": "Food ranking remains deterministic from Food V2 data and NutriTail rules. This source may support rule design and customer-facing explanations only."
+  },
+  "priority_notes": [
+    "Fill this template for each new book, chapter set, training folder, or reference collection before extracting rules."
+  ],
+  "chapter_map": [
+    {
+      "file": "example-chapter-or-note.pdf",
+      "topics": ["topic_slug"],
+      "target_rule_files": ["feedingRules"]
+    }
+  ]
+}

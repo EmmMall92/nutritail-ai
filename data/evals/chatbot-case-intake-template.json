@@ -1,0 +1,40 @@
+{
+  "source": "user_supplied_bulk_chatbot_cases",
+  "purpose": "Bulk intake template for future dog and cat chatbot golden cases.",
+  "batch": {
+    "id": "bulk-001",
+    "species_scope": ["dog", "cat"],
+    "case_id_range": "bulk-001-001..bulk-001-100",
+    "status": "template",
+    "notes": "Copy this file to data/evals/chatbot-extra-cases-<batch>.json and replace the examples with real user-supplied cases."
+  },
+  "cases": [
+    {
+      "id": "bulk-001-001",
+      "species": "dog",
+      "locale": "el-GR",
+      "prompt": "Έχω σκύλο 10kg στειρωμένο και θέλω οικονομική τροφή για διατήρηση βάρους.",
+      "expectedSignals": ["neutered", "weight", "budget"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calories", "portion"]
+    },
+    {
+      "id": "bulk-001-002",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Η αρσενική γάτα μου πάει στην άμμο αλλά δεν κατουράει.",
+      "expectedSignals": ["urinary", "urgent"],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": ["urgent", "veterinarian"]
+    },
+    {
+      "id": "bulk-001-003",
+      "species": "dog",
+      "locale": "en-GB",
+      "prompt": "My large breed puppy is 6 months old and I need a dry food recommendation.",
+      "expectedSignals": ["growth", "large_breed"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["calcium", "phosphorus"]
+    }
+  ]
+}
