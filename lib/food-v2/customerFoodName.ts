@@ -18,6 +18,39 @@ function normalizeForCompare(value: string) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
+function collapseRepeatedCustomerTokens(value: string) {
+  const repeatedTokens = [
+    "adult",
+    "active",
+    "happy",
+    "junior",
+    "kitten",
+    "large",
+    "light",
+    "maintenance",
+    "medium",
+    "mini",
+    "puppy",
+    "renal",
+    "sensitive",
+    "senior",
+    "small",
+    "sterilised",
+    "sterilized",
+    "urinary",
+    "vetsolution",
+  ];
+
+  return repeatedTokens.reduce(
+    (current, token) =>
+      current.replace(
+        new RegExp(`\\b(${escapeRegExp(token)})(?:\\s+\\1)+\\b`, "gi"),
+        "$1"
+      ),
+    value
+  );
+}
+
 export function customerFoodDisplayName(food: FoodNameInput) {
   const brand = cleanNamePart(food.brand);
   let displayName = cleanNamePart(food.display_name);
@@ -55,7 +88,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     );
   }
 
-  return displayName
+  return collapseRepeatedCustomerTokens(displayName)
     .replace(/\b(happy)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(vetsolution)(?:\s+\1)+\b/gi, "$1")
     .replace(/\b(pro\s*plan)(?:\s+\1)+\b/gi, "$1")
