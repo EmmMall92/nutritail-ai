@@ -1162,7 +1162,7 @@ function mergeExtractedPetFacts(
     next.excludedIngredients ?? []
   );
 
-  return next;
+  return sanitizePetIntake(next);
 }
 
 function parseTastePreferences(text: string): {
@@ -1170,6 +1170,21 @@ function parseTastePreferences(text: string): {
   preferredProteins: string[];
 } {
   return parseSharedTastePreferences(text);
+}
+
+function sanitizePetIntake(intake: PetIntake): PetIntake {
+  const excludedIngredients = uniqueTerms(intake.excludedIngredients ?? []);
+  const preferredProteins = removeExcludedFromPreferred(
+    uniqueTerms(intake.preferredProteins ?? []),
+    excludedIngredients
+  );
+
+  return {
+    ...intake,
+    name: intake.name ? formatPetDisplayName(intake.name) : intake.name,
+    excludedIngredients,
+    preferredProteins,
+  };
 }
 function parseWeightGoal(text: string): WeightGoal | null {
   const value = normalizeUserText(text);
@@ -3979,7 +3994,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         ]),
       };
 
-      setPet(nextPet);
+      setPet(sanitizePetIntake(nextPet));
       setStep("currentFood");
 
       addMessages(
@@ -4006,7 +4021,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             : workingPet.currentFoodName ?? currentFoodName,
       };
 
-      setPet(nextPet);
+      setPet(sanitizePetIntake(nextPet));
       setStep("preferences");
 
       addMessages(
@@ -4042,7 +4057,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         preferredProteins,
       };
 
-      setPet(nextPet);
+      setPet(sanitizePetIntake(nextPet));
       setStep("weightGoal");
 
       addMessages(
@@ -4080,7 +4095,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         weightGoal,
       };
 
-      setPet(nextPet);
+      setPet(sanitizePetIntake(nextPet));
 
       addMessages(
         createMessage(

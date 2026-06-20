@@ -19,6 +19,12 @@ const checks = [
     covers: "OpenAI/fallback fact extraction, pet name cleanup, preference parsing, weight limits.",
   },
   {
+    name: "Chatbot intake cleanup",
+    command: "npm.cmd",
+    args: ["run", "qa:chatbot-intake-cleanup"],
+    covers: "Live-style Greek pet name cleanup and liked/avoided protein conflict reconciliation.",
+  },
+  {
     name: "Dog edge fixture 101-200",
     command: "npm.cmd",
     args: ["run", "qa:dog-edge-fixture"],

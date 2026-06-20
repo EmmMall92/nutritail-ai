@@ -93,6 +93,7 @@
     "qa:account-progress-live-routes": "node scripts/qa/check-account-progress-live-routes.mjs",
     "qa:customer-chatbot-flow-links": "node scripts/qa/check-customer-chatbot-flow-links.mjs",
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
+    "qa:chatbot-intake-cleanup": "tsx scripts/qa/check-chatbot-intake-cleanup.ts",
     "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
     "qa:customer-recommendation-smoke": "tsx scripts/qa/check-customer-recommendation-smoke.ts",
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
