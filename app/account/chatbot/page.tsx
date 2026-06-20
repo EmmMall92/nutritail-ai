@@ -4595,43 +4595,43 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {showSave && recommendedFoodChoices.length > 0 && (
           <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
-              {botText("Διάλεξε τροφή και δες γραμμάρια/ημέρα", "Choose a food and see grams/day")}
+              {botText("Οι τροφές που αξίζει να δεις πρώτα", "Foods worth checking first")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Πάτησε την επιλογή που σου ταιριάζει και θα υπολογίσω την πρώτη ημερήσια ποσότητα.",
-                "Choose the option that fits best and I will calculate the first daily amount."
+                "Ξεκίνα από την πρώτη κάρτα ή διάλεξε άλλη επιλογή αν σε βολεύει καλύτερα σε γεύση, εταιρεία ή budget.",
+                "Start with the first card, or choose another option if it fits flavour, brand, or budget better."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Οι καλύτερες επιλογές είναι μπροστά. Οι πρακτικές επιλογές είναι καλές εναλλακτικές όταν θέλεις κάτι πιο απλό.",
-                "Best matches come first. Practical options are good alternatives when you want something simpler."
+                "Πάτησε μία κάρτα για να δω την πρώτη ποσότητα σε γραμμάρια/ημέρα. Μετά μπορείς να αποθηκεύσεις το πλάνο.",
+                "Choose one card to estimate the first grams/day. Then you can save the plan."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block text-emerald-800">
-                  {botText("1. Διάλεξε", "1. Pick")}
+                  {botText("1. Δες", "1. Review")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("την τροφή που σου ταιριάζει", "the food that feels right")}
+                  {botText("τι ταιριάζει καλύτερα", "the best fit")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block text-sky-800">
-                  {botText("2. Υπολόγισε", "2. Calculate")}
+                  {botText("2. Πάτησε", "2. Choose")}
                 </span>
                 <span className="font-normal text-sky-950">
-                  {botText("περίπου ποσότητα/ημέρα", "daily amount")}
+                  {botText("μία κάρτα τροφής", "one food card")}
                 </span>
               </div>
               <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
                 <span className="block text-amber-800">
-                  {botText("3. Αποθήκευσε", "3. Save")}
+                  {botText("3. Πάρε", "3. Get")}
                 </span>
                 <span className="font-normal text-amber-950">
-                  {botText("την ανάλυση στο προφίλ", "the analysis to the profile")}
+                  {botText("γραμμάρια/ημέρα", "grams/day")}
                 </span>
               </div>
             </div>

@@ -461,12 +461,14 @@ const requiredCardFlowCopy = [
   "Practical option",
   "Good alternative",
   "Estimate portions",
-  "Choose a food and see grams/day",
+  "Foods worth checking first",
   "Choose this food to calculate grams/day.",
   "Choose for grams/day.",
-  "Choose the option that fits best and I will calculate the first daily amount.",
-  "Best matches come first.",
-  "Practical options are good alternatives when you want something simpler.",
+  "Start with the first card, or choose another option if it fits flavour, brand, or budget better.",
+  "Choose one card to estimate the first grams/day. Then you can save the plan.",
+  "1. Review",
+  "2. Choose",
+  "3. Get",
   "Best overall match for this pet's profile.",
   "Practical alternative when you want a simpler option.",
   "Another suitable option if you want a different direction.",
@@ -531,11 +533,14 @@ const requiredGreekCardFlowCopy = [
   "Πρακτική επιλογή",
   "Καλή εναλλακτική",
   "Υπολόγισε ποσότητα",
-  "Διάλεξε τροφή και δες γραμμάρια/ημέρα",
+  "Οι τροφές που αξίζει να δεις πρώτα",
   "Διάλεξε αυτή την τροφή για να υπολογίσουμε γραμμάρια/ημέρα.",
   "Διάλεξε για γραμμάρια/ημέρα.",
-  "Πάτησε την επιλογή που σου ταιριάζει",
-  "Οι καλύτερες επιλογές είναι μπροστά.",
+  "Ξεκίνα από την πρώτη κάρτα",
+  "Πάτησε μία κάρτα για να δω την πρώτη ποσότητα",
+  "1. Δες",
+  "2. Πάτησε",
+  "3. Πάρε",
   "Η πιο δυνατή πρώτη επιλογή για το προφίλ που έδωσες.",
   "Πιο απλή/value εναλλακτική",
   "Καλή εναλλακτική, αν θέλεις να δεις κι άλλη σωστή κατεύθυνση.",
@@ -569,7 +574,7 @@ const recommendationBlockIndex = chatbotPage.lastIndexOf(
   "showSave && recommendedFoodChoices.length > 0",
   recommendedChoicesIndex
 );
-const pickStepIndex = chatbotPage.lastIndexOf("1. Pick", recommendedChoicesIndex);
+const pickStepIndex = chatbotPage.lastIndexOf("1. Review", recommendedChoicesIndex);
 const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
