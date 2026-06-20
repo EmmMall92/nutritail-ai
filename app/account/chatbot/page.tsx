@@ -600,6 +600,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       el: "ζέστη / χαμηλή όρεξη χωρίς αρκετή ενεργειακή στήριξη",
       en: "hot-weather low appetite without enough energy support",
     },
+    cold_weather_outdoor_feeding_review: {
+      el: "κρύο ή ζωή έξω με προσεκτική ενέργεια",
+      en: "cold-weather or outdoor feeding review",
+    },
+    cold_weather_outdoor_without_energy_support: {
+      el: "κρύο ή ζωή έξω χωρίς αρκετή ενεργειακή στήριξη",
+      en: "cold-weather outdoor feeding without enough energy support",
+    },
     small_breed: { el: "μικρόσωμο ζώο", en: "small breeds" },
     sterilised: { el: "στειρωμένο ζώο", en: "sterilised pets" },
     sensitive_digestion: { el: "ευαίσθητη πέψη", en: "sensitive digestion" },
@@ -707,6 +715,18 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       el: "κουτάβι μεγαλόσωμης φυλής χωρίς πλήρη μεταλλική εικόνα",
       en: "large-breed puppy without full mineral review",
     },
+    cold_weather_outdoor_feeding_review: {
+      el: "κρύο ή ζωή έξω με προσεκτική ενέργεια",
+      en: "cold-weather or outdoor feeding review",
+    },
+    cold_weather_outdoor_without_energy_support: {
+      el: "κρύο ή ζωή έξω χωρίς αρκετή ενεργειακή στήριξη",
+      en: "cold-weather outdoor feeding without enough energy support",
+    },
+    controlled_weight_gain_recovery_review: {
+      el: "ελεγχόμενη ανάκτηση βάρους ή ανάρρωση",
+      en: "controlled weight-gain or recovery review",
+    },
     limited_protein_allergy_review: {
       el: "αλλεργία / έλεγχος πρωτεΐνης",
       en: "allergy or limited-protein review",
@@ -742,6 +762,10 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     summer_low_appetite_without_energy_support: {
       el: "ζέστη / χαμηλή όρεξη χωρίς αρκετή ενέργεια",
       en: "hot-weather low appetite without enough energy support",
+    },
+    recovery_weight_gain_without_energy_protein_support: {
+      el: "ανάκτηση βάρους χωρίς αρκετή ενέργεια και πρωτεΐνη",
+      en: "recovery or weight gain without enough energy and protein support",
     },
     strict_allergy_trial_with_many_proteins: {
       el: "αυστηρή δοκιμή αλλεργίας με πολλές πρωτεΐνες",
