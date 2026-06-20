@@ -67,9 +67,9 @@ const checks = [
     expected: "getRecommendationChoicePortionPreview",
   },
   {
-    label: "Recommendation cards expose customer portion label",
+    label: "Recommendation cards expose customer grams/day label",
     file: "app/account/chatbot/page.tsx",
-    expected: "Estimated portion",
+    expected: "Choose a food and see grams/day",
   },
   {
     label: "Chosen recommendation points user to save the plan",

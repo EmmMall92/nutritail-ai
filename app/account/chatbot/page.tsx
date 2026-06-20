@@ -793,13 +793,13 @@ function getRecommendationChoiceBadgeLabel(
   language: ChatLanguage
 ) {
   if (index === 0) {
-    return language === "el" ? "Πρόταση 1" : "Pick 1";
+    return language === "el" ? "Καλύτερη επιλογή" : "Best match";
   }
   if (choice.role === "value") {
-    return language === "el" ? "Πιο απλή επιλογή" : "Simple option";
+    return language === "el" ? "Πρακτική επιλογή" : "Practical option";
   }
 
-  return language === "el" ? "Εναλλακτική" : "Alternative";
+  return language === "el" ? "Καλή εναλλακτική" : "Good alternative";
 }
 
 function getRecommendationChoiceActionHint(
@@ -810,13 +810,13 @@ function getRecommendationChoiceActionHint(
 
   if (hasPortionData) {
     return language === "el"
-      ? "Πάτησε για ποσότητα/ημέρα και επόμενο βήμα."
-      : "Tap for portions/day and the next step.";
+      ? "Διάλεξε αυτή την τροφή για να υπολογίσουμε γραμμάρια/ημέρα."
+      : "Choose this food to calculate grams/day.";
   }
 
   return language === "el"
-    ? "Πάτησε για να κρατήσουμε αυτή την επιλογή στο πλάνο."
-    : "Tap to keep this choice in the plan.";
+    ? "Διάλεξε αυτή την τροφή για να την κρατήσουμε στο πλάνο."
+    : "Choose this food to keep it in the plan.";
 }
 
 function getRecommendationChoiceRoleSummary(
@@ -837,14 +837,14 @@ function getRecommendationChoiceRoleSummary(
   }
 
   if (index === 0) {
-    return "Strongest first pick for the profile you gave.";
+    return "Best overall match for this pet's profile.";
   }
 
   if (choice.role === "value") {
-    return "Simpler value-style alternative that still keeps a sensible nutrition fit.";
+    return "Practical alternative when you want a simpler option.";
   }
 
-  return "Good alternative if you want another suitable direction.";
+  return "Another suitable option if you want a different direction.";
 }
 
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
@@ -4560,18 +4560,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {showSave && recommendedFoodChoices.length > 0 && (
           <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
-              {botText("Διάλεξε τροφή και δες ποσότητα", "Choose a food and see portions")}
+              {botText("Διάλεξε τροφή και δες γραμμάρια/ημέρα", "Choose a food and see grams/day")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Πάτησε την τροφή που σου αρέσει για να δεις περίπου γραμμάρια/ημέρα και να την κρατήσουμε στο πλάνο.",
-                "Tap the food you like to see a daily amount and keep it in the plan."
+                "Πάτησε την επιλογή που σου ταιριάζει και θα υπολογίσω την πρώτη ημερήσια ποσότητα.",
+                "Choose the option that fits best and I will calculate the first daily amount."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Οι πρώτες προτάσεις είναι οι πιο ταιριαστές. Οι πιο απλές επιλογές είναι καλές εναλλακτικές όταν θέλεις κάτι πιο πρακτικό.",
-                "The first picks are the strongest fits. Simple options are good alternatives when you want something more practical."
+                "Οι καλύτερες επιλογές είναι μπροστά. Οι πρακτικές επιλογές είναι καλές εναλλακτικές όταν θέλεις κάτι πιο απλό.",
+                "Best matches come first. Practical options are good alternatives when you want something simpler."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
@@ -4603,20 +4603,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("Πρώτες προτάσεις", "First picks")}
+                  {botText("Καλύτερα ταιριάσματα", "Best matches")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "food option(s) with the strongest fit")}
+                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "food option(s) with the best fit")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Πιο απλές επιλογές", "Simple options")}
+                  {botText("Πρακτικές επιλογές", "Practical options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("πρακτικές εναλλακτικές όταν ταιριάζουν αρκετά", "practical alternatives when they still fit")}
+                  {botText("καλές εναλλακτικές όταν θέλεις κάτι πιο απλό", "good alternatives when you want something simpler")}
                 </span>
               </div>
             </div>
@@ -4738,8 +4738,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </span>
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
-                      "Πάτησε για ποσότητα και επόμενο βήμα.",
-                      "Tap for portions and the next step."
+                      "Διάλεξε για γραμμάρια/ημέρα.",
+                      "Choose for grams/day."
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
