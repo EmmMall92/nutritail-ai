@@ -379,6 +379,39 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "small_sterilised_top3_lean_enough") {
+      const richPicks = picks
+        .slice(0, 3)
+        .map((pick, index) => ({
+          index: index + 1,
+          label: pick?.display_name ?? pick?.formula_name ?? "unknown",
+          kcal: pick?.nutrition?.kcal_per_100g,
+          fat: pick?.nutrition?.fat_percent,
+          text: foodText(pick),
+        }))
+        .filter((pick) => {
+          const positionedForControl = hasAnyTerm(pick.text, [
+            "weight",
+            "light",
+            "sterilised",
+            "sterilized",
+            "satiety",
+          ]);
+          const highKcal = typeof pick.kcal === "number" && pick.kcal > 360;
+          const highFat = typeof pick.fat === "number" && pick.fat > 13;
+
+          return (highKcal || highFat) && !positionedForControl;
+        });
+
+      if (richPicks.length > 0) {
+        warnings.push(
+          `Small sterilised top picks include rich candidates: ${richPicks
+            .map((pick) => `#${pick.index} ${pick.label} (${pick.kcal ?? "?"} kcal, ${pick.fat ?? "?"}% fat)`)
+            .join(", ")}.`
+        );
+      }
+    }
+
     if (expectation === "sensitive_fit") {
       if (
         !hasAnyTerm(firstText, [

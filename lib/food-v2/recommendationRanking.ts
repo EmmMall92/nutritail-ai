@@ -1544,6 +1544,13 @@ function scoreFit(input: FoodV2RankingInput) {
 
   let adjustedScore = score;
   if (goal === "sterilised") {
+    const expectedSize = expectedDogSize(pet);
+    const strictSmallSterilisedContext =
+      pet.species === "dog" &&
+      (pet.activityLevel === "low" ||
+        (hasNumber(pet.weight) && pet.weight <= 10) ||
+        expectedSize === "mini" ||
+        expectedSize === "small");
     const hasWeightPositioning = hasWeightControlPositioning(haystack);
     const mildlyRicherSterilisedFit = isMildlyRicherSterilisedFit(
       haystack,
@@ -1576,6 +1583,42 @@ function scoreFit(input: FoodV2RankingInput) {
     }
     if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 10) {
       adjustedScore -= mildlyRicherSterilisedFit ? 10 : 20;
+    }
+    if (strictSmallSterilisedContext) {
+      if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 350) {
+        adjustedScore -= 18;
+        addSignal(
+          signals,
+          "caution",
+          "small_sterilised_energy_density_high",
+          -18,
+          "Small sterilised pets should start from lower calorie density when good options exist."
+        );
+      }
+      if (hasNumber(nutrients.fat_percent) && nutrients.fat_percent > 12) {
+        adjustedScore -= 16;
+        addSignal(
+          signals,
+          "caution",
+          "small_sterilised_fat_density_high",
+          -16,
+          "Small sterilised pets should not start from higher-fat foods when leaner options exist."
+        );
+      }
+      if (
+        hasNumber(food.kcal_per_100g) &&
+        food.kcal_per_100g >= 365 &&
+        hasNumber(nutrients.fat_percent) &&
+        nutrients.fat_percent >= 14
+      ) {
+        addSignal(
+          signals,
+          "exclude",
+          "small_sterilised_rich_formula_mismatch",
+          -100,
+          "Excluded because this small sterilised pet needs a leaner first shortlist."
+        );
+      }
     }
     if (
       hasNumber(food.kcal_per_100g) &&
