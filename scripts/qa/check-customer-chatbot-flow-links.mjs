@@ -74,7 +74,7 @@ const checks = [
   {
     label: "Chosen recommendation points user to save the plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "Press save to keep this plan on the pet profile.",
+    expected: "Press save to keep calories, food choice, and first portion on the profile.",
   },
   {
     label: "Recommendation cards use customer role badges",
