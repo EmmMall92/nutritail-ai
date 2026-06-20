@@ -418,6 +418,16 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
       });
     }
 
+    if (!positioning.active) {
+      signals.push({
+        type: "caution",
+        code: "high_activity_without_active_positioning",
+        points: -16,
+        message:
+          "Highly active pets should usually start from visibly active, performance, or energy-positioned formulas when those options exist.",
+      });
+    }
+
     if (
       !positioning.active &&
       !weightGainContext &&

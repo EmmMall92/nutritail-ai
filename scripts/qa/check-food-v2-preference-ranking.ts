@@ -744,10 +744,31 @@ const lightSterilisedForActiveFood = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 330,
 });
+const genericRichAdultForActiveFood = food({
+  id: "generic-rich-adult-active",
+  formula_key: "qa|generic-rich-adult-active|dog|dry",
+  display_name: "Adult Chicken & Rice",
+  dog_size: "large",
+  commercial_tags: ["adult"],
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 392,
+});
 const activeMaintenanceRanking = rankFoodV2ForPet({
   food: activeMaintenanceFood,
   nutrients: {
     ...nutrients(activeMaintenanceFood),
+    protein_percent: 28,
+    fat_percent: 17,
+    fiber_percent: 2.2,
+  },
+  pet: activeMaintenancePet,
+  goal: "general",
+});
+const genericRichAdultForActiveRanking = rankFoodV2ForPet({
+  food: genericRichAdultForActiveFood,
+  nutrients: {
+    ...nutrients(genericRichAdultForActiveFood),
     protein_percent: 28,
     fat_percent: 17,
     fiber_percent: 2.2,
@@ -786,6 +807,22 @@ if (
 if (activeMaintenanceRanking.total_score <= lightSterilisedForActiveRanking.total_score) {
   console.error("Active/performance food should outrank light sterilised food for high-activity maintenance dogs.");
   console.error({ activeMaintenanceRanking, lightSterilisedForActiveRanking });
+  process.exit(1);
+}
+
+if (
+  !genericRichAdultForActiveRanking.signals.some(
+    (signal) => signal.code === "high_activity_without_active_positioning"
+  )
+) {
+  console.error("Expected high_activity_without_active_positioning for generic rich adult food.");
+  console.error(genericRichAdultForActiveRanking.signals);
+  process.exit(1);
+}
+
+if (activeMaintenanceRanking.total_score <= genericRichAdultForActiveRanking.total_score) {
+  console.error("Active/performance food should outrank generic rich adult food for high-activity dogs.");
+  console.error({ activeMaintenanceRanking, genericRichAdultForActiveRanking });
   process.exit(1);
 }
 

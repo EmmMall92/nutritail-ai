@@ -16,6 +16,7 @@ const GROUPS = [
     ids: [4, 32, 33, 38, 105, 106, 107, 108, 178],
     positive: ["puppy", "junior", "large breed", "med/maxi", "maxi", "giant", "youngstar", "kids"],
     negative: ["adult", "senior", "mature", "light", "sterilised", "renal", "urinary"],
+    top3Positive: true,
     note: "Growth cases should surface puppy/junior formulas, and large/giant cases should avoid adult-only positioning.",
   },
   {
@@ -30,6 +31,7 @@ const GROUPS = [
     ids: [9, 22, 24, 42, 43, 44, 94, 102, 109, 110, 111, 113, 114, 115, 192, 193, 195],
     positive: ["active", "performance", "energy", "sporting", "trail", "working", "profi", "high energy"],
     negative: ["light", "sterilised", "sterilized", "neutered", "renal", "urinary", "satiety", "obesity"],
+    top3Positive: true,
     note: "Active dogs should not start with diet, renal, urinary, or low-energy formulas.",
   },
   {
@@ -37,6 +39,7 @@ const GROUPS = [
     ids: [14, 56, 154, 155, 156],
     positive: ["renal", "kidney"],
     negative: ["urinary struvite", "active", "performance", "high energy", "puppy"],
+    top3Positive: true,
     note: "Renal cases should surface renal/kidney-positioned formulas first.",
   },
   {
@@ -44,6 +47,7 @@ const GROUPS = [
     ids: [15, 90, 151, 152, 153],
     positive: ["urinary", "struvite", "oxalate", "u/c"],
     negative: ["active", "performance", "high energy", "puppy"],
+    top3Positive: true,
     note: "Urinary cases should surface urinary-positioned formulas and avoid generic active food.",
   },
   {
@@ -51,6 +55,7 @@ const GROUPS = [
     ids: [6, 7, 51, 52, 53, 54, 55, 57, 58, 59, 60, 161, 162, 163, 164, 165, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190],
     positive: ["senior", "mature", "ageing", "aging", "joint", "mobility", "7+", "8+", "9+", "12+"],
     negative: ["puppy", "junior", "high energy"],
+    top3Positive: true,
     note: "Senior/mobility cases should surface senior, ageing, joint, or mobility-aware options.",
   },
   {
@@ -135,6 +140,13 @@ function hasAny(text, terms) {
   return terms.some((term) => text.includes(normalize(term)));
 }
 
+function topFoodTexts(row, limit = 3) {
+  return row.foods.slice(0, limit).map((food, index) => ({
+    index: index + 1,
+    text: normalize(food),
+  }));
+}
+
 function auditGroup(group, rowsById) {
   const covered = group.ids.map((id) => rowsById.get(id)).filter(Boolean);
   const missing = group.ids.filter((id) => !rowsById.has(id));
@@ -145,13 +157,21 @@ function auditGroup(group, rowsById) {
     const positiveTerms = [...group.positive, ...caseSpecificTerms];
     const positiveHit = positiveTerms.length === 0 || hasAny(row.text, positiveTerms);
     const negativeFirst = group.negative.length > 0 && hasAny(row.firstText, group.negative);
+    const nonMatchingTopFoods = group.top3Positive
+      ? topFoodTexts(row).filter((food) => !hasAny(food.text, positiveTerms))
+      : [];
 
-    if (!positiveHit || negativeFirst) {
+    if (!positiveHit || negativeFirst || nonMatchingTopFoods.length > 0) {
       review.push({
         id: row.id,
         reason: [
           !positiveHit ? "no expected positioning in visible foods" : null,
           negativeFirst ? "first food has conflicting positioning" : null,
+          nonMatchingTopFoods.length > 0
+            ? `top foods lack expected positioning: #${nonMatchingTopFoods
+                .map((food) => food.index)
+                .join(", #")}`
+            : null,
         ].filter(Boolean).join("; "),
         foods: row.foods,
       });
