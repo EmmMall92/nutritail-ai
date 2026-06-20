@@ -780,13 +780,13 @@ export default function AccountPetDetailPage() {
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">RER</p>
+                <p className="text-sm text-gray-600">Resting calories</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {latest.rer} kcal
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">MER</p>
+                <p className="text-sm text-gray-600">Daily target</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {latest.mer} kcal
                 </p>

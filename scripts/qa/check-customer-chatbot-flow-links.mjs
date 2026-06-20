@@ -198,6 +198,16 @@ const checks = [
     expected: "Resting calories",
   },
   {
+    label: "Pet detail explains resting calories in customer language",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Resting calories",
+  },
+  {
+    label: "Pet detail explains daily target in customer language",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Daily target",
+  },
+  {
     label: "Printable timeline explains daily target in customer language",
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "Practical calories for the current plan",
@@ -326,6 +336,36 @@ const forbiddenChecks = [
     label: "Chat guardrails do not expose confidence heading",
     file: "lib/nutrition/chatGuardrails.ts",
     forbidden: "Confidence notes:",
+  },
+  {
+    label: "Chatbot calorie explanation does not expose RER acronym",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Resting calories (RER)",
+  },
+  {
+    label: "Chatbot calorie explanation does not expose MER/DER acronym",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Base daily target (MER/DER)",
+  },
+  {
+    label: "Pet detail does not expose RER card label",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: ">RER<",
+  },
+  {
+    label: "Pet detail does not expose MER card label",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: ">MER<",
+  },
+  {
+    label: "Printable report history does not expose RER label",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "<strong>RER:</strong>",
+  },
+  {
+    label: "Printable report history does not expose MER label",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "<strong>MER:</strong>",
   },
 ];
 
