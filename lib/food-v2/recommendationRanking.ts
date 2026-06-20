@@ -1338,6 +1338,12 @@ function scoreFit(input: FoodV2RankingInput) {
           points: 8,
           message: "Medical tags confirm urinary formula positioning.",
         },
+        urinary_complete_mineral_context: {
+          type: "boost",
+          code: "urinary_complete_mineral_context",
+          points: 6,
+          message: "Magnesium, phosphorus and sodium are available for urinary mineral context.",
+        },
         missing_magnesium_for_urinary_review: {
           type: "caution",
           code: "missing_magnesium_for_urinary_review",
@@ -1349,6 +1355,12 @@ function scoreFit(input: FoodV2RankingInput) {
           code: "missing_phosphorus_for_urinary_review",
           points: -4,
           message: "Phosphorus data is missing for urinary review.",
+        },
+        missing_sodium_for_urinary_context: {
+          type: "caution",
+          code: "missing_sodium_for_urinary_context",
+          points: -3,
+          message: "Sodium data is missing for fuller urinary context.",
         },
         urinary_claim_needs_strong_source: {
           type: "caution",
@@ -1410,17 +1422,35 @@ function scoreFit(input: FoodV2RankingInput) {
           points: 4,
           message: "EPA/DHA data supports renal fatty-acid context.",
         },
+        renal_phosphorus_sodium_context: {
+          type: "boost",
+          code: "renal_phosphorus_sodium_context",
+          points: 6,
+          message: "Phosphorus and sodium data are available for renal mineral context.",
+        },
         missing_phosphorus_for_renal_review: {
           type: "caution",
           code: "missing_phosphorus_for_renal_review",
           points: -8,
           message: "Phosphorus data is missing for renal review.",
         },
+        missing_sodium_for_renal_context: {
+          type: "caution",
+          code: "missing_sodium_for_renal_context",
+          points: -4,
+          message: "Sodium data is missing for fuller renal context.",
+        },
         high_protein_not_renal_default: {
           type: "caution",
           code: "high_protein_not_renal_default",
           points: -10,
           message: "High protein is not a default renal-diet advantage without vet context.",
+        },
+        higher_phosphorus_not_renal_default: {
+          type: "caution",
+          code: "higher_phosphorus_not_renal_default",
+          points: -8,
+          message: "Higher phosphorus is not a default renal-diet advantage.",
         },
         renal_claim_needs_strong_source: {
           type: "caution",
