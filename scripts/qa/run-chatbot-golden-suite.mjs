@@ -62,6 +62,12 @@ const fullChecks = [
     covers: "GI symptom ranking, allergy/intolerance hard rejects, and senior low-appetite/chewing logic.",
   },
   {
+    name: "Pancreatitis fat-sensitive v2 rules",
+    command: "npm.cmd",
+    args: ["run", "qa:pancreatitis-fat-sensitive-v2"],
+    covers: "Pancreatitis and fat-sensitive low-fat fit, missing-fat caution, high-fat holds, and vet framing.",
+  },
+  {
     name: "Nutrition source-map intake",
     command: "npm.cmd",
     args: ["run", "qa:nutrition-source-map-intake"],
@@ -132,6 +138,7 @@ const fastCheckNames = new Set([
   "Food Intelligence use cases",
   "Medical nutrition rules",
   "GI allergy senior v2 rules",
+  "Pancreatitis fat-sensitive v2 rules",
   "Nutrition source-map intake",
   "Food V2 ranking scenarios",
   "Food V2 guard coverage",

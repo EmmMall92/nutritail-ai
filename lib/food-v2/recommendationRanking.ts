@@ -9,6 +9,7 @@ import { evaluateGiRules } from "@/lib/nutrition-v2/giRules";
 import { evaluateGrowthFitRules } from "@/lib/nutrition-v2/growthRules";
 import { evaluateIngredientFitRules } from "@/lib/nutrition-v2/ingredientRules";
 import { evaluateObesityFitRules } from "@/lib/nutrition-v2/obesityRules";
+import { evaluatePancreatitisFitRules } from "@/lib/nutrition-v2/pancreatitisRules";
 import { evaluateRenalRules } from "@/lib/nutrition-v2/renalRules";
 import { evaluateSeniorFitRules } from "@/lib/nutrition-v2/seniorRules";
 import { evaluateUrinaryRules } from "@/lib/nutrition-v2/urinaryRules";
@@ -649,6 +650,36 @@ function hasPancreatitisContext(values: string[] | undefined) {
     "pagkreat",
     "pagkreatit",
     "παγκρεατ",
+  ]);
+}
+
+function hasFatSensitiveContext(values: string[] | undefined) {
+  return hasAny(normalizeText((values ?? []).join(" ")), [
+    "fat sensitive",
+    "fat sensitivity",
+    "fat intolerance",
+    "low fat",
+    "greasy food",
+    "rich food",
+    "fatty food",
+    "λιπαρ",
+    "λιπος",
+    "λίπος",
+    "παχυν",
+  ]);
+}
+
+function hasLowFatPositioning(foodText: string) {
+  return hasAny(foodText, [
+    "low fat",
+    "low-fat",
+    "gastro low fat",
+    "digestive low fat",
+    "fat restricted",
+    "pancreatic",
+    "pancreatitis",
+    "χαμηλα λιπαρα",
+    "χαμηλά λιπαρά",
   ]);
 }
 
@@ -1517,50 +1548,20 @@ function scoreFit(input: FoodV2RankingInput) {
     );
   }
 
-  if (hasPancreatitisContext(pet.healthIssues)) {
-    const fat = nutrients.fat_percent;
-    const lowFatPositioning = hasAny(haystack, [
-      "low fat",
-      "gastro low fat",
-      "pancreatic",
-      "pancreatitis",
-      "digestive low fat",
-    ]);
-
-    addSignal(
-      signals,
-      "caution",
-      "pancreatitis_requires_vet",
-      -10,
-      "Pancreatitis history needs veterinarian-directed diet selection."
+  if (hasPancreatitisContext(pet.healthIssues) || hasFatSensitiveContext(pet.healthIssues)) {
+    const pancreatitisContext = hasPancreatitisContext(pet.healthIssues);
+    applyRuleSignals(
+      evaluatePancreatitisFitRules({
+        food,
+        nutrients,
+        context: pancreatitisContext ? "pancreatitis" : "fat_sensitive",
+        positioning: {
+          digestive: hasSensitiveDigestivePositioning(haystack),
+          lowFat: hasLowFatPositioning(haystack),
+          pancreatitis: hasAny(haystack, ["pancreatic", "pancreatitis"]),
+        },
+      })
     );
-
-    if (!hasNumber(fat)) {
-      addSignal(
-        signals,
-        "caution",
-        "pancreatitis_missing_fat",
-        -18,
-        "Pancreatitis context needs fat data before confident shortlisting."
-      );
-    } else if (fat > 12 && !lowFatPositioning) {
-      addSignal(
-        signals,
-        "exclude",
-        "pancreatitis_high_fat_mismatch",
-        -100,
-        "Excluded because pancreatitis history should not start from higher-fat foods."
-      );
-    } else if (fat <= 10 || lowFatPositioning) {
-      score += 14;
-      addSignal(
-        signals,
-        "boost",
-        "pancreatitis_low_fat_fit",
-        14,
-        "Lower fat profile is more appropriate for pancreatitis-sensitive review."
-      );
-    }
   }
 
   if (goal === "growth" || stage === "puppy" || stage === "kitten") {
