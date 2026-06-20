@@ -46,7 +46,11 @@ const NOISE_WORDS = [
 
 const DESCRIPTIVE_TITLE_PATTERNS = [
   /\bcomplete\s+food\s+for\b/i,
+  /\bcomplete\s+dry\s+food\s+for\b/i,
+  /\bcomplete\s+for\s+(?:adult|puppy|kitten|senior|sterilised|sensitive)\b/i,
+  /\bcomplete\s+for\s+(?:adult\s+)?(?:dogs?|cats?|puppies|kittens)\b/i,
   /\bholistic\s+food\s+for\b/i,
+  /\bdry\s+food\s+for\s+(?:adult\s+)?(?:dogs?|cats?|puppies|kittens)\b/i,
   /\bideal\s+for\b/i,
   /\bfood\s+for\s+(?:adult|puppy|kitten|senior|sterilised|sensitive)\b/i,
   /τροφ[ηή]\s+για/iu,
