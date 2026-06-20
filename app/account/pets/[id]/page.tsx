@@ -90,12 +90,12 @@ function hasValidFoodScore(score?: number | null) {
 }
 
 function getFoodScoreLabel(score?: number | null) {
-  if (!hasValidFoodScore(score)) return "Not scored";
+  if (!hasValidFoodScore(score)) return "General guidance";
   const numericScore = Number(score);
-  if (numericScore >= 80) return "Strong match";
-  if (numericScore >= 60) return "Good match";
-  if (numericScore >= 40) return "Needs review";
-  return "Low match";
+  if (numericScore >= 80) return "Strong fit";
+  if (numericScore >= 60) return "Useful fit";
+  if (numericScore >= 40) return "Worth rechecking";
+  return "Fresh analysis suggested";
 }
 
 function getReportReadiness(item?: AnalysisHistoryItem) {
@@ -373,6 +373,7 @@ export default function AccountPetDetailPage() {
   const { pet, analysisHistory, progressLogs = [] } = data;
   const latest = analysisHistory[0];
   const progressSummary = getLatestProgressSummary(progressLogs, pet);
+  const maxPetWeightKg = pet.species === "cat" ? 15 : 90;
 
   return (
       <section className="mx-auto max-w-4xl space-y-6">
@@ -674,7 +675,7 @@ export default function AccountPetDetailPage() {
                 <input
                   type="number"
                   min="0.1"
-                  max="150"
+                  max={maxPetWeightKg}
                   step="0.1"
                   value={editForm.weight}
                   onChange={(event) =>

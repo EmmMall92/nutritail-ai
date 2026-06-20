@@ -143,6 +143,16 @@ const checks = [
     expected: "Food recommendation:",
   },
   {
+    label: "Pet detail food score uses customer-facing recheck wording",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Worth rechecking",
+  },
+  {
+    label: "Pet detail weight edit uses species-aware customer limit",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: 'const maxPetWeightKg = pet.species === "cat" ? 15 : 90;',
+  },
+  {
     label: "Printable report uses customer-facing saved food insights heading",
     file: "app/print/pet-report/page.tsx",
     expected: "Saved Food Insights",
@@ -204,6 +214,16 @@ const forbiddenChecks = [
     label: "Pet detail page does not expose legacy food signal ids",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: "Legacy food signal ids",
+  },
+  {
+    label: "Pet detail food score does not expose back-office review wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Needs review",
+  },
+  {
+    label: "Pet detail weight edit does not allow unrealistic legacy limit",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: 'max="150"',
   },
   {
     label: "Printable report does not expose legacy food analysis wording",
