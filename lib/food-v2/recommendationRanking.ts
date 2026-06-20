@@ -794,6 +794,25 @@ function hasCustomerVisibleSeniorPositioning(food: FoodProductV2) {
   return hasExplicitSeniorTitle(food);
 }
 
+function visibleLifeStageFromFood(food: FoodProductV2) {
+  const text = normalizeText(
+    [
+      food.display_name,
+      food.formula_name,
+      ...(food.commercial_tags ?? []),
+      ...(food.medical_tags ?? []),
+    ].join(" ")
+  );
+
+  if (hasAny(text, ["puppy", "puppies", "junior"])) return "puppy";
+  if (hasAny(text, ["kitten", "kittens"])) return "kitten";
+  if (hasAny(text, ["senior", "mature", "ageing", "aging", "7+", "8+", "10+", "12+"])) {
+    return "senior";
+  }
+  if (hasAny(text, ["adult", "maintenance"])) return "adult";
+  return null;
+}
+
 function therapeuticPositioningFitsGoal(
   foodText: string,
   goal: FoodV2RecommendationGoal,
@@ -809,6 +828,8 @@ function therapeuticPositioningFitsGoal(
 
 function lifeStageMatches(food: FoodProductV2, stage: string) {
   if (food.life_stage === "all_life_stages") return true;
+  const visibleStage = visibleLifeStageFromFood(food);
+  if (visibleStage === stage) return true;
   if (stage === "puppy") return food.life_stage === "puppy";
   if (stage === "kitten") return food.life_stage === "kitten";
   return food.life_stage === stage;
