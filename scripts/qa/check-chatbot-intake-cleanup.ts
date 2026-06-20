@@ -19,6 +19,10 @@ function runChecks(): Check[] {
   const greekKyrki = "\u03c4\u03b7\u03bd \u03bb\u03b5\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
   const greekKyrkiWithAccent =
     "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
+  const greekKyrkiRepeatedArticle =
+    "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u03c4\u03b7\u03bd \u039a\u03cd\u03c1\u03ba\u03b7";
+  const greekDogNamedLeonidas =
+    "\u03bf \u03c3\u03ba\u03cd\u03bb\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9 \u03bb\u03ad\u03c9\u03bd\u03b9\u03b4\u03b1\u03c2";
   const chickenYesSalmonNo =
     "\u03a4\u03b7\u03c2 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b8\u03bf\u03bb\u03bf\u03c5 \u03bf \u03c3\u03bf\u03bb\u03bf\u03bc\u03bf\u03c2";
   const chickenYesLambBeefNo =
@@ -44,6 +48,21 @@ function runChecks(): Check[] {
       name: "Greek pet name strips natural phrase with accent",
       pass: formatPetDisplayName(greekKyrkiWithAccent) === "\u039a\u03cd\u03c1\u03ba\u03b7",
       details: formatPetDisplayName(greekKyrkiWithAccent),
+    },
+    {
+      name: "Greek pet name strips repeated article after natural phrase",
+      pass: formatPetDisplayName(greekKyrkiRepeatedArticle) === "\u039a\u03cd\u03c1\u03ba\u03b7",
+      details: formatPetDisplayName(greekKyrkiRepeatedArticle),
+    },
+    {
+      name: "Greek pet name strips species-owner named phrase",
+      pass: formatPetDisplayName(greekDogNamedLeonidas) === "\u039b\u03b5\u03c9\u03bd\u03af\u03b4\u03b1\u03c2",
+      details: formatPetDisplayName(greekDogNamedLeonidas),
+    },
+    {
+      name: "English pet name strips natural named phrase",
+      pass: formatPetDisplayName("my dog is named luna") === "Luna",
+      details: formatPetDisplayName("my dog is named luna"),
     },
     {
       name: "Preferences keep liked chicken and avoid disliked salmon",
