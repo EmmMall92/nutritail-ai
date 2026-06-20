@@ -82,9 +82,9 @@ const checks = [
     expected: "getRecommendationChoiceBadgeLabel",
   },
   {
-    label: "Recommendation cards expose portion estimate badge",
+    label: "Recommendation cards expose tap-for-grams badge",
     file: "app/account/chatbot/page.tsx",
-    expected: "Portion estimate",
+    expected: "Tap for grams",
   },
   {
     label: "Recommendation composer has compact customer fallback",
