@@ -1075,7 +1075,7 @@ function scoreFit(input: FoodV2RankingInput) {
       expectedSize &&
       visibleTitleSize &&
       visibleTitleSize === expectedSize &&
-      ["sterilised", "weight_control", "senior", "growth"].includes(goal)
+      ["general", "sterilised", "weight_control", "senior", "growth"].includes(goal)
     ) {
       score += 8;
       addSignal(

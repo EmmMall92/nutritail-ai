@@ -1269,6 +1269,65 @@ if (
   process.exit(1);
 }
 
+const visibleLargeGeneralFood = food({
+  id: "visible-large-general",
+  formula_key: "qa|visible-large-general|dog|dry",
+  display_name: "Maxi Adult Chicken & Rice",
+  dog_size: "all",
+  commercial_tags: ["adult", "maintenance"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
+const allBreedsGeneralFood = food({
+  id: "all-breeds-general",
+  formula_key: "qa|all-breeds-general|dog|dry",
+  display_name: "All Breeds Adult Chicken & Rice",
+  dog_size: "all",
+  commercial_tags: ["adult", "maintenance"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
+const visibleLargeGeneralRanking = rankFoodV2ForPet({
+  food: visibleLargeGeneralFood,
+  nutrients: {
+    ...nutrients(visibleLargeGeneralFood),
+    protein_percent: 24,
+    fat_percent: 13,
+    fiber_percent: 2.5,
+  },
+  pet: generalLargeDogPet,
+  goal: "general",
+});
+const allBreedsGeneralRanking = rankFoodV2ForPet({
+  food: allBreedsGeneralFood,
+  nutrients: {
+    ...nutrients(allBreedsGeneralFood),
+    protein_percent: 24,
+    fat_percent: 13,
+    fiber_percent: 2.5,
+  },
+  pet: generalLargeDogPet,
+  goal: "general",
+});
+
+if (visibleLargeGeneralRanking.total_score <= allBreedsGeneralRanking.total_score) {
+  console.error("Visible large-size general food should outrank an otherwise equal all-breeds option for a large dog.");
+  console.error({ visibleLargeGeneralRanking, allBreedsGeneralRanking });
+  process.exit(1);
+}
+
+if (
+  !visibleLargeGeneralRanking.signals.some(
+    (signal) => signal.code === "customer_visible_dog_size_match"
+  )
+) {
+  console.error("Expected customer_visible_dog_size_match for visible large-size general food.");
+  console.error(visibleLargeGeneralRanking.signals);
+  process.exit(1);
+}
+
 const highActivityPet = {
   ...pet,
   weight: 25,
