@@ -87,6 +87,18 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "This is too energy-dense for a sterilised maintenance shortlist.",
   },
+  sterilised_rich_formula_mismatch: {
+    code: "sterilised_rich_formula_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Calories and fat are too rich for a first sterilised-pet shortlist.",
+  },
+  small_sterilised_rich_formula_mismatch: {
+    code: "small_sterilised_rich_formula_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "Small sterilised pets need leaner first-shortlist options.",
+  },
   active_formula_for_weight_sensitive_pet: {
     code: "active_formula_for_weight_sensitive_pet",
     severity: "block",

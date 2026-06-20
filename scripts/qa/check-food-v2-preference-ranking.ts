@@ -852,6 +852,8 @@ const sterilisedRicherRanking = rankFoodV2ForPet({
   },
   goal: "sterilised",
 });
+const sterilisedTooRichGuards =
+  detectFoodV2RecommendationGuardFlags(sterilisedTooRichRanking);
 
 if (sterilisedLeanRanking.total_score <= sterilisedRicherRanking.total_score) {
   console.error("Lower-kcal/lower-fat food should outrank richer options for sterilised cases.");
@@ -878,6 +880,26 @@ if (
 ) {
   console.error("Expected sterilised_rich_formula_mismatch for rich sterilised food.");
   console.error(sterilisedTooRichRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !sterilisedTooRichGuards.some(
+    (flag) => flag.code === "sterilised_rich_formula_mismatch" && flag.severity === "block"
+  )
+) {
+  console.error("Expected sterilised_rich_formula_mismatch to be exposed as a block guard.");
+  console.error(sterilisedTooRichGuards);
+  process.exit(1);
+}
+
+if (
+  !sterilisedTooRichGuards.some(
+    (flag) => flag.code === "small_sterilised_rich_formula_mismatch" && flag.severity === "block"
+  )
+) {
+  console.error("Expected small_sterilised_rich_formula_mismatch to be exposed as a block guard.");
+  console.error(sterilisedTooRichGuards);
   process.exit(1);
 }
 
