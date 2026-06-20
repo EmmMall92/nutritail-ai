@@ -512,6 +512,7 @@ const requiredCardFlowCopy = [
   "digestive_tolerance_review",
   "sterilised pets with too much energy density",
   "active pets without enough energy support",
+  "energy-dense food without clear active use",
   "senior pets without clear senior or mobility support",
   "kcal/100g",
   "protein",

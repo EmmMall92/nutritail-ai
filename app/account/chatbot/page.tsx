@@ -580,6 +580,10 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       el: "δραστήριο ζώο χωρίς αρκετή ενεργειακή υποστήριξη",
       en: "active pets without enough energy support",
     },
+    energy_dense_without_clear_active_positioning: {
+      el: "πολλές θερμίδες χωρίς ξεκάθαρη active χρήση",
+      en: "energy-dense food without clear active use",
+    },
     digestive_tolerance_review: {
       el: "ευαίσθητη πέψη",
       en: "digestive tolerance review",
