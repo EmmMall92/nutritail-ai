@@ -443,7 +443,17 @@ function hasTherapeuticPositioning(foodText: string) {
 }
 
 function hasActivePositioning(foodText: string) {
-  return hasAny(foodText, ["active", "performance", "energy", "sport", "working"]);
+  return hasAny(foodText, [
+    "active",
+    "performance",
+    "energy",
+    "sport",
+    "working",
+    "endurance",
+    "trail",
+    "profi",
+    "athletic",
+  ]);
 }
 
 function hasWeightControlPositioning(foodText: string) {

@@ -23,7 +23,7 @@ export type FeedingFitSignal = {
 
 export type FeedingFitInput = {
   food: Pick<FoodProductV2, "kcal_per_100g">;
-  nutrients: Pick<FoodNutrientsV2, "fat_percent" | "fiber_percent">;
+  nutrients: Pick<FoodNutrientsV2, "protein_percent" | "fat_percent" | "fiber_percent">;
   pet: Pick<Pet, "activityLevel" | "neutered"> & {
     healthIssues?: string[];
   };
@@ -374,6 +374,15 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         message: "Fat level can support higher energy needs in an active pet.",
       });
     }
+
+    if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent >= 26) {
+      signals.push({
+        type: "boost",
+        code: "protein_supports_active_pet",
+        points: weightGainContext ? 7 : 5,
+        message: "Protein level supports a high-activity or working-dog shortlist.",
+      });
+    }
   }
 
   if (highActivity && !strictWeightContext && !positioning.weightControl) {
@@ -414,6 +423,23 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         points: -100,
         message:
           "Excluded because a weight-gain active pet needs a formula with more credible energy/fat support.",
+      });
+    }
+
+    if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent >= 26) {
+      signals.push({
+        type: "boost",
+        code: "protein_supports_high_activity",
+        points: weightGainContext ? 6 : 4,
+        message: "Protein level is useful for a high-activity or working dog.",
+      });
+    } else if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent < 22) {
+      signals.push({
+        type: weightGainContext ? "exclude" : "caution",
+        code: "low_protein_formula_for_high_activity_pet",
+        points: weightGainContext ? -100 : -14,
+        message:
+          "Protein looks low for a highly active or working dog shortlist.",
       });
     }
 

@@ -87,6 +87,23 @@ const activePerformance = rankFoodV2ForPet({
   goal: "general",
 });
 
+const activeEnduranceProteinSupport = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "active-endurance-protein",
+    display_name: "Large Adult Endurance Trail",
+    commercial_tags: ["endurance"],
+    kcal_per_100g: 390,
+  },
+  nutrients: {
+    protein_percent: 27,
+    fat_percent: 17,
+    fiber_percent: 2.5,
+  },
+  pet: highActivityDog,
+  goal: "general",
+});
+
 const lowEnergyMaintenance = rankFoodV2ForPet({
   food: {
     ...baseFood,
@@ -98,6 +115,23 @@ const lowEnergyMaintenance = rankFoodV2ForPet({
   nutrients: {
     protein_percent: 23,
     fat_percent: 10,
+    fiber_percent: 3,
+  },
+  pet: highActivityDog,
+  goal: "general",
+});
+
+const lowProteinMaintenance = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "low-protein-maintenance",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 370,
+  },
+  nutrients: {
+    protein_percent: 19,
+    fat_percent: 15,
     fiber_percent: 3,
   },
   pet: highActivityDog,
@@ -177,6 +211,23 @@ const lowEnergyMaintenanceForGain = rankFoodV2ForPet({
   goal: "general",
 });
 
+const lowProteinMaintenanceForGain = rankFoodV2ForPet({
+  food: {
+    ...baseFood,
+    formula_key: "low-protein-maintenance-gain",
+    display_name: "Large Adult Maintenance",
+    commercial_tags: ["adult"],
+    kcal_per_100g: 385,
+  },
+  nutrients: {
+    protein_percent: 19,
+    fat_percent: 16,
+    fiber_percent: 3,
+  },
+  pet: weightGainHighActivityDog,
+  goal: "general",
+});
+
 const strictWeightControlModerateEnergy = rankFoodV2ForPet({
   food: {
     ...baseFood,
@@ -220,8 +271,24 @@ assert(
   "High-activity formula should receive energy-density support."
 );
 assert(
+  signalCodes(activeEnduranceProteinSupport).includes("active_formula_activity_fit"),
+  "Endurance/trail positioning should count as active positioning."
+);
+assert(
+  signalCodes(activeEnduranceProteinSupport).includes("protein_supports_active_pet"),
+  "Active-positioned food should receive protein support for high-activity dogs."
+);
+assert(
+  signalCodes(activeEnduranceProteinSupport).includes("protein_supports_high_activity"),
+  "High-activity food should receive a general protein support signal."
+);
+assert(
   signalCodes(lowEnergyMaintenance).includes("low_energy_formula_for_high_activity_pet"),
   "Low-energy maintenance food should be marked as weaker for high-activity dogs."
+);
+assert(
+  signalCodes(lowProteinMaintenance).includes("low_protein_formula_for_high_activity_pet"),
+  "Low-protein maintenance food should be marked as weaker for high-activity dogs."
 );
 assert(
   activePerformance.total_score > lowEnergyMaintenance.total_score,
@@ -264,6 +331,14 @@ assert(
   "Low-energy weight-gain mismatch should emit a clear blocking signal."
 );
 assert(
+  lowProteinMaintenanceForGain.bucket === "hold",
+  "Low-protein maintenance food should be held for active dogs that need weight gain."
+);
+assert(
+  signalCodes(lowProteinMaintenanceForGain).includes("low_protein_formula_for_high_activity_pet"),
+  "Low-protein active weight-gain mismatch should emit a clear blocking signal."
+);
+assert(
   signalCodes(strictWeightControlModerateEnergy).includes(
     "moderate_high_energy_strict_weight_context"
   ),
@@ -277,8 +352,8 @@ assert(
 console.log(
   JSON.stringify(
     {
-      checked: 9,
-      passed: 9,
+      checked: 14,
+      passed: 14,
       light_sterilised: {
         bucket: lightSterilised.bucket,
         score: lightSterilised.total_score,
@@ -289,6 +364,11 @@ console.log(
         score: activePerformance.total_score,
         signals: signalCodes(activePerformance),
       },
+      active_endurance_protein_support: {
+        bucket: activeEnduranceProteinSupport.bucket,
+        score: activeEnduranceProteinSupport.total_score,
+        signals: signalCodes(activeEnduranceProteinSupport),
+      },
       low_energy_maintenance: {
         bucket: lowEnergyMaintenance.bucket,
         score: lowEnergyMaintenance.total_score,
@@ -298,6 +378,11 @@ console.log(
         bucket: modestEnergyMaintenance.bucket,
         score: modestEnergyMaintenance.total_score,
         signals: signalCodes(modestEnergyMaintenance),
+      },
+      low_protein_maintenance: {
+        bucket: lowProteinMaintenance.bucket,
+        score: lowProteinMaintenance.total_score,
+        signals: signalCodes(lowProteinMaintenance),
       },
       light_sterilised_for_gain: {
         bucket: lightSterilisedForGain.bucket,
@@ -313,6 +398,11 @@ console.log(
         bucket: lowEnergyMaintenanceForGain.bucket,
         score: lowEnergyMaintenanceForGain.total_score,
         signals: signalCodes(lowEnergyMaintenanceForGain),
+      },
+      low_protein_maintenance_for_gain: {
+        bucket: lowProteinMaintenanceForGain.bucket,
+        score: lowProteinMaintenanceForGain.total_score,
+        signals: signalCodes(lowProteinMaintenanceForGain),
       },
       strict_weight_control_moderate_energy: {
         bucket: strictWeightControlModerateEnergy.bucket,
