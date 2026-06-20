@@ -1112,7 +1112,7 @@ function removeExcludedFromPreferred(preferred: string[], excluded: string[]) {
 }
 
 function shouldExtractIntakeFacts(step: IntakeStep, text: string) {
-  if (step === "analysis" || step === "done" || step === "petChoice") {
+  if (step === "analysis" || step === "done") {
     return false;
   }
 
@@ -2674,6 +2674,82 @@ export default function AccountChatbotPage() {
     return chatLanguage === "el" ? repairCustomerGreekText(el) : en;
   }
 
+  function getNextMissingIntakeStep(draft: PetIntake): IntakeStep {
+    if (!draft.species) return "species";
+    if (!draft.name) return "name";
+    if (!draft.weight) return "weight";
+    if (!draft.age) return "age";
+    if (!draft.activityLevel) return "activity";
+    if (draft.neutered === undefined) return "neutered";
+    if ((draft.healthIssues ?? []).length === 0 && (draft.allergies ?? []).length === 0) {
+      return "health";
+    }
+    if (!draft.currentFoodName) return "currentFood";
+    if ((draft.preferredProteins ?? []).length === 0 && (draft.excludedIngredients ?? []).length === 0) {
+      return "preferences";
+    }
+    if (!draft.weightGoal) return "weightGoal";
+    return "analysis";
+  }
+
+  function getIntakeQuestion(nextStep: IntakeStep, draft: PetIntake) {
+    const displayName = draft.name ? formatPetDisplayName(draft.name) : undefined;
+
+    switch (nextStep) {
+      case "species":
+        return botText("Τέλεια. Έχεις σκύλο ή γάτα;", "Great. Do you have a dog or a cat?");
+      case "name":
+        return draft.species === "cat"
+          ? botText("Τέλεια, γάτα. Πώς τον/την λένε;", "Great, a cat. What is their name?")
+          : botText("Τέλεια, σκύλος. Πώς τον/την λένε;", "Great, a dog. What is their name?");
+      case "weight":
+        return botText(
+          `Ωραία. Περίπου πόσα κιλά είναι ο/η ${displayName ?? "το κατοικίδιο"};`,
+          `Nice. About how many kg is ${displayName ?? "your pet"}?`
+        );
+      case "age":
+        return botText("Τέλεια. Πόσο χρονών είναι;", "Great. How old is your pet?");
+      case "activity":
+        return botText(
+          "Ποιο είναι το επίπεδο δραστηριότητας: χαμηλό, κανονικό ή υψηλό;",
+          "What is your pet's activity level: low, normal, or high?"
+        );
+      case "neutered":
+        return botText("Είναι στειρωμένο; Ναι ή όχι;", "Is your pet neutered? Yes or no?");
+      case "health":
+        return botText(
+          "Υπάρχουν αλλεργίες, ευαισθησίες ή θέματα υγείας; Αν όχι, γράψε όχι. Αν ναι, γράψ’ τα με κόμμα.",
+          "Any allergies, sensitivities, or health issues? If not, type no. If yes, separate them with commas."
+        );
+      case "currentFood":
+        return botText(
+          "Ποια τροφή τρώει τώρα; Γράψε εταιρεία και όνομα προϊόντος αν το ξέρεις. Αν δεν είσαι σίγουρος/η, γράψε δεν ξέρω.",
+          "What food are you feeding now? Write the brand and product name if you know it. If you are not sure, type I don't know."
+        );
+      case "preferences":
+        return botText(
+          "Υπάρχει γεύση ή πρωτεΐνη που προτιμά ή αποφεύγει; Π.χ. του αρέσει αρνί ή σολομός, δεν τρώει κοτόπουλο. Αν δεν υπάρχει προτίμηση, γράψε όχι.",
+          "Does your pet prefer or avoid any flavors or proteins? For example: likes lamb or salmon, does not eat chicken. If there is no preference, type no."
+        );
+      case "weightGoal":
+        return botText(
+          "Ποιος είναι ο στόχος βάρους: διατήρηση, απώλεια ή αύξηση;",
+          "What is the weight goal: maintain weight, lose weight, or gain weight?"
+        );
+      default:
+        return "";
+    }
+  }
+
+  function askNextMissingIntakeQuestion(draft: PetIntake) {
+    const nextStep = getNextMissingIntakeStep(draft);
+    if (nextStep === "analysis") return false;
+
+    setStep(nextStep);
+    addMessages(createMessage("bot", getIntakeQuestion(nextStep, draft)));
+    return true;
+  }
+
   function isNewPetRequest(text: string) {
     const normalized = normalizeUserText(text);
 
@@ -2686,45 +2762,38 @@ export default function AccountChatbotPage() {
     );
   }
 
-  function startNewPetFromPetChoice(text: string) {
+  function startNewPetFromPetChoice(
+    text: string,
+    extracted?: AiIntakeExtraction | null
+  ) {
     const species = parseSpeciesInput(text);
+    const extractedPet = mergeExtractedPetFacts(
+      {
+        healthIssues: [],
+        allergies: [],
+        excludedIngredients: [],
+        preferredProteins: [],
+      },
+      extracted
+    );
+    const startingPet = sanitizePetIntake({
+      ...extractedPet,
+      species: species ?? extractedPet.species,
+    });
 
     setSelectedPetId(null);
     setFollowUpMode(null);
     setRecommendationMode("default");
     setAnalysisMetadata({});
     setRecommendedFoodChoices([]);
-    setPet({
-      healthIssues: [],
-      allergies: [],
-      excludedIngredients: [],
-      preferredProteins: [],
-    });
+    setPet(startingPet);
 
-    if (!species) {
-      setStep("species");
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Τέλεια. Έχεις σκύλο ή γάτα;",
-            "Great. Do you have a dog or a cat?"
-          )
-        )
-      );
+    if (!startingPet.species) {
+      askNextMissingIntakeQuestion(startingPet);
       return true;
     }
 
-    setPet((prev) => ({ ...prev, species }));
-    setStep("name");
-    addMessages(
-      createMessage(
-        "bot",
-        species === "dog"
-          ? botText("Τέλεια, σκύλος. Πώς τον/την λένε;", "Great, a dog. What is their name?")
-          : botText("Τέλεια, γάτα. Πώς τον/την λένε;", "Great, a cat. What is their name?")
-      )
-    );
+    askNextMissingIntakeQuestion(startingPet);
     return true;
   }
 
@@ -3792,9 +3861,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       return;
     }
 
+    const intakeExtraction = await extractIntakeFactsFromMessage(text);
+    const workingPet = mergeExtractedPetFacts(pet, intakeExtraction?.data);
+
     if (step === "petChoice") {
       if (isNewPetRequest(text) || parseSpeciesInput(text)) {
-        startNewPetFromPetChoice(text);
+        startNewPetFromPetChoice(text, intakeExtraction?.data);
         return;
       }
 
@@ -3809,9 +3881,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       );
       return;
     }
-
-    const intakeExtraction = await extractIntakeFactsFromMessage(text);
-    const workingPet = mergeExtractedPetFacts(pet, intakeExtraction?.data);
 
     if (intakeExtraction?.canUse) {
       setPet(workingPet);
@@ -3834,42 +3903,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, ...workingPet, species }));
-      setStep("name");
-
-      addMessages(
-        createMessage(
-          "bot",
-          species === "dog"
-            ? botText("Τέλεια, σκύλος. Πώς τον/την λένε;", "Great, a dog. What is their name?")
-            : botText("Τέλεια, γάτα. Πώς τον/την λένε;", "Great, a cat. What is their name?")
-        )
-      );
+      const nextPet = sanitizePetIntake({ ...workingPet, species });
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
 
     if (step === "name") {
-      const displayName = formatPetDisplayName(text);
+      const displayName = formatPetDisplayName(workingPet.name ?? text);
+      const nextPet = sanitizePetIntake({ ...workingPet, name: displayName });
 
-      setPet((prev) => ({ ...prev, name: displayName }));
-      setStep("weight");
-
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            `Ωραία. Περίπου πόσα κιλά είναι ο/η ${displayName};`,
-            `Nice. About how many kg is ${displayName}?`
-          )
-        )
-      );
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
 
     if (step === "weight") {
-      const weight = parseNumber(text) ?? workingPet.weight ?? null;
+      const weight = workingPet.weight ?? parseNumber(text) ?? null;
       const maxWeight = getMaxWeightKg(workingPet.species ?? pet.species);
 
       if (!weight || weight <= 0 || weight > maxWeight) {
@@ -3890,16 +3942,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, ...workingPet, weight }));
-      setStep("age");
-
-      addMessages(createMessage("bot", botText("Τέλεια. Πόσο χρονών είναι;", "Great. How old is your pet?")));
+      const nextPet = sanitizePetIntake({ ...workingPet, weight });
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
 
     if (step === "age") {
-      const age = parseNumber(text) ?? workingPet.age ?? null;
+      const age = workingPet.age ?? parseNumber(text) ?? null;
 
       if (age === null || age < 0 || age > MAX_PET_AGE_YEARS) {
         addMessages(
@@ -3912,18 +3963,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, ...workingPet, age }));
-      setStep("activity");
-
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Ποιο είναι το επίπεδο δραστηριότητας: χαμηλό, κανονικό ή υψηλό;",
-            "What is your pet's activity level: low, normal, or high?"
-          )
-        )
-      );
+      const nextPet = sanitizePetIntake({ ...workingPet, age });
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
@@ -3945,10 +3987,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, ...workingPet, activityLevel }));
-      setStep("neutered");
-
-      addMessages(createMessage("bot", botText("Είναι στειρωμένο; Ναι ή όχι;", "Is your pet neutered? Yes or no?")));
+      const nextPet = sanitizePetIntake({ ...workingPet, activityLevel });
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
@@ -3963,18 +4004,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         return;
       }
 
-      setPet((prev) => ({ ...prev, ...workingPet, neutered }));
-      setStep("health");
-
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Υπάρχουν αλλεργίες, ευαισθησίες ή θέματα υγείας; Αν όχι, γράψε όχι. Αν ναι, γράψ’ τα με κόμμα.",
-            "Any allergies, sensitivities, or health issues? If not, type no. If yes, separate them with commas."
-          )
-        )
-      );
+      const nextPet = sanitizePetIntake({ ...workingPet, neutered });
+      setPet(nextPet);
+      askNextMissingIntakeQuestion(nextPet);
 
       return;
     }
