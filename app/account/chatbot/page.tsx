@@ -849,7 +849,7 @@ function getRecommendationChoiceActionHint(
   if (hasPortionData) {
     return language === "el"
       ? "Επόμενο: υπολόγισε γραμμάρια/ημέρα."
-      : "Next: calculate grams/day.";
+      : "Next: estimate the daily portion.";
   }
 
   return language === "el"
@@ -4715,7 +4715,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Πάτησε για ποσότητα", "Tap for grams")}
+                      {botText("Πάτησε για ποσότητα", "Estimate portion")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -4822,7 +4822,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
                       "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-                      "Next: calculate grams/day."
+                      "Next: estimate the daily portion."
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
