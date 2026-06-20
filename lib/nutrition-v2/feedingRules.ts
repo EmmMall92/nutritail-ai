@@ -486,7 +486,10 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     if (
       strictWeightContext &&
       !positioning.weightControl &&
-      (food.kcal_per_100g == null ||
+      (input.goal === "sterilised" ||
+        pet.neutered ||
+        pet.activityLevel === "low" ||
+        food.kcal_per_100g == null ||
         food.kcal_per_100g > 370 ||
         (nutrients.fat_percent ?? 0) >= 14.5)
     ) {
