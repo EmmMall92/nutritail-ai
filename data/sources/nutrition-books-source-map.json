@@ -1,0 +1,160 @@
+{
+  "source_collection_id": "NUTRITION_BOOKS_DOWNLOADS",
+  "display_name": "Nutrition Books Downloads",
+  "local_folder": "C:\\Users\\NIOstb\\Downloads\\BOOKS",
+  "policy": {
+    "allowed_use": [
+      "decision_rules",
+      "nutrition_logic",
+      "disease_nutrition",
+      "growth_nutrition",
+      "senior_nutrition"
+    ],
+    "copyright_rule": "Do not copy source text. Extract only NutriTail-owned structured decision logic, cautions, contraindications, uncertainty rules, and source-map metadata.",
+    "ranking_rule": "Food ranking remains deterministic from Food V2 data and NutriTail rules. These books may support rule design and customer-facing explanations only."
+  },
+  "priority_notes": [
+    "Treat veterinary clinical nutrition textbooks and guideline PDFs as higher priority than breed books, market reports, or general pet-care books.",
+    "Use disease-specific PDFs to cross-check existing renal, urinary, GI, pancreatitis, obesity, growth, senior, and allergy rules.",
+    "Do not extract or store long excerpts, tables, page scans, or copied paragraphs from copyrighted works."
+  ],
+  "source_map": [
+    {
+      "source_id": "BOOKS_CORE_CLINICAL_NUTRITION",
+      "files": [
+        "1037060838-Applied-Veterinary-Clinical-Nutrition-2nd-Edition-Andrea-J-Fascetti-full-chapters-instanly.pdf",
+        "177414612-Manual-of-Veterinary-Dietetics-Bibliotecamvz-blogspot-com.pdf",
+        "282906679-Small-Animal-Clinical-Nutrition.pdf",
+        "282908848-Small-Animal-Clinical-Nutrition.pdf",
+        "282913739-Small-Animal-Clinical-Nutrition.pdf",
+        "282926769-Small-Animal-Clinical-Nutrition.pdf",
+        "408593603-Veterinary-Nutrition-and-Dietetics-pdf.pdf",
+        "650285654-Nutrient-Requirements-of-Dogs-and-Cats.pdf",
+        "658634023-Handbook-Canine-Feline-Nutrition.pdf",
+        "693330310-Small-Animal-Clinical-Nutrition-5th-Edition-VetBooks-ir.pdf"
+      ],
+      "topics": [
+        "clinical_nutrition",
+        "maintenance",
+        "disease_nutrition",
+        "energy",
+        "protein",
+        "fat",
+        "minerals"
+      ],
+      "target_rule_files": [
+        "feedingRules",
+        "proteinRules",
+        "fatRules",
+        "vitaminMineralRules",
+        "foodEvaluationEngine"
+      ]
+    },
+    {
+      "source_id": "BOOKS_RENAL_URINARY",
+      "files": [
+        "224195566-Chapter-46-Feline-Lower-Urinary-Tract-Disease.pdf",
+        "23751679-FELINE-Feline-Idiopathic-Lower-Urinary-Tract-Disease-part-IV.pdf",
+        "289783869-Effects-of-Dietary-Protein-Intake-on-Renal-Function.pdf",
+        "310137369-FLUTD.pdf",
+        "318460112-Feline-Urologic-Syndrome-En.pdf",
+        "356932643-Feline-Lower-Urinary-Tract-Disease-FLUTD-Cat.pdf",
+        "488196028-Renal-Vegetarian-Nutrition-pdf.pdf",
+        "491527098-FLUTD-1-pdf.pdf",
+        "828701165-taylor-et-al-2025-2025-icatcare-consensus-guidelines-on-the-diagnosis-and-management-of-lower-urinary-trac.pdf",
+        "870393633-Phosphorus-Can-Be-Key-for-Cat-Kidneys.pdf",
+        "960643574-renal-nutrition-dog.pdf"
+      ],
+      "topics": [
+        "renal",
+        "urinary",
+        "flutd",
+        "struvite",
+        "oxalate",
+        "phosphorus",
+        "hydration"
+      ],
+      "target_rule_files": [
+        "renalRules",
+        "urinaryRules",
+        "vitaminMineralRules",
+        "feedingRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "BOOKS_GI_PANCREATITIS_ALLERGY",
+      "files": [
+        "148413795-Alopecia-Areata-Treated-Successfully-With-Food-Allergy-Elimination-And.pdf",
+        "692370702-Pancreatitis-en-Gatos.pdf",
+        "703552039-Pancreatitis-canina.pdf",
+        "831294692-The-Role-of-Diet-Nutrition-and-Supple-2025-Veterinary-Clinics-of-North-Ame.pdf",
+        "866656624-Clinical-Nutrition-in-Gastrointestinal-Disease-1st-Edition-Complete-Digital-Book.pdf"
+      ],
+      "topics": [
+        "gi",
+        "pancreatitis",
+        "food_allergy",
+        "elimination_trial",
+        "skin",
+        "omega"
+      ],
+      "target_rule_files": [
+        "giRules",
+        "ingredientRules",
+        "fatRules",
+        "feedingRules",
+        "safetyRules"
+      ]
+    },
+    {
+      "source_id": "BOOKS_GROWTH_SENIOR_LIFESTAGE",
+      "files": [
+        "246200740-Nutrition-Growing-Kitten.pdf",
+        "47980988-Nutrition-Growing-Puppy-1.pdf",
+        "650933406-Puppy-Growth-Charts-waltham-Royal-Canin.pdf",
+        "715038766-Senior-pet-nutrition-and-management.pdf",
+        "832148246-SOL-Puppy-Care-Guide.pdf",
+        "964244012-Senior-Pets-Dietary-Advice-to-Offer-Cat-and-Dog-Owners.pdf",
+        "98452214-Nutrition-Adult-Dog.pdf"
+      ],
+      "topics": [
+        "puppy",
+        "kitten",
+        "growth",
+        "large_breed_growth",
+        "senior",
+        "adult_maintenance"
+      ],
+      "target_rule_files": [
+        "growthRules",
+        "seniorRules",
+        "feedingRules",
+        "vitaminMineralRules"
+      ]
+    },
+    {
+      "source_id": "BOOKS_BRAND_PRODUCT_GUIDES",
+      "files": [
+        "343268603-126-Royal-Canin-Puppy-Guide-AU-Spreads.pdf",
+        "367581727-2017-Royal-Canin-Vet-Product-Guide.pdf",
+        "425820805-Royal-Canin-Kitten-Guide.pdf",
+        "735746357-Catalogo-Royal-Canin-2022.pdf",
+        "748215857-Babycat-milk-Royal-Canin.pdf",
+        "806065760-Hills-Product-Guide-2024-2.pdf"
+      ],
+      "topics": [
+        "brand_product_guides",
+        "formula_positioning",
+        "life_stage_positioning",
+        "veterinary_lines"
+      ],
+      "target_rule_files": [
+        "foodEvaluationEngine",
+        "feedingRules",
+        "growthRules",
+        "seniorRules"
+      ]
+    }
+  ]
+}
