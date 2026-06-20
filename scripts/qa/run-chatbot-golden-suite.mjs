@@ -56,6 +56,12 @@ const fullChecks = [
     covers: "Renal and urinary mineral-context rules, veterinary safety notes, and Food V2 ranking signals.",
   },
   {
+    name: "GI allergy senior v2 rules",
+    command: "npm.cmd",
+    args: ["run", "qa:gi-allergy-senior-v2"],
+    covers: "GI symptom ranking, allergy/intolerance hard rejects, and senior low-appetite/chewing logic.",
+  },
+  {
     name: "Nutrition source-map intake",
     command: "npm.cmd",
     args: ["run", "qa:nutrition-source-map-intake"],
@@ -125,6 +131,7 @@ const fastCheckNames = new Set([
   "Dog golden coverage audit",
   "Food Intelligence use cases",
   "Medical nutrition rules",
+  "GI allergy senior v2 rules",
   "Nutrition source-map intake",
   "Food V2 ranking scenarios",
   "Food V2 guard coverage",
