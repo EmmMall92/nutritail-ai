@@ -230,7 +230,7 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
     });
   }
 
-  if (lowActivitySenior && positioning.weightControl) {
+  if (lowActivitySenior && positioning.weightControl && !appetiteOrWeightLossConcern) {
     signals.push({
       type: "boost",
       code: "senior_low_activity_weight_awareness",
@@ -241,11 +241,11 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
 
   if (appetiteOrWeightLossConcern && positioning.weightControl) {
     signals.push({
-      type: "caution",
+      type: "exclude",
       code: "senior_appetite_weight_loss_avoid_light_default",
-      points: -30,
+      points: -100,
       message:
-        "Senior pets with reduced appetite or weight loss should not default to light or weight-loss foods.",
+        "Excluded because senior pets with reduced appetite or weight loss should not default to light or weight-loss foods.",
     });
   }
 
