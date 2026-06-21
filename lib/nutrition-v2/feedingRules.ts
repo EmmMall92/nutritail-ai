@@ -380,7 +380,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         type: "boost",
         code: "protein_supports_active_pet",
         points: weightGainContext ? 7 : 5,
-        message: "Protein level supports a high-activity or working-dog shortlist.",
+        message: "Protein level supports a high-activity or working-pet shortlist.",
       });
     }
   }
@@ -431,7 +431,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         type: "boost",
         code: "protein_supports_high_activity",
         points: weightGainContext ? 6 : 4,
-        message: "Protein level is useful for a high-activity or working dog.",
+        message: "Protein level is useful for a high-activity or working pet.",
       });
     } else if (hasNumber(nutrients.protein_percent) && nutrients.protein_percent < 22) {
       signals.push({
@@ -439,7 +439,7 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
         code: "low_protein_formula_for_high_activity_pet",
         points: weightGainContext ? -100 : -14,
         message:
-          "Protein looks low for a highly active or working dog shortlist.",
+          "Protein looks low for a highly active or working-pet shortlist.",
       });
     }
 
