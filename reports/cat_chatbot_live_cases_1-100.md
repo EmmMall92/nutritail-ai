@@ -1,7 +1,7 @@
 # Cat Chatbot Live Cases 001-100
 
 Site: https://nutritail.ai
-Run date: 2026-06-21T19:11:45.804Z
+Run date: 2026-06-21T19:37:05.667Z
 Result: 100/100 passed, 0 review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.
@@ -30,12 +30,12 @@ It focuses on species safety, empty shortlists, and major nutrition-direction mi
 | allergy | 12/12 | Josera - Marinesse Hypoallergenic Adult (8); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2); Monge BWild - Bwild Low Grain Adult Hare (1) |
 | environment | 4/4 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (4); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4) |
 | general_recommendation | 3/3 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (3); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (3) |
-| kitten_growth | 12/12 | Orijen - Cat & Kitten Fit & Trim (12); Royal Canin - Dental Care (12) |
+| kitten_growth | 12/12 | Orijen - Cat & Kitten Fit & Trim (12); ACANA - Grasslands Adult Cat & Kitten (10); ACANA - Pacifica Adult Cat & Kitten (2) |
 | preference | 28/28 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (21); Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (10); Josera - Indoor Grain Free Sterilised (3); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (3) |
 | renal | 10/10 | Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (9); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (9); Royal Canin - Vet Diet Cat Renal (1); Royal Canin - Vet Diet Cat Renal Special (1) |
-| rescue | 6/6 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (5); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (5); Orijen - Cat & Kitten Fit & Trim (1); Royal Canin - Dental Care (1) |
+| rescue | 6/6 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (5); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (5); ACANA - Grasslands Adult Cat & Kitten (1); Orijen - Cat & Kitten Fit & Trim (1) |
 | senior | 8/8 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4); Schesir - Sterilized Chicken (4); Josera - Senior (3); Royal Canin - Ageing Sterilised 11+ (3) |
-| skin_hairball | 10/10 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (8); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Orijen - Cat & Kitten Fit & Trim (2); Royal Canin - Dental Care (2) |
+| skin_hairball | 10/10 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (8); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); ACANA - Pacifica Adult Cat & Kitten (2); Orijen - Cat & Kitten Fit & Trim (2) |
 | sterilised | 12/12 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (10); Schesir - Sterilized Chicken (4); Josera - Indoor Grain Free Sterilised (3); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (2) |
 | urinary | 9/9 | Monge VetSolution - Urinary Oxalate (7); Monge VetSolution - Urinary Struvite (7); Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (1); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (1) |
 | weight_control | 9/9 | Monge - Adult Light Turkey (8); Schesir - Cat Sterilized & Light Με Κοτόπουλο (8); Monge VetSolution - Urinary Oxalate (1); Monge VetSolution - Urinary Struvite (1) |
@@ -207,8 +207,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -220,8 +220,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -233,8 +233,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -246,8 +246,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -259,8 +259,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -272,8 +272,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -285,8 +285,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -298,8 +298,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -311,8 +311,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -324,8 +324,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Grasslands Adult Cat & Kitten
+- ACANA - Pacifica Adult Cat & Kitten
 
 Warnings:
 - None
@@ -1040,8 +1040,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Pacifica Adult Cat & Kitten
+- ORIJEN - Acana Tundra Adult Cat & Kitten
 
 Warnings:
 - None
@@ -1053,8 +1053,8 @@ Goal: growth
 
 Top foods:
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Dental Care
-- Royal Canin - Fit 32
+- ACANA - Pacifica Adult Cat & Kitten
+- ORIJEN - Acana Tundra Adult Cat & Kitten
 
 Warnings:
 - None
