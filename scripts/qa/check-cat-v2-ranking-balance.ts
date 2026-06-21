@@ -126,7 +126,7 @@ const mislabeledDentalCare = catFood({
   formula_key: "qa-cat|mislabeled-dental-care|cat|dry",
   display_name: "Dental Care",
   life_stage: "kitten",
-  commercial_tags: ["dental"],
+  commercial_tags: ["dental", "kitten"],
   kcal_per_100g: 335,
 });
 
