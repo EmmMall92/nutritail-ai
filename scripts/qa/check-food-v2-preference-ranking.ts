@@ -3041,4 +3041,68 @@ if (
   process.exit(1);
 }
 
+const seniorFoodWithKidneyIngredient = food({
+  id: "senior-with-kidney-beans",
+  formula_key: "qa|senior-with-kidney-beans|dog|dry",
+  display_name: "Senior Chicken",
+  life_stage: "senior",
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "kidney beans", "rice"],
+});
+const visibleRenalDogFood = food({
+  id: "visible-renal-dog",
+  formula_key: "qa|visible-renal-dog|dog|dry",
+  display_name: "Renal Care",
+  life_stage: "adult",
+  medical_tags: ["renal"],
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "rice"],
+});
+const renalDogPet = {
+  ...pet,
+  age: 11,
+  weight: 9,
+  healthIssues: ["renal"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const kidneyIngredientRanking = rankFoodV2ForPet({
+  food: seniorFoodWithKidneyIngredient,
+  nutrients: nutrients(seniorFoodWithKidneyIngredient),
+  pet: renalDogPet,
+  goal: "renal",
+});
+const visibleRenalDogRanking = rankFoodV2ForPet({
+  food: visibleRenalDogFood,
+  nutrients: nutrients(visibleRenalDogFood),
+  pet: renalDogPet,
+  goal: "renal",
+});
+const renalDogSplit = splitFoodV2Recommendations([
+  kidneyIngredientRanking,
+  visibleRenalDogRanking,
+]);
+
+if (kidneyIngredientRanking.bucket !== "hold") {
+  console.error("Ingredient text such as kidney beans must not make a food renal-positioned.");
+  console.error(kidneyIngredientRanking);
+  process.exit(1);
+}
+
+if (
+  !kidneyIngredientRanking.signals.some(
+    (signal) => signal.code === "renal_needs_vet_food"
+  )
+) {
+  console.error("Expected renal_needs_vet_food when renal positioning is absent from title/tags.");
+  console.error(kidneyIngredientRanking.signals);
+  process.exit(1);
+}
+
+if (renalDogSplit.premium[0]?.formula_key !== "qa|visible-renal-dog|dog|dry") {
+  console.error("Visible renal formula should outrank a senior food that only mentions kidney in ingredients.");
+  console.error(renalDogSplit);
+  process.exit(1);
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");
