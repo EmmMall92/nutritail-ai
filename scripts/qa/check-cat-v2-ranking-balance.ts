@@ -157,4 +157,27 @@ if (kittenSplit.premium[0]?.formula_key !== "qa-cat|kitten|cat|dry") {
   process.exit(1);
 }
 
+const activeCatRanking = rankFoodV2ForPet({
+  food: catFood({
+    id: "active-adult",
+    formula_key: "qa-cat|active-adult|cat|dry",
+    display_name: "Adult Active Chicken",
+    commercial_tags: ["active"],
+    kcal_per_100g: 395,
+  }),
+  nutrients: nutrients({ protein_percent: 34, fat_percent: 18 }),
+  pet: {
+    ...adultNonNeuteredCat,
+    activityLevel: "high",
+  },
+  goal: "general",
+});
+const activeCatCopy = [...activeCatRanking.reasons, ...activeCatRanking.cautions].join(" ");
+
+if (/\bdog\b|\bdogs\b|working-dog|working dog/i.test(activeCatCopy)) {
+  console.error("Cat active-food ranking copy should not mention dogs.");
+  console.error(activeCatRanking);
+  process.exit(1);
+}
+
 console.log("Cat Food V2 ranking balance checks passed.");
