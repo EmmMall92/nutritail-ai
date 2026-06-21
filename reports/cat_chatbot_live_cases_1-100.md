@@ -1,7 +1,7 @@
 # Cat Chatbot Live Cases 001-100
 
 Site: https://nutritail.ai
-Run date: 2026-06-21T18:42:24.489Z
+Run date: 2026-06-21T19:11:45.804Z
 Result: 100/100 passed, 0 review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.
@@ -13,9 +13,9 @@ It focuses on species safety, empty shortlists, and major nutrition-direction mi
 
 | Goal | Pass rate | Most common first picks |
 | --- | ---: | --- |
-| allergy | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2) |
-| general | 39/39 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (32); Josera - Culinesse Adult (7) |
-| growth | 12/12 | Royal Canin - Kitten Sterilised (12) |
+| allergy | 10/10 | Josera - Marinesse Hypoallergenic Adult (8); Monge BWild - Bwild Low Grain Adult Hare (1); Purina Pro Plan - Veterinary Diets Cat HA Hypoallergenic (1) |
+| general | 39/39 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (31); Josera - Culinesse Adult (6); Monge BWild - Bwild Low Grain Adult Anchovies (2) |
+| growth | 12/12 | Orijen - Cat & Kitten Fit & Trim (12) |
 | renal | 10/10 | Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (9); Royal Canin - Vet Diet Cat Renal Special (1) |
 | senior | 3/3 | Royal Canin - Ageing Sterilised 11+ (3) |
 | sterilised | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (10) |
@@ -26,28 +26,29 @@ It focuses on species safety, empty shortlists, and major nutrition-direction mi
 
 | Signal | Pass rate | Common top-2 foods |
 | --- | ---: | --- |
-| active | 10/10 | Josera - Culinesse Adult (7); Monge BWild - Bwild Low Grain Adult Anchovies (7); Josera - Senior (3); Royal Canin - Ageing Sterilised 11+ (3) |
-| allergy | 12/12 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Schesir - Sterilized Chicken (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2); Monge VetSolution - Urinary Oxalate (1) |
-| environment | 4/4 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (4) |
-| general_recommendation | 3/3 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (3); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (3) |
-| kitten_growth | 12/12 | Royal Canin - Kitten Sterilised (12); Royal Canin - Sterilised +7 (10); Orijen - Cat & Kitten Fit & Trim (2) |
-| preference | 28/28 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (21); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (11); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (4); Schesir - Sterilized Chicken (4) |
+| active | 10/10 | Monge BWild - Bwild Low Grain Adult Anchovies (7); Josera - Culinesse Adult (5); Royal Canin - Ageing Sterilised 11+ (4); Josera - Senior (3) |
+| allergy | 12/12 | Josera - Marinesse Hypoallergenic Adult (8); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2); Monge BWild - Bwild Low Grain Adult Hare (1) |
+| environment | 4/4 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (4); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4) |
+| general_recommendation | 3/3 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (3); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (3) |
+| kitten_growth | 12/12 | Orijen - Cat & Kitten Fit & Trim (12); Royal Canin - Dental Care (12) |
+| preference | 28/28 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (21); Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (10); Josera - Indoor Grain Free Sterilised (3); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (3) |
 | renal | 10/10 | Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (9); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (9); Royal Canin - Vet Diet Cat Renal (1); Royal Canin - Vet Diet Cat Renal Special (1) |
-| rescue | 6/6 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (5); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (5); Royal Canin - Kitten Sterilised (1); Royal Canin - Sterilised +7 (1) |
+| rescue | 6/6 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (5); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (5); Orijen - Cat & Kitten Fit & Trim (1); Royal Canin - Dental Care (1) |
 | senior | 8/8 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4); Schesir - Sterilized Chicken (4); Josera - Senior (3); Royal Canin - Ageing Sterilised 11+ (3) |
-| skin_hairball | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (8); Orijen - Cat & Kitten Fit & Trim (2); Royal Canin - Kitten Sterilised (2) |
+| skin_hairball | 10/10 | Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils (8); Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Orijen - Cat & Kitten Fit & Trim (2); Royal Canin - Dental Care (2) |
 | sterilised | 12/12 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (10); Schesir - Sterilized Chicken (4); Josera - Indoor Grain Free Sterilised (3); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (2) |
 | urinary | 9/9 | Monge VetSolution - Urinary Oxalate (7); Monge VetSolution - Urinary Struvite (7); Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (1); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (1) |
 | weight_control | 9/9 | Monge - Adult Light Turkey (8); Schesir - Cat Sterilized & Light Με Κοτόπουλο (8); Monge VetSolution - Urinary Oxalate (1); Monge VetSolution - Urinary Struvite (1) |
 
 ### Recurring First Picks
 
-- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas: 50 first-pick appearances
-- Royal Canin - Kitten Sterilised: 12 first-pick appearances
+- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas: 41 first-pick appearances
+- Orijen - Cat & Kitten Fit & Trim: 12 first-pick appearances
 - Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι: 9 first-pick appearances
+- Josera - Marinesse Hypoallergenic Adult: 8 first-pick appearances
 - Monge - Adult Light Turkey: 8 first-pick appearances
-- Josera - Culinesse Adult: 7 first-pick appearances
 - Monge VetSolution - Urinary Oxalate: 7 first-pick appearances
+- Josera - Culinesse Adult: 6 first-pick appearances
 
 Use this section for qualitative review: repeated first picks can be healthy if they match the scenario, but they can also reveal over-dominant ranking signals.
 
@@ -205,9 +206,9 @@ Prompt: Γατάκι 2 μηνών, 0.9kg.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -218,9 +219,9 @@ Prompt: Γατάκι 3 μηνών, 1.4kg.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -231,9 +232,9 @@ Prompt: Γατάκι 4 μηνών, 2kg.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -244,9 +245,9 @@ Prompt: Γατάκι 5 μηνών, 2.5kg.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -257,9 +258,9 @@ Prompt: Γατάκι 6 μηνών, 3kg.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -270,9 +271,9 @@ Prompt: Γατάκι Maine Coon 4 μηνών.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -283,9 +284,9 @@ Prompt: Γατάκι Persian 5 μηνών.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -296,9 +297,9 @@ Prompt: Γατάκι British Shorthair 6 μηνών.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -309,9 +310,9 @@ Prompt: Γατάκι rescue άγνωστης φυλής.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -322,9 +323,9 @@ Prompt: Ορφανό γατάκι που απογαλακτίστηκε πρόσ
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
-- Royal Canin - Sterilised +7
-- Royal Canin - Sterilised
+- Orijen - Cat & Kitten Fit & Trim
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -337,7 +338,7 @@ Goal: general
 Top foods:
 - Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
 
 Warnings:
 - None
@@ -350,7 +351,7 @@ Goal: general
 Top foods:
 - Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
 
 Warnings:
 - None
@@ -363,7 +364,7 @@ Goal: general
 Top foods:
 - Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
 
 Warnings:
 - None
@@ -376,7 +377,7 @@ Goal: general
 Top foods:
 - Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
 
 Warnings:
 - None
@@ -387,9 +388,10 @@ Prompt: Αστείρωτη γάτα 7 ετών, προτιμά ψάρι.
 Goal: general
 
 Top foods:
-- Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
 - Royal Canin - Ageing Sterilised 11+
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Josera - Culinesse Adult
 
 Warnings:
 - None
@@ -402,7 +404,7 @@ Goal: general
 Top foods:
 - Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
 
 Warnings:
 - None
@@ -413,9 +415,10 @@ Prompt: Αστείρωτη γάτα 9 ετών, θέλει κοτόπουλο.
 Goal: general
 
 Top foods:
-- Josera - Culinesse Adult
 - Monge BWild - Bwild Low Grain Adult Anchovies
-- Royal Canin - Ageing Sterilised 11+
+- Josera - Dailycat Adult Grain Free
+- Josera - Sensicat Sensitive Adult
+- Josera - Culinesse Adult
 
 Warnings:
 - None
@@ -541,8 +544,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -554,9 +557,9 @@ Prompt: Γάτα που αρνείται υγρή τροφή.
 Goal: general
 
 Top foods:
-- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- N&D - Pumpkin Grain Free Lamb & Blueberry Sterilised
 - Josera - Culinesse Adult
+- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 
 Warnings:
 - None
@@ -797,8 +800,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -826,8 +829,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -869,9 +872,9 @@ Prompt: Γάτα αλλεργική στο κοτόπουλο.
 Goal: allergy
 
 Top foods:
+- Purina Pro Plan - Veterinary Diets Cat HA Hypoallergenic
 - Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
 - Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Purina Pro Plan - STERILISED Μπακαλιάρος Και Πέστρορφα
 
 Warnings:
 - None
@@ -882,9 +885,9 @@ Prompt: Γάτα αλλεργική στο ψάρι.
 Goal: allergy
 
 Top foods:
+- Monge BWild - Bwild Low Grain Adult Hare
 - Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
 - Purina Pro Plan - STERILISED Μπακαλιάρος Και Πέστρορφα
-- Monge BWild - Bwild Low Grain Adult Hare
 
 Warnings:
 - None
@@ -895,10 +898,9 @@ Prompt: Γάτα αλλεργική στο μοσχάρι.
 Goal: allergy
 
 Top foods:
-- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
 - Josera - Marinesse Hypoallergenic Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 
 Warnings:
 - None
@@ -909,11 +911,10 @@ Prompt: Γάτα αλλεργική στο αρνί.
 Goal: allergy
 
 Top foods:
-- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
 - Josera - Marinesse Hypoallergenic Adult
+- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
 
 Warnings:
 - None
@@ -924,9 +925,9 @@ Prompt: Γάτα αλλεργική στο αυγό.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -938,9 +939,9 @@ Prompt: Γάτα αλλεργική στα σιτηρά.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -952,9 +953,9 @@ Prompt: Γάτα αλλεργική στο καλαμπόκι.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -966,9 +967,9 @@ Prompt: Γάτα με πολλαπλές αλλεργίες.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -980,9 +981,9 @@ Prompt: Γάτα σε elimination diet.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -994,9 +995,9 @@ Prompt: Γάτα με χρόνια φαγούρα.
 Goal: allergy
 
 Top foods:
+- Josera - Marinesse Hypoallergenic Adult
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1009,10 +1010,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1024,10 +1025,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1038,9 +1039,9 @@ Prompt: Persian με συχνά hairballs.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Sterilised +7
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -1051,9 +1052,9 @@ Prompt: Maine Coon με hairballs.
 Goal: growth
 
 Top foods:
-- Royal Canin - Kitten Sterilised
 - Orijen - Cat & Kitten Fit & Trim
-- Royal Canin - Sterilised +7
+- Royal Canin - Dental Care
+- Royal Canin - Fit 32
 
 Warnings:
 - None
@@ -1065,10 +1066,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1080,10 +1081,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1095,10 +1096,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1110,10 +1111,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1125,10 +1126,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1140,10 +1141,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1156,7 +1157,7 @@ Goal: general
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
 - Josera - Culinesse Adult
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
 
 Warnings:
 - None
@@ -1168,10 +1169,9 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
-- Schesir - Sterilized Chicken
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
 
 Warnings:
 - None
@@ -1183,10 +1183,10 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Schesir - Sterilized Chicken
-- Schesir - Sterilized Fish
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
-- Josera - Josicat Classic Sterilised
+- Monge BWild - Bwild Low Grain Adult Anchovies
 
 Warnings:
 - None
@@ -1198,8 +1198,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1212,8 +1212,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1226,8 +1226,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1240,8 +1240,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1254,8 +1254,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1268,8 +1268,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1282,8 +1282,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1296,8 +1296,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1310,8 +1310,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1324,8 +1324,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1338,8 +1338,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1352,8 +1352,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1366,8 +1366,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1380,8 +1380,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1394,8 +1394,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1408,8 +1408,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
@@ -1422,8 +1422,8 @@ Goal: general
 
 Top foods:
 - Monge BWild - Bwild Grain Free Sterilised Tuna With Peas
-- Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι
-- Purina Pro Plan - STERILISED Vital Functions Cat Σολομός
+- Monge BWild - Bwild Grain Free Adult Codfish With Potatoes And Lentils
+- Monge BWild - Bwild Grain Free Adult Salmon With Peas
 - Josera - Culinesse Adult
 
 Warnings:
