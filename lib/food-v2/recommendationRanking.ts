@@ -920,7 +920,9 @@ function lifeStageMatches(food: FoodProductV2, stage: string) {
   const visibleStage = visibleLifeStageFromFood(food);
   if (visibleStage === stage) return true;
   if (stage === "puppy") return food.life_stage === "puppy";
-  if (stage === "kitten") return food.life_stage === "kitten";
+  if (stage === "kitten") {
+    return food.life_stage === "kitten" && visibleStage === "kitten";
+  }
   return food.life_stage === stage;
 }
 
