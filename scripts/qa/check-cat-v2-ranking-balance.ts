@@ -121,8 +121,16 @@ const adultSevenPlus = catFood({
   life_stage: "adult",
   commercial_tags: ["sterilised", "senior"],
 });
+const mislabeledDentalCare = catFood({
+  id: "mislabeled-dental-care",
+  formula_key: "qa-cat|mislabeled-dental-care|cat|dry",
+  display_name: "Dental Care",
+  life_stage: "kitten",
+  commercial_tags: ["dental"],
+  kcal_per_100g: 335,
+});
 
-const kittenRankings = [kittenFood, adultSevenPlus].map((food) =>
+const kittenRankings = [kittenFood, adultSevenPlus, mislabeledDentalCare].map((food) =>
   rankFoodV2ForPet({
     food,
     nutrients: nutrients(food === adultSevenPlus ? { fat_percent: 10 } : {}),
@@ -133,6 +141,9 @@ const kittenRankings = [kittenFood, adultSevenPlus].map((food) =>
 const kittenSplit = splitFoodV2Recommendations(kittenRankings, 2, "growth");
 const adultSevenPlusRanking = kittenRankings.find(
   (ranking) => ranking.formula_key === "qa-cat|adult-seven-plus|cat|dry"
+);
+const mislabeledDentalCareRanking = kittenRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|mislabeled-dental-care|cat|dry"
 );
 
 if (!adultSevenPlusRanking || adultSevenPlusRanking.bucket !== "hold") {
@@ -154,6 +165,22 @@ if (
 if (kittenSplit.premium[0]?.formula_key !== "qa-cat|kitten|cat|dry") {
   console.error("Kitten food should be the visible first growth recommendation.");
   console.error(kittenSplit);
+  process.exit(1);
+}
+
+if (!mislabeledDentalCareRanking || mislabeledDentalCareRanking.bucket !== "hold") {
+  console.error("A dental/adult-style cat food with stale kitten metadata should stay on hold for kitten growth.");
+  console.error(mislabeledDentalCareRanking);
+  process.exit(1);
+}
+
+if (
+  !mislabeledDentalCareRanking.signals.some(
+    (signal) => signal.code === "adult_food_for_kitten_growth"
+  )
+) {
+  console.error("Expected adult_food_for_kitten_growth for stale kitten metadata without visible kitten title.");
+  console.error(mislabeledDentalCareRanking.signals);
   process.exit(1);
 }
 
