@@ -1044,6 +1044,35 @@ function scoreFit(input: FoodV2RankingInput) {
         `Excluded because ${food.life_stage} food does not fit a ${stage} pet.`
       );
     }
+    if (
+      ["puppy", "kitten"].includes(stage) &&
+      ["adult", "senior"].includes(food.life_stage)
+    ) {
+      addSignal(
+        signals,
+        "exclude",
+        "adult_food_for_growth_pet",
+        -100,
+        `Excluded because ${food.life_stage} food does not fit a ${stage} growth pet.`
+      );
+    }
+  }
+
+  if (
+    pet.species === "cat" &&
+    !pet.neutered &&
+    !["sterilised", "weight_control", "urinary", "renal"].includes(goal) &&
+    hasWeightControlPositioning(haystack)
+  ) {
+    const points = goal === "growth" || stage === "kitten" ? -35 : -22;
+    score += points;
+    addSignal(
+      signals,
+      "caution",
+      "cat_weight_positioning_without_context",
+      points,
+      "Sterilised, neutered or light cat food should not be the default first pick without sterilised or weight-control context."
+    );
   }
 
   const specialCareContexts = specialCareContextsFromPet(pet);

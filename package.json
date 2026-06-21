@@ -114,6 +114,7 @@
     "qa:food-v2-product-form-guards": "tsx scripts/qa/check-food-v2-product-form-guards.ts",
     "qa:food-v2-import-life-stage": "tsx scripts/qa/check-food-v2-import-life-stage-normalization.ts",
     "qa:food-v2-preference-ranking": "tsx scripts/qa/check-food-v2-preference-ranking.ts",
+    "qa:cat-v2-ranking-balance": "tsx scripts/qa/check-cat-v2-ranking-balance.ts",
     "qa:food-v2-guard-coverage": "node scripts/qa/check-food-v2-guard-coverage.mjs",
     "qa:food-v2-senior-visible-ranking": "tsx scripts/qa/check-food-v2-senior-visible-ranking.ts",
     "qa:dog-edge-cases": "npm run qa:dog-edge-fixture",

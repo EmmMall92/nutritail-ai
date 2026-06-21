@@ -64,6 +64,7 @@ type CatQaResult = {
   status: "pass" | "review";
   prompt: string;
   goal: RecommendationGoal;
+  expectedSignals: string[];
   warnings: string[];
   topFoods: string[];
 };
@@ -276,9 +277,88 @@ async function runCase(testCase: CatFixtureCase): Promise<CatQaResult> {
     status: warnings.length === 0 ? "pass" : "review",
     prompt: testCase.prompt,
     goal,
+    expectedSignals: testCase.expectedSignals,
     warnings,
     topFoods: allVisibleFoods(json).slice(0, 5).map(foodLabel),
   };
+}
+
+function countItems(items: string[]) {
+  const counts = new Map<string, number>();
+  for (const item of items) counts.set(item, (counts.get(item) ?? 0) + 1);
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+function resultSummary(results: CatQaResult[]) {
+  const byGoal = new Map<RecommendationGoal, CatQaResult[]>();
+  const bySignal = new Map<string, CatQaResult[]>();
+
+  for (const result of results) {
+    byGoal.set(result.goal, [...(byGoal.get(result.goal) ?? []), result]);
+    for (const signal of result.expectedSignals) {
+      bySignal.set(signal, [...(bySignal.get(signal) ?? []), result]);
+    }
+  }
+
+  const goalRows = [...byGoal.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([goal, goalResults]) => {
+      const passCount = goalResults.filter((result) => result.status === "pass").length;
+      const topFirstFoods = countItems(
+        goalResults.map((result) => result.topFoods[0]).filter((food): food is string => Boolean(food))
+      )
+        .slice(0, 3)
+        .map(([food, count]) => `${food} (${count})`)
+        .join("; ");
+
+      return `| ${goal} | ${passCount}/${goalResults.length} | ${topFirstFoods || "None"} |`;
+    });
+
+  const signalRows = [...bySignal.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([signal, signalResults]) => {
+      const passCount = signalResults.filter((result) => result.status === "pass").length;
+      const topFoods = countItems(
+        signalResults.flatMap((result) => result.topFoods.slice(0, 2))
+      )
+        .slice(0, 4)
+        .map(([food, count]) => `${food} (${count})`)
+        .join("; ");
+
+      return `| ${signal} | ${passCount}/${signalResults.length} | ${topFoods || "None"} |`;
+    });
+
+  const recurringFirstPicks = countItems(
+    results.map((result) => result.topFoods[0]).filter((food): food is string => Boolean(food))
+  )
+    .filter(([, count]) => count >= 4)
+    .slice(0, 10)
+    .map(([food, count]) => `- ${food}: ${count} first-pick appearances`);
+
+  return [
+    "## Executive Summary",
+    "",
+    "### Goal Coverage",
+    "",
+    "| Goal | Pass rate | Most common first picks |",
+    "| --- | ---: | --- |",
+    ...goalRows,
+    "",
+    "### Signal Coverage",
+    "",
+    "| Signal | Pass rate | Common top-2 foods |",
+    "| --- | ---: | --- |",
+    ...signalRows,
+    "",
+    "### Recurring First Picks",
+    "",
+    ...(recurringFirstPicks.length
+      ? recurringFirstPicks
+      : ["- No single first pick appears in four or more cases."]),
+    "",
+    "Use this section for qualitative review: repeated first picks can be healthy if they match the scenario, but they can also reveal over-dominant ranking signals.",
+    "",
+  ];
 }
 
 function reportMarkdown(results: CatQaResult[]) {
@@ -295,6 +375,7 @@ function reportMarkdown(results: CatQaResult[]) {
     "This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.",
     "It focuses on species safety, empty shortlists, and major nutrition-direction mismatches for urinary, renal, kitten, senior, sterilised, weight-control, and allergy scenarios.",
     "",
+    ...resultSummary(results),
     "## Results",
     "",
     ...results.flatMap((result) => [
