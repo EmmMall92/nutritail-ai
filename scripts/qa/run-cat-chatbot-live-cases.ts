@@ -1,0 +1,353 @@
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { customerFoodName } from "@/lib/food-v2/customerFoodName";
+
+type SafetyExpectation = "normal" | "caution" | "urgent";
+type RecommendationGoal =
+  | "general"
+  | "premium"
+  | "value"
+  | "weight_control"
+  | "sensitive_digestion"
+  | "allergy"
+  | "urinary"
+  | "renal"
+  | "growth"
+  | "sterilised"
+  | "senior";
+
+type CatFixtureCase = {
+  id: string;
+  species: "cat";
+  locale: string;
+  prompt: string;
+  expectedSignals: string[];
+  expectedSafetyLevel: SafetyExpectation;
+  expectedResponseMustMention: string[];
+};
+
+type FoodV2Item = {
+  brand?: string | null;
+  display_name?: string | null;
+  formula_key?: string | null;
+  life_stage?: string | null;
+  source_priority?: string | null;
+  ranking?: {
+    total_score?: number;
+    confidence?: string;
+    reasons?: string[];
+    cautions?: string[];
+    signals?: Array<{ code?: string; type?: string; message?: string }>;
+  };
+  nutrition?: {
+    kcal_per_100g?: number | null;
+    protein_percent?: number | null;
+    fat_percent?: number | null;
+    fiber_percent?: number | null;
+    calcium_percent?: number | null;
+    phosphorus_percent?: number | null;
+    magnesium_percent?: number | null;
+    sodium_percent?: number | null;
+  };
+};
+
+type RecommendationResponse = {
+  total_candidates?: number;
+  premium?: FoodV2Item[];
+  value?: FoodV2Item[];
+  hold?: FoodV2Item[];
+  error?: string;
+};
+
+type CatQaResult = {
+  id: string;
+  status: "pass" | "review";
+  prompt: string;
+  goal: RecommendationGoal;
+  warnings: string[];
+  topFoods: string[];
+};
+
+const SITE_URL = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
+const DEFAULT_REPORT_PATH = "reports/cat_chatbot_live_cases_1-100.md";
+const STRICT = process.env.NUTRITAIL_QA_STRICT === "1";
+
+function normalizeText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function selectedCaseIds() {
+  const raw = process.env.NUTRITAIL_QA_CASE_IDS?.trim();
+  if (!raw) return null;
+
+  return new Set(
+    raw
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => (item.startsWith("cat-") ? item : `cat-${item.padStart(3, "0")}`))
+  );
+}
+
+function numberFromPrompt(prompt: string, pattern: RegExp) {
+  const match = prompt.match(pattern);
+  if (!match) return null;
+  const parsed = Number.parseFloat(match[1].replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function inferGoal(testCase: CatFixtureCase): RecommendationGoal {
+  const signals = new Set(testCase.expectedSignals);
+
+  if (signals.has("renal")) return "renal";
+  if (signals.has("urinary")) return "urinary";
+  if (signals.has("kitten_growth")) return "growth";
+  if (signals.has("allergy")) return "allergy";
+  if (signals.has("weight_control")) return "weight_control";
+  if (signals.has("sterilised")) return "sterilised";
+  if (signals.has("senior")) return "senior";
+
+  return "general";
+}
+
+function inferPet(testCase: CatFixtureCase) {
+  const prompt = normalizeText(testCase.prompt);
+  const signals = new Set(testCase.expectedSignals);
+  const weight = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*kg/) ?? 4;
+  const monthAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:μηνων|months)/);
+  const yearAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:ετων|χρονων|years?)/);
+  const age = monthAge != null ? Number((monthAge / 12).toFixed(2)) : yearAge ?? (signals.has("kitten_growth") ? 0.5 : signals.has("senior") ? 11 : 4);
+
+  const healthIssues = [
+    signals.has("urinary") ? "urinary" : null,
+    signals.has("renal") ? "renal" : null,
+    signals.has("skin_hairball") ? "skin_hairball" : null,
+    signals.has("weight_control") ? "weight_control" : null,
+  ].filter((item): item is string => Boolean(item));
+
+  return {
+    species: "cat",
+    weight,
+    age,
+    activityLevel: prompt.includes("outdoor") || signals.has("active") ? "high" : "low",
+    neutered: signals.has("sterilised") || prompt.includes("στειρω"),
+    healthIssues,
+    allergies: inferAllergies(prompt),
+    excludedIngredients: inferAllergies(prompt),
+    preferredProteins: inferPreferredProteins(prompt),
+  };
+}
+
+function inferAllergies(prompt: string) {
+  const allergies: string[] = [];
+  if (prompt.includes("κοτοπουλ") || prompt.includes("chicken")) allergies.push("chicken");
+  if (prompt.includes("σολομ") || prompt.includes("salmon")) allergies.push("salmon");
+  if (prompt.includes("ψαρ") || prompt.includes("fish")) allergies.push("fish");
+  if (prompt.includes("μοσχαρ") || prompt.includes("beef")) allergies.push("beef");
+  if (prompt.includes("αρν") || prompt.includes("lamb")) allergies.push("lamb");
+  return prompt.includes("αλλεργ") || prompt.includes("ευαισθη") ? allergies : [];
+}
+
+function inferPreferredProteins(prompt: string) {
+  const preferred: string[] = [];
+  if (prompt.includes("κοτοπουλ") || prompt.includes("chicken")) preferred.push("chicken");
+  if (prompt.includes("σολομ") || prompt.includes("salmon")) preferred.push("salmon");
+  if (prompt.includes("τονο") || prompt.includes("tuna")) preferred.push("tuna");
+  if (prompt.includes("παπια") || prompt.includes("duck")) preferred.push("duck");
+  if (prompt.includes("ψαρ") || prompt.includes("fish")) preferred.push("fish");
+  if (prompt.includes("αρν") || prompt.includes("lamb")) preferred.push("lamb");
+  return preferred;
+}
+
+function foodLabel(food: FoodV2Item) {
+  return customerFoodName({
+    brand: food.brand ?? "",
+    display_name: food.display_name ?? "",
+  });
+}
+
+function allVisibleFoods(response: RecommendationResponse) {
+  return [...(response.premium ?? []), ...(response.value ?? [])];
+}
+
+function hasFoodMatch(foods: FoodV2Item[], patterns: RegExp[]) {
+  return foods.some((food) => {
+    const text = normalizeText(
+      [
+        food.brand,
+        food.display_name,
+        food.formula_key,
+        food.life_stage,
+        ...(food.ranking?.reasons ?? []),
+        ...(food.ranking?.cautions ?? []),
+        ...(food.ranking?.signals ?? []).map((signal) => signal.message ?? ""),
+      ].join(" ")
+    );
+    return patterns.some((pattern) => pattern.test(text));
+  });
+}
+
+function validateCase(testCase: CatFixtureCase, response: RecommendationResponse, goal: RecommendationGoal) {
+  const warnings: string[] = [];
+  const foods = allVisibleFoods(response);
+  const signals = new Set(testCase.expectedSignals);
+
+  if (response.error) warnings.push(`Recommendation endpoint returned error: ${response.error}`);
+  if (!response.total_candidates) warnings.push("Food V2 returned zero cat candidates.");
+  if (foods.length === 0 && testCase.expectedSafetyLevel !== "urgent") {
+    warnings.push("No visible cat recommendations returned.");
+  }
+
+  if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /σκυλ/, /puppy/])) {
+    warnings.push("Visible shortlist appears to contain dog food terms.");
+  }
+
+  if (signals.has("urinary") && !hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /ουρο/])) {
+    warnings.push("Urinary case did not surface urinary/struvite/oxalate candidates.");
+  }
+
+  if (signals.has("renal") && !hasFoodMatch(foods, [/renal/, /kidney/, /νεφρ/])) {
+    warnings.push("Renal case did not surface renal/kidney candidates.");
+  }
+
+  if (signals.has("kitten_growth") && !hasFoodMatch(foods, [/kitten/, /growth/, /junior/, /γατακι/])) {
+    warnings.push("Kitten growth case did not surface kitten/growth candidates.");
+  }
+
+  if (signals.has("sterilised") && !hasFoodMatch(foods, [/sterili[sz]ed/, /neutered/, /στειρ/, /indoor/, /light/])) {
+    warnings.push("Sterilised case did not surface sterilised/neutered/indoor/light candidates.");
+  }
+
+  if (signals.has("weight_control") && !hasFoodMatch(foods, [/light/, /obesity/, /weight/, /sterili[sz]ed/, /neutered/])) {
+    const hasModerateEnergy = foods.some((food) => {
+      const kcal = food.nutrition?.kcal_per_100g;
+      const fat = food.nutrition?.fat_percent;
+      return (kcal == null || kcal <= 380) && (fat == null || fat <= 15);
+    });
+    if (!hasModerateEnergy) warnings.push("Weight-control case did not surface weight/light candidates or moderate kcal/fat foods.");
+  }
+
+  if (signals.has("senior") && !hasFoodMatch(foods, [/senior/, /\b7\+/, /\b10\+/, /\b11\+/, /\b12\+/, /mature/])) {
+    warnings.push("Senior case did not surface senior/mature candidates.");
+  }
+
+  if (goal === "allergy") {
+    const prompt = normalizeText(testCase.prompt);
+    const riskyProteins = [
+      ["chicken", /chicken|κοτοπουλ/],
+      ["salmon", /salmon|σολομ/],
+      ["beef", /beef|μοσχαρ/],
+      ["lamb", /lamb|αρν/],
+    ] as const;
+
+    for (const [protein, pattern] of riskyProteins) {
+      if (prompt.includes("αλλεργ") && pattern.test(prompt) && hasFoodMatch(foods.slice(0, 3), [new RegExp(protein)])) {
+        warnings.push(`Top allergy shortlist may contain excluded protein: ${protein}.`);
+      }
+    }
+  }
+
+  return warnings;
+}
+
+async function runCase(testCase: CatFixtureCase): Promise<CatQaResult> {
+  const goal = inferGoal(testCase);
+  const pet = inferPet(testCase);
+  const response = await fetch(`${SITE_URL}/api/account/foods/v2-recommendations`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      goal,
+      pet,
+      format: "dry",
+      limit_per_bucket: 3,
+    }),
+  });
+
+  const json = (await response.json()) as RecommendationResponse;
+  const warnings = validateCase(testCase, json, goal);
+  if (!response.ok) warnings.push(`HTTP ${response.status}`);
+
+  return {
+    id: testCase.id,
+    status: warnings.length === 0 ? "pass" : "review",
+    prompt: testCase.prompt,
+    goal,
+    warnings,
+    topFoods: allVisibleFoods(json).slice(0, 5).map(foodLabel),
+  };
+}
+
+function reportMarkdown(results: CatQaResult[]) {
+  const passed = results.filter((result) => result.status === "pass").length;
+  const review = results.length - passed;
+
+  return [
+    "# Cat Chatbot Live Cases 001-100",
+    "",
+    `Site: ${SITE_URL}`,
+    `Run date: ${new Date().toISOString()}`,
+    `Result: ${passed}/${results.length} passed, ${review} review`,
+    "",
+    "This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.",
+    "It focuses on species safety, empty shortlists, and major nutrition-direction mismatches for urinary, renal, kitten, senior, sterilised, weight-control, and allergy scenarios.",
+    "",
+    "## Results",
+    "",
+    ...results.flatMap((result) => [
+      `### ${result.id} - ${result.status.toUpperCase()}`,
+      "",
+      `Prompt: ${result.prompt}`,
+      `Goal: ${result.goal}`,
+      "",
+      "Top foods:",
+      ...(result.topFoods.length ? result.topFoods.map((food) => `- ${food}`) : ["- None"]),
+      "",
+      "Warnings:",
+      ...(result.warnings.length ? result.warnings.map((warning) => `- ${warning}`) : ["- None"]),
+      "",
+    ]),
+  ].join("\n");
+}
+
+async function main() {
+  const fixturePath = path.join(process.cwd(), "data/evals/chatbot-extra-cases-cat-001-100.json");
+  const fixture = JSON.parse(await readFile(fixturePath, "utf8")) as { cases: CatFixtureCase[] };
+  const selected = selectedCaseIds();
+  const limit = Number.parseInt(process.env.NUTRITAIL_QA_CASE_LIMIT ?? "", 10);
+  const cases = fixture.cases
+    .filter((testCase) => !selected || selected.has(testCase.id))
+    .slice(0, Number.isFinite(limit) ? limit : undefined);
+
+  if (cases.length === 0) {
+    throw new Error("No cat QA cases selected.");
+  }
+
+  const results: CatQaResult[] = [];
+  for (const testCase of cases) {
+    const result = await runCase(testCase);
+    results.push(result);
+    console.log(`${result.status === "pass" ? "PASS" : "REVIEW"} ${result.id}: ${result.prompt}`);
+    for (const warning of result.warnings) console.log(`  - ${warning}`);
+  }
+
+  const reportPath = process.env.NUTRITAIL_QA_REPORT_PATH || DEFAULT_REPORT_PATH;
+  await mkdir(path.dirname(reportPath), { recursive: true });
+  await writeFile(reportPath, reportMarkdown(results), "utf8");
+
+  const reviewCount = results.filter((result) => result.status === "review").length;
+  console.log(`\nWrote ${reportPath}`);
+  console.log(`Result: ${results.length - reviewCount}/${results.length} passed, ${reviewCount} review`);
+
+  if (STRICT && reviewCount > 0) {
+    process.exitCode = 1;
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

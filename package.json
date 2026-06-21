@@ -120,6 +120,7 @@
     "qa:dog-edge-fixture": "tsx scripts/qa/check-dog-edge-case-fixture.ts",
     "qa:dog-chatbot-live-smoke": "node scripts/qa/run-dog-chatbot-live-smoke.mjs",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
+    "qa:cat-chatbot-live-cases": "tsx scripts/qa/run-cat-chatbot-live-cases.ts",
     "qa:dog-edge-live-chunks": "node scripts/qa/run-dog-edge-live-chunks.mjs",
     "qa:chatbot-golden-suite": "node scripts/qa/run-chatbot-golden-suite.mjs",
     "qa:chatbot-golden-suite:fast": "node scripts/qa/run-chatbot-golden-suite.mjs --fast",
