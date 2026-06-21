@@ -1,11 +1,55 @@
 # Cat Chatbot Live Cases 001-100
 
 Site: https://nutritail.ai
-Run date: 2026-06-21T18:30:18.061Z
+Run date: 2026-06-21T18:42:24.489Z
 Result: 100/100 passed, 0 review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.
 It focuses on species safety, empty shortlists, and major nutrition-direction mismatches for urinary, renal, kitten, senior, sterilised, weight-control, and allergy scenarios.
+
+## Executive Summary
+
+### Goal Coverage
+
+| Goal | Pass rate | Most common first picks |
+| --- | ---: | --- |
+| allergy | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2) |
+| general | 39/39 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (32); Josera - Culinesse Adult (7) |
+| growth | 12/12 | Royal Canin - Kitten Sterilised (12) |
+| renal | 10/10 | Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (9); Royal Canin - Vet Diet Cat Renal Special (1) |
+| senior | 3/3 | Royal Canin - Ageing Sterilised 11+ (3) |
+| sterilised | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (10) |
+| urinary | 8/8 | Monge VetSolution - Urinary Oxalate (7); Purina Pro Plan Veterinary Diets - FELINE UR ST/OX URINARY Cat Ψάρια Ωκεανού (1) |
+| weight_control | 8/8 | Monge - Adult Light Turkey (8) |
+
+### Signal Coverage
+
+| Signal | Pass rate | Common top-2 foods |
+| --- | ---: | --- |
+| active | 10/10 | Josera - Culinesse Adult (7); Monge BWild - Bwild Low Grain Adult Anchovies (7); Josera - Senior (3); Royal Canin - Ageing Sterilised 11+ (3) |
+| allergy | 12/12 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Schesir - Sterilized Chicken (8); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (2); Monge VetSolution - Urinary Oxalate (1) |
+| environment | 4/4 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (4) |
+| general_recommendation | 3/3 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (3); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (3) |
+| kitten_growth | 12/12 | Royal Canin - Kitten Sterilised (12); Royal Canin - Sterilised +7 (10); Orijen - Cat & Kitten Fit & Trim (2) |
+| preference | 28/28 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (21); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (11); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (4); Schesir - Sterilized Chicken (4) |
+| renal | 10/10 | Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (9); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (9); Royal Canin - Vet Diet Cat Renal (1); Royal Canin - Vet Diet Cat Renal Special (1) |
+| rescue | 6/6 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (5); Purina Pro Plan - STERILISED Savoury Duo Πάπια Και Συκώτι (5); Royal Canin - Kitten Sterilised (1); Royal Canin - Sterilised +7 (1) |
+| senior | 8/8 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (4); Schesir - Sterilized Chicken (4); Josera - Senior (3); Royal Canin - Ageing Sterilised 11+ (3) |
+| skin_hairball | 10/10 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (8); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (8); Orijen - Cat & Kitten Fit & Trim (2); Royal Canin - Kitten Sterilised (2) |
+| sterilised | 12/12 | Monge BWild - Bwild Grain Free Sterilised Tuna With Peas (10); Schesir - Sterilized Chicken (4); Josera - Indoor Grain Free Sterilised (3); Purina Pro Plan - STERILISED Vital Functions Cat Σολομός (2) |
+| urinary | 9/9 | Monge VetSolution - Urinary Oxalate (7); Monge VetSolution - Urinary Struvite (7); Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι (1); Purina Pro Plan - STERILISED Renal Plus Cat Σολομός (1) |
+| weight_control | 9/9 | Monge - Adult Light Turkey (8); Schesir - Cat Sterilized & Light Με Κοτόπουλο (8); Monge VetSolution - Urinary Oxalate (1); Monge VetSolution - Urinary Struvite (1) |
+
+### Recurring First Picks
+
+- Monge BWild - Bwild Grain Free Sterilised Tuna With Peas: 50 first-pick appearances
+- Royal Canin - Kitten Sterilised: 12 first-pick appearances
+- Purina Pro Plan - STERILISED Renal Plus Cat Κουνέλι: 9 first-pick appearances
+- Monge - Adult Light Turkey: 8 first-pick appearances
+- Josera - Culinesse Adult: 7 first-pick appearances
+- Monge VetSolution - Urinary Oxalate: 7 first-pick appearances
+
+Use this section for qualitative review: repeated first picks can be healthy if they match the scenario, but they can also reveal over-dominant ranking signals.
 
 ## Results
 
