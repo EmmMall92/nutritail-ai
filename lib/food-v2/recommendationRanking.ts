@@ -285,6 +285,21 @@ function textFor(food: FoodProductV2) {
   );
 }
 
+function positioningTextFor(food: FoodProductV2) {
+  return normalizeText(
+    [
+      food.brand,
+      food.formula_name,
+      food.display_name,
+      food.life_stage,
+      food.dog_size,
+      food.breed_target,
+      ...(food.medical_tags ?? []),
+      ...(food.commercial_tags ?? []),
+    ].join(" ")
+  );
+}
+
 function petLifeStage(pet: FoodV2RankingInput["pet"]) {
   if (pet.species === "cat") {
     if (pet.age < 1) return "kitten";
@@ -1002,6 +1017,7 @@ function scoreFit(input: FoodV2RankingInput) {
   const { food, nutrients, pet, goal = "general" } = input;
   const signals: FoodV2RankingSignal[] = [];
   const haystack = textFor(food);
+  const positioningText = positioningTextFor(food);
   const stage = petLifeStage(pet);
   let score = 0;
   const applyRuleSignals = (ruleSignals: FoodV2RankingSignal[]) => {
@@ -1208,10 +1224,10 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (
-    hasTherapeuticPositioning(haystack) &&
-    !therapeuticPositioningFitsGoal(haystack, goal, pet.healthIssues ?? []) &&
-    !(hasRenalContext(pet) && hasRenalPositioning(haystack)) &&
-    !(hasUrinaryContext(pet) && hasUrinaryPositioning(haystack)) &&
+    hasTherapeuticPositioning(positioningText) &&
+    !therapeuticPositioningFitsGoal(positioningText, goal, pet.healthIssues ?? []) &&
+    !(hasRenalContext(pet) && hasRenalPositioning(positioningText)) &&
+    !(hasUrinaryContext(pet) && hasUrinaryPositioning(positioningText)) &&
     !specialCareContexts.some((context) =>
       hasSpecialCareFoodPositioning(food, nutrients, haystack, context)
     )
@@ -1397,8 +1413,8 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "urinary" || hasUrinaryContext(pet)) {
-    const hasUrinary = hasUrinaryPositioning(haystack);
-    const hasRenalOnly = hasRenalPositioning(haystack) && !hasUrinary;
+    const hasUrinary = hasUrinaryPositioning(positioningText);
+    const hasRenalOnly = hasRenalPositioning(positioningText) && !hasUrinary;
     const petUrinarySubtype = urinarySubtypeFromPet(pet);
     const visibleFoodUrinarySubtype = urinarySubtypeFromText(titleTextFor(food));
     const foodUrinarySubtype =
@@ -1503,9 +1519,9 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "renal" || hasRenalContext(pet)) {
-    const hasRenal = hasRenalPositioning(haystack);
+    const hasRenal = hasRenalPositioning(positioningText);
     const hasUrinaryOnlyPositioning =
-      hasUrinaryPositioning(haystack) && !hasRenal;
+      hasUrinaryPositioning(positioningText) && !hasRenal;
 
     if (hasRenal) {
       score += 24;
