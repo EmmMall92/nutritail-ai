@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-22T20:14:52.335Z
+Generated: 2026-06-22T20:22:38.299Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -15,6 +15,9 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Intake QA passed: 18
 - Intake QA failed: 0
 - Intake QA skipped suites: 1
+- Response contracts checked: 156
+- Response contracts passed: 156
+- Response contracts failed: 0
 
 ## Species Coverage
 
@@ -38,12 +41,19 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-22T20:14:50.935Z |
 | OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-22T20:14:51.956Z |
 
+## Response Contract Evidence
+
+| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Contracts covered | Missing contracts | Last run |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
+| Chatbot response contract audit | `reports/chatbot_response_contract_summary.md` | conversation safety + required answer structure | `npm.cmd run review:chatbot:responses` | PASS | 156 | 156 | 0 | compare, context_question, nutrition_reasoning, safety_escalation, transition_guidance | none | 2026-06-22T20:22:18.205Z |
+
 ## Current Interpretation
 
 - Dog coverage is proven across 600 live recommendation scenarios.
 - Cat coverage is proven across 500 live recommendation scenarios.
 - The live suites currently show no review cases.
 - OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
+- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.
 
 ## Next QA Gaps
 

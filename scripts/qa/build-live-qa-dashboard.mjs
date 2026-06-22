@@ -39,6 +39,13 @@ const intakeSuites = [
   },
 ];
 
+const responseContractSuite = {
+  name: "Chatbot response contract audit",
+  source: "reports/chatbot_response_contract_summary.md",
+  command: "npm.cmd run review:chatbot:responses",
+  layer: "conversation safety + required answer structure",
+};
+
 function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
@@ -110,6 +117,30 @@ function parseIntakeReport(suite) {
   };
 }
 
+function parseResponseContractReport(suite) {
+  const text = readReport(suite.source);
+  const status = text.match(/^## Result\s+([A-Z]+)/im)?.[1]?.trim() ?? "unknown";
+  const checked = matchNumber(text, [/Cases:\s*(\d+)/i], `${suite.source} cases`);
+  const passed = matchNumber(text, [/Passed:\s*(\d+)/i], `${suite.source} passed`);
+  const failed = matchNumber(text, [/Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const contractsCovered =
+    text.match(/Contracts covered:\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+  const missingContracts =
+    text.match(/Missing contracts:\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+  const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+
+  return {
+    ...suite,
+    status,
+    checked,
+    passed,
+    failed,
+    contractsCovered,
+    missingContracts,
+    runDate,
+  };
+}
+
 function percent(value, total) {
   if (total === 0) return "0.0%";
   return `${((value / total) * 100).toFixed(1)}%`;
@@ -117,6 +148,7 @@ function percent(value, total) {
 
 const parsed = suites.map(parseReport);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
+const parsedResponseContract = parseResponseContractReport(responseContractSuite);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -163,6 +195,9 @@ const lines = [
   `- Intake QA passed: ${intakeTotals.passed}`,
   `- Intake QA failed: ${intakeTotals.failed}`,
   `- Intake QA skipped suites: ${intakeTotals.skipped}`,
+  `- Response contracts checked: ${parsedResponseContract.checked}`,
+  `- Response contracts passed: ${parsedResponseContract.passed}`,
+  `- Response contracts failed: ${parsedResponseContract.failed}`,
   "",
   "## Species Coverage",
   "",
@@ -194,12 +229,19 @@ const lines = [
       `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} |`,
   ),
   "",
+  "## Response Contract Evidence",
+  "",
+  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Contracts covered | Missing contracts | Last run |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |",
+  `| ${parsedResponseContract.name} | \`${parsedResponseContract.source}\` | ${parsedResponseContract.layer} | \`${parsedResponseContract.command}\` | ${parsedResponseContract.status} | ${parsedResponseContract.checked} | ${parsedResponseContract.passed} | ${parsedResponseContract.failed} | ${parsedResponseContract.contractsCovered} | ${parsedResponseContract.missingContracts} | ${parsedResponseContract.runDate} |`,
+  "",
   "## Current Interpretation",
   "",
   "- Dog coverage is proven across 600 live recommendation scenarios.",
   "- Cat coverage is proven across 500 live recommendation scenarios.",
   "- The live suites currently show no review cases.",
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
+  "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "",
   "## Next QA Gaps",
   "",
@@ -214,3 +256,7 @@ console.log("Wrote reports/chatbot_live_qa_dashboard.md");
 console.log(`Live cases checked: ${totals.checked}`);
 console.log(`Passed: ${totals.passed}`);
 console.log(`Needs review: ${totals.review}`);
+
+if (parsedResponseContract.failed > 0 || parsedResponseContract.status !== "PASS") {
+  throw new Error("Response contract audit is not passing.");
+}
