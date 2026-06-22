@@ -1,4 +1,51 @@
 import Link from "next/link";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
+type ReadinessSummary = {
+  result: string;
+  suitesPassing: string;
+  totalChecks: string;
+  failedOrReview: string;
+  passRate: string;
+  generated: string;
+};
+
+function readLiveReadinessSummary(): ReadinessSummary {
+  const fallback = {
+    result: "Not generated",
+    suitesPassing: "unknown",
+    totalChecks: "unknown",
+    failedOrReview: "unknown",
+    passRate: "unknown",
+    generated: "unknown",
+  };
+
+  try {
+    const report = readFileSync(
+      path.join(process.cwd(), "reports/live_readiness_dashboard.md"),
+      "utf8",
+    );
+
+    return {
+      result: report.match(/^Result:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.result,
+      suitesPassing:
+        report.match(/- Suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.suitesPassing,
+      totalChecks:
+        report.match(/- Total checks\/cases\/routes:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.totalChecks,
+      failedOrReview:
+        report.match(/- Failed or needs review:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.failedOrReview,
+      passRate: report.match(/- Pass rate:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.passRate,
+      generated:
+        report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.generated,
+    };
+  } catch {
+    return fallback;
+  }
+}
 
 const liveChecks = [
   {
@@ -98,6 +145,9 @@ const liveUrls = [
 ];
 
 export default function FoodV2LiveQaPage() {
+  const readiness = readLiveReadinessSummary();
+  const isPassing = readiness.result === "PASS";
+
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -138,6 +188,62 @@ export default function FoodV2LiveQaPage() {
           >
             Open Guide
           </Link>
+          <a
+            href="https://github.com/EmmMall92/nutritail-ai/blob/master/reports/live_readiness_dashboard.md"
+            className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Readiness Report
+          </a>
+        </div>
+      </div>
+
+      <div
+        className={`rounded-2xl border p-5 shadow-sm ${
+          isPassing
+            ? "border-green-200 bg-green-50 text-green-950"
+            : "border-amber-200 bg-amber-50 text-amber-950"
+        }`}
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Automated live readiness
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {isPassing ? "Live readiness passed" : "Live readiness needs review"}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm">
+              Generated from route checks, customer-flow checks, and chatbot QA.
+              Re-run the QA commands after deploys that touch account, chatbot,
+              Food V2, or printable reports.
+            </p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 px-4 py-3 text-sm">
+            <p className="font-semibold">Last generated</p>
+            <p className="mt-1 break-all">{readiness.generated}</p>
+          </div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Result</p>
+            <p className="mt-2 text-2xl font-bold">{readiness.result}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Suites passing</p>
+            <p className="mt-2 text-2xl font-bold">{readiness.suitesPassing}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Checks/routes/cases</p>
+            <p className="mt-2 text-2xl font-bold">{readiness.totalChecks}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Review items</p>
+            <p className="mt-2 text-2xl font-bold">{readiness.failedOrReview}</p>
+            <p className="mt-1 text-xs">Pass rate: {readiness.passRate}</p>
+          </div>
         </div>
       </div>
 
