@@ -61,6 +61,15 @@ const customerUxSuites = [
   },
 ];
 
+const fixtureIntegritySuites = [
+  {
+    name: "Cat 001-500 fixture integrity",
+    source: "reports/cat_case_fixture_integrity.md",
+    command: "npm.cmd run qa:cat-case-fixture",
+    layer: "UTF-8 prompt integrity + sequential cat QA fixture",
+  },
+];
+
 function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
@@ -171,6 +180,22 @@ function parsePassFailReport(suite) {
   };
 }
 
+function parseFixtureIntegrityReport(suite) {
+  const text = readReport(suite.source);
+  const result = text.match(/^Result:\s*([A-Z]+)/im)?.[1]?.trim() ?? "unknown";
+  const checked = matchNumber(text, [/- Cases checked:\s*(\d+)/i], `${suite.source} cases checked`);
+  const issues = matchNumber(text, [/- Issues:\s*(\d+)/i], `${suite.source} issues`);
+  const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+
+  return {
+    ...suite,
+    result,
+    checked,
+    issues,
+    runDate,
+  };
+}
+
 function percent(value, total) {
   if (total === 0) return "0.0%";
   return `${((value / total) * 100).toFixed(1)}%`;
@@ -180,6 +205,7 @@ const parsed = suites.map(parseReport);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
 const parsedResponseContract = parseResponseContractReport(responseContractSuite);
 const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
+const parsedFixtureIntegrity = fixtureIntegritySuites.map(parseFixtureIntegrityReport);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -230,6 +256,7 @@ const lines = [
   `- Response contracts passed: ${parsedResponseContract.passed}`,
   `- Response contracts failed: ${parsedResponseContract.failed}`,
   `- Customer UX suites passing: ${parsedCustomerUx.filter((suite) => suite.result === "PASS").length}/${parsedCustomerUx.length}`,
+  `- Fixture integrity suites passing: ${parsedFixtureIntegrity.filter((suite) => suite.result === "PASS").length}/${parsedFixtureIntegrity.length}`,
   "",
   "## Species Coverage",
   "",
@@ -276,6 +303,15 @@ const lines = [
       `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} |`,
   ),
   "",
+  "## Fixture Integrity Evidence",
+  "",
+  "| Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | --- |",
+  ...parsedFixtureIntegrity.map(
+    (suite) =>
+      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.checked} | ${suite.issues} | ${suite.runDate} |`,
+  ),
+  "",
   "## Current Interpretation",
   "",
   "- Dog coverage is proven across 600 live recommendation scenarios.",
@@ -284,6 +320,7 @@ const lines = [
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.",
+  "- Fixture integrity checks protect the large Greek cat QA batch from encoding drift before live tests run.",
   "",
   "## Next QA Gaps",
   "",
@@ -307,6 +344,15 @@ const failingCustomerUx = parsedCustomerUx.filter((suite) => suite.result !== "P
 if (failingCustomerUx.length > 0) {
   throw new Error(
     `Customer UX QA is not passing: ${failingCustomerUx
+      .map((suite) => suite.name)
+      .join(", ")}`,
+  );
+}
+
+const failingFixtureIntegrity = parsedFixtureIntegrity.filter((suite) => suite.result !== "PASS");
+if (failingFixtureIntegrity.length > 0) {
+  throw new Error(
+    `Fixture integrity QA is not passing: ${failingFixtureIntegrity
       .map((suite) => suite.name)
       .join(", ")}`,
   );
