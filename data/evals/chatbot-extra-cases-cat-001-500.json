@@ -1,0 +1,6126 @@
+{
+  "source": "user_supplied_cat_cases_attachment_2026-06-22",
+  "purpose": "Live QA fixture for NutriTail cat recommendation behavior across 500 realistic Greek scenarios.",
+  "batch": {
+    "id": "cat-live-cases-001-500",
+    "species": "cat",
+    "locale": "el-GR",
+    "case_count": 500
+  },
+  "cases": [
+    {
+      "id": "cat-001",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 2 ετών, 4kg, indoor, λατρεύει κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "indoor",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-002",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 3 ετών, 5kg, indoor, αγαπά σολομό.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "indoor",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-003",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 4 ετών, 6kg, indoor, προτιμά πάπια.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "indoor",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-004",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 5 ετών, 4.5kg, αγαπά αρνί.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-005",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 7 ετών, 5kg, θέλει ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "sterilised"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-006",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 8 ετών, 6kg, πολύ ιδιότροπη.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-007",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 10 ετών, 4kg, θέλει έντονη μυρωδιά τροφής.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "senior",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-008",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 12 ετών, 3.5kg, μειωμένη όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-009",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 14 ετών, 4kg, αγαπά τόνο.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "senior",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-010",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 15 ετών, 3kg, θέλει εύπεπτη τροφή.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-011",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 2 μηνών, 0.9kg.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-012",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 3 μηνών, 1.4kg.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-013",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 4 μηνών, 2kg.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-014",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 5 μηνών, 2.5kg.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-015",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 6 μηνών, 3kg.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-016",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι Maine Coon 4 μηνών.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-017",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι Persian 5 μηνών.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-018",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι British Shorthair 6 μηνών.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-019",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι rescue άγνωστης φυλής.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-020",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ορφανό γατάκι που απογαλακτίστηκε πρόσφατα.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-021",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 2 ετών, 4kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-022",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 3 ετών, outdoor.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-023",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 5 ετών, κυνηγά καθημερινά.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-024",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 6 ετών, τρώει πολύ.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-025",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 7 ετών, προτιμά ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-026",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 8 ετών, πολύ δραστήρια.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-027",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 9 ετών, θέλει κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-028",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 10 ετών, αγαπά πάπια.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-029",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 11 ετών, προτιμά αρνί.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-030",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αστείρωτη γάτα 12 ετών, μειωμένη όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-031",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ιστορικό στρουβίτη.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-032",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ιστορικό οξαλικών λίθων.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-033",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με συχνές ουρολοιμώξεις.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-034",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Αρσενική γάτα με ουρολογική ευαισθησία.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-035",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένος γάτος 6kg με ιστορικό FLUTD.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-036",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πίνει λίγο νερό.",
+      "expectedSignals": [
+        "cat",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-037",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-038",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αρνείται υγρή τροφή.",
+      "expectedSignals": [
+        "cat",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-039",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και παχυσαρκία.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-040",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και ευαισθησία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-041",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρική ανεπάρκεια IRIS 2.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-042",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρική ανεπάρκεια IRIS 3.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-043",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένη κρεατινίνη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-044",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένη ουρία.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-045",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-046",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και απώλεια βάρους.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-047",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και κακή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-048",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-049",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και υπέρταση.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-050",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και δυσκοιλιότητα.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-051",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Υπέρβαρη γάτα 7kg.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-052",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Υπέρβαρη γάτα 8kg.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-053",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Υπέρβαρη γάτα 9kg.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-054",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "BCS 8/9.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-055",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "BCS 9/9.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-056",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που δεν κινείται.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-057",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα που πεινάει συνέχεια.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-058",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει πολύ γρήγορα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-059",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζητά φαγητό όλη μέρα.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-060",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται πρόγραμμα απώλειας βάρους.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-061",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-062",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-063",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο μοσχάρι.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-064",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο αρνί.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-065",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο αυγό.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-066",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στα σιτηρά.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-067",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα αλλεργική στο καλαμπόκι.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-068",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με πολλαπλές αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-069",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε elimination diet.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-070",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια φαγούρα.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-071",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με τριχοβεζωάρια.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-072",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Μακρύτριχη γάτα με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-073",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian με συχνά hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-074",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-075",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κάνει εμετό τρίχες συχνά.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-076",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που γλείφεται υπερβολικά.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-077",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με θαμπό τρίχωμα.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-078",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ξηρό δέρμα.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-079",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με πιτυρίδα.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-080",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται υποστήριξη δέρματος.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-081",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Πολύ ιδιότροπη γάτα που τρώει μόνο τόνο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-082",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο σολομό.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-083",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-084",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο υγρή τροφή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-085",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-086",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αλλάζει συνεχώς προτιμήσεις.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-087",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που βαρέθηκε την τωρινή τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-088",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο μικρή κροκέτα.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-089",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει έντονη μυρωδιά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-090",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο αν ζεστάνω την τροφή.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-091",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με άγνωστη ηλικία.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-092",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με άγνωστο ιστορικό.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-093",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα υποσιτισμένη.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-094",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα πολύ φοβική.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-095",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα που τρώει λαίμαργα.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-096",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 5 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-097",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που μοιράζεται την τροφή με άλλη γάτα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-098",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε πολύ ζεστό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-099",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε πολύ ψυχρό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-100",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει την καλύτερη δυνατή τροφή ανεξαρτήτως κόστους.",
+      "expectedSignals": [
+        "cat",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-101",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 4kg με χρόνια δυσκοιλιότητα.",
+      "expectedSignals": [
+        "cat",
+        "sterilised"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-102",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 5kg με συχνή διάρροια.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-103",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ευαίσθητο πεπτικό.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-104",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με IBD.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-105",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ιστορικό παγκρεατίτιδας.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-106",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια γαστρίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-107",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κάνει εμετούς μετά το φαγητό.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-108",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κάνει εμετούς όταν τρώει γρήγορα.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-109",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με συχνά μαλακά κόπρανα.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-110",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χάνει βάρος λόγω πεπτικού.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-111",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon 8kg, 3 ετών.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-112",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon 10kg, στειρωμένος.",
+      "expectedSignals": [
+        "cat",
+        "sterilised"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-113",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian 5kg, indoor.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-114",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair 7kg, στειρωμένη.",
+      "expectedSignals": [
+        "cat",
+        "sterilised"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-115",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal 5kg, πολύ δραστήρια.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-116",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian 6kg, μακρύτριχη.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-117",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest 7kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-118",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll 8kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-119",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx 4kg με αυξημένες ενεργειακές ανάγκες.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-120",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold 5kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-121",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με σακχαρώδη διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-122",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με προδιαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-123",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με υπεργλυκαιμία.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-124",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και παχυσαρκία.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-125",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-126",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-127",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και χαμηλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-128",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-129",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-130",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και πολλά γεύματα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-131",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με καρδιοπάθεια.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-132",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με υπερτροφική μυοκαρδιοπάθεια.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-133",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με υπέρταση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-134",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με καρδιοπάθεια και νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-135",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χαμηλή μυϊκή μάζα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-136",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με απώλεια βάρους.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-137",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με κακή φυσική κατάσταση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-138",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα μετά από νοσηλεία.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-139",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε ανάρρωση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-140",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πρέπει να πάρει βάρος.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-141",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 2 μηνών που δεν τρώει εύκολα.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-142",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 3 μηνών με διάρροια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-143",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 4 μηνών rescue.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-144",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 5 μηνών με χαμηλό βάρος.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-145",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 6 μηνών πολύ δραστήριο.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-146",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 7 μηνών που θα στειρωθεί.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-147",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 8 μηνών στειρωμένο.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-148",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 9 μηνών με ευαισθησία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-149",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 10 μηνών με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-150",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 11 μηνών με ιδιοτροπίες.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-151",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που δεν κινείται καθόλου.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-152",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που κοιμάται όλη μέρα.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-153",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα σε μικρό διαμέρισμα.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-154",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με stress.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-155",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με πολλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-156",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που παχαίνει εύκολα.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-157",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με λίγη άσκηση.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-158",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που δεν πίνει αρκετό νερό.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-159",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-160",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που χρειάζεται έλεγχο βάρους.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-161",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που κυνηγά καθημερινά.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-162",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που ζει σε αγρόκτημα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-163",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα με υψηλές ενεργειακές ανάγκες.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-164",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που χάνει βάρος τον χειμώνα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-165",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε ψυχρό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-166",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε θερμό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-167",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που τρώει θηράματα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-168",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που επιστρέφει μόνο για φαγητό.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-169",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα με μεγάλη δραστηριότητα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-170",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που χρειάζεται περισσότερες θερμίδες.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-171",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία σε κοτόπουλο και γαλοπούλα.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-172",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία σε ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-173",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία σε σολομό.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-174",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία σε τόνο.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-175",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία στο μοσχάρι.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-176",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία στο αρνί.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-177",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία στο αυγό.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-178",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αλλεργία στα σιτηρά.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-179",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με πολλαπλές τροφικές αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-180",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε υποαλλεργική δίαιτα.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-181",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο τόνο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-182",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο σολομό.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-183",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-184",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο πάπια.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-185",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο γαλοπούλα.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-186",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο αρνί.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-187",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο λευκό ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-188",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αλλάζει γεύση κάθε μήνα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-189",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που βαριέται γρήγορα την τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-190",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει συνεχώς νέα τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-191",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 2 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-192",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 4 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-193",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 6 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-194",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κλέβει φαγητό από άλλες γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-195",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν προλαβαίνει να φάει.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-196",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει πολύ γρήγορα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-197",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει πολύ αργά.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-198",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που φοβάται την ώρα του φαγητού.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-199",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα rescue με άγνωστο ιστορικό υγείας.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-200",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα rescue που θέλει μετάβαση σε premium διατροφή.",
+      "expectedSignals": [
+        "cat",
+        "rescue",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-201",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένος γάτος 6kg με ιστορικό στρουβίτη.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-202",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένος γάτος 7kg με υποτροπές στρουβίτη.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-203",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένος γάτος 5kg με ιστορικό απόφραξης ουρήθρας.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-204",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος 8kg που είχε ουροκαθετήρα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-205",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος με FLUTD.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-206",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος με συχνές ουρολοιμώξεις.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-207",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος που ουρεί εκτός λεκάνης.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-208",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος που πίνει λίγο νερό.",
+      "expectedSignals": [
+        "cat",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-209",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-210",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος με ουρολογικό και παχυσαρκία.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-211",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με οξαλικούς λίθους.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-212",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με υποτροπές οξαλικών.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-213",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και αλλεργία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-214",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και hairballs.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-215",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και stress.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-216",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και χαμηλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-217",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-218",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-219",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και senior ηλικία.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-220",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό και δυσκοιλιότητα.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-221",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα IRIS 1.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-222",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα IRIS 2.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-223",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα IRIS 3.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-224",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα IRIS 4.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-225",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένη ουρία.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-226",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένη κρεατινίνη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-227",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένο SDMA.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-228",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με πρωτεϊνουρία.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-229",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και απώλεια βάρους.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-230",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και κακή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-231",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και υπέρταση.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-232",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και υποκαλιαιμία.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-233",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-234",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-235",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και obesity.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-236",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και hairballs.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-237",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό και αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-238",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-239",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-240",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό που τρώει ελάχιστα.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-241",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 7kg BCS 8/9.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-242",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Στειρωμένη γάτα 8kg BCS 9/9.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-243",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με σοβαρή παχυσαρκία.",
+      "expectedSignals": [
+        "cat",
+        "weight_control",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-244",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πήρε 2kg μετά τη στείρωση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-245",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζητά φαγητό όλη μέρα.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-246",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει 10 φορές τη μέρα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-247",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κλέβει φαγητό.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-248",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity και ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-249",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity και διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-250",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity και αρθρίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-251",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 11 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-252",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 12 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-253",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 13 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-254",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 14 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-255",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 15 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-256",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 16 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-257",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 17 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-258",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα 18 ετών.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-259",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με χαμηλή μυϊκή μάζα.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-260",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με απώλεια βάρους.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-261",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με άνοια.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-262",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με κακή όσφρηση.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-263",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα χωρίς δόντια.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-264",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα που τρώει δύσκολα.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-265",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-266",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-267",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με υπέρταση.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-268",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με αρθρίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-269",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με δυσκοιλιότητα.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-270",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Senior γάτα με χαμηλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-271",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-272",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-273",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-274",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και senior ηλικία.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-275",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-276",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-277",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και χαμηλό βάρος.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-278",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και υψηλό βάρος.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-279",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-280",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη και αλλεργία.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-281",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ηπατική λιπίδωση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-282",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αυξημένα ηπατικά ένζυμα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-283",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια ηπατοπάθεια.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-284",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με παγκρεατίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-285",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια παγκρεατίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-286",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με IBD.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-287",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια διάρροια.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-288",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με χρόνια δυσκοιλιότητα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-289",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με γαστρίτιδα.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-290",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ευαίσθητο πεπτικό.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-291",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό + νεφρικό + obesity.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "renal",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-292",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό + διαβήτη.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-293",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity + hairballs.",
+      "expectedSignals": [
+        "cat",
+        "weight_control",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-294",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity + senior ηλικία.",
+      "expectedSignals": [
+        "cat",
+        "senior",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-295",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό + αλλεργία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-296",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ουρολογικό + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-297",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με νεφρικό + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-298",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με διαβήτη + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-299",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με πολλαπλά προβλήματα υγείας.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-300",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με άγνωστο ιστορικό αλλά πολλά συμπτώματα.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-301",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon 9kg, στειρωμένος, indoor.",
+      "expectedSignals": [
+        "cat",
+        "sterilised",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-302",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon 11kg, υπέρβαρος.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-303",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon 7 μηνών, ανάπτυξη.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-304",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-305",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Maine Coon με ευαίσθητο στομάχι.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-306",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian 5kg, indoor.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-307",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian με χρόνια hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-308",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian με δακρύρροια.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-309",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-310",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Persian πολύ ιδιότροπη.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-311",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair 8kg, στειρωμένος.",
+      "expectedSignals": [
+        "cat",
+        "sterilised"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-312",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair με obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-313",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair που δεν κινείται.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-314",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair που τρώει πολύ.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-315",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "British Shorthair picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-316",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal 5kg, πολύ δραστήρια.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-317",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal που θέλει υψηλή πρωτεΐνη.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-318",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal που βγαίνει έξω.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-319",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal με χαμηλό βάρος.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-320",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Bengal με ευαισθησία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-321",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll 8kg, indoor.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-322",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll με χαμηλή δραστηριότητα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-323",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll με obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-324",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-325",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Ragdoll που θέλει ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-326",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx 4kg με αυξημένες θερμιδικές ανάγκες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-327",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx με ευαίσθητο δέρμα.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-328",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx που πεινάει συνέχεια.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-329",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx με αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-330",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Sphynx picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-331",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest Cat 7kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-332",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-333",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest outdoor.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-334",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest senior.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-335",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Norwegian Forest με obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-336",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian 6kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-337",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian με αλλεργία.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-338",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian indoor.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-339",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian outdoor.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-340",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Siberian picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-341",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold 5kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-342",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold με αρθρώσεις.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-343",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold με obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-344",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold με χαμηλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-345",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Scottish Fold senior.",
+      "expectedSignals": [
+        "cat",
+        "senior"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-346",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Exotic Shorthair 5kg.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-347",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Exotic με hairballs.",
+      "expectedSignals": [
+        "cat",
+        "skin_hairball"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-348",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Exotic με ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-349",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Exotic picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-350",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Exotic indoor.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-351",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζει μόνη της.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-352",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 2 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-353",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 3 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-354",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα σε σπίτι με 5 γάτες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-355",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει την τροφή των άλλων.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-356",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν προλαβαίνει να φάει.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-357",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει κρυφά.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-358",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζηλεύει τις άλλες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-359",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με stress λόγω άλλων γατών.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-360",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο όταν είναι μόνη.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-361",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα σε διαμέρισμα 40τμ.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-362",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα σε μεγάλο σπίτι.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-363",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα χωρίς παιχνίδι.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-364",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με καθημερινό παιχνίδι.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-365",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που κοιμάται 20 ώρες.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-366",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα με χαμηλή δραστηριότητα.",
+      "expectedSignals": [
+        "cat",
+        "active",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-367",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που παχαίνει.",
+      "expectedSignals": [
+        "cat",
+        "indoor"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-368",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που δεν πίνει νερό.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-369",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-370",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Indoor γάτα που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "indoor",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-371",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που κυνηγά.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-372",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που τρώει ποντίκια.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-373",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε χωριό.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-374",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε πόλη.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-375",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα με υψηλές ανάγκες.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-376",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που χάνει βάρος τον χειμώνα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-377",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που ζει σε νησί.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-378",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε ψυχρό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-379",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα σε θερμό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-380",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Outdoor γάτα που επιστρέφει μόνο για φαγητό.",
+      "expectedSignals": [
+        "cat",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-381",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο τόνο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-382",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο σολομό.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-383",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο λευκό ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-384",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-385",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο πάπια.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-386",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο γαλοπούλα.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-387",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο αρνί.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-388",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μόνο κουνέλι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-389",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αλλάζει γεύση κάθε εβδομάδα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-390",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που βαριέται την τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-391",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πίνει πολύ λίγο νερό.",
+      "expectedSignals": [
+        "cat",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-392",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πίνει υπερβολικά πολύ νερό.",
+      "expectedSignals": [
+        "cat",
+        "hydration"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-393",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο ξηρά και δεν πίνει.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-394",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-395",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται καλύτερη ενυδάτωση.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-396",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζει σε πολύ ζεστό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-397",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζει σε πολύ ψυχρό κλίμα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-398",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ταξιδεύει συχνά.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-399",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα rescue με stress.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-400",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει την καλύτερη δυνατή τροφή χωρίς περιορισμό κόστους.",
+      "expectedSignals": [
+        "cat",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-401",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα στον 1ο μήνα κύησης.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-402",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα στον 2ο μήνα κύησης.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-403",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα στον τελευταίο μήνα κύησης.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-404",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα με χαμηλή όρεξη.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-405",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα που χάνει βάρος.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-406",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα με αλλεργία στο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "allergy",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-407",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα με ουρολογικό ιστορικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-408",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-409",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-410",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Έγκυος γάτα rescue.",
+      "expectedSignals": [
+        "cat",
+        "rescue",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-411",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει 2 γατάκια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-412",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει 4 γατάκια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-413",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει 6 γατάκια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-414",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει 8 γατάκια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-415",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που έχασε βάρος στον θηλασμό.",
+      "expectedSignals": [
+        "cat",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-416",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που πεινάει συνέχεια στον θηλασμό.",
+      "expectedSignals": [
+        "cat",
+        "weight_control",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-417",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν έχει όρεξη μετά τον τοκετό.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-418",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει και έχει ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-419",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θηλάζει και έχει αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "allergy",
+        "reproduction"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-420",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα μετά τον απογαλακτισμό.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-421",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 6 εβδομάδων.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-422",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 8 εβδομάδων.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-423",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 10 εβδομάδων.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-424",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι 12 εβδομάδων.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-425",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι που μόλις απογαλακτίστηκε.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-426",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι που δεν τρώει εύκολα.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-427",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι που κάνει διάρροια.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-428",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι rescue.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-429",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι με χαμηλό βάρος.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-430",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γατάκι πολύ δραστήριο.",
+      "expectedSignals": [
+        "cat",
+        "kitten_growth",
+        "active"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-431",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που άλλαξε τροφή και κάνει διάρροια.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-432",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που άλλαξε τροφή και κάνει εμετούς.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-433",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αρνείται τη νέα τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-434",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δέχεται μόνο αργή μετάβαση.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-435",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει παλιά και νέα τροφή μαζί.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-436",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται αλλαγή λόγω obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-437",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται αλλαγή λόγω ουρολογικού.",
+      "expectedSignals": [
+        "cat",
+        "urinary"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-438",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται αλλαγή λόγω νεφρικού.",
+      "expectedSignals": [
+        "cat",
+        "renal"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-439",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται αλλαγή λόγω αλλεργίας.",
+      "expectedSignals": [
+        "cat",
+        "allergy"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-440",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που χρειάζεται αλλαγή λόγω ηλικίας.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-441",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν τρώει για 24 ώρες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "red_flag_not_eating"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-442",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν τρώει για 48 ώρες.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "red_flag_not_eating"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-443",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κάνει συνεχείς εμετούς.",
+      "expectedSignals": [
+        "cat",
+        "sensitive_digestion",
+        "red_flag_vomiting"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-444",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με αίμα στα ούρα.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "red_flag_blood"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-445",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτος που προσπαθεί να ουρήσει και δεν μπορεί.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "red_flag_urinary_blockage"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-446",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με έντονο πόνο στην κοιλιά.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "red_flag_pain"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-447",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με ξαφνική απώλεια βάρους.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "weight_loss"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-448",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με λήθαργο και ανορεξία.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "red_flag_not_eating",
+        "red_flag_lethargy"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-449",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κατέρρευσε.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation",
+        "red_flag_collapse"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-450",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που δεν πίνει καθόλου νερό.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "red_flag_not_drinking"
+      ],
+      "expectedSafetyLevel": "urgent",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-451",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity + urinary.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-452",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity + renal.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-453",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με diabetes + renal.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-454",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με diabetes + obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-455",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με urinary + renal.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-456",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με urinary + allergy.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-457",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με renal + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-458",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με obesity + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "weight_control",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-459",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με diabetes + picky eater.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-460",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με τρία χρόνια προβλήματα μαζί.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-461",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που ζει σε σπίτι με σκύλο.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-462",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει τροφή σκύλου.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-463",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που κλέβει τροφή από τον σκύλο.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-464",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που φοβάται την ώρα του φαγητού.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-465",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο μόνη της.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-466",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με stress λόγω μετακόμισης.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-467",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με stress λόγω νέου μωρού.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-468",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με stress λόγω νέας γάτας.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-469",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που σταμάτησε να τρώει μετά από αλλαγή περιβάλλοντος.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-470",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που τρώει μόνο όταν είναι ήσυχα.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-471",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με budget 10€/μήνα.",
+      "expectedSignals": [
+        "cat",
+        "budget"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-472",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με budget 20€/μήνα.",
+      "expectedSignals": [
+        "cat",
+        "budget"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-473",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα με budget 40€/μήνα.",
+      "expectedSignals": [
+        "cat",
+        "budget"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-474",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα χωρίς περιορισμό κόστους.",
+      "expectedSignals": [
+        "cat",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-475",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει premium τροφή.",
+      "expectedSignals": [
+        "cat",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-476",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει super premium τροφή.",
+      "expectedSignals": [
+        "cat",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-477",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει grain free.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-478",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει low grain.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-479",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει limited ingredients.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-480",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει μονοπρωτεϊνική τροφή.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-481",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο τόνο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-482",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο σολομό.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-483",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο κοτόπουλο.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-484",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο πάπια.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-485",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο αρνί.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-486",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο γαλοπούλα.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-487",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο κουνέλι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-488",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αγαπά μόνο λευκό ψάρι.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-489",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που αλλάζει γεύση κάθε μήνα.",
+      "expectedSignals": [
+        "cat",
+        "general_recommendation"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-490",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Γάτα που θέλει πολύ έντονη μυρωδιά τροφής.",
+      "expectedSignals": [
+        "cat",
+        "preference"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-491",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με άγνωστο ιστορικό.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-492",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα υποσιτισμένη.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-493",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με obesity.",
+      "expectedSignals": [
+        "cat",
+        "weight_control",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-494",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με ουρολογικό.",
+      "expectedSignals": [
+        "cat",
+        "urinary",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-495",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με νεφρικό.",
+      "expectedSignals": [
+        "cat",
+        "renal",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-496",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με αλλεργίες.",
+      "expectedSignals": [
+        "cat",
+        "allergy",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-497",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα που τρώει μόνο υγρή.",
+      "expectedSignals": [
+        "cat",
+        "hydration",
+        "preference",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-498",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα που τρώει μόνο ξηρά.",
+      "expectedSignals": [
+        "cat",
+        "preference",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-499",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα με έντονο stress.",
+      "expectedSignals": [
+        "cat",
+        "rescue"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    },
+    {
+      "id": "cat-500",
+      "species": "cat",
+      "locale": "el-GR",
+      "prompt": "Rescue γάτα που θέλει πλήρη μετάβαση σε premium διατροφή.",
+      "expectedSignals": [
+        "cat",
+        "rescue",
+        "premium"
+      ],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": []
+    }
+  ]
+}
