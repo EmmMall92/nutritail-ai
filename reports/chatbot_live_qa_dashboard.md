@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-22T20:33:44.443Z
+Generated: 2026-06-22T20:38:33.176Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
