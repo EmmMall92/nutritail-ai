@@ -1,14 +1,14 @@
 # Dog Chatbot 400 Live Cases
 
-Generated: 2026-06-22T18:35:12.263Z
+Generated: 2026-06-22T18:50:49.984Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
 ## Summary
 
 - Cases checked: 400
-- Passed: 371
-- Needs review: 29
+- Passed: 399
+- Needs review: 1
 
 Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity energy/protein mismatch guards.
 
@@ -20,25 +20,25 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 
 | Goal | Pass rate | Most common first picks |
 | --- | ---: | --- |
-| allergy | 45/49 | Monge All Breeds Adult Monoprotein Beef With Rice (12); Monge VetSolution An Hydro (10); Josera KIDS (9) |
-| general | 119/122 | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (65); Josera ACTIVE NATURE (23); Monge All Breeds Adult Active (11) |
-| growth | 89/100 | Brit Premium By Nature Junior Small (49); Brit Care Grain Free Puppy Salmon (29); Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο (7) |
+| allergy | 49/49 | Monge All Breeds Adult Monoprotein Beef With Rice (12); Monge VetSolution An Hydro (10); Josera KIDS (9) |
+| general | 122/122 | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (65); Josera ACTIVE NATURE (23); Monge All Breeds Adult Active (11) |
+| growth | 99/100 | Brit Premium By Nature Junior Small (49); Brit Care Grain Free Puppy Salmon (29); Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο (7) |
 | premium | 11/11 | Josera KIDS (4); Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο (4); N&D Quinoa Grain Free Duck Neutered Adult Med/maxi (3) |
 | renal | 2/2 | Monge VetSolution Renal And Oxalate (2) |
-| senior | 18/20 | Brit Care Sustainable Senior Chicken & Insect (13); Josera MINI SENIOR SALMON (6); Acana Senior (1) |
-| sensitive_digestion | 10/14 | Josera DUCK & POTATO (10); Josera GASTRO DRY (4) |
-| sterilised | 64/65 | Happy Dog Fit & Vital Light (52); Josera LIGHT & VITAL (6); N&D Quinoa Grain Free Duck Neutered Adult Med/maxi (3) |
+| senior | 20/20 | Brit Care Sustainable Senior Chicken & Insect (13); Josera MINI SENIOR SALMON (6); Acana Senior (1) |
+| sensitive_digestion | 14/14 | Josera DUCK & POTATO (10); Josera GASTRO DRY (4) |
+| sterilised | 65/65 | Happy Dog Fit & Vital Light (52); Josera LIGHT & VITAL (6); N&D Quinoa Grain Free Duck Neutered Adult Med/maxi (3) |
 | urinary | 3/3 | Monge VetSolution Urinary Struvite (3) |
 | value | 6/6 | Brit Premium By Nature Junior Medium (2); Happy Dog Naturcroq Adult Chicken (2); Happy Dog Naturcroq Duck & Rice Sterilised (2) |
-| weight_control | 4/8 | Josera LIGHT & VITAL (6); Acana Wild Coast (2) |
+| weight_control | 8/8 | Josera LIGHT & VITAL (6); Acana Wild Coast (2) |
 
 ### Safety Coverage
 
 | Safety level | Pass rate | Common top-2 foods |
 | --- | ---: | --- |
 | emergency | 1/1 | Josera DUCK & POTATO (1); Josera KIDS (1) |
-| normal | 275/278 | Happy Dog Fit & Vital Light (62); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (43); Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (42); Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT (40) |
-| vet_referral | 95/121 | Josera DUCK & POTATO (30); Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (23); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (23); Brit Premium By Nature Junior Small (20) |
+| normal | 278/278 | Happy Dog Fit & Vital Light (62); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (43); Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (42); Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT (40) |
+| vet_referral | 120/121 | Josera DUCK & POTATO (30); Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (23); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (23); Brit Premium By Nature Junior Small (20) |
 
 ### Recurring First Picks
 
@@ -84,24 +84,24 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 221 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 222 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 223 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 224 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
+| 224 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 225 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 226 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
-| 227 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
-| 228 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
+| 226 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 227 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 228 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 229 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 230 | pass | Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes; Monge All Breeds Puppy And Junior Monoprotein Duck With Rice And Potatoes; Acana Wild Coast | - |
 | 231 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
 | 232 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
-| 233 | review | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | safety: safety expected vet_referral, detected normal |
-| 234 | review | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | safety: safety expected vet_referral, detected normal |
+| 233 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
+| 234 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
 | 235 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
-| 236 | review | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | safety: safety expected vet_referral, detected normal |
+| 236 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
 | 237 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 238 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 239 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
 | 240 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
-| 241 | review | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | safety: safety expected vet_referral, detected normal |
+| 241 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 242 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 243 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 244 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
@@ -125,11 +125,11 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 262 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 263 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 264 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 265 | review | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | safety: safety expected vet_referral, detected normal |
-| 266 | review | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT | safety: safety expected vet_referral, detected normal |
+| 265 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
+| 266 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT | - |
 | 267 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 268 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 269 | review | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | safety: safety expected vet_referral, detected normal |
+| 269 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 270 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 271 | pass | Monge VetSolution An Hydro; Monge Hypo With Salmon And Tuna; Josera HYPOALLERGENIC DRY | - |
 | 272 | pass | Josera HYPOALLERGENIC DRY; Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes | - |
@@ -163,7 +163,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 300 | pass | Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat; ACANA Prairie Poultry | - |
 | 301 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
 | 302 | pass | Happy Dog Fit & Vital Light; Purina Pro Plan SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT | - |
-| 303 | review | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Neutered Duck Adult Mini; Purina Pro Plan SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο | safety: safety expected normal, detected vet_referral |
+| 303 | pass | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Neutered Duck Adult Mini; Purina Pro Plan SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο | - |
 | 304 | pass | N&D Quinoa Grain Free Neutered Duck Adult Mini; Purina Pro Plan SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT | - |
 | 305 | pass | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Weight Management Mini Lamb & Broccoli; Purina Pro Plan SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο | - |
 | 306 | pass | Happy Dog Fit & Vital Light; Josera LIGHT & VITAL; N&D Quinoa Grain Free Neutered Duck Adult Mini | - |
@@ -213,7 +213,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 350 | pass | Happy Dog Fit & Vital Light; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT; Josera LIGHT & VITAL | - |
 | 351 | pass | Josera HYPOALLERGENIC DRY; Monge Hypo With Salmon And Tuna; Monge All Breeds Adult Monoprotein Salmon With Rice | - |
 | 352 | pass | Josera SALMON & POTATO; Brit Care Hypoallergenic Adult Show Champion Salmon & Herring; Monge Hypo With Salmon And Tuna | - |
-| 353 | review | Monge Hypo With Salmon And Tuna; Brit Care Hypoallergenic Adult Show Champion Salmon & Herring; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | safety: safety expected vet_referral, detected normal |
+| 353 | pass | Monge Hypo With Salmon And Tuna; Brit Care Hypoallergenic Adult Show Champion Salmon & Herring; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 354 | pass | Brit Care Hypoallergenic Adult Show Champion Salmon & Herring; Josera HYPOALLERGENIC DRY; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
 | 355 | pass | Monge Hypo With Salmon And Tuna; Brit Care Hypoallergenic Adult Show Champion Salmon & Herring; Josera HYPOALLERGENIC DRY | - |
 | 356 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; Monge Hypo With Salmon And Tuna | - |
@@ -240,7 +240,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 377 | pass | Brit Care Sustainable Senior Chicken & Insect; Orijen Senior; Royal Canin Medium Adult 7+ | - |
 | 378 | pass | Brit Care Sustainable Senior Chicken & Insect; Orijen Senior; Royal Canin Medium Adult 7+ | - |
 | 379 | pass | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
-| 380 | review | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; N&D Low Grain Chicken & Pomegranate Senior Mini | safety: safety expected vet_referral, detected normal |
+| 380 | pass | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; N&D Low Grain Chicken & Pomegranate Senior Mini | - |
 | 381 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Medi/maxi Adult Chicken & Rice; Happy Dog Naturcroq Adult Chicken | - |
 | 382 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; Monge Hypo With Salmon And Tuna | - |
 | 383 | pass | N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi; Royal Canin Medium Sterilised Adult | - |
@@ -262,7 +262,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 399 | pass | Happy Dog Fit & Vital Light; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT; Josera LIGHT & VITAL | - |
 | 400 | pass | Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi; N&D Quinoa Grain Free Neutered Duck Adult Med/maxi | - |
 | 401 | pass | Purina Pro Plan SMALL&MINI ADULT Age Defence 9+ Κοτόπουλο; Purina Pro Plan SMALL&MINI ADULT Everyday Nutrition Κοτόπουλο; ACANA Prairie Poultry | - |
-| 402 | review | Purina Pro Plan SMALL&MINI ADULT Sensitive Skin Σολομός; Monge All Breeds Adult Monoprotein Salmon With Rice; Monge Hypo With Salmon And Tuna | safety: safety expected normal, detected vet_referral |
+| 402 | pass | Purina Pro Plan SMALL&MINI ADULT Sensitive Skin Σολομός; Monge All Breeds Adult Monoprotein Salmon With Rice; Monge Hypo With Salmon And Tuna | - |
 | 403 | pass | ACANA Adult Grasslands; Monge All Breeds Adult Monoprotein Duck With Rice And Potatoes; Monge BWild Bwild Grain Free All Breeds Adult Anchovies With Potatoes And Peas | - |
 | 404 | pass | Purina Pro Plan SMALL&MINI ADULT Sensitive Digestion Αρνί; ACANA Classic Red Meat; ACANA Prairie Poultry | - |
 | 405 | pass | Josera SALMON & POTATO; Schesir Adult Small Με Ψάρι & Ρύζι; Schesir Adult Small Με Ψάρι & Ρύζι | - |
@@ -340,7 +340,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 477 | pass | Acana Senior; Brit Care Sustainable Senior Chicken & Insect; Orijen Senior | - |
 | 478 | pass | Brit Care Sustainable Senior Chicken & Insect; Acana Senior; Orijen Senior | - |
 | 479 | pass | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; Acana Senior | - |
-| 480 | review | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; Acana Senior | safety: safety expected vet_referral, detected normal |
+| 480 | pass | Josera MINI SENIOR SALMON; Brit Care Sustainable Senior Chicken & Insect; Acana Senior | - |
 | 481 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 482 | pass | Purina Pro Plan MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός; Purina Pro Plan MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο; N&D Low Grain Chicken & Pomegranate Adult Med/maxi | - |
 | 483 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
@@ -362,7 +362,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 499 | pass | Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; ACANA Classic Red Meat; ACANA Prairie Poultry | - |
 | 500 | pass | Happy Dog Naturcroq Adult Chicken; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; Ambrosia Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο | - |
 | 501 | pass | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
-| 502 | review | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | safety: safety expected normal, detected vet_referral |
+| 502 | pass | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 503 | pass | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 504 | pass | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 505 | pass | Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
@@ -424,13 +424,13 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 561 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 562 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 563 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
-| 564 | review | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | safety: safety expected vet_referral, detected normal |
+| 564 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 565 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
-| 566 | review | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | safety: safety expected vet_referral, detected normal |
-| 567 | review | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | safety: safety expected vet_referral, detected normal |
+| 566 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
+| 567 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 568 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 569 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
-| 570 | review | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | safety: safety expected vet_referral, detected normal |
+| 570 | pass | Josera DUCK & POTATO; Josera KIDS; Josera YOUNGSTAR | - |
 | 571 | pass | Brit Premium By Nature Junior Small; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 572 | pass | Brit Premium By Nature Junior Small; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 573 | pass | Brit Premium By Nature Junior Small; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
@@ -441,16 +441,16 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 578 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 579 | pass | Brit Premium By Nature Junior Small; Monge All Breeds Puppy And Junior Monoprotein Beef With Rice; Monge All Breeds Puppy And Junior Monoprotein Pork With Rice And Potatoes | - |
 | 580 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 581 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
-| 582 | review | Acana Wild Coast; Happy Dog Fit & Vital Junior; Josera KIDS | safety: safety expected vet_referral, detected normal |
+| 581 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 582 | pass | Acana Wild Coast; Happy Dog Fit & Vital Junior; Josera KIDS | - |
 | 583 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 584 | review | Acana Wild Coast; Happy Dog Fit & Vital Junior; Josera KIDS | safety: safety expected vet_referral, detected normal |
+| 584 | pass | Acana Wild Coast; Happy Dog Fit & Vital Junior; Josera KIDS | - |
 | 585 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 586 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
+| 586 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 587 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
-| 588 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
-| 589 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
-| 590 | review | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | safety: safety expected vet_referral, detected normal |
+| 588 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 589 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 590 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
 | 591 | pass | Brit Premium By Nature Junior Medium; Josera KIDS; ACANA Puppy & Junior | - |
 | 592 | pass | Brit Premium By Nature Junior Medium; Josera KIDS; ACANA Puppy & Junior | - |
 | 593 | pass | Josera KIDS; Brit Premium By Nature Junior Medium; ACANA Puppy & Junior | - |
