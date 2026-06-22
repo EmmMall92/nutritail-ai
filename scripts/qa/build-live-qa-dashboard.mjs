@@ -46,6 +46,21 @@ const responseContractSuite = {
   layer: "conversation safety + required answer structure",
 };
 
+const customerUxSuites = [
+  {
+    name: "Customer-facing recommendation QA",
+    source: "reports/customer_facing_recommendation_qa.md",
+    command: "npm.cmd run qa:chatbot-customer-recommendations",
+    layer: "customer food shortlist language + card flow",
+  },
+  {
+    name: "Customer UX copy contract QA",
+    source: "reports/customer_ux_copy_contract_qa.md",
+    command: "npm.cmd run qa:customer-ux-copy",
+    layer: "account/chatbot copy leakage guard",
+  },
+];
+
 function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
@@ -141,6 +156,21 @@ function parseResponseContractReport(suite) {
   };
 }
 
+function parsePassFailReport(suite) {
+  const text = readReport(suite.source);
+  const result =
+    text.match(/^- Result:\s*([A-Z]+)/im)?.[1]?.trim() ??
+    text.match(/^## Result\s+([A-Z]+)/im)?.[1]?.trim() ??
+    "unknown";
+  const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+
+  return {
+    ...suite,
+    result,
+    runDate,
+  };
+}
+
 function percent(value, total) {
   if (total === 0) return "0.0%";
   return `${((value / total) * 100).toFixed(1)}%`;
@@ -149,6 +179,7 @@ function percent(value, total) {
 const parsed = suites.map(parseReport);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
 const parsedResponseContract = parseResponseContractReport(responseContractSuite);
+const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -198,6 +229,7 @@ const lines = [
   `- Response contracts checked: ${parsedResponseContract.checked}`,
   `- Response contracts passed: ${parsedResponseContract.passed}`,
   `- Response contracts failed: ${parsedResponseContract.failed}`,
+  `- Customer UX suites passing: ${parsedCustomerUx.filter((suite) => suite.result === "PASS").length}/${parsedCustomerUx.length}`,
   "",
   "## Species Coverage",
   "",
@@ -235,6 +267,15 @@ const lines = [
   "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |",
   `| ${parsedResponseContract.name} | \`${parsedResponseContract.source}\` | ${parsedResponseContract.layer} | \`${parsedResponseContract.command}\` | ${parsedResponseContract.status} | ${parsedResponseContract.checked} | ${parsedResponseContract.passed} | ${parsedResponseContract.failed} | ${parsedResponseContract.contractsCovered} | ${parsedResponseContract.missingContracts} | ${parsedResponseContract.runDate} |`,
   "",
+  "## Customer UX Evidence",
+  "",
+  "| Suite | Source report | Layer | Command | Result | Last run |",
+  "| --- | --- | --- | --- | --- | --- |",
+  ...parsedCustomerUx.map(
+    (suite) =>
+      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} |`,
+  ),
+  "",
   "## Current Interpretation",
   "",
   "- Dog coverage is proven across 600 live recommendation scenarios.",
@@ -242,6 +283,7 @@ const lines = [
   "- The live suites currently show no review cases.",
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
+  "- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.",
   "",
   "## Next QA Gaps",
   "",
@@ -259,4 +301,13 @@ console.log(`Needs review: ${totals.review}`);
 
 if (parsedResponseContract.failed > 0 || parsedResponseContract.status !== "PASS") {
   throw new Error("Response contract audit is not passing.");
+}
+
+const failingCustomerUx = parsedCustomerUx.filter((suite) => suite.result !== "PASS");
+if (failingCustomerUx.length > 0) {
+  throw new Error(
+    `Customer UX QA is not passing: ${failingCustomerUx
+      .map((suite) => suite.name)
+      .join(", ")}`,
+  );
 }

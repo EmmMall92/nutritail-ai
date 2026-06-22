@@ -1,4 +1,8 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const reportPath =
+  process.env.NUTRITAIL_QA_REPORT_PATH || "reports/customer_ux_copy_contract_qa.md";
 
 const customerCopyFiles = ["app/account/page.tsx"];
 
@@ -66,6 +70,38 @@ for (const required of requiredCustomerCopy) {
     failures.push(`${required.file}: missing required customer copy "${required.text}".`);
   }
 }
+
+function writeReport() {
+  mkdirSync(path.dirname(reportPath), { recursive: true });
+  writeFileSync(
+    reportPath,
+    [
+      "# Customer UX Copy Contract QA",
+      "",
+      `Generated: ${new Date().toISOString()}`,
+      "",
+      "This QA checks customer-facing account/chatbot copy for backend leakage and required customer guidance.",
+      "",
+      "## Summary",
+      "",
+      `- Files checked: ${new Set([...customerCopyFiles, ...requiredCustomerCopy.map((item) => item.file)]).size}`,
+      `- Banned copy checks: ${bannedCustomerCopy.length}`,
+      `- Required copy checks: ${requiredCustomerCopy.length}`,
+      `- Failed: ${failures.length}`,
+      "",
+      "## Result",
+      "",
+      failures.length === 0 ? "PASS" : "FAIL",
+      "",
+      "## Failures",
+      "",
+      ...(failures.length > 0 ? failures.map((failure) => `- ${failure}`) : ["- none"]),
+    ].join("\n") + "\n",
+    "utf8",
+  );
+}
+
+writeReport();
 
 if (failures.length > 0) {
   console.error("Customer UX copy contract failed:");

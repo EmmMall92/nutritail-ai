@@ -1,5 +1,10 @@
 import { formatFoodV2ChatbotRecommendationSummary } from "@/lib/food-v2/chatbotRecommendationSummary";
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const reportPath =
+  process.env.NUTRITAIL_QA_REPORT_PATH ||
+  "reports/customer_facing_recommendation_qa.md";
 
 function toEscapedUnicode(value: string) {
   return value.replace(/[^\x00-\x7F]/g, (char) =>
@@ -650,5 +655,30 @@ if (
   );
   process.exit(1);
 }
+
+mkdirSync(path.dirname(reportPath), { recursive: true });
+writeFileSync(
+  reportPath,
+  [
+    "# Customer-Facing Recommendation QA",
+    "",
+    `Generated: ${new Date().toISOString()}`,
+    "",
+    "This QA checks that Food V2 recommendations are presented in customer language without backend labels, raw scores, or confusing save-before-choice flows.",
+    "",
+    "## Summary",
+    "",
+    `- Scenario summaries checked: ${coreScenarioSamples.length}`,
+    `- Forbidden customer-facing terms checked: ${forbiddenTerms.length}`,
+    `- Required card-flow copy checks: ${requiredCardFlowCopy.length}`,
+    `- Required Greek card-flow copy checks: ${requiredGreekCardFlowCopy.length}`,
+    "- Result: PASS",
+    "",
+    "## Covered Scenarios",
+    "",
+    ...coreScenarioSamples.map((scenario) => `- ${scenario.label}`),
+  ].join("\n") + "\n",
+  "utf8",
+);
 
 console.log("Customer-facing chatbot recommendation QA passed.");
