@@ -275,7 +275,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "meal timing"
       ]
     },
     {
@@ -287,7 +288,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "meal timing"
       ]
     },
     {
@@ -299,7 +301,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "digestive"
       ]
     },
     {
@@ -349,7 +352,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "ingredient"
       ]
     },
     {
@@ -361,7 +365,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "ingredient"
       ]
     },
     {
@@ -411,7 +416,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "fiber"
       ]
     },
     {
@@ -423,7 +429,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "transition"
       ]
     },
     {
@@ -435,7 +442,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "digestibility"
       ]
     },
     {
@@ -447,7 +455,8 @@
       ],
       "expectedSafetyLevel": "caution",
       "expectedResponseMustMention": [
-        "veterinarian"
+        "veterinarian",
+        "transition"
       ]
     },
     {
@@ -620,7 +629,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "transition"
+        "transition",
+        "wet food"
       ]
     },
     {
@@ -632,7 +642,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "portion"
+        "portion",
+        "calories"
       ]
     },
     {
@@ -1019,7 +1030,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "senior"
+        "senior",
+        "weight"
       ]
     },
     {
@@ -1031,7 +1043,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "senior"
+        "senior",
+        "appetite"
       ]
     },
     {
@@ -1068,7 +1081,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "portion"
+        "portion",
+        "chewing"
       ]
     },
     {
@@ -1131,7 +1145,8 @@
       ],
       "expectedSafetyLevel": "normal",
       "expectedResponseMustMention": [
-        "portion"
+        "portion",
+        "chewing"
       ]
     },
     {
