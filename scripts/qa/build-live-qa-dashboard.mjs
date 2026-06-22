@@ -139,7 +139,7 @@ const lines = [
   "",
   "## Next QA Gaps",
   "",
-  "- Add a smaller live suite where OpenAI extraction is explicitly enabled, so we prove the full hybrid flow separately from deterministic recommendation quality.",
+  "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove live OpenAI fact extraction separately from deterministic recommendation quality.",
   "- Keep adding real customer-style cases when new foods or new clinical rules are introduced.",
   "- When recommendation ranking changes, rerun the affected dog/cat suite before merge.",
   "",
