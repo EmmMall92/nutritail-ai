@@ -95,6 +95,8 @@ type FoodV2Item = {
 type CaseResult = {
   id: number;
   status: "pass" | "review";
+  goal: RecommendationGoal;
+  safety: SafetyExpectation;
   extractionSource: "openai" | "skipped";
   factsWarnings: string[];
   flowWarnings: string[];
@@ -1050,6 +1052,84 @@ function markdownEscape(value: string) {
   return value.replace(/\|/g, "\\|").replace(/\n/g, " ");
 }
 
+function countItems(items: string[]) {
+  const counts = new Map<string, number>();
+  for (const item of items) counts.set(item, (counts.get(item) ?? 0) + 1);
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+function resultSummary(results: CaseResult[]) {
+  const byGoal = new Map<RecommendationGoal, CaseResult[]>();
+  const bySafety = new Map<SafetyExpectation, CaseResult[]>();
+
+  for (const result of results) {
+    byGoal.set(result.goal, [...(byGoal.get(result.goal) ?? []), result]);
+    bySafety.set(result.safety, [...(bySafety.get(result.safety) ?? []), result]);
+  }
+
+  const goalRows = [...byGoal.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([goal, goalResults]) => {
+      const passCount = goalResults.filter((result) => result.status === "pass").length;
+      const topFirstFoods = countItems(
+        goalResults
+          .map((result) => result.topFoods[0])
+          .filter((food): food is string => Boolean(food))
+      )
+        .slice(0, 3)
+        .map(([food, count]) => `${food} (${count})`)
+        .join("; ");
+
+      return `| ${goal} | ${passCount}/${goalResults.length} | ${markdownEscape(topFirstFoods || "None")} |`;
+    });
+
+  const safetyRows = [...bySafety.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([safety, safetyResults]) => {
+      const passCount = safetyResults.filter((result) => result.status === "pass").length;
+      const topFoods = countItems(safetyResults.flatMap((result) => result.topFoods.slice(0, 2)))
+        .slice(0, 4)
+        .map(([food, count]) => `${food} (${count})`)
+        .join("; ");
+
+      return `| ${safety} | ${passCount}/${safetyResults.length} | ${markdownEscape(topFoods || "None")} |`;
+    });
+
+  const recurringFirstPicks = countItems(
+    results
+      .map((result) => result.topFoods[0])
+      .filter((food): food is string => Boolean(food))
+  )
+    .filter(([, count]) => count >= 6)
+    .slice(0, 12)
+    .map(([food, count]) => `- ${food}: ${count} first-pick appearances`);
+
+  return [
+    "## Executive Summary",
+    "",
+    "### Goal Coverage",
+    "",
+    "| Goal | Pass rate | Most common first picks |",
+    "| --- | ---: | --- |",
+    ...goalRows,
+    "",
+    "### Safety Coverage",
+    "",
+    "| Safety level | Pass rate | Common top-2 foods |",
+    "| --- | ---: | --- |",
+    ...safetyRows,
+    "",
+    "### Recurring First Picks",
+    "",
+    ...(recurringFirstPicks.length
+      ? recurringFirstPicks
+      : ["- No single first pick appears in six or more cases."]),
+    "",
+    "Use this section for qualitative review: repeated first picks can be healthy if they match the scenario, but they can also reveal over-dominant ranking signals.",
+    "",
+  ];
+}
+
 function renderReport(results: CaseResult[]) {
   const passed = results.filter((item) => item.status === "pass").length;
   const review = results.length - passed;
@@ -1072,6 +1152,7 @@ function renderReport(results: CaseResult[]) {
       ? "OpenAI fact extraction was checked for each case."
       : "OpenAI fact extraction was not checked in this run because no usable OPENAI_API_KEY was available to the QA runner.",
     "",
+    ...resultSummary(results),
     "## Results",
     "",
     "| # | Status | Top foods | Review notes |",
@@ -1135,6 +1216,8 @@ async function main() {
     results.push({
       id: testCase.id,
       status: warnings.length === 0 ? "pass" : "review",
+      goal: testCase.goal,
+      safety: testCase.safety,
       extractionSource: extraction ? "openai" : "skipped",
       factsWarnings,
       flowWarnings,
