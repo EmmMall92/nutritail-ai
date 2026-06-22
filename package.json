@@ -138,7 +138,8 @@
     "qa:nutrition-source-map-intake": "tsx scripts/qa/check-nutrition-source-map-intake.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs",
-    "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs"
+    "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs",
+    "qa:chatbot-live-dashboard": "node scripts/qa/build-live-qa-dashboard.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
