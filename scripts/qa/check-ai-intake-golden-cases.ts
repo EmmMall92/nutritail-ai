@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
@@ -13,6 +14,8 @@ type GoldenCase = {
 const goldenPath =
   process.env.NUTRITAIL_AI_INTAKE_GOLDEN_PATH ??
   "data/evals/ai-intake-golden-cases.json";
+const reportPath =
+  process.env.NUTRITAIL_QA_REPORT_PATH ?? "reports/ai_intake_golden_qa.md";
 
 function includesExpectedArray(actual: unknown, expected: unknown[]) {
   if (!Array.isArray(actual)) return false;
@@ -216,6 +219,31 @@ async function main() {
     checkFallbackPetNameCleanup(),
   ];
   const failed = results.filter((result) => result.status === "fail");
+  const report = [
+    "# AI Intake Golden QA",
+    "",
+    `Generated: ${new Date().toISOString()}`,
+    "",
+    "This QA checks deterministic intake fallback, validation cleanup, pet-name cleanup, and taste-preference parsing.",
+    "",
+    "## Summary",
+    "",
+    `- Cases checked: ${results.length}`,
+    `- Passed: ${results.length - failed.length}`,
+    `- Failed: ${failed.length}`,
+    "",
+    "## Results",
+    "",
+    "| Case | Status | Source | Notes |",
+    "| --- | --- | --- | --- |",
+    ...results.map((result) => {
+      const notes = result.failures.length > 0 ? result.failures.join("; ") : "-";
+      return `| ${result.id} | ${result.status} | ${result.source} | ${notes} |`;
+    }),
+  ];
+
+  await mkdir(path.dirname(reportPath), { recursive: true });
+  await writeFile(reportPath, `${report.join("\n")}\n`, "utf8");
 
   console.log(
     JSON.stringify(
@@ -223,6 +251,7 @@ async function main() {
         checked: results.length,
         passed: results.length - failed.length,
         failed: failed.length,
+        report: reportPath,
         results,
       },
       null,
