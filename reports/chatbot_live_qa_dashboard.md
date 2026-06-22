@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-22T20:22:38.299Z
+Generated: 2026-06-22T20:26:12.125Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -18,6 +18,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Response contracts checked: 156
 - Response contracts passed: 156
 - Response contracts failed: 0
+- Customer UX suites passing: 2/2
 
 ## Species Coverage
 
@@ -45,7 +46,14 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Contracts covered | Missing contracts | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
-| Chatbot response contract audit | `reports/chatbot_response_contract_summary.md` | conversation safety + required answer structure | `npm.cmd run review:chatbot:responses` | PASS | 156 | 156 | 0 | compare, context_question, nutrition_reasoning, safety_escalation, transition_guidance | none | 2026-06-22T20:22:18.205Z |
+| Chatbot response contract audit | `reports/chatbot_response_contract_summary.md` | conversation safety + required answer structure | `npm.cmd run review:chatbot:responses` | PASS | 156 | 156 | 0 | compare, context_question, nutrition_reasoning, safety_escalation, transition_guidance | none | 2026-06-22T20:22:38.329Z |
+
+## Customer UX Evidence
+
+| Suite | Source report | Layer | Command | Result | Last run |
+| --- | --- | --- | --- | --- | --- |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-22T20:26:11.057Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-22T20:26:11.701Z |
 
 ## Current Interpretation
 
@@ -54,6 +62,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - The live suites currently show no review cases.
 - OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
 - Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.
+- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.
 
 ## Next QA Gaps
 
