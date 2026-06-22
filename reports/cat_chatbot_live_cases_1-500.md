@@ -1,7 +1,7 @@
 # Cat Chatbot Live Cases 001-500
 
 Site: https://nutritail.ai
-Run date: 2026-06-22T17:58:26.078Z
+Run date: 2026-06-22T19:06:45.932Z
 Result: 500/500 passed, 0 review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-500.json`.

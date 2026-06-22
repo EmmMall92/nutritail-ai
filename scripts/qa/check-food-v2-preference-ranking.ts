@@ -2265,6 +2265,16 @@ const largeContextLargePuppyRanking = rankFoodV2ForPet({
   pet: largeBreedContextPuppy,
   goal: "growth",
 });
+const largeContextLargePuppyWithoutMineralsRanking = rankFoodV2ForPet({
+  food: largeBreedPuppyFood,
+  nutrients: {
+    ...nutrients(largeBreedPuppyFood),
+    calcium_percent: null,
+    phosphorus_percent: null,
+  },
+  pet: largeBreedContextPuppy,
+  goal: "growth",
+});
 
 if (largeContextSmallPuppyRanking.bucket !== "hold") {
   console.error("Small puppy food should be held when user context says large-breed puppy.");
@@ -2275,6 +2285,28 @@ if (largeContextSmallPuppyRanking.bucket !== "hold") {
 if (largeContextLargePuppyRanking.total_score <= largeContextSmallPuppyRanking.total_score) {
   console.error("Large-breed puppy context should prefer large-breed puppy food over small puppy food.");
   console.error({ largeContextLargePuppyRanking, largeContextSmallPuppyRanking });
+  process.exit(1);
+}
+
+if (
+  largeContextLargePuppyRanking.total_score <=
+  largeContextLargePuppyWithoutMineralsRanking.total_score
+) {
+  console.error("Large-breed puppy food with Ca/P data should outrank the same food without Ca/P data.");
+  console.error({
+    largeContextLargePuppyRanking,
+    largeContextLargePuppyWithoutMineralsRanking,
+  });
+  process.exit(1);
+}
+
+if (
+  !largeContextLargePuppyWithoutMineralsRanking.signals.some(
+    (signal) => signal.code === "large_breed_growth_mineral_gap"
+  )
+) {
+  console.error("Expected large_breed_growth_mineral_gap when Ca/P data is missing.");
+  console.error(largeContextLargePuppyWithoutMineralsRanking.signals);
   process.exit(1);
 }
 
