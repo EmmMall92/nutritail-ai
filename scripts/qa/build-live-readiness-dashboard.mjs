@@ -6,6 +6,12 @@ const outputPath = "reports/live_readiness_dashboard.md";
 
 const routeSuites = [
   {
+    name: "Public launch live routes",
+    source: "reports/public_launch_live_route_smoke_qa.md",
+    command: "npm.cmd run qa:public-launch-live-routes",
+    layer: "homepage, auth pages, legal pages, SEO files, manifest, OpenGraph image",
+  },
+  {
     name: "Food V2 live routes",
     source: "reports/food_v2_live_route_smoke_qa.md",
     command: "npm.cmd run qa:food-v2-live-routes",
