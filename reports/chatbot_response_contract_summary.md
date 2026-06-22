@@ -1,14 +1,14 @@
 # Chatbot Response Contract Summary
 
-Generated: 2026-06-18T20:12:38.488Z
+Generated: 2026-06-22T20:18:39.784Z
 
 ## Result
 
-FAIL
+PASS
 
 Cases: 156
-Passed: 141
-Failed: 15
+Passed: 156
+Failed: 0
 
 ## Coverage
 
@@ -93,30 +93,21 @@ Missing contracts: none
 - PASS dog-118-unexplained-weight-loss: nutrition_reasoning, safety_escalation, transition_guidance; mentions=calorie, veterinarian, weight; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-119-begging: nutrition_reasoning, transition_guidance; mentions=calorie, calories, treats; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-120-eats-fast: nutrition_reasoning; mentions=calorie, portion; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-121-vomits-empty-stomach: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-122-morning-vomit: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-123-eats-grass: nutrition_reasoning, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-121-vomits-empty-stomach: nutrition_reasoning, safety_escalation, transition_guidance; mentions=meal timing, veterinarian; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-122-morning-vomit: nutrition_reasoning, safety_escalation, transition_guidance; mentions=meal timing, veterinarian; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-123-eats-grass: nutrition_reasoning, transition_guidance; mentions=digestive, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-124-coprophagia: nutrition_reasoning, safety_escalation; mentions=calorie, portion, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-125-licks-paws: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
 - PASS dog-126-itches-after-food: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
-- FAIL dog-127-bites-tail: nutrition_reasoning, safety_escalation; mentions=veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-128-ear-infections: nutrition_reasoning, safety_escalation; mentions=veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-127-bites-tail: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
+- PASS dog-128-ear-infections: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
 - PASS dog-129-chronic-itch: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
 - PASS dog-130-poor-coat: nutrition_reasoning, safety_escalation; mentions=individual, ingredient, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-131-constipation: nutrition_reasoning, safety_escalation, transition_guidance; mentions=fiber, veterinarian; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-132-chronic-soft-stool: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-133-ibd: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-134-epi: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-135-gastritis: nutrition_reasoning, safety_escalation, transition_guidance; mentions=veterinarian; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-132-chronic-soft-stool: nutrition_reasoning, safety_escalation, transition_guidance; mentions=fiber, veterinarian; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-133-ibd: nutrition_reasoning, safety_escalation, transition_guidance; mentions=transition, veterinarian; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-134-epi: nutrition_reasoning, safety_escalation, transition_guidance; mentions=digestibility, veterinarian; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-135-gastritis: nutrition_reasoning, safety_escalation, transition_guidance; mentions=transition, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-136-food-intolerance: nutrition_reasoning, safety_escalation, transition_guidance; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
 - PASS dog-137-no-dairy: nutrition_reasoning; mentions=individual, ingredient; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-138-no-legumes: nutrition_reasoning; mentions=individual, ingredient; forbidden=always best, diagnose, guaranteed cure
@@ -130,10 +121,8 @@ Missing contracts: none
 - PASS dog-146-many-ingredient-allergy: nutrition_reasoning, safety_escalation; mentions=ingredient, veterinarian; forbidden=allergy is confirmed, always best, diagnose, guaranteed cure
 - PASS dog-147-fish-only: nutrition_reasoning; mentions=individual, ingredient; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-148-wet-only: nutrition_reasoning; mentions=ingredient, portion; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-149-refuses-dry: nutrition_reasoning; mentions=transition; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-150-eats-with-wet: nutrition_reasoning; mentions=portion; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-149-refuses-dry: nutrition_reasoning; mentions=transition, wet food; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-150-eats-with-wet: nutrition_reasoning; mentions=calories, portion; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-151-urinary-problem: nutrition_reasoning, safety_escalation; mentions=minerals, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-152-struvite-history: nutrition_reasoning, safety_escalation; mentions=minerals, veterinarian; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-153-oxalate-history: nutrition_reasoning, safety_escalation; mentions=minerals, veterinarian; forbidden=always best, diagnose, guaranteed cure
@@ -164,20 +153,16 @@ Missing contracts: none
 - PASS dog-178-giant-puppy: nutrition_reasoning; mentions=calcium, phosphorus; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-179-poor-growth-puppy: nutrition_reasoning, safety_escalation; mentions=calcium, phosphorus, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-180-thin-puppy: nutrition_reasoning, safety_escalation, transition_guidance; mentions=calcium, calorie, calories, phosphorus, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-181-sixteen-year-old: nutrition_reasoning; mentions=senior; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
-- FAIL dog-182-seventeen-year-old: nutrition_reasoning; mentions=senior; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-181-sixteen-year-old: nutrition_reasoning; mentions=senior, weight; forbidden=always best, diagnose, guaranteed cure
+- PASS dog-182-seventeen-year-old: nutrition_reasoning; mentions=appetite, senior; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-183-cognitive-dysfunction: nutrition_reasoning, safety_escalation; mentions=senior, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-184-smell-food-poorly: nutrition_reasoning, safety_escalation; mentions=veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-185-no-teeth: nutrition_reasoning; mentions=portion; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-185-no-teeth: nutrition_reasoning; mentions=chewing, portion; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-186-chokes-large-kibble: nutrition_reasoning, safety_escalation; mentions=portion, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-187-low-activity-age: nutrition_reasoning; mentions=calories, senior; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-188-sleeps-20-hours: nutrition_reasoning, safety_escalation; mentions=senior, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-189-low-appetite-age: nutrition_reasoning, safety_escalation; mentions=senior, veterinarian, veterinary; forbidden=always best, diagnose, guaranteed cure
-- FAIL dog-190-easy-chewing: nutrition_reasoning; mentions=portion; forbidden=always best, diagnose, guaranteed cure
-  Issues: Response contract needs at least two required mentions
+- PASS dog-190-easy-chewing: nutrition_reasoning; mentions=chewing, portion; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-191-hot-climate: nutrition_reasoning; mentions=portion, water; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-192-cold-climate: nutrition_reasoning; mentions=calorie, calories, protein; forbidden=always best, diagnose, guaranteed cure
 - PASS dog-193-outside-only: nutrition_reasoning; mentions=calorie, calories, protein; forbidden=always best, diagnose, guaranteed cure
