@@ -24,6 +24,21 @@ const suites = [
   },
 ];
 
+const intakeSuites = [
+  {
+    name: "AI intake golden QA",
+    source: "reports/ai_intake_golden_qa.md",
+    command: "npm.cmd run qa:ai-intake",
+    layer: "deterministic fallback + validation",
+  },
+  {
+    name: "OpenAI intake smoke QA",
+    source: "reports/openai_intake_smoke_qa.md",
+    command: "npm.cmd run qa:openai-intake-smoke",
+    layer: "OpenAI structured fact extraction",
+  },
+];
+
 function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
@@ -70,12 +85,38 @@ function parseReport(suite) {
   };
 }
 
+function parseIntakeReport(suite) {
+  const text = readReport(suite.source);
+  const status = text.match(/^Status:\s*([^\n]+)/im)?.[1]?.trim() ?? "completed";
+  const skipped = status.toLowerCase() === "skipped";
+  const checked = skipped
+    ? 0
+    : matchNumber(text, [/- Cases checked:\s*(\d+)/i], `${suite.source} cases checked`);
+  const passed = skipped
+    ? 0
+    : matchNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
+  const failed = skipped
+    ? 0
+    : matchNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+
+  return {
+    ...suite,
+    status,
+    checked,
+    passed,
+    failed,
+    runDate,
+  };
+}
+
 function percent(value, total) {
   if (total === 0) return "0.0%";
   return `${((value / total) * 100).toFixed(1)}%`;
 }
 
 const parsed = suites.map(parseReport);
+const parsedIntake = intakeSuites.map(parseIntakeReport);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -84,6 +125,16 @@ const totals = parsed.reduce(
     return acc;
   },
   { checked: 0, passed: 0, review: 0 },
+);
+const intakeTotals = parsedIntake.reduce(
+  (acc, suite) => {
+    acc.checked += suite.checked;
+    acc.passed += suite.passed;
+    acc.failed += suite.failed;
+    acc.skipped += suite.status.toLowerCase() === "skipped" ? 1 : 0;
+    return acc;
+  },
+  { checked: 0, passed: 0, failed: 0, skipped: 0 },
 );
 
 const bySpecies = parsed.reduce((acc, suite) => {
@@ -108,6 +159,10 @@ const lines = [
   `- Passed: ${totals.passed}`,
   `- Needs review: ${totals.review}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
+  `- Intake QA checked: ${intakeTotals.checked}`,
+  `- Intake QA passed: ${intakeTotals.passed}`,
+  `- Intake QA failed: ${intakeTotals.failed}`,
+  `- Intake QA skipped suites: ${intakeTotals.skipped}`,
   "",
   "## Species Coverage",
   "",
@@ -130,12 +185,21 @@ const lines = [
       `| ${suite.name} | \`${suite.source}\` | \`${suite.fixture}\` | ${suite.checked} | ${suite.passed} | ${suite.review} | \`${suite.runner}\` | ${suite.openAiExtraction} | ${suite.runDate} |`,
   ),
   "",
+  "## Intake Evidence",
+  "",
+  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+  ...parsedIntake.map(
+    (suite) =>
+      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} |`,
+  ),
+  "",
   "## Current Interpretation",
   "",
   "- Dog coverage is proven across 600 live recommendation scenarios.",
   "- Cat coverage is proven across 500 live recommendation scenarios.",
   "- The live suites currently show no review cases.",
-  "- OpenAI fact extraction is not the main proof in these live suites; they primarily validate Food V2 retrieval, deterministic ranking, safety guards, and recommendation availability.",
+  "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "",
   "## Next QA Gaps",
   "",

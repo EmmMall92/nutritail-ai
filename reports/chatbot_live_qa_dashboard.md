@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-22T20:11:11.081Z
+Generated: 2026-06-22T20:14:52.335Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -11,6 +11,10 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Passed: 1100
 - Needs review: 0
 - Pass rate: 100.0%
+- Intake QA checked: 18
+- Intake QA passed: 18
+- Intake QA failed: 0
+- Intake QA skipped suites: 1
 
 ## Species Coverage
 
@@ -27,12 +31,19 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-22T19:35:07.060Z |
 | Cat chatbot live QA 001-500 | `reports/cat_chatbot_live_cases_1-500.md` | `data/evals/chatbot-extra-cases-cat-001-500.json` | 500 | 500 | 0 | `npm.cmd run qa:cat-chatbot-live-cases:500:chunks` | not recorded | 2026-06-22T19:59:07.279Z |
 
+## Intake Evidence
+
+| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
+| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-22T20:14:50.935Z |
+| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-22T20:14:51.956Z |
+
 ## Current Interpretation
 
 - Dog coverage is proven across 600 live recommendation scenarios.
 - Cat coverage is proven across 500 live recommendation scenarios.
 - The live suites currently show no review cases.
-- OpenAI fact extraction is not the main proof in these live suites; they primarily validate Food V2 retrieval, deterministic ranking, safety guards, and recommendation availability.
+- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
 
 ## Next QA Gaps
 
