@@ -100,6 +100,7 @@
     "qa:customer-recommendation-smoke": "tsx scripts/qa/check-customer-recommendation-smoke.ts",
     "qa:chatbot-customer-recommendations": "tsx scripts/qa/check-chatbot-customer-facing-recommendations.ts",
     "qa:customer-ux-copy": "tsx scripts/qa/check-customer-ux-copy-contract.ts",
+    "qa:chatbot-safety-interrupts": "tsx scripts/qa/check-chatbot-safety-interrupts.ts",
     "qa:feeding-rules": "tsx scripts/qa/check-feeding-rule-edge-cases.ts",
     "qa:gi-allergy-senior-v2": "tsx scripts/qa/check-gi-allergy-senior-v2.ts",
     "qa:medical-rules": "tsx scripts/qa/check-medical-rule-edge-cases.ts",

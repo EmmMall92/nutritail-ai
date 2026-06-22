@@ -7,6 +7,11 @@ import {
   goalFromPetContext,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import {
+  detectSafetyWarnings,
+  formatSafetyInterruptMessage,
+  hasHardStop,
+} from "@/lib/chatbot/safetyRules";
 import { formatPetDisplayName } from "@/lib/petName";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
@@ -44,6 +49,10 @@ type PetIntake = {
   healthIssues: string[];
   allergies: string[];
 };
+
+function buildSafetyMessageFromIntake(pet: PetIntake) {
+  return [...(pet.healthIssues ?? []), ...(pet.allergies ?? [])].filter(Boolean).join(" ");
+}
 
 type Customer = {
   id: string;
@@ -303,6 +312,27 @@ export default function ChatbotPage() {
 
   async function runAnalysis(nextPet: PetIntake) {
     try {
+      const safetyWarnings = detectSafetyWarnings({
+        message: buildSafetyMessageFromIntake(nextPet),
+        pet: {
+          species: nextPet.species,
+          age: nextPet.age,
+          weight: nextPet.weight,
+          activityLevel: nextPet.activityLevel,
+          neutered: nextPet.neutered,
+          healthIssues: nextPet.healthIssues,
+          allergies: nextPet.allergies,
+        },
+        locale: "el",
+      });
+
+      if (hasHardStop(safetyWarnings)) {
+        setShowSave(false);
+        setStep("done");
+        addMessages(createMessage("bot", formatSafetyInterruptMessage(safetyWarnings, "el")));
+        return;
+      }
+
       setIsAnalyzing(true);
       setStep("analysis");
 

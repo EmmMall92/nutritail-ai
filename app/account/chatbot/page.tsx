@@ -29,6 +29,11 @@ import {
   parseTastePreferences as parseSharedTastePreferences,
   removeExcludedFromPreferred as removeSharedExcludedFromPreferred,
 } from "@/lib/chatbot/tastePreferences";
+import {
+  detectSafetyWarnings,
+  formatSafetyInterruptMessage,
+  hasHardStop,
+} from "@/lib/chatbot/safetyRules";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
@@ -108,6 +113,18 @@ type PetIntake = {
   currentFoodName?: string;
   weightGoal?: WeightGoal;
 };
+
+function buildSafetyMessageFromIntake(pet: PetIntake) {
+  return [
+    ...(pet.healthIssues ?? []),
+    ...(pet.allergies ?? []),
+    ...(pet.excludedIngredients ?? []),
+    ...(pet.preferredProteins ?? []),
+    pet.currentFoodName ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
 
 type RecommendedFoodChoice = {
   name: string;
@@ -3442,6 +3459,29 @@ Then I can help decide whether the plan is working or needs adjustment.`
 
   async function runAnalysis(nextPet: PetIntake) {
     try {
+      const safetyWarnings = detectSafetyWarnings({
+        message: buildSafetyMessageFromIntake(nextPet),
+        pet: {
+          species: nextPet.species,
+          age: nextPet.age,
+          weight: nextPet.weight,
+          activityLevel: nextPet.activityLevel,
+          neutered: nextPet.neutered,
+          healthIssues: nextPet.healthIssues,
+          allergies: nextPet.allergies,
+          currentFood: nextPet.currentFoodName,
+        },
+        locale: chatLanguage,
+      });
+
+      if (hasHardStop(safetyWarnings)) {
+        setRecommendedFoodChoices([]);
+        setShowSave(false);
+        setStep("done");
+        addMessages(createMessage("bot", formatSafetyInterruptMessage(safetyWarnings, chatLanguage)));
+        return;
+      }
+
       setIsAnalyzing(true);
       setStep("analysis");
       setRecommendedFoodChoices([]);
