@@ -174,7 +174,7 @@ export function evaluateGrowthFitRules(input: GrowthFitInput) {
       signals.push({
         type: "caution",
         code: "large_breed_growth_mineral_gap",
-        points: -14,
+        points: -32,
         message: "Large-breed puppy ranking needs calcium and phosphorus data.",
       });
     } else {
@@ -183,7 +183,7 @@ export function evaluateGrowthFitRules(input: GrowthFitInput) {
         signals.push({
           type: "boost",
           code: "large_breed_growth_ca_p_available",
-          points: 8,
+          points: 16,
           message: "Calcium and phosphorus data support growth-stage review.",
         });
       } else {
