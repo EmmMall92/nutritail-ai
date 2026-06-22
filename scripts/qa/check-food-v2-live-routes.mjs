@@ -15,6 +15,11 @@ const checks = [
     label: "Food V2 recommendation visibility page",
   },
   {
+    path: "/admin/validation",
+    expected: [200, 302, 307],
+    label: "Admin validation and AI policy page",
+  },
+  {
     path: "/api/admin/foods/v2-best-candidates/summary",
     expected: [200, 401, 403, 307],
     label: "Best candidates summary API",
@@ -28,6 +33,11 @@ const checks = [
     path: "/api/admin/foods/v2-brand-batches",
     expected: [200, 401, 403, 307],
     label: "Brand batches API",
+  },
+  {
+    path: "/api/admin/ai-status",
+    expected: [200, 401, 403, 307],
+    label: "Admin AI status API",
   },
 ];
 
