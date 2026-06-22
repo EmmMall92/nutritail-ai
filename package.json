@@ -126,6 +126,7 @@
     "qa:dog-chatbot-live-cases:201-600:chunks": "node scripts/qa/run-dog-chatbot-live-cases-201-600-chunks.mjs",
     "qa:cat-chatbot-live-cases": "tsx scripts/qa/run-cat-chatbot-live-cases.ts",
     "qa:cat-chatbot-live-cases:500": "node scripts/qa/run-cat-chatbot-live-cases-500.mjs",
+    "qa:cat-chatbot-live-cases:500:chunks": "node scripts/qa/run-cat-chatbot-live-cases-500-chunks.mjs",
     "qa:dog-edge-live-chunks": "node scripts/qa/run-dog-edge-live-chunks.mjs",
     "qa:chatbot-golden-suite": "node scripts/qa/run-chatbot-golden-suite.mjs",
     "qa:chatbot-golden-suite:fast": "node scripts/qa/run-chatbot-golden-suite.mjs --fast",
