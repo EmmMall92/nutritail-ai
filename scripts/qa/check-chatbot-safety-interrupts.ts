@@ -61,6 +61,24 @@ const cases: SafetyCase[] = [
     species: "cat",
     expectedHardStop: false,
   },
+  {
+    id: "male-cat-flutd-history-not-urgent",
+    message: "Στειρωμένος γάτος 6kg με ιστορικό FLUTD",
+    species: "cat",
+    expectedHardStop: false,
+  },
+  {
+    id: "greedy-eating-not-blood",
+    message: "Rescue γάτα που τρώει λαίμαργα",
+    species: "cat",
+    expectedHardStop: false,
+  },
+  {
+    id: "kitten-picky-eating-not-emergency",
+    message: "Γατάκι 2 μηνών που δεν τρώει εύκολα",
+    species: "cat",
+    expectedHardStop: false,
+  },
 ];
 
 function codes(warnings: ChatbotSafetyWarning[]) {
