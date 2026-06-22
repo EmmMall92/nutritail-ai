@@ -71,6 +71,7 @@ type CatQaResult = {
 
 const SITE_URL = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const DEFAULT_REPORT_PATH = "reports/cat_chatbot_live_cases_1-100.md";
+const DEFAULT_FIXTURE_PATH = "data/evals/chatbot-extra-cases-cat-001-100.json";
 const STRICT = process.env.NUTRITAIL_QA_STRICT === "1";
 
 function normalizeText(value: string) {
@@ -118,9 +119,15 @@ function inferPet(testCase: CatFixtureCase) {
   const prompt = normalizeText(testCase.prompt);
   const signals = new Set(testCase.expectedSignals);
   const weight = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*kg/) ?? 4;
-  const monthAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:μηνων|months)/);
-  const yearAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:ετων|χρονων|years?)/);
-  const age = monthAge != null ? Number((monthAge / 12).toFixed(2)) : yearAge ?? (signals.has("kitten_growth") ? 0.5 : signals.has("senior") ? 11 : 4);
+  const monthAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:\u03bc\u03b7\u03bd|month)/);
+  const weekAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:\u03b5\u03b2\u03b4\u03bf\u03bc\u03b1\u03b4|week)/);
+  const yearAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:\u03b5\u03c4|\u03c7\u03c1\u03bf\u03bd|year)/);
+  const age =
+    weekAge != null
+      ? Number((weekAge / 52).toFixed(2))
+      : monthAge != null
+        ? Number((monthAge / 12).toFixed(2))
+        : yearAge ?? (signals.has("kitten_growth") ? 0.5 : signals.has("senior") ? 11 : 4);
 
   const healthIssues = [
     signals.has("urinary") ? "urinary" : null,
@@ -133,8 +140,8 @@ function inferPet(testCase: CatFixtureCase) {
     species: "cat",
     weight,
     age,
-    activityLevel: prompt.includes("outdoor") || signals.has("active") ? "high" : "low",
-    neutered: signals.has("sterilised") || prompt.includes("στειρω"),
+    activityLevel: prompt.includes("outdoor") || prompt.includes("\u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1") || signals.has("active") ? "high" : "low",
+    neutered: signals.has("sterilised") || prompt.includes("\u03c3\u03c4\u03b5\u03b9\u03c1"),
     healthIssues,
     allergies: inferAllergies(prompt),
     excludedIngredients: inferAllergies(prompt),
@@ -144,22 +151,33 @@ function inferPet(testCase: CatFixtureCase) {
 
 function inferAllergies(prompt: string) {
   const allergies: string[] = [];
-  if (prompt.includes("κοτοπουλ") || prompt.includes("chicken")) allergies.push("chicken");
-  if (prompt.includes("σολομ") || prompt.includes("salmon")) allergies.push("salmon");
-  if (prompt.includes("ψαρ") || prompt.includes("fish")) allergies.push("fish");
-  if (prompt.includes("μοσχαρ") || prompt.includes("beef")) allergies.push("beef");
-  if (prompt.includes("αρν") || prompt.includes("lamb")) allergies.push("lamb");
-  return prompt.includes("αλλεργ") || prompt.includes("ευαισθη") ? allergies : [];
+  if (prompt.includes("\u03ba\u03bf\u03c4\u03bf\u03c0") || prompt.includes("chicken")) allergies.push("chicken");
+  if (prompt.includes("\u03b3\u03b1\u03bb\u03bf\u03c0") || prompt.includes("turkey")) allergies.push("turkey");
+  if (prompt.includes("\u03c3\u03bf\u03bb\u03bf\u03bc") || prompt.includes("salmon")) allergies.push("salmon");
+  if (prompt.includes("\u03c8\u03b1\u03c1") || prompt.includes("fish")) allergies.push("fish");
+  if (prompt.includes("\u03bc\u03bf\u03c3\u03c7") || prompt.includes("beef")) allergies.push("beef");
+  if (prompt.includes("\u03b1\u03c1\u03bd") || prompt.includes("lamb")) allergies.push("lamb");
+  if (prompt.includes("\u03b1\u03c5\u03b3") || prompt.includes("egg")) allergies.push("egg");
+  if (prompt.includes("\u03c3\u03b9\u03c4\u03b7\u03c1") || prompt.includes("grain")) allergies.push("grain");
+  if (prompt.includes("\u03ba\u03b1\u03bb\u03b1\u03bc\u03c0\u03bf\u03ba") || prompt.includes("corn")) allergies.push("corn");
+  return prompt.includes("\u03b1\u03bb\u03bb\u03b5\u03c1\u03b3") ||
+    prompt.includes("\u03b5\u03c5\u03b1\u03b9\u03c3\u03b8\u03b7") ||
+    prompt.includes("\u03b4\u03c5\u03c3\u03b1\u03bd\u03b5\u03be") ||
+    prompt.includes("elimination")
+    ? allergies
+    : [];
 }
 
 function inferPreferredProteins(prompt: string) {
   const preferred: string[] = [];
-  if (prompt.includes("κοτοπουλ") || prompt.includes("chicken")) preferred.push("chicken");
-  if (prompt.includes("σολομ") || prompt.includes("salmon")) preferred.push("salmon");
-  if (prompt.includes("τονο") || prompt.includes("tuna")) preferred.push("tuna");
-  if (prompt.includes("παπια") || prompt.includes("duck")) preferred.push("duck");
-  if (prompt.includes("ψαρ") || prompt.includes("fish")) preferred.push("fish");
-  if (prompt.includes("αρν") || prompt.includes("lamb")) preferred.push("lamb");
+  if (prompt.includes("\u03ba\u03bf\u03c4\u03bf\u03c0") || prompt.includes("chicken")) preferred.push("chicken");
+  if (prompt.includes("\u03b3\u03b1\u03bb\u03bf\u03c0") || prompt.includes("turkey")) preferred.push("turkey");
+  if (prompt.includes("\u03c3\u03bf\u03bb\u03bf\u03bc") || prompt.includes("salmon")) preferred.push("salmon");
+  if (prompt.includes("\u03c4\u03bf\u03bd\u03bf") || prompt.includes("tuna")) preferred.push("tuna");
+  if (prompt.includes("\u03c0\u03b1\u03c0\u03b9\u03b1") || prompt.includes("duck")) preferred.push("duck");
+  if (prompt.includes("\u03c8\u03b1\u03c1") || prompt.includes("fish")) preferred.push("fish");
+  if (prompt.includes("\u03b1\u03c1\u03bd") || prompt.includes("lamb")) preferred.push("lamb");
+  if (prompt.includes("\u03ba\u03bf\u03c5\u03bd\u03b5\u03bb") || prompt.includes("rabbit")) preferred.push("rabbit");
   return preferred;
 }
 
@@ -198,27 +216,30 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
 
   if (response.error) warnings.push(`Recommendation endpoint returned error: ${response.error}`);
   if (!response.total_candidates) warnings.push("Food V2 returned zero cat candidates.");
+  if (testCase.expectedSafetyLevel === "urgent" && foods.length > 0) {
+    warnings.push("Urgent safety case returned visible food recommendations; chatbot should block shopping mode before showing foods.");
+  }
   if (foods.length === 0 && testCase.expectedSafetyLevel !== "urgent") {
     warnings.push("No visible cat recommendations returned.");
   }
 
-  if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /σκυλ/, /puppy/])) {
+  if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /\u03c3\u03ba\u03c5\u03bb/, /puppy/])) {
     warnings.push("Visible shortlist appears to contain dog food terms.");
   }
 
-  if (signals.has("urinary") && !hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /ουρο/])) {
+  if (signals.has("urinary") && !hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /\u03bf\u03c5\u03c1\u03bf/])) {
     warnings.push("Urinary case did not surface urinary/struvite/oxalate candidates.");
   }
 
-  if (signals.has("renal") && !hasFoodMatch(foods, [/renal/, /kidney/, /νεφρ/])) {
+  if (signals.has("renal") && !hasFoodMatch(foods, [/renal/, /kidney/, /\u03bd\u03b5\u03c6\u03c1/])) {
     warnings.push("Renal case did not surface renal/kidney candidates.");
   }
 
-  if (signals.has("kitten_growth") && !hasFoodMatch(foods, [/kitten/, /growth/, /junior/, /γατακι/])) {
+  if (signals.has("kitten_growth") && !hasFoodMatch(foods, [/kitten/, /growth/, /junior/, /\u03b3\u03b1\u03c4\u03b1\u03ba\u03b9/])) {
     warnings.push("Kitten growth case did not surface kitten/growth candidates.");
   }
 
-  if (signals.has("sterilised") && !hasFoodMatch(foods, [/sterili[sz]ed/, /neutered/, /στειρ/, /indoor/, /light/])) {
+  if (signals.has("sterilised") && !hasFoodMatch(foods, [/sterili[sz]ed/, /neutered/, /\u03c3\u03c4\u03b5\u03b9\u03c1/, /indoor/, /light/])) {
     warnings.push("Sterilised case did not surface sterilised/neutered/indoor/light candidates.");
   }
 
@@ -238,14 +259,20 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   if (goal === "allergy") {
     const prompt = normalizeText(testCase.prompt);
     const riskyProteins = [
-      ["chicken", /chicken|κοτοπουλ/],
-      ["salmon", /salmon|σολομ/],
-      ["beef", /beef|μοσχαρ/],
-      ["lamb", /lamb|αρν/],
+      ["chicken", /chicken|\u03ba\u03bf\u03c4\u03bf\u03c0/],
+      ["turkey", /turkey|\u03b3\u03b1\u03bb\u03bf\u03c0/],
+      ["salmon", /salmon|\u03c3\u03bf\u03bb\u03bf\u03bc/],
+      ["beef", /beef|\u03bc\u03bf\u03c3\u03c7/],
+      ["lamb", /lamb|\u03b1\u03c1\u03bd/],
+      ["fish", /fish|\u03c8\u03b1\u03c1/],
     ] as const;
 
     for (const [protein, pattern] of riskyProteins) {
-      if (prompt.includes("αλλεργ") && pattern.test(prompt) && hasFoodMatch(foods.slice(0, 3), [new RegExp(protein)])) {
+      if (
+        (prompt.includes("\u03b1\u03bb\u03bb\u03b5\u03c1\u03b3") || prompt.includes("\u03b5\u03c5\u03b1\u03b9\u03c3\u03b8\u03b7") || prompt.includes("\u03b4\u03c5\u03c3\u03b1\u03bd\u03b5\u03be")) &&
+        pattern.test(prompt) &&
+        hasFoodMatch(foods.slice(0, 3), [new RegExp(protein)])
+      ) {
         warnings.push(`Top allergy shortlist may contain excluded protein: ${protein}.`);
       }
     }
@@ -361,18 +388,29 @@ function resultSummary(results: CatQaResult[]) {
   ];
 }
 
-function reportMarkdown(results: CatQaResult[]) {
+function caseRange(results: CatQaResult[]) {
+  const numbers = results
+    .map((result) => Number.parseInt(result.id.replace(/\D/g, ""), 10))
+    .filter(Number.isFinite);
+  if (!numbers.length) return "selected";
+  const first = String(Math.min(...numbers)).padStart(3, "0");
+  const last = String(Math.max(...numbers)).padStart(3, "0");
+  return `${first}-${last}`;
+}
+
+function reportMarkdown(results: CatQaResult[], fixturePath: string) {
   const passed = results.filter((result) => result.status === "pass").length;
   const review = results.length - passed;
+  const range = caseRange(results);
 
   return [
-    "# Cat Chatbot Live Cases 001-100",
+    `# Cat Chatbot Live Cases ${range}`,
     "",
     `Site: ${SITE_URL}`,
     `Run date: ${new Date().toISOString()}`,
     `Result: ${passed}/${results.length} passed, ${review} review`,
     "",
-    "This QA checks the live Food V2 recommendation endpoint with cat scenarios from `data/evals/chatbot-extra-cases-cat-001-100.json`.",
+    `This QA checks the live Food V2 recommendation endpoint with cat scenarios from \`${fixturePath}\`.`,
     "It focuses on species safety, empty shortlists, and major nutrition-direction mismatches for urinary, renal, kitten, senior, sterilised, weight-control, and allergy scenarios.",
     "",
     ...resultSummary(results),
@@ -395,8 +433,9 @@ function reportMarkdown(results: CatQaResult[]) {
 }
 
 async function main() {
-  const fixturePath = path.join(process.cwd(), "data/evals/chatbot-extra-cases-cat-001-100.json");
-  const fixture = JSON.parse(await readFile(fixturePath, "utf8")) as { cases: CatFixtureCase[] };
+  const fixturePath = process.env.NUTRITAIL_QA_CAT_FIXTURE_PATH || DEFAULT_FIXTURE_PATH;
+  const absoluteFixturePath = path.join(process.cwd(), fixturePath);
+  const fixture = JSON.parse(await readFile(absoluteFixturePath, "utf8")) as { cases: CatFixtureCase[] };
   const selected = selectedCaseIds();
   const limit = Number.parseInt(process.env.NUTRITAIL_QA_CASE_LIMIT ?? "", 10);
   const cases = fixture.cases
@@ -417,7 +456,7 @@ async function main() {
 
   const reportPath = process.env.NUTRITAIL_QA_REPORT_PATH || DEFAULT_REPORT_PATH;
   await mkdir(path.dirname(reportPath), { recursive: true });
-  await writeFile(reportPath, reportMarkdown(results), "utf8");
+  await writeFile(reportPath, reportMarkdown(results, fixturePath), "utf8");
 
   const reviewCount = results.filter((result) => result.status === "review").length;
   console.log(`\nWrote ${reportPath}`);
