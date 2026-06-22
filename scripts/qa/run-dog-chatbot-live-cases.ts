@@ -842,6 +842,8 @@ async function getRecommendations(testCase: DogQaCase, extraction: ExtractionRes
       "User-Agent": "NutriTail-dog-chatbot-live-qa/1.0",
     },
     body: JSON.stringify({
+      message: testCase.message,
+      prompt: testCase.message,
       pet: inferPetFromCase(testCase, extraction),
       goal: testCase.goal,
       format: "dry",

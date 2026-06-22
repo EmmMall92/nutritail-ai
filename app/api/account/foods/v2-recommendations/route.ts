@@ -10,6 +10,7 @@ import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendati
 import { isLikelyNonCompleteFoodProduct } from "@/lib/food-v2/productFormGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
 import { evaluateFoodIntelligence } from "@/lib/food-intelligence/evaluateFood";
+import { detectSafetyWarnings, hasHardStop } from "@/lib/chatbot/safetyRules";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 import type { PetActivityLevel, PetSpecies } from "@/types/pet";
 
@@ -98,6 +99,22 @@ function goalFrom(value: unknown): FoodV2RecommendationGoal {
 function activityLevelFrom(value: unknown): PetActivityLevel {
   if (value === "low" || value === "normal" || value === "high") return value;
   return "normal";
+}
+
+function safetyMessageFromRequest(body: Record<string, unknown>, pet: Record<string, unknown>) {
+  return [
+    body.message,
+    body.prompt,
+    body.query,
+    pet.currentFood,
+    pet.currentFoodName,
+    ...stringArray(pet.healthIssues),
+    ...stringArray(pet.allergies),
+    ...stringArray(pet.excludedIngredients),
+    ...stringArray(pet.dislikedIngredients),
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function compactRanking(
@@ -233,6 +250,44 @@ export async function POST(request: Request) {
       );
     }
     const petSpecies = species as PetSpecies;
+    const petContext = {
+      species: petSpecies,
+      breed: String(pet.breed ?? ""),
+      age: numberValue(pet.age, petSpecies === "cat" ? 3 : 4),
+      weight: numberValue(pet.weight, petSpecies === "cat" ? 4 : 10),
+      activityLevel: activityLevelFrom(pet.activityLevel),
+      neutered: Boolean(pet.neutered),
+      allergies: stringArray(pet.allergies),
+      healthIssues: stringArray(pet.healthIssues),
+      excludedIngredients: stringArray(
+        pet.excludedIngredients ?? pet.dislikedIngredients
+      ),
+      preferredProteins: stringArray(pet.preferredProteins ?? pet.preferredFlavors),
+    };
+    const safetyWarnings = detectSafetyWarnings({
+      message: safetyMessageFromRequest(body, pet),
+      pet: petContext,
+      locale: "el",
+    });
+
+    if (hasHardStop(safetyWarnings)) {
+      return NextResponse.json({
+        goal,
+        pet: petContext,
+        total_candidates: 0,
+        premium: [],
+        value: [],
+        hold: [],
+        safety: {
+          hard_stop: true,
+          warnings: safetyWarnings,
+        },
+        notes: [
+          "Urgent symptom safety interrupt blocked customer-facing food recommendations.",
+          "Recommend veterinary assessment before shopping-mode food advice.",
+        ],
+      });
+    }
 
     let productsQuery = supabaseAdmin
       .from("food_products_v2")
@@ -283,21 +338,6 @@ export async function POST(request: Request) {
         row,
       ])
     );
-
-    const petContext = {
-      species: petSpecies,
-      breed: String(pet.breed ?? ""),
-      age: numberValue(pet.age, petSpecies === "cat" ? 3 : 4),
-      weight: numberValue(pet.weight, petSpecies === "cat" ? 4 : 10),
-      activityLevel: activityLevelFrom(pet.activityLevel),
-      neutered: Boolean(pet.neutered),
-      allergies: stringArray(pet.allergies),
-      healthIssues: stringArray(pet.healthIssues),
-      excludedIngredients: stringArray(
-        pet.excludedIngredients ?? pet.dislikedIngredients
-      ),
-      preferredProteins: stringArray(pet.preferredProteins ?? pet.preferredFlavors),
-    };
 
     const rankedRows = productRows.map((product) => {
       const { food_product_id: ignoredFoodProductId, ...nutrients } =

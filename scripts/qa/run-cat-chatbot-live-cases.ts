@@ -56,6 +56,10 @@ type RecommendationResponse = {
   premium?: FoodV2Item[];
   value?: FoodV2Item[];
   hold?: FoodV2Item[];
+  safety?: {
+    hard_stop?: boolean;
+    warnings?: Array<{ code?: string; severity?: string; message?: string }>;
+  };
   error?: string;
 };
 
@@ -213,15 +217,21 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   const warnings: string[] = [];
   const foods = allVisibleFoods(response);
   const signals = new Set(testCase.expectedSignals);
+  const safetyHardStop = response.safety?.hard_stop === true;
 
   if (response.error) warnings.push(`Recommendation endpoint returned error: ${response.error}`);
-  if (!response.total_candidates) warnings.push("Food V2 returned zero cat candidates.");
+  if (!response.total_candidates && !safetyHardStop) warnings.push("Food V2 returned zero cat candidates.");
   if (testCase.expectedSafetyLevel === "urgent" && foods.length > 0) {
     warnings.push("Urgent safety case returned visible food recommendations; chatbot should block shopping mode before showing foods.");
+  }
+  if (testCase.expectedSafetyLevel === "urgent" && !safetyHardStop) {
+    warnings.push("Urgent safety case did not return a safety hard stop.");
   }
   if (foods.length === 0 && testCase.expectedSafetyLevel !== "urgent") {
     warnings.push("No visible cat recommendations returned.");
   }
+
+  if (safetyHardStop) return warnings;
 
   if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /\u03c3\u03ba\u03c5\u03bb/, /puppy/])) {
     warnings.push("Visible shortlist appears to contain dog food terms.");
@@ -289,6 +299,8 @@ async function runCase(testCase: CatFixtureCase): Promise<CatQaResult> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       goal,
+      message: testCase.prompt,
+      prompt: testCase.prompt,
       pet,
       format: "dry",
       limit_per_bucket: 3,
