@@ -110,6 +110,7 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const RUN_OPENAI = process.env.NUTRITAIL_QA_OPENAI !== "0";
 const STRICT = process.env.NUTRITAIL_QA_STRICT === "1";
 const DEFAULT_REPORT_PATH = "reports/dog_chatbot_200_live_cases.md";
+const DOG_FIXTURE_PATH = process.env.NUTRITAIL_QA_DOG_FIXTURE_PATH?.trim();
 
 const CASES: DogQaCase[] = [
   { id: 1, message: "Έχω ημίαιμο κουτάβι 4 μηνών, 8kg, θα γίνει περίπου 15kg. Θέλω ξηρά τροφή.", goal: "growth", safety: "normal", expected: { species: "dog", weightKg: 8, ageYears: 0.33 }, checks: { puppyGrowth: true, foodV2Candidates: true } },
@@ -344,10 +345,27 @@ function repairLegacyGreekMojibake(value?: string) {
   return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
 }
 
-const ALL_CASES = [...CASES, ...EXTRA_CASES_101_200].map((testCase) => ({
+const BUILT_IN_CASES = [...CASES, ...EXTRA_CASES_101_200].map((testCase) => ({
   ...testCase,
   message: repairLegacyGreekMojibake(testCase.message),
 }));
+
+async function loadExternalCases() {
+  if (!DOG_FIXTURE_PATH) return [];
+
+  const raw = await readFile(DOG_FIXTURE_PATH, "utf8");
+  const parsed = JSON.parse(raw) as DogQaCase[] | { cases?: DogQaCase[] };
+  const cases = Array.isArray(parsed) ? parsed : parsed.cases;
+
+  if (!Array.isArray(cases)) {
+    throw new Error(`Dog QA fixture must be an array or { cases: [] }: ${DOG_FIXTURE_PATH}`);
+  }
+
+  return cases.map((testCase) => ({
+    ...testCase,
+    message: repairLegacyGreekMojibake(testCase.message),
+  }));
+}
 
 function parseCaseIds(value: string | undefined) {
   if (!value?.trim()) return null;
@@ -374,32 +392,53 @@ function parseCaseIds(value: string | undefined) {
   return ids.size > 0 ? ids : null;
 }
 
-function selectedCases() {
+function selectedCases(allCases: DogQaCase[]) {
   const selectedIds = parseCaseIds(process.env.NUTRITAIL_QA_CASE_IDS);
   const limit = Number(process.env.NUTRITAIL_QA_CASE_LIMIT ?? 0);
   const cases = selectedIds
-    ? ALL_CASES.filter((testCase) => selectedIds.has(testCase.id))
-    : ALL_CASES;
+    ? allCases.filter((testCase) => selectedIds.has(testCase.id))
+    : allCases;
 
   if (Number.isInteger(limit) && limit > 0) return cases.slice(0, limit);
   return cases;
 }
 
-function resolveReportPath(casesToRun: DogQaCase[]) {
+function resolveReportPath(casesToRun: DogQaCase[], allCases: DogQaCase[]) {
   if (process.env.NUTRITAIL_QA_REPORT_PATH?.trim()) {
     return process.env.NUTRITAIL_QA_REPORT_PATH.trim();
   }
 
-  if (casesToRun.length === ALL_CASES.length) return DEFAULT_REPORT_PATH;
+  if (casesToRun.length === allCases.length && !DOG_FIXTURE_PATH) return DEFAULT_REPORT_PATH;
 
   const first = casesToRun[0]?.id ?? "none";
   const last = casesToRun.at(-1)?.id ?? first;
   return `reports/dog_chatbot_live_cases_${first}-${last}_${casesToRun.length}.md`;
 }
 
-function assertCaseCoverage() {
-  const ids = ALL_CASES.map((testCase) => testCase.id);
+function assertCaseCoverage(allCases: DogQaCase[], externalCases: DogQaCase[]) {
+  const ids = allCases.map((testCase) => testCase.id);
   const uniqueIds = new Set(ids);
+
+  if (externalCases.length > 0) {
+    const externalIds = externalCases.map((testCase) => testCase.id);
+    const externalUniqueIds = new Set(externalIds);
+    const externalProblems = [
+      externalCases.length === 0 ? "external dog chatbot fixture is empty" : null,
+      externalUniqueIds.size !== externalCases.length
+        ? "duplicate dog chatbot case ids found in external fixture"
+        : null,
+      externalCases.some((testCase) => !testCase.message?.trim())
+        ? "external dog chatbot fixture contains empty messages"
+        : null,
+    ].filter(Boolean);
+
+    if (externalProblems.length > 0) {
+      throw new Error(`Dog chatbot external QA fixture is invalid: ${externalProblems.join("; ")}`);
+    }
+
+    return;
+  }
+
   const missingExtraIds = Array.from({ length: 100 }, (_, index) => index + 101).filter(
     (id) => !uniqueIds.has(id)
   );
@@ -411,10 +450,10 @@ function assertCaseCoverage() {
     EXTRA_CASES_101_200.length !== 100
       ? `expected 100 dog edge cases 101-200, found ${EXTRA_CASES_101_200.length}`
       : null,
-    ALL_CASES.length !== 200
-      ? `expected 200 total dog chatbot cases, found ${ALL_CASES.length}`
+    allCases.length !== 200
+      ? `expected 200 total dog chatbot cases, found ${allCases.length}`
       : null,
-    uniqueIds.size !== ALL_CASES.length
+    uniqueIds.size !== allCases.length
       ? "duplicate dog chatbot case ids found"
       : null,
     missingExtraIds.length > 0
@@ -677,8 +716,6 @@ function validateMissingQuestionFlow(extraction: ExtractionResult | null) {
 function detectSafety(message: string) {
   const text = normalize(message);
   const emergencyTerms = [
-    "αιμα",
-    "αίμα",
     "κατερευσε",
     "κατέρρευσε",
     "εντονο πονο",
@@ -801,13 +838,23 @@ function detectSafety(message: string) {
     return "vet_referral" as const;
   }
 
+  const cleanBloodPattern =
+    /(?:^|[\s,.;:])(?:αιμα|αίμα)(?:$|[\s,.;:])|ματων|ματωμεν/;
   if (
-    /αιμα|αίμα|κατερρευ|έντονο πονο|εντονο πονο|δεν τρωει 2|δεν τρώει 2|εμετο συνεχεια|εμετό συνέχεια|φουσκωσει|φουσκώσει|φουσκωνει|φουσκώνει|δεν μπορει να ουρησει|δεν μπορεί να ουρήσει/.test(text)
+    cleanBloodPattern.test(text) ||
+    /κατερρευ|έντονο πονο|εντονο πονο|δεν τρωει 2|δεν τρώει 2|εμετο συνεχεια|εμετό συνέχεια|φουσκωσει|φουσκώσει|φουσκωνει|φουσκώνει|δεν μπορει να ουρησει|δεν μπορεί να ουρήσει/.test(text)
   ) {
     return "emergency" as const;
   }
+
+  const cleanVetPattern =
+    /ηπατ|αλp|alt|χολ|ουρικ|ουρολοιμ|κρυσταλλ|υπερταση|πρωτεινουρια|bcs\s*[2389]|καχεξ|υποσιτισ|σκελετωμ|αδυνατ|χαμηλη μυικ|χαμηλή μυϊκ|χαμηλη ορεξη|χαμηλή όρεξη|εγκυ|θηλαζ|τοκετ|απογαλακτισμ|ορφαν|κακη αναπτυξ|κακή ανάπτυξ|rescue|αδεσποτ|αγνωστο ιστορικο|άγνωστο ιστορικό|κακοποιηση|κακοποίηση|αρνειται να φαει|αρνείται να φάει|πολλαπλες αλλεργ|πολλαπλές αλλεργ|elimination|υποαλλεργ/;
+  if (cleanVetPattern.test(text)) {
+    return "vet_referral" as const;
+  }
+
   if (
-    /νεφρ|παγκρεατ|διαβητ|καρδιακ|διάρροια|διαρροια|εμετ|φαγουρα|φαγούρα|κοκκιν|αρθρ|μειωμενη ορεξη|μειωμένη όρεξη|δυσκοιλιοτητα|δυσκοιλιότητα|πολυ νερο|πολύ νερό|ουρολιθ|αλλεργ|ευαισθη|ευαίσθη|στομαχ|στομάχ|μαλακα κακα|μαλακά κακά|μαλακα κοπρανα|μαλακά κόπρανα|πειραζει|πειράζει|δοντια|δόντια|μαγειρευτο|μαγειρευτό|χασει πολλα κιλα|χάσει πολλά κιλά|χανει μυς|χάνει μυς|ουρει πολυ|ουρεί πολύ|πετρα στα δοντια|πέτρα στα δόντια|μονοπρωτειν/.test(text)
+    /νεφρ|παγκρεατ|διαβητ|καρδιακ|διάρροια|διαρροια|εμετ|φαγουρα|φαγούρα|κοκκιν|αρθρ|μειωμενη ορεξη|μειωμένη όρεξη|δυσκοιλιοτητα|δυσκοιλιότητα|πολυ νερο|πολύ νερό|ουρολιθ|αλλεργ|ευαισθη|ευαίσθη|στομαχ|στομάχ|μαλακα κακα|μαλακά κακά|μαλακα κοπρανα|μαλακά κόπρανα|πειραζει|πειράζει|δοντια|δόντια|μαγειρευτο|μαγειρευτό|χασει πολλα κιλα|χάσει πολλά κιλά|χανει μυς|χάνει μυς|ουρει πολυ|ουρεί πολύ|πετρα στα δοντια|πέτρα στα δόντια/.test(text)
   ) {
     return "vet_referral" as const;
   }
@@ -1177,8 +1224,11 @@ function renderReport(results: CaseResult[]) {
 }
 
 async function main() {
-  assertCaseCoverage();
   await loadEnv();
+  const externalCases = await loadExternalCases();
+  const allCases = externalCases.length > 0 ? externalCases : BUILT_IN_CASES;
+  assertCaseCoverage(allCases, externalCases);
+
   const client =
     RUN_OPENAI && process.env.OPENAI_API_KEY?.trim()
       ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY.trim() })
@@ -1186,8 +1236,8 @@ async function main() {
 
   const results: CaseResult[] = [];
 
-  const casesToRun = selectedCases();
-  const reportPath = resolveReportPath(casesToRun);
+  const casesToRun = selectedCases(allCases);
+  const reportPath = resolveReportPath(casesToRun, allCases);
 
   for (const testCase of casesToRun) {
     let extraction: ExtractionResult | null = null;

@@ -1,0 +1,5949 @@
+[
+  {
+    "id": 201,
+    "message": "Έχω σκύλο που τρώει μόνο αν βάλω γιαούρτι στην τροφή.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 202,
+    "message": "Έχω σκύλο που τρώει μόνο βράδυ.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 203,
+    "message": "Έχω σκύλο που τρώει κάθε δεύτερη μέρα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 204,
+    "message": "Έχω σκύλο που κλέβει φαγητό από τον πάγκο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 205,
+    "message": "Έχω σκύλο που τρώει πολύ γρήγορα και κάνει αναγωγές.",
+    "goal": "sensitive_digestion",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 206,
+    "message": "Έχω σκύλο που θάβει την τροφή του.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 207,
+    "message": "Έχω σκύλο που προτιμά μόνο μικρές κροκέτες.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 208,
+    "message": "Έχω σκύλο που δεν τρώει από μεταλλικό μπολ.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 209,
+    "message": "Έχω σκύλο που τρώει μόνο όταν είμαι σπίτι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 210,
+    "message": "Έχω σκύλο που δεν τρώει όταν ταξιδεύουμε.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 211,
+    "message": "Έχω σκύλο 2 ετών που κάνει agility και είναι πολύ αδύνατος.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 212,
+    "message": "Έχω σκύλο 4 ετών που κάνει canicross.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 213,
+    "message": "Έχω σκύλο εργασίας σε κοπάδι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 214,
+    "message": "Έχω σκύλο έρευνας και διάσωσης.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 215,
+    "message": "Έχω σκύλο κυνηγό που δουλεύει 3 μέρες την εβδομάδα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 216,
+    "message": "Έχω σκύλο φύλακα που ζει σε βιομηχανικό χώρο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 217,
+    "message": "Έχω σκύλο που τρέχει καθημερινά με ποδήλατο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 218,
+    "message": "Έχω σκύλο που κάνει hiking σε βουνό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 219,
+    "message": "Έχω σκύλο που συμμετέχει σε εκθέσεις μορφολογίας.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 220,
+    "message": "Έχω σκύλο αναπαραγωγής.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 221,
+    "message": "Έχω σκύλα που είναι στην αρχή της εγκυμοσύνης.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 222,
+    "message": "Έχω σκύλα στον τελευταίο μήνα εγκυμοσύνης.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 223,
+    "message": "Έχω σκύλα που θηλάζει 12 κουτάβια.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 224,
+    "message": "Έχω σκύλα που έχασε βάρος στον θηλασμό.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 225,
+    "message": "Έχω σκύλα που αρνείται να φάει μετά τον τοκετό.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 226,
+    "message": "Έχω σκύλα που μόλις στειρώθηκε μετά τον θηλασμό.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 227,
+    "message": "Έχω σκύλα που κάνει ψευδοκύηση.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 228,
+    "message": "Έχω σκύλα που χρειάζεται περισσότερη ενέργεια.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 229,
+    "message": "Έχω σκύλα με μικρή όρεξη στην εγκυμοσύνη.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 230,
+    "message": "Έχω σκύλα με ευαισθησία στο κοτόπουλο και εγκυμοσύνη.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "allergyReject": [
+        "chicken"
+      ]
+    }
+  },
+  {
+    "id": 231,
+    "message": "Έχω Dalmatian 28kg με ιστορικό ουρικών λίθων.",
+    "goal": "urinary",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 28
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 232,
+    "message": "Έχω Mini Schnauzer με ιστορικό παγκρεατίτιδας.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 233,
+    "message": "Έχω Cocker Spaniel με χρόνια ωτίτιδα.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 234,
+    "message": "Έχω Westie με ατοπική δερματίτιδα.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 235,
+    "message": "Έχω Shar Pei με ευαισθησίες δέρματος.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 236,
+    "message": "Έχω Bulldog με χρόνια δερματικά.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 237,
+    "message": "Έχω Labrador με υπερφαγία.",
+    "goal": "weight_control",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 238,
+    "message": "Έχω Beagle που κλέβει φαγητό συνεχώς.",
+    "goal": "weight_control",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 239,
+    "message": "Έχω German Shepherd με ευαίσθητο έντερο.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 240,
+    "message": "Έχω Boxer που κάνει συχνές κενώσεις.",
+    "goal": "sensitive_digestion",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 241,
+    "message": "Έχω σκύλο με αυξημένη ALP.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 242,
+    "message": "Έχω σκύλο με αυξημένη ALT.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 243,
+    "message": "Έχω σκύλο με χρόνια ηπατίτιδα.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 244,
+    "message": "Έχω σκύλο με χολολιθίαση.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 245,
+    "message": "Έχω σκύλο με χρόνια νεφρική νόσο IRIS 2.",
+    "goal": "renal",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 246,
+    "message": "Έχω σκύλο με πρωτεϊνουρία.",
+    "goal": "renal",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 247,
+    "message": "Έχω σκύλο με ιστορικό κρυστάλλων.",
+    "goal": "urinary",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 248,
+    "message": "Έχω σκύλο με συχνές ουρολοιμώξεις.",
+    "goal": "urinary",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 249,
+    "message": "Έχω σκύλο με καρδιακή ανεπάρκεια.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 250,
+    "message": "Έχω σκύλο με υπέρταση.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 251,
+    "message": "Έχω σκύλο που κάνει BARF και θέλω ξηρά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 252,
+    "message": "Έχω σκύλο που τρώει μόνο μαγειρευτό.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 253,
+    "message": "Έχω σκύλο που τρώει ξηρά και ωμή τροφή.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 254,
+    "message": "Έχω σκύλο που τρώει μόνο κονσέρβα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 255,
+    "message": "Έχω σκύλο που αλλάζει συχνά τροφή.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 256,
+    "message": "Έχω σκύλο που τρώει από 5 διαφορετικά άτομα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 257,
+    "message": "Έχω σκύλο που παίρνει πολλές λιχουδιές.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 258,
+    "message": "Έχω σκύλο που τρώει και τροφή γάτας.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 259,
+    "message": "Έχω σκύλο που τρώει ανθρώπινο φαγητό καθημερινά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 260,
+    "message": "Έχω σκύλο που αρνείται οποιαδήποτε ξηρά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 261,
+    "message": "Έχω σκύλο με BCS 2/9.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 262,
+    "message": "Έχω σκύλο με BCS 3/9.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 263,
+    "message": "Έχω σκύλο με BCS 8/9.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 264,
+    "message": "Έχω σκύλο με BCS 9/9.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 265,
+    "message": "Έχω σκύλο που έχασε 20% του βάρους του.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 266,
+    "message": "Έχω σκύλο που πήρε 10kg σε 1 χρόνο.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 267,
+    "message": "Έχω σκύλο που χάνει μυϊκή μάζα.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 268,
+    "message": "Έχω σκύλο με καχεξία.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 269,
+    "message": "Έχω σκύλο που χρειάζεται αποκατάσταση βάρους.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 270,
+    "message": "Έχω σκύλο με πολύ χαμηλή όρεξη.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 271,
+    "message": "Έχω σκύλο αλλεργικό σε κοτόπουλο, γαλοπούλα και πάπια.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "chicken",
+        "turkey",
+        "duck"
+      ],
+      "allergies": [
+        "chicken",
+        "turkey",
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "chicken",
+        "turkey",
+        "duck"
+      ]
+    }
+  },
+  {
+    "id": 272,
+    "message": "Έχω σκύλο αλλεργικό σε σολομό και τόνο.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "salmon",
+        "tuna"
+      ],
+      "allergies": [
+        "salmon",
+        "tuna"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "salmon",
+        "tuna"
+      ]
+    }
+  },
+  {
+    "id": 273,
+    "message": "Έχω σκύλο αλλεργικό σε ρύζι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "rice"
+      ],
+      "allergies": [
+        "rice"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "rice"
+      ]
+    }
+  },
+  {
+    "id": 274,
+    "message": "Έχω σκύλο αλλεργικό σε μπιζέλι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "pea"
+      ],
+      "allergies": [
+        "pea"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "pea"
+      ]
+    }
+  },
+  {
+    "id": 275,
+    "message": "Έχω σκύλο αλλεργικό σε πατάτα.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "potato"
+      ],
+      "allergies": [
+        "potato"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "potato"
+      ]
+    }
+  },
+  {
+    "id": 276,
+    "message": "Έχω σκύλο αλλεργικό σε αυγό.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "egg"
+      ],
+      "allergies": [
+        "egg"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "egg"
+      ]
+    }
+  },
+  {
+    "id": 277,
+    "message": "Έχω σκύλο αλλεργικό σε γλουτένη.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "gluten"
+      ],
+      "allergies": [
+        "gluten"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "gluten"
+      ]
+    }
+  },
+  {
+    "id": 278,
+    "message": "Έχω σκύλο με πολλαπλές τροφικές αλλεργίες.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 279,
+    "message": "Έχω σκύλο που έχει κάνει elimination diet.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 280,
+    "message": "Έχω σκύλο σε υποαλλεργική δίαιτα.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 281,
+    "message": "Έχω σκύλο που ζει στη Σαουδική Αραβία.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 282,
+    "message": "Έχω σκύλο που ζει στη Φινλανδία.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 283,
+    "message": "Έχω σκύλο που ζει στην Αυστραλία.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 284,
+    "message": "Έχω σκύλο που ζει σε τροπικό κλίμα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 285,
+    "message": "Έχω σκύλο που ζει σε υψόμετρο 2000 μέτρων.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 286,
+    "message": "Έχω σκύλο σε ιστιοπλοϊκό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 287,
+    "message": "Έχω σκύλο που ταξιδεύει με αεροπλάνο συχνά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 288,
+    "message": "Έχω σκύλο που αλλάζει χώρα κάθε μήνα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 289,
+    "message": "Έχω σκύλο σε στρατιωτική βάση.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 290,
+    "message": "Έχω σκύλο σε καταφύγιο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 291,
+    "message": "Έχω rescue σκύλο και δεν ξέρω ηλικία.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 292,
+    "message": "Έχω rescue σκύλο που βρέθηκε σκελετωμένος.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 293,
+    "message": "Έχω rescue σκύλο που φοβάται να φάει.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 294,
+    "message": "Έχω rescue σκύλο που τρώει λαίμαργα.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 295,
+    "message": "Έχω rescue σκύλο με άγνωστο ιστορικό υγείας.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 296,
+    "message": "Έχω rescue σκύλο με πιθανή κακοποίηση.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 297,
+    "message": "Έχω rescue σκύλο με έντονο άγχος.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 298,
+    "message": "Έχω rescue σκύλο που τρώει μόνο συγκεκριμένες τροφές.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 299,
+    "message": "Έχω rescue σκύλο που δεν ξέρω αν είναι στειρωμένος.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 300,
+    "message": "Έχω rescue σκύλο που θέλω να περάσω σε πλήρη premium διατροφή.",
+    "goal": "premium",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 301,
+    "message": "Στειρωμένο Yorkshire, 2 ετών, 3kg, λατρεύει κοτόπουλο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 3,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 302,
+    "message": "Στειρωμένο Yorkshire, 8 ετών, 4kg, προτιμά σολομό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 4,
+      "neutered": true,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 303,
+    "message": "Στειρωμένο Maltese, 5 ετών, 5kg, τρώει μόνο μικρές κροκέτες.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 5,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 304,
+    "message": "Στειρωμένο Chihuahua, 7 ετών, 2kg, θέλει τροφή με πάπια.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 2,
+      "neutered": true,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 305,
+    "message": "Στειρωμένο Pomeranian, 4 ετών, 3kg, λατρεύει αρνί.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 3,
+      "neutered": true,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 306,
+    "message": "Στειρωμένο Jack Russell, 6 ετών, 8kg, προτιμά ψάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8,
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 307,
+    "message": "Στειρωμένο Shih Tzu, 9 ετών, 7kg, θέλει πολύ νόστιμη τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 308,
+    "message": "Στειρωμένο Pug, 5 ετών, 9kg, παχαίνει εύκολα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 9,
+      "neutered": true,
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 309,
+    "message": "Στειρωμένο French Bulldog, 4 ετών, 12kg, θέλει σολομό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "neutered": true,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 310,
+    "message": "Στειρωμένο Boston Terrier, 6 ετών, 10kg, προτιμά γαλοπούλα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10,
+      "neutered": true,
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 311,
+    "message": "Στειρωμένο Beagle, 7 ετών, 18kg, λατρεύει κοτόπουλο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 312,
+    "message": "Στειρωμένο Cocker, 8 ετών, 14kg, προτιμά αρνί.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 14,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 313,
+    "message": "Στειρωμένο Border Collie, 5 ετών, 19kg, θέλει υψηλή πρωτεΐνη.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 19,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 314,
+    "message": "Στειρωμένο Australian Shepherd, 4 ετών, 22kg, αγαπά ψάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 315,
+    "message": "Στειρωμένο Bulldog, 6 ετών, 24kg, θέλει εύπεπτη τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 316,
+    "message": "Στειρωμένο Shar Pei, 7 ετών, 22kg, τρώει μόνο πάπια.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 317,
+    "message": "Στειρωμένο Husky, 5 ετών, 23kg, προτιμά σολομό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 23,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 318,
+    "message": "Στειρωμένο Samoyed, 8 ετών, 25kg, θέλει λευκό ψάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 319,
+    "message": "Στειρωμένο Springer Spaniel, 9 ετών, 21kg, αγαπά γαλοπούλα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 21,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 320,
+    "message": "Στειρωμένο Vizsla, 6 ετών, 24kg, θέλει τροφή χωρίς σιτάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 321,
+    "message": "Στειρωμένο Labrador, 8 ετών, 34kg, λατρεύει φαγητό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 34,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 322,
+    "message": "Στειρωμένο Golden Retriever, 7 ετών, 32kg, προτιμά αρνί.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 32,
+      "neutered": true,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 323,
+    "message": "Στειρωμένο German Shepherd, 6 ετών, 36kg, θέλει κοτόπουλο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 36,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 324,
+    "message": "Στειρωμένο Rottweiler, 5 ετών, 48kg, αγαπά μοσχάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 48,
+      "neutered": true,
+      "preferredProteins": [
+        "beef"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 325,
+    "message": "Στειρωμένο Doberman, 8 ετών, 34kg, προτιμά σολομό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 34,
+      "neutered": true,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 326,
+    "message": "Στειρωμένο Boxer, 7 ετών, 29kg, θέλει πάπια.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 29,
+      "neutered": true,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 327,
+    "message": "Στειρωμένο Akita, 9 ετών, 40kg, θέλει ψάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 40,
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 328,
+    "message": "Στειρωμένο Cane Corso, 6 ετών, 55kg, προτιμά αρνί.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 55,
+      "neutered": true,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 329,
+    "message": "Στειρωμένο Weimaraner, 5 ετών, 33kg, θέλει κοτόπουλο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 33,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 330,
+    "message": "Στειρωμένο Bernese, 8 ετών, 42kg, αγαπά γαλοπούλα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 42,
+      "neutered": true,
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 331,
+    "message": "Στειρωμένο σκυλί 10kg με λατρεία στο σολομό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 332,
+    "message": "Στειρωμένο σκυλί 15kg που τρώει μόνο αρνί.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 15,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 333,
+    "message": "Στειρωμένο σκυλί 20kg που προτιμά πάπια.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 334,
+    "message": "Στειρωμένο σκυλί 25kg που θέλει λευκό ψάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 335,
+    "message": "Στειρωμένο σκυλί 30kg που αγαπά μοσχάρι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 30,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 336,
+    "message": "Στειρωμένο σκυλί 18kg που τρώει μόνο γαλοπούλα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 337,
+    "message": "Στειρωμένο σκυλί 12kg που θέλει τροφή με κουνέλι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 338,
+    "message": "Στειρωμένο σκυλί 16kg που θέλει χοιρινό.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 16,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 339,
+    "message": "Στειρωμένο σκυλί 22kg που προτιμά πέστροφα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 340,
+    "message": "Στειρωμένο σκυλί 14kg που λατρεύει σαρδέλα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 14,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 341,
+    "message": "Στειρωμένο σκυλί 6 ετών που βαρέθηκε την τωρινή τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 342,
+    "message": "Στειρωμένο σκυλί 4 ετών που αλλάζει συχνά γεύση.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 343,
+    "message": "Στειρωμένο σκυλί 8 ετών που δεν τρώει ξηρά εύκολα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 344,
+    "message": "Στειρωμένο σκυλί 7 ετών που θέλει έντονη μυρωδιά τροφής.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 345,
+    "message": "Στειρωμένο σκυλί 5 ετών που λατρεύει ψάρι αλλά όχι κοτόπουλο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 346,
+    "message": "Στειρωμένο σκυλί 9 ετών που τρώει μόνο μικρές κροκέτες.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 347,
+    "message": "Στειρωμένο σκυλί 10 ετών που προτιμά μαλακή υφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 348,
+    "message": "Στειρωμένο σκυλί 3 ετών που ζητά συνεχώς λιχουδιές.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 349,
+    "message": "Στειρωμένο σκυλί 4 ετών που πεινάει συνέχεια.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 350,
+    "message": "Στειρωμένο σκυλί 6 ετών που τρώει αργά.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 351,
+    "message": "Στειρωμένο σκυλί 7kg με ευαισθησία στο κοτόπουλο και προτίμηση σε σολομό.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7,
+      "neutered": true,
+      "excludedIngredients": [
+        "chicken"
+      ],
+      "allergies": [
+        "chicken"
+      ],
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "chicken"
+      ]
+    }
+  },
+  {
+    "id": 352,
+    "message": "Στειρωμένο σκυλί 18kg με ευαισθησία στο αρνί και προτίμηση σε ψάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "neutered": true,
+      "excludedIngredients": [
+        "lamb"
+      ],
+      "allergies": [
+        "lamb"
+      ],
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "lamb"
+      ]
+    }
+  },
+  {
+    "id": 353,
+    "message": "Στειρωμένο σκυλί 28kg με δυσανεξία στο μοσχάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 28,
+      "neutered": true,
+      "excludedIngredients": [
+        "beef"
+      ],
+      "allergies": [
+        "beef"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "beef"
+      ]
+    }
+  },
+  {
+    "id": 354,
+    "message": "Στειρωμένο σκυλί 11kg με ευαισθησία στο καλαμπόκι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 11,
+      "neutered": true,
+      "excludedIngredients": [
+        "corn"
+      ],
+      "allergies": [
+        "corn"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "corn"
+      ]
+    }
+  },
+  {
+    "id": 355,
+    "message": "Στειρωμένο σκυλί 14kg με ευαισθησία στο σιτάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 14,
+      "neutered": true,
+      "excludedIngredients": [
+        "wheat"
+      ],
+      "allergies": [
+        "wheat"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "wheat"
+      ]
+    }
+  },
+  {
+    "id": 356,
+    "message": "Στειρωμένο σκυλί 22kg που θέλει grain free.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 357,
+    "message": "Στειρωμένο σκυλί 30kg που θέλει low grain.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 30,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 358,
+    "message": "Στειρωμένο σκυλί 17kg που θέλει μονοπρωτεϊνική τροφή.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 17,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 359,
+    "message": "Στειρωμένο σκυλί 24kg που θέλει limited ingredients.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 360,
+    "message": "Στειρωμένο σκυλί 26kg που θέλει υποαλλεργική τροφή.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 26,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 361,
+    "message": "Στειρωμένο κουτάβι 8 μηνών, 12kg, αγαπά κοτόπουλο.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 362,
+    "message": "Στειρωμένο κουτάβι 10 μηνών, 18kg, θέλει ψάρι.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 363,
+    "message": "Στειρωμένο κουτάβι 9 μηνών, 22kg, αγαπά αρνί.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 364,
+    "message": "Στειρωμένο κουτάβι 11 μηνών, 25kg, θέλει πάπια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 365,
+    "message": "Στειρωμένο κουτάβι μεγαλόσωμης φυλής, 35kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 35,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 366,
+    "message": "Στειρωμένο κουτάβι μικρόσωμης φυλής, 4kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 4,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 367,
+    "message": "Στειρωμένο κουτάβι που πεινάει συνέχεια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 368,
+    "message": "Στειρωμένο κουτάβι που παχαίνει εύκολα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 369,
+    "message": "Στειρωμένο κουτάβι που κάνει agility.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 370,
+    "message": "Στειρωμένο κουτάβι με ευαίσθητο έντερο.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 371,
+    "message": "Στειρωμένος senior σκύλος 12 ετών, 8kg, αγαπά σολομό.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8,
+      "neutered": true,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 372,
+    "message": "Στειρωμένος senior 13 ετών, 15kg, θέλει εύπεπτη τροφή.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 15,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 373,
+    "message": "Στειρωμένος senior 14 ετών, 20kg, προτιμά κοτόπουλο.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 374,
+    "message": "Στειρωμένος senior 15 ετών, 10kg, θέλει μικρή κροκέτα.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 375,
+    "message": "Στειρωμένος senior 11 ετών, 32kg, έχει μειωμένη όρεξη.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 32,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 376,
+    "message": "Στειρωμένος senior 12 ετών, 28kg, αγαπά ψάρι.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 28,
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 377,
+    "message": "Στειρωμένος senior 13 ετών, 18kg, προτιμά αρνί.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "neutered": true,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 378,
+    "message": "Στειρωμένος senior 10 ετών, 25kg, θέλει τροφή για αρθρώσεις.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 379,
+    "message": "Στειρωμένος senior 14 ετών, 7kg, θέλει πολύ νόστιμη τροφή.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 380,
+    "message": "Στειρωμένος senior 16 ετών, 6kg, τρώει δύσκολα.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 6,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 381,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει οικονομική τροφή με κοτόπουλο.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 382,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει premium τροφή με σολομό.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 383,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει super premium τροφή με αρνί.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 384,
+    "message": "Στειρωμένος σκύλος 20kg που δεν τον νοιάζει το κόστος.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 385,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει value for money.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 386,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει ελληνική εταιρεία.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 387,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει ευρωπαϊκή παραγωγή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 388,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει γαλλική τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 389,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει ιταλική τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 390,
+    "message": "Στειρωμένος σκύλος 20kg που θέλει καναδική τροφή.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 391,
+    "message": "Στειρωμένος σκύλος που αγαπά κοτόπουλο και ρύζι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "chicken",
+        "rice"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 392,
+    "message": "Στειρωμένος σκύλος που αγαπά αρνί και ρύζι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "lamb",
+        "rice"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 393,
+    "message": "Στειρωμένος σκύλος που αγαπά σολομό και πατάτα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "salmon",
+        "potato"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 394,
+    "message": "Στειρωμένος σκύλος που αγαπά πάπια και αρακά.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "duck",
+        "pea"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 395,
+    "message": "Στειρωμένος σκύλος που αγαπά γαλοπούλα και βρώμη.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 396,
+    "message": "Στειρωμένος σκύλος που αγαπά πέστροφα.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 397,
+    "message": "Στειρωμένος σκύλος που αγαπά κουνέλι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "rabbit"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 398,
+    "message": "Στειρωμένος σκύλος που αγαπά αγριογούρουνο.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 399,
+    "message": "Στειρωμένος σκύλος που αγαπά ελάφι.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 400,
+    "message": "Στειρωμένος σκύλος που αγαπά μίγμα ψαριών.",
+    "goal": "sterilised",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "neutered": true,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 401,
+    "message": "Αστείρωτο Yorkshire, 2 ετών, 3kg, λατρεύει κοτόπουλο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 3,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 402,
+    "message": "Αστείρωτο Maltese, 4 ετών, 5kg, αγαπά σολομό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 5,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 403,
+    "message": "Αστείρωτο Chihuahua, 6 ετών, 2kg, προτιμά πάπια.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 2,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 404,
+    "message": "Αστείρωτο Pomeranian, 5 ετών, 3kg, θέλει αρνί.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 3,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 405,
+    "message": "Αστείρωτο Jack Russell, 4 ετών, 8kg, τρώει μόνο ψάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 406,
+    "message": "Αστείρωτο Shih Tzu, 8 ετών, 7kg, αγαπά γαλοπούλα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7,
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 407,
+    "message": "Αστείρωτο Pug, 3 ετών, 9kg, λατρεύει κοτόπουλο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 9,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 408,
+    "message": "Αστείρωτο French Bulldog, 5 ετών, 12kg, προτιμά σολομό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 409,
+    "message": "Αστείρωτο Boston Terrier, 7 ετών, 10kg, θέλει πάπια.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 410,
+    "message": "Αστείρωτο Cavalier, 6 ετών, 8kg, θέλει μικρή κροκέτα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 411,
+    "message": "Αστείρωτο Beagle, 4 ετών, 17kg, πολύ δραστήριο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 17
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 412,
+    "message": "Αστείρωτο Cocker, 5 ετών, 13kg, αγαπά αρνί.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 13,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 413,
+    "message": "Αστείρωτο Border Collie, 3 ετών, 18kg, κάνει agility.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 414,
+    "message": "Αστείρωτο Australian Shepherd, 4 ετών, 22kg, πολύ ενεργητικό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 415,
+    "message": "Αστείρωτο Bulldog, 5 ετών, 24kg, προτιμά ψάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 416,
+    "message": "Αστείρωτο Husky, 4 ετών, 24kg, αγαπά σολομό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 417,
+    "message": "Αστείρωτο Samoyed, 7 ετών, 25kg, προτιμά λευκό ψάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 418,
+    "message": "Αστείρωτο Vizsla, 5 ετών, 24kg, πολύ αθλητικό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 419,
+    "message": "Αστείρωτο Springer Spaniel, 6 ετών, 21kg, θέλει γαλοπούλα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 21,
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 420,
+    "message": "Αστείρωτο Shar Pei, 8 ετών, 22kg, προτιμά πάπια.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 421,
+    "message": "Αστείρωτο Labrador, 4 ετών, 31kg, κυνηγόσκυλο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 31,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 422,
+    "message": "Αστείρωτο Golden Retriever, 5 ετών, 30kg, πολύ δραστήριο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 30,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 423,
+    "message": "Αστείρωτο German Shepherd, 4 ετών, 36kg, εργάζεται καθημερινά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 36,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 424,
+    "message": "Αστείρωτο Rottweiler, 5 ετών, 48kg, αγαπά μοσχάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 48,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 425,
+    "message": "Αστείρωτο Doberman, 6 ετών, 34kg, κάνει εκπαίδευση IPO.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 34,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 426,
+    "message": "Αστείρωτο Boxer, 4 ετών, 29kg, προτιμά πάπια.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 29,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 427,
+    "message": "Αστείρωτο Akita, 7 ετών, 40kg, θέλει ψάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 40,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 428,
+    "message": "Αστείρωτο Cane Corso, 5 ετών, 55kg, αγαπά αρνί.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 55,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 429,
+    "message": "Αστείρωτο Weimaraner, 4 ετών, 33kg, πολύ δραστήριο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 33,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 430,
+    "message": "Αστείρωτο Bernese, 6 ετών, 42kg, θέλει γαλοπούλα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 42,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 431,
+    "message": "Αστείρωτος σκύλος 10kg που κάνει agility.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 432,
+    "message": "Αστείρωτος σκύλος 15kg που κυνηγά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 15,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 433,
+    "message": "Αστείρωτος σκύλος 20kg που κάνει canicross.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 434,
+    "message": "Αστείρωτος σκύλος 25kg που ζει σε φάρμα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 435,
+    "message": "Αστείρωτος σκύλος 30kg που κάνει πεζοπορία.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 30,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 436,
+    "message": "Αστείρωτος σκύλος 18kg που κολυμπά συχνά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 437,
+    "message": "Αστείρωτος σκύλος 12kg που τρέχει καθημερινά.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 438,
+    "message": "Αστείρωτος σκύλος 16kg που δουλεύει με πρόβατα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 16,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 439,
+    "message": "Αστείρωτος σκύλος 22kg που είναι σκύλος διάσωσης.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 440,
+    "message": "Αστείρωτος σκύλος 14kg που είναι σκύλος θεραπείας.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 14,
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 441,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο κοτόπουλο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 442,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο αρνί.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 443,
+    "message": "Αστείρωτος σκύλος με προτίμηση στον σολομό.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 444,
+    "message": "Αστείρωτος σκύλος με προτίμηση στην πάπια.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 445,
+    "message": "Αστείρωτος σκύλος με προτίμηση στη γαλοπούλα.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 446,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο μοσχάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "beef"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 447,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο λευκό ψάρι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 448,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο κουνέλι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "rabbit"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 449,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο αγριογούρουνο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 450,
+    "message": "Αστείρωτος σκύλος με προτίμηση στο ελάφι.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 451,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο κοτόπουλο.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "chicken"
+      ],
+      "allergies": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "chicken"
+      ]
+    }
+  },
+  {
+    "id": 452,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο αρνί.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "lamb"
+      ],
+      "allergies": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "lamb"
+      ]
+    }
+  },
+  {
+    "id": 453,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο μοσχάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "beef"
+      ],
+      "allergies": [
+        "beef"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "beef"
+      ]
+    }
+  },
+  {
+    "id": 454,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο ψάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "fish"
+      ],
+      "allergies": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "fish"
+      ]
+    }
+  },
+  {
+    "id": 455,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο σιτάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "wheat"
+      ],
+      "allergies": [
+        "wheat"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "wheat"
+      ]
+    }
+  },
+  {
+    "id": 456,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο καλαμπόκι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "corn"
+      ],
+      "allergies": [
+        "corn"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "corn"
+      ]
+    }
+  },
+  {
+    "id": 457,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο αυγό.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "egg"
+      ],
+      "allergies": [
+        "egg"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "egg"
+      ]
+    }
+  },
+  {
+    "id": 458,
+    "message": "Αστείρωτος σκύλος με αλλεργία στο μπιζέλι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "pea"
+      ],
+      "allergies": [
+        "pea"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "pea"
+      ]
+    }
+  },
+  {
+    "id": 459,
+    "message": "Αστείρωτος σκύλος με πολλαπλές αλλεργίες.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 460,
+    "message": "Αστείρωτος σκύλος σε elimination diet.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 461,
+    "message": "Αστείρωτος σκύλος 8 μηνών, 12kg, λατρεύει κοτόπουλο.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 12,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 462,
+    "message": "Αστείρωτος σκύλος 10 μηνών, 18kg, θέλει ψάρι.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 463,
+    "message": "Αστείρωτος σκύλος 9 μηνών, 22kg, αγαπά αρνί.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 22,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 464,
+    "message": "Αστείρωτος σκύλος 11 μηνών, 25kg, θέλει πάπια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25,
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 465,
+    "message": "Αστείρωτος σκύλος μεγαλόσωμης φυλής, 35kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 35
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 466,
+    "message": "Αστείρωτος σκύλος μικρόσωμης φυλής, 4kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 4
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 467,
+    "message": "Αστείρωτος σκύλος που πεινάει συνέχεια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 468,
+    "message": "Αστείρωτος σκύλος που δεν παίρνει εύκολα βάρος.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 469,
+    "message": "Αστείρωτος σκύλος πολύ δραστήριος.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 470,
+    "message": "Αστείρωτος σκύλος με ευαίσθητο έντερο.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 471,
+    "message": "Αστείρωτος senior 10 ετών, 8kg, αγαπά σολομό.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8,
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 472,
+    "message": "Αστείρωτος senior 11 ετών, 15kg, θέλει εύπεπτη τροφή.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 15
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 473,
+    "message": "Αστείρωτος senior 12 ετών, 20kg, προτιμά κοτόπουλο.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20,
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 474,
+    "message": "Αστείρωτος senior 13 ετών, 10kg, θέλει μικρή κροκέτα.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 475,
+    "message": "Αστείρωτος senior 10 ετών, 32kg, έχει χαμηλή όρεξη.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 32
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 476,
+    "message": "Αστείρωτος senior 11 ετών, 28kg, αγαπά ψάρι.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 28,
+      "preferredProteins": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 477,
+    "message": "Αστείρωτος senior 12 ετών, 18kg, προτιμά αρνί.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18,
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 478,
+    "message": "Αστείρωτος senior 13 ετών, 25kg, θέλει υποστήριξη αρθρώσεων.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 479,
+    "message": "Αστείρωτος senior 14 ετών, 7kg, θέλει πολύ νόστιμη τροφή.",
+    "goal": "senior",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 480,
+    "message": "Αστείρωτος senior 15 ετών, 6kg, τρώει δύσκολα.",
+    "goal": "senior",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightKg": 6
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 481,
+    "message": "Αστείρωτος σκύλος αναπαραγωγής 20kg.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 482,
+    "message": "Αστείρωτος αρσενικός αναπαραγωγής 30kg.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 30
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 483,
+    "message": "Αστείρωτη θηλυκή πριν την αναπαραγωγή.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 484,
+    "message": "Αστείρωτη θηλυκή μετά τον οίστρο.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 485,
+    "message": "Αστείρωτος σκύλος με υψηλή ενεργειακή κατανάλωση.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 486,
+    "message": "Αστείρωτος σκύλος σε περίοδο εκπαίδευσης.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 487,
+    "message": "Αστείρωτος σκύλος με πολύ υψηλή μυϊκή μάζα.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 488,
+    "message": "Αστείρωτος σκύλος με χαμηλή μυϊκή μάζα.",
+    "goal": "general",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 489,
+    "message": "Αστείρωτος σκύλος που χρειάζεται αύξηση βάρους.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 490,
+    "message": "Αστείρωτος σκύλος που χρειάζεται συντήρηση.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 491,
+    "message": "Αστείρωτος σκύλος που θέλει οικονομική τροφή.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 492,
+    "message": "Αστείρωτος σκύλος που θέλει premium τροφή.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 493,
+    "message": "Αστείρωτος σκύλος που θέλει super premium τροφή.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 494,
+    "message": "Αστείρωτος σκύλος που θέλει grain free.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 495,
+    "message": "Αστείρωτος σκύλος που θέλει low grain.",
+    "goal": "general",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 496,
+    "message": "Αστείρωτος σκύλος που θέλει μονοπρωτεϊνική τροφή.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 497,
+    "message": "Αστείρωτος σκύλος που θέλει limited ingredients.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 498,
+    "message": "Αστείρωτος σκύλος που θέλει υποαλλεργική τροφή.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 499,
+    "message": "Αστείρωτος σκύλος που θέλει την καλύτερη τροφή ανεξαρτήτως κόστους.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 500,
+    "message": "Αστείρωτος σκύλος που θέλει value for money.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 501,
+    "message": "Κουτάβι 2 μηνών, 1kg, Yorkshire.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 1
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 502,
+    "message": "Κουτάβι 2 μηνών, 2kg, Maltese.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 2
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 503,
+    "message": "Κουτάβι 3 μηνών, 3kg, Chihuahua.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 3
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 504,
+    "message": "Κουτάβι 4 μηνών, 4kg, Pomeranian.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 4
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 505,
+    "message": "Κουτάβι 5 μηνών, 5kg, Jack Russell.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 5
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 506,
+    "message": "Κουτάβι 6 μηνών, 6kg, Shih Tzu.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 6
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 507,
+    "message": "Κουτάβι 7 μηνών, 7kg, Mini Poodle.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 7
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 508,
+    "message": "Κουτάβι 8 μηνών, 8kg, Cocker.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 509,
+    "message": "Κουτάβι 9 μηνών, 9kg, Beagle.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 9
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 510,
+    "message": "Κουτάβι 10 μηνών, 10kg, Border Collie.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 511,
+    "message": "Ημίαιμο κουτάβι 3 μηνών, 5kg, αναμενόμενο βάρος 12kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 5
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 512,
+    "message": "Ημίαιμο κουτάβι 4 μηνών, 8kg, αναμενόμενο βάρος 15kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 8
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 513,
+    "message": "Ημίαιμο κουτάβι 5 μηνών, 10kg, αναμενόμενο βάρος 20kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 10
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 514,
+    "message": "Ημίαιμο κουτάβι 6 μηνών, 15kg, αναμενόμενο βάρος 30kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 15
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 515,
+    "message": "Ημίαιμο κουτάβι 7 μηνών, 20kg, αναμενόμενο βάρος 40kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 516,
+    "message": "Ημίαιμο κουτάβι 8 μηνών, 25kg, αναμενόμενο βάρος 50kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 25
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 517,
+    "message": "Ημίαιμο κουτάβι με άγνωστη ράτσα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 518,
+    "message": "Ημίαιμο κουτάβι rescue.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 519,
+    "message": "Ημίαιμο κουτάβι που βρέθηκε αδέσποτο.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 520,
+    "message": "Ημίαιμο κουτάβι με άγνωστη ηλικία.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 521,
+    "message": "Labrador 4 μηνών, 14kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 14
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 522,
+    "message": "Labrador 6 μηνών, 24kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 24
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 523,
+    "message": "Golden Retriever 5 μηνών, 18kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 18
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 524,
+    "message": "German Shepherd 5 μηνών, 20kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 20
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 525,
+    "message": "Rottweiler 6 μηνών, 32kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 32
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 526,
+    "message": "Cane Corso 7 μηνών, 40kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 40
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 527,
+    "message": "Great Dane 6 μηνών, 45kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 45
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 528,
+    "message": "Saint Bernard 7 μηνών, 50kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 50
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 529,
+    "message": "Bernese 6 μηνών, 35kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 35
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 530,
+    "message": "Newfoundland 8 μηνών, 48kg.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "weightKg": 48
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 531,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που τρώει πολύ γρήγορα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 532,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που παχαίνει.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 533,
+    "message": "Κουτάβι μεγαλόσωμης φυλής με μαλακά κόπρανα.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 534,
+    "message": "Κουτάβι μεγαλόσωμης φυλής με ευαισθησία στο κοτόπουλο.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true,
+      "allergyReject": [
+        "chicken"
+      ]
+    }
+  },
+  {
+    "id": 535,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που θέλει σολομό.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 536,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που δεν τρώει εύκολα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 537,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που χρειάζεται υψηλή ενέργεια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 538,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που κάνει εκπαίδευση.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 539,
+    "message": "Κουτάβι μεγαλόσωμης φυλής που είναι πολύ αδύνατο.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 540,
+    "message": "Κουτάβι μεγαλόσωμης φυλής rescue.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true,
+      "largeBreedPuppy": true
+    }
+  },
+  {
+    "id": 541,
+    "message": "Κουτάβι με αλλεργία στο κοτόπουλο.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "chicken"
+      ],
+      "allergies": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "chicken"
+      ]
+    }
+  },
+  {
+    "id": 542,
+    "message": "Κουτάβι με αλλεργία στο αρνί.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "lamb"
+      ],
+      "allergies": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "lamb"
+      ]
+    }
+  },
+  {
+    "id": 543,
+    "message": "Κουτάβι με αλλεργία στο μοσχάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "beef"
+      ],
+      "allergies": [
+        "beef"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "beef"
+      ]
+    }
+  },
+  {
+    "id": 544,
+    "message": "Κουτάβι με αλλεργία στο ψάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "fish"
+      ],
+      "allergies": [
+        "fish"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "fish"
+      ]
+    }
+  },
+  {
+    "id": 545,
+    "message": "Κουτάβι με αλλεργία στο σιτάρι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "wheat"
+      ],
+      "allergies": [
+        "wheat"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "wheat"
+      ]
+    }
+  },
+  {
+    "id": 546,
+    "message": "Κουτάβι με αλλεργία στο καλαμπόκι.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "excludedIngredients": [
+        "corn"
+      ],
+      "allergies": [
+        "corn"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "allergyReject": [
+        "corn"
+      ]
+    }
+  },
+  {
+    "id": 547,
+    "message": "Κουτάβι με πολλαπλές αλλεργίες.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 548,
+    "message": "Κουτάβι σε elimination diet.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 549,
+    "message": "Κουτάβι με τροφική δυσανεξία.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 550,
+    "message": "Κουτάβι με χρόνια φαγούρα.",
+    "goal": "allergy",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 551,
+    "message": "Κουτάβι που τρώει μόνο κοτόπουλο.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "chicken"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 552,
+    "message": "Κουτάβι που τρώει μόνο σολομό.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "salmon"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 553,
+    "message": "Κουτάβι που τρώει μόνο πάπια.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "duck"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 554,
+    "message": "Κουτάβι που τρώει μόνο αρνί.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "lamb"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 555,
+    "message": "Κουτάβι που τρώει μόνο γαλοπούλα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "preferredProteins": [
+        "turkey"
+      ]
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 556,
+    "message": "Κουτάβι που θέλει πολύ έντονη μυρωδιά τροφής.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 557,
+    "message": "Κουτάβι που βαρέθηκε την τροφή του.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 558,
+    "message": "Κουτάβι που δεν τρώει ξηρά εύκολα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 559,
+    "message": "Κουτάβι που θέλει μικρή κροκέτα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 560,
+    "message": "Κουτάβι που τρώει μόνο αν βρέξω την τροφή.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 561,
+    "message": "Κουτάβι με διάρροια μετά από αλλαγή τροφής.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 562,
+    "message": "Κουτάβι με συχνούς εμετούς.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 563,
+    "message": "Κουτάβι με ευαίσθητο στομάχι.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 564,
+    "message": "Κουτάβι με γαστρεντερίτιδα στο παρελθόν.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 565,
+    "message": "Κουτάβι που κάνει μαλακά κόπρανα.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 566,
+    "message": "Κουτάβι που κάνει πολλές κενώσεις.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 567,
+    "message": "Κουτάβι που τρώει χόρτα.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 568,
+    "message": "Κουτάβι που τρώει γρήγορα και φουσκώνει.",
+    "goal": "sensitive_digestion",
+    "safety": "emergency",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 569,
+    "message": "Κουτάβι που πίνει πολύ νερό.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 570,
+    "message": "Κουτάβι που δεν πίνει αρκετό νερό.",
+    "goal": "sensitive_digestion",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true
+    }
+  },
+  {
+    "id": 571,
+    "message": "Κουτάβι που κάνει agility.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 572,
+    "message": "Κουτάβι που κάνει υπακοή.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 573,
+    "message": "Κουτάβι που εκπαιδεύεται για φύλαξη.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 574,
+    "message": "Κουτάβι που κάνει καθημερινή άσκηση.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 575,
+    "message": "Κουτάβι που ζει σε διαμέρισμα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "low"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 576,
+    "message": "Κουτάβι που ζει σε αυλή.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 577,
+    "message": "Κουτάβι που ζει σε φάρμα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog",
+      "activityLevel": "high"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true,
+      "activeFit": true
+    }
+  },
+  {
+    "id": 578,
+    "message": "Κουτάβι που ζει σε ζεστό κλίμα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 579,
+    "message": "Κουτάβι που ζει σε ψυχρό κλίμα.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 580,
+    "message": "Κουτάβι που ταξιδεύει συχνά.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 581,
+    "message": "Κουτάβι που πρέπει να πάρει βάρος.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 582,
+    "message": "Κουτάβι που είναι υπέρβαρο.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 583,
+    "message": "Κουτάβι που έχει BCS 3/9.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 584,
+    "message": "Κουτάβι που έχει BCS 7/9.",
+    "goal": "weight_control",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "loss"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "obesityLogic": true
+    }
+  },
+  {
+    "id": 585,
+    "message": "Κουτάβι που χάνει βάρος.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 586,
+    "message": "Κουτάβι που δεν αναπτύσσεται σωστά.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 587,
+    "message": "Κουτάβι με χαμηλή μυϊκή μάζα.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 588,
+    "message": "Κουτάβι που χρειάζεται περισσότερη πρωτεΐνη.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 589,
+    "message": "Κουτάβι που χρειάζεται περισσότερες θερμίδες.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog",
+      "weightGoal": "gain"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 590,
+    "message": "Κουτάβι που χρειάζεται καλύτερη πέψη.",
+    "goal": "growth",
+    "safety": "vet_referral",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "medicalNoTreatment": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 591,
+    "message": "Κουτάβι με περιορισμένο budget.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 592,
+    "message": "Κουτάβι με μεσαίο budget.",
+    "goal": "value",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 593,
+    "message": "Κουτάβι χωρίς περιορισμό κόστους.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 594,
+    "message": "Κουτάβι που θέλει premium τροφή.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 595,
+    "message": "Κουτάβι που θέλει super premium τροφή.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 596,
+    "message": "Κουτάβι που θέλει grain free.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 597,
+    "message": "Κουτάβι που θέλει low grain.",
+    "goal": "growth",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true,
+      "puppyGrowth": true
+    }
+  },
+  {
+    "id": 598,
+    "message": "Κουτάβι που θέλει μονοπρωτεϊνική τροφή.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 599,
+    "message": "Κουτάβι που θέλει limited ingredient diet.",
+    "goal": "allergy",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  },
+  {
+    "id": 600,
+    "message": "Κουτάβι που θέλει την καλύτερη δυνατή τροφή ανεξαρτήτως κόστους.",
+    "goal": "premium",
+    "safety": "normal",
+    "expected": {
+      "species": "dog"
+    },
+    "checks": {
+      "foodV2Candidates": true
+    }
+  }
+]
