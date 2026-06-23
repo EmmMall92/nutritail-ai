@@ -26,6 +26,10 @@ type CatFixtureCase = {
   expectedResponseMustMention: string[];
 };
 
+type CatFixtureCaseWithEncoding = CatFixtureCase & {
+  encodingRepaired?: boolean;
+};
+
 type FoodV2Item = {
   brand?: string | null;
   display_name?: string | null;
@@ -77,6 +81,64 @@ const SITE_URL = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const DEFAULT_REPORT_PATH = "reports/cat_chatbot_live_cases_1-100.md";
 const DEFAULT_FIXTURE_PATH = "data/evals/chatbot-extra-cases-cat-001-100.json";
 const STRICT = process.env.NUTRITAIL_QA_STRICT === "1";
+const damagedTextPattern =
+  /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+
+let isoGreekReverseMap: Map<string, number> | null = null;
+
+function getIsoGreekReverseMap() {
+  if (isoGreekReverseMap) return isoGreekReverseMap;
+
+  const decoder = new TextDecoder("iso-8859-7");
+  isoGreekReverseMap = new Map<string, number>();
+
+  for (let byte = 0; byte <= 255; byte += 1) {
+    isoGreekReverseMap.set(decoder.decode(Uint8Array.of(byte)), byte);
+  }
+
+  return isoGreekReverseMap;
+}
+
+function repairLegacyGreekMojibake(value: string) {
+  if (!damagedTextPattern.test(value)) return value;
+
+  const reverseMap = getIsoGreekReverseMap();
+  const bytes: number[] = [];
+
+  for (const char of value) {
+    const byte = reverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return value;
+    }
+  }
+
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? value : repaired;
+}
+
+function repairCaseEncoding(testCase: CatFixtureCase): CatFixtureCaseWithEncoding {
+  const repaired = repairLegacyGreekMojibake(testCase.prompt);
+  return {
+    ...testCase,
+    prompt: repaired,
+    encodingRepaired: repaired !== testCase.prompt,
+  };
+}
+
+function assertNoDamagedPrompts(cases: CatFixtureCaseWithEncoding[], source: string) {
+  const damaged = cases.filter((testCase) => damagedTextPattern.test(testCase.prompt));
+  if (damaged.length > 0) {
+    throw new Error(
+      `${source} cat chatbot QA prompts still contain damaged Greek text after repair: ${damaged
+        .map((testCase) => testCase.id)
+        .join(", ")}`,
+    );
+  }
+}
 
 function normalizeText(value: string) {
   return value
@@ -410,10 +472,16 @@ function caseRange(results: CatQaResult[]) {
   return `${first}-${last}`;
 }
 
-function reportMarkdown(results: CatQaResult[], fixturePath: string) {
+function reportMarkdown(
+  results: CatQaResult[],
+  fixturePath: string,
+  cases: CatFixtureCaseWithEncoding[],
+) {
   const passed = results.filter((result) => result.status === "pass").length;
   const review = results.length - passed;
   const range = caseRange(results);
+  const repairedPromptCount = cases.filter((testCase) => testCase.encodingRepaired).length;
+  const damagedAfterRepair = cases.filter((testCase) => damagedTextPattern.test(testCase.prompt)).length;
 
   return [
     `# Cat Chatbot Live Cases ${range}`,
@@ -422,6 +490,8 @@ function reportMarkdown(results: CatQaResult[], fixturePath: string) {
     `Run date: ${new Date().toISOString()}`,
     "OpenAI extraction: skipped",
     `Result: ${passed}/${results.length} passed, ${review} review`,
+    `Prompt encoding repairs applied: ${repairedPromptCount}`,
+    `Prompt encoding issues after repair: ${damagedAfterRepair}`,
     "",
     `This QA checks the live Food V2 recommendation endpoint with cat scenarios from \`${fixturePath}\`.`,
     "It focuses on species safety, empty shortlists, and major nutrition-direction mismatches for urinary, renal, kitten, senior, sterilised, weight-control, and allergy scenarios.",
@@ -452,12 +522,14 @@ async function main() {
   const selected = selectedCaseIds();
   const limit = Number.parseInt(process.env.NUTRITAIL_QA_CASE_LIMIT ?? "", 10);
   const cases = fixture.cases
+    .map(repairCaseEncoding)
     .filter((testCase) => !selected || selected.has(testCase.id))
     .slice(0, Number.isFinite(limit) ? limit : undefined);
 
   if (cases.length === 0) {
     throw new Error("No cat QA cases selected.");
   }
+  assertNoDamagedPrompts(cases, fixturePath);
 
   const results: CatQaResult[] = [];
   for (const testCase of cases) {
@@ -469,7 +541,7 @@ async function main() {
 
   const reportPath = process.env.NUTRITAIL_QA_REPORT_PATH || DEFAULT_REPORT_PATH;
   await mkdir(path.dirname(reportPath), { recursive: true });
-  await writeFile(reportPath, reportMarkdown(results, fixturePath), "utf8");
+  await writeFile(reportPath, reportMarkdown(results, fixturePath, cases), "utf8");
 
   const reviewCount = results.filter((result) => result.status === "review").length;
   console.log(`\nWrote ${reportPath}`);

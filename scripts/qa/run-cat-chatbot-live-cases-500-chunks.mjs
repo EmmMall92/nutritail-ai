@@ -86,6 +86,8 @@ const rows = chunkReports.map(({ chunk, reportPath }) => {
     passed: Number(result?.[1] ?? 0),
     checked: Number(result?.[2] ?? 0),
     review: Number(result?.[3] ?? 0),
+    promptEncodingRepairs: Number(report.match(/Prompt encoding repairs applied: (\d+)/)?.[1] ?? 0),
+    promptEncodingIssues: Number(report.match(/Prompt encoding issues after repair: (\d+)/)?.[1] ?? 0),
     generated: report.match(/Run date: ([^\n\r]+)/)?.[1] ?? new Date().toISOString(),
   };
 });
@@ -95,8 +97,10 @@ const totals = rows.reduce(
     checked: acc.checked + row.checked,
     passed: acc.passed + row.passed,
     review: acc.review + row.review,
+    promptEncodingRepairs: acc.promptEncodingRepairs + row.promptEncodingRepairs,
+    promptEncodingIssues: acc.promptEncodingIssues + row.promptEncodingIssues,
   }),
-  { checked: 0, passed: 0, review: 0 }
+  { checked: 0, passed: 0, review: 0, promptEncodingRepairs: 0, promptEncodingIssues: 0 }
 );
 
 const runDate = rows.at(-1)?.generated ?? new Date().toISOString();
@@ -119,12 +123,14 @@ run without identifying the affected range.
 - Cases checked: ${totals.checked}
 - Passed: ${totals.passed}
 - Needs review: ${totals.review}
+- Prompt encoding repairs applied: ${totals.promptEncodingRepairs}
+- Prompt encoding issues after repair: ${totals.promptEncodingIssues}
 
 ## Chunk Results
 
-| Chunk | Checked | Passed | Needs review |
-| --- | ---: | ---: | ---: |
-${rows.map((row) => `| ${row.chunk} | ${row.checked} | ${row.passed} | ${row.review} |`).join("\n")}
+| Chunk | Checked | Passed | Needs review | Encoding repairs | Encoding issues |
+| --- | ---: | ---: | ---: | ---: | ---: |
+${rows.map((row) => `| ${row.chunk} | ${row.checked} | ${row.passed} | ${row.review} | ${row.promptEncodingRepairs} | ${row.promptEncodingIssues} |`).join("\n")}
 
 ## Coverage Notes
 
