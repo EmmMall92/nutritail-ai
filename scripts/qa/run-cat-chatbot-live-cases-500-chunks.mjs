@@ -105,6 +105,7 @@ const aggregateReport = `# Cat Chatbot Live Cases ${String(min).padStart(3, "0")
 Site: ${process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai"}
 Run date: ${runDate}
 Runner: \`npm.cmd run qa:cat-chatbot-live-cases:500:chunks\`
+OpenAI extraction: skipped
 Result: ${totals.passed}/${totals.checked} passed, ${totals.review} review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from

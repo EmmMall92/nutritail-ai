@@ -420,6 +420,7 @@ function reportMarkdown(results: CatQaResult[], fixturePath: string) {
     "",
     `Site: ${SITE_URL}`,
     `Run date: ${new Date().toISOString()}`,
+    "OpenAI extraction: skipped",
     `Result: ${passed}/${results.length} passed, ${review} review`,
     "",
     `This QA checks the live Food V2 recommendation endpoint with cat scenarios from \`${fixturePath}\`.`,
