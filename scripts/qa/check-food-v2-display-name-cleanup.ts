@@ -54,7 +54,7 @@ const cases = [
       formula_name:
         "PRO PlanΒ® MEDIUM & LARGE ADULT 7+ Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
     },
-    expected: "PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+    expected: "PRO Plan® MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός",
   },
   {
     label: "Purina mojibake chicken token",
@@ -65,7 +65,7 @@ const cases = [
       formula_name:
         "PRO PlanΒ® SMALL&MINI ADULT LIGHT/STERILISED ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
     },
-    expected: "PRO Plan® SMALL&MINI ADULT LIGHT/STERILISED Chicken",
+    expected: "PRO Plan® SMALL&MINI ADULT LIGHT/STERILISED Κοτόπουλο",
   },
   {
     label: "AATU repeated adult term",
