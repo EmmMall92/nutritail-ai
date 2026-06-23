@@ -74,6 +74,11 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage: "Puppy growth cases need puppy or all-life-stage food.",
   },
+  adult_food_for_growth_pet: {
+    code: "adult_food_for_growth_pet",
+    severity: "block",
+    fallbackMessage: "Growth-stage pets need puppy, kitten, junior or all-life-stage food.",
+  },
   adult_food_for_kitten_growth: {
     code: "adult_food_for_kitten_growth",
     severity: "block",

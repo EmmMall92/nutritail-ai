@@ -44,6 +44,20 @@ const fullChecks = [
     covers: "200 live runner ids, fixture coverage, duplicates, and damaged prompt detection.",
   },
   {
+    name: "Dog 201-600 coverage audit",
+    command: "npm.cmd",
+    args: ["run", "audit:dog-201-600-coverage"],
+    covers:
+      "400 additional dog cases cover growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, activity, and safety scenarios.",
+  },
+  {
+    name: "Cat 001-500 coverage audit",
+    command: "npm.cmd",
+    args: ["run", "audit:cat-chatbot-coverage"],
+    covers:
+      "500 cat cases cover urinary, renal, kitten/growth, allergy, senior, sterilised, weight-control, preference, and urgent safety scenarios.",
+  },
+  {
     name: "Food Intelligence use cases",
     command: "npm.cmd",
     args: ["run", "qa:food-intelligence-use-cases"],
@@ -135,6 +149,8 @@ const fastCheckNames = new Set([
   "Chatbot intake cleanup",
   "Dog edge fixture 101-200",
   "Dog golden coverage audit",
+  "Dog 201-600 coverage audit",
+  "Cat 001-500 coverage audit",
   "Food Intelligence use cases",
   "Medical nutrition rules",
   "GI allergy senior v2 rules",
@@ -177,9 +193,9 @@ const fullObjectiveCoverage = [
       "Customer recommendation copy, customer recommendation smoke, and customer chatbot flow links guard against back-office wording and verify food-card action flow.",
   },
   {
-    objective: "3. 200 live chatbot cases",
+    objective: "3. Large dog/cat live chatbot case coverage",
     evidence:
-      "Dog edge fixture, dog golden coverage audit, live runner, and quality audit prove ids 1-200 exist, are unique, include required safety/recommendation checks, and are reviewed for visible top-food quality.",
+      "Dog edge fixture, dog golden coverage audit, dog 201-600 coverage audit, cat 001-500 coverage audit, live runners, and quality audits prove the large dog/cat scenario set is structurally sound and covers required safety/recommendation checks.",
   },
   {
     objective: "4. Brand data cleanup",
@@ -199,11 +215,11 @@ const fullObjectiveCoverage = [
 ];
 
 const fastObjectiveCoverage = fullObjectiveCoverage.map((item) => {
-  if (item.objective === "3. 200 live chatbot cases") {
+  if (item.objective === "3. Large dog/cat live chatbot case coverage") {
     return {
       ...item,
       evidence:
-        "Dog edge fixture and golden coverage audit prove ids 1-200 exist, are unique, and include required safety/recommendation checks. The fast suite runs representative live smoke cases for quick regression feedback; run the full or strict suite before release-level signoff.",
+        "Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, and cat 001-500 coverage prove the large case bank is structurally sound and balanced. The fast suite runs representative live smoke cases for quick regression feedback; run the full or strict suite before release-level signoff.",
     };
   }
 
