@@ -1,8 +1,9 @@
 # Cat Chatbot Live Cases 001-500
 
 Site: https://nutritail.ai
-Run date: 2026-06-22T19:59:07.279Z
+Run date: 2026-06-23T04:43:13.581Z
 Runner: `npm.cmd run qa:cat-chatbot-live-cases:500:chunks`
+OpenAI extraction: skipped
 Result: 500/500 passed, 0 review
 
 This QA checks the live Food V2 recommendation endpoint with cat scenarios from
