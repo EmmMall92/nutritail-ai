@@ -74,6 +74,12 @@ const fixtureIntegritySuites = [
     command: "npm.cmd run qa:cat-case-fixture",
     layer: "UTF-8 prompt integrity + sequential cat QA fixture",
   },
+  {
+    name: "Cat 001-500 coverage audit",
+    source: "reports/cat_chatbot_coverage_audit.md",
+    command: "npm.cmd run audit:cat-chatbot-coverage",
+    layer: "cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases",
+  },
 ];
 
 function readReport(relativePath) {
