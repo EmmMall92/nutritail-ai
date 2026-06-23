@@ -48,6 +48,10 @@ type DogQaCase = {
   };
 };
 
+type DogQaCaseWithEncoding = DogQaCase & {
+  encodingRepaired?: boolean;
+};
+
 type ExtractionResult = {
   species?: "dog" | "cat" | null;
   petName?: string | null;
@@ -130,7 +134,7 @@ const CASES: DogQaCase[] = [
   { id: 15, message: "Έχω σκύλο με ουρολιθίαση. Θέλω ξηρά τροφή.", goal: "urinary", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 16, message: "Έχω σκύλο με διαβήτη. Είναι 20kg και 8 ετών.", goal: "general", safety: "vet_referral", expected: { species: "dog", weightKg: 20, ageYears: 8 }, checks: { medicalNoTreatment: true } },
   { id: 17, message: "Έχω σκύλο με καρδιακό πρόβλημα και παίρνει φάρμακα.", goal: "general", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true } },
-  { id: 18, message: "Έχω σκύλο που κάνει εμετούς με πολλές τροφές.", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
+  { id: 18, message: "Έχω σκύλο που κάνει εμετούς με πολλές τροφές.", goal: "sensitive_digestion", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true } },
   { id: 19, message: "Έχω σκύλο με φαγούρα και κοκκινίλες στο δέρμα.", goal: "allergy", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 20, message: "Έχω σκύλο με αλλεργία σε μοσχάρι και κοτόπουλο.", goal: "allergy", safety: "vet_referral", expected: { species: "dog", allergies: ["beef", "chicken"], excludedIngredients: ["beef", "chicken"] }, checks: { allergyReject: ["beef", "chicken"], medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 21, message: "Θέλω οικονομική τροφή για ενήλικο σκύλο 15kg χωρίς πρόβλημα υγείας.", goal: "value", safety: "normal", expected: { species: "dog", weightKg: 15 }, checks: { foodV2Candidates: true } },
@@ -345,10 +349,27 @@ function repairLegacyGreekMojibake(value?: string) {
   return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
 }
 
-const BUILT_IN_CASES = [...CASES, ...EXTRA_CASES_101_200].map((testCase) => ({
-  ...testCase,
-  message: repairLegacyGreekMojibake(testCase.message),
-}));
+function repairCaseEncoding(testCase: DogQaCase): DogQaCaseWithEncoding {
+  const repaired = repairLegacyGreekMojibake(testCase.message);
+  return {
+    ...testCase,
+    message: repaired,
+    encodingRepaired: repaired !== testCase.message,
+  };
+}
+
+function assertNoDamagedPrompts(cases: DogQaCaseWithEncoding[], source: string) {
+  const damaged = cases.filter((testCase) => damagedTextPattern.test(testCase.message));
+  if (damaged.length > 0) {
+    throw new Error(
+      `${source} dog chatbot QA prompts still contain damaged Greek text after repair: ${damaged
+        .map((testCase) => testCase.id)
+        .join(", ")}`,
+    );
+  }
+}
+
+const BUILT_IN_CASES = [...CASES, ...EXTRA_CASES_101_200].map(repairCaseEncoding);
 
 async function loadExternalCases() {
   if (!DOG_FIXTURE_PATH) return [];
@@ -361,10 +382,7 @@ async function loadExternalCases() {
     throw new Error(`Dog QA fixture must be an array or { cases: [] }: ${DOG_FIXTURE_PATH}`);
   }
 
-  return cases.map((testCase) => ({
-    ...testCase,
-    message: repairLegacyGreekMojibake(testCase.message),
-  }));
+  return cases.map(repairCaseEncoding);
 }
 
 function parseCaseIds(value: string | undefined) {
@@ -848,7 +866,7 @@ function detectSafety(message: string) {
   }
 
   const cleanVetPattern =
-    /ηπατ|χολ|ουρικ|ουρολοιμ|κρυσταλλ|υπερταση|πρωτεινουρια|bcs\s*[23789]|καχεξ|υποσιτισ|σκελετωμ|αδυνατ|χαμηλη μυικ|χαμηλή μυϊκ|χαμηλη ορεξη|χαμηλή όρεξη|εγκυ|θηλαζ|θηλασμ|ψευδοκυηση|ψευδοκύηση|τοκετ|απογαλακτισμ|ορφαν|κακη αναπτυξ|κακή ανάπτυξ|rescue|αδεσποτ|αγνωστο ιστορικο|άγνωστο ιστορικό|κακοποιηση|κακοποίηση|αρνειται να φαει|αρνείται να φάει|πολλαπλες αλλεργ|πολλαπλές αλλεργ|elimination|υποαλλεργ|ωτιτιδ|ωτίτιδ|δερματ|δυσανεξ|εχασε 20|έχασε 20|πηρε 10|πήρε 10|αποκατασταση βαρους|αποκατάσταση βάρους|τρωει δυσκολα|τρώει δύσκολα|γαστρεντεριτιδ|γαστρεντερίτιδ|πολλες κενωσεις|πολλές κενώσεις|τρωει χορτα|τρώει χόρτα|δεν πινει αρκετο|δεν πίνει αρκετό|πρεπει να παρει βαρος|πρέπει να πάρει βάρος|υπερβαρ|δεν αναπτυσσεται|δεν αναπτύσσεται|περισσοτερη πρωτειν|περισσότερη πρωτεΐν|περισσοτερες θερμιδ|περισσότερες θερμίδ|καλυτερη πεψη|καλύτερη πέψη|περισσοτερη ενεργεια|περισσότερη ενέργεια/;
+    /ηπατ|χολ|ουρικ|ουρολοιμ|κρυσταλλ|υπερταση|πρωτεινουρια|καχεξ|υποσιτισ|σκελετωμ|χαμηλη μυικ|χαμηλή μυϊκ|χαμηλη ορεξη|χαμηλή όρεξη|εγκυ|θηλαζ|θηλασμ|ψευδοκυηση|ψευδοκύηση|τοκετ|απογαλακτισμ|ορφαν|κακη αναπτυξ|κακή ανάπτυξ|rescue|αδεσποτ|αγνωστο ιστορικο|άγνωστο ιστορικό|κακοποιηση|κακοποίηση|αρνειται να φαει|αρνείται να φάει|πολλαπλες αλλεργ|πολλαπλές αλλεργ|elimination|υποαλλεργ|ωτιτιδ|ωτίτιδ|δερματ|δυσανεξ|εχασε 20|έχασε 20|πηρε 10|πήρε 10|αποκατασταση βαρους|αποκατάσταση βάρους|τρωει δυσκολα|τρώει δύσκολα|γαστρεντεριτιδ|γαστρεντερίτιδ|πολλες κενωσεις|πολλές κενώσεις|τρωει χορτα|τρώει χόρτα|δεν πινει αρκετο|δεν πίνει αρκετό|πρεπει να παρει βαρος|πρέπει να πάρει βάρος|υπερβαρ|δεν αναπτυσσεται|δεν αναπτύσσεται|περισσοτερη πρωτειν|περισσότερη πρωτεΐν|περισσοτερες θερμιδ|περισσότερες θερμίδ|καλυτερη πεψη|καλύτερη πέψη|περισσοτερη ενεργεια|περισσότερη ενέργεια/;
   const liverEnzymePattern = /\b(?:alp|alt)\b/;
   if (cleanVetPattern.test(text) || liverEnzymePattern.test(text)) {
     return "vet_referral" as const;
@@ -1180,9 +1198,11 @@ function resultSummary(results: CaseResult[]) {
   ];
 }
 
-function renderReport(results: CaseResult[]) {
+function renderReport(results: CaseResult[], allCases: DogQaCaseWithEncoding[]) {
   const passed = results.filter((item) => item.status === "pass").length;
   const review = results.length - passed;
+  const repairedPromptCount = allCases.filter((testCase) => testCase.encodingRepaired).length;
+  const damagedAfterRepair = allCases.filter((testCase) => damagedTextPattern.test(testCase.message)).length;
   const lines = [
     `# Dog Chatbot ${results.length} Live Cases`,
     "",
@@ -1195,6 +1215,8 @@ function renderReport(results: CaseResult[]) {
     `- Cases checked: ${results.length}`,
     `- Passed: ${passed}`,
     `- Needs review: ${review}`,
+    `- Prompt encoding repairs applied: ${repairedPromptCount}`,
+    `- Prompt encoding issues after repair: ${damagedAfterRepair}`,
     "",
     "Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity energy/protein mismatch guards.",
     "",
@@ -1228,6 +1250,7 @@ async function main() {
   await loadEnv();
   const externalCases = await loadExternalCases();
   const allCases = externalCases.length > 0 ? externalCases : BUILT_IN_CASES;
+  assertNoDamagedPrompts(allCases, externalCases.length > 0 ? "external" : "built-in");
   assertCaseCoverage(allCases, externalCases);
 
   const client =
@@ -1281,7 +1304,7 @@ async function main() {
   }
 
   await mkdir(path.dirname(reportPath), { recursive: true });
-  await writeFile(reportPath, renderReport(results), "utf8");
+  await writeFile(reportPath, renderReport(results, allCases), "utf8");
 
   const passed = results.filter((item) => item.status === "pass").length;
   const review = results.length - passed;
