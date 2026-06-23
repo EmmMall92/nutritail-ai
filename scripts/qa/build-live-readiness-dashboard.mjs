@@ -3,6 +3,12 @@ import path from "node:path";
 
 const root = process.cwd();
 const outputPath = "reports/live_readiness_dashboard.md";
+const generatedAt = new Date();
+const configuredMaxReportAgeHours = Number(process.env.NUTRITAIL_QA_MAX_REPORT_AGE_HOURS ?? 48);
+const maxReportAgeHours =
+  Number.isFinite(configuredMaxReportAgeHours) && configuredMaxReportAgeHours > 0
+    ? configuredMaxReportAgeHours
+    : 48;
 
 const routeSuites = [
   {
@@ -58,19 +64,39 @@ function parseRunDate(text) {
   return text.match(/(?:Generated|Run date):\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown";
 }
 
+function reportAgeHours(runDate) {
+  const parsed = Date.parse(runDate);
+  if (!Number.isFinite(parsed)) return null;
+  return Math.max(0, (generatedAt.getTime() - parsed) / 36e5);
+}
+
+function formatAge(hours) {
+  if (hours == null) return "unknown";
+  if (hours < 1) return `${Math.round(hours * 60)}m`;
+  return `${hours.toFixed(1)}h`;
+}
+
+function isStale(runDate) {
+  const ageHours = reportAgeHours(runDate);
+  return ageHours == null || ageHours > maxReportAgeHours;
+}
+
 function parseRouteSuite(suite) {
   const text = readReport(suite.source);
   const checked = parseNumber(text, [/- Routes checked:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
   const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const runDate = parseRunDate(text);
+  const stale = isStale(runDate);
 
   return {
     ...suite,
     checked,
     passed,
     failed,
-    runDate: parseRunDate(text),
-    status: failed === 0 && checked === passed ? "PASS" : "REVIEW",
+    runDate,
+    age: formatAge(reportAgeHours(runDate)),
+    status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
 
@@ -79,14 +105,17 @@ function parseStaticSuite(suite) {
   const checked = parseNumber(text, [/- Checks:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
   const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const runDate = parseRunDate(text);
+  const stale = isStale(runDate);
 
   return {
     ...suite,
     checked,
     passed,
     failed,
-    runDate: parseRunDate(text),
-    status: failed === 0 && checked === passed ? "PASS" : "REVIEW",
+    runDate,
+    age: formatAge(reportAgeHours(runDate)),
+    status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
 
@@ -112,6 +141,8 @@ function parseChatbotSuite(suite) {
     text.match(/- Fixture integrity suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
   const customerUxLine =
     text.match(/- Customer UX suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
+  const runDate = parseRunDate(text);
+  const stale = isStale(runDate);
 
   return {
     ...suite,
@@ -126,8 +157,14 @@ function parseChatbotSuite(suite) {
     intakeSkippedSuites,
     fixtureLine,
     customerUxLine,
-    runDate: parseRunDate(text),
-    status: review === 0 && responseFailures === 0 && intakeFailed === 0 && checked === passed ? "PASS" : "REVIEW",
+    runDate,
+    age: formatAge(reportAgeHours(runDate)),
+    status:
+      review === 0 && responseFailures === 0 && intakeFailed === 0 && checked === passed && !stale
+        ? "PASS"
+        : stale
+          ? "STALE"
+          : "REVIEW",
   };
 }
 
@@ -155,7 +192,7 @@ const status = failingSuites.length === 0 ? "PASS" : "REVIEW";
 const lines = [
   "# NutriTail Live Readiness Dashboard",
   "",
-  `Generated: ${new Date().toISOString()}`,
+  `Generated: ${generatedAt.toISOString()}`,
   `Result: ${status}`,
   "",
   "This dashboard summarizes live route, customer-flow, and chatbot QA evidence.",
@@ -169,14 +206,15 @@ const lines = [
   `- Passed: ${totals.passed}`,
   `- Failed or needs review: ${totals.failed}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
+  `- Max report age: ${maxReportAgeHours}h`,
   "",
   "## Readiness Evidence",
   "",
-  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run | Age |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: |",
   ...allSuites.map(
     (suite) =>
-      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} |`,
+      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} | ${suite.age} |`,
   ),
   "",
   "## Chatbot Evidence Details",
@@ -201,6 +239,7 @@ const lines = [
   "## Next Live Checks",
   "",
   "- Rerun this dashboard after each deploy that touches account, chatbot, Food V2, or report routes.",
+  `- Reports older than ${maxReportAgeHours}h are marked STALE and block readiness until rerun.`,
   "- If a route report is older than the current deploy, rerun the source command before relying on it.",
   "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY`.",
   "",
