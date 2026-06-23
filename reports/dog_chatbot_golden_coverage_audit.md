@@ -1,6 +1,6 @@
 # Dog Chatbot Golden Coverage Audit
 
-Generated: 2026-06-19T21:46:25.395Z
+Generated: 2026-06-23T06:41:48.489Z
 
 ## Summary
 
@@ -35,7 +35,7 @@ Generated: 2026-06-19T21:46:25.395Z
 
 ## Check Coverage
 
-- foodV2Candidates: 167
+- foodV2Candidates: 166
 - medicalNoTreatment: 103
 - puppyGrowth: 25
 - obesityLogic: 17

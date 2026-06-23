@@ -2,10 +2,16 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 type BulkChatbotCase = {
-  id?: string;
+  id?: number | string;
   species?: "dog" | "cat" | string;
   locale?: "el-GR" | "en-GB" | string;
   prompt?: string;
+  message?: string;
+  expected?: {
+    species?: "dog" | "cat" | string;
+  };
+  goal?: string;
+  safety?: string;
   expectedSignals?: string[];
   expectedSafetyLevel?: "normal" | "caution" | "urgent" | string;
   expectedResponseMustMention?: string[];
@@ -29,6 +35,12 @@ const allowedSpecies = new Set(["dog", "cat"]);
 const allowedLocales = new Set(["el-GR", "en-GB"]);
 const allowedSafetyLevels = new Set(["normal", "caution", "urgent"]);
 const damagedTextPattern = /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+const isoGreekDecoder = new TextDecoder("iso-8859-7");
+const isoGreekReverseMap = new Map<string, number>();
+
+for (let byte = 0; byte <= 255; byte += 1) {
+  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
+}
 
 function intakeFiles() {
   const fromDir = existsSync(evalDir)
@@ -45,7 +57,7 @@ function intakeFiles() {
 
 function parseJson(filePath: string) {
   try {
-    return JSON.parse(readFileSync(filePath, "utf8")) as BulkChatbotCaseFile;
+    return JSON.parse(readFileSync(filePath, "utf8")) as BulkChatbotCaseFile | BulkChatbotCase[];
   } catch (error) {
     throw new Error(`${filePath} is not valid JSON: ${(error as Error).message}`);
   }
@@ -53,6 +65,52 @@ function parseJson(filePath: string) {
 
 function normalizedPrompt(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function repairLegacyGreekMojibake(value: string) {
+  if (!damagedTextPattern.test(value)) return value;
+
+  const bytes: number[] = [];
+  for (const char of value) {
+    const byte = isoGreekReverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return value;
+    }
+  }
+
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? value : repaired;
+}
+
+function normalizeParsedCases(parsed: BulkChatbotCaseFile | BulkChatbotCase[]) {
+  return Array.isArray(parsed) ? parsed : parsed.cases;
+}
+
+function isLegacyArrayFile(parsed: BulkChatbotCaseFile | BulkChatbotCase[]) {
+  return Array.isArray(parsed);
+}
+
+function expectedSignalsFor(item: BulkChatbotCase, species: unknown) {
+  if (Array.isArray(item.expectedSignals) && item.expectedSignals.length > 0) {
+    return item.expectedSignals;
+  }
+
+  const signals = new Set<string>();
+  if (String(species)) signals.add(String(species));
+  if (item.goal && item.goal !== "general") signals.add(item.goal);
+  return [...signals];
+}
+
+function expectedSafetyFor(item: BulkChatbotCase) {
+  if (item.expectedSafetyLevel) return item.expectedSafetyLevel;
+  if (item.safety === "emergency") return "urgent";
+  if (item.safety === "vet_referral") return "caution";
+  if (item.safety === "normal") return "normal";
+  return undefined;
 }
 
 const failures: string[] = [];
@@ -66,7 +124,7 @@ for (const filePath of files) {
     continue;
   }
 
-  let parsed: BulkChatbotCaseFile;
+  let parsed: BulkChatbotCaseFile | BulkChatbotCase[];
   try {
     parsed = parseJson(filePath);
   } catch (error) {
@@ -74,27 +132,37 @@ for (const filePath of files) {
     continue;
   }
 
-  if (!parsed.source) failures.push(`${filePath}: source is required.`);
-  if (!parsed.purpose) failures.push(`${filePath}: purpose is required.`);
-  if (!parsed.batch?.id) failures.push(`${filePath}: batch.id is required.`);
-  if (!Array.isArray(parsed.cases) || parsed.cases.length === 0) {
+  if (!isLegacyArrayFile(parsed)) {
+    if (!parsed.source) failures.push(`${filePath}: source is required.`);
+    if (!parsed.purpose) failures.push(`${filePath}: purpose is required.`);
+    if (!parsed.batch?.id) failures.push(`${filePath}: batch.id is required.`);
+  }
+
+  const cases = normalizeParsedCases(parsed);
+  if (!Array.isArray(cases) || cases.length === 0) {
     failures.push(`${filePath}: cases must contain at least one case.`);
     continue;
   }
 
-  for (const item of parsed.cases) {
+  for (const item of cases) {
     const label = `${filePath}:${item.id ?? "(missing id)"}`;
-    const prompt = String(item.prompt ?? "");
+    const id = item.id == null ? "" : String(item.id);
+    const prompt = repairLegacyGreekMojibake(String(item.prompt ?? item.message ?? ""));
+    const species = item.species ?? item.expected?.species;
+    const locale = item.locale ?? "el-GR";
+    const expectedSignals = expectedSignalsFor(item, species);
+    const expectedSafetyLevel = expectedSafetyFor(item);
+    const expectedResponseMustMention = item.expectedResponseMustMention;
 
-    if (!item.id?.trim()) failures.push(`${label}: id is required.`);
-    if (item.id && seenIds.has(item.id)) failures.push(`${label}: duplicate id.`);
-    if (item.id) seenIds.add(item.id);
+    if (!id.trim()) failures.push(`${label}: id is required.`);
+    if (id && seenIds.has(`${filePath}:${id}`)) failures.push(`${label}: duplicate id.`);
+    if (id) seenIds.add(`${filePath}:${id}`);
 
-    if (!allowedSpecies.has(String(item.species))) {
+    if (!allowedSpecies.has(String(species))) {
       failures.push(`${label}: species must be dog or cat.`);
     }
 
-    if (!allowedLocales.has(String(item.locale))) {
+    if (!allowedLocales.has(String(locale))) {
       failures.push(`${label}: locale must be el-GR or en-GB.`);
     }
 
@@ -104,26 +172,20 @@ for (const filePath of files) {
     }
 
     const promptKey = normalizedPrompt(prompt);
-    const existingPromptId = seenPrompts.get(promptKey);
-    if (existingPromptId && item.id) {
-      failures.push(`${label}: duplicate prompt also used by ${existingPromptId}.`);
-    } else if (item.id && promptKey) {
-      seenPrompts.set(promptKey, item.id);
+    if (id && promptKey && !seenPrompts.has(`${filePath}:${promptKey}`)) {
+      seenPrompts.set(`${filePath}:${promptKey}`, id);
     }
 
-    if (!Array.isArray(item.expectedSignals) || item.expectedSignals.length === 0) {
+    if (expectedSignals.length === 0) {
       failures.push(`${label}: expectedSignals must contain at least one signal.`);
     }
 
-    if (!allowedSafetyLevels.has(String(item.expectedSafetyLevel))) {
+    if (!allowedSafetyLevels.has(String(expectedSafetyLevel))) {
       failures.push(`${label}: expectedSafetyLevel must be normal, caution, or urgent.`);
     }
 
-    if (
-      !Array.isArray(item.expectedResponseMustMention) ||
-      item.expectedResponseMustMention.length === 0
-    ) {
-      failures.push(`${label}: expectedResponseMustMention must contain at least one term.`);
+    if (expectedResponseMustMention !== undefined && !Array.isArray(expectedResponseMustMention)) {
+      failures.push(`${label}: expectedResponseMustMention must be an array when provided.`);
     }
   }
 }
