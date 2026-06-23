@@ -76,6 +76,13 @@ function formatAge(hours) {
   return `${hours.toFixed(1)}h`;
 }
 
+function formatRemaining(hours) {
+  if (hours == null) return "unknown";
+  if (hours <= 0) return "now";
+  if (hours < 1) return `${Math.max(1, Math.round(hours * 60))}m`;
+  return `${hours.toFixed(1)}h`;
+}
+
 function isStale(runDate) {
   const ageHours = reportAgeHours(runDate);
   return ageHours == null || ageHours > maxReportAgeHours;
@@ -87,6 +94,7 @@ function parseRouteSuite(suite) {
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
   const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
   const runDate = parseRunDate(text);
+  const ageHours = reportAgeHours(runDate);
   const stale = isStale(runDate);
 
   return {
@@ -95,7 +103,8 @@ function parseRouteSuite(suite) {
     passed,
     failed,
     runDate,
-    age: formatAge(reportAgeHours(runDate)),
+    ageHours,
+    age: formatAge(ageHours),
     status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
@@ -106,6 +115,7 @@ function parseStaticSuite(suite) {
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
   const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
   const runDate = parseRunDate(text);
+  const ageHours = reportAgeHours(runDate);
   const stale = isStale(runDate);
 
   return {
@@ -114,7 +124,8 @@ function parseStaticSuite(suite) {
     passed,
     failed,
     runDate,
-    age: formatAge(reportAgeHours(runDate)),
+    ageHours,
+    age: formatAge(ageHours),
     status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
@@ -152,6 +163,7 @@ function parseChatbotSuite(suite) {
   const customerUxLine =
     text.match(/- Customer UX suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
   const runDate = parseRunDate(text);
+  const ageHours = reportAgeHours(runDate);
   const stale = isStale(runDate);
 
   return {
@@ -170,7 +182,8 @@ function parseChatbotSuite(suite) {
     fixtureLine,
     customerUxLine,
     runDate,
-    age: formatAge(reportAgeHours(runDate)),
+    ageHours,
+    age: formatAge(ageHours),
     status:
       review === 0 &&
       responseFailures === 0 &&
@@ -205,6 +218,14 @@ const totals = allSuites.reduce(
 );
 const failingSuites = allSuites.filter((suite) => suite.status !== "PASS");
 const status = failingSuites.length === 0 ? "PASS" : "REVIEW";
+const ageKnownSuites = allSuites.filter((suite) => suite.ageHours != null);
+const oldestSuite = [...ageKnownSuites].sort((a, b) => b.ageHours - a.ageHours)[0];
+const nextStaleSuite = [...ageKnownSuites]
+  .filter((suite) => suite.ageHours <= maxReportAgeHours)
+  .sort((a, b) => maxReportAgeHours - a.ageHours - (maxReportAgeHours - b.ageHours))[0];
+const nextStaleRemainingHours =
+  nextStaleSuite?.ageHours == null ? null : maxReportAgeHours - nextStaleSuite.ageHours;
+const refreshPrioritySuites = [...ageKnownSuites].sort((a, b) => b.ageHours - a.ageHours).slice(0, 3);
 
 const lines = [
   "# NutriTail Live Readiness Dashboard",
@@ -224,6 +245,12 @@ const lines = [
   `- Failed or needs review: ${totals.failed}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
   `- Max report age: ${maxReportAgeHours}h`,
+  `- Oldest source report: ${oldestSuite ? `${oldestSuite.name} (${oldestSuite.age})` : "unknown"}`,
+  `- Next stale report: ${
+    nextStaleSuite
+      ? `${nextStaleSuite.name} in ${formatRemaining(nextStaleRemainingHours)}`
+      : "unknown"
+  }`,
   "",
   "## Readiness Evidence",
   "",
@@ -233,6 +260,15 @@ const lines = [
     (suite) =>
       `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} | ${suite.age} |`,
   ),
+  "",
+  "## Refresh Priority",
+  "",
+  "| Priority | Suite | Age | Time until stale | Source report |",
+  "| ---: | --- | ---: | ---: | --- |",
+  ...refreshPrioritySuites.map((suite, index) => {
+    const remainingHours = maxReportAgeHours - suite.ageHours;
+    return `| ${index + 1} | ${suite.name} | ${suite.age} | ${formatRemaining(remainingHours)} | \`${suite.source}\` |`;
+  }),
   "",
   "## Chatbot Evidence Details",
   "",
@@ -258,6 +294,9 @@ const lines = [
   "## Next Live Checks",
   "",
   "- Rerun this dashboard after each deploy that touches account, chatbot, Food V2, or report routes.",
+  `- Refresh first: ${
+    nextStaleSuite ? `${nextStaleSuite.name} (${nextStaleSuite.command})` : "no current source report found"
+  }.`,
   `- Reports older than ${maxReportAgeHours}h are marked STALE and block readiness until rerun.`,
   "- If a route report is older than the current deploy, rerun the source command before relying on it.",
   "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY`.",
