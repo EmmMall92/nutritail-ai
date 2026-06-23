@@ -1,6 +1,6 @@
 # Cat Case Fixture Integrity QA
 
-Generated: 2026-06-22T20:33:37.424Z
+Generated: 2026-06-23T05:20:15.448Z
 Fixture: `data/evals/chatbot-extra-cases-cat-001-500.json`
 Result: PASS
 
