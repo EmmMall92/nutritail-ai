@@ -72,6 +72,18 @@ const cases: SmokeCase[] = [
   },
 ];
 
+function assertSmokeCaseEncoding() {
+  const mojibakePattern = /Ξ[\u0080-\u00ff]|Ο[\u0080-\u00ff]|Οƒ|Ο‡|Ο‰|�/;
+  const damaged = cases.filter((item) => mojibakePattern.test(item.message));
+  if (damaged.length > 0) {
+    throw new Error(
+      `OpenAI intake smoke cases contain damaged Greek text: ${damaged
+        .map((item) => item.id)
+        .join(", ")}`,
+    );
+  }
+}
+
 function extractJsonObject(text: string) {
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) return null;
@@ -152,6 +164,7 @@ async function writeReport(lines: string[]) {
 }
 
 async function main() {
+  assertSmokeCaseEncoding();
   await loadEnvFile();
 
   const hasOpenAiKey = Boolean(process.env.OPENAI_API_KEY?.trim());
