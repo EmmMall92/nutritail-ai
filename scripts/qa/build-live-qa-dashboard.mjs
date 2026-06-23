@@ -61,7 +61,7 @@ const customerUxSuites = [
   },
 ];
 
-const fixtureIntegritySuites = [
+const fixtureCoverageSuites = [
   {
     name: "Dog 201-600 fixture integrity",
     source: "reports/dog_201_600_fixture_integrity.md",
@@ -235,7 +235,7 @@ const parsed = suites.map(parseReport);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
 const parsedResponseContract = parseResponseContractReport(responseContractSuite);
 const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
-const parsedFixtureIntegrity = fixtureIntegritySuites.map(parseFixtureIntegrityReport);
+const parsedFixtureCoverage = fixtureCoverageSuites.map(parseFixtureIntegrityReport);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -290,7 +290,7 @@ const lines = [
   `- Response contracts passed: ${parsedResponseContract.passed}`,
   `- Response contracts failed: ${parsedResponseContract.failed}`,
   `- Customer UX suites passing: ${parsedCustomerUx.filter((suite) => suite.result === "PASS").length}/${parsedCustomerUx.length}`,
-  `- Fixture integrity suites passing: ${parsedFixtureIntegrity.filter((suite) => suite.result === "PASS").length}/${parsedFixtureIntegrity.length}`,
+  `- Fixture/coverage evidence suites passing: ${parsedFixtureCoverage.filter((suite) => suite.result === "PASS").length}/${parsedFixtureCoverage.length}`,
   "",
   "## Species Coverage",
   "",
@@ -337,11 +337,11 @@ const lines = [
       `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} |`,
   ),
   "",
-  "## Fixture Integrity Evidence",
+  "## Fixture And Coverage Evidence",
   "",
   "| Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |",
   "| --- | --- | --- | --- | --- | ---: | ---: | --- |",
-  ...parsedFixtureIntegrity.map(
+  ...parsedFixtureCoverage.map(
     (suite) =>
       `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.checked} | ${suite.issues} | ${suite.runDate} |`,
   ),
@@ -354,7 +354,7 @@ const lines = [
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.",
-  "- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches from encoding drift before live tests run.",
+  "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.",
   "",
   "## Next QA Gaps",
   "",
@@ -392,10 +392,10 @@ if (failingCustomerUx.length > 0) {
   );
 }
 
-const failingFixtureIntegrity = parsedFixtureIntegrity.filter((suite) => suite.result !== "PASS");
-if (failingFixtureIntegrity.length > 0) {
+const failingFixtureCoverage = parsedFixtureCoverage.filter((suite) => suite.result !== "PASS");
+if (failingFixtureCoverage.length > 0) {
   throw new Error(
-    `Fixture integrity QA is not passing: ${failingFixtureIntegrity
+    `Fixture/coverage QA is not passing: ${failingFixtureCoverage
       .map((suite) => suite.name)
       .join(", ")}`,
   );

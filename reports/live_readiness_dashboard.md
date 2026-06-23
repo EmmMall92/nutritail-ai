@@ -1,6 +1,6 @@
 # NutriTail Live Readiness Dashboard
 
-Generated: 2026-06-23T06:22:32.866Z
+Generated: 2026-06-23T06:26:28.744Z
 Result: PASS
 
 This dashboard summarizes live route, customer-flow, and chatbot QA evidence.
@@ -26,7 +26,7 @@ It is intentionally evidence-based: each row points to the authoritative report 
 | Food V2 live routes | admin Food V2 pages + protected Food V2 APIs | `reports/food_v2_live_route_smoke_qa.md` | `npm.cmd run qa:food-v2-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.191Z | 9.5h |
 | Account progress live routes | account pages, pet pages, printable reports, progress API guard | `reports/account_progress_live_route_smoke_qa.md` | `npm.cmd run qa:account-progress-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.694Z | 9.5h |
 | Customer chatbot flow links | saved pet deep links, progress links, customer-facing copy guards | `reports/customer_chatbot_flow_links_qa.md` | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 78 | 78 | 0 | 2026-06-22T20:54:28.890Z | 9.5h |
-| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-23T06:22:27.876Z | 0m |
+| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-23T06:26:22.942Z | 0m |
 
 ## Refresh Priority
 
@@ -47,7 +47,7 @@ It is intentionally evidence-based: each row points to the authoritative report 
 - Prompt encoding issues after repair: 0
 - Response contract failures: 0
 - Customer UX suites: 2/2
-- Fixture integrity suites: 4/4
+- Fixture/coverage evidence suites: 4/4
 
 ## Interpretation
 
@@ -55,7 +55,7 @@ It is intentionally evidence-based: each row points to the authoritative report 
 - Customer flow link QA protects saved-pet, progress-check, report, and chatbot navigation behavior.
 - Chatbot live QA protects dog/cat recommendation behavior separately from route availability.
 - Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.
-- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches before live tests run.
+- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches before live tests run.
 
 ## Next Live Checks
 
