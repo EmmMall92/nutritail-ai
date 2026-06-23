@@ -856,6 +856,15 @@ function detectSafety(message: string) {
     return "vet_referral" as const;
   }
 
+  const bcsMatch = text.match(/\bbcs\s*([0-9])\s*\/?\s*9\b/);
+  if (bcsMatch) {
+    const score = Number(bcsMatch[1]);
+    const puppyBcs = /κουταβ|puppy/.test(text);
+    if ([2, 3, 8, 9].includes(score) || (puppyBcs && score === 7)) {
+      return "vet_referral" as const;
+    }
+  }
+
   const cleanBloodPattern =
     /(?:^|[\s,.;:])(?:αιμα|αίμα)(?:$|[\s,.;:])|ματων|ματωμεν/;
   if (

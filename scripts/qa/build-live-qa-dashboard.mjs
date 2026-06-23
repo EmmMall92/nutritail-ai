@@ -63,6 +63,12 @@ const customerUxSuites = [
 
 const fixtureIntegritySuites = [
   {
+    name: "Dog 201-600 fixture integrity",
+    source: "reports/dog_201_600_fixture_integrity.md",
+    command: "npm.cmd run qa:dog-201-600-fixture",
+    layer: "UTF-8 prompt integrity + sequential dog QA fixture",
+  },
+  {
     name: "Cat 001-500 fixture integrity",
     source: "reports/cat_case_fixture_integrity.md",
     command: "npm.cmd run qa:cat-case-fixture",

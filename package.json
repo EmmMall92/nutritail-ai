@@ -121,6 +121,7 @@
     "qa:food-v2-senior-visible-ranking": "tsx scripts/qa/check-food-v2-senior-visible-ranking.ts",
     "qa:dog-edge-cases": "npm run qa:dog-edge-fixture",
     "qa:dog-edge-fixture": "tsx scripts/qa/check-dog-edge-case-fixture.ts",
+    "qa:dog-201-600-fixture": "node scripts/qa/check-dog-201-600-fixture-integrity.mjs",
     "qa:dog-chatbot-live-smoke": "node scripts/qa/run-dog-chatbot-live-smoke.mjs",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
     "qa:dog-chatbot-live-cases:201-600": "node scripts/qa/run-dog-chatbot-live-cases-201-600.mjs",

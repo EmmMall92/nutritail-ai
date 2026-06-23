@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-23T05:15:20.723Z
+Generated: 2026-06-23T05:45:25.923Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -19,7 +19,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Response contracts passed: 156
 - Response contracts failed: 0
 - Customer UX suites passing: 2/2
-- Fixture integrity suites passing: 1/1
+- Fixture integrity suites passing: 2/2
 
 ## Species Coverage
 
@@ -33,7 +33,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Suite | Source report | Fixture | Checked | Passed | Needs review | Runner | OpenAI extraction | Last run |
 | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
 | Dog chatbot live QA 001-200 | `reports/dog_chatbot_200_live_cases.md` | `data/evals/chatbot-extra-cases-dog-001-100.json + data/evals/chatbot-dog-edge-cases-101-200.json` | 200 | 200 | 0 | `legacy live QA runner` | skipped | 2026-06-23T05:15:13.589Z |
-| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-22T19:35:07.060Z |
+| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-23T05:45:19.897Z |
 | Cat chatbot live QA 001-500 | `reports/cat_chatbot_live_cases_1-500.md` | `data/evals/chatbot-extra-cases-cat-001-500.json` | 500 | 500 | 0 | `npm.cmd run qa:cat-chatbot-live-cases:500:chunks` | skipped | 2026-06-23T04:43:13.581Z |
 
 ## Intake Evidence
@@ -60,7 +60,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | --- |
-| Cat 001-500 fixture integrity | `reports/cat_case_fixture_integrity.md` | UTF-8 prompt integrity + sequential cat QA fixture | `npm.cmd run qa:cat-case-fixture` | PASS | 500 | 0 | 2026-06-22T20:33:37.424Z |
+| Dog 201-600 fixture integrity | `reports/dog_201_600_fixture_integrity.md` | UTF-8 prompt integrity + sequential dog QA fixture | `npm.cmd run qa:dog-201-600-fixture` | PASS | 400 | 0 | 2026-06-23T05:20:15.410Z |
+| Cat 001-500 fixture integrity | `reports/cat_case_fixture_integrity.md` | UTF-8 prompt integrity + sequential cat QA fixture | `npm.cmd run qa:cat-case-fixture` | PASS | 500 | 0 | 2026-06-23T05:20:15.448Z |
 
 ## Current Interpretation
 
