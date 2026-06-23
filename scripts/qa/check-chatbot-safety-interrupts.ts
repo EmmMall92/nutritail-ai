@@ -49,6 +49,19 @@ const cases: SafetyCase[] = [
     expectedCode: "collapse_or_severe_pain",
   },
   {
+    id: "not-eating-at-all-en",
+    message: "My cat is not eating at all",
+    species: "cat",
+    expectedHardStop: true,
+    expectedCode: "not_eating",
+  },
+  {
+    id: "senior-low-appetite-not-hard-stop-en",
+    message: "Senior dog with low appetite and not eating much",
+    species: "dog",
+    expectedHardStop: false,
+  },
+  {
     id: "renal-caution-not-hard-stop",
     message: "Γάτα με νεφρική ανεπάρκεια IRIS 2",
     species: "cat",

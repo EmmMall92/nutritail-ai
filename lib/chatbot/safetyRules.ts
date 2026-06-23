@@ -65,7 +65,12 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "not_eating",
-    patterns: [/not\s+eating/i, /won't\s+eat/i, /no\s+appetite/i, greek.notEating],
+    patterns: [
+      /not\s+eating(?:\s*$|\s+(?:at\s+all|anything|for|\d+\s*(?:h|hr|hrs|hour|hours|day|days)))/i,
+      /won't\s+eat/i,
+      /no\s+appetite/i,
+      greek.notEating,
+    ],
     message: {
       el: "Αν δεν τρώει, ειδικά αν είναι γάτα ή κρατάει πάνω από 24 ώρες, χρειάζεται γρήγορη κτηνιατρική καθοδήγηση.",
       en: "Not eating, especially in cats or for more than 24 hours, needs prompt veterinary guidance.",
