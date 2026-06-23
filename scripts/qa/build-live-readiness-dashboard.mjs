@@ -137,6 +137,16 @@ function parseChatbotSuite(suite) {
     [/- Intake QA skipped suites:\s*(\d+)/i],
     `${suite.source} intake skipped suites`,
   );
+  const promptEncodingRepairs = parseNumber(
+    text,
+    [/- Prompt encoding repairs applied:\s*(\d+)/i],
+    `${suite.source} prompt encoding repairs`,
+  );
+  const promptEncodingIssues = parseNumber(
+    text,
+    [/- Prompt encoding issues after repair:\s*(\d+)/i],
+    `${suite.source} prompt encoding issues`,
+  );
   const fixtureLine =
     text.match(/- Fixture integrity suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
   const customerUxLine =
@@ -148,19 +158,26 @@ function parseChatbotSuite(suite) {
     ...suite,
     checked,
     passed,
-    failed: review + responseFailures + intakeFailed,
+    failed: review + responseFailures + intakeFailed + promptEncodingIssues,
     review,
     responseFailures,
     intakeChecked,
     intakePassed,
     intakeFailed,
     intakeSkippedSuites,
+    promptEncodingRepairs,
+    promptEncodingIssues,
     fixtureLine,
     customerUxLine,
     runDate,
     age: formatAge(reportAgeHours(runDate)),
     status:
-      review === 0 && responseFailures === 0 && intakeFailed === 0 && checked === passed && !stale
+      review === 0 &&
+      responseFailures === 0 &&
+      intakeFailed === 0 &&
+      promptEncodingIssues === 0 &&
+      checked === passed &&
+      !stale
         ? "PASS"
         : stale
           ? "STALE"
@@ -224,6 +241,8 @@ const lines = [
   `- Intake QA: ${parsedChatbotSuite.intakePassed}/${parsedChatbotSuite.intakeChecked}`,
   `- Intake QA failures: ${parsedChatbotSuite.intakeFailed}`,
   `- Intake QA skipped suites: ${parsedChatbotSuite.intakeSkippedSuites}`,
+  `- Prompt encoding repairs applied: ${parsedChatbotSuite.promptEncodingRepairs}`,
+  `- Prompt encoding issues after repair: ${parsedChatbotSuite.promptEncodingIssues}`,
   `- Response contract failures: ${parsedChatbotSuite.responseFailures}`,
   `- Customer UX suites: ${parsedChatbotSuite.customerUxLine}`,
   `- Fixture integrity suites: ${parsedChatbotSuite.fixtureLine}`,
@@ -234,7 +253,7 @@ const lines = [
   "- Customer flow link QA protects saved-pet, progress-check, report, and chatbot navigation behavior.",
   "- Chatbot live QA protects dog/cat recommendation behavior separately from route availability.",
   "- Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.",
-  "- Fixture integrity protects the large Greek cat QA batch before live cat tests run.",
+  "- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches before live tests run.",
   "",
   "## Next Live Checks",
   "",
