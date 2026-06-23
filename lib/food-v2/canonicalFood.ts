@@ -78,8 +78,26 @@ const LIFE_STAGE_LABELS: Record<LifeStage, string> = {
   unknown: "",
 };
 
+function applyKnownGreekTokenRepairs(value: string) {
+  return value
+    .replace(/Ξ’Β®/g, "Β®")
+    .replace(/ΞΒ£ΞΞΞΒ»ΞΞΞΞΞΒΞβ€/g, "Salmon")
+    .replace(/ΞΒΞΞΞβ€ΞΒΞβ‚¬ΞΞΞβ€¦ΞΒ»ΞΞ/g, "Chicken")
+    .replace(/ΞΒ\S*ΞΎΒ»ΞΎΟ/gi, "Chicken")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Σολομός")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΞΏΟ‚/g, "Σολομός")
+    .replace(/ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/ΞΞΏΟ„ΞΏΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/Ξ‘ΟΞ½Ξ―/g, "Αρνί")
+    .replace(/Ξ‘ΟΞ½ΞΉ/g, "Αρνί")
+    .replace(/ΞΞΏΟƒΟ‡Ξ¬ΟΞΉ/g, "Μοσχάρι")
+    .replace(/ΞΞΏΟƒΟ‡Ξ±ΟΞΉ/g, "Μοσχάρι")
+    .replace(/ΟΞ¬ΟΞΉ/g, "Ψάρι")
+    .replace(/ΟΞ±ΟΞΉ/g, "Ψάρι");
+}
+
 function cleanText(value: unknown) {
-  return String(value ?? "")
+  return applyKnownGreekTokenRepairs(String(value ?? ""))
     .normalize("NFKC")
     .replace(/Β®/g, "®")
     .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Salmon")
