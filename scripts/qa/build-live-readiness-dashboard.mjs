@@ -100,6 +100,14 @@ function parseChatbotSuite(suite) {
     [/- Response contracts failed:\s*(\d+)/i],
     `${suite.source} response failures`,
   );
+  const intakeChecked = parseNumber(text, [/- Intake QA checked:\s*(\d+)/i], `${suite.source} intake checked`);
+  const intakePassed = parseNumber(text, [/- Intake QA passed:\s*(\d+)/i], `${suite.source} intake passed`);
+  const intakeFailed = parseNumber(text, [/- Intake QA failed:\s*(\d+)/i], `${suite.source} intake failed`);
+  const intakeSkippedSuites = parseNumber(
+    text,
+    [/- Intake QA skipped suites:\s*(\d+)/i],
+    `${suite.source} intake skipped suites`,
+  );
   const fixtureLine =
     text.match(/- Fixture integrity suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
   const customerUxLine =
@@ -109,13 +117,17 @@ function parseChatbotSuite(suite) {
     ...suite,
     checked,
     passed,
-    failed: review + responseFailures,
+    failed: review + responseFailures + intakeFailed,
     review,
     responseFailures,
+    intakeChecked,
+    intakePassed,
+    intakeFailed,
+    intakeSkippedSuites,
     fixtureLine,
     customerUxLine,
     runDate: parseRunDate(text),
-    status: review === 0 && responseFailures === 0 && checked === passed ? "PASS" : "REVIEW",
+    status: review === 0 && responseFailures === 0 && intakeFailed === 0 && checked === passed ? "PASS" : "REVIEW",
   };
 }
 
@@ -171,6 +183,9 @@ const lines = [
   "",
   `- Live recommendation cases: ${parsedChatbotSuite.passed}/${parsedChatbotSuite.checked}`,
   `- Recommendation cases needing review: ${parsedChatbotSuite.review}`,
+  `- Intake QA: ${parsedChatbotSuite.intakePassed}/${parsedChatbotSuite.intakeChecked}`,
+  `- Intake QA failures: ${parsedChatbotSuite.intakeFailed}`,
+  `- Intake QA skipped suites: ${parsedChatbotSuite.intakeSkippedSuites}`,
   `- Response contract failures: ${parsedChatbotSuite.responseFailures}`,
   `- Customer UX suites: ${parsedChatbotSuite.customerUxLine}`,
   `- Fixture integrity suites: ${parsedChatbotSuite.fixtureLine}`,
@@ -180,6 +195,7 @@ const lines = [
   "- Food V2 and account route smoke checks prove key live pages and protected APIs are deployed.",
   "- Customer flow link QA protects saved-pet, progress-check, report, and chatbot navigation behavior.",
   "- Chatbot live QA protects dog/cat recommendation behavior separately from route availability.",
+  "- Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.",
   "- Fixture integrity protects the large Greek cat QA batch before live cat tests run.",
   "",
   "## Next Live Checks",
