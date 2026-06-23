@@ -158,8 +158,10 @@ function parseChatbotSuite(suite) {
     [/- Prompt encoding issues after repair:\s*(\d+)/i],
     `${suite.source} prompt encoding issues`,
   );
-  const fixtureLine =
-    text.match(/- Fixture integrity suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
+  const fixtureCoverageLine =
+    text.match(/- Fixture\/coverage evidence suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+    text.match(/- Fixture integrity suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+    "not recorded";
   const customerUxLine =
     text.match(/- Customer UX suites passing:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "not recorded";
   const runDate = parseRunDate(text);
@@ -179,7 +181,7 @@ function parseChatbotSuite(suite) {
     intakeSkippedSuites,
     promptEncodingRepairs,
     promptEncodingIssues,
-    fixtureLine,
+    fixtureCoverageLine,
     customerUxLine,
     runDate,
     ageHours,
@@ -281,7 +283,7 @@ const lines = [
   `- Prompt encoding issues after repair: ${parsedChatbotSuite.promptEncodingIssues}`,
   `- Response contract failures: ${parsedChatbotSuite.responseFailures}`,
   `- Customer UX suites: ${parsedChatbotSuite.customerUxLine}`,
-  `- Fixture integrity suites: ${parsedChatbotSuite.fixtureLine}`,
+  `- Fixture/coverage evidence suites: ${parsedChatbotSuite.fixtureCoverageLine}`,
   "",
   "## Interpretation",
   "",
@@ -289,7 +291,7 @@ const lines = [
   "- Customer flow link QA protects saved-pet, progress-check, report, and chatbot navigation behavior.",
   "- Chatbot live QA protects dog/cat recommendation behavior separately from route availability.",
   "- Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.",
-  "- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches before live tests run.",
+  "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches before live tests run.",
   "",
   "## Next Live Checks",
   "",
