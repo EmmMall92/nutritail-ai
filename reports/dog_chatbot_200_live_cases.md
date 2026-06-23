@@ -1,6 +1,6 @@
 # Dog Chatbot 200 Live Cases
 
-Generated: 2026-06-21T19:59:08.489Z
+Generated: 2026-06-23T05:15:13.589Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
@@ -9,10 +9,52 @@ OpenAI extraction: skipped
 - Cases checked: 200
 - Passed: 200
 - Needs review: 0
+- Prompt encoding repairs applied: 0
+- Prompt encoding issues after repair: 0
 
 Checks cover OpenAI fact extraction when an API key is available, minimum missing-question flow, safety intent, Food V2 recommendation availability, allergy conflicts, puppy growth, large-breed puppy mineral data, weight-control kcal/fat/fiber logic, renal/urinary fit, sterilised calorie fit, senior fit, and active-dog/high-activity energy/protein mismatch guards.
 
 OpenAI fact extraction was not checked in this run because no usable OPENAI_API_KEY was available to the QA runner.
+
+## Executive Summary
+
+### Goal Coverage
+
+| Goal | Pass rate | Most common first picks |
+| --- | ---: | --- |
+| allergy | 24/24 | Monge All Breeds Adult Monoprotein Beef With Rice (14); Monge VetSolution An Hydro (4); Monge All Breeds Adult Monoprotein Salmon With Rice (3) |
+| general | 74/74 | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (48); Josera ACTIVE NATURE (13); Monge All Breeds Adult Active (2) |
+| growth | 27/27 | Brit Premium By Nature Junior Small (14); Brit Care Grain Free Puppy Salmon (9); Purina Pro Plan SMALL&MINI PUPPY Healthy Start Κοτόπουλο (2) |
+| premium | 6/6 | Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο (3); Josera ACTIVE NATURE (1); Josera Medi/maxi Adult Chicken & Rice (1) |
+| renal | 5/5 | Monge VetSolution Renal And Oxalate (5) |
+| senior | 26/26 | Brit Care Sustainable Senior Chicken & Insect (23); Josera MINI SENIOR SALMON (3) |
+| sensitive_digestion | 17/17 | Josera GASTRO DRY (13); Josera DUCK & POTATO (2); Monge All Breeds Adult Monoprotein Beef With Rice (1) |
+| sterilised | 3/3 | Happy Dog Fit & Vital Light (1); Josera LIGHT & VITAL (1); N&D Quinoa Grain Free Neutered Duck Adult Mini (1) |
+| urinary | 5/5 | Monge VetSolution Urinary Struvite (4); Monge VetSolution Renal And Oxalate (1) |
+| value | 2/2 | Happy Dog Naturcroq Adult Chicken (2) |
+| weight_control | 11/11 | Josera LIGHT & VITAL (9); Happy Dog Fit & Vital Light (2) |
+
+### Safety Coverage
+
+| Safety level | Pass rate | Common top-2 foods |
+| --- | ---: | --- |
+| emergency | 9/9 | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (3); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (3); Brit Premium By Nature Junior Small (1); Josera DUCK & POTATO (1) |
+| normal | 97/97 | Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (23); Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (21); Monge All Breeds Adult Active (17); Josera ACTIVE NATURE (14) |
+| vet_referral | 94/94 | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί (24); Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός (24); Brit Care Sustainable Senior Chicken & Insect (19); Acana Senior (15) |
+
+### Recurring First Picks
+
+- Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί: 48 first-pick appearances
+- Brit Care Sustainable Senior Chicken & Insect: 23 first-pick appearances
+- Monge All Breeds Adult Monoprotein Beef With Rice: 15 first-pick appearances
+- Brit Premium By Nature Junior Small: 14 first-pick appearances
+- Josera ACTIVE NATURE: 14 first-pick appearances
+- Josera GASTRO DRY: 13 first-pick appearances
+- Josera LIGHT & VITAL: 10 first-pick appearances
+- Brit Care Grain Free Puppy Salmon: 9 first-pick appearances
+- Monge VetSolution Renal And Oxalate: 6 first-pick appearances
+
+Use this section for qualitative review: repeated first picks can be healthy if they match the scenario, but they can also reveal over-dominant ranking signals.
 
 ## Results
 
@@ -35,7 +77,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 15 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
 | 16 | pass | Acana Senior; Brit Care Sustainable Senior Chicken & Insect; Orijen Senior | - |
 | 17 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 18 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
+| 18 | pass | - | - |
 | 19 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Lamb With Rice And Potatoes; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
 | 20 | pass | Monge VetSolution An Hydro; Monge Hypo With Salmon And Tuna; Josera HYPOALLERGENIC DRY | - |
 | 21 | pass | Happy Dog Naturcroq Adult Chicken; Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο; Ambrosia Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο | - |
@@ -98,12 +140,12 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | 78 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 79 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 80 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 81 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
+| 81 | pass | - | - |
 | 82 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 83 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 84 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 85 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
-| 86 | pass | Brit Premium By Nature Junior Small; Josera DUCK & POTATO; ACANA Puppy Small Breed | - |
+| 84 | pass | - | - |
+| 85 | pass | - | - |
+| 86 | pass | - | - |
 | 87 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 88 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
 | 89 | pass | Purina Pro Plan MEDIUM ADULT Sensitive Digestion Αρνί; Purina Pro Plan MEDIUM ADULT Sensitive Skin Σολομός; Schesir Mature Medium Με Κοτόπουλο | - |
