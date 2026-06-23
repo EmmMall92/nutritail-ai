@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-23T06:17:04.209Z
+Generated: 2026-06-23T06:22:27.876Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -21,7 +21,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Response contracts passed: 156
 - Response contracts failed: 0
 - Customer UX suites passing: 2/2
-- Fixture integrity suites passing: 3/3
+- Fixture integrity suites passing: 4/4
 
 ## Species Coverage
 
@@ -62,7 +62,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | --- |
-| Dog 201-600 fixture integrity | `reports/dog_201_600_fixture_integrity.md` | UTF-8 prompt integrity + sequential dog QA fixture | `npm.cmd run qa:dog-201-600-fixture` | PASS | 400 | 0 | 2026-06-23T05:20:15.410Z |
+| Dog 201-600 fixture integrity | `reports/dog_201_600_fixture_integrity.md` | UTF-8 prompt integrity + sequential dog QA fixture | `npm.cmd run qa:dog-201-600-fixture` | PASS | 400 | 0 | 2026-06-23T06:22:21.757Z |
+| Dog 201-600 coverage audit | `reports/dog_201_600_coverage_audit.md` | dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases | `npm.cmd run audit:dog-201-600-coverage` | PASS | 400 | 0 | 2026-06-23T06:22:21.420Z |
 | Cat 001-500 fixture integrity | `reports/cat_case_fixture_integrity.md` | UTF-8 prompt integrity + sequential cat QA fixture | `npm.cmd run qa:cat-case-fixture` | PASS | 500 | 0 | 2026-06-23T06:16:55.533Z |
 | Cat 001-500 coverage audit | `reports/cat_chatbot_coverage_audit.md` | cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases | `npm.cmd run audit:cat-chatbot-coverage` | PASS | 500 | 0 | 2026-06-23T06:16:55.436Z |
 

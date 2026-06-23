@@ -137,6 +137,7 @@
     "qa:dog-chatbot-golden-audit": "npm run audit:dog-chatbot-golden-coverage && npm run audit:dog-chatbot-quality",
     "audit:dog-chatbot-golden-coverage": "node scripts/qa/audit-dog-chatbot-golden-coverage.mjs",
     "audit:dog-chatbot-quality": "node scripts/qa/audit-dog-chatbot-quality.mjs",
+    "audit:dog-201-600-coverage": "node scripts/qa/audit-dog-201-600-coverage.mjs",
     "audit:cat-chatbot-coverage": "node scripts/qa/audit-cat-chatbot-coverage.mjs",
     "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
     "qa:nutrition-source-map-intake": "tsx scripts/qa/check-nutrition-source-map-intake.ts",

@@ -69,6 +69,12 @@ const fixtureIntegritySuites = [
     layer: "UTF-8 prompt integrity + sequential dog QA fixture",
   },
   {
+    name: "Dog 201-600 coverage audit",
+    source: "reports/dog_201_600_coverage_audit.md",
+    command: "npm.cmd run audit:dog-201-600-coverage",
+    layer: "dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases",
+  },
+  {
     name: "Cat 001-500 fixture integrity",
     source: "reports/cat_case_fixture_integrity.md",
     command: "npm.cmd run qa:cat-case-fixture",
