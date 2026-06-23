@@ -1,6 +1,6 @@
 # NutriTail Live Readiness Dashboard
 
-Generated: 2026-06-23T06:17:13.338Z
+Generated: 2026-06-23T06:22:32.866Z
 Result: PASS
 
 This dashboard summarizes live route, customer-flow, and chatbot QA evidence.
@@ -15,26 +15,26 @@ It is intentionally evidence-based: each row points to the authoritative report 
 - Failed or needs review: 0
 - Pass rate: 100.0%
 - Max report age: 48h
-- Oldest source report: Public launch live routes (9.4h)
-- Next stale report: Public launch live routes in 38.6h
+- Oldest source report: Public launch live routes (9.5h)
+- Next stale report: Public launch live routes in 38.5h
 
 ## Readiness Evidence
 
 | Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run | Age |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: |
-| Public launch live routes | homepage, auth pages, legal pages, SEO files, manifest, OpenGraph image | `reports/public_launch_live_route_smoke_qa.md` | `npm.cmd run qa:public-launch-live-routes` | PASS | 11 | 11 | 0 | 2026-06-22T20:54:13.058Z | 9.4h |
-| Food V2 live routes | admin Food V2 pages + protected Food V2 APIs | `reports/food_v2_live_route_smoke_qa.md` | `npm.cmd run qa:food-v2-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.191Z | 9.4h |
-| Account progress live routes | account pages, pet pages, printable reports, progress API guard | `reports/account_progress_live_route_smoke_qa.md` | `npm.cmd run qa:account-progress-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.694Z | 9.4h |
-| Customer chatbot flow links | saved pet deep links, progress links, customer-facing copy guards | `reports/customer_chatbot_flow_links_qa.md` | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 78 | 78 | 0 | 2026-06-22T20:54:28.890Z | 9.4h |
-| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-23T06:17:04.209Z | 0m |
+| Public launch live routes | homepage, auth pages, legal pages, SEO files, manifest, OpenGraph image | `reports/public_launch_live_route_smoke_qa.md` | `npm.cmd run qa:public-launch-live-routes` | PASS | 11 | 11 | 0 | 2026-06-22T20:54:13.058Z | 9.5h |
+| Food V2 live routes | admin Food V2 pages + protected Food V2 APIs | `reports/food_v2_live_route_smoke_qa.md` | `npm.cmd run qa:food-v2-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.191Z | 9.5h |
+| Account progress live routes | account pages, pet pages, printable reports, progress API guard | `reports/account_progress_live_route_smoke_qa.md` | `npm.cmd run qa:account-progress-live-routes` | PASS | 10 | 10 | 0 | 2026-06-22T20:54:31.694Z | 9.5h |
+| Customer chatbot flow links | saved pet deep links, progress links, customer-facing copy guards | `reports/customer_chatbot_flow_links_qa.md` | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 78 | 78 | 0 | 2026-06-22T20:54:28.890Z | 9.5h |
+| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-23T06:22:27.876Z | 0m |
 
 ## Refresh Priority
 
 | Priority | Suite | Age | Time until stale | Source report |
 | ---: | --- | ---: | ---: | --- |
-| 1 | Public launch live routes | 9.4h | 38.6h | `reports/public_launch_live_route_smoke_qa.md` |
-| 2 | Customer chatbot flow links | 9.4h | 38.6h | `reports/customer_chatbot_flow_links_qa.md` |
-| 3 | Food V2 live routes | 9.4h | 38.6h | `reports/food_v2_live_route_smoke_qa.md` |
+| 1 | Public launch live routes | 9.5h | 38.5h | `reports/public_launch_live_route_smoke_qa.md` |
+| 2 | Customer chatbot flow links | 9.5h | 38.5h | `reports/customer_chatbot_flow_links_qa.md` |
+| 3 | Food V2 live routes | 9.5h | 38.5h | `reports/food_v2_live_route_smoke_qa.md` |
 
 ## Chatbot Evidence Details
 
@@ -47,7 +47,7 @@ It is intentionally evidence-based: each row points to the authoritative report 
 - Prompt encoding issues after repair: 0
 - Response contract failures: 0
 - Customer UX suites: 2/2
-- Fixture integrity suites: 3/3
+- Fixture integrity suites: 4/4
 
 ## Interpretation
 
