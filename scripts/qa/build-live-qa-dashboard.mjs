@@ -110,12 +110,24 @@ function parseReport(suite) {
   const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
   const openAiLine = text.match(/OpenAI extraction:\s*([^\n]+)/i)?.[1]?.trim();
   const runner = text.match(/Runner:\s*`([^`]+)`/i)?.[1]?.trim();
+  const promptEncodingRepairs = matchNumber(
+    text,
+    [/Prompt encoding repairs applied:\s*(\d+)/i],
+    `${suite.source} prompt encoding repairs`,
+  );
+  const promptEncodingIssues = matchNumber(
+    text,
+    [/Prompt encoding issues after repair:\s*(\d+)/i],
+    `${suite.source} prompt encoding issues`,
+  );
 
   return {
     ...suite,
     checked,
     passed,
     review,
+    promptEncodingRepairs,
+    promptEncodingIssues,
     runDate,
     runner: runner ?? "legacy live QA runner",
     openAiExtraction: openAiLine ?? "not recorded",
@@ -217,9 +229,11 @@ const totals = parsed.reduce(
     acc.checked += suite.checked;
     acc.passed += suite.passed;
     acc.review += suite.review;
+    acc.promptEncodingRepairs += suite.promptEncodingRepairs;
+    acc.promptEncodingIssues += suite.promptEncodingIssues;
     return acc;
   },
-  { checked: 0, passed: 0, review: 0 },
+  { checked: 0, passed: 0, review: 0, promptEncodingRepairs: 0, promptEncodingIssues: 0 },
 );
 const intakeTotals = parsedIntake.reduce(
   (acc, suite) => {
@@ -254,6 +268,8 @@ const lines = [
   `- Passed: ${totals.passed}`,
   `- Needs review: ${totals.review}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
+  `- Prompt encoding repairs applied: ${totals.promptEncodingRepairs}`,
+  `- Prompt encoding issues after repair: ${totals.promptEncodingIssues}`,
   `- Intake QA checked: ${intakeTotals.checked}`,
   `- Intake QA passed: ${intakeTotals.passed}`,
   `- Intake QA failed: ${intakeTotals.failed}`,
@@ -278,11 +294,11 @@ const lines = [
   "",
   "## Suite Evidence",
   "",
-  "| Suite | Source report | Fixture | Checked | Passed | Needs review | Runner | OpenAI extraction | Last run |",
-  "| --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |",
+  "| Suite | Source report | Fixture | Checked | Passed | Needs review | Encoding repairs | Encoding issues | Runner | OpenAI extraction | Last run |",
+  "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |",
   ...parsed.map(
     (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | \`${suite.fixture}\` | ${suite.checked} | ${suite.passed} | ${suite.review} | \`${suite.runner}\` | ${suite.openAiExtraction} | ${suite.runDate} |`,
+      `| ${suite.name} | \`${suite.source}\` | \`${suite.fixture}\` | ${suite.checked} | ${suite.passed} | ${suite.review} | ${suite.promptEncodingRepairs} | ${suite.promptEncodingIssues} | \`${suite.runner}\` | ${suite.openAiExtraction} | ${suite.runDate} |`,
   ),
   "",
   "## Intake Evidence",
@@ -326,7 +342,7 @@ const lines = [
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.",
-  "- Fixture integrity checks protect the large Greek cat QA batch from encoding drift before live tests run.",
+  "- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches from encoding drift before live tests run.",
   "",
   "## Next QA Gaps",
   "",
@@ -344,6 +360,15 @@ console.log(`Needs review: ${totals.review}`);
 
 if (parsedResponseContract.failed > 0 || parsedResponseContract.status !== "PASS") {
   throw new Error("Response contract audit is not passing.");
+}
+
+const suitesWithEncodingIssues = parsed.filter((suite) => suite.promptEncodingIssues > 0);
+if (suitesWithEncodingIssues.length > 0) {
+  throw new Error(
+    `Live QA prompt encoding issues remain after repair: ${suitesWithEncodingIssues
+      .map((suite) => suite.name)
+      .join(", ")}`,
+  );
 }
 
 const failingCustomerUx = parsedCustomerUx.filter((suite) => suite.result !== "PASS");

@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-23T05:59:49.934Z
+Generated: 2026-06-23T06:04:50.118Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -11,6 +11,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Passed: 1100
 - Needs review: 0
 - Pass rate: 100.0%
+- Prompt encoding repairs applied: 0
+- Prompt encoding issues after repair: 0
 - Intake QA checked: 18
 - Intake QA passed: 18
 - Intake QA failed: 0
@@ -30,11 +32,11 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 ## Suite Evidence
 
-| Suite | Source report | Fixture | Checked | Passed | Needs review | Runner | OpenAI extraction | Last run |
-| --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
-| Dog chatbot live QA 001-200 | `reports/dog_chatbot_200_live_cases.md` | `data/evals/chatbot-extra-cases-dog-001-100.json + data/evals/chatbot-dog-edge-cases-101-200.json` | 200 | 200 | 0 | `legacy live QA runner` | skipped | 2026-06-23T05:15:13.589Z |
-| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-23T05:45:19.897Z |
-| Cat chatbot live QA 001-500 | `reports/cat_chatbot_live_cases_1-500.md` | `data/evals/chatbot-extra-cases-cat-001-500.json` | 500 | 500 | 0 | `npm.cmd run qa:cat-chatbot-live-cases:500:chunks` | skipped | 2026-06-23T05:59:43.118Z |
+| Suite | Source report | Fixture | Checked | Passed | Needs review | Encoding repairs | Encoding issues | Runner | OpenAI extraction | Last run |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
+| Dog chatbot live QA 001-200 | `reports/dog_chatbot_200_live_cases.md` | `data/evals/chatbot-extra-cases-dog-001-100.json + data/evals/chatbot-dog-edge-cases-101-200.json` | 200 | 200 | 0 | 0 | 0 | `legacy live QA runner` | skipped | 2026-06-23T05:15:13.589Z |
+| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | 0 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-23T05:45:19.897Z |
+| Cat chatbot live QA 001-500 | `reports/cat_chatbot_live_cases_1-500.md` | `data/evals/chatbot-extra-cases-cat-001-500.json` | 500 | 500 | 0 | 0 | 0 | `npm.cmd run qa:cat-chatbot-live-cases:500:chunks` | skipped | 2026-06-23T05:59:43.118Z |
 
 ## Intake Evidence
 
@@ -71,7 +73,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
 - Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.
 - Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.
-- Fixture integrity checks protect the large Greek cat QA batch from encoding drift before live tests run.
+- Fixture integrity and live encoding checks protect the large Greek dog/cat QA batches from encoding drift before live tests run.
 
 ## Next QA Gaps
 
