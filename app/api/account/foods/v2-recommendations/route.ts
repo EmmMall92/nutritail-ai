@@ -6,6 +6,7 @@ import {
   type FoodV2RecommendationGoal,
 } from "@/lib/food-v2/recommendationRanking";
 import { normalizeBrandlessFoodDisplayName } from "@/lib/food-v2/canonicalFood";
+import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import { isLikelyNonCompleteFoodProduct } from "@/lib/food-v2/productFormGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
@@ -122,11 +123,17 @@ function compactRanking(
   product: FoodProductV2Row,
   nutrients: FoodNutrientsV2
 ) {
-  const displayName = normalizeBrandlessFoodDisplayName({
-    brand: product.brand,
-    display_name: product.display_name,
-    formula_name: product.formula_name,
-  });
+  const displayName =
+    customerFoodDisplayName({
+      brand: product.brand,
+      display_name: product.display_name,
+      formula_name: product.formula_name,
+    }) ||
+    normalizeBrandlessFoodDisplayName({
+      brand: product.brand,
+      display_name: product.display_name,
+      formula_name: product.formula_name,
+    });
   const foodIntelligence = evaluateFoodIntelligence({
     species: product.species,
     life_stage: product.life_stage,
