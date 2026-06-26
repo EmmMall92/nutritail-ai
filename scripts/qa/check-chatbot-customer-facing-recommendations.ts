@@ -370,6 +370,7 @@ if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
 const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
+const compareRoute = readFileSync("app/api/account/foods/compare/route.ts", "utf8");
 
 const forbiddenComposerCopy = [
   "score: food.ranking?.total_score",
@@ -460,6 +461,9 @@ const forbiddenChatbotPageCopy = [
   "Plan summary",
   "Choose a food for grams",
   "keep that food in the analysis",
+  "result.summary.note",
+  "Use this as a structured comparison aid.",
+  "Χρησιμοποίησέ το σαν δομημένη βοήθεια σύγκρισης.",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)
@@ -475,6 +479,22 @@ if (!chatbotPage.includes("if (analysisFoodChoices.length === 0)")) {
   console.error(
     "Fallback next-step copy should only appear when no selectable food cards were returned."
   );
+  process.exit(1);
+}
+
+const requiredCompareNameCleanup = [
+  'import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";',
+  "function getFoodV2CustomerDisplayName",
+  "name: getFoodV2CustomerDisplayName(bestV2)",
+  "name: getFoodV2CustomerDisplayName(item)",
+];
+const missingCompareNameCleanup = requiredCompareNameCleanup.filter(
+  (term) => !compareRoute.includes(term)
+);
+
+if (missingCompareNameCleanup.length > 0) {
+  console.error("Food compare API must return customer-clean Food V2 names:");
+  console.error(missingCompareNameCleanup.join(", "));
   process.exit(1);
 }
 
