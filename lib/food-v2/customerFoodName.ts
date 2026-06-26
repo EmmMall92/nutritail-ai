@@ -17,6 +17,16 @@ const PACK_SIZE_PATTERN =
 const MULTIPACK_SIZE_PATTERN =
   /\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr|gram|grams|kilogram|kilograms|lb|lbs)\b/gi;
 
+function repairKnownGreekFoodTokens(value: string) {
+  return value
+    .replace(
+      /\u039e\u009a\u039e\u038f\u039f\u201e\u039f\u008c\u039f\u20ac\u039e\u038f\u039f\u2026\u039e\u00bb\u039e\u038f/gu,
+      "Κοτόπουλο"
+    )
+    .replace(/\u039e\u0385\u039f\u008d\u039e\u00b6\u039e\u0389/gu, "Ρύζι")
+    .replace(/\u0395\u03cd\u03b6\u03b9/gu, "Ρύζι");
+}
+
 function getIsoGreekReverseMap() {
   if (isoGreekReverseMap) return isoGreekReverseMap;
 
@@ -63,7 +73,9 @@ function repairLegacyGreekMojibakeSegment(value: string) {
 }
 
 function cleanNamePart(value: unknown) {
-  return repairLegacyGreekMojibake(String(value ?? ""))
+  return repairKnownGreekFoodTokens(
+    repairLegacyGreekMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
+  )
     .replace(/\u0392\u00ae/g, "\u00ae")
     .replace(/\s+/g, " ")
     .trim();

@@ -325,6 +325,37 @@ function legacyGreekMojibake(value: string) {
 
 const customerFoodNameCases = [
   {
+    label: "Customer Purina partially repaired salmon title is readable",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name:
+        "PRO PlanΒ® MEDIUM & LARGE ADULT 7+ Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
+    },
+    expectedDisplay: "MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός",
+    expectedName:
+      "Purina Pro Plan - MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός",
+  },
+  {
+    label: "Customer Purina partially repaired chicken title is readable",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name:
+        "PRO PlanΒ® MEDIUM & LARGE ADULT Age Defence 7+ ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+    },
+    expectedDisplay: "MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο",
+    expectedName:
+      "Purina Pro Plan - MEDIUM & LARGE ADULT Age Defence 7+ Κοτόπουλο",
+  },
+  {
+    label: "Customer Happy Dog partially repaired salmon rice title is readable",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Naturcroq Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚ & Ξ΅ΟΞ¶ΞΉ",
+    },
+    expectedDisplay: "Naturcroq Σολομός & Ρύζι",
+    expectedName: "Happy Dog - Naturcroq Σολομός & Ρύζι",
+  },
+  {
     label: "Customer Purina chicken token is repaired from legacy Greek mojibake",
     input: {
       brand: "Purina Pro Plan",
