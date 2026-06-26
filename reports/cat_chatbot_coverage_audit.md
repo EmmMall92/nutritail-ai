@@ -1,6 +1,6 @@
 # Cat Chatbot Coverage Audit
 
-Generated: 2026-06-23T06:41:49.249Z
+Generated: 2026-06-26T20:05:08.650Z
 Fixture: `data/evals/chatbot-extra-cases-cat-001-500.json`
 Result: PASS
 
