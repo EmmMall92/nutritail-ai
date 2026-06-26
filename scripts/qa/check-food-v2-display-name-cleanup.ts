@@ -325,6 +325,24 @@ function legacyGreekMojibake(value: string) {
 
 const customerFoodNameCases = [
   {
+    label: "Customer Purina UTF-8 Latin mojibake salmon title is readable",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "PRO Plan® MEDIUM ADULT Sensitive Skin Î£Î¿Î»Î¿Î¼ÏÏ",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Skin Σολομός",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Σολομός",
+  },
+  {
+    label: "Customer Happy Dog UTF-8 Latin mojibake salmon rice title is readable",
+    input: {
+      brand: "Happy Dog",
+      display_name: "Happy Dog Naturcroq Î£Î¿Î»Î¿Î¼ÏÏ & Î¡ÏÎ¶Î¹",
+    },
+    expectedDisplay: "Naturcroq Σολομός & Ρύζι",
+    expectedName: "Happy Dog - Naturcroq Σολομός & Ρύζι",
+  },
+  {
     label: "Customer Purina partially repaired salmon title is readable",
     input: {
       brand: "Purina Pro Plan",

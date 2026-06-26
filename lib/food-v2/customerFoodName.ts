@@ -17,6 +17,29 @@ const PACK_SIZE_PATTERN =
 const MULTIPACK_SIZE_PATTERN =
   /\b\d+\s*x\s*\d+(?:[.,]\d+)?\s*(?:g|kg|gr|gram|grams|kilogram|kilograms|lb|lbs)\b/gi;
 
+const UTF8_AS_LATIN_MOJIBAKE_PATTERN = /[\u00ce\u00cf\u00ee\u00ef][\u0080-\u00ff]/u;
+
+function repairUtf8AsLatinMojibake(value: string) {
+  if (!UTF8_AS_LATIN_MOJIBAKE_PATTERN.test(value)) return value;
+
+  return value.replace(/[\u0080-\u00ff]+/gu, (candidate) => {
+    if (!UTF8_AS_LATIN_MOJIBAKE_PATTERN.test(candidate)) return candidate;
+    return repairUtf8AsLatinMojibakeSegment(candidate) ?? candidate;
+  });
+}
+
+function repairUtf8AsLatinMojibakeSegment(value: string) {
+  const bytes: number[] = [];
+  for (const char of value) {
+    const code = char.charCodeAt(0);
+    if (code > 255) return null;
+    bytes.push(code);
+  }
+
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? null : repaired;
+}
+
 function repairKnownGreekFoodTokens(value: string) {
   return value
     .replace(
@@ -74,7 +97,9 @@ function repairLegacyGreekMojibakeSegment(value: string) {
 
 function cleanNamePart(value: unknown) {
   return repairKnownGreekFoodTokens(
-    repairLegacyGreekMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
+    repairLegacyGreekMojibake(
+      repairUtf8AsLatinMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
+    )
   )
     .replace(/\u0392\u00ae/g, "\u00ae")
     .replace(/\s+/g, " ")
@@ -214,12 +239,18 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     cleanedDisplayName = cleanedDisplayName.slice(brand.length).trim();
   }
 
-  return (
-    normalizeBrandlessFoodDisplayName({
+  const normalizedDisplayName = normalizeBrandlessFoodDisplayName({
       brand,
       display_name: cleanedDisplayName,
       formula_name: food.formula_name,
-    }) || cleanedDisplayName
+    });
+
+  return (
+    repairKnownGreekFoodTokens(
+      repairLegacyGreekMojibake(
+        repairUtf8AsLatinMojibake(normalizedDisplayName || cleanedDisplayName)
+      )
+    ) || cleanedDisplayName
   );
 }
 
