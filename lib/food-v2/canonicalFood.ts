@@ -53,10 +53,31 @@ const DESCRIPTIVE_TITLE_PATTERNS = [
   /\bdry\s+food\s+for\s+(?:adult\s+)?(?:dogs?|cats?|puppies|kittens)\b/i,
   /\bideal\s+for\b/i,
   /\bfood\s+for\s+(?:adult|puppy|kitten|senior|sterilised|sensitive)\b/i,
+  /\u03c4\u03c1\u03bf\u03c6[\u03b7\u03ae]\s+\u03b3\u03b9\u03b1/iu,
+  /\u03b9\u03b4\u03b1\u03bd\u03b9\u03ba[\u03b7\u03ae]\s+\u03b3\u03b9\u03b1/iu,
+  /\u03bf\u03bb\u03b9\u03c3\u03c4\u03b9\u03ba[\u03b7\u03ae]\s+\u03c4\u03c1\u03bf\u03c6[\u03b7\u03ae]/iu,
+  /\u03c0\u03bb[\u03b7\u03ae]\u03c1\u03b7[\u03c2\u03c3]\s+\u03c4\u03c1\u03bf\u03c6[\u03b7\u03ae]/iu,
   /τροφ[ηή]\s+για/iu,
   /ιδανικ[ηή]\s+για/iu,
   /ολιστικ[ηή]\s+τροφ[ηή]/iu,
   /πλ[ηή]ρη[ςσ]\s+τροφ[ηή]/iu,
+];
+
+const DESCRIPTIVE_PROTEIN_TOKENS: Array<[string, RegExp]> = [
+  ["Chicken", /\bchicken\b|\u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb/iu],
+  ["Turkey", /\bturkey\b|\u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03c5\u03bb/iu],
+  ["Duck", /\bduck\b|\u03c0\u03b1\u03c0\u03b9\u03b1/iu],
+  ["Lamb", /\blamb\b|\u03b1\u03c1\u03bd\u03b9/iu],
+  ["Beef", /\bbeef\b|\u03bc\u03bf\u03c3\u03c7\u03b1\u03c1|\u03b2\u03bf\u03b4\u03b9\u03bd/iu],
+  ["Pork", /\bpork\b|\u03c7\u03bf\u03b9\u03c1\u03b9\u03bd/iu],
+  ["Rabbit", /\brabbit\b|\u03ba\u03bf\u03c5\u03bd\u03b5\u03bb/iu],
+  ["Salmon", /\bsalmon\b|\u03c3\u03bf\u03bb\u03bf\u03bc/iu],
+  ["Sardine", /\bsardine\b|\u03c3\u03b1\u03c1\u03b4\u03b5\u03bb/iu],
+  ["Herring", /\bherring\b|\u03c1\u03b5\u03b3\u03b3/iu],
+  ["Tuna", /\btuna\b|\u03c4\u03bf\u03bd\u03bf/iu],
+  ["Fish", /\bfish\b|\u03c8\u03b1\u03c1/iu],
+  ["Rice", /\brice\b|\u03c1\u03c5\u03b6/iu],
+  ["Vegetables", /\bvegetables?\b|\u03bb\u03b1\u03c7\u03b1\u03bd/iu],
 ];
 
 const DOG_SIZE_LABELS: Record<DogSize, string> = {
@@ -143,6 +164,58 @@ function titleCase(value: string) {
     .filter(Boolean)
     .map(titleCaseToken)
     .join(" ");
+}
+
+function hasDescriptiveTitlePattern(value: string) {
+  return DESCRIPTIVE_TITLE_PATTERNS.some((pattern) => pattern.test(value));
+}
+
+function joinTitleParts(parts: string[]) {
+  return [...new Set(parts.filter(Boolean))].join(" ").replace(/\s+/g, " ").trim();
+}
+
+function simplifyDescriptiveFoodTitle(value: string) {
+  if (!hasDescriptiveTitlePattern(value)) return "";
+
+  const normalized = normalizeSearchText(value);
+  const parts: string[] = [];
+  const flavours: string[] = [];
+
+  if (/\bgrain\s+free\b|\u03c7\u03c9\u03c1\u03b9\u03c2\s+\u03c3\u03b9\u03c4\u03b7\u03c1/iu.test(normalized)) {
+    parts.push("Grain Free");
+  } else if (/\blow\s+grain\b|\u03c7\u03b1\u03bc\u03b7\u03bb.*\u03c3\u03b9\u03c4\u03b7\u03c1/iu.test(normalized)) {
+    parts.push("Low Grain");
+  }
+
+  if (/\ball\s+breeds\b|\u03bf\u03bb\u03c9\u03bd\s+\u03c4\u03c9\u03bd\s+\u03c6\u03c5\u03bb/iu.test(normalized)) {
+    parts.push("All Breeds");
+  } else if (/\bmini\b|\bsmall\b|\u03bc\u03b9\u03ba\u03c1\u03bf\u03c3\u03c9\u03bc/iu.test(normalized)) {
+    parts.push("Small");
+  } else if (/\bmedium\b|\u03bc\u03b5\u03c3\u03b1\u03b9/iu.test(normalized)) {
+    parts.push("Medium");
+  } else if (/\blarge\b|\bmaxi\b|\u03bc\u03b5\u03b3\u03b1\u03bb\u03bf\u03c3\u03c9\u03bc/iu.test(normalized)) {
+    parts.push("Large");
+  }
+
+  if (/\bpuppy\b|\u03ba\u03bf\u03c5\u03c4\u03b1\u03b2/iu.test(normalized)) {
+    parts.push("Puppy");
+  } else if (/\bkitten\b|\u03b3\u03b1\u03c4\u03b1\u03ba/iu.test(normalized)) {
+    parts.push("Kitten");
+  } else if (/\bsenior\b|\bmature\b|\u03b7\u03bb\u03b9\u03ba\u03b9\u03c9\u03bc/iu.test(normalized)) {
+    parts.push("Senior");
+  } else if (/\badult\b|\u03b5\u03bd\u03b7\u03bb\u03b9\u03ba/iu.test(normalized)) {
+    parts.push("Adult");
+  }
+
+  for (const [label, pattern] of DESCRIPTIVE_PROTEIN_TOKENS) {
+    if (pattern.test(normalized)) flavours.push(label);
+  }
+
+  const simplified = joinTitleParts([
+    ...parts,
+    [...new Set(flavours)].join(" & "),
+  ]);
+  return simplified && simplified !== value ? simplified : "";
 }
 
 function dedupeRepeatedDisplayTerms(value: string) {
@@ -331,9 +404,13 @@ export function normalizeBrandlessFoodDisplayName({
     normalizedDisplay = normalizeSearchText(cleanedDisplay);
   }
 
-  return dedupeRepeatedDisplayTerms(dedupeRepeatedLeadingToken(cleanedDisplay))
+  const displayWithoutBrand = dedupeRepeatedDisplayTerms(
+    dedupeRepeatedLeadingToken(cleanedDisplay)
+  )
     .replace(/\s+/g, " ")
     .trim();
+
+  return simplifyDescriptiveFoodTitle(displayWithoutBrand) || displayWithoutBrand;
 }
 
 export function normalizeBrandlessFormulaName({
@@ -364,6 +441,13 @@ export function isLikelyDescriptiveFoodTitle({
   display_name?: string | null;
   formula_name?: string | null;
 }) {
+  const rawTitle = [display_name, formula_name]
+    .map((value) => cleanText(value))
+    .filter(Boolean)
+    .join(" ");
+
+  if (rawTitle && hasDescriptiveTitlePattern(rawTitle)) return true;
+
   const title = normalizeBrandlessFoodDisplayName({
     brand,
     display_name,

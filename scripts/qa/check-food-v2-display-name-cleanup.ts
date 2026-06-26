@@ -104,6 +104,28 @@ const cases = [
     expected: "Naturcroq Duck & Rice Sterilised",
   },
   {
+    label: "Ambrosia Greek retailer SEO title becomes concise formula",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+      formula_name:
+        "Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+    },
+    expected: "All Breeds Adult Sardine & Tuna",
+  },
+  {
+    label: "Ambrosia grain-free Greek retailer SEO title becomes concise formula",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia Ολιστική τροφή για κουτάβια όλων των φυλών χωρίς σιτηρά, με σαρδέλα και ρέγγα",
+      formula_name:
+        "Ολιστική τροφή για κουτάβια όλων των φυλών χωρίς σιτηρά, με σαρδέλα και ρέγγα",
+    },
+    expected: "Grain Free All Breeds Puppy Sardine & Herring",
+  },
+  {
     label: "Josera feeding table title tail",
     input: {
       brand: "Josera",
@@ -257,6 +279,16 @@ const descriptiveTitleCases = [
     },
   },
   {
+    label: "Clean Greek Ambrosia retailer SEO description title",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+      formula_name:
+        "Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+    },
+  },
+  {
     label: "Concise Ambrosia official-style formula title",
     input: {
       brand: "Ambrosia",
@@ -347,6 +379,18 @@ const customerFoodNameCases = [
     },
     expectedDisplay: "Naturcroq Duck & Rice Sterilised",
     expectedName: "Happy Dog - Naturcroq Duck & Rice Sterilised",
+  },
+  {
+    label: "Customer Ambrosia Greek retailer SEO title is simplified",
+    input: {
+      brand: "Ambrosia",
+      display_name:
+        "Ambrosia Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+      formula_name:
+        "Ολιστική Τροφή Για Ενήλικους Σκύλους, Όλων Των Φυλών, Με Σαρδέλα Και Τόνο",
+    },
+    expectedDisplay: "All Breeds Adult Sardine & Tuna",
+    expectedName: "Ambrosia - All Breeds Adult Sardine & Tuna",
   },
   {
     label: "Customer Royal Canin repeated size token is cleaned",

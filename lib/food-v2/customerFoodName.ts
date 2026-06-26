@@ -1,6 +1,9 @@
+import { normalizeBrandlessFoodDisplayName } from "@/lib/food-v2/canonicalFood";
+
 type FoodNameInput = {
   brand?: string | null;
   display_name?: string | null;
+  formula_name?: string | null;
 };
 
 const LEGACY_GREEK_MOJIBAKE_PATTERN =
@@ -199,7 +202,13 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     cleanedDisplayName = cleanedDisplayName.slice(brand.length).trim();
   }
 
-  return cleanedDisplayName;
+  return (
+    normalizeBrandlessFoodDisplayName({
+      brand,
+      display_name: cleanedDisplayName,
+      formula_name: food.formula_name,
+    }) || cleanedDisplayName
+  );
 }
 
 export function customerFoodName(food: FoodNameInput, separator = " - ") {
