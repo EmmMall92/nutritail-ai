@@ -1879,15 +1879,13 @@ Calcium/Phosphorus: ${formatCustomerNutritionValue(
 Γρήγορη εικόνα:
 - Πιο χαμηλές θερμίδες: ${result.summary.lowest_calorie ?? "δεν υπάρχουν αρκετά δεδομένα"}
 - Περισσότερη πρωτεΐνη: ${result.summary.highest_protein ?? "δεν υπάρχουν αρκετά δεδομένα"}
-- Περισσότερες ίνες: ${result.summary.highest_fiber ?? "δεν υπάρχουν αρκετά δεδομένα"}
-- ${result.summary.note ?? "Χρησιμοποίησέ το σαν δομημένη βοήθεια σύγκρισης."}`
+- Περισσότερες ίνες: ${result.summary.highest_fiber ?? "δεν υπάρχουν αρκετά δεδομένα"}`
       : `
 
 Quick read:
 - Lowest calorie: ${result.summary.lowest_calorie ?? "not enough data"}
 - Highest protein: ${result.summary.highest_protein ?? "not enough data"}
-- Highest fiber: ${result.summary.highest_fiber ?? "not enough data"}
-- ${result.summary.note ?? "Use this as a structured comparison aid."}`
+- Highest fiber: ${result.summary.highest_fiber ?? "not enough data"}`
     : "";
 
   const customerTakeaway = formatCompareCustomerTakeaway(result, language);

@@ -5,6 +5,7 @@ import {
   searchFoodProductsV2,
   type FoodV2SearchResult,
 } from "@/lib/food-v2/retrieval";
+import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";
 
 const MAX_COMPARE_ITEMS = 5;
 
@@ -120,6 +121,15 @@ function getFoodV2Confidence(food: FoodV2SearchResult) {
   return "moderate";
 }
 
+function getFoodV2CustomerDisplayName(food: FoodV2SearchResult) {
+  return (
+    customerFoodDisplayName({
+      brand: food.brand,
+      display_name: food.display_name,
+    }) || food.display_name
+  );
+}
+
 function buildComparisonSummary(
   matches: Array<{
     query: string;
@@ -229,7 +239,7 @@ export async function POST(request: Request) {
           match: {
             id: bestV2.id,
             brand: bestV2.brand,
-            name: bestV2.display_name,
+            name: getFoodV2CustomerDisplayName(bestV2),
             species: bestV2.species,
             life_stage: bestV2.life_stage,
             size: bestV2.dog_size,
@@ -255,7 +265,7 @@ export async function POST(request: Request) {
             ? foodV2Matches[index].slice(0, 3).map((item) => ({
                 id: item.id,
                 brand: item.brand,
-                name: item.display_name,
+                name: getFoodV2CustomerDisplayName(item),
                 score: item.match_score,
                 source: "food_v2",
               }))
@@ -309,7 +319,7 @@ export async function POST(request: Request) {
           ...foodV2Matches[index].slice(0, 3).map((item) => ({
             id: item.id,
             brand: item.brand,
-            name: item.display_name,
+            name: getFoodV2CustomerDisplayName(item),
             score: item.match_score,
             source: "food_v2",
           })),
