@@ -31,6 +31,22 @@ type AccountPet = {
   species?: string | null;
   weight?: number | null;
   analysisHistory?: AnalysisHistoryItem[];
+  latestProgressLog?: {
+    id: string;
+    created_at: string;
+    metadata?: {
+      currentWeightKg?: number | null;
+      feedingGramsPerDay?: number | null;
+      progressDecisionStatus?: string | null;
+      progressDecisionConfidence?: string | null;
+      progressDecisionHeadlineEn?: string | null;
+      progressDecisionHeadlineEl?: string | null;
+      appetiteNote?: string | null;
+      stoolNote?: string | null;
+      energyNote?: string | null;
+      treatsNote?: string | null;
+    } | null;
+  } | null;
 };
 
 function formatDate(value?: string) {
@@ -91,6 +107,29 @@ function getFoodFitLabel(score?: number | null) {
   if (score >= 60) return "Useful fit";
   if (score >= 40) return "Worth rechecking";
   return "Fresh analysis suggested";
+}
+
+function getProgressDecisionLabel(value?: string | null) {
+  const labels: Record<string, string> = {
+    continue_plan: "Continue plan",
+    adjust_portions: "Adjust portions",
+    reduce_treats: "Reduce treats",
+    review_food_fit: "Review food fit",
+    needs_more_data: "Needs more data",
+  };
+
+  return value ? labels[value] ?? value : "Progress check";
+}
+
+function getLatestProgressEntry(pets: AccountPet[]) {
+  return pets
+    .map((pet) => ({ pet, progress: pet.latestProgressLog }))
+    .filter((entry) => Boolean(entry.progress?.created_at))
+    .sort(
+      (a, b) =>
+        new Date(b.progress?.created_at ?? 0).getTime() -
+        new Date(a.progress?.created_at ?? 0).getTime()
+    )[0];
 }
 
 export default function AccountPage() {
@@ -208,6 +247,10 @@ export default function AccountPage() {
     )[0];
   const latestAnalysis = latestAnalysisEntry?.analysis;
   const latestPet = latestAnalysisEntry?.pet;
+  const latestProgressEntry = getLatestProgressEntry(pets);
+  const latestProgressPet = latestProgressEntry?.pet;
+  const latestProgress = latestProgressEntry?.progress;
+  const latestProgressMetadata = latestProgress?.metadata;
   const nextPetToAnalyze = petsNeedingAnalysis[0];
   const planStatusCopy = getNutritionPlanStatusCopy(
     latestAnalysis?.food_score
@@ -383,6 +426,80 @@ export default function AccountPage() {
                 {latestAnalysis.feeding_grams_per_day}g/day
               </span>
             )}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
+              Latest progress decision
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-sky-950">
+              {latestProgressPet?.name ?? "No progress check yet"}
+            </h2>
+            <p className="mt-1 text-sm text-sky-900">
+              {latestProgress
+                ? latestProgressMetadata?.progressDecisionHeadlineEn ??
+                  latestProgressMetadata?.progressDecisionHeadlineEl ??
+                  getProgressDecisionLabel(
+                    latestProgressMetadata?.progressDecisionStatus
+                  )
+                : "Run a progress check after 2-4 weeks on a new plan to see whether to continue, adjust portions, or try another food."}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {latestProgressPet && (
+              <Link
+                href={`/print/pet-timeline/${latestProgressPet.id}`}
+                className="rounded-xl border border-sky-300 bg-white px-4 py-2 text-center text-sm font-medium text-sky-900 transition hover:bg-sky-100"
+              >
+                Timeline
+              </Link>
+            )}
+            <Link
+              href={
+                latestProgressPet
+                  ? `/account/chatbot?petId=${latestProgressPet.id}&mode=progress`
+                  : "/account/chatbot"
+              }
+              className="rounded-xl bg-sky-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-sky-800"
+            >
+              {latestProgressPet ? "New progress check" : "Start check"}
+            </Link>
+          </div>
+        </div>
+
+        {latestProgress && (
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-sky-950">
+            {latestProgressMetadata?.progressDecisionStatus && (
+              <span className="rounded-full bg-white px-3 py-1">
+                Decision:{" "}
+                {getProgressDecisionLabel(
+                  latestProgressMetadata.progressDecisionStatus
+                )}
+              </span>
+            )}
+            {latestProgressMetadata?.progressDecisionConfidence && (
+              <span className="rounded-full bg-white px-3 py-1">
+                Confidence: {latestProgressMetadata.progressDecisionConfidence}
+              </span>
+            )}
+            {latestProgressMetadata?.currentWeightKg && (
+              <span className="rounded-full bg-white px-3 py-1">
+                Current {latestProgressMetadata.currentWeightKg} kg
+              </span>
+            )}
+            {latestProgressMetadata?.feedingGramsPerDay && (
+              <span className="rounded-full bg-white px-3 py-1">
+                {latestProgressMetadata.feedingGramsPerDay}g/day
+              </span>
+            )}
+            <span className="rounded-full bg-white px-3 py-1">
+              {formatDate(latestProgress.created_at)}
+            </span>
           </div>
         )}
       </div>

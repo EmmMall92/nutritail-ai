@@ -27,6 +27,21 @@ const checks = [
     expected: "/account/chatbot?petId=${latestPet.id}&mode=progress",
   },
   {
+    label: "Account dashboard receives latest pet progress log",
+    file: "app/api/account/pets/route.ts",
+    expected: "latestProgressLog",
+  },
+  {
+    label: "Account dashboard shows latest progress decision card",
+    file: "app/account/page.tsx",
+    expected: "Latest progress decision",
+  },
+  {
+    label: "Account dashboard links latest progress to a new progress check",
+    file: "app/account/page.tsx",
+    expected: "/account/chatbot?petId=${latestProgressPet.id}&mode=progress",
+  },
+  {
     label: "Pets list progress action deep-links to saved pet",
     file: "app/account/pets/page.tsx",
     expected: "/account/chatbot?petId=${pet.id}&mode=progress",

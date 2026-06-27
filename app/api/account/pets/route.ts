@@ -39,6 +39,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: petsError.message }, { status: 500 });
     }
 
+    const petIds = (pets ?? []).map((pet) => String(pet.id));
+    const { data: progressLogs, error: progressError } =
+      petIds.length > 0
+        ? await supabaseAdmin
+            .from("admin_activity_logs")
+            .select("id,entity_id,message,metadata,created_at")
+            .eq("entity_type", "pet_progress")
+            .in("entity_id", petIds)
+            .order("created_at", { ascending: false })
+        : { data: [], error: null };
+
+    if (progressError) {
+      return NextResponse.json({ error: progressError.message }, { status: 500 });
+    }
+
+    const latestProgressByPetId = new Map<string, unknown>();
+    for (const log of progressLogs ?? []) {
+      const petId = String(log.entity_id ?? "");
+      if (petId && !latestProgressByPetId.has(petId)) {
+        latestProgressByPetId.set(petId, log);
+      }
+    }
+
     const petsWithHistory = await Promise.all(
       (pets ?? []).map(async (pet) => {
         const history = await petAnalysisHistoryService.getPetHistory(String(pet.id));
@@ -46,6 +69,7 @@ export async function POST(request: Request) {
         return {
           ...pet,
           analysisHistory: history,
+          latestProgressLog: latestProgressByPetId.get(String(pet.id)) ?? null,
         };
       })
     );
