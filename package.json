@@ -141,6 +141,7 @@
     "audit:cat-chatbot-coverage": "node scripts/qa/audit-cat-chatbot-coverage.mjs",
     "qa:nutrition-knowledge-sources": "tsx scripts/qa/check-nutrition-knowledge-sources.ts",
     "qa:nutrition-source-map-intake": "tsx scripts/qa/check-nutrition-source-map-intake.ts",
+    "qa:openai-chatbot-training-contract": "tsx scripts/qa/check-openai-chatbot-training-contract.ts",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs",
     "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs",

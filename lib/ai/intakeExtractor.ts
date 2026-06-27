@@ -1,5 +1,6 @@
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
 import { getOpenAiClient, getOpenAiModel, isOpenAiConfigured } from "@/lib/ai/openaiServer";
+import { buildNutriTailSystemPrompt } from "@/lib/ai/promptInstructions";
 import type {
   AiIntakeExtraction,
   ValidatedAiIntakeExtraction,
@@ -83,8 +84,11 @@ export async function extractPetIntakeFacts(
         input: [
           {
             role: "system",
-            content:
-              "Extract only pet nutrition intake facts from the user message. Return strict JSON only. Do not recommend foods, diagnose, or invent facts. Use null for unknown values. Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
+            content: [
+              buildNutriTailSystemPrompt("fact_extraction"),
+              "",
+              "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
+            ].join("\n"),
           },
           {
             role: "user",
