@@ -3245,13 +3245,34 @@ export default function AccountChatbotPage() {
     loadSavedPets();
   }, [pathname, router]);
 
-  function selectSavedPet(savedPet: AccountPet) {
+  async function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
     const hasHistory = (savedPet.analysisHistory?.length ?? 0) > 0;
+    const pendingCompare = [...pendingCompareQueries];
 
     setSelectedPetId(savedPet.id);
     setPet(nextPet);
     setRecommendedFoodChoices([]);
+
+    if (pendingCompare.length >= 2) {
+      setPendingCompareQueries([]);
+      setFollowUpPet(hasHistory ? savedPet : null);
+      setStep("petChoice");
+
+      addMessages(createMessage("user", `Use ${savedPet.name}`));
+      await runFoodComparison(pendingCompare, { species: nextPet.species });
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Αν θέλεις μετά τη σύγκριση, μπορώ να κάνω νέα ανάλυση, έλεγχο προόδου ή εναλλακτική πρόταση τροφής για αυτό το κατοικίδιο.",
+            "After the comparison, I can run a fresh analysis, a progress check, or another-food recommendation for this pet."
+          )
+        )
+      );
+
+      return;
+    }
 
     if (hasHistory) {
       setFollowUpPet(savedPet);
