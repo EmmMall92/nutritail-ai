@@ -2925,6 +2925,22 @@ export default function AccountChatbotPage() {
     return true;
   }
 
+  async function continueIntakeOrRunAnalysis(nextPet: PetIntake) {
+    if (askNextMissingIntakeQuestion(nextPet)) return;
+
+    addMessages(
+      createMessage(
+        "bot",
+        botText(
+          `Σύντομη περίληψη πριν υπολογίσω:\n${formatPetIntakeSummary(nextPet, "el")}`,
+          `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet, "en")}`
+        )
+      )
+    );
+
+    await runAnalysis(nextPet);
+  }
+
   function isNewPetRequest(text: string) {
     const normalized = normalizeUserText(text);
 
@@ -4125,7 +4141,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet = sanitizePetIntake({ ...workingPet, species });
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4135,7 +4151,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const nextPet = sanitizePetIntake({ ...workingPet, name: displayName });
 
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4164,7 +4180,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet = sanitizePetIntake({ ...workingPet, weight });
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4185,7 +4201,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet = sanitizePetIntake({ ...workingPet, age });
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4209,7 +4225,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet = sanitizePetIntake({ ...workingPet, activityLevel });
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4226,7 +4242,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet = sanitizePetIntake({ ...workingPet, neutered });
       setPet(nextPet);
-      askNextMissingIntakeQuestion(nextPet);
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
