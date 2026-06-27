@@ -35,6 +35,10 @@ import {
   hasHardStop,
   shouldInterruptForSafety,
 } from "@/lib/chatbot/safetyRules";
+import {
+  parseProgressUpdate,
+  type ProgressUpdateDetails,
+} from "@/lib/chatbot/progressParsing";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
@@ -2504,7 +2508,7 @@ function buildFollowUpProgressReply({
   mode: Exclude<FollowUpMode, null>;
   language?: ChatLanguage;
 }) {
-  const progressDetails = extractReadableProgressDetails(text);
+  const progressDetails = parseProgressUpdate(text);
   const currentWeight = progressDetails.currentWeightKg;
   const currentGrams = progressDetails.feedingGramsPerDay;
   const previousWeight = Number(savedPet.weight);
@@ -2537,6 +2541,15 @@ function buildFollowUpProgressReply({
       ? `Κατέγραψα ότι τρώει περίπου ${currentGrams}g/ημέρα τώρα.`
       : `I noted the current feeding amount: about ${currentGrams}g/day.`
     : null;
+
+  if (currentWeight && currentGrams && mode === "progress") {
+    const contextSummary = formatProgressContextSummary(progressDetails, language);
+    const missingQuestion = formatProgressMissingQuestion(progressDetails, language);
+
+    return [weightLine, currentGramsLine, contextSummary, missingQuestion]
+      .filter(Boolean)
+      .join("\n\n");
+  }
 
   if (currentWeight && currentGrams && mode === "progress") {
     const nextQuestion =
@@ -2612,7 +2625,132 @@ Saved context:
 If the food is no longer accepted or the taste/brand is the issue, choose "Try another food" and I will keep the same pet context.`;
 }
 
+function formatProgressContextSummary(
+  details: ProgressUpdateDetails,
+  language: ChatLanguage
+) {
+  const notes: string[] = [];
+
+  if (details.treatsNote) {
+    notes.push(
+      language === "el"
+        ? `Λιχουδιές: ${formatProgressNote(details.treatsNote, language)}`
+        : `Treats: ${formatProgressNote(details.treatsNote, language)}`
+    );
+  }
+  if (details.appetiteNote) {
+    notes.push(
+      language === "el"
+        ? `Όρεξη: ${formatProgressNote(details.appetiteNote, language)}`
+        : `Appetite: ${formatProgressNote(details.appetiteNote, language)}`
+    );
+  }
+  if (details.stoolNote) {
+    notes.push(
+      language === "el"
+        ? `Κόπρανα: ${formatProgressNote(details.stoolNote, language)}`
+        : `Stool: ${formatProgressNote(details.stoolNote, language)}`
+    );
+  }
+  if (details.energyNote) {
+    notes.push(
+      language === "el"
+        ? `Ενέργεια: ${formatProgressNote(details.energyNote, language)}`
+        : `Energy: ${formatProgressNote(details.energyNote, language)}`
+    );
+  }
+
+  if (notes.length === 0) return null;
+
+  if (details.hasEnoughProgressContext) {
+    return language === "el"
+      ? `Έχω αρκετά στοιχεία για πρώτο έλεγχο προόδου.\n${notes.join("\n")}\n\nΑν το βάρος, η όρεξη, τα κόπρανα και η ενέργεια πάνε σωστά, συνεχίζουμε έτσι και ξανατσεκάρουμε σε 2-4 εβδομάδες.`
+      : `I have enough context for a first progress check.\n${notes.join("\n")}\n\nIf weight, appetite, stool, and energy are moving well, keep this plan and check again in 2-4 weeks.`;
+  }
+
+  return language === "el"
+    ? `Κρατάω επίσης:\n${notes.join("\n")}`
+    : `I also noted:\n${notes.join("\n")}`;
+}
+
+function formatProgressMissingQuestion(
+  details: ProgressUpdateDetails,
+  language: ChatLanguage
+) {
+  if (details.missingFollowUpFields.length === 0) return null;
+
+  const labels =
+    language === "el"
+      ? {
+          treats: "λιχουδιές/σνακ",
+          appetite: "όρεξη",
+          stool: "κόπρανα",
+          energy: "ενέργεια",
+        }
+      : {
+          treats: "treats/snacks",
+          appetite: "appetite",
+          stool: "stool quality",
+          energy: "energy",
+        };
+
+  const missing = details.missingFollowUpFields.map((field) => labels[field]);
+  const joined =
+    missing.length === 1
+      ? missing[0]
+      : `${missing.slice(0, -1).join(", ")} ${language === "el" ? "και" : "and"} ${
+          missing[missing.length - 1]
+        }`;
+
+  return language === "el"
+    ? `Για να το κρίνω πιο σωστά, πες μου μόνο: ${joined}.`
+    : `To judge this more accurately, tell me only: ${joined}.`;
+}
+
+function formatProgressNote(value: string, language: ChatLanguage) {
+  const greek: Record<string, string> = {
+    none: "καθόλου",
+    few: "λίγες",
+    some: "υπάρχουν",
+    many: "πολλές",
+    normal: "φυσιολογική",
+    hungry: "πεινάει/ζητιανεύει",
+    low: "χαμηλή",
+    picky: "επιλεκτική",
+    better: "καλύτερα",
+    soft: "μαλακά",
+    diarrhea: "διάρροια",
+    constipation: "δυσκοιλιότητα",
+    high: "υψηλή",
+  };
+  const english: Record<string, string> = {
+    none: "none",
+    few: "few",
+    some: "some",
+    many: "many",
+    normal: "normal",
+    hungry: "hungry/begging",
+    low: "low",
+    picky: "picky",
+    better: "better",
+    soft: "soft",
+    diarrhea: "diarrhea",
+    constipation: "constipation",
+    high: "high",
+  };
+
+  return language === "el" ? greek[value] ?? value : english[value] ?? value;
+}
+
 function extractProgressDetails(text: string) {
+  const parsed = parseProgressUpdate(text);
+  if (text || text === "") {
+    return {
+      currentWeightKg: parsed.currentWeightKg ?? parseNumber(text),
+      feedingGramsPerDay: parsed.feedingGramsPerDay,
+    };
+  }
+
   const normalized = text.toLocaleLowerCase("el-GR").replace(",", ".");
   const weightMatch = normalized.match(
     /(\d+(?:\.\d+)?)\s*(?:kg|kgs|κιλ|κιλα|κιλά|κιλο|κιλό|kilo)\b/i
@@ -2638,6 +2776,16 @@ function hasProgressMetric(text: string) {
 }
 
 function extractReadableProgressDetails(text: string) {
+  const parsed = parseProgressUpdate(text);
+  if (text || text === "") {
+    return {
+      ...parsed,
+      currentWeightKg:
+        parsed.currentWeightKg ??
+        (parsed.feedingGramsPerDay === null ? parseNumber(text) : null),
+    };
+  }
+
   const normalized = text.toLocaleLowerCase("el-GR").replace(",", ".");
   const legacyDetails = extractProgressDetails(text);
   const weightMatch = normalized.match(
