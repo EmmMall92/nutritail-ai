@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
+import { buildNutriTailSystemPrompt } from "@/lib/ai/promptInstructions";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 
@@ -59,7 +60,7 @@ const cases: SmokeCase[] = [
     message: "Ο γάτος μου προσπαθεί να κατουρήσει και δεν μπορεί.",
     expect: {
       species: "cat",
-      healthIssues: ["urinary"],
+      redFlags: ["urinary_blockage"],
     },
   },
   {
@@ -74,13 +75,13 @@ const cases: SmokeCase[] = [
 
 function assertSmokeCaseEncoding() {
   const mojibakePattern =
-    /(?:\?{3,}|\u039e|\u0392\u00ae|\ufffd|\u039f[\u0080-\u00ff])/u;
+    /(?:\?{3,}|Ξ|Ο€|Ο|Β«|Β»|\uFFFD|\u00C2|\u00CE|\u00CF)/u;
   const damaged = cases.filter((item) => mojibakePattern.test(item.message));
   if (damaged.length > 0) {
     throw new Error(
       `OpenAI intake smoke cases contain damaged Greek text: ${damaged
         .map((item) => item.id)
-        .join(", ")}`,
+        .join(", ")}`
     );
   }
 }
@@ -102,8 +103,11 @@ async function extractWithOpenAi(client: OpenAI, message: string) {
     input: [
       {
         role: "system",
-        content:
-          "Extract only pet nutrition intake facts from the user message. Return strict JSON only. Do not recommend foods, diagnose, or invent facts. Use null for unknown values. Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
+        content: [
+          buildNutriTailSystemPrompt("fact_extraction"),
+          "",
+          "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
+        ].join("\n"),
       },
       {
         role: "user",
@@ -180,6 +184,7 @@ async function main() {
       "No usable `OPENAI_API_KEY` was available in the QA environment.",
       "This is expected in CI unless the secret is intentionally enabled there.",
       "",
+      "The smoke fixture still validates clean Greek prompts and the same fact-extraction prompt contract used by the app.",
       "The deterministic fallback intake QA still runs separately through `npm.cmd run qa:ai-intake`.",
     ]);
 
@@ -191,8 +196,8 @@ async function main() {
           report: reportPath,
         },
         null,
-        2,
-      ),
+        2
+      )
     );
     return;
   }
@@ -212,7 +217,7 @@ async function main() {
       const actual = result.data[field as keyof typeof result.data];
       if (!matchesExpected(actual, expected)) {
         failures.push(
-          `${field}: expected ${renderValue(expected)}, got ${renderValue(actual)}`,
+          `${field}: expected ${renderValue(expected)}, got ${renderValue(actual)}`
         );
       }
     }
@@ -234,6 +239,7 @@ async function main() {
     "Status: completed",
     "",
     "This smoke test checks that OpenAI is used only for structured pet fact extraction.",
+    "It uses the same NutriTail fact-extraction prompt contract as the app.",
     "It does not rank foods or invent nutrient values.",
     "",
     "## Summary",
@@ -262,8 +268,8 @@ async function main() {
         report: reportPath,
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 
   if (failed.length > 0) process.exitCode = 1;
