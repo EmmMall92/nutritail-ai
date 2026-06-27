@@ -1352,6 +1352,10 @@ function parseSpeciesInput(text: string): Species | null {
   if (
     value.includes("dog") ||
     value.includes("σκυλ") ||
+    value.includes("σκυλο") ||
+    value.includes("σκυλος") ||
+    value.includes("σκυλα") ||
+    value.includes("σκυλ") ||
     value.includes("σκύλ") ||
     value.includes("skyl") ||
     value.includes("skil")
@@ -1361,6 +1365,10 @@ function parseSpeciesInput(text: string): Species | null {
 
   if (
     value.includes("cat") ||
+    value.includes("γατ") ||
+    value.includes("γατα") ||
+    value.includes("γατος") ||
+    value.includes("γατι") ||
     value.includes("γατ") ||
     value.includes("γάτ") ||
     value.includes("gat")
@@ -1377,6 +1385,7 @@ function parseActivityInput(text: string): ActivityLevel | null {
   if (
     value.includes("low") ||
     value.includes("χαμηλ") ||
+    value.includes("χαμηλ") ||
     value.includes("xamhl") ||
     value.includes("xamil")
   ) {
@@ -1385,6 +1394,8 @@ function parseActivityInput(text: string): ActivityLevel | null {
 
   if (
     value.includes("high") ||
+    value.includes("υψηλ") ||
+    value.includes("πολυ") ||
     value.includes("υψηλ") ||
     value.includes("ψηλ") ||
     value.includes("πολυ") ||
@@ -1401,6 +1412,8 @@ function parseActivityInput(text: string): ActivityLevel | null {
     value.includes("medium") ||
     value.includes("κανον") ||
     value.includes("μετρι") ||
+    value.includes("κανον") ||
+    value.includes("μετρι") ||
     value.includes("μέτρι") ||
     value.includes("kanon") ||
     value.includes("metri")
@@ -1415,8 +1428,17 @@ function parseYesNoInput(text: string): boolean | null {
   const value = normalizeUserText(text);
 
   if (
+    value.includes("\u03bf\u03c7\u03b9") ||
+    value.includes("\u03b4\u03b5\u03bd \u03b5\u03b9\u03bd\u03b1\u03b9 \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03b5\u03bd")
+  ) {
+    return false;
+  }
+
+  if (
     value === "y" ||
     value.includes("yes") ||
+    value.includes("ναι") ||
+    value.includes("ειναι στειρωμεν") ||
     value.includes("ναι") ||
     value.includes("nai")
   ) {
@@ -1426,6 +1448,8 @@ function parseYesNoInput(text: string): boolean | null {
   if (
     value === "n" ||
     value.includes("no") ||
+    value.includes("οχι") ||
+    value.includes("δεν ειναι στειρωμεν") ||
     value.includes("όχι") ||
     value.includes("οχι") ||
     value.includes("oxi") ||
