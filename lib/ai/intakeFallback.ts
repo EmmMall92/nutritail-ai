@@ -6,6 +6,7 @@ import type {
   ValidatedAiIntakeExtraction,
 } from "@/lib/ai/intakeTypes";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
+import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
 
 const EMPTY_EXTRACTION: AiIntakeExtraction = {
   healthIssues: [],
@@ -212,6 +213,12 @@ function splitPreferenceClauses(text: string) {
 }
 
 function detectProteinPreferences(text: string) {
+  const preferences = parseTastePreferences(text);
+  return {
+    excluded: preferences.excludedIngredients,
+    preferred: preferences.preferredProteins,
+  };
+
   const excluded: string[] = [];
   const preferred: string[] = [];
   const clauses = splitPreferenceClauses(text);
