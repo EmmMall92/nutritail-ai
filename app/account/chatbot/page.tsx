@@ -33,6 +33,7 @@ import {
   detectSafetyWarnings,
   formatSafetyInterruptMessage,
   hasHardStop,
+  shouldInterruptForSafety,
 } from "@/lib/chatbot/safetyRules";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
@@ -3978,10 +3979,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       locale: chatLanguage,
     });
 
-    if (hasHardStop(immediateSafetyWarnings)) {
+    if (shouldInterruptForSafety(immediateSafetyWarnings)) {
       setRecommendedFoodChoices([]);
       setShowSave(false);
-      setStep("done");
+      if (hasHardStop(immediateSafetyWarnings)) {
+        setStep("done");
+      }
       addMessages(createMessage("bot", formatSafetyInterruptMessage(immediateSafetyWarnings, chatLanguage)));
       return;
     }

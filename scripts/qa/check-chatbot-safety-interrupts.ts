@@ -1,6 +1,7 @@
 import {
   detectSafetyWarnings,
   hasHardStop,
+  shouldInterruptForSafety,
   type ChatbotSafetyWarning,
 } from "../../lib/chatbot/safetyRules";
 
@@ -9,6 +10,7 @@ type SafetyCase = {
   message: string;
   species?: "dog" | "cat";
   expectedHardStop: boolean;
+  expectedInterrupt: boolean;
   expectedCode?: string;
 };
 
@@ -18,6 +20,7 @@ const cases: SafetyCase[] = [
     message: "Αρσενικός γάτος που προσπαθεί να ουρήσει και δεν μπορεί",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "male_cat_no_urine",
   },
   {
@@ -25,6 +28,7 @@ const cases: SafetyCase[] = [
     message: "Ο γάτος μου προσπαθεί να κατουρήσει και δεν μπορεί. Τι τροφή να πάρω;",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "male_cat_no_urine",
   },
   {
@@ -32,6 +36,7 @@ const cases: SafetyCase[] = [
     message: "Γάτα με αίμα στα ούρα",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "blood_seen",
   },
   {
@@ -39,6 +44,7 @@ const cases: SafetyCase[] = [
     message: "Ο σκύλος μου έχει διάρροια με αίμα. Να αλλάξω τροφή;",
     species: "dog",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "blood_seen",
   },
   {
@@ -46,6 +52,7 @@ const cases: SafetyCase[] = [
     message: "Γάτα που κάνει συνεχείς εμετούς",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "persistent_vomiting",
   },
   {
@@ -53,6 +60,15 @@ const cases: SafetyCase[] = [
     message: "Γάτα που δεν τρώει για 48 ώρες",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
+    expectedCode: "not_eating",
+  },
+  {
+    id: "manual-qa-cat-not-eating-48h",
+    message: "Η γάτα μου δεν τρώει εδώ και δύο μέρες. Ποια τροφή να της δώσω;",
+    species: "cat",
+    expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "not_eating",
   },
   {
@@ -60,6 +76,7 @@ const cases: SafetyCase[] = [
     message: "My dog collapsed and has severe abdominal pain",
     species: "dog",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "collapse_or_severe_pain",
   },
   {
@@ -67,6 +84,7 @@ const cases: SafetyCase[] = [
     message: "My cat is not eating at all",
     species: "cat",
     expectedHardStop: true,
+    expectedInterrupt: true,
     expectedCode: "not_eating",
   },
   {
@@ -74,44 +92,59 @@ const cases: SafetyCase[] = [
     message: "Senior dog with low appetite and not eating much",
     species: "dog",
     expectedHardStop: false,
+    expectedInterrupt: false,
   },
   {
-    id: "renal-caution-not-hard-stop",
-    message: "Γάτα με νεφρική ανεπάρκεια IRIS 2",
+    id: "renal-caution-interrupts-normal-flow",
+    message: "Γάτα με νεφρική νόσο IRIS 3 και θέλω απλή senior τροφή",
     species: "cat",
     expectedHardStop: false,
+    expectedInterrupt: true,
     expectedCode: "renal",
   },
   {
-    id: "pancreatitis-caution-not-hard-stop",
+    id: "pancreatitis-caution-interrupts-normal-flow",
     message: "Ο σκύλος μου έχει παγκρεατίτιδα και θέλω τροφή με πολλά λιπαρά",
     species: "dog",
     expectedHardStop: false,
+    expectedInterrupt: true,
     expectedCode: "pancreatitis",
+  },
+  {
+    id: "diabetes-caution-interrupts-normal-flow",
+    message: "Ο σκύλος μου έχει διαβήτη και θέλω να αλλάξω τροφή",
+    species: "dog",
+    expectedHardStop: false,
+    expectedInterrupt: true,
+    expectedCode: "diabetes",
   },
   {
     id: "normal-sterilised-cat",
     message: "Στειρωμένη γάτα 2 ετών, 4kg, indoor, λατρεύει κοτόπουλο",
     species: "cat",
     expectedHardStop: false,
+    expectedInterrupt: false,
   },
   {
     id: "male-cat-flutd-history-not-urgent",
     message: "Στειρωμένος γάτος 6kg με ιστορικό FLUTD",
     species: "cat",
     expectedHardStop: false,
+    expectedInterrupt: false,
   },
   {
     id: "greedy-eating-not-blood",
     message: "Rescue γάτα που τρώει λαίμαργα",
     species: "cat",
     expectedHardStop: false,
+    expectedInterrupt: false,
   },
   {
     id: "kitten-picky-eating-not-emergency",
     message: "Γατάκι 2 μηνών που δεν τρώει εύκολα",
     species: "cat",
     expectedHardStop: false,
+    expectedInterrupt: false,
   },
 ];
 
@@ -128,11 +161,18 @@ for (const safetyCase of cases) {
     locale: "el",
   });
   const hardStop = hasHardStop(warnings);
+  const interrupt = shouldInterruptForSafety(warnings);
   const warningCodes = codes(warnings);
 
   if (hardStop !== safetyCase.expectedHardStop) {
     failures.push(
       `${safetyCase.id}: expected hardStop=${safetyCase.expectedHardStop}, got ${hardStop}; codes=${warningCodes.join(", ")}`
+    );
+  }
+
+  if (interrupt !== safetyCase.expectedInterrupt) {
+    failures.push(
+      `${safetyCase.id}: expected interrupt=${safetyCase.expectedInterrupt}, got ${interrupt}; codes=${warningCodes.join(", ")}`
     );
   }
 
