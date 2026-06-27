@@ -12,35 +12,54 @@ type SafetyRule = {
   message: Record<ChatbotLocale, string>;
 };
 
-const greek = {
-  maleCatUrinaryBlock:
-    /(?:\u03b3\u03b1\u03c4\u03bf\u03c2|\u03b3\u03ac\u03c4\u03bf\u03c2|\u03b1\u03c1\u03c3\u03b5\u03bd\u03b9\u03ba)[\s\S]{0,80}(?:\u03b4\u03b5\u03bd\s+(?:\u03bc\u03c0\u03bf\u03c1\u03b5\u03b9|\u03bc\u03c0\u03bf\u03c1\u03b5\u03af)?[\s\S]{0,30}(?:\u03bf\u03c5\u03c1|\u03ba\u03b1\u03c4\u03bf\u03c5\u03c1)|\u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8[\s\S]{0,40}\u03bf\u03c5\u03c1|\u03b1\u03c0\u03bf\u03c6\u03c1\u03b1\u03be|\u03b1\u03c0\u03cc\u03c6\u03c1\u03b1\u03be)/i,
-  noUrine:
-    /\u03b4\u03b5\u03bd\s+(\u03bc\u03c0\u03bf\u03c1\u03b5\u03b9|\u03bc\u03c0\u03bf\u03c1\u03b5\u03af).*(\u03bf\u03c5\u03c1|\u03ba\u03b1\u03c4\u03bf\u03c5\u03c1)|\u03b4\u03b5\u03bd\s+(\u03bf\u03c5\u03c1|\u03ba\u03b1\u03c4\u03bf\u03c5\u03c1)|\u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8.*\u03bf\u03c5\u03c1|\u03b1\u03c0\u03bf\u03c6\u03c1\u03b1\u03be|\u03b1\u03c0\u03cc\u03c6\u03c1\u03b1\u03be/i,
-  blood:
-    /(?:^|[\s,.;:])(?:\u03b1\u03b9\u03bc\u03b1|\u03b1\u03af\u03bc\u03b1)(?:$|[\s,.;:])|\u03bc\u03b1\u03c4\u03c9\u03bd|\u03bc\u03b1\u03c4\u03bf\u03bc\u03b5\u03bd/i,
-  persistentVomiting:
-    /\u03c3\u03c5\u03bd\u03b5\u03c7.*\u03b5\u03bc\u03b5\u03c4|\u03c3\u03c5\u03bd\u03b5\u03c7.*\u03b5\u03bc\u03ad\u03c4|\u03c0\u03bf\u03bb\u03bb.*\u03b5\u03bc\u03b5\u03c4|\u03c0\u03bf\u03bb\u03bb.*\u03b5\u03bc\u03ad\u03c4/i,
-  notEating:
-    /\u03b4\u03b5\u03bd\s+(?:\u03c4\u03c1\u03c9\u03b5\u03b9|\u03c4\u03c1\u03ce\u03b5\u03b9)(?:\s*$|\s+(?:\u03b3\u03b9\u03b1|\u03ba\u03b1\u03b8\u03bf\u03bb|\u03ba\u03b1\u03b8\u03cc\u03bb|\d+\s*(?:\u03c9\u03c1|\u03ce\u03c1|\u03b7\u03bc\u03b5\u03c1)))|\u03b1\u03bd\u03bf\u03c1\u03b5\u03be|\u03b1\u03bd\u03bf\u03c1\u03b5\u03be\u03b9\u03b1|\u03c7\u03c9\u03c1\u03b9\u03c2\s+\u03bf\u03c1\u03b5\u03be|\u03c7\u03c9\u03c1\u03af\u03c2\s+\u03cc\u03c1\u03b5\u03be/i,
-  severePainOrCollapse:
-    /\u03ba\u03b1\u03c4\u03b5\u03c1\u03c1\u03b5\u03c5|\u03ba\u03b1\u03c4\u03ad\u03c1\u03c1\u03b5\u03c5|\u03b5\u03bd\u03c4\u03bf\u03bd.*\u03c0\u03bf\u03bd|\u03ad\u03bd\u03c4\u03bf\u03bd.*\u03c0\u03cc\u03bd|\u03c0\u03bf\u03bd.*\u03ba\u03bf\u03b9\u03bb\u03b9|\u03c0\u03cc\u03bd.*\u03ba\u03bf\u03b9\u03bb\u03b9/i,
-  notDrinking:
-    /\u03b4\u03b5\u03bd\s+\u03c0\u03b9\u03bd\u03b5\u03b9\s+\u03ba\u03b1\u03b8\u03bf\u03bb|\u03b4\u03b5\u03bd\s+\u03c0\u03af\u03bd\u03b5\u03b9\s+\u03ba\u03b1\u03b8\u03cc\u03bb/i,
-  severeAllergy:
-    /\u03c0\u03c1\u03b7\u03c3\u03bc.*\u03bc\u03bf\u03c5\u03c4\u03c1|\u03c0\u03c1\u03ae\u03c3\u03bc.*\u03bc\u03bf\u03cd\u03c4\u03c1|\u03b4\u03c5\u03c3\u03ba\u03bf\u03bb.*\u03b1\u03bd\u03b1\u03c0\u03bd|\u03b4\u03cd\u03c3\u03ba\u03bf\u03bb.*\u03b1\u03bd\u03b1\u03c0\u03bd/i,
-  renal: /\u03bd\u03b5\u03c6\u03c1|\u03bf\u03c5\u03c1\u03b9\u03b1|\u03bf\u03c5\u03c1\u03af\u03b1|\u03ba\u03c1\u03b5\u03b1\u03c4\u03b9\u03bd/i,
-  pancreatitis: /\u03c0\u03b1\u03b3\u03ba\u03c1\u03b5\u03b1\u03c4/i,
-  diabetes: /\u03b4\u03b9\u03b1\u03b2\u03b7\u03c4|\u03b4\u03b9\u03b1\u03b2\u03ae\u03c4/i,
+function normalizeSafetyText(value: string) {
+  return value
+    .toLocaleLowerCase("el-GR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function rx(pattern: string) {
+  return new RegExp(pattern, "i");
+}
+
+const greekPatterns = {
+  maleCatUrinaryBlock: rx(
+    "(γατο|αρσενικ)[\\s\\S]{0,100}(δεν[\\s\\S]{0,40}(ουρ|κατουρ|τσισ)|δυσκολ[\\s\\S]{0,40}(ουρ|κατουρ|τσισ)|προσπαθ[\\s\\S]{0,50}(ουρ|κατουρ|τσισ)|δεν[\\s\\S]{0,40}βγαιν[\\s\\S]{0,30}(ουρ|τσισ)|αποφραξ|φραγμ)"
+  ),
+  noUrine: rx(
+    "δεν[\\s\\S]{0,40}(ουρ|κατουρ|τσισ)|δυσκολ[\\s\\S]{0,40}(ουρ|κατουρ|τσισ)|προσπαθ[\\s\\S]{0,50}(ουρ|κατουρ|τσισ)|αποφραξ|φραγμ"
+  ),
+  blood: rx(
+    "(^|[\\s,.;:])(αιμα|ματωμεν|ματων)([\\s,.;:]|$)|αιμα[\\s\\S]{0,25}(κοπρ|ουρ)|κοπρ[\\s\\S]{0,25}αιμα|ουρ[\\s\\S]{0,25}αιμα"
+  ),
+  persistentVomiting: rx(
+    "(συνεχ|πολλ|επιμον|καθε)[\\s\\S]{0,40}εμετ|εμετ[\\s\\S]{0,40}(συνεχ|πολλ|μερες|ωρες)"
+  ),
+  notEating: rx(
+    "δεν\\s+τρωει[\\s\\S]{0,60}(καθολου|24|48|ωρ|ημερ|μερες)|ανορεξ|χωρις\\s+ορεξ|δεν\\s+εχει\\s+ορεξ"
+  ),
+  severePainOrCollapse: rx(
+    "κατερρευ|εντον[\\s\\S]{0,25}πον|πον[\\s\\S]{0,25}κοιλι|διπλωνεται[\\s\\S]{0,25}πον"
+  ),
+  notDrinking: rx("δεν\\s+πινει[\\s\\S]{0,30}(καθολου|νερο)|χωρις\\s+νερο|αφυδατ"),
+  severeAllergy: rx(
+    "πρησμ[\\s\\S]{0,30}(μουτρ|προσωπ)|δυσκολ[\\s\\S]{0,30}αναπν|πνιγ|σοβαρ[\\s\\S]{0,30}αλλεργ"
+  ),
+  renal: rx("νεφρ|ουρια|κρεατιν|ckd|iris"),
+  pancreatitis: rx("παγκρεατ"),
+  diabetes: rx("διαβητ"),
 };
 
 const RED_FLAG_RULES: SafetyRule[] = [
   {
     code: "male_cat_no_urine",
     patterns: [
-      /male\s+cat.*(no\s+urine|can't\s+pee|cannot\s+pee|straining)/i,
-      /cat.*(cannot\s+urinate|can't\s+urinate|blocked|urinary\s+blockage)/i,
-      greek.maleCatUrinaryBlock,
+      /male\s+cat.*(no\s+urine|can't\s+pee|cannot\s+pee|straining|blocked)/i,
+      /cat.*(cannot\s+urinate|can't\s+urinate|blocked|urinary\s+blockage|no\s+urine)/i,
+      greekPatterns.maleCatUrinaryBlock,
     ],
     message: {
       el: "Αν αρσενική γάτα ζορίζεται ή δεν μπορεί να ουρήσει, αυτό μπορεί να είναι επείγον. Μην περιμένεις αλλαγή τροφής. Επικοινώνησε άμεσα με κτηνίατρο ή εφημερεύουσα κλινική.",
@@ -49,7 +68,7 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "blood_seen",
-    patterns: [/blood/i, greek.blood],
+    patterns: [/blood/i, greekPatterns.blood],
     message: {
       el: "Αίμα σε ούρα ή κόπρανα χρειάζεται κτηνιατρικό έλεγχο πριν μιλήσουμε για αλλαγή τροφής.",
       en: "Blood in urine or stool needs veterinary assessment before food changes.",
@@ -57,9 +76,14 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "persistent_vomiting",
-    patterns: [/persistent\s+vomit/i, /repeated\s+vomit/i, /vomiting\s+for/i, greek.persistentVomiting],
+    patterns: [
+      /persistent\s+vomit/i,
+      /repeated\s+vomit/i,
+      /vomiting\s+for/i,
+      greekPatterns.persistentVomiting,
+    ],
     message: {
-      el: "Συνεχείς εμετοί δεν πρέπει να αντιμετωπίζονται μόνο με τροφή. Μίλα με κτηνίατρο πριν κάνεις διατροφική αλλαγή.",
+      el: "Συνεχείς ή επαναλαμβανόμενοι εμετοί δεν πρέπει να αντιμετωπίζονται μόνο με τροφή. Μίλα με κτηνίατρο πριν κάνεις διατροφική αλλαγή.",
       en: "Persistent vomiting should not be managed by diet alone. Speak with a veterinarian before changing food.",
     },
   },
@@ -69,7 +93,7 @@ const RED_FLAG_RULES: SafetyRule[] = [
       /not\s+eating(?:\s*$|\s+(?:at\s+all|anything|for|\d+\s*(?:h|hr|hrs|hour|hours|day|days)))/i,
       /won't\s+eat/i,
       /no\s+appetite/i,
-      greek.notEating,
+      greekPatterns.notEating,
     ],
     message: {
       el: "Αν δεν τρώει, ειδικά αν είναι γάτα ή κρατάει πάνω από 24 ώρες, χρειάζεται γρήγορη κτηνιατρική καθοδήγηση.",
@@ -78,7 +102,13 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "collapse_or_severe_pain",
-    patterns: [/collapse/i, /collapsed/i, /severe\s+abdominal\s+pain/i, /severe\s+pain/i, greek.severePainOrCollapse],
+    patterns: [
+      /collapse/i,
+      /collapsed/i,
+      /severe\s+abdominal\s+pain/i,
+      /severe\s+pain/i,
+      greekPatterns.severePainOrCollapse,
+    ],
     message: {
       el: "Κατάρρευση ή έντονος πόνος είναι επείγον σημάδι. Πήγαινε σε κτηνίατρο άμεσα.",
       en: "Collapse or severe pain is an emergency sign. Seek veterinary care now.",
@@ -86,7 +116,7 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "not_drinking",
-    patterns: [/not\s+drinking/i, /no\s+water/i, greek.notDrinking],
+    patterns: [/not\s+drinking/i, /no\s+water/i, greekPatterns.notDrinking],
     message: {
       el: "Αν δεν πίνει καθόλου νερό ή δείχνει αφυδατωμένο, χρειάζεται κτηνιατρική εκτίμηση πριν από διατροφική σύσταση.",
       en: "If the pet is not drinking or seems dehydrated, veterinary assessment should come before food advice.",
@@ -94,7 +124,12 @@ const RED_FLAG_RULES: SafetyRule[] = [
   },
   {
     code: "severe_allergy",
-    patterns: [/swollen\s+face/i, /difficulty\s+breathing/i, /severe\s+allergy/i, greek.severeAllergy],
+    patterns: [
+      /swollen\s+face/i,
+      /difficulty\s+breathing/i,
+      /severe\s+allergy/i,
+      greekPatterns.severeAllergy,
+    ],
     message: {
       el: "Πρήξιμο στο πρόσωπο ή δυσκολία στην αναπνοή μπορεί να είναι σοβαρή αλλεργική αντίδραση και χρειάζεται άμεση βοήθεια.",
       en: "Facial swelling or breathing difficulty can be a severe allergic reaction and needs urgent help.",
@@ -105,23 +140,23 @@ const RED_FLAG_RULES: SafetyRule[] = [
 const VET_REFERRAL_RULES: SafetyRule[] = [
   {
     code: "renal",
-    patterns: [/renal/i, /kidney/i, /ckd/i, greek.renal],
+    patterns: [/renal/i, /kidney/i, /ckd/i, greekPatterns.renal],
     message: {
-      el: "Για νεφρικό περιστατικό, η επιλογή τροφής πρέπει να γίνεται με κτηνίατρο και προσοχή σε φώσφορο/όρεξη/βάρος.",
+      el: "Για νεφρικό περιστατικό, η επιλογή τροφής πρέπει να γίνεται με κτηνίατρο και προσοχή σε φώσφορο, όρεξη και βάρος.",
       en: "For renal disease, diet choice should be veterinarian-guided and phosphorus, appetite, and weight aware.",
     },
   },
   {
     code: "pancreatitis",
-    patterns: [/pancreatitis/i, greek.pancreatitis],
+    patterns: [/pancreatitis/i, greekPatterns.pancreatitis],
     message: {
-      el: "Η παγκρεατίτιδα χρειάζεται κτηνιατρική καθοδήγηση και προσεκτικό έλεγχο λιπαρών.",
-      en: "Pancreatitis needs veterinarian guidance and careful fat control.",
+      el: "Η παγκρεατίτιδα χρειάζεται κτηνιατρική καθοδήγηση και προσεκτικό έλεγχο λιπαρών. Δεν προτείνουμε υψηλά λιπαρά σε τέτοιο ιστορικό.",
+      en: "Pancreatitis needs veterinarian guidance and careful fat control. High-fat food should not be recommended for this history.",
     },
   },
   {
     code: "diabetes",
-    patterns: [/diabetes/i, /diabetic/i, greek.diabetes],
+    patterns: [/diabetes/i, /diabetic/i, greekPatterns.diabetes],
     message: {
       el: "Ο διαβήτης χρειάζεται πρόγραμμα με κτηνίατρο, όχι απλή αλλαγή τροφής.",
       en: "Diabetes needs a veterinarian-guided plan, not a casual food switch.",
@@ -150,7 +185,7 @@ export function detectSafetyWarnings({
   pet?: ChatbotPetContext | null;
   locale?: ChatbotLocale;
 }): ChatbotSafetyWarning[] {
-  const text = textFrom(message, pet);
+  const text = normalizeSafetyText(textFrom(message, pet));
   const warnings: ChatbotSafetyWarning[] = [];
 
   for (const rule of RED_FLAG_RULES) {
@@ -191,7 +226,10 @@ export function hasHardStop(warnings: ChatbotSafetyWarning[]) {
   return warnings.some((warning) => warning.severity === "hard_stop");
 }
 
-export function formatSafetyInterruptMessage(warnings: ChatbotSafetyWarning[], locale: ChatbotLocale = "el") {
+export function formatSafetyInterruptMessage(
+  warnings: ChatbotSafetyWarning[],
+  locale: ChatbotLocale = "el"
+) {
   const hardStops = warnings.filter((warning) => warning.severity === "hard_stop");
   const visibleWarnings = hardStops.length > 0 ? hardStops : warnings;
   const intro =

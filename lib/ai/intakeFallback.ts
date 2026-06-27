@@ -31,6 +31,10 @@ const PROTEIN_TERMS = [
   { keys: ["tuna", "τονο", "τόνο"], value: "tuna" },
   { keys: ["rice", "ρυζ"], value: "rice" },
   { keys: ["grain", "σιτηρ", "δημητριακ"], value: "grain" },
+  { keys: ["wheat", "σιταρ"], value: "wheat" },
+  { keys: ["corn", "maize", "καλαμποκ"], value: "corn" },
+  { keys: ["dairy", "milk", "cheese", "γαλακτοκομ", "γαλα"], value: "dairy" },
+  { keys: ["legume", "pea", "lentil", "οσπρ", "αρακα", "φακ"], value: "legumes" },
 ];
 
 function normalizeText(value: string) {
@@ -89,8 +93,33 @@ function parseAgeYears(text: string) {
 }
 
 function detectSpecies(text: string): ExtractedSpecies | null {
-  if (includesAny(text, ["dog", "puppy", "skyl", "skil", "σκυλ", "σκυλο", "σκύλο", "κουταβ"])) return "dog";
-  if (includesAny(text, ["cat", "kitten", "gat", "γατ", "γάτ", "γατακ"])) return "cat";
+  if (
+    includesAny(text, [
+      "dog",
+      "puppy",
+      "skyl",
+      "skil",
+      "σκυλ",
+      "σκυλο",
+      "σκύλο",
+      "κουταβ",
+      "akita",
+      "boxer",
+      "rottweiler",
+      "cane corso",
+      "great dane",
+      "saint bernard",
+      "doberman",
+      "malinois",
+      "husky",
+      "yorkshire",
+      "maltese",
+      "labrador",
+      "golden retriever",
+      "german shepherd",
+    ])
+  ) return "dog";
+  if (includesAny(text, ["cat", "kitten", "gat", "γατ", "γάτ", "γατακ", "γατακι", "γατάκι"])) return "cat";
   return null;
 }
 
@@ -236,17 +265,40 @@ function detectCurrentFood(message: string) {
     return null;
   }
 
+  if (
+    includesAny(normalized, [
+      "δεν τρω",
+      "δεν του αρε",
+      "δεν της αρε",
+      "δεν αρε",
+      "τον πειρα",
+      "την πειρα",
+      "αλλεργ",
+      "avoid",
+      "does not like",
+      "doesnt like",
+      "does not eat",
+      "dont eat",
+      "allerg",
+    ])
+  ) {
+    return null;
+  }
+
   const match = message.match(/(?:τρωει|τρώει|current food|now eating)\s+(.{3,80})/i);
   return match?.[1]?.trim() ?? null;
 }
 
 function detectRedFlags(text: string) {
   return detectTerms(text, [
-    [["δεν κατουρα", "δεν ουρει", "no urine", "straining"], "urinary_blockage_risk"],
+    [["δεν κατουρα", "δεν ουρει", "δεν μπορει να κατουρ", "δεν μπορει να ουρ", "προσπαθει να ουρ", "προσπαθει να κατουρ", "no urine", "straining"], "urinary_blockage_risk"],
     [["αιμα", "αίμα", "blood"], "blood"],
-    [["δεν τρωει καθολου", "δεν τρώει καθόλου", "not eating"], "not_eating"],
-    [["εμετ", "vomit"], "vomiting"],
+    [["δεν τρωει καθολου", "δεν τρωει για", "δεν εχει ορεξ", "ανορεξ", "not eating"], "not_eating"],
+    [["συνεχεις εμετ", "συνεχ", "εμετ", "vomit"], "vomiting"],
     [["καταρρε", "collapse"], "collapse"],
+    [["παγκρεατ", "pancreatitis"], "pancreatitis"],
+    [["νεφρ", "ουρια", "κρεατιν", "renal", "kidney", "ckd"], "renal"],
+    [["διαβητ", "diabetes"], "diabetes"],
   ]);
 }
 

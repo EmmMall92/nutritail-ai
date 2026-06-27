@@ -21,9 +21,23 @@ const cases: SafetyCase[] = [
     expectedCode: "male_cat_no_urine",
   },
   {
+    id: "manual-qa-greek-male-cat-straining",
+    message: "Ο γάτος μου προσπαθεί να κατουρήσει και δεν μπορεί. Τι τροφή να πάρω;",
+    species: "cat",
+    expectedHardStop: true,
+    expectedCode: "male_cat_no_urine",
+  },
+  {
     id: "blood-urine-el",
     message: "Γάτα με αίμα στα ούρα",
     species: "cat",
+    expectedHardStop: true,
+    expectedCode: "blood_seen",
+  },
+  {
+    id: "manual-qa-dog-blood-diarrhea",
+    message: "Ο σκύλος μου έχει διάρροια με αίμα. Να αλλάξω τροφή;",
+    species: "dog",
     expectedHardStop: true,
     expectedCode: "blood_seen",
   },
@@ -67,6 +81,13 @@ const cases: SafetyCase[] = [
     species: "cat",
     expectedHardStop: false,
     expectedCode: "renal",
+  },
+  {
+    id: "pancreatitis-caution-not-hard-stop",
+    message: "Ο σκύλος μου έχει παγκρεατίτιδα και θέλω τροφή με πολλά λιπαρά",
+    species: "dog",
+    expectedHardStop: false,
+    expectedCode: "pancreatitis",
   },
   {
     id: "normal-sterilised-cat",

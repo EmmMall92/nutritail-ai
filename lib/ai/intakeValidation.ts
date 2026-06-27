@@ -90,6 +90,31 @@ function canonicalizeIngredientTerm(value: string) {
   return normalized;
 }
 
+function looksLikeBareIngredient(value: string) {
+  const normalized = normalizeLookup(value);
+  const words = normalized.split(/\s+/).filter(Boolean);
+
+  if (words.length > 3) return false;
+
+  return INGREDIENT_ALIASES.some((item) =>
+    item.aliases.some((alias) => normalized.includes(normalizeLookup(alias)))
+  );
+}
+
+function cleanCurrentFoodName(value: unknown, excludedIngredients: string[]) {
+  const cleaned = cleanString(value);
+  if (!cleaned) return null;
+
+  const canonical = canonicalizeIngredientTerm(cleaned);
+  const excluded = new Set(excludedIngredients.map(normalizeLookup));
+
+  if (looksLikeBareIngredient(cleaned) && excluded.has(normalizeLookup(canonical))) {
+    return null;
+  }
+
+  return cleaned;
+}
+
 function cleanIngredientArray(value: unknown) {
   return cleanStringArray(value).map(canonicalizeIngredientTerm);
 }
@@ -192,7 +217,7 @@ export function validateAiIntakeExtraction(
       typeof input.neutered === "boolean" ? input.neutered : null,
     healthIssues: cleanStringArray(input.healthIssues),
     allergies: cleanStringArray(input.allergies),
-    currentFoodName: cleanString(input.currentFoodName),
+    currentFoodName: cleanCurrentFoodName(input.currentFoodName, excludedIngredients),
     preferredProteins,
     excludedIngredients,
     weightGoal,
