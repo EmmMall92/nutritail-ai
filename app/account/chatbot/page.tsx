@@ -3868,6 +3868,29 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   async function handleStep(text: string) {
+    const immediateSafetyWarnings = detectSafetyWarnings({
+      message: text,
+      pet: {
+        species: followUpPet?.species ?? pet.species,
+        age: followUpPet?.age ?? pet.age,
+        weight: followUpPet?.weight ?? pet.weight,
+        activityLevel: followUpPet?.activity_level ?? pet.activityLevel,
+        neutered: followUpPet?.neutered ?? pet.neutered,
+        healthIssues: followUpPet?.health_issues ?? pet.healthIssues,
+        allergies: pet.allergies,
+        currentFood: pet.currentFoodName,
+      },
+      locale: chatLanguage,
+    });
+
+    if (hasHardStop(immediateSafetyWarnings)) {
+      setRecommendedFoodChoices([]);
+      setShowSave(false);
+      setStep("done");
+      addMessages(createMessage("bot", formatSafetyInterruptMessage(immediateSafetyWarnings, chatLanguage)));
+      return;
+    }
+
     if (followUpPet && followUpMode) {
       void saveFollowUpProgressLog({
         savedPet: followUpPet,
