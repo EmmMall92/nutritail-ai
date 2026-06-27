@@ -108,6 +108,7 @@ type PetIntake = {
   neutered?: boolean;
   healthIssues: string[];
   allergies: string[];
+  healthAnswered?: boolean;
   excludedIngredients?: string[];
   preferredProteins?: string[];
   currentFoodName?: string;
@@ -1147,6 +1148,24 @@ function includesAny(value: string, terms: string[]) {
   return terms.some((term) => value.includes(term));
 }
 
+function hasNoHealthIssueAnswer(text: string) {
+  const normalized = normalizeUserText(text);
+
+  return (
+    /\b(no|none|healthy|no health|no issues|nothing)\b/.test(normalized) ||
+    includesAny(normalized, [
+      "οχι",
+      "δεν εχει θεματα υγειας",
+      "δεν εχει καποιο θεμα",
+      "δεν εχει αλλεργ",
+      "χωρις θεματα υγειας",
+      "χωρις αλλεργ",
+      "κανενα θεμα",
+      "καμια αλλεργ",
+    ])
+  );
+}
+
 function getExcludedBrandsForAlternative(currentFoodName?: string) {
   const normalized = normalizeUserText(currentFoodName ?? "");
 
@@ -1243,6 +1262,14 @@ function mergeExtractedPetFacts(
     ...(next.allergies ?? []),
     ...normalizeExtractedList(extracted.allergies),
   ]);
+  if (
+    extracted.healthIssues?.length ||
+    extracted.allergies?.length ||
+    next.healthIssues.length > 0 ||
+    next.allergies.length > 0
+  ) {
+    next.healthAnswered = true;
+  }
   next.excludedIngredients = uniqueTerms([
     ...(next.excludedIngredients ?? []),
     ...normalizeExtractedList(extracted.excludedIngredients),
@@ -2798,7 +2825,7 @@ export default function AccountChatbotPage() {
     if (!draft.age) return "age";
     if (!draft.activityLevel) return "activity";
     if (draft.neutered === undefined) return "neutered";
-    if ((draft.healthIssues ?? []).length === 0 && (draft.allergies ?? []).length === 0) {
+    if (!draft.healthAnswered && (draft.healthIssues ?? []).length === 0 && (draft.allergies ?? []).length === 0) {
       return "health";
     }
     if (!draft.currentFoodName) return "currentFood";
@@ -4013,7 +4040,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     const intakeExtraction = await extractIntakeFactsFromMessage(text);
-    const workingPet = mergeExtractedPetFacts(pet, intakeExtraction?.data);
+    const workingPet = sanitizePetIntake({
+      ...mergeExtractedPetFacts(pet, intakeExtraction?.data),
+      healthAnswered:
+        pet.healthAnswered ||
+        hasNoHealthIssueAnswer(text) ||
+        (intakeExtraction?.data?.healthIssues?.length ?? 0) > 0 ||
+        (intakeExtraction?.data?.allergies?.length ?? 0) > 0,
+    });
 
     if (step === "petChoice") {
       if (isNewPetRequest(text) || parseSpeciesInput(text)) {
@@ -4167,6 +4201,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet: PetIntake = {
         ...workingPet,
+        healthAnswered: true,
         healthIssues: uniqueTerms([
           ...(workingPet.healthIssues ?? []),
           ...intakeClassification.healthIssues,
