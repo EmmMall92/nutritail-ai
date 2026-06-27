@@ -173,6 +173,16 @@ const checks = [
     expected: "progressDecisionStatus: progressDecision.status",
   },
   {
+    label: "Progress decision exposes focused next-step action panel",
+    file: "app/account/chatbot/page.tsx",
+    expected: "getProgressDecisionActions(latestProgressDecisionStatus).map",
+  },
+  {
+    label: "Progress decision panel can recommend another food",
+    file: "app/account/chatbot/page.tsx",
+    expected: "review_food_fit",
+  },
+  {
     label: "Progress API stores deterministic decision status",
     file: "app/api/account/pets/[id]/progress/route.ts",
     expected: "progressDecisionStatus: progressDecisionStatus || null",
