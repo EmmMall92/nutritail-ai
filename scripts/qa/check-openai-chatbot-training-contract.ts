@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import {
   buildAuthorityContractPrompt,
   NUTRITAIL_AI_AUTHORITY_CONTRACT,
@@ -28,6 +29,12 @@ function includesAll(text: string, snippets: string[], label: string) {
   for (const snippet of snippets) {
     expect(text.includes(snippet), `${label} is missing: ${snippet}`);
   }
+}
+
+function assertNoMojibake(sourcePath: string) {
+  const source = readFileSync(sourcePath, "utf8");
+  const mojibakePattern = /(?:\?{3,}|\uFFFD|\u00C2|\u00CE|\u00CF)/u;
+  expect(!mojibakePattern.test(source), `${sourcePath} contains damaged Greek or mojibake text`);
 }
 
 const authorityPrompt = buildAuthorityContractPrompt();
@@ -131,6 +138,20 @@ expect(fineTuningPhase?.status === "later", "fine-tuning must stay marked as lat
 expect(
   NUTRITAIL_FINE_TUNING_NOT_NOW_REASONS.length >= 3,
   "fine-tuning policy should explain why it is not the current training path"
+);
+
+assertNoMojibake("scripts/qa/check-openai-intake-smoke.ts");
+assertNoMojibake("scripts/qa/check-openai-chatbot-training-contract.ts");
+
+const openAiSmokeSource = readFileSync("scripts/qa/check-openai-intake-smoke.ts", "utf8");
+includesAll(
+  openAiSmokeSource,
+  [
+    'buildNutriTailSystemPrompt("fact_extraction")',
+    "Έχω σκύλο, την λένε Κύρκη",
+    "Ο γάτος μου προσπαθεί να κατουρήσει",
+  ],
+  "OpenAI intake smoke source"
 );
 
 if (failures.length > 0) {
