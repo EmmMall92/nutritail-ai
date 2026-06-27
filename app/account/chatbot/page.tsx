@@ -112,6 +112,7 @@ type PetIntake = {
   excludedIngredients?: string[];
   preferredProteins?: string[];
   currentFoodName?: string;
+  currentFoodAnswered?: boolean;
   weightGoal?: WeightGoal;
 };
 
@@ -1251,6 +1252,7 @@ function mergeExtractedPetFacts(
   }
   if (!next.currentFoodName && extracted.currentFoodName) {
     next.currentFoodName = extracted.currentFoodName;
+    next.currentFoodAnswered = true;
   }
   if (!next.weightGoal && extracted.weightGoal) next.weightGoal = extracted.weightGoal;
 
@@ -1493,6 +1495,11 @@ function isUnknownFoodAnswer(text: string) {
     "no current food",
     "no food",
     "not feeding one",
+    "δεν ξερω",
+    "δεν ξερω τροφη",
+    "δεν γνωριζω",
+    "καμια τροφη",
+    "οχι τροφη",
     "δεν ξερω",
     "δεν ξέρω",
     "καμια",
@@ -2828,7 +2835,7 @@ export default function AccountChatbotPage() {
     if (!draft.healthAnswered && (draft.healthIssues ?? []).length === 0 && (draft.allergies ?? []).length === 0) {
       return "health";
     }
-    if (!draft.currentFoodName) return "currentFood";
+    if (!draft.currentFoodAnswered && !draft.currentFoodName) return "currentFood";
     if ((draft.preferredProteins ?? []).length === 0 && (draft.excludedIngredients ?? []).length === 0) {
       return "preferences";
     }
@@ -4047,6 +4054,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         hasNoHealthIssueAnswer(text) ||
         (intakeExtraction?.data?.healthIssues?.length ?? 0) > 0 ||
         (intakeExtraction?.data?.allergies?.length ?? 0) > 0,
+      currentFoodAnswered:
+        pet.currentFoodAnswered ||
+        isUnknownFoodAnswer(text) ||
+        Boolean(intakeExtraction?.data?.currentFoodName),
     });
 
     if (step === "petChoice") {
@@ -4233,6 +4244,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       const nextPet: PetIntake = {
         ...workingPet,
+        currentFoodAnswered: true,
         currentFoodName:
           isUnknownFoodAnswer(currentFoodName)
             ? undefined
