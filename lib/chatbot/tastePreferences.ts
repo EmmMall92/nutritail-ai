@@ -16,6 +16,10 @@ const PROTEIN_TERMS = [
   { keys: ["tuna", "τονο", "τόνο"], value: "tuna" },
   { keys: ["rice", "ρυζ"], value: "rice" },
   { keys: ["grain", "σιτηρ", "δημητριακ"], value: "grain" },
+  { keys: ["wheat", "σιταρ"], value: "wheat" },
+  { keys: ["corn", "maize", "καλαμποκ"], value: "corn" },
+  { keys: ["dairy", "milk", "cheese", "γαλακτοκομ", "γαλα"], value: "dairy" },
+  { keys: ["legume", "pea", "lentil", "οσπρ", "αρακα", "φακ"], value: "legumes" },
 ];
 
 const NO_PREFERENCE_TERMS = [

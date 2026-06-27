@@ -22,6 +22,44 @@ function extractJsonObject(text: string) {
   }
 }
 
+function mergeUnique(...arrays: Array<string[] | undefined>) {
+  return [...new Set(arrays.flatMap((items) => items ?? []).filter(Boolean))];
+}
+
+function mergeOpenAiWithFallback(
+  openAi: AiIntakeExtraction,
+  fallback: ValidatedAiIntakeExtraction
+): AiIntakeExtraction {
+  const fallbackData = fallback.data;
+
+  return {
+    ...openAi,
+    species: openAi.species ?? fallbackData.species ?? null,
+    petName: openAi.petName ?? fallbackData.petName ?? null,
+    weightKg: openAi.weightKg ?? fallbackData.weightKg ?? null,
+    ageYears: openAi.ageYears ?? fallbackData.ageYears ?? null,
+    activityLevel: openAi.activityLevel ?? fallbackData.activityLevel ?? null,
+    neutered: openAi.neutered ?? fallbackData.neutered ?? null,
+    weightGoal: openAi.weightGoal ?? fallbackData.weightGoal ?? null,
+    language: openAi.language ?? fallbackData.language ?? null,
+    currentFoodName: openAi.currentFoodName ?? fallbackData.currentFoodName ?? null,
+    healthIssues: mergeUnique(openAi.healthIssues, fallbackData.healthIssues),
+    allergies: mergeUnique(openAi.allergies, fallbackData.allergies),
+    preferredProteins: mergeUnique(
+      openAi.preferredProteins,
+      fallbackData.preferredProteins
+    ),
+    excludedIngredients: mergeUnique(
+      openAi.excludedIngredients,
+      fallbackData.excludedIngredients
+    ),
+    missingFields: mergeUnique(openAi.missingFields, fallbackData.missingFields),
+    redFlags: mergeUnique(openAi.redFlags, fallbackData.redFlags),
+    notes: mergeUnique(openAi.notes, fallbackData.notes, ["openai_with_rule_merge"]),
+    confidence: openAi.confidence ?? fallbackData.confidence ?? "medium",
+  };
+}
+
 export async function extractPetIntakeFacts(
   message: string,
   options: ExtractIntakeOptions = {}
@@ -62,7 +100,9 @@ export async function extractPetIntakeFacts(
     const parsed = extractJsonObject(response.output_text ?? "");
     if (!parsed) return { ...fallback, source: "fallback" };
 
-    const validated = validateAiIntakeExtraction(parsed);
+    const validated = validateAiIntakeExtraction(
+      mergeOpenAiWithFallback(parsed, fallback)
+    );
     return {
       ...validated,
       source: validated.canUse ? "openai" : "fallback",

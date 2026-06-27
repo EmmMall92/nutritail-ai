@@ -2445,7 +2445,9 @@ function buildFollowUpProgressReply({
   mode: Exclude<FollowUpMode, null>;
   language?: ChatLanguage;
 }) {
-  const currentWeight = parseNumber(text);
+  const progressDetails = extractReadableProgressDetails(text);
+  const currentWeight = progressDetails.currentWeightKg;
+  const currentGrams = progressDetails.feedingGramsPerDay;
   const previousWeight = Number(savedPet.weight);
   const deltaKg =
     currentWeight && Number.isFinite(previousWeight)
@@ -2471,6 +2473,20 @@ function buildFollowUpProgressReply({
   const latest = getLatestSavedPetAnalysis(savedPet);
   const grams = getHistoryFeedingGrams(latest);
   const foodName = getHistoryFoodName(latest);
+  const currentGramsLine = currentGrams
+    ? language === "el"
+      ? `Κατέγραψα ότι τρώει περίπου ${currentGrams}g/ημέρα τώρα.`
+      : `I noted the current feeding amount: about ${currentGrams}g/day.`
+    : null;
+
+  if (currentWeight && currentGrams && mode === "progress") {
+    const nextQuestion =
+      language === "el"
+        ? "Πες μου τώρα μόνο λιχουδιές/σνακ ανά ημέρα και πώς είναι όρεξη, κόπρανα και ενέργεια."
+        : "Now tell me only treats/snacks per day plus appetite, stool quality, and energy.";
+
+    return [weightLine, currentGramsLine, nextQuestion].filter(Boolean).join("\n\n");
+  }
 
   if (mode === "no_result") {
     if (language === "el") {
@@ -2538,9 +2554,13 @@ If the food is no longer accepted or the taste/brand is the issue, choose "Try a
 }
 
 function extractProgressDetails(text: string) {
-  const normalized = text.toLowerCase().replace(",", ".");
-  const weightMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:kg|κιλ|κιλα|κιλά)/);
-  const gramsMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:g|gr|γρ|γραμμαρια|γραμμάρια)/);
+  const normalized = text.toLocaleLowerCase("el-GR").replace(",", ".");
+  const weightMatch = normalized.match(
+    /(\d+(?:\.\d+)?)\s*(?:kg|kgs|κιλ|κιλα|κιλά|κιλο|κιλό|kilo)\b/i
+  );
+  const gramsMatch = normalized.match(
+    /(\d+(?:\.\d+)?)\s*(?:g|gr|γρ|γρ\.|gram|grams|γραμμαρια|γραμμάρια|γραμμαριο|γραμμάριο)\b/i
+  );
 
   return {
     currentWeightKg: weightMatch ? Number(weightMatch[1]) : parseNumber(text),
@@ -2559,7 +2579,7 @@ function hasProgressMetric(text: string) {
 }
 
 function extractReadableProgressDetails(text: string) {
-  const normalized = text.toLowerCase().replace(",", ".");
+  const normalized = text.toLocaleLowerCase("el-GR").replace(",", ".");
   const legacyDetails = extractProgressDetails(text);
   const weightMatch = normalized.match(
     /(\d+(?:\.\d+)?)\s*(?:kg|kgs|κιλ|κιλα|κιλά|κιλο|κιλό|κιλογραμμα|κιλογραμμο|κιλογραμμάριο|kilo)\b/i

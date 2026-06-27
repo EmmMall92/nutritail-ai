@@ -1,4 +1,5 @@
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
+import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
 import {
   parseTastePreferences,
   removeExcludedFromPreferred,
@@ -30,8 +31,15 @@ function runChecks(): Check[] {
 
   const parsedSalmon = parseTastePreferences(chickenYesSalmonNo);
   const parsedLambBeef = parseTastePreferences(chickenYesLambBeefNo);
+  const fallbackGreatDane = fallbackExtractIntake(
+    "Έχω Great Dane 7 μηνών 45kg και θέλω τροφή για ανάπτυξη."
+  );
+  const fallbackDislikedSalmon = fallbackExtractIntake(
+    "Δεν ξέρω την τροφή του. Του αρέσει κοτόπουλο και δεν τρώει σολομό."
+  );
   const validatedConflict = validateAiIntakeExtraction({
     petName: greekKyrki,
+    currentFoodName: "σολομός",
     preferredProteins: ["chicken", "salmon"],
     excludedIngredients: ["salmon"],
     confidence: "medium",
@@ -39,6 +47,21 @@ function runChecks(): Check[] {
   const reconciled = removeExcludedFromPreferred(["chicken", "salmon"], ["salmon"]);
 
   return [
+    {
+      name: "Fallback infers dog species from Great Dane breed",
+      pass:
+        fallbackGreatDane.data.species === "dog" &&
+        fallbackGreatDane.data.weightKg === 45,
+      details: JSON.stringify(fallbackGreatDane.data),
+    },
+    {
+      name: "Fallback does not turn disliked salmon into current food",
+      pass:
+        fallbackDislikedSalmon.data.currentFoodName == null &&
+        hasAll(fallbackDislikedSalmon.data.preferredProteins, ["chicken"]) &&
+        hasAll(fallbackDislikedSalmon.data.excludedIngredients, ["salmon"]),
+      details: JSON.stringify(fallbackDislikedSalmon.data),
+    },
     {
       name: "Greek pet name strips natural phrase without accent",
       pass: formatPetDisplayName(greekKyrki) === "\u039a\u03cd\u03c1\u03ba\u03b7",
@@ -85,6 +108,7 @@ function runChecks(): Check[] {
       name: "Validation removes OpenAI preference conflicts",
       pass:
         validatedConflict.data.petName === "\u039a\u03cd\u03c1\u03ba\u03b7" &&
+        validatedConflict.data.currentFoodName == null &&
         hasAll(validatedConflict.data.preferredProteins, ["chicken"]) &&
         hasAll(validatedConflict.data.excludedIngredients, ["salmon"]) &&
         !validatedConflict.data.preferredProteins?.includes("salmon"),

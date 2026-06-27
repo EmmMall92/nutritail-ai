@@ -29,25 +29,15 @@ function stripNamePrefix(value: string) {
 
   const phrasePatterns = [
     /^(?:τον|την|τη|το)\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/iu,
-    /^(?:ονοματαζεται|ονομάζεται|ονομαζεται)\s+/iu,
+    /^(?:ονομαζεται|ονομάζεται|λεγεται|λέγεται)\s+/iu,
     /^(?:ο|η)\s+(?:σκυλος|σκύλος|γατα|γάτα|γατος|γάτος)\s+μου\s+(?:λενε|λένε|λεγεται|λέγεται)\s+/iu,
     /^(?:το\s+)?(?:ονομα|όνομα)(?:\s+(?:του|της))?\s+(?:ειναι|είναι)\s+/iu,
     /^(?:his|her|their|the|my\s+(?:dog|cat|pet)'?s)\s+name\s+is\s+/iu,
+    /^(?:my\s+)?(?:dog|cat|pet)\s+is\s+(?:called|named)\s+/iu,
     /^(?:called|named)\s+/iu,
   ];
 
   for (const pattern of phrasePatterns) {
-    cleaned = cleaned.replace(pattern, "").trim();
-  }
-
-  const safePhrasePatterns = [
-    /^(?:\u03c4\u03bf\u03bd|\u03c4\u03b7\u03bd|\u03c4\u03b7|\u03c4\u03bf)\s+(?:\u03bb\u03b5\u03bd\u03b5|\u03bb\u03ad\u03bd\u03b5|\u03bb\u03b5\u03b3\u03b5\u03c4\u03b1\u03b9|\u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9)\s+/iu,
-    /^(?:\u03bf\u03bd\u03bf\u03bc\u03b1\u03c4\u03b1\u03b6\u03b5\u03c4\u03b1\u03b9|\u03bf\u03bd\u03bf\u03bc\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9|\u03bb\u03b5\u03b3\u03b5\u03c4\u03b1\u03b9|\u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9)\s+/iu,
-    /^(?:\u03bf|\u03b7)\s+(?:\u03c3\u03ba\u03c5\u03bb\u03bf\u03c2|\u03c3\u03ba\u03cd\u03bb\u03bf\u03c2|\u03b3\u03b1\u03c4\u03b1|\u03b3\u03ac\u03c4\u03b1|\u03b3\u03b1\u03c4\u03bf\u03c2|\u03b3\u03ac\u03c4\u03bf\u03c2)\s+\u03bc\u03bf\u03c5\s+(?:\u03bb\u03b5\u03bd\u03b5|\u03bb\u03ad\u03bd\u03b5|\u03bb\u03b5\u03b3\u03b5\u03c4\u03b1\u03b9|\u03bb\u03ad\u03b3\u03b5\u03c4\u03b1\u03b9)\s+/iu,
-    /^(?:my\s+)?(?:dog|cat|pet)\s+is\s+(?:called|named)\s+/iu,
-  ];
-
-  for (const pattern of safePhrasePatterns) {
     cleaned = cleaned.replace(pattern, "").trim();
   }
 
@@ -56,10 +46,7 @@ function stripNamePrefix(value: string) {
   );
   if (inlineMarker?.[1]) cleaned = inlineMarker[1].trim();
 
-  cleaned = cleaned.replace(
-    /^(?:\u03c4\u03bf\u03bd|\u03c4\u03b7\u03bd|\u03c4\u03b7|\u03c4\u03bf)\s+(?=\S{2,})/iu,
-    ""
-  );
+  cleaned = cleaned.replace(/^(?:τον|την|τη|το)\s+(?=\S{2,})/iu, "");
 
   return cleaned
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
