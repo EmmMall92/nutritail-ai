@@ -132,6 +132,27 @@ const checks = [
     expected: "Weight, grams, treats, and results.",
   },
   {
+    label: "Saved pet selection preserves pending comparison intent",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const pendingCompare = [...pendingCompareQueries]",
+  },
+  {
+    label: "Saved pet selection clears pending comparison after handoff",
+    file: "app/account/chatbot/page.tsx",
+    expected: "setPendingCompareQueries([])",
+  },
+  {
+    label: "Saved pet selection runs pending comparison with pet species",
+    file: "app/account/chatbot/page.tsx",
+    expected: "await runFoodComparison(pendingCompare, { species: nextPet.species })",
+  },
+  {
+    label: "Saved pet comparison handoff offers next actions",
+    file: "app/account/chatbot/page.tsx",
+    expected:
+      "After the comparison, I can run a fresh analysis, a progress check, or another-food recommendation for this pet.",
+  },
+  {
     label: "Progress check accepts weight-only first reply",
     file: "app/account/chatbot/page.tsx",
     expected: "You can start with only the current weight, for example 7 kg.",
