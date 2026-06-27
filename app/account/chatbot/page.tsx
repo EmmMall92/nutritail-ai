@@ -2839,7 +2839,11 @@ function extractReadableProgressDetails(text: string) {
   };
 }
 
-function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "en") {
+function formatAnalysisResult(
+  analysis: PetAnalysis,
+  language: ChatLanguage = "en",
+  finalDailyCalories?: number | null
+) {
   const { nutrition, advice } = analysis;
   const translateAdviceTitle = (title: string) => {
     if (language !== "el") return title;
@@ -2868,6 +2872,14 @@ function formatAnalysisResult(analysis: PetAnalysis, language: ChatLanguage = "e
         "Τα μεγαλύτερα ζώα χρειάζονται παρακολούθηση όρεξης, τάσης βάρους, μυϊκής κατάστασης και πέψης. Δεν θεωρούμε αυτόματα ότι μια light τροφή είναι η καλύτερη αν χάνει βάρος."
       );
   };
+  const finalCalories =
+    finalDailyCalories && finalDailyCalories > 0 ? finalDailyCalories : nutrition.der;
+  const hasGoalAdjustment = finalCalories !== nutrition.der;
+  const englishDailyTargetBlock = hasGoalAdjustment
+    ? `- Final daily target: ${finalCalories} kcal/day
+  This is the number we will use for the feeding plan. The starting estimate was ${nutrition.der} kcal/day and it was adjusted for the weight goal.`
+    : `- Final daily target: ${finalCalories} kcal/day
+  This is the practical target for the day, based on weight, age, activity, neuter status, and weight goal.`;
 
   if (language === "el") {
     return `Το διατροφικό πλάνο είναι έτοιμο:
@@ -2902,8 +2914,7 @@ Daily calorie guide
 - Resting need: ${nutrition.rer} kcal/day
   This is the basic energy the body needs at complete rest.
 
-- Starting daily target: ${nutrition.der} kcal/day
-  This is the practical starting point before the final weight goal adjustment. It considers weight, age, activity, and neuter status.
+${englishDailyTargetBlock}
 
 What matters for this pet:
 ${
@@ -3949,8 +3960,24 @@ Then I can help decide whether the plan is working or needs adjustment.`
 
       const analysis = result.analysis as PetAnalysis;
       setLatestAnalysis(analysis);
+      const adjustedCalories = adjustCaloriesForWeightGoal({
+        calories: analysis.nutrition.der,
+        goal: nextPet.weightGoal,
+      });
+      const displayAnalysis: PetAnalysis = {
+        ...analysis,
+        nutrition: {
+          ...analysis.nutrition,
+          der: adjustedCalories,
+        },
+      };
 
-      addMessages(createMessage("bot", formatAnalysisResult(analysis, chatLanguage)));
+      addMessages(
+        createMessage(
+          "bot",
+          formatAnalysisResult(displayAnalysis, chatLanguage, adjustedCalories)
+        )
+      );
 
       if (nextPet.weightGoal) {
         addMessages(
@@ -3973,11 +4000,6 @@ Then I can help decide whether the plan is working or needs adjustment.`
         )
       );
       }
-
-      const adjustedCalories = adjustCaloriesForWeightGoal({
-        calories: analysis.nutrition.der,
-        goal: nextPet.weightGoal,
-      });
 
       const treats = calculateTreatsAllowance(adjustedCalories);
 
