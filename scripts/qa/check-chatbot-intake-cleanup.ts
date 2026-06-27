@@ -28,9 +28,12 @@ function runChecks(): Check[] {
     "\u03a4\u03b7\u03c2 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b8\u03bf\u03bb\u03bf\u03c5 \u03bf \u03c3\u03bf\u03bb\u03bf\u03bc\u03bf\u03c2";
   const chickenYesLambBeefNo =
     "\u03c4\u03bf\u03c5 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03c1\u03c9\u03b5\u03b9 \u03c4\u03bf \u03b1\u03c1\u03bd\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03bf \u03bc\u03bf\u03c3\u03c7\u03b1\u03c1\u03b9";
+  const greeklishChickenYesLambBeefNo =
+    "tou aresei to kotopoulo kai den troei arni kai mosxari";
 
   const parsedSalmon = parseTastePreferences(chickenYesSalmonNo);
   const parsedLambBeef = parseTastePreferences(chickenYesLambBeefNo);
+  const parsedGreeklishLambBeef = parseTastePreferences(greeklishChickenYesLambBeefNo);
   const fallbackGreatDane = fallbackExtractIntake(
     "Έχω Great Dane 7 μηνών 45kg και θέλω τροφή για ανάπτυξη."
   );
@@ -45,6 +48,9 @@ function runChecks(): Check[] {
     confidence: "medium",
   });
   const reconciled = removeExcludedFromPreferred(["chicken", "salmon"], ["salmon"]);
+  const fallbackGreeklishPreferences = fallbackExtractIntake(
+    "den ksero tin trofi. tou aresei to kotopoulo kai den troei arni kai mosxari"
+  );
 
   return [
     {
@@ -103,6 +109,23 @@ function runChecks(): Check[] {
         !parsedLambBeef.preferredProteins.includes("lamb") &&
         !parsedLambBeef.preferredProteins.includes("beef"),
       details: JSON.stringify(parsedLambBeef),
+    },
+    {
+      name: "Greeklish preferences keep chicken and avoid lamb plus beef",
+      pass:
+        hasAll(parsedGreeklishLambBeef.preferredProteins, ["chicken"]) &&
+        hasAll(parsedGreeklishLambBeef.excludedIngredients, ["lamb", "beef"]) &&
+        !parsedGreeklishLambBeef.preferredProteins.includes("lamb") &&
+        !parsedGreeklishLambBeef.preferredProteins.includes("beef"),
+      details: JSON.stringify(parsedGreeklishLambBeef),
+    },
+    {
+      name: "Fallback handles Greeklish unknown food plus preferences",
+      pass:
+        fallbackGreeklishPreferences.data.currentFoodName == null &&
+        hasAll(fallbackGreeklishPreferences.data.preferredProteins, ["chicken"]) &&
+        hasAll(fallbackGreeklishPreferences.data.excludedIngredients, ["lamb", "beef"]),
+      details: JSON.stringify(fallbackGreeklishPreferences.data),
     },
     {
       name: "Validation removes OpenAI preference conflicts",
