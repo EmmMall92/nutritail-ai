@@ -25,6 +25,10 @@ type ProgressLog = {
     stoolNote?: string | null;
     energyNote?: string | null;
     bodyChangeNote?: string | null;
+    progressDecisionStatus?: string | null;
+    progressDecisionConfidence?: string | null;
+    progressDecisionHeadlineEl?: string | null;
+    progressDecisionHeadlineEn?: string | null;
     note?: string | null;
   };
 };
@@ -130,6 +134,11 @@ function formatProgressChipLabel(value?: string | null) {
     leaner: "leaner",
     same: "same",
     heavier: "heavier",
+    continue_plan: "continue plan",
+    adjust_portions: "adjust portions",
+    reduce_treats: "reduce treats",
+    review_food_fit: "review food fit",
+    needs_more_data: "needs more data",
   };
 
   return labels[value] ?? value;
@@ -470,7 +479,24 @@ export default function PetTimelineReportPage() {
                     <span className="font-semibold">Body change:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.bodyChangeNote) ?? "-"}
                   </p>
+                  <p>
+                    <span className="font-semibold">Progress decision:</span>{" "}
+                    {formatProgressChipLabel(log.metadata?.progressDecisionStatus) ??
+                      "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Decision confidence:</span>{" "}
+                    {log.metadata?.progressDecisionConfidence ?? "-"}
+                  </p>
                 </div>
+
+                {(log.metadata?.progressDecisionHeadlineEn ||
+                  log.metadata?.progressDecisionHeadlineEl) && (
+                  <p className="mt-3 font-semibold text-blue-950">
+                    {log.metadata.progressDecisionHeadlineEn ??
+                      log.metadata.progressDecisionHeadlineEl}
+                  </p>
+                )}
 
                 {log.metadata?.note && (
                   <p className="mt-3 text-gray-700">{log.metadata.note}</p>

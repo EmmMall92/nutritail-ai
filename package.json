@@ -97,6 +97,7 @@
     "qa:ai-intake": "tsx scripts/qa/check-ai-intake-golden-cases.ts",
     "qa:chatbot-case-intake": "tsx scripts/qa/check-chatbot-case-intake.ts",
     "qa:chatbot-intake-cleanup": "tsx scripts/qa/check-chatbot-intake-cleanup.ts",
+    "qa:chatbot-progress-decision": "tsx scripts/qa/check-chatbot-progress-decision.ts",
     "qa:chatbot-progress-parsing": "tsx scripts/qa/check-chatbot-progress-parsing.ts",
     "qa:chatbot-portions": "tsx scripts/qa/check-chatbot-portion-estimates.ts",
     "qa:customer-recommendation-smoke": "tsx scripts/qa/check-customer-recommendation-smoke.ts",
