@@ -168,9 +168,24 @@ const checks = [
     expected: "appetiteNote: appetiteNote || null",
   },
   {
+    label: "Progress check sends deterministic decision status",
+    file: "app/account/chatbot/page.tsx",
+    expected: "progressDecisionStatus: progressDecision.status",
+  },
+  {
+    label: "Progress API stores deterministic decision status",
+    file: "app/api/account/pets/[id]/progress/route.ts",
+    expected: "progressDecisionStatus: progressDecisionStatus || null",
+  },
+  {
     label: "Pet detail latest progress shows appetite chip",
     file: "app/account/pets/[id]/page.tsx",
     expected: "Appetite: {formatProgressChipLabel(progressSummary.appetiteNote)}",
+  },
+  {
+    label: "Pet detail latest progress shows decision chip",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Decision: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}",
   },
   {
     label: "Pet detail timeline shows structured progress chips",
@@ -181,6 +196,11 @@ const checks = [
     label: "Printable timeline shows structured stool progress",
     file: "app/print/pet-timeline/[id]/page.tsx",
     expected: "formatProgressChipLabel(log.metadata?.stoolNote)",
+  },
+  {
+    label: "Printable timeline shows progress decision",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "Progress decision:",
   },
   {
     label: "Analysis in-progress message is localized",

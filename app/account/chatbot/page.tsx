@@ -39,6 +39,7 @@ import {
   parseProgressUpdate,
   type ProgressUpdateDetails,
 } from "@/lib/chatbot/progressParsing";
+import { buildProgressDecision } from "@/lib/chatbot/progressDecision";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
@@ -2544,9 +2545,17 @@ function buildFollowUpProgressReply({
 
   if (currentWeight && currentGrams && mode === "progress") {
     const contextSummary = formatProgressContextSummary(progressDetails, language);
+    const progressDecision = formatProgressDecisionReply(
+      buildProgressDecision({
+        details: progressDetails,
+        previousWeightKg: previousWeight,
+        mode,
+      }),
+      language
+    );
     const missingQuestion = formatProgressMissingQuestion(progressDetails, language);
 
-    return [weightLine, currentGramsLine, contextSummary, missingQuestion]
+    return [weightLine, currentGramsLine, contextSummary, progressDecision, missingQuestion]
       .filter(Boolean)
       .join("\n\n");
   }
@@ -2671,6 +2680,26 @@ function formatProgressContextSummary(
   return language === "el"
     ? `Κρατάω επίσης:\n${notes.join("\n")}`
     : `I also noted:\n${notes.join("\n")}`;
+}
+
+function formatProgressDecisionReply(
+  decision: ReturnType<typeof buildProgressDecision>,
+  language: ChatLanguage
+) {
+  const isGreek = language === "el";
+  const headline = isGreek ? decision.headline.el : decision.headline.en;
+  const reasons = isGreek ? decision.reasons.el : decision.reasons.en;
+  const nextSteps = isGreek ? decision.nextSteps.el : decision.nextSteps.en;
+  const confidenceLabel = isGreek ? "Σιγουριά" : "Confidence";
+  const reasonsLabel = isGreek ? "Γιατί" : "Why";
+  const nextLabel = isGreek ? "Τι κάνουμε τώρα" : "What to do now";
+
+  return [
+    headline,
+    `${confidenceLabel}: ${decision.confidence}`,
+    `${reasonsLabel}:\n${reasons.map((reason) => `- ${reason}`).join("\n")}`,
+    `${nextLabel}:\n${nextSteps.map((step) => `- ${step}`).join("\n")}`,
+  ].join("\n");
 }
 
 function formatProgressMissingQuestion(
@@ -3273,6 +3302,11 @@ export default function AccountChatbotPage() {
       if (!authUserId) return;
 
       const details = parseProgressUpdate(text);
+      const progressDecision = buildProgressDecision({
+        details,
+        previousWeightKg: Number(savedPet.weight),
+        mode,
+      });
 
       await fetch(`/api/account/pets/${savedPet.id}/progress`, {
         method: "POST",
@@ -3290,6 +3324,10 @@ export default function AccountChatbotPage() {
           stoolNote: details.stoolNote,
           energyNote: details.energyNote,
           bodyChangeNote: details.bodyChangeNote,
+          progressDecisionStatus: progressDecision.status,
+          progressDecisionConfidence: progressDecision.confidence,
+          progressDecisionHeadlineEl: progressDecision.headline.el,
+          progressDecisionHeadlineEn: progressDecision.headline.en,
         }),
       });
     } catch (error) {

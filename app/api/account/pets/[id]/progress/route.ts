@@ -67,6 +67,10 @@ export async function POST(request: Request, context: Context) {
     const stoolNote = cleanText(body.stoolNote);
     const energyNote = cleanText(body.energyNote);
     const bodyChangeNote = cleanText(body.bodyChangeNote);
+    const progressDecisionStatus = cleanText(body.progressDecisionStatus);
+    const progressDecisionConfidence = cleanText(body.progressDecisionConfidence);
+    const progressDecisionHeadlineEl = cleanText(body.progressDecisionHeadlineEl);
+    const progressDecisionHeadlineEn = cleanText(body.progressDecisionHeadlineEn);
     const note = cleanText(body.note);
     const mode = cleanText(body.mode || "progress");
 
@@ -91,6 +95,10 @@ export async function POST(request: Request, context: Context) {
         stoolNote: stoolNote || null,
         energyNote: energyNote || null,
         bodyChangeNote: bodyChangeNote || null,
+        progressDecisionStatus: progressDecisionStatus || null,
+        progressDecisionConfidence: progressDecisionConfidence || null,
+        progressDecisionHeadlineEl: progressDecisionHeadlineEl || null,
+        progressDecisionHeadlineEn: progressDecisionHeadlineEn || null,
         note,
       },
       created_at: new Date().toISOString(),

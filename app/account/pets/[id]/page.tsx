@@ -47,6 +47,10 @@ type ProgressLog = {
     stoolNote?: string | null;
     energyNote?: string | null;
     bodyChangeNote?: string | null;
+    progressDecisionStatus?: string | null;
+    progressDecisionConfidence?: string | null;
+    progressDecisionHeadlineEl?: string | null;
+    progressDecisionHeadlineEn?: string | null;
     note?: string | null;
   };
 };
@@ -222,6 +226,12 @@ function getLatestProgressSummary(progressLogs: ProgressLog[], pet: AccountPet) 
     appetiteNote: metadata?.appetiteNote ?? null,
     stoolNote: metadata?.stoolNote ?? null,
     energyNote: metadata?.energyNote ?? null,
+    progressDecisionStatus: metadata?.progressDecisionStatus ?? null,
+    progressDecisionConfidence: metadata?.progressDecisionConfidence ?? null,
+    progressDecisionHeadline:
+      metadata?.progressDecisionHeadlineEn ??
+      metadata?.progressDecisionHeadlineEl ??
+      null,
     mode: formatProgressMode(metadata?.mode),
     deltaText: formatWeightDelta(currentWeight, previousWeight),
   };
@@ -247,6 +257,11 @@ function formatProgressChipLabel(value?: string | null) {
     leaner: "leaner",
     same: "same",
     heavier: "heavier",
+    continue_plan: "continue plan",
+    adjust_portions: "adjust portions",
+    reduce_treats: "reduce treats",
+    review_food_fit: "review food fit",
+    needs_more_data: "needs more data",
   };
 
   return labels[value] ?? value;
@@ -604,7 +619,22 @@ export default function AccountPetDetailPage() {
                   <p className="mt-2 text-sm text-blue-900">
                     {progressSummary.deltaText}
                   </p>
+                  {progressSummary.progressDecisionHeadline && (
+                    <p className="mt-2 text-sm font-semibold text-blue-950">
+                      {progressSummary.progressDecisionHeadline}
+                    </p>
+                  )}
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-blue-950">
+                    {progressSummary.progressDecisionStatus && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Decision: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}
+                      </span>
+                    )}
+                    {progressSummary.progressDecisionConfidence && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Confidence: {progressSummary.progressDecisionConfidence}
+                      </span>
+                    )}
                     {progressSummary.currentWeight && (
                       <span className="rounded-full bg-white px-3 py-1">
                         Current {progressSummary.currentWeight} kg
@@ -994,12 +1024,30 @@ export default function AccountPetDetailPage() {
                         Treats: {log.metadata.treatsPerDay}
                       </span>
                     )}
+                    {log.metadata?.progressDecisionStatus && (
+                      <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-900">
+                        Decision: {formatProgressChipLabel(log.metadata.progressDecisionStatus)}
+                      </span>
+                    )}
+                    {log.metadata?.progressDecisionConfidence && (
+                      <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-900">
+                        Confidence: {log.metadata.progressDecisionConfidence}
+                      </span>
+                    )}
                     {getProgressContextChips(log.metadata).map((chip) => (
                       <span key={chip} className="rounded-full bg-gray-100 px-3 py-1">
                         {chip}
                       </span>
                     ))}
                   </div>
+
+                  {(log.metadata?.progressDecisionHeadlineEn ||
+                    log.metadata?.progressDecisionHeadlineEl) && (
+                    <p className="mt-3 text-sm font-semibold text-blue-950">
+                      {log.metadata.progressDecisionHeadlineEn ??
+                        log.metadata.progressDecisionHeadlineEl}
+                    </p>
+                  )}
 
                   {log.metadata?.note && (
                     <p className="mt-3 text-sm text-gray-700">
