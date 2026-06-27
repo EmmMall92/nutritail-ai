@@ -3272,7 +3272,7 @@ export default function AccountChatbotPage() {
 
       if (!authUserId) return;
 
-      const details = extractReadableProgressDetails(text);
+      const details = parseProgressUpdate(text);
 
       await fetch(`/api/account/pets/${savedPet.id}/progress`, {
         method: "POST",
@@ -3285,6 +3285,11 @@ export default function AccountChatbotPage() {
           note: text,
           currentWeightKg: details.currentWeightKg,
           feedingGramsPerDay: details.feedingGramsPerDay,
+          treatsNote: details.treatsNote,
+          appetiteNote: details.appetiteNote,
+          stoolNote: details.stoolNote,
+          energyNote: details.energyNote,
+          bodyChangeNote: details.bodyChangeNote,
         }),
       });
     } catch (error) {

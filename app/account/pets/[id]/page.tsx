@@ -42,6 +42,11 @@ type ProgressLog = {
     previousWeightKg?: number | null;
     feedingGramsPerDay?: number | null;
     treatsPerDay?: string | null;
+    treatsNote?: string | null;
+    appetiteNote?: string | null;
+    stoolNote?: string | null;
+    energyNote?: string | null;
+    bodyChangeNote?: string | null;
     note?: string | null;
   };
 };
@@ -213,9 +218,55 @@ function getLatestProgressSummary(progressLogs: ProgressLog[], pet: AccountPet) 
     latestLog,
     currentWeight,
     feedingGramsPerDay: metadata?.feedingGramsPerDay ?? null,
+    treatsNote: metadata?.treatsNote ?? metadata?.treatsPerDay ?? null,
+    appetiteNote: metadata?.appetiteNote ?? null,
+    stoolNote: metadata?.stoolNote ?? null,
+    energyNote: metadata?.energyNote ?? null,
     mode: formatProgressMode(metadata?.mode),
     deltaText: formatWeightDelta(currentWeight, previousWeight),
   };
+}
+
+function formatProgressChipLabel(value?: string | null) {
+  if (!value) return null;
+
+  const labels: Record<string, string> = {
+    none: "none",
+    few: "few",
+    some: "some",
+    many: "many",
+    normal: "normal",
+    hungry: "hungry",
+    low: "low",
+    picky: "picky",
+    better: "better",
+    soft: "soft",
+    diarrhea: "diarrhea",
+    constipation: "constipation",
+    high: "high",
+    leaner: "leaner",
+    same: "same",
+    heavier: "heavier",
+  };
+
+  return labels[value] ?? value;
+}
+
+function getProgressContextChips(metadata?: ProgressLog["metadata"]) {
+  if (!metadata) return [];
+
+  return [
+    ["Treats", metadata.treatsNote],
+    ["Appetite", metadata.appetiteNote],
+    ["Stool", metadata.stoolNote],
+    ["Energy", metadata.energyNote],
+    ["Body", metadata.bodyChangeNote],
+  ]
+    .map(([label, value]) => {
+      const formatted = formatProgressChipLabel(value);
+      return formatted ? `${label}: ${formatted}` : null;
+    })
+    .filter((value): value is string => Boolean(value));
 }
 
 export default function AccountPetDetailPage() {
@@ -562,6 +613,26 @@ export default function AccountPetDetailPage() {
                     {progressSummary.feedingGramsPerDay && (
                       <span className="rounded-full bg-white px-3 py-1">
                         {progressSummary.feedingGramsPerDay}g/day
+                      </span>
+                    )}
+                    {progressSummary.treatsNote && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Treats: {formatProgressChipLabel(progressSummary.treatsNote)}
+                      </span>
+                    )}
+                    {progressSummary.appetiteNote && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Appetite: {formatProgressChipLabel(progressSummary.appetiteNote)}
+                      </span>
+                    )}
+                    {progressSummary.stoolNote && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Stool: {formatProgressChipLabel(progressSummary.stoolNote)}
+                      </span>
+                    )}
+                    {progressSummary.energyNote && (
+                      <span className="rounded-full bg-white px-3 py-1">
+                        Energy: {formatProgressChipLabel(progressSummary.energyNote)}
                       </span>
                     )}
                     <span className="rounded-full bg-white px-3 py-1">
@@ -923,6 +994,11 @@ export default function AccountPetDetailPage() {
                         Treats: {log.metadata.treatsPerDay}
                       </span>
                     )}
+                    {getProgressContextChips(log.metadata).map((chip) => (
+                      <span key={chip} className="rounded-full bg-gray-100 px-3 py-1">
+                        {chip}
+                      </span>
+                    ))}
                   </div>
 
                   {log.metadata?.note && (

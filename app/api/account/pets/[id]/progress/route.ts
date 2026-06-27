@@ -62,6 +62,11 @@ export async function POST(request: Request, context: Context) {
     const currentWeightKg = numberOrNull(body.currentWeightKg);
     const feedingGramsPerDay = numberOrNull(body.feedingGramsPerDay);
     const treatsPerDay = cleanText(body.treatsPerDay);
+    const treatsNote = cleanText(body.treatsNote);
+    const appetiteNote = cleanText(body.appetiteNote);
+    const stoolNote = cleanText(body.stoolNote);
+    const energyNote = cleanText(body.energyNote);
+    const bodyChangeNote = cleanText(body.bodyChangeNote);
     const note = cleanText(body.note);
     const mode = cleanText(body.mode || "progress");
 
@@ -81,6 +86,11 @@ export async function POST(request: Request, context: Context) {
         currentWeightKg,
         feedingGramsPerDay,
         treatsPerDay: treatsPerDay || null,
+        treatsNote: treatsNote || null,
+        appetiteNote: appetiteNote || null,
+        stoolNote: stoolNote || null,
+        energyNote: energyNote || null,
+        bodyChangeNote: bodyChangeNote || null,
         note,
       },
       created_at: new Date().toISOString(),
