@@ -20,6 +20,11 @@ type ProgressLog = {
     previousWeightKg?: number | null;
     feedingGramsPerDay?: number | null;
     treatsPerDay?: string | null;
+    treatsNote?: string | null;
+    appetiteNote?: string | null;
+    stoolNote?: string | null;
+    energyNote?: string | null;
+    bodyChangeNote?: string | null;
     note?: string | null;
   };
 };
@@ -103,6 +108,31 @@ function getLatestProgressLog(progressLogs: ProgressLog[]) {
 
     return bDate - aDate;
   })[0];
+}
+
+function formatProgressChipLabel(value?: string | null) {
+  if (!value) return null;
+
+  const labels: Record<string, string> = {
+    none: "none",
+    few: "few",
+    some: "some",
+    many: "many",
+    normal: "normal",
+    hungry: "hungry",
+    low: "low",
+    picky: "picky",
+    better: "better",
+    soft: "soft",
+    diarrhea: "diarrhea",
+    constipation: "constipation",
+    high: "high",
+    leaner: "leaner",
+    same: "same",
+    heavier: "heavier",
+  };
+
+  return labels[value] ?? value;
 }
 
 export default function PetTimelineReportPage() {
@@ -420,7 +450,25 @@ export default function PetTimelineReportPage() {
                   </p>
                   <p className="md:col-span-2">
                     <span className="font-semibold">Treats:</span>{" "}
-                    {log.metadata?.treatsPerDay || "-"}
+                    {log.metadata?.treatsNote
+                      ? formatProgressChipLabel(log.metadata.treatsNote)
+                      : log.metadata?.treatsPerDay || "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Appetite:</span>{" "}
+                    {formatProgressChipLabel(log.metadata?.appetiteNote) ?? "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Stool:</span>{" "}
+                    {formatProgressChipLabel(log.metadata?.stoolNote) ?? "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Energy:</span>{" "}
+                    {formatProgressChipLabel(log.metadata?.energyNote) ?? "-"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Body change:</span>{" "}
+                    {formatProgressChipLabel(log.metadata?.bodyChangeNote) ?? "-"}
                   </p>
                 </div>
 

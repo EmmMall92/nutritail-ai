@@ -158,6 +158,31 @@ const checks = [
     expected: "You can start with only the current weight, for example 7 kg.",
   },
   {
+    label: "Progress check sends appetite context to the progress API",
+    file: "app/account/chatbot/page.tsx",
+    expected: "appetiteNote: details.appetiteNote",
+  },
+  {
+    label: "Progress API stores appetite context in progress metadata",
+    file: "app/api/account/pets/[id]/progress/route.ts",
+    expected: "appetiteNote: appetiteNote || null",
+  },
+  {
+    label: "Pet detail latest progress shows appetite chip",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "Appetite: {formatProgressChipLabel(progressSummary.appetiteNote)}",
+  },
+  {
+    label: "Pet detail timeline shows structured progress chips",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "getProgressContextChips(log.metadata).map",
+  },
+  {
+    label: "Printable timeline shows structured stool progress",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    expected: "formatProgressChipLabel(log.metadata?.stoolNote)",
+  },
+  {
     label: "Analysis in-progress message is localized",
     file: "app/account/chatbot/page.tsx",
     expected: "Περίμενε λίγο, ολοκληρώνω την ανάλυση.",
