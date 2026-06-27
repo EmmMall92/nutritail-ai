@@ -517,7 +517,7 @@ const requiredCardFlowCopy = [
   "Your nutrition plan is ready:",
   "Daily calorie guide",
   "Resting need:",
-  "Starting daily target:",
+  "Final daily target:",
   "What matters for this pet:",
   "The food cards below are the next step. Choose one option to estimate the daily portion.",
   "formatCompareCustomerTakeaway",
