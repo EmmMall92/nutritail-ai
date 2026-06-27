@@ -1,6 +1,6 @@
 # OpenAI Intake Smoke QA
 
-Generated: 2026-06-23T06:32:42.218Z
+Generated: 2026-06-27T17:42:48.525Z
 Status: skipped
 
 No usable `OPENAI_API_KEY` was available in the QA environment.
