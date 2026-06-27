@@ -39,7 +39,10 @@ import {
   parseProgressUpdate,
   type ProgressUpdateDetails,
 } from "@/lib/chatbot/progressParsing";
-import { buildProgressDecision } from "@/lib/chatbot/progressDecision";
+import {
+  buildProgressDecision,
+  type ProgressDecisionStatus,
+} from "@/lib/chatbot/progressDecision";
 
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 import type { Pet } from "@/types/pet";
@@ -2943,6 +2946,113 @@ function getFoodKcalPer100g(food: Record<string, unknown>): number | null {
   return null;
 }
 
+function getProgressDecisionActions(status: ProgressDecisionStatus) {
+  const actionsByStatus: Record<
+    ProgressDecisionStatus,
+    {
+      title: string;
+      titleEl: string;
+      helper: string;
+      helperEl: string;
+      action: FollowUpAction;
+      tone: "primary" | "secondary";
+    }[]
+  > = {
+    continue_plan: [
+      {
+        title: "Open timeline",
+        titleEl: "Άνοιγμα ιστορικού",
+        helper: "Save this check-in in the bigger picture.",
+        helperEl: "Δες την πρόοδο μαζί με τις προηγούμενες αναλύσεις.",
+        action: "timeline",
+        tone: "primary",
+      },
+      {
+        title: "Progress check later",
+        titleEl: "Νέος έλεγχος αργότερα",
+        helper: "Check again after 2-4 weeks.",
+        helperEl: "Ξανατσέκαρε σε 2-4 εβδομάδες.",
+        action: "progress",
+        tone: "secondary",
+      },
+    ],
+    adjust_portions: [
+      {
+        title: "Fresh analysis",
+        titleEl: "Νέος υπολογισμός",
+        helper: "Recalculate calories and portions with the new context.",
+        helperEl: "Ξαναυπολόγισε θερμίδες και γραμμάρια με τα νέα στοιχεία.",
+        action: "new_analysis",
+        tone: "primary",
+      },
+      {
+        title: "Try another food",
+        titleEl: "Άλλη τροφή",
+        helper: "Look for a better calorie or satiety fit.",
+        helperEl: "Ψάξε καλύτερο fit σε θερμίδες ή κορεσμό.",
+        action: "change_food",
+        tone: "secondary",
+      },
+    ],
+    reduce_treats: [
+      {
+        title: "Progress check later",
+        titleEl: "Νέος έλεγχος μετά",
+        helper: "Track again after treats are controlled.",
+        helperEl: "Ξανατσέκαρε αφού μπουν όρια στις λιχουδιές.",
+        action: "progress",
+        tone: "primary",
+      },
+      {
+        title: "Open timeline",
+        titleEl: "Άνοιγμα ιστορικού",
+        helper: "Keep the treat adjustment visible in history.",
+        helperEl: "Κράτα την αλλαγή στις λιχουδιές στο ιστορικό.",
+        action: "timeline",
+        tone: "secondary",
+      },
+    ],
+    review_food_fit: [
+      {
+        title: "Try another food",
+        titleEl: "Άλλη τροφή",
+        helper: "Get a new shortlist for appetite, stool, or tolerance issues.",
+        helperEl: "Πάρε νέα λίστα για όρεξη, κόπρανα ή ανοχή.",
+        action: "change_food",
+        tone: "primary",
+      },
+      {
+        title: "Fresh analysis",
+        titleEl: "Νέα ανάλυση",
+        helper: "Restart if symptoms or needs changed.",
+        helperEl: "Ξεκίνα ξανά αν άλλαξαν συμπτώματα ή ανάγκες.",
+        action: "new_analysis",
+        tone: "secondary",
+      },
+    ],
+    needs_more_data: [
+      {
+        title: "Continue progress check",
+        titleEl: "Συνέχεια ελέγχου",
+        helper: "Send the missing detail and continue from here.",
+        helperEl: "Στείλε το στοιχείο που λείπει και συνεχίζουμε.",
+        action: "progress",
+        tone: "primary",
+      },
+      {
+        title: "Open timeline",
+        titleEl: "Άνοιγμα ιστορικού",
+        helper: "Review what is already saved.",
+        helperEl: "Δες τι έχει ήδη αποθηκευτεί.",
+        action: "timeline",
+        tone: "secondary",
+      },
+    ],
+  };
+
+  return actionsByStatus[status];
+}
+
 export default function AccountChatbotPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -2957,6 +3067,8 @@ export default function AccountChatbotPage() {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [followUpPet, setFollowUpPet] = useState<AccountPet | null>(null);
   const [followUpMode, setFollowUpMode] = useState<FollowUpMode>(null);
+  const [latestProgressDecisionStatus, setLatestProgressDecisionStatus] =
+    useState<ProgressDecisionStatus | null>(null);
   const [recommendationMode, setRecommendationMode] =
     useState<RecommendationMode>("default");
   const [isLoadingPets, setIsLoadingPets] = useState(true);
@@ -3019,6 +3131,20 @@ export default function AccountChatbotPage() {
     if (visibleMessages.length === 0) return;
 
     setMessages((prev) => [...prev, ...visibleMessages]);
+  }
+
+  function setLatestProgressDecisionFromText(
+    savedPet: AccountPet,
+    mode: Exclude<FollowUpMode, null>,
+    text: string
+  ) {
+    const details = parseProgressUpdate(text);
+    const decision = buildProgressDecision({
+      details,
+      previousWeightKg: Number(savedPet.weight),
+      mode,
+    });
+    setLatestProgressDecisionStatus(decision.status);
   }
 
   function botText(el: string, en: string) {
@@ -3445,6 +3571,7 @@ export default function AccountChatbotPage() {
     setSelectedPetId(savedPet.id);
     setPet(nextPet);
     setRecommendedFoodChoices([]);
+    setLatestProgressDecisionStatus(null);
 
     if (pendingCompare.length >= 2) {
       setPendingCompareQueries([]);
@@ -3498,6 +3625,7 @@ export default function AccountChatbotPage() {
 
     setSelectedPetId(savedPet.id);
     setFollowUpPet(null);
+    setLatestProgressDecisionStatus(null);
     setRecommendationMode("default");
     setPet(nextPet);
     setRecommendedFoodChoices([]);
@@ -3535,6 +3663,7 @@ export default function AccountChatbotPage() {
     setSelectedPetId(targetPet.id);
     setFollowUpPet(targetPet);
     setPet(nextPet);
+    setLatestProgressDecisionStatus(null);
 
     if (action === "timeline") {
       addMessages(
@@ -3751,6 +3880,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
     setSelectedPetId(null);
     setFollowUpPet(null);
     setFollowUpMode(null);
+    setLatestProgressDecisionStatus(null);
     setRecommendationMode("default");
     setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
     setRecommendedFoodChoices([]);
@@ -4181,6 +4311,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     if (followUpPet && followUpMode) {
+      setLatestProgressDecisionFromText(followUpPet, followUpMode, text);
       void saveFollowUpProgressLog({
         savedPet: followUpPet,
         mode: followUpMode,
@@ -4207,6 +4338,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       if (followUpAction) {
         if (followUpAction === "progress" && parseNumber(text) !== null) {
           setFollowUpMode("progress");
+          setLatestProgressDecisionFromText(followUpPet, "progress", text);
           void saveFollowUpProgressLog({
             savedPet: followUpPet,
             mode: "progress",
@@ -4228,6 +4360,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
         if (followUpAction === "no_result" && parseNumber(text) !== null) {
           setFollowUpMode("no_result");
+          setLatestProgressDecisionFromText(followUpPet, "no_result", text);
           void saveFollowUpProgressLog({
             savedPet: followUpPet,
             mode: "no_result",
@@ -4253,6 +4386,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       if (hasProgressMetric(text)) {
         setFollowUpMode("progress");
+        setLatestProgressDecisionFromText(followUpPet, "progress", text);
         void saveFollowUpProgressLog({
           savedPet: followUpPet,
           mode: "progress",
@@ -4992,6 +5126,43 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </a>
               </div>
             </div>
+
+            {latestProgressDecisionStatus && (
+              <div className="mt-4 rounded-2xl border border-blue-300 bg-white p-4 shadow-sm">
+                <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                  {botText("Προτεινόμενο επόμενο βήμα", "Recommended next step")}
+                </p>
+                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {getProgressDecisionActions(latestProgressDecisionStatus).map(
+                    (item) => (
+                      <button
+                        key={`${latestProgressDecisionStatus}-${item.action}-${item.title}`}
+                        type="button"
+                        onClick={() => handleFollowUpAction(item.action)}
+                        className={`rounded-xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                          item.tone === "primary"
+                            ? "border-blue-600 bg-blue-700 text-white hover:bg-blue-800"
+                            : "border-blue-200 bg-blue-50 text-blue-950 hover:border-blue-500"
+                        }`}
+                      >
+                        <span className="block font-semibold">
+                          {botText(item.titleEl, item.title)}
+                        </span>
+                        <span
+                          className={`mt-1 block text-sm ${
+                            item.tone === "primary"
+                              ? "text-blue-50"
+                              : "text-blue-900"
+                          }`}
+                        >
+                          {botText(item.helperEl, item.helper)}
+                        </span>
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {followUpActions.map((action) => (
