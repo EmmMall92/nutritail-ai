@@ -240,6 +240,10 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     displayName = displayName.replace(/^happy\s+/i, "").trim();
   }
 
+  if (normalizedBrand.endsWith("vetsolution")) {
+    displayName = displayName.replace(/^vetsolution\s+/i, "").trim();
+  }
+
   const firstBrandWord = brand.split(/\s+/)[0];
   if (firstBrandWord) {
     displayName = displayName.replace(
@@ -252,6 +256,10 @@ export function customerFoodDisplayName(food: FoodNameInput) {
 
   if (normalizedBrand === "happy dog") {
     displayName = displayName.replace(/^happy\s+/i, "").trim();
+  }
+
+  if (normalizedBrand.endsWith("vetsolution")) {
+    displayName = displayName.replace(/^vetsolution\s+/i, "").trim();
   }
 
   let cleanedDisplayName = removeCustomerPackAndPromoText(
