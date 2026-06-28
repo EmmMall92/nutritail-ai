@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
@@ -57,6 +57,23 @@ function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
 
+function missingSuite(suite) {
+  return {
+    ...suite,
+    checked: 1,
+    passed: 0,
+    failed: 1,
+    runDate: "missing",
+    ageHours: null,
+    age: "missing",
+    status: "MISSING",
+  };
+}
+
+function reportExists(relativePath) {
+  return existsSync(path.join(root, relativePath));
+}
+
 function parseNumber(text, patterns, label) {
   for (const pattern of patterns) {
     const match = text.match(pattern);
@@ -95,6 +112,8 @@ function isStale(runDate) {
 }
 
 function parseRouteSuite(suite) {
+  if (!reportExists(suite.source)) return missingSuite(suite);
+
   const text = readReport(suite.source);
   const checked = parseNumber(text, [/- Routes checked:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
@@ -116,6 +135,8 @@ function parseRouteSuite(suite) {
 }
 
 function parseStaticSuite(suite) {
+  if (!reportExists(suite.source)) return missingSuite(suite);
+
   const text = readReport(suite.source);
   const checked = parseNumber(text, [/- Checks:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
@@ -137,6 +158,22 @@ function parseStaticSuite(suite) {
 }
 
 function parseChatbotSuite(suite) {
+  if (!reportExists(suite.source)) {
+    return {
+      ...missingSuite(suite),
+      review: 1,
+      responseFailures: 0,
+      intakeChecked: 0,
+      intakePassed: 0,
+      intakeFailed: 0,
+      intakeSkippedSuites: 0,
+      promptEncodingRepairs: 0,
+      promptEncodingIssues: 0,
+      fixtureCoverageLine: "missing",
+      customerUxLine: "missing",
+    };
+  }
+
   const text = readReport(suite.source);
   const checked = parseNumber(text, [/- Live cases checked:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
