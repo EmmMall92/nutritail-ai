@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-27T17:43:19.526Z
+Generated: 2026-06-28T12:18:53.567Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -43,7 +43,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
 | AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-23T06:41:46.475Z |
-| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-27T17:42:48.525Z |
+| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-28T12:17:57.888Z |
 
 ## Response Contract Evidence
 
