@@ -67,6 +67,25 @@ function normalizeCustomerGreekTokens(value: string) {
     .replace(/Ξ¡ΟΞ¶ΞΉ/g, "Ρύζι");
 }
 
+function repairCustomerGreekMojibake(value: string) {
+  let current = String(value ?? "");
+
+  for (let index = 0; index < 3; index += 1) {
+    const next = normalizeCustomerGreekTokens(
+      repairKnownGreekFoodTokens(
+        repairLegacyGreekMojibake(
+          repairUtf8AsLatinMojibake(repairKnownGreekFoodTokens(current))
+        )
+      )
+    );
+
+    if (next === current) return current;
+    current = next;
+  }
+
+  return current;
+}
+
 function getIsoGreekReverseMap() {
   if (isoGreekReverseMap) return isoGreekReverseMap;
 
@@ -113,13 +132,7 @@ function repairLegacyGreekMojibakeSegment(value: string) {
 }
 
 function cleanNamePart(value: unknown) {
-  return normalizeCustomerGreekTokens(
-    repairKnownGreekFoodTokens(
-      repairLegacyGreekMojibake(
-        repairUtf8AsLatinMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
-      )
-    )
-  )
+  return repairCustomerGreekMojibake(String(value ?? ""))
     .replace(/\u0392\u00ae/g, "\u00ae")
     .replace(/Ξ['’]?\u00ae/g, "\u00ae")
     .replace(/\s+/g, " ")
@@ -265,15 +278,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
       formula_name: food.formula_name,
     });
 
-  return (
-    normalizeCustomerGreekTokens(
-      repairKnownGreekFoodTokens(
-        repairLegacyGreekMojibake(
-          repairUtf8AsLatinMojibake(normalizedDisplayName || cleanedDisplayName)
-        )
-      )
-    ) || cleanedDisplayName
-  );
+  return repairCustomerGreekMojibake(normalizedDisplayName || cleanedDisplayName) || cleanedDisplayName;
 }
 
 export function customerFoodName(food: FoodNameInput, separator = " - ") {

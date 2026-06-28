@@ -514,6 +514,10 @@ function normalize(value: unknown) {
     .trim();
 }
 
+function hasCustomerVisibleMojibake(value: string) {
+  return /(?:Ξ|Ο[\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€|\ufffd)/u.test(value);
+}
+
 function arrayIncludes(actual: unknown, expected: string) {
   if (!Array.isArray(actual)) return false;
   const expectedText = normalize(expected);
@@ -1026,6 +1030,12 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.checks?.foodV2Candidates && top.length === 0) {
     warnings.push("Food V2 returned no visible premium/value candidates.");
+  }
+
+  const visibleTopFoodNames = top.slice(0, 3).map((item) => customerFoodName(item, " "));
+  const damagedTopFoodName = visibleTopFoodNames.find(hasCustomerVisibleMojibake);
+  if (damagedTopFoodName) {
+    warnings.push(`Customer-visible top food name contains mojibake: ${damagedTopFoodName}`);
   }
 
   if (hasAny(top, ["feline", "cat", "γάτα", "γατα"])) {
