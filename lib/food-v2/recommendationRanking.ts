@@ -2075,9 +2075,14 @@ export function splitFoodV2Recommendations(
     };
   }
 
+  const bestOverall = usable.slice(0, limitPerBucket);
+  const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
+
   return {
-    premium: premium.slice(0, limitPerBucket),
-    value: value.slice(0, limitPerBucket),
+    premium: bestOverall,
+    value: value
+      .filter((ranking) => !bestKeys.has(ranking.formula_key))
+      .slice(0, limitPerBucket),
     hold: rankings
       .filter((ranking) => ranking.bucket === "hold")
       .sort((a, b) => b.quality_score - a.quality_score),
