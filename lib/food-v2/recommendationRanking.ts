@@ -2062,6 +2062,7 @@ export function splitFoodV2Recommendations(
     const displayTokens = normalizeText(ranking.display_name)
       .split(" ")
       .filter(Boolean)
+      .filter((token) => token !== "adult")
       .sort();
 
     return [brand, ...displayTokens].join(" ");

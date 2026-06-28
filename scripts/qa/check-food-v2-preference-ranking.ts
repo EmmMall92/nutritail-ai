@@ -300,6 +300,37 @@ if (
   process.exit(1);
 }
 
+const genericAdultDuplicateSplit = splitFoodV2Recommendations([
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|generic-adult-duplicate-lower|dog|dry",
+    display_name: "Light & Vital",
+    brand: "Josera",
+    total_score: 80,
+  },
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|generic-adult-duplicate-higher|dog|dry",
+    display_name: "Light & Vital Adult",
+    brand: "Josera",
+    total_score: 86,
+  },
+]);
+
+const visibleGenericAdultDuplicates = [
+  ...genericAdultDuplicateSplit.premium,
+  ...genericAdultDuplicateSplit.value,
+].filter((ranking) => ranking.brand === "Josera" && ranking.display_name.includes("Light & Vital"));
+
+if (
+  visibleGenericAdultDuplicates.length !== 1 ||
+  visibleGenericAdultDuplicates[0]?.formula_key !== "qa|generic-adult-duplicate-higher|dog|dry"
+) {
+  console.error("Visible recommendations should dedupe generic Adult suffix variants and keep the strongest row.");
+  console.error(genericAdultDuplicateSplit);
+  process.exit(1);
+}
+
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
   process.exit(1);
