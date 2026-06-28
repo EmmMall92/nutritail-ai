@@ -30,6 +30,12 @@ type ValidationResponse = {
 type AiStatusResponse = {
   openai_configured: boolean;
   model: string | null;
+  runtime_ping?: {
+    checked: boolean;
+    ok: boolean | null;
+    model: string | null;
+    error: string | null;
+  };
   runtime_policy: {
     source_of_truth: string;
     openai_allowed_for: string[];
@@ -66,6 +72,7 @@ export default function AdminValidationPage() {
   const [data, setData] = useState<ValidationResponse | null>(null);
   const [aiStatus, setAiStatus] = useState<AiStatusResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPingingAi, setIsPingingAi] = useState(false);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
 
@@ -101,6 +108,32 @@ export default function AdminValidationPage() {
       setError(err instanceof Error ? err.message : "Failed to load validation.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function runOpenAiPing() {
+    try {
+      setIsPingingAi(true);
+      setError("");
+
+      const aiResponse = await fetch("/api/admin/ai-status?ping=1", {
+        method: "GET",
+        cache: "no-store",
+      });
+      const aiResult = await aiResponse.json();
+
+      if (!aiResponse.ok) {
+        throw new Error(aiResult.error || "Failed to run OpenAI runtime ping.");
+      }
+
+      setAiStatus(aiResult as AiStatusResponse);
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : "Failed to run OpenAI runtime ping."
+      );
+    } finally {
+      setIsPingingAi(false);
     }
   }
 
@@ -172,12 +205,18 @@ export default function AdminValidationPage() {
 
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
-                    aiStatus.openai_configured
+                    aiStatus.runtime_ping?.ok
                       ? "bg-green-100 text-green-800"
+                      : aiStatus.openai_configured
+                        ? "bg-blue-100 text-blue-800"
                       : "bg-yellow-100 text-yellow-800"
                   }`}
                 >
-                  {aiStatus.openai_configured ? "active" : "fallback only"}
+                  {aiStatus.runtime_ping?.ok
+                    ? "runtime verified"
+                    : aiStatus.openai_configured
+                      ? "configured"
+                      : "fallback only"}
                 </span>
               </div>
 
@@ -208,6 +247,44 @@ export default function AdminValidationPage() {
                     {aiStatus.surfaces.food_ranking}
                   </p>
                 </div>
+              </div>
+
+              <div
+                className={`mt-4 rounded-lg border p-3 ${
+                  aiStatus.runtime_ping?.ok
+                    ? "border-green-200 bg-green-50"
+                    : aiStatus.runtime_ping?.checked
+                      ? "border-yellow-200 bg-yellow-50"
+                      : "border-gray-100 bg-gray-50"
+                }`}
+              >
+                <p className="text-xs font-medium uppercase text-gray-500">
+                  OpenAI runtime ping
+                </p>
+                <p className="mt-1 text-sm font-semibold text-black">
+                  {aiStatus.runtime_ping?.ok
+                    ? "Server-side OpenAI check passed"
+                    : aiStatus.runtime_ping?.checked
+                      ? "Server-side OpenAI check needs attention"
+                      : "Not checked"}
+                </p>
+                <p className="mt-1 text-xs text-gray-600">
+                  This admin-only check proves connectivity without exposing the
+                  API key or sending pet data.
+                  {aiStatus.runtime_ping?.error
+                    ? ` Last error: ${aiStatus.runtime_ping.error}`
+                    : ""}
+                </p>
+                {aiStatus.openai_configured && (
+                  <button
+                    type="button"
+                    onClick={runOpenAiPing}
+                    disabled={isPingingAi}
+                    className="mt-3 rounded-lg border border-black px-3 py-2 text-xs font-semibold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isPingingAi ? "Checking OpenAI..." : "Run OpenAI runtime ping"}
+                  </button>
+                )}
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
