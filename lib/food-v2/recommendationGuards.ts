@@ -126,6 +126,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Small sterilised pets need leaner first-shortlist options.",
   },
+  small_sterilised_generic_without_lean_evidence: {
+    code: "small_sterilised_generic_without_lean_evidence",
+    severity: "block",
+    fallbackMessage:
+      "Small sterilised pets need visible sterilised/light positioning or lean calorie and fat evidence.",
+  },
   active_formula_for_weight_sensitive_pet: {
     code: "active_formula_for_weight_sensitive_pet",
     severity: "block",

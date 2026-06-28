@@ -495,6 +495,18 @@ function isMildlyRicherSterilisedFit(
   );
 }
 
+function hasLeanSmallSterilisedNutrition(
+  kcal: number | null | undefined,
+  nutrients: FoodNutrientsV2
+) {
+  return (
+    hasNumber(kcal) &&
+    kcal <= 345 &&
+    hasNumber(nutrients.fat_percent) &&
+    nutrients.fat_percent <= 11
+  );
+}
+
 function hasSensitiveDigestivePositioning(foodText: string) {
   return hasAny(foodText, [
     "gastro",
@@ -1754,12 +1766,12 @@ function scoreFit(input: FoodV2RankingInput) {
     );
 
     if (!hasWeightPositioning) {
-      adjustedScore -= 18;
+      adjustedScore -= strictSmallSterilisedContext ? 28 : 18;
       addSignal(
         signals,
         "caution",
         "sterilised_goal_without_visible_positioning",
-        -18,
+        strictSmallSterilisedContext ? -28 : -18,
         "Sterilised pets should start from visibly sterilised, light or weight-aware foods when good options exist."
       );
     }
@@ -1780,6 +1792,18 @@ function scoreFit(input: FoodV2RankingInput) {
       adjustedScore -= mildlyRicherSterilisedFit ? 10 : 20;
     }
     if (strictSmallSterilisedContext) {
+      if (
+        !hasWeightPositioning &&
+        !hasLeanSmallSterilisedNutrition(food.kcal_per_100g, nutrients)
+      ) {
+        addSignal(
+          signals,
+          "exclude",
+          "small_sterilised_generic_without_lean_evidence",
+          -100,
+          "Excluded because small sterilised pets need visible sterilised/light positioning or clear lean calorie and fat evidence."
+        );
+      }
       if (hasNumber(food.kcal_per_100g) && food.kcal_per_100g > 350) {
         adjustedScore -= 18;
         addSignal(
