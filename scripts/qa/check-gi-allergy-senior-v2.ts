@@ -149,6 +149,30 @@ const monoproteinOnlyFood = rankFoodV2ForPet({
   goal: "general",
 });
 
+const highDataMonoproteinOnlyFood = rankFoodV2ForPet({
+  food: food({
+    formula_key: "qa-high-data-monoprotein-adult",
+    display_name: "QA Adult Monoprotein Beef With Rice",
+    formula_name: "Adult Monoprotein Beef With Rice",
+    commercial_tags: ["monoprotein"],
+    ingredient_text: "beef, rice, animal fat, minerals",
+    ingredients: ["beef", "rice", "animal fat", "minerals"],
+    primary_animal_proteins: ["beef"],
+    carbohydrate_sources: ["rice"],
+    fiber_sources: [],
+    kcal_per_100g: 380,
+  }),
+  nutrients: nutrients({
+    protein_percent: 28,
+    fat_percent: 18,
+    fiber_percent: 2,
+    calcium_percent: 1.2,
+    phosphorus_percent: 0.9,
+  }),
+  pet: giDog,
+  goal: "sensitive_digestion",
+});
+
 assert(
   codes(digestiveFood).includes("digestive_support_positioning") &&
     codes(digestiveFood).includes("digestibility_support_context"),
@@ -170,6 +194,12 @@ assert(
     digestiveFood.total_score > monoproteinOnlyFood.total_score,
   "Digestive-positioned food should outrank generic or monoprotein-only food for GI symptoms.",
   { digestiveFood, genericFood, monoproteinOnlyFood }
+);
+assert(
+  codes(highDataMonoproteinOnlyFood).includes("monoprotein_not_digestive_fit") &&
+    digestiveFood.total_score > highDataMonoproteinOnlyFood.total_score,
+  "High-data monoprotein-only foods should not outrank digestive-positioned foods for chronic gas or stool concerns.",
+  { digestiveFood, highDataMonoproteinOnlyFood }
 );
 
 const chickenAllergy = rankFoodV2ForPet({

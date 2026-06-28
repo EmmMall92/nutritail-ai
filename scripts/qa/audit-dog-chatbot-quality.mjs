@@ -29,7 +29,7 @@ const GROUPS = [
   {
     label: "High activity and working dogs",
     ids: [9, 22, 24, 42, 43, 44, 94, 102, 109, 110, 111, 113, 114, 115, 192, 193, 195],
-    positive: ["active", "performance", "energy", "sport", "sporting", "trail", "working", "profi", "high energy"],
+    positive: ["active", "athletic", "performance", "energy", "sport", "sporting", "trail", "working", "profi", "high energy"],
     negative: ["light", "sterilised", "sterilized", "neutered", "renal", "urinary", "satiety", "obesity"],
     top3Positive: true,
     note: "Active dogs should not start with diet, renal, urinary, or low-energy formulas.",
@@ -78,6 +78,11 @@ const CASE_SPECIFIC_ACCEPTABLE_TERMS = {
   35: ["duck & potato", "junior", "puppy", "kids", "youngstar"],
   40: ["duck & potato", "junior", "puppy", "kids", "youngstar"],
 };
+
+const CASES_WITH_ACCEPTABLE_EMPTY_FOOD_SHORTLIST = new Set([
+  18,
+  186,
+]);
 
 function normalize(value) {
   return String(value ?? "")
@@ -147,12 +152,23 @@ function topFoodTexts(row, limit = 3) {
   }));
 }
 
+function hasVisibleFoods(row) {
+  return row.foods.some((food) => {
+    const normalized = normalize(food).trim();
+    return normalized && normalized !== "-";
+  });
+}
+
 function auditGroup(group, rowsById) {
   const covered = group.ids.map((id) => rowsById.get(id)).filter(Boolean);
   const missing = group.ids.filter((id) => !rowsById.has(id));
   const review = [];
 
   for (const row of covered) {
+    if (!hasVisibleFoods(row) && CASES_WITH_ACCEPTABLE_EMPTY_FOOD_SHORTLIST.has(row.id)) {
+      continue;
+    }
+
     const caseSpecificTerms = CASE_SPECIFIC_ACCEPTABLE_TERMS[row.id] ?? [];
     const positiveTerms = [...group.positive, ...caseSpecificTerms];
     const positiveHit = positiveTerms.length === 0 || hasAny(row.text, positiveTerms);

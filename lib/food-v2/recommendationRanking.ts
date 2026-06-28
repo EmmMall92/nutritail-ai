@@ -1316,7 +1316,7 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) {
-    const hasDigestiveFit = hasSensitiveDigestivePositioning(haystack);
+    const hasDigestiveFit = hasSensitiveDigestivePositioning(positioningText);
 
     if (hasDigestiveFit) {
       score += 24;
@@ -1821,9 +1821,19 @@ function scoreFit(input: FoodV2RankingInput) {
   }
   if (
     (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) &&
-    !hasSensitiveDigestivePositioning(haystack)
+    !hasSensitiveDigestivePositioning(positioningText)
   ) {
-    adjustedScore -= hasWeightControlPositioning(haystack) ? 50 : 30;
+    const genericGiMismatchPenalty = goal === "sensitive_digestion" ? 42 : 30;
+    const monoproteinOnlyPenalty = hasAny(haystack, [
+      "monoprotein",
+      "mono protein",
+      "single protein",
+    ])
+      ? 16
+      : 0;
+    adjustedScore -= hasWeightControlPositioning(haystack)
+      ? 50
+      : genericGiMismatchPenalty + monoproteinOnlyPenalty;
   }
 
   return {
