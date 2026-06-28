@@ -162,6 +162,11 @@ const checks = [
     expected: "const pendingCompare = [...pendingCompareQueries]",
   },
   {
+    label: "Initial natural pet details can start intake without button tap",
+    file: "app/account/chatbot/page.tsx",
+    expected: "isNewPetRequest(text) || parseSpeciesInput(text) || workingPet.species",
+  },
+  {
     label: "Saved pet selection clears pending comparison after handoff",
     file: "app/account/chatbot/page.tsx",
     expected: "setPendingCompareQueries([])",

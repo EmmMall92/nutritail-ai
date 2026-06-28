@@ -4553,7 +4553,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     });
 
     if (step === "petChoice") {
-      if (isNewPetRequest(text) || parseSpeciesInput(text)) {
+      if (isNewPetRequest(text) || parseSpeciesInput(text) || workingPet.species) {
         startNewPetFromPetChoice(text, intakeExtraction?.data);
         return;
       }
