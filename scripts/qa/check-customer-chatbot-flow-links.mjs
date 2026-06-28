@@ -217,6 +217,26 @@ const checks = [
     expected: 'botText("Επανεκκίνηση", "Restart")',
   },
   {
+    label: "Account shell logout action is customer-localized",
+    file: "app/account/layout.tsx",
+    expected: "Αποσύνδεση",
+  },
+  {
+    label: "Account shell dashboard nav is customer-localized",
+    file: "app/account/layout.tsx",
+    expected: 'label="Πίνακας"',
+  },
+  {
+    label: "Account shell pets nav is customer-localized",
+    file: "app/account/layout.tsx",
+    expected: 'label="Κατοικίδια"',
+  },
+  {
+    label: "Account shell profile nav is customer-localized",
+    file: "app/account/layout.tsx",
+    expected: 'label="Προφίλ"',
+  },
+  {
     label: "Saved pet picker uses localized customer-facing pet metadata",
     file: "app/account/chatbot/page.tsx",
     expected: "formatSavedPetCardMeta(savedPet, chatLanguage)",
