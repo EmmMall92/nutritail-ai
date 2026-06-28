@@ -146,6 +146,7 @@
     "qa:nutrition-source-map-intake": "tsx scripts/qa/check-nutrition-source-map-intake.ts",
     "qa:openai-chatbot-training-contract": "tsx scripts/qa/check-openai-chatbot-training-contract.ts",
     "qa:vercel-openai-env": "node scripts/qa/check-vercel-openai-env.mjs",
+    "qa:post-deploy-readiness": "node scripts/qa/run-post-deploy-readiness.mjs",
     "audit:food-v2-ranking-scenarios": "node scripts/qa/audit-food-v2-ranking-scenarios.mjs",
     "qa:chatbot-golden": "node scripts/qa/check-chatbot-golden-cases.mjs",
     "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs",
