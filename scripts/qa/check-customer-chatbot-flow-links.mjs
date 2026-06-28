@@ -756,6 +756,24 @@ async function runPreserveCompareIntentCheck() {
   };
 }
 
+async function runInitialCompareStartsIntakeCheck() {
+  const file = "app/account/chatbot/page.tsx";
+  const content = await readFile(file, "utf8");
+  const start = content.indexOf('if (compareQueries.length >= 2 && step !== "analysis")');
+  const end = content.indexOf("await runFoodComparison(compareQueries);", start);
+  const body = start >= 0 && end > start ? content.slice(start, end) : "";
+
+  return {
+    label: "Initial compare request starts intake instead of blocking on pet buttons",
+    file,
+    ok:
+      body.includes('if (step === "petChoice")') &&
+      body.includes("setPendingCompareQueries(compareQueries)") &&
+      body.includes("startNewPetFromPetChoice(text, null)") &&
+      !body.includes("Choose a saved pet or start with a new pet"),
+  };
+}
+
 async function runCheck(check) {
   const content = await readFile(check.file, "utf8");
   const ok = content.includes(check.expected);
@@ -798,6 +816,7 @@ async function main() {
   }
 
   rows.push(await runPreserveCompareIntentCheck());
+  rows.push(await runInitialCompareStartsIntakeCheck());
 
   const passed = rows.filter((row) => row.ok).length;
   const failed = rows.length - passed;
