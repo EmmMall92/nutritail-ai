@@ -1294,6 +1294,12 @@ if (visibleMediumSterilisedForSmallDogRanking.total_score >= visibleSmallSterili
   process.exit(1);
 }
 
+if (visibleMediumSterilisedForSmallDogRanking.bucket !== "hold") {
+  console.error("Visible medium-size sterilised food should be held for a small sterilised dog.");
+  console.error(visibleMediumSterilisedForSmallDogRanking);
+  process.exit(1);
+}
+
 if (
   !visibleMediumSterilisedForSmallDogRanking.signals.some(
     (signal) => signal.code === "small_dog_medium_visible_mismatch"

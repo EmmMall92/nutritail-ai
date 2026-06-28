@@ -1222,12 +1222,12 @@ function scoreFit(input: FoodV2RankingInput) {
       );
 
       if (["mini", "small"].includes(expectedSize) && visibleTitleSize === "medium") {
-        score -= 18;
+        score -= 35;
         addSignal(
           signals,
-          "caution",
+          "exclude",
           "small_dog_medium_visible_mismatch",
-          -18,
+          -100,
           "Small dogs should not start from visibly medium-positioned foods when small, mini or all-size options are available."
         );
       }
