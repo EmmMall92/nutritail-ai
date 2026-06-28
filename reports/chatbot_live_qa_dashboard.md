@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-28T14:50:41.454Z
+Generated: 2026-06-28T18:46:25.087Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -42,7 +42,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
-| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-28T12:28:08.306Z |
+| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-28T18:43:57.822Z |
 | OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-28T12:17:57.888Z |
 
 ## Response Contract Evidence
@@ -55,17 +55,17 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-28T13:57:28.856Z |
-| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-28T12:41:28.106Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-28T18:45:39.915Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-28T18:41:27.357Z |
 
 ## Fixture And Coverage Evidence
 
 | Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | --- |
 | Dog 201-600 fixture integrity | `reports/dog_201_600_fixture_integrity.md` | UTF-8 prompt integrity + sequential dog QA fixture | `npm.cmd run qa:dog-201-600-fixture` | PASS | 400 | 0 | 2026-06-23T06:22:21.757Z |
-| Dog 201-600 coverage audit | `reports/dog_201_600_coverage_audit.md` | dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases | `npm.cmd run audit:dog-201-600-coverage` | PASS | 400 | 0 | 2026-06-23T06:41:48.870Z |
+| Dog 201-600 coverage audit | `reports/dog_201_600_coverage_audit.md` | dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases | `npm.cmd run audit:dog-201-600-coverage` | PASS | 400 | 0 | 2026-06-28T18:44:00.353Z |
 | Cat 001-500 fixture integrity | `reports/cat_case_fixture_integrity.md` | UTF-8 prompt integrity + sequential cat QA fixture | `npm.cmd run qa:cat-case-fixture` | PASS | 500 | 0 | 2026-06-23T06:16:55.533Z |
-| Cat 001-500 coverage audit | `reports/cat_chatbot_coverage_audit.md` | cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases | `npm.cmd run audit:cat-chatbot-coverage` | PASS | 500 | 0 | 2026-06-26T20:05:08.650Z |
+| Cat 001-500 coverage audit | `reports/cat_chatbot_coverage_audit.md` | cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases | `npm.cmd run audit:cat-chatbot-coverage` | PASS | 500 | 0 | 2026-06-28T18:44:00.729Z |
 
 ## Current Interpretation
 
