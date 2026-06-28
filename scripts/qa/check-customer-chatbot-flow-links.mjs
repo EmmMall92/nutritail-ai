@@ -122,6 +122,16 @@ const checks = [
     expected: "formatCompactFoodV2RecommendationFallback",
   },
   {
+    label: "Chatbot locks rapid message submits immediately",
+    file: "app/account/chatbot/page.tsx",
+    expected: "processingMessageRef.current",
+  },
+  {
+    label: "Chatbot disables input while preparing a reply",
+    file: "app/account/chatbot/page.tsx",
+    expected: "disabled={isProcessingMessage || isAnalyzing || isSaving}",
+  },
+  {
     label: "Compact recommendation fallback points to food cards",
     file: "app/account/chatbot/page.tsx",
     expected: "Choose one food card below to estimate daily portions. After that, you can save the plan.",

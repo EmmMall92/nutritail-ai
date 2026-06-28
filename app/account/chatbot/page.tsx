@@ -3100,6 +3100,8 @@ export default function AccountChatbotPage() {
   useState<AnalysisMetadata | null>(null);
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isProcessingMessage, setIsProcessingMessage] = useState(false);
+  const processingMessageRef = useRef(false);
   const [showSave, setShowSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackStatus, setFeedbackStatus] = useState("");
@@ -4804,20 +4806,35 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   async function sendMessage() {
     const text = input.trim();
 
-    if (!text || isAnalyzing || isSaving) return;
-    addMessages(createMessage("user", text));
-    setInput("");
+    if (!text || isProcessingMessage || processingMessageRef.current || isAnalyzing || isSaving) return;
 
-    await handleStep(text);
+    processingMessageRef.current = true;
+    setIsProcessingMessage(true);
+
+    try {
+      addMessages(createMessage("user", text));
+      setInput("");
+      await handleStep(text);
+    } finally {
+      processingMessageRef.current = false;
+      setIsProcessingMessage(false);
+    }
   }
 
   async function sendQuickReply(text: string) {
-    if (isAnalyzing || isSaving) return;
+    if (isProcessingMessage || processingMessageRef.current || isAnalyzing || isSaving) return;
 
-    addMessages(createMessage("user", text));
-    setInput("");
+    processingMessageRef.current = true;
+    setIsProcessingMessage(true);
 
-    await handleStep(text);
+    try {
+      addMessages(createMessage("user", text));
+      setInput("");
+      await handleStep(text);
+    } finally {
+      processingMessageRef.current = false;
+      setIsProcessingMessage(false);
+    }
   }
 
   function chooseRecommendedFood(choice: RecommendedFoodChoice) {
@@ -4947,6 +4964,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     setInput("");
     setLatestAnalysis(null);
     setIsAnalyzing(false);
+    setIsProcessingMessage(false);
+    processingMessageRef.current = false;
     setShowSave(false);
     setIsSaving(false);
     setAnalysisMetadata(null);
@@ -5761,7 +5780,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        {quickReplies.length > 0 && !isAnalyzing && !isSaving && (
+        {quickReplies.length > 0 && !isProcessingMessage && !isAnalyzing && !isSaving && (
           <div className="mb-3 flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
               <button
@@ -5783,7 +5802,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         <div className="flex items-end gap-2 sm:gap-3">
           <input
             value={input}
-            disabled={isAnalyzing || isSaving}
+            disabled={isProcessingMessage || isAnalyzing || isSaving}
             aria-label="Chat message"
             autoComplete="off"
             onChange={(e) => setInput(e.target.value)}
@@ -5803,7 +5822,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <button
             type="button"
             onClick={sendMessage}
-            disabled={isAnalyzing || isSaving}
+            disabled={isProcessingMessage || isAnalyzing || isSaving}
             className="min-h-12 shrink-0 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50 sm:px-5"
           >
             {isAnalyzing ? "..." : botText("Αποστολή", "Send")}
