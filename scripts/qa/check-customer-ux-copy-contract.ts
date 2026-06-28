@@ -4,7 +4,11 @@ import path from "node:path";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/customer_ux_copy_contract_qa.md";
 
-const customerCopyFiles = ["app/account/page.tsx", "app/account/profile/page.tsx"];
+const customerCopyFiles = [
+  "app/account/page.tsx",
+  "app/account/profile/page.tsx",
+  "app/dashboard/page.tsx",
+];
 
 const bannedCustomerCopy = [
   {
@@ -30,6 +34,10 @@ const bannedCustomerCopy = [
   {
     pattern: /\bScore \d+\/100\b/i,
     reason: "Use customer food-fit wording instead of raw score badges.",
+  },
+  {
+    pattern: /\blegacy food matcher\b/i,
+    reason: "Do not expose legacy-system wording to customers.",
   },
 ];
 
@@ -104,6 +112,11 @@ const bannedExactCustomerStrings = [
     file: "app/account/chatbot/page.tsx",
     text: "No matched food",
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",
+  },
+  {
+    file: "app/dashboard/page.tsx",
+    text: "Legacy Food Analysis Signals",
+    reason: "Dashboard should use customer wording instead of legacy-system labels.",
   },
 ];
 
