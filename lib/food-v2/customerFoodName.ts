@@ -183,6 +183,21 @@ function collapseRepeatedCustomerTokens(value: string) {
   );
 }
 
+function removeLeadingLineAlias(brand: string, displayName: string) {
+  const normalizedBrand = normalizeForCompare(brand);
+  const lineAliases: Record<string, string[]> = {
+    "monge bwild": ["bwild", "b wild"],
+    orijen: ["acana"],
+  };
+
+  const aliases = lineAliases[normalizedBrand] ?? [];
+  return aliases.reduce(
+    (current, alias) =>
+      current.replace(new RegExp(`^${escapeRegExp(alias)}\\s+`, "i"), ""),
+    displayName
+  );
+}
+
 function repairPossessiveBrandTail(brand: string, displayName: string) {
   if (!brand) return displayName;
 
@@ -211,6 +226,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
   if (!displayName) return "";
 
   displayName = repairPossessiveBrandTail(brand, displayName);
+  displayName = removeLeadingLineAlias(brand, displayName);
 
   const normalizedBrand = normalizeForCompare(brand);
   const normalizedDisplay = normalizeForCompare(displayName);
