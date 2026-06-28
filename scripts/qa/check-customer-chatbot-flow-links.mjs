@@ -217,6 +217,16 @@ const checks = [
     expected: 'botText("Λογαριασμός", "Account")',
   },
   {
+    label: "New account chatbot empty-pets message is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Δεν υπάρχουν ακόμη αποθηκευμένα κατοικίδια. Ας ξεκινήσουμε νέα ανάλυση.",
+  },
+  {
+    label: "Saved pets load failure message is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Δεν μπόρεσα να φορτώσω τα αποθηκευμένα κατοικίδια, οπότε ας ξεκινήσουμε νέα ανάλυση.",
+  },
+  {
     label: "Chatbot restart header action is localized",
     file: "app/account/chatbot/page.tsx",
     expected: 'botText("Επανεκκίνηση", "Restart")',
