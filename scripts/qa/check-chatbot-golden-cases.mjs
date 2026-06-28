@@ -199,11 +199,17 @@ const supplementalSignalLexicon = {
 };
 
 const supplementalResponseTermLexicon = {
+  appetite: ["appetite", "όρεξη", "ορεξη", "orexi"],
+  chewing: ["chewing", "chew", "μάσηση", "μασηση", "masisi", "κροκέτα", "κροκετα", "kroketa"],
+  digestive: ["digestive", "digestion", "stomach", "gastro", "πέψη", "πεψη", "στομάχι", "στομαχι", "pepsi", "stomachi"],
+  digestibility: ["digestibility", "digestible", "digestive", "πεπτικότητα", "πεπτικοτητα", "εύπεπ", "ευπεπ", "peptikotita"],
   fat: ["fat", "λιπαρ", "λίπος"],
   fiber: ["fiber", "fibre", "ινα", "ίνα"],
   growth: ["growth", "puppy", "kitten", "αναπτυξ", "ανάπτυξ"],
+  "meal timing": ["meal timing", "feeding time", "feeding schedule", "small meals", "timing", "γεύματα", "γευματα", "ωράριο", "ωραριο", "συχνά γεύματα", "συχνα γευματα"],
   transition: ["transition", "gradual", "σταδιακ", "αλλαγ"],
   water: ["water", "hydration", "νερο", "νερό", "ενυδατ"],
+  "wet food": ["wet food", "canned", "κονσέρβα", "κονσερβα", "υγρή", "υγρη", "ygri", "konserva"],
 };
 
 const mergedSignalLexicon = {
