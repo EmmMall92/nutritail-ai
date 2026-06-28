@@ -201,6 +201,24 @@ includesAll(
   "admin validation OpenAI runtime status"
 );
 
+const responseComposerSource = readFileSync("lib/ai/responseComposer.ts", "utf8");
+includesAll(
+  responseComposerSource,
+  [
+    "repairLegacyGreekMojibakeText",
+    "polishCustomerFacingLanguage",
+  ],
+  "response composer fallback language repair"
+);
+expect(
+  !/\?{3,}/.test(responseComposerSource),
+  "response composer must not contain replacement-question-mark customer text"
+);
+expect(
+  responseComposerSource.includes("\\u0388\\u03bb\\u03b5\\u03b3\\u03c7\\u03bf\\u03c2 \\u03b2\\u03ac\\u03c1\\u03bf\\u03c5\\u03c2"),
+  "response composer must keep Greek fallback replacements ASCII-safe"
+);
+
 if (failures.length > 0) {
   console.error("OpenAI chatbot training contract QA failed:");
   for (const failure of failures) console.error(`- ${failure}`);
