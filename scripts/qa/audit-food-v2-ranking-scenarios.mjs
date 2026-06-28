@@ -589,11 +589,35 @@ function renderPick(food, index) {
   const bucket = food.ranking?.bucket ?? "-";
   const reasons = (food.ranking?.reasons ?? []).slice(0, 3).join("; ") || "-";
   const cautions = (food.ranking?.cautions ?? []).slice(0, 2).join("; ") || "-";
-  return `| ${index} | ${food.brand ?? "-"} | ${
-    food.display_name ?? "-"
-  } | ${bucket} | ${score} | ${reasons} ${
-    cautions !== "-" ? `Cautions: ${cautions}` : ""
+  return `| ${index} | ${markdownCell(food.brand)} | ${markdownCell(
+    food.display_name
+  )} | ${markdownCell(bucket)} | ${score} | ${markdownCell(reasons)} ${
+    cautions !== "-" ? `Cautions: ${markdownCell(cautions)}` : ""
   } |`;
+}
+
+function cleanReportFoodName(value) {
+  return String(value ?? "-")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Σολομός")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΞΏΟ‚/g, "Σολομός")
+    .replace(/ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/ΞΞΏΟ„ΞΏΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/Ξ‘ΟΞ½Ξ―/g, "Αρνί")
+    .replace(/Ξ‘ΟΞ½ΞΉ/g, "Αρνί")
+    .replace(/ΞΞΏΟƒΟ‡Ξ¬ΟΞΉ/g, "Μοσχάρι")
+    .replace(/ΞΞΏΟƒΟ‡Ξ±ΟΞΉ/g, "Μοσχάρι")
+    .replace(/Ξ¨Ξ¬ΟΞΉ/g, "Ψάρι")
+    .replace(/ΟΞ¬ΟΞΉ/g, "Ψάρι")
+    .replace(/ΟΞ±ΟΞΉ/g, "Ψάρι")
+    .replace(/Ξ΅ΟΞ¶ΞΉ/g, "Ρύζι")
+    .replace(/Ξ¡ΟΞ¶ΞΉ/g, "Ρύζι")
+    .replace(/Β®/g, "®")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function markdownCell(value) {
+  return cleanReportFoodName(value).replace(/\|/g, "\\|");
 }
 
 async function runScenario(scenario) {
