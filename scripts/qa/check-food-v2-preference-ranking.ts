@@ -1214,6 +1214,16 @@ const allBreedsSterilisedFood = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 332,
 });
+const visibleMediumSterilisedFood = food({
+  id: "visible-medium-sterilised",
+  formula_key: "qa|visible-medium-sterilised|dog|dry",
+  display_name: "Medium Sterilised Adult Chicken",
+  dog_size: "medium",
+  commercial_tags: ["sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
 const visibleSmallSterilisedRanking = rankFoodV2ForPet({
   food: visibleSmallSterilisedFood,
   nutrients: {
@@ -1252,10 +1262,45 @@ const allBreedsSterilisedRanking = rankFoodV2ForPet({
   },
   goal: "sterilised",
 });
+const visibleMediumSterilisedForSmallDogRanking = rankFoodV2ForPet({
+  food: visibleMediumSterilisedFood,
+  nutrients: {
+    ...nutrients(visibleMediumSterilisedFood),
+    protein_percent: 22,
+    fat_percent: 9,
+    fiber_percent: 2.5,
+  },
+  pet: {
+    ...pet,
+    weight: 6,
+    age: 5,
+    activityLevel: "low",
+    neutered: true,
+    excludedIngredients: [],
+    preferredProteins: ["chicken"],
+  },
+  goal: "sterilised",
+});
 
 if (visibleSmallSterilisedRanking.total_score <= allBreedsSterilisedRanking.total_score) {
   console.error("Exact visible small-size sterilised food should outrank an otherwise equal all-breeds option.");
   console.error({ visibleSmallSterilisedRanking, allBreedsSterilisedRanking });
+  process.exit(1);
+}
+
+if (visibleMediumSterilisedForSmallDogRanking.total_score >= visibleSmallSterilisedRanking.total_score) {
+  console.error("Visible medium-size sterilised food should not outrank small-size food for a small dog.");
+  console.error({ visibleMediumSterilisedForSmallDogRanking, visibleSmallSterilisedRanking });
+  process.exit(1);
+}
+
+if (
+  !visibleMediumSterilisedForSmallDogRanking.signals.some(
+    (signal) => signal.code === "small_dog_medium_visible_mismatch"
+  )
+) {
+  console.error("Expected small_dog_medium_visible_mismatch for visible Medium title on a small dog.");
+  console.error(visibleMediumSterilisedForSmallDogRanking.signals);
   process.exit(1);
 }
 

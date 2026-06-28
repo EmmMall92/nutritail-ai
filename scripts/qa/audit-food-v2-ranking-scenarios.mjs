@@ -158,6 +158,16 @@ function checkExpectations(scenario, data) {
       }
     }
 
+    if (expectation === "no_medium_top_pick_for_small_dog") {
+      const petWeight = Number(scenario.pet?.weight ?? 0);
+      const smallDog = scenario.pet?.species === "dog" && petWeight > 0 && petWeight <= 10;
+      const firstVisibleText = customerVisibleFoodText(first);
+
+      if (smallDog && hasAnyTerm(firstVisibleText, ["medium", "medium adult", "medium breed"])) {
+        warnings.push("Small dog top pick appears to target medium dogs.");
+      }
+    }
+
     if (expectation === "no_chicken_top_pick") {
       if (hasAnyTerm(firstText, ["chicken", "κοτοπου", "poultry"])) {
         warnings.push("Top pick may contain chicken/poultry.");
