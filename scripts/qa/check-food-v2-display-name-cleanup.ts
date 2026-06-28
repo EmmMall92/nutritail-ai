@@ -430,9 +430,47 @@ const customerFoodNameCases = [
       display_name:
         "PRO PlanΞ’Β® MEDIUM & LARGE ADULT 7+ Sensitive Skin ΞΒ£ΞΞΞΒ»ΞΞΞΞΞΒΞβ€",
     },
-    expectedDisplay: "MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+    expectedDisplay: "MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός",
     expectedName:
-      "Purina Pro Plan - MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+      "Purina Pro Plan - MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός",
+  },
+  {
+    label: "Customer visible Purina chicken token is real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "MEDIUM ADULT Everyday Nutrition ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+    },
+    expectedDisplay: "MEDIUM ADULT Everyday Nutrition Κοτόπουλο",
+    expectedName:
+      "Purina Pro Plan - MEDIUM ADULT Everyday Nutrition Κοτόπουλο",
+  },
+  {
+    label: "Customer visible Purina lamb token is real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "MEDIUM ADULT Sensitive Digestion Ξ‘ΟΞ½Ξ―",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Digestion Αρνί",
+    expectedName:
+      "Purina Pro Plan - MEDIUM ADULT Sensitive Digestion Αρνί",
+  },
+  {
+    label: "Customer visible Purina salmon token is real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "MEDIUM ADULT Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Skin Σολομός",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Σολομός",
+  },
+  {
+    label: "Customer visible Schesir with chicken token is real Greek",
+    input: {
+      brand: "Schesir",
+      display_name: "Mature Medium ΞΞµ ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+    },
+    expectedDisplay: "Mature Medium Με Κοτόπουλο",
+    expectedName: "Schesir - Mature Medium Με Κοτόπουλο",
   },
   {
     label: "Purina veterinary customer label removes repeated Pro Plan prefix",
