@@ -249,6 +249,17 @@ const forbidden = [
   "ranking",
 ];
 
+const compactForbidden = [
+  "1.",
+  "2.",
+  "option 1",
+  "best matches:",
+  "first picks:",
+  "simple alternatives:",
+  "save the plan",
+  "save it",
+];
+
 for (const scenario of scenarios) {
   const full = formatFoodV2ChatbotRecommendationSummary(scenario.response, {
     locale: "en",
@@ -287,6 +298,17 @@ for (const scenario of scenarios) {
 
   if (!compact.includes("Choose one food card below to estimate daily portions.")) {
     console.error(`Scenario ${scenario.label} missed the compact card CTA.`);
+    console.error(compact);
+    process.exit(1);
+  }
+
+  const compactLeaks = compactForbidden.filter((term) =>
+    compact.toLowerCase().includes(term.toLowerCase())
+  );
+
+  if (compactLeaks.length > 0) {
+    console.error(`Scenario ${scenario.label} compact card intro is too list-like or asks for save.`);
+    console.error(compactLeaks.join(", "));
     console.error(compact);
     process.exit(1);
   }
