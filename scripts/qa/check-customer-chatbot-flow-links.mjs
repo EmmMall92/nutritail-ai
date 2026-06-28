@@ -399,24 +399,24 @@ const checks = [
     expected: "Latest Saved Food Insights",
   },
   {
-    label: "Printable report gives a customer follow-up plan",
+    label: "Printable report gives a Greek customer follow-up plan",
     file: "app/print/pet-report/[id]/page.tsx",
-    expected: "Follow-up Plan",
+    expected: "Πλάνο επανελέγχου",
   },
   {
-    label: "Printable report uses customer-facing plan status wording",
+    label: "Printable report uses Greek customer-facing plan status wording",
     file: "app/print/pet-report/[id]/page.tsx",
-    expected: "Plan status",
+    expected: "Κατάσταση πλάνου",
   },
   {
-    label: "Printable report uses customer-facing food-fit wording",
+    label: "Printable report uses Greek customer-facing food-fit wording",
     file: "app/print/pet-report/[id]/page.tsx",
-    expected: "Fresh analysis suggested",
+    expected: "Προτείνεται νέα ανάλυση",
   },
   {
-    label: "Printable report explains when to ask for a new shortlist",
+    label: "Printable report explains in Greek when to ask for a new shortlist",
     file: "app/print/pet-report/[id]/page.tsx",
-    expected: "When to ask for a new shortlist",
+    expected: "Πότε ζητάμε νέα λίστα",
   },
   {
     label: "Printable timeline asks for grams and food refusal notes",
@@ -605,6 +605,26 @@ const forbiddenChecks = [
     label: "Printable saved report does not expose raw food-score wording",
     file: "app/print/pet-report/[id]/page.tsx",
     forbidden: "Food score:",
+  },
+  {
+    label: "Printable saved report does not expose English loading copy",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Loading report...",
+  },
+  {
+    label: "Printable saved report does not expose English print button",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Print / Save PDF",
+  },
+  {
+    label: "Printable saved report does not expose English client summary heading",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Client summary",
+  },
+  {
+    label: "Printable saved report does not expose English follow-up heading",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "Follow-up Plan",
   },
   {
     label: "Printable timeline does not expose legacy food analysis wording",
