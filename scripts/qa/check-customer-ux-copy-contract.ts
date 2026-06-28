@@ -4,7 +4,7 @@ import path from "node:path";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/customer_ux_copy_contract_qa.md";
 
-const customerCopyFiles = ["app/account/page.tsx"];
+const customerCopyFiles = ["app/account/page.tsx", "app/account/profile/page.tsx"];
 
 const bannedCustomerCopy = [
   {
@@ -50,6 +50,51 @@ const requiredCustomerCopy = [
     file: "app/account/chatbot/page.tsx",
     text: "Estimate portions",
   },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Διαχειρίσου τα στοιχεία που συνδέονται με το προφίλ NutriTail AI.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Πώς χρησιμοποιούνται αυτά τα στοιχεία",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Αποθήκευση προφίλ",
+  },
+];
+
+const bannedExactCustomerStrings = [
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Loading profile...",
+    reason: "Profile loading copy should be localized for customers.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Could not load profile",
+    reason: "Profile error copy should be localized for customers.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Profile updated successfully.",
+    reason: "Profile success copy should be localized for customers.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Back to dashboard",
+    reason: "Profile navigation copy should be localized for customers.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "How this information is used",
+    reason: "Profile guidance copy should be localized for customers.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "Save profile",
+    reason: "Profile save copy should be localized for customers.",
+  },
 ];
 
 const failures: string[] = [];
@@ -71,6 +116,13 @@ for (const required of requiredCustomerCopy) {
   }
 }
 
+for (const banned of bannedExactCustomerStrings) {
+  const source = readFileSync(banned.file, "utf8");
+  if (source.includes(banned.text)) {
+    failures.push(`${banned.file}: ${banned.reason}`);
+  }
+}
+
 function writeReport() {
   mkdirSync(path.dirname(reportPath), { recursive: true });
   writeFileSync(
@@ -86,6 +138,7 @@ function writeReport() {
       "",
       `- Files checked: ${new Set([...customerCopyFiles, ...requiredCustomerCopy.map((item) => item.file)]).size}`,
       `- Banned copy checks: ${bannedCustomerCopy.length}`,
+      `- Banned exact string checks: ${bannedExactCustomerStrings.length}`,
       `- Required copy checks: ${requiredCustomerCopy.length}`,
       `- Failed: ${failures.length}`,
       "",
