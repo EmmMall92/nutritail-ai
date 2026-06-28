@@ -172,6 +172,21 @@ const checks = [
     expected: "await runFoodComparison(pendingCompare, { species: nextPet.species })",
   },
   {
+    label: "Saved pet chatbot intake uses formatted pet display names",
+    file: "app/account/chatbot/page.tsx",
+    expected: "name: formatPetDisplayName(savedPet.name)",
+  },
+  {
+    label: "Saved pet chatbot messages use formatted pet display names",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const savedPetName = formatPetDisplayName(savedPet.name)",
+  },
+  {
+    label: "Saved pet follow-up messages use formatted pet display names",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const targetPetName = formatPetDisplayName(targetPet.name)",
+  },
+  {
     label: "Saved pet comparison handoff offers next actions",
     file: "app/account/chatbot/page.tsx",
     expected:

@@ -2326,7 +2326,7 @@ function createIntakeFromSavedPet(savedPet: AccountPet): PetIntake {
 
   return {
     species: savedPet.species,
-    name: savedPet.name,
+    name: formatPetDisplayName(savedPet.name),
     weight: savedPet.weight,
     age: savedPet.age,
     activityLevel: savedPet.activity_level,
@@ -2470,8 +2470,10 @@ function formatSavedPetContinuityIntro(
   savedPet: AccountPet,
   language: ChatLanguage = "en"
 ) {
+  const petName = formatPetDisplayName(savedPet.name);
+
   if (language === "el") {
-    return `Βρήκα προηγούμενο διατροφικό ιστορικό για ${savedPet.name}.
+    return `Βρήκα προηγούμενο διατροφικό ιστορικό για ${petName}.
 
 Αποθηκευμένο προφίλ:
 ${formatSavedPetProfileSummary(savedPet, language)}
@@ -2486,7 +2488,7 @@ ${formatLatestAnalysisSummary(savedPet, language)}
 - Ιστορικό: βλέπεις προηγούμενες αναλύσεις και πρόοδο.`;
   }
 
-  return `I found previous nutrition history for ${savedPet.name}.
+  return `I found previous nutrition history for ${petName}.
 
 Saved profile:
 ${formatSavedPetProfileSummary(savedPet, language)}
@@ -3582,6 +3584,7 @@ export default function AccountChatbotPage() {
 
   async function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
+    const savedPetName = formatPetDisplayName(savedPet.name);
     const hasHistory = (savedPet.analysisHistory?.length ?? 0) > 0;
     const pendingCompare = [...pendingCompareQueries];
 
@@ -3595,7 +3598,7 @@ export default function AccountChatbotPage() {
       setFollowUpPet(hasHistory ? savedPet : null);
       setStep("petChoice");
 
-      addMessages(createMessage("user", `Use ${savedPet.name}`));
+      addMessages(createMessage("user", `Use ${savedPetName}`));
       await runFoodComparison(pendingCompare, { species: nextPet.species });
       addMessages(
         createMessage(
@@ -3615,7 +3618,7 @@ export default function AccountChatbotPage() {
       setStep("petChoice");
 
       addMessages(
-        createMessage("user", `Use ${savedPet.name}`),
+        createMessage("user", `Use ${savedPetName}`),
         createMessage(
           "bot",
           formatSavedPetContinuityIntro(savedPet, chatLanguage)
@@ -3629,16 +3632,17 @@ export default function AccountChatbotPage() {
     setStep("currentFood");
 
     addMessages(
-      createMessage("user", `Use ${savedPet.name}`),
+      createMessage("user", `Use ${savedPetName}`),
       createMessage(
         "bot",
-        `Great. I will use ${savedPet.name}'s saved profile. What food is ${savedPet.name} eating now? If you are not sure, type "I don't know".`
+        `Great. I will use ${savedPetName}'s saved profile. What food is ${savedPetName} eating now? If you are not sure, type "I don't know".`
       )
     );
   }
 
   function startSavedPetAnalysis(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
+    const savedPetName = formatPetDisplayName(savedPet.name);
 
     setSelectedPetId(savedPet.id);
     setFollowUpPet(null);
@@ -3651,7 +3655,7 @@ export default function AccountChatbotPage() {
     addMessages(
       createMessage(
         "bot",
-        `Great. I will run a fresh analysis for ${savedPet.name}. What food is ${savedPet.name} eating now? If you are not sure, type "I don't know".`
+        `Great. I will run a fresh analysis for ${savedPetName}. What food is ${savedPetName} eating now? If you are not sure, type "I don't know".`
       )
     );
   }
@@ -3662,6 +3666,7 @@ export default function AccountChatbotPage() {
     options: { echoUser?: boolean } = {}
   ) {
     const echoUser = options.echoUser ?? true;
+    const targetPetName = formatPetDisplayName(targetPet.name);
 
     void submitChatFeedback({
       eventType: "chat_followup_action",
@@ -3670,7 +3675,7 @@ export default function AccountChatbotPage() {
       context: {
         action,
         petId: targetPet.id,
-        petName: targetPet.name,
+        petName: targetPetName,
         hasAnalysisHistory: (targetPet.analysisHistory?.length ?? 0) > 0,
         latestAnalysisSummary: formatLatestAnalysisSummary(targetPet),
       },
@@ -3690,13 +3695,13 @@ export default function AccountChatbotPage() {
         createMessage(
           "bot",
           botText(
-            `Μπορείς να δεις το προηγούμενο διατροφικό ιστορικό του/της ${targetPet.name} εδώ:
+            `Μπορείς να δεις το προηγούμενο διατροφικό ιστορικό του/της ${targetPetName} εδώ:
 
 - Προφίλ κατοικιδίου: ${siteUrl}/account/pets/${targetPet.id}
 - Εκτυπώσιμο timeline: ${siteUrl}/print/pet-timeline/${targetPet.id}
 
 Μετά γύρνα εδώ και γράψε μου τι άλλαξε: βάρος, όρεξη, κόπρανα, λιχουδιές ή αν δέχτηκε την τροφή.`,
-            `You can review ${targetPet.name}'s previous nutrition history here:
+            `You can review ${targetPetName}'s previous nutrition history here:
 
 - Pet profile: ${siteUrl}/account/pets/${targetPet.id}
 - Printable timeline: ${siteUrl}/print/pet-timeline/${targetPet.id}
@@ -3718,7 +3723,7 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
         createMessage(
           "bot",
           botText(
-            `Πάμε να ελέγξουμε την πρόοδο του/της ${targetPet.name}, χωρίς να ξεκινήσουμε από την αρχή.
+            `Πάμε να ελέγξουμε την πρόοδο του/της ${targetPetName}, χωρίς να ξεκινήσουμε από την αρχή.
 
 Γράψε μου:
 1. Τωρινό βάρος
@@ -3727,7 +3732,7 @@ After checking it, come back and tell me what changed: weight, appetite, stool q
 4. Τι αλλαγή βλέπεις σε σώμα, όρεξη, κόπρανα ή ενέργεια
 
 Μετά θα σου πω αν το πλάνο φαίνεται να δουλεύει ή αν θέλει προσαρμογή.`,
-            `Let's check ${targetPet.name}'s progress without starting from zero.
+            `Let's check ${targetPetName}'s progress without starting from zero.
 
 Tell me:
 1. Current weight now
@@ -3798,12 +3803,12 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
         createMessage(
           "bot",
           botText(
-            `Κανένα πρόβλημα. Αν ο/η ${targetPet.name} βαρέθηκε γεύση, εταιρία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.
+            `Κανένα πρόβλημα. Αν ο/η ${targetPetName} βαρέθηκε γεύση, εταιρία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.
 
 Ποια τροφή τρώει τώρα; Γράψε ακριβή εταιρία και προϊόν αν τα ξέρεις, αλλιώς γράψε "δεν ξέρω".`,
-            `No problem. If ${targetPet.name} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
+            `No problem. If ${targetPetName} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
 
-What food is ${targetPet.name} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
+What food is ${targetPetName} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
           )
         )
       );
@@ -3840,6 +3845,7 @@ What food is ${targetPet.name} eating now? Write the exact brand and formula if 
 
     const targetPet = savedPets.find((savedPet) => savedPet.id === targetPetId);
     if (!targetPet) return;
+    const targetPetName = formatPetDisplayName(targetPet.name);
 
     handledDeepLinkRef.current = deepLinkKey;
 
@@ -3853,7 +3859,7 @@ What food is ${targetPet.name} eating now? Write the exact brand and formula if 
         createMessage("user", "Progress check"),
         createMessage(
           "bot",
-          `Let's check ${targetPet.name}'s progress without starting from zero.
+          `Let's check ${targetPetName}'s progress without starting from zero.
 
 Tell me:
 1. Current weight now
@@ -3876,7 +3882,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
       setFollowUpPet(targetPet);
       setStep("petChoice");
       addMessages(
-        createMessage("user", `Use ${targetPet.name}`),
+        createMessage("user", `Use ${targetPetName}`),
         createMessage("bot", formatSavedPetContinuityIntro(targetPet, chatLanguage))
       );
       return;
@@ -3885,10 +3891,10 @@ Then I can help decide whether the plan is working or needs adjustment.`
     setFollowUpPet(null);
     setStep("currentFood");
     addMessages(
-      createMessage("user", `Use ${targetPet.name}`),
+      createMessage("user", `Use ${targetPetName}`),
       createMessage(
         "bot",
-        `Great. I will use ${targetPet.name}'s saved profile. What food is ${targetPet.name} eating now? If you are not sure, type "I don't know".`
+        `Great. I will use ${targetPetName}'s saved profile. What food is ${targetPetName} eating now? If you are not sure, type "I don't know".`
       )
     );
   }, [chatLanguage, isLoadingPets, savedPets]);
@@ -5111,7 +5117,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     className="min-h-[92px] rounded-xl border border-gray-300 bg-white p-4 text-left transition hover:border-black focus:outline-none focus:ring-2 focus:ring-black"
                   >
                     <span className="block font-semibold text-black">
-                      {savedPet.name}
+                      {formatPetDisplayName(savedPet.name)}
                     </span>
                     <span className="mt-1 block text-sm text-gray-600">
                       {savedPet.species} - {savedPet.weight} kg -{" "}
