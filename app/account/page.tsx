@@ -50,11 +50,11 @@ type AccountPet = {
 };
 
 function formatDate(value?: string) {
-  if (!value) return "No analyses yet";
+  if (!value) return "Δεν υπάρχει ανάλυση ακόμη";
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) return "No analyses yet";
+  if (Number.isNaN(date.getTime())) return "Δεν υπάρχει ανάλυση ακόμη";
 
   return date.toLocaleDateString();
 }
@@ -65,60 +65,65 @@ function hasReadyReport(pet: AccountPet) {
 }
 
 function getPetLabel(pet: AccountPet) {
-  const species = pet.species ? ` - ${pet.species}` : "";
+  const species =
+    pet.species === "dog"
+      ? " - σκύλος"
+      : pet.species === "cat"
+        ? " - γάτα"
+        : "";
   const weight = pet.weight ? ` - ${pet.weight} kg` : "";
-  return `${pet.name ?? "Unnamed pet"}${species}${weight}`;
+  return `${pet.name ?? "Κατοικίδιο"}${species}${weight}`;
 }
 
 function getNutritionPlanStatusCopy(score?: number | null) {
   if (typeof score !== "number") {
     return {
-      label: "Ready for first guidance",
-      text: "Run a nutrition analysis to get calories, a food shortlist, and a simple first portion estimate for this pet.",
+      label: "Έτοιμο για πρώτη καθοδήγηση",
+      text: "Κάνε μια διατροφική ανάλυση για θερμίδες, λίστα τροφών και πρώτη εκτίμηση ποσότητας.",
     };
   }
 
   if (score >= 80) {
     return {
-      label: "Strong latest fit",
-      text: "The latest plan looks solid. Recheck it if weight, appetite, stool, allergies, or the current food changes.",
+      label: "Δυνατό τελευταίο fit",
+      text: "Το τελευταίο πλάνο φαίνεται καλό. Ξανατσέκαρέ το αν αλλάξει βάρος, όρεξη, κόπρανα, αλλεργίες ή τροφή.",
     };
   }
 
   if (score >= 60) {
     return {
-      label: "Useful latest shortlist",
-      text: "The latest food choice is a good starting point. If anything feels off, run a quick progress check with the newest weight and feeding amount.",
+      label: "Χρήσιμη τελευταία πρόταση",
+      text: "Η τελευταία επιλογή τροφής είναι καλό σημείο εκκίνησης. Αν κάτι δεν πάει καλά, κάνε έλεγχο προόδου με νέο βάρος και γραμμάρια.",
     };
   }
 
   return {
-    label: "Fresh check recommended",
-    text: "The last match was cautious. Use the chatbot again with the exact bag name, a label photo, or updated pet details.",
+    label: "Προτείνεται νέος έλεγχος",
+    text: "Το τελευταίο match ήταν προσεκτικό. Χρησιμοποίησε ξανά το chatbot με ακριβές όνομα τροφής, φωτογραφία ετικέτας ή νεότερα στοιχεία.",
   };
 }
 
 function getFoodFitLabel(score?: number | null) {
   if (typeof score !== "number" || !Number.isFinite(score)) {
-    return "General guidance";
+    return "Γενική καθοδήγηση";
   }
 
-  if (score >= 80) return "Strong fit";
-  if (score >= 60) return "Useful fit";
-  if (score >= 40) return "Worth rechecking";
-  return "Fresh analysis suggested";
+  if (score >= 80) return "Δυνατό fit";
+  if (score >= 60) return "Χρήσιμο fit";
+  if (score >= 40) return "Θέλει επανέλεγχο";
+  return "Προτείνεται νέα ανάλυση";
 }
 
 function getProgressDecisionLabel(value?: string | null) {
   const labels: Record<string, string> = {
-    continue_plan: "Continue plan",
-    adjust_portions: "Adjust portions",
-    reduce_treats: "Reduce treats",
-    review_food_fit: "Review food fit",
-    needs_more_data: "Needs more data",
+    continue_plan: "Συνέχισε το πλάνο",
+    adjust_portions: "Προσαρμογή ποσότητας",
+    reduce_treats: "Μείωση λιχουδιών",
+    review_food_fit: "Έλεγχος τροφής",
+    needs_more_data: "Χρειάζονται στοιχεία",
   };
 
-  return value ? labels[value] ?? value : "Progress check";
+  return value ? labels[value] ?? value : "Έλεγχος προόδου";
 }
 
 function getLatestProgressEntry(pets: AccountPet[]) {
@@ -164,14 +169,14 @@ export default function AccountPage() {
             fullName:
               data.session.user.user_metadata?.full_name ||
               data.session.user.email ||
-              "Customer",
+              "Πελάτης",
           }),
         });
 
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Failed to load account.");
+          throw new Error(result.error || "Δεν ήταν δυνατή η φόρτωση λογαριασμού.");
         }
 
         setCustomer(result as Customer);
@@ -193,7 +198,11 @@ export default function AccountPage() {
         }
       } catch (error) {
         console.error(error);
-        setError(error instanceof Error ? error.message : "Failed to load account.");
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Δεν ήταν δυνατή η φόρτωση λογαριασμού."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -206,9 +215,12 @@ export default function AccountPage() {
     return (
       <section className="space-y-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Loading account...</p>
+          <p className="text-sm font-medium text-black">
+            Φορτώνουμε τον λογαριασμό...
+          </p>
           <p className="mt-2 text-sm text-gray-600">
-            We are fetching your profile, saved pets, and analysis summary.
+            Ετοιμάζουμε το προφίλ, τα αποθηκευμένα κατοικίδια και τη σύνοψη
+            αναλύσεων.
           </p>
         </div>
       </section>
@@ -219,7 +231,7 @@ export default function AccountPage() {
     return (
       <section className="space-y-6">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 shadow-sm">
-          {error || "Could not load account."}
+          {error || "Δεν ήταν δυνατή η φόρτωση λογαριασμού."}
         </div>
       </section>
     );
@@ -262,21 +274,21 @@ export default function AccountPage() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-black">
-              Welcome, {customer.fullName}
+              Καλώς ήρθες, {customer.fullName}
             </h1>
             <p className="mt-2 max-w-3xl text-gray-600">
-              Your Nutritail AI dashboard for pet nutrition guidance, saved
-              pets, reports, and next steps.
+              Το Nutritail AI dashboard σου για διατροφική καθοδήγηση,
+              αποθηκευμένα κατοικίδια, reports και επόμενα βήματα.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {profileProgress}% report coverage
+                {profileProgress}% κάλυψη report
               </span>
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {readyReports} ready reports
+                {readyReports} έτοιμα reports
               </span>
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {petsNeedingAnalysisCount} need analysis
+                {petsNeedingAnalysisCount} θέλουν ανάλυση
               </span>
             </div>
           </div>
@@ -286,13 +298,13 @@ export default function AccountPage() {
               href="/account/chatbot"
               className="rounded-xl bg-black px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
             >
-              Start nutrition analysis
+              Νέα διατροφική ανάλυση
             </Link>
             <Link
               href="/account/pets"
               className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-gray-100"
             >
-              View my pets
+              Δες τα κατοικίδια
             </Link>
           </div>
         </div>
@@ -300,22 +312,22 @@ export default function AccountPage() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Saved pets</p>
+          <p className="text-sm text-gray-500">Αποθηκευμένα κατοικίδια</p>
           <p className="mt-2 text-3xl font-bold text-black">{pets.length}</p>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Saved analyses</p>
+          <p className="text-sm text-gray-500">Αποθηκευμένες αναλύσεις</p>
           <p className="mt-2 text-3xl font-bold text-black">{totalAnalyses}</p>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Reports ready</p>
+          <p className="text-sm text-gray-500">Έτοιμα reports</p>
           <p className="mt-2 text-3xl font-bold text-black">{readyReports}</p>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Need analysis</p>
+          <p className="text-sm text-gray-500">Θέλουν ανάλυση</p>
           <p className="mt-2 text-3xl font-bold text-black">
             {petsNeedingAnalysisCount}
           </p>
@@ -326,23 +338,23 @@ export default function AccountPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-              Next best action
+              Επόμενο καλύτερο βήμα
             </p>
             <h2 className="mt-2 text-2xl font-bold text-emerald-950">
               {pets.length === 0
-                ? "Create your first pet profile"
+                ? "Δημιούργησε το πρώτο προφίλ"
                 : nextPetToAnalyze
-                  ? `Analyze ${nextPetToAnalyze.name ?? "your pet"}`
-                  : "Review your latest report"}
+                  ? `Ανάλυση για ${nextPetToAnalyze.name ?? "το κατοικίδιο"}`
+                  : "Δες το τελευταίο report"}
             </h2>
             <p className="mt-2 text-sm text-emerald-900">
               {pets.length === 0
-                ? "Start the guided chatbot flow to create a profile, calorie target, and first report."
+                ? "Ξεκίνα τη ροή του chatbot για προφίλ, θερμίδες και πρώτο report."
                 : nextPetToAnalyze
                   ? `${getPetLabel(
                       nextPetToAnalyze
-                    )} does not have a saved nutrition analysis yet.`
-                  : "All saved pets have report history. Open the latest report or run a fresh analysis if anything changed."}
+                    )} δεν έχει ακόμη αποθηκευμένη διατροφική ανάλυση.`
+                  : "Όλα τα κατοικίδια έχουν ιστορικό report. Άνοιξε το τελευταίο report ή κάνε νέα ανάλυση αν άλλαξε κάτι."}
             </p>
           </div>
 
@@ -354,7 +366,7 @@ export default function AccountPage() {
             }
             className="rounded-xl bg-emerald-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-emerald-800"
           >
-            {nextPetToAnalyze ? "Open pet" : "Open chatbot"}
+            {nextPetToAnalyze ? "Άνοιγμα κατοικιδίου" : "Άνοιγμα chatbot"}
           </Link>
         </div>
       </div>
@@ -362,9 +374,9 @@ export default function AccountPage() {
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-sm text-gray-500">Latest report</p>
+            <p className="text-sm text-gray-500">Τελευταίο report</p>
             <h2 className="mt-2 text-xl font-semibold text-black">
-              {latestPet?.name ?? "No saved report yet"}
+              {latestPet?.name ?? "Δεν υπάρχει αποθηκευμένο report"}
             </h2>
             <p className="mt-1 text-sm text-gray-600">
               {latestAnalysis
@@ -373,7 +385,7 @@ export default function AccountPage() {
                       ? ` - ${latestAnalysis.matched_food_name}`
                       : ""
                   }`
-                : "Run an analysis to create the first report."}
+                : "Κάνε ανάλυση για να δημιουργηθεί το πρώτο report."}
             </p>
           </div>
 
@@ -384,19 +396,19 @@ export default function AccountPage() {
                   href={`/account/pets/${latestPet.id}`}
                   className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
                 >
-                  Open pet
+                  Άνοιγμα κατοικιδίου
                 </Link>
                 <Link
                   href={`/print/pet-report/${latestPet.id}`}
                   className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
                 >
-                  Open report
+                  Άνοιγμα report
                 </Link>
                 <Link
                   href={`/print/pet-timeline/${latestPet.id}`}
                   className="rounded-xl border border-green-300 px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-50"
                 >
-                  Timeline
+                  Ιστορικό
                 </Link>
               </>
             )}
@@ -408,7 +420,7 @@ export default function AccountPage() {
               }
               className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
             >
-              {latestPet ? "Progress check" : "New analysis"}
+              {latestPet ? "Έλεγχος προόδου" : "Νέα ανάλυση"}
             </Link>
           </div>
         </div>
@@ -418,12 +430,12 @@ export default function AccountPage() {
             {latestAnalysis.food_score !== null &&
               latestAnalysis.food_score !== undefined && (
                 <span className="rounded-full bg-gray-100 px-3 py-1">
-                  Food fit: {getFoodFitLabel(latestAnalysis.food_score)}
+                  Fit τροφής: {getFoodFitLabel(latestAnalysis.food_score)}
                 </span>
               )}
             {latestAnalysis.feeding_grams_per_day && (
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {latestAnalysis.feeding_grams_per_day}g/day
+                {latestAnalysis.feeding_grams_per_day} γρ./ημέρα
               </span>
             )}
           </div>
@@ -434,19 +446,19 @@ export default function AccountPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
-              Latest progress decision
+              Τελευταία απόφαση προόδου
             </p>
             <h2 className="mt-2 text-xl font-semibold text-sky-950">
-              {latestProgressPet?.name ?? "No progress check yet"}
+              {latestProgressPet?.name ?? "Δεν υπάρχει έλεγχος προόδου"}
             </h2>
             <p className="mt-1 text-sm text-sky-900">
               {latestProgress
-                ? latestProgressMetadata?.progressDecisionHeadlineEn ??
-                  latestProgressMetadata?.progressDecisionHeadlineEl ??
+                ? latestProgressMetadata?.progressDecisionHeadlineEl ??
+                  latestProgressMetadata?.progressDecisionHeadlineEn ??
                   getProgressDecisionLabel(
                     latestProgressMetadata?.progressDecisionStatus
                   )
-                : "Run a progress check after 2-4 weeks on a new plan to see whether to continue, adjust portions, or try another food."}
+                : "Κάνε έλεγχο προόδου μετά από 2-4 εβδομάδες για να δεις αν συνεχίζουμε, αλλάζουμε ποσότητα ή ψάχνουμε άλλη τροφή."}
             </p>
           </div>
 
@@ -456,7 +468,7 @@ export default function AccountPage() {
                 href={`/print/pet-timeline/${latestProgressPet.id}`}
                 className="rounded-xl border border-sky-300 bg-white px-4 py-2 text-center text-sm font-medium text-sky-900 transition hover:bg-sky-100"
               >
-                Timeline
+                Ιστορικό
               </Link>
             )}
             <Link
@@ -467,7 +479,7 @@ export default function AccountPage() {
               }
               className="rounded-xl bg-sky-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-sky-800"
             >
-              {latestProgressPet ? "New progress check" : "Start check"}
+              {latestProgressPet ? "Νέος έλεγχος προόδου" : "Έναρξη ελέγχου"}
             </Link>
           </div>
         </div>
@@ -476,7 +488,7 @@ export default function AccountPage() {
           <div className="mt-4 flex flex-wrap gap-2 text-xs text-sky-950">
             {latestProgressMetadata?.progressDecisionStatus && (
               <span className="rounded-full bg-white px-3 py-1">
-                Decision:{" "}
+                Απόφαση:{" "}
                 {getProgressDecisionLabel(
                   latestProgressMetadata.progressDecisionStatus
                 )}
@@ -484,17 +496,17 @@ export default function AccountPage() {
             )}
             {latestProgressMetadata?.progressDecisionConfidence && (
               <span className="rounded-full bg-white px-3 py-1">
-                Confidence: {latestProgressMetadata.progressDecisionConfidence}
+                Σιγουριά: {latestProgressMetadata.progressDecisionConfidence}
               </span>
             )}
             {latestProgressMetadata?.currentWeightKg && (
               <span className="rounded-full bg-white px-3 py-1">
-                Current {latestProgressMetadata.currentWeightKg} kg
+                Τωρινό βάρος {latestProgressMetadata.currentWeightKg} kg
               </span>
             )}
             {latestProgressMetadata?.feedingGramsPerDay && (
               <span className="rounded-full bg-white px-3 py-1">
-                {latestProgressMetadata.feedingGramsPerDay}g/day
+                {latestProgressMetadata.feedingGramsPerDay} γρ./ημέρα
               </span>
             )}
             <span className="rounded-full bg-white px-3 py-1">
@@ -508,7 +520,7 @@ export default function AccountPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-              Nutrition plan status
+              Κατάσταση διατροφικού πλάνου
             </p>
             <h2 className="mt-2 text-xl font-bold text-blue-950">
               {planStatusCopy.label}
@@ -518,13 +530,13 @@ export default function AccountPage() {
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-blue-900">
               <span className="rounded-full bg-white px-3 py-1">
-                Food choices come from the NutriTail food list
+                Οι επιλογές τροφών έρχονται από τη βάση NutriTail
               </span>
               <span className="rounded-full bg-white px-3 py-1">
-                Better label details improve the answer
+                Περισσότερα στοιχεία ετικέτας βελτιώνουν την απάντηση
               </span>
               <span className="rounded-full bg-white px-3 py-1">
-                Health issues get extra-care guidance
+                Τα θέματα υγείας απαντώνται πιο προσεκτικά
               </span>
             </div>
           </div>
@@ -533,27 +545,27 @@ export default function AccountPage() {
             href={latestPet ? `/account/pets/${latestPet.id}` : "/account/chatbot"}
             className="rounded-xl bg-blue-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-blue-800"
           >
-            {latestPet ? "Review pet context" : "Start analysis"}
+            {latestPet ? "Έλεγχος στοιχείων" : "Έναρξη ανάλυσης"}
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Suggested next step</p>
+          <p className="text-sm text-gray-500">Προτεινόμενο επόμενο βήμα</p>
           <p className="mt-2 text-lg font-semibold text-black">
             {pets.length === 0
-              ? "Create your first pet"
+              ? "Δημιούργησε το πρώτο κατοικίδιο"
               : petsNeedingAnalysisCount > 0
-                ? "Run missing analyses"
-                : "Review latest report"}
+                ? "Κάνε τις αναλύσεις που λείπουν"
+                : "Δες το τελευταίο report"}
           </p>
           <p className="mt-2 text-sm text-gray-600">
             {pets.length === 0
-              ? "Start with the chatbot to save a profile and report."
+              ? "Ξεκίνα από το chatbot για να αποθηκευτούν προφίλ και report."
               : petsNeedingAnalysisCount > 0
-                ? "Some saved pets do not have an analysis yet."
-                : "Your pets have saved analysis history."}
+                ? "Κάποια αποθηκευμένα κατοικίδια δεν έχουν ακόμη ανάλυση."
+                : "Τα κατοικίδια έχουν αποθηκευμένο ιστορικό αναλύσεων."}
           </p>
         </div>
 
@@ -562,10 +574,10 @@ export default function AccountPage() {
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
           <h2 className="text-lg font-semibold text-black">
-            Nutrition Chatbot
+            Διατροφικό chatbot
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Start a new guided nutrition analysis for a saved pet or a new pet.
+            Ξεκίνα νέα καθοδηγούμενη ανάλυση για αποθηκευμένο ή νέο κατοικίδιο.
           </p>
         </Link>
 
@@ -573,9 +585,9 @@ export default function AccountPage() {
           href="/account/pets"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
-          <h2 className="text-lg font-semibold text-black">My Pets</h2>
+          <h2 className="text-lg font-semibold text-black">Κατοικίδια</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Review saved pet profiles, analysis history, reports, and timelines.
+            Δες προφίλ, ιστορικό αναλύσεων, reports και timeline.
           </p>
         </Link>
 
@@ -583,9 +595,9 @@ export default function AccountPage() {
           href="/account/profile"
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
-          <h2 className="text-lg font-semibold text-black">Profile</h2>
+          <h2 className="text-lg font-semibold text-black">Προφίλ</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Manage your account details and customer information.
+            Διαχειρίσου στοιχεία λογαριασμού και πληροφορίες πελάτη.
           </p>
         </Link>
       </div>
@@ -595,17 +607,17 @@ export default function AccountPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-black">
-                Pets needing analysis
+                Κατοικίδια που θέλουν ανάλυση
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Start here to make every saved pet useful inside Nutritail.
+                Ξεκίνα από εδώ ώστε κάθε αποθηκευμένο κατοικίδιο να έχει χρήσιμη ανάλυση.
               </p>
             </div>
             <Link
               href="/account/chatbot"
               className="rounded-xl border border-black px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
             >
-              Run analysis
+              Έναρξη ανάλυσης
             </Link>
           </div>
 
@@ -617,11 +629,10 @@ export default function AccountPage() {
                 className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-black"
               >
                 <p className="font-semibold text-black">
-                  {pet.name ?? "Unnamed pet"}
+                  {pet.name ?? "Κατοικίδιο"}
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
-                  {pet.species ?? "pet"}
-                  {pet.weight ? ` - ${pet.weight} kg` : ""}
+                  {getPetLabel(pet)}
                 </p>
               </Link>
             ))}
