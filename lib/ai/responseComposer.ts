@@ -369,6 +369,33 @@ function removeBackOfficeLines(text: string) {
     .trim();
 }
 
+function wordCount(text: string) {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function numberedListLineCount(text: string) {
+  return text.split(/\r?\n/).filter((line) => /^\s*\d+[\).]\s+/.test(line)).length;
+}
+
+function isCompactCardIntro(text: string) {
+  const normalized = text.toLowerCase();
+  const listLikeTerms = [
+    "option 1",
+    "best matches:",
+    "first picks:",
+    "simple alternatives:",
+    "your food shortlist:",
+    "recommended foods:",
+    "food shortlist:",
+  ];
+
+  if (wordCount(text) > 120) return false;
+  if (numberedListLineCount(text) > 1) return false;
+  if (/\bsave\b/i.test(text)) return false;
+
+  return !listLikeTerms.some((term) => normalized.includes(term));
+}
+
 function polishCustomerFacingLanguage(text: string, locale: ComposerLocale) {
   if (locale !== "el") return text;
 
@@ -466,6 +493,9 @@ export async function composeChatbotRecommendationResponse(
       locale
     );
     if (text.length < 80) return fallback(input, ["composer_output_too_short"]);
+    if (input.cardsFollow && !isCompactCardIntro(text)) {
+      return fallback(input, ["composer_card_intro_not_compact"]);
+    }
     if (!hasAtLeastOneKnownFood(text, input)) {
       return fallback(input, ["composer_did_not_preserve_known_food"]);
     }
