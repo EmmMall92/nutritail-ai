@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-28T18:23:30.691Z
+Generated: 2026-06-28T18:45:39.949Z
 
 ## Summary
 
@@ -176,7 +176,7 @@ Dog edge case fixture QA passed.
 ### Food Intelligence use cases
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:food-intelligence-use-cases`
 
 ```text
@@ -240,7 +240,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 45.2s
+- Duration: 56.9s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -274,7 +274,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Chatbot portion estimates
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:chatbot-portions`
 
 ```text
@@ -328,7 +328,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 30.3s
+- Duration: 36.9s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
