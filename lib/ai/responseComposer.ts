@@ -396,27 +396,75 @@ function isCompactCardIntro(text: string) {
   return !listLikeTerms.some((term) => normalized.includes(term));
 }
 
+
+const LEGACY_GREEK_MOJIBAKE_PATTERN =
+  /(?:\u039e|\u039f[\u0080-\u00ff]|[\u0392\u03b2][\u00ae\u20ac]|\ufffd)/u;
+
+let isoGreekReverseMap: Map<string, number> | null = null;
+
+function getIsoGreekReverseMap() {
+  if (isoGreekReverseMap) return isoGreekReverseMap;
+
+  const decoder = new TextDecoder("iso-8859-7");
+  isoGreekReverseMap = new Map<string, number>();
+
+  for (let byte = 0; byte <= 255; byte += 1) {
+    isoGreekReverseMap.set(decoder.decode(Uint8Array.of(byte)), byte);
+  }
+
+  return isoGreekReverseMap;
+}
+
+function repairLegacyGreekMojibakeSegment(value: string) {
+  const reverseMap = getIsoGreekReverseMap();
+  const bytes: number[] = [];
+
+  for (const char of value) {
+    const byte = reverseMap.get(char);
+    if (byte !== undefined) {
+      bytes.push(byte);
+    } else if (char.charCodeAt(0) <= 255) {
+      bytes.push(char.charCodeAt(0));
+    } else {
+      return null;
+    }
+  }
+
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? null : repaired;
+}
+
+function repairLegacyGreekMojibakeText(value: string) {
+  if (!LEGACY_GREEK_MOJIBAKE_PATTERN.test(value)) return value;
+
+  return value.replace(/[\u0080-\u00ff\u0370-\u03ff]+/gu, (candidate) => {
+    if (!LEGACY_GREEK_MOJIBAKE_PATTERN.test(candidate)) return candidate;
+
+    return repairLegacyGreekMojibakeSegment(candidate) ?? candidate;
+  });
+}
+
 function polishCustomerFacingLanguage(text: string, locale: ComposerLocale) {
   if (locale !== "el") return text;
 
-  return text
-    .replace(/\bWeight Control\b/g, "Έλεγχος βάρους")
-    .replace(/\bSenior Nutrition\b/g, "Διατροφή senior")
-    .replace(/\bHigh Activity\b/g, "Υψηλή δραστηριότητα")
+  return repairLegacyGreekMojibakeText(text)
+    .replace(/\bWeight Control\b/g, "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2")
+    .replace(/\bSenior Nutrition\b/g, "\u0394\u03b9\u03b1\u03c4\u03c1\u03bf\u03c6\u03ae senior")
+    .replace(/\bHigh Activity\b/g, "\u03a5\u03c8\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1")
     .replace(
       /Fat is not low enough to be a first pick for a sterilised or weight-control case\./gi,
-      "Τα λιπαρά δεν είναι αρκετά χαμηλά για να είναι πρώτη επιλογή σε στειρωμένο ή επιρρεπές σε βάρος ζώο."
+      "\u03a4\u03b1 \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03c1\u03ba\u03b5\u03c4\u03ac \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c3\u03b5 \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03bf \u03ae \u03b5\u03c0\u03b9\u03c1\u03c1\u03b5\u03c0\u03ad\u03c2 \u03c3\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2 \u03b6\u03ce\u03bf."
     )
     .replace(
       /Active\/performance food does not fit this weight-loss context\./gi,
-      "Τροφή active/performance δεν είναι καλή πρώτη επιλογή για στόχο απώλειας βάρους."
+      "\u03a4\u03c1\u03bf\u03c6\u03ae active/performance \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03bb\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c3\u03c4\u03cc\u03c7\u03bf \u03b1\u03c0\u03ce\u03bb\u03b5\u03b9\u03b1\u03c2 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
     )
     .replace(
       /Low-fat formulas are not a credible first pick for active weight-gain cases\./gi,
-      "Τροφές με πολύ χαμηλά λιπαρά δεν είναι ιδανική πρώτη επιλογή για δραστήριο ζώο που χρειάζεται αύξηση βάρους."
+      "\u03a4\u03c1\u03bf\u03c6\u03ad\u03c2 \u03bc\u03b5 \u03c0\u03bf\u03bb\u03cd \u03c7\u03b1\u03bc\u03b7\u03bb\u03ac \u03bb\u03b9\u03c0\u03b1\u03c1\u03ac \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b9\u03b4\u03b1\u03bd\u03b9\u03ba\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03b4\u03c1\u03b1\u03c3\u03c4\u03ae\u03c1\u03b9\u03bf \u03b6\u03ce\u03bf \u03c0\u03bf\u03c5 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b1\u03cd\u03be\u03b7\u03c3\u03b7 \u03b2\u03ac\u03c1\u03bf\u03c5\u03c2."
     )
-    .replace(/\bMatches adult life stage\b/gi, "ταιριάζει σε ενήλικο ζώο")
-    .replace(/\bIngredient data is available\b/gi, "υπάρχουν στοιχεία συστατικών");
+    .replace(/\bMatches adult life stage\b/gi, "\u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03b5\u03b9 \u03c3\u03b5 \u03b5\u03bd\u03ae\u03bb\u03b9\u03ba\u03bf \u03b6\u03ce\u03bf")
+    .replace(/\bIngredient data is available\b/gi, "\u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03c3\u03c5\u03c3\u03c4\u03b1\u03c4\u03b9\u03ba\u03ce\u03bd");
 }
 
 function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
