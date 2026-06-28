@@ -492,6 +492,7 @@ function compactCardsIntro({
   const name = foodName(top);
   const reason = customerReason(top, goal, locale);
   const snapshot = nutritionSnapshot(top, locale);
+  const safetyLine = goal === "urinary" || goal === "renal" ? vetSafetyLine(locale, goal) : "";
 
   if (locale === "el") {
     return cleanOutput(
@@ -502,7 +503,7 @@ function compactCardsIntro({
         `Ξεκίνα από: ${name}, γιατί ${reason}.`,
         snapshot,
         "Πάτησε μία κάρτα για να δεις περίπου ποσότητα/ημέρα.",
-        vetSafetyLine(locale, goal),
+        safetyLine,
       ]
         .filter(Boolean)
         .join("\n")
@@ -517,7 +518,7 @@ function compactCardsIntro({
       `Start with: ${name}, because it ${reason}.`,
       snapshot,
       "Tap one card to estimate portions/day.",
-      vetSafetyLine(locale, goal),
+      safetyLine,
     ]
       .filter(Boolean)
       .join("\n")

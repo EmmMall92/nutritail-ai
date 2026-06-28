@@ -2014,7 +2014,7 @@ function formatCompactFoodV2RecommendationFallback({
 
 Ξεκίνα από: ${topChoice.name}.${reason}
 
-Πάτησε μία κάρτα από κάτω για να δεις περίπου ποσότητα/ημέρα και να κρατήσω την τροφή στην ανάλυση.`;
+Πάτησε μία κάρτα από κάτω για να δεις περίπου ποσότητα/ημέρα.`;
   }
 
   const intro =
@@ -2027,7 +2027,7 @@ function formatCompactFoodV2RecommendationFallback({
 
 Start with: ${topChoice.name}.${reason}
 
-Choose one food card below to estimate daily portions. After that, you can save the plan.`;
+Choose one food card below to estimate daily portions.`;
 }
 
 async function getFoodV2RecommendationMessage(

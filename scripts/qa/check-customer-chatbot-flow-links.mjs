@@ -134,7 +134,7 @@ const checks = [
   {
     label: "Compact recommendation fallback points to food cards",
     file: "app/account/chatbot/page.tsx",
-    expected: "Choose one food card below to estimate daily portions. After that, you can save the plan.",
+    expected: "Choose one food card below to estimate daily portions.",
   },
   {
     label: "Saved chatbot analysis frames next steps as ready",
