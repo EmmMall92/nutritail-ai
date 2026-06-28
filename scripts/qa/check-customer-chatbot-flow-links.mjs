@@ -142,6 +142,26 @@ const checks = [
     expected: "disabled={isProcessingMessage || isAnalyzing || isSaving}",
   },
   {
+    label: "Chatbot uses layout scroll effect to keep newest content visible",
+    file: "app/account/chatbot/page.tsx",
+    expected: "useLayoutEffect(() =>",
+  },
+  {
+    label: "Chatbot scroll effect responds while a reply is being prepared",
+    file: "app/account/chatbot/page.tsx",
+    expected: "isProcessingMessage, recommendedFoodChoices.length",
+  },
+  {
+    label: "Chatbot message list reserves room above sticky input",
+    file: "app/account/chatbot/page.tsx",
+    expected: "scroll-pb-72",
+  },
+  {
+    label: "Chatbot message list disables browser scroll anchoring",
+    file: "app/account/chatbot/page.tsx",
+    expected: "[overflow-anchor:none]",
+  },
+  {
     label: "Compact recommendation fallback points to food cards",
     file: "app/account/chatbot/page.tsx",
     expected: "Choose one food card below to estimate daily portions.",
