@@ -1896,7 +1896,7 @@ function formatFoodComparison(
       return greek
         ? `${index + 1}. ${item.query}: δεν βρήκα αρκετά σίγουρο match στη βάση.
 Επόμενο βήμα: στείλε την ακριβή εταιρεία και φόρμουλα από τη συσκευασία ή δοκίμασε πιο σύντομο όνομα με brand + σειρά.`
-        : `${index + 1}. ${item.query}: no confident database match.
+        : `${index + 1}. ${item.query}: I need the exact product name before I can compare it well.
 Next step: send the exact brand and formula from the bag, or try a shorter query with brand + line name.`;
     }
 
@@ -1968,8 +1968,8 @@ Quick read:
         : `
 
 What this means:
-- ${missedMatches.length} item(s) need a more exact product name before I can compare them confidently.
-- ${partialMatches.length} item(s) have some nutrition gaps, so use the comparison as directional rather than final.
+- ${missedMatches.length} item(s) need a more exact product name before I can compare them properly.
+- ${partialMatches.length} item(s) are missing some label details, so use the comparison as a guide rather than a final answer.
 - For health issues, weight loss, puppies, kidney, or urinary concerns, confirm the label data before choosing.`
       : greek
         ? `
@@ -1980,7 +1980,7 @@ What this means:
         : `
 
 What this means:
-- I found ${matchedItems.length} products clearly enough for a structured comparison.
+- I found ${matchedItems.length} products clearly enough to compare the main nutrition points.
 - Still use pet context before choosing: age, weight goal, neuter status, and health issues matter.`;
 
   return `${greek ? "Σύγκριση τροφών" : "Food comparison"}:
