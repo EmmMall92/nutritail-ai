@@ -2369,6 +2369,60 @@ function formatSavedPetCardMeta(savedPet: AccountPet, language: ChatLanguage = "
   return `${species} - ${savedPet.weight ?? "-"} kg - ${ageLabel}`;
 }
 
+function formatSavedPetUserEcho(petName: string, language: ChatLanguage = "en") {
+  return language === "el" ? `Χρήση ${petName}` : `Use ${petName}`;
+}
+
+function formatSavedPetCurrentFoodPrompt(
+  petName: string,
+  language: ChatLanguage = "en",
+  mode: "use_saved" | "fresh_analysis" = "use_saved"
+) {
+  if (language === "el") {
+    const intro =
+      mode === "fresh_analysis"
+        ? `Τέλεια. Θα κάνω νέα ανάλυση για ${petName}.`
+        : `Τέλεια. Θα χρησιμοποιήσω το αποθηκευμένο προφίλ του/της ${petName}.`;
+
+    return `${intro} Ποια τροφή τρώει τώρα; Αν δεν είσαι σίγουρος/η, γράψε "δεν ξέρω".`;
+  }
+
+  const intro =
+    mode === "fresh_analysis"
+      ? `Great. I will run a fresh analysis for ${petName}.`
+      : `Great. I will use ${petName}'s saved profile.`;
+
+  return `${intro} What food is ${petName} eating now? If you are not sure, type "I don't know".`;
+}
+
+function formatSavedPetProgressPrompt(petName: string, language: ChatLanguage = "en") {
+  if (language === "el") {
+    return `Πάμε να ελέγξουμε την πρόοδο του/της ${petName}, χωρίς να ξεκινήσουμε από την αρχή.
+
+Γράψε μου:
+1. Τωρινό βάρος
+2. Πόσα γραμμάρια/ημέρα τρώει
+3. Λιχουδιές/σνακ ανά ημέρα
+4. Τι αλλαγή βλέπεις σε σώμα, όρεξη, κόπρανα ή ενέργεια
+
+Μετά θα σου πω αν το πλάνο φαίνεται να δουλεύει ή αν θέλει προσαρμογή.
+
+Μπορείς να ξεκινήσεις μόνο με το τωρινό βάρος, π.χ. 7 kg. Μετά θα σου ζητήσω μόνο ό,τι λείπει.`;
+  }
+
+  return `Let's check ${petName}'s progress without starting from zero.
+
+Tell me:
+1. Current weight now
+2. How many grams per day you are feeding
+3. Treats/snacks per day
+4. Any visible change in body shape, appetite, stool, or energy
+
+Then I can help decide whether the plan is working or needs adjustment.
+
+You can start with only the current weight, for example 7 kg. After that I will ask only for what is missing.`;
+}
+
 function getHistoryWeightGoal(item?: AccountPetAnalysisHistoryItem | null) {
   return item?.weightGoal ?? item?.weight_goal ?? null;
 }
@@ -3626,7 +3680,7 @@ export default function AccountChatbotPage() {
       setFollowUpPet(hasHistory ? savedPet : null);
       setStep("petChoice");
 
-      addMessages(createMessage("user", `Use ${savedPetName}`));
+      addMessages(createMessage("user", formatSavedPetUserEcho(savedPetName, chatLanguage)));
       await runFoodComparison(pendingCompare, { species: nextPet.species });
       addMessages(
         createMessage(
@@ -3646,7 +3700,7 @@ export default function AccountChatbotPage() {
       setStep("petChoice");
 
       addMessages(
-        createMessage("user", `Use ${savedPetName}`),
+        createMessage("user", formatSavedPetUserEcho(savedPetName, chatLanguage)),
         createMessage(
           "bot",
           formatSavedPetContinuityIntro(savedPet, chatLanguage)
@@ -3660,10 +3714,10 @@ export default function AccountChatbotPage() {
     setStep("currentFood");
 
     addMessages(
-      createMessage("user", `Use ${savedPetName}`),
+      createMessage("user", formatSavedPetUserEcho(savedPetName, chatLanguage)),
       createMessage(
         "bot",
-        `Great. I will use ${savedPetName}'s saved profile. What food is ${savedPetName} eating now? If you are not sure, type "I don't know".`
+        formatSavedPetCurrentFoodPrompt(savedPetName, chatLanguage)
       )
     );
   }
@@ -3683,7 +3737,7 @@ export default function AccountChatbotPage() {
     addMessages(
       createMessage(
         "bot",
-        `Great. I will run a fresh analysis for ${savedPetName}. What food is ${savedPetName} eating now? If you are not sure, type "I don't know".`
+        formatSavedPetCurrentFoodPrompt(savedPetName, chatLanguage, "fresh_analysis")
       )
     );
   }
@@ -3884,21 +3938,8 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
       setStep("petChoice");
       setFollowUpMode("progress");
       addMessages(
-        createMessage("user", "Progress check"),
-        createMessage(
-          "bot",
-          `Let's check ${targetPetName}'s progress without starting from zero.
-
-Tell me:
-1. Current weight now
-2. How many grams per day you are feeding
-3. Treats/snacks per day
-4. Any visible change in body shape, appetite, stool, or energy
-
-Then I can help decide whether the plan is working or needs adjustment.`
-            +
-            "\n\nYou can start with only the current weight, for example 7 kg. After that I will ask only for what is missing."
-        )
+        createMessage("user", chatLanguage === "el" ? "Έλεγχος προόδου" : "Progress check"),
+        createMessage("bot", formatSavedPetProgressPrompt(targetPetName, chatLanguage))
       );
       return;
     }
@@ -3910,7 +3951,7 @@ Then I can help decide whether the plan is working or needs adjustment.`
       setFollowUpPet(targetPet);
       setStep("petChoice");
       addMessages(
-        createMessage("user", `Use ${targetPetName}`),
+        createMessage("user", formatSavedPetUserEcho(targetPetName, chatLanguage)),
         createMessage("bot", formatSavedPetContinuityIntro(targetPet, chatLanguage))
       );
       return;
@@ -3919,10 +3960,10 @@ Then I can help decide whether the plan is working or needs adjustment.`
     setFollowUpPet(null);
     setStep("currentFood");
     addMessages(
-      createMessage("user", `Use ${targetPetName}`),
+      createMessage("user", formatSavedPetUserEcho(targetPetName, chatLanguage)),
       createMessage(
         "bot",
-        `Great. I will use ${targetPetName}'s saved profile. What food is ${targetPetName} eating now? If you are not sure, type "I don't know".`
+        formatSavedPetCurrentFoodPrompt(targetPetName, chatLanguage)
       )
     );
   }, [chatLanguage, isLoadingPets, savedPets]);

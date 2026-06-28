@@ -187,6 +187,16 @@ const checks = [
     expected: "const targetPetName = formatPetDisplayName(targetPet.name)",
   },
   {
+    label: "Saved pet handoff user echo is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: "formatSavedPetUserEcho(savedPetName, chatLanguage)",
+  },
+  {
+    label: "Saved pet current-food prompt is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: "formatSavedPetCurrentFoodPrompt(savedPetName, chatLanguage)",
+  },
+  {
     label: "Saved pet picker uses localized customer-facing pet metadata",
     file: "app/account/chatbot/page.tsx",
     expected: "formatSavedPetCardMeta(savedPet, chatLanguage)",
@@ -371,6 +381,16 @@ const checks = [
 ];
 
 const forbiddenChecks = [
+  {
+    label: "Saved pet handoff does not use raw English Use echo",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "createMessage(\"user\", `Use ${savedPetName}`)",
+  },
+  {
+    label: "Saved pet prompt does not use old English-only current-food text",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Great. I will use ${savedPetName}'s saved profile.",
+  },
   {
     label: "Current-food candidate copy does not expose matcher score",
     file: "app/account/chatbot/page.tsx",
