@@ -262,8 +262,8 @@ export default function DashboardPage() {
       </SectionCard>
 
       <SectionCard
-        title="Legacy Food Analysis Signals"
-        description="Historical analysis signals from the legacy food matcher. Use the chatbot Food V2 shortlist for current shopping recommendations."
+        title="Food Analysis Signals"
+        description="Extra context from previous analyses. For current shopping recommendations, use the Food V2 shortlist in the chatbot."
       >
         <FoodRecommendations foods={analysis.recommendedFoods} />
       </SectionCard>
