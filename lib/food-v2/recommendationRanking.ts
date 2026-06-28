@@ -478,7 +478,17 @@ function hasActivePositioning(foodText: string) {
 }
 
 function hasWeightControlPositioning(foodText: string) {
-  return hasAny(foodText, ["light", "weight", "satiety", "obesity", "sterilised", "sterilized", "neutered"]);
+  return hasAny(foodText, [
+    "fit & trim",
+    "fit and trim",
+    "light",
+    "obesity",
+    "neutered",
+    "satiety",
+    "sterilised",
+    "sterilized",
+    "weight",
+  ]);
 }
 
 function isMildlyRicherSterilisedFit(
@@ -1115,6 +1125,21 @@ function scoreFit(input: FoodV2RankingInput) {
       "cat_weight_positioning_without_context",
       points,
       "Sterilised, neutered or light cat food should not be the default first pick without sterilised or weight-control context."
+    );
+  }
+
+  if (
+    pet.species === "cat" &&
+    (goal === "growth" || stage === "kitten") &&
+    hasWeightControlPositioning(haystack)
+  ) {
+    score -= 45;
+    addSignal(
+      signals,
+      "caution",
+      "kitten_growth_weight_control_positioning",
+      -45,
+      "Kitten growth shortlists should not start from visibly light, fit/trim, sterilised or weight-control formulas."
     );
   }
 

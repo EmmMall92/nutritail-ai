@@ -129,8 +129,16 @@ const mislabeledDentalCare = catFood({
   commercial_tags: ["dental", "kitten"],
   kcal_per_100g: 335,
 });
+const allLifeFitTrim = catFood({
+  id: "all-life-fit-trim",
+  formula_key: "qa-cat|all-life-fit-trim|cat|dry",
+  display_name: "Cat & Kitten Fit & Trim",
+  life_stage: "all_life_stages",
+  commercial_tags: ["cat_kitten", "fit_trim"],
+  kcal_per_100g: 340,
+});
 
-const kittenRankings = [kittenFood, adultSevenPlus, mislabeledDentalCare].map((food) =>
+const kittenRankings = [kittenFood, adultSevenPlus, mislabeledDentalCare, allLifeFitTrim].map((food) =>
   rankFoodV2ForPet({
     food,
     nutrients: nutrients(food === adultSevenPlus ? { fat_percent: 10 } : {}),
@@ -144,6 +152,9 @@ const adultSevenPlusRanking = kittenRankings.find(
 );
 const mislabeledDentalCareRanking = kittenRankings.find(
   (ranking) => ranking.formula_key === "qa-cat|mislabeled-dental-care|cat|dry"
+);
+const allLifeFitTrimRanking = kittenRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|all-life-fit-trim|cat|dry"
 );
 
 if (!adultSevenPlusRanking || adultSevenPlusRanking.bucket !== "hold") {
@@ -165,6 +176,22 @@ if (
 if (kittenSplit.premium[0]?.formula_key !== "qa-cat|kitten|cat|dry") {
   console.error("Kitten food should be the visible first growth recommendation.");
   console.error(kittenSplit);
+  process.exit(1);
+}
+
+if (allLifeFitTrimRanking?.formula_key === kittenSplit.premium[0]?.formula_key) {
+  console.error("Fit/trim all-life-stage cat food should not be the first kitten growth recommendation.");
+  console.error({ allLifeFitTrimRanking, kittenSplit });
+  process.exit(1);
+}
+
+if (
+  !allLifeFitTrimRanking?.signals.some(
+    (signal) => signal.code === "kitten_growth_weight_control_positioning"
+  )
+) {
+  console.error("Expected kitten_growth_weight_control_positioning signal for fit/trim kitten growth candidate.");
+  console.error(allLifeFitTrimRanking?.signals);
   process.exit(1);
 }
 
