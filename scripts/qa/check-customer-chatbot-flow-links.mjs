@@ -52,19 +52,19 @@ const checks = [
     expected: "/account/chatbot?petId=${pet.id}",
   },
   {
-    label: "Pets list explains resting calories in customer language",
+    label: "Pets list explains resting calories in Greek customer language",
     file: "app/account/pets/page.tsx",
-    expected: "Resting calories",
+    expected: "Θερμίδες ηρεμίας",
   },
   {
-    label: "Pets list explains daily target in customer language",
+    label: "Pets list explains daily target in Greek customer language",
     file: "app/account/pets/page.tsx",
-    expected: "Daily target",
+    expected: "Ημερήσιος στόχος",
   },
   {
     label: "Pets list uses customer-facing food-fit wording",
     file: "app/account/pets/page.tsx",
-    expected: "Food fit:",
+    expected: "Fit τροφής:",
   },
   {
     label: "Pet detail progress action deep-links to saved pet",
@@ -540,6 +540,21 @@ const forbiddenChecks = [
     label: "Pets list does not expose raw score fraction",
     file: "app/account/pets/page.tsx",
     forbidden: "Score {latest.food_score}/100",
+  },
+  {
+    label: "Pets list does not expose English loading copy",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Loading pets...",
+  },
+  {
+    label: "Pets list does not expose English empty-state heading",
+    file: "app/account/pets/page.tsx",
+    forbidden: "No saved pets yet",
+  },
+  {
+    label: "Pets list does not expose English report-ready status",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Report ready",
   },
   {
     label: "Pet detail weight edit does not allow unrealistic legacy limit",
