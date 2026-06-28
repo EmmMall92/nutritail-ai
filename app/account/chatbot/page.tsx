@@ -3,7 +3,7 @@
 import { generateIngredientInsights } from "@/lib/nutrition/ingredientInsights";
 import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
 import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFeedingGrams } from "@/lib/feedingCalculator";
@@ -3575,12 +3575,12 @@ export default function AccountChatbotPage() {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
       const container = messagesContainerRef.current;
       if (container) {
         container.scrollTo({
-          top: container.scrollHeight,
+          top: Math.max(container.scrollHeight - container.clientHeight, 0),
           behavior,
         });
         return;
@@ -3593,7 +3593,7 @@ export default function AccountChatbotPage() {
     };
 
     const frame = window.requestAnimationFrame(() => scrollToBottom("auto"));
-    const delayed = [120, 350, 800].map((delay) =>
+    const delayed = [80, 220, 500, 900].map((delay) =>
       window.setTimeout(() => scrollToBottom("auto"), delay)
     );
     const container = messagesContainerRef.current;
@@ -3614,7 +3614,7 @@ export default function AccountChatbotPage() {
       delayed.forEach((timeoutId) => window.clearTimeout(timeoutId));
       resizeObserver?.disconnect();
     };
-  }, [messages, showSave, step, isAnalyzing, recommendedFoodChoices.length]);
+  }, [messages, showSave, step, isAnalyzing, isProcessingMessage, recommendedFoodChoices.length]);
 
   useEffect(() => {
     async function loadSavedPets() {
@@ -5088,7 +5088,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       <div
         ref={messagesContainerRef}
-        className="flex flex-1 scroll-pb-56 flex-col gap-4 overflow-y-auto overscroll-contain p-3 pb-28 sm:p-5 sm:pb-32"
+        className="flex flex-1 scroll-pb-72 flex-col gap-4 overflow-y-auto overscroll-contain p-3 pb-40 [overflow-anchor:none] sm:p-5 sm:pb-44"
       >
         {!showSave && messages.length <= 1 && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
@@ -5802,7 +5802,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="min-h-4 shrink-0" />
       </div>
 
       <div className="sticky bottom-0 z-20 shrink-0 border-t border-gray-200 bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sm:p-5">
