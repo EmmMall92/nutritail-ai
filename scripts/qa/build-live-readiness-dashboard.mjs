@@ -38,6 +38,12 @@ const staticSuites = [
     command: "npm.cmd run qa:customer-chatbot-flow-links",
     layer: "saved pet deep links, progress links, customer-facing copy guards",
   },
+  {
+    name: "Vercel OpenAI production env",
+    source: "reports/vercel_openai_env_qa.md",
+    command: "npm.cmd run qa:vercel-openai-env",
+    layer: "production OpenAI API key presence without exposing the secret",
+  },
 ];
 
 const chatbotSuite = {
