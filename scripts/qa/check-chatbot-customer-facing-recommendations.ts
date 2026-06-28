@@ -1,4 +1,5 @@
 import { formatFoodV2ChatbotRecommendationSummary } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { planFoodV2RecommendationResponse } from "@/lib/food-v2/recommendationResponseAdapter";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -74,6 +75,20 @@ const greekSample = summary(sampleResponse, "el");
 const compactCardsSample = summary(sampleResponse, "en", true);
 const compactGreekCardsSample = summary(sampleResponse, "el", true);
 const valueGoalSample = summary({ ...sampleResponse, goal: "value" as const });
+const greekAdapterPlan = planFoodV2RecommendationResponse({
+  ...sampleResponse,
+  locale: "el",
+});
+const greekAdapterText = [
+  greekAdapterPlan.title,
+  greekAdapterPlan.summary,
+  ...greekAdapterPlan.sections.flatMap((section) => [
+    section.title,
+    ...section.items,
+  ]),
+  ...greekAdapterPlan.cautions,
+  greekAdapterPlan.followUpQuestion,
+].join("\n");
 
 const coreScenarioSamples = [
   {
@@ -228,7 +243,7 @@ const forbiddenTerms = [
   "Ο",
 ];
 
-const allSummaries = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${coreScenarioSamples
+const allSummaries = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${greekAdapterText}\n${coreScenarioSamples
   .map((scenario) => scenario.text)
   .join("\n")}`;
 const leakedTerms = forbiddenTerms.filter((term) =>
@@ -239,6 +254,16 @@ if (leakedTerms.length > 0) {
   console.error("Customer-facing recommendation leaked back-office or mojibake terms:");
   console.error(leakedTerms.join(", "));
   console.error(allSummaries);
+  process.exit(1);
+}
+
+if (
+  !greekAdapterPlan.title.includes("Προτάσεις τροφής") ||
+  !greekAdapterText.includes("Καλύτερες διατροφικά επιλογές") ||
+  /Ξ|Ξ|Ξ |Ο€|οΏ½/.test(greekAdapterText)
+) {
+  console.error("Food V2 recommendation response adapter should render clean Greek customer copy.");
+  console.error(greekAdapterText);
   process.exit(1);
 }
 

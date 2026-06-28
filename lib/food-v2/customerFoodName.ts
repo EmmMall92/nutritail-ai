@@ -79,11 +79,31 @@ function repairCustomerGreekMojibake(value: string) {
       )
     );
 
-    if (next === current) return current;
+    if (next === current) return normalizeVisibleMojibakeFlavorTokens(current);
     current = next;
   }
 
-  return current;
+  return normalizeVisibleMojibakeFlavorTokens(current);
+}
+
+function normalizeVisibleMojibakeFlavorTokens(value: string) {
+  const replacements: Array<[string, string]> = [
+    ["Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚", "Salmon"],
+    ["ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ", "Chicken"],
+    ["Ξ‘ΟΞ½Ξ―", "Lamb"],
+    ["ΞΞΏΟƒΟ‡Ξ¬ΟΞΉ", "Beef"],
+    ["Ξ¨Ξ¬ΟΞΉΞ± Ξ©ΞΊΞµΞ±Ξ½ΞΏΟ", "Ocean Fish"],
+    ["Ξ¨Ξ¬ΟΞΉ", "Fish"],
+    ["Ξ΅ΟΞ¶ΞΉ", "Rice"],
+    ["ΞΞΏΟ…Ξ½Ξ­Ξ»ΞΉ", "Rabbit"],
+    ["Ξ“Ξ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±", "Turkey"],
+  ];
+
+  return replacements.reduce(
+    (current, [brokenToken, readableToken]) =>
+      current.split(brokenToken).join(readableToken),
+    value
+  );
 }
 
 function getIsoGreekReverseMap() {

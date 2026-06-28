@@ -9,10 +9,10 @@ type RecommendationFood = {
   display_name?: string | null;
   data_quality_status?: string | null;
   data_source_url?: string | null;
-  ranking?: Pick<
+  ranking?: Partial<Pick<
     FoodV2RankingResult,
     "confidence" | "reasons" | "cautions" | "bucket" | "value_score"
-  > | null;
+  >> | null;
   nutrition?: {
     kcal_per_100g?: number | null;
     protein_percent?: number | null;
@@ -99,7 +99,8 @@ function repairLegacyGreekMojibake(value: string) {
     }
   }
 
-  return new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
+  return repaired.includes("\ufffd") ? value : repaired;
 }
 
 function customerText(value: string) {
@@ -110,8 +111,46 @@ function foodName(food: RecommendationFood) {
   return customerFoodName(food, " ");
 }
 
+function translateCustomerReason(reason: string, locale: "el" | "en") {
+  const text = reason.toLowerCase();
+
+  if (text.includes("matches adult life stage")) {
+    return locale === "el"
+      ? "ταιριάζει σε ενήλικο κατοικίδιο"
+      : "matches the adult life stage";
+  }
+  if (text.includes("weight-aware") || text.includes("weight-control")) {
+    return locale === "el"
+      ? "ταιριάζει σε έλεγχο θερμίδων και βάρους"
+      : "fits calorie and weight-control needs";
+  }
+  if (text.includes("ingredient data is available")) {
+    return locale === "el"
+      ? "έχει αρκετά στοιχεία συστατικών για αρχική αξιολόγηση"
+      : "has enough ingredient data for an initial review";
+  }
+
+  return reason;
+}
+
+function customerReasons(food: RecommendationFood, locale: "el" | "en") {
+  return (food.ranking?.reasons ?? [])
+    .map((reason) => translateCustomerReason(reason, locale))
+    .filter((reason) => {
+      const text = reason.toLowerCase();
+      return (
+        !text.includes("needs review") &&
+        !text.includes("retailer") &&
+        !text.includes("data quality") &&
+        !text.includes("source tier") &&
+        !text.includes("missing nutrition")
+      );
+    })
+    .slice(0, 2);
+}
+
 function compactReasons(food: RecommendationFood, locale: "el" | "en") {
-  const reasons = food.ranking?.reasons?.slice(0, 2) ?? [];
+  const reasons = customerReasons(food, locale);
   if (reasons.length > 0) return reasons.join("; ");
 
   return locale === "el"
@@ -134,29 +173,62 @@ function confidencePhrase(food: RecommendationFood, locale: "el" | "en") {
   return "good fit";
 }
 
-function renderFoodItem(food: RecommendationFood, index: number, locale: "el" | "en") {
+function renderFoodItem(
+  food: RecommendationFood,
+  index: number,
+  locale: "el" | "en"
+) {
   const name = foodName(food);
   const reasons = compactReasons(food, locale);
   const confidence = confidencePhrase(food, locale);
 
-  if (locale === "el") {
-    return `${index}. ${name}: ${reasons}. (${confidence})`;
-  }
-
   return `${index}. ${name}: ${reasons}. (${confidence})`;
 }
 
-function collectCautions(input: FoodV2RecommendationResponseInput, locale: "el" | "en") {
+function translateCustomerCaution(caution: string, locale: "el" | "en") {
+  const text = caution.toLowerCase();
+
+  if (
+    text.includes("needs review") ||
+    text.includes("retailer source") ||
+    text.includes("data is usable") ||
+    text.includes("source tier") ||
+    text.includes("missing nutrition")
+  ) {
+    return null;
+  }
+  if (text.includes("fat looks high") || text.includes("fat is not low enough")) {
+    return locale === "el"
+      ? "Τα λιπαρά θέλουν προσοχή αν υπάρχει τάση για βάρος ή ευαισθησία."
+      : "Fat level needs attention if weight gain or sensitivity is a concern.";
+  }
+  if (text.includes("pancreatitis")) {
+    return locale === "el"
+      ? "Σε ιστορικό παγκρεατίτιδας, η τελική τροφή πρέπει να επιλεγεί με κτηνίατρο."
+      : "With pancreatitis history, final diet choice should be veterinarian-guided.";
+  }
+
+  return caution;
+}
+
+function collectCautions(
+  input: FoodV2RecommendationResponseInput,
+  locale: "el" | "en"
+) {
   const foods = [...(input.premium ?? []), ...(input.value ?? [])];
   const cautions = new Set<string>();
 
   for (const food of foods) {
     for (const caution of food.ranking?.cautions?.slice(0, 2) ?? []) {
-      cautions.add(caution);
+      const customerCaution = translateCustomerCaution(caution, locale);
+      if (customerCaution) cautions.add(customerCaution);
     }
   }
 
-  for (const note of input.notes ?? []) cautions.add(note);
+  for (const note of input.notes ?? []) {
+    const customerNote = translateCustomerCaution(note, locale);
+    if (customerNote) cautions.add(customerNote);
+  }
 
   if (cautions.size === 0) {
     cautions.add(
@@ -171,10 +243,18 @@ function collectCautions(input: FoodV2RecommendationResponseInput, locale: "el" 
 
 function followUpFor(goal: string, locale: "el" | "en") {
   if (locale === "el") {
-    if (goal === "allergy") return "Θέλεις να αποκλείσουμε και κάποια γεύση εκτός από αλλεργιογόνα;";
-    if (goal === "weight_control") return "Ξέρουμε το ιδανικό βάρος ή το body condition score;";
-    if (goal === "urinary" || goal === "renal") return "Υπάρχει σύσταση κτηνιάτρου ή συγκεκριμένη διάγνωση;";
-    if (goal === "growth") return "Πόσων μηνών είναι και τι βάρος έχει τώρα;";
+    if (goal === "allergy") {
+      return "Θέλεις να αποκλείσουμε και κάποια γεύση εκτός από αλλεργιογόνα;";
+    }
+    if (goal === "weight_control") {
+      return "Ξέρουμε το ιδανικό βάρος ή το body condition score;";
+    }
+    if (goal === "urinary" || goal === "renal") {
+      return "Υπάρχει σύσταση κτηνιάτρου ή συγκεκριμένη διάγνωση;";
+    }
+    if (goal === "growth") {
+      return "Πόσων μηνών είναι και τι βάρος έχει τώρα;";
+    }
     return "Θέλεις να δούμε και πιο οικονομικές επιλογές ή μόνο τις καλύτερες διατροφικά;";
   }
 
@@ -211,14 +291,21 @@ export function planFoodV2RecommendationResponse(
   if (premium.length > 0) {
     sections.push({
       title: locale === "el" ? "Καλύτερες διατροφικά επιλογές" : "Best nutrition fits",
-      items: premium.slice(0, 3).map((food, index) => renderFoodItem(food, index + 1, locale)),
+      items: premium
+        .slice(0, 3)
+        .map((food, index) => renderFoodItem(food, index + 1, locale)),
     });
   }
 
   if (value.length > 0) {
     sections.push({
-      title: locale === "el" ? "Πιο οικονομικές/value επιλογές" : "Value options",
-      items: value.slice(0, 3).map((food, index) => renderFoodItem(food, index + 1, locale)),
+      title:
+        locale === "el"
+          ? "Πιο οικονομικές/value επιλογές"
+          : "Value options",
+      items: value
+        .slice(0, 3)
+        .map((food, index) => renderFoodItem(food, index + 1, locale)),
     });
   }
 
