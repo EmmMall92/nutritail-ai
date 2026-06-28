@@ -4314,16 +4314,24 @@ const ingredientInsights = generateIngredientInsights(
         const transitionGuide = buildFoodTransitionGuide({
           healthIssues: nextPet.healthIssues,
           allergies: nextPet.allergies,
+          language: chatLanguage,
         });
 
         addMessages(
           createMessage(
             "bot",
-            `If you decide to change food, do it gradually:
+            botText(
+              `Αν αλλάξεις τροφή, κάν' το σταδιακά:
+
+${transitionGuide.map((item) => `- ${item}`).join("\n")}
+
+Αν εμφανιστεί εμετός, διάρροια ή έντονη ενόχληση, σταμάτα τη μετάβαση και μίλα με κτηνίατρο.`,
+              `If you decide to change food, do it gradually:
 
 ${transitionGuide.map((item) => `- ${item}`).join("\n")}
 
 If vomiting, diarrhea, or strong discomfort appears, stop the transition and speak with a veterinarian.`
+            )
           )
         );
       }
