@@ -287,6 +287,33 @@ export default function AdminValidationPage() {
                 )}
               </div>
 
+              {!aiStatus.runtime_ping?.ok && (
+                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                  <p className="text-xs font-medium uppercase text-amber-700">
+                    OpenAI production checklist
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-black">
+                    Fix this before considering the hybrid chatbot fully live.
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-amber-900">
+                    <li>
+                      Set a non-empty <code>OPENAI_API_KEY</code> in Vercel
+                      Production.
+                    </li>
+                    <li>
+                      If the key was pasted in chat or another shared place,
+                      rotate it in OpenAI first and use the new value.
+                    </li>
+                    <li>
+                      After saving the Vercel env var, redeploy production and
+                      rerun <code>qa:vercel-openai-env</code>,{" "}
+                      <code>qa:openai-intake-smoke</code>, and{" "}
+                      <code>qa:live-readiness-dashboard</code>.
+                    </li>
+                  </ul>
+                </div>
+              )}
+
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <p className="text-sm font-semibold text-black">

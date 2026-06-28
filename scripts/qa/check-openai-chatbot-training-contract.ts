@@ -192,8 +192,11 @@ includesAll(
   [
     "/api/admin/ai-status?ping=1",
     "OpenAI runtime ping",
+    "OpenAI production checklist",
     "Server-side OpenAI check passed",
     "without exposing the",
+    "Set a non-empty",
+    "qa:openai-intake-smoke",
   ],
   "admin validation OpenAI runtime status"
 );
