@@ -493,6 +493,15 @@ const customerFoodNameCases = [
     expectedName: "Monge - Vetsolution Urinary Oxalate",
   },
   {
+    label: "Customer Monge VetSolution brand does not repeat veterinary line token",
+    input: {
+      brand: "Monge VetSolution",
+      display_name: "VetSolution Renal And Oxalate",
+    },
+    expectedDisplay: "Renal And Oxalate",
+    expectedName: "Monge VetSolution - Renal And Oxalate",
+  },
+  {
     label: "Customer AATU repeated life-stage token is cleaned",
     input: {
       brand: "AATU",
