@@ -34,7 +34,7 @@ const checks = [
   {
     label: "Account dashboard shows latest progress decision card",
     file: "app/account/page.tsx",
-    expected: "Latest progress decision",
+    expected: "Τελευταία απόφαση προόδου",
   },
   {
     label: "Account dashboard links latest progress to a new progress check",
@@ -235,6 +235,31 @@ const checks = [
     label: "Account shell profile nav is customer-localized",
     file: "app/account/layout.tsx",
     expected: 'label="Προφίλ"',
+  },
+  {
+    label: "Account dashboard welcome is customer-localized",
+    file: "app/account/page.tsx",
+    expected: "Καλώς ήρθες",
+  },
+  {
+    label: "Account dashboard primary CTA is customer-localized",
+    file: "app/account/page.tsx",
+    expected: "Νέα διατροφική ανάλυση",
+  },
+  {
+    label: "Account dashboard latest report card is customer-localized",
+    file: "app/account/page.tsx",
+    expected: "Τελευταίο report",
+  },
+  {
+    label: "Account dashboard progress decision card is customer-localized",
+    file: "app/account/page.tsx",
+    expected: "Τελευταία απόφαση προόδου",
+  },
+  {
+    label: "Account dashboard food fit chip is customer-localized",
+    file: "app/account/page.tsx",
+    expected: "Fit τροφής:",
   },
   {
     label: "Saved pet picker uses localized customer-facing pet metadata",
