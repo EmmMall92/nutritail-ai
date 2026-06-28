@@ -187,6 +187,16 @@ const checks = [
     expected: "const targetPetName = formatPetDisplayName(targetPet.name)",
   },
   {
+    label: "Saved pet picker uses localized customer-facing pet metadata",
+    file: "app/account/chatbot/page.tsx",
+    expected: "formatSavedPetCardMeta(savedPet, chatLanguage)",
+  },
+  {
+    label: "Saved pet profile summary localizes activity labels",
+    file: "app/account/chatbot/page.tsx",
+    expected: "formatSavedPetActivityLabel(savedPet.activity_level, language)",
+  },
+  {
     label: "Saved pet comparison handoff offers next actions",
     file: "app/account/chatbot/page.tsx",
     expected:
