@@ -28,18 +28,18 @@ function rx(pattern: string) {
 }
 
 const greekPatterns = {
-  catContext: rx("(γατ|γατο|γατα|γατος|γατουλα|γατακι|αρσενικος γατος|cat)"),
+  catContext: rx("(γατ|γατο|γατα|γατος|γατουλα|γατακι|αρσενικος γατος|gat[ao]?s?|gata|gati|cat)"),
   noUrine: rx(
-    "(δεν|δε).{0,20}(ουρησει|κατουρησει|κανει\\s*τσισα)|δεν\\s*βγαινουν\\s*(ουρα|τσισα)|προσπαθ.{0,35}(ουρησει|κατουρησει|κανει\\s*τσισα|ουρ|κατουρ|τσισ)|δυσκολ.{0,35}(ουρησει|κατουρησει|ουρ|κατουρ|τσισ)|αποφραξ|φραγμ|blocked|straining"
+    "(δεν|δε).{0,20}(ουρησει|κατουρησει|κανει\\s*τσισα)|δεν\\s*βγαινουν\\s*(ουρα|τσισα)|προσπαθ.{0,35}(ουρησει|κατουρησει|κανει\\s*τσισα|ουρ|κατουρ|τσισ)|δυσκολ.{0,35}(ουρησει|κατουρησει|ουρ|κατουρ|τσισ)|\\bden\\b.{0,30}(mporei|borei|vgainei|vgazei|kanei).{0,35}(our|katour|tsis|pee)|prospath.{0,45}(our|katour|tsis|pee)|diskol.{0,45}(our|katour|tsis|pee)|αποφραξ|φραγμ|blocked|straining"
   ),
   blood: rx(
-    "\\bαιμα\\b|αιματ\\w+|με\\s+αιμα|αιμα\\s+(στα|στα\\s+κοπρανα|στα\\s+ουρα)|κοπρανα\\s+με\\s+αιμα|ουρα\\s+με\\s+αιμα|bloody|blood"
+    "\\bαιμα\\b|αιματ\\w+|με\\s+αιμα|αιμα\\s+(στα|στα\\s+κοπρανα|στα\\s+ουρα)|κοπρανα\\s+με\\s+αιμα|ουρα\\s+με\\s+αιμα|\\baima\\b|oura\\s+me\\s+aima|koprana\\s+me\\s+aima|bloody|blood"
   ),
   persistentVomiting: rx(
-    "(συνεχ|πολλ|επιμον|καθε|επαναλαμβαν).{0,45}εμετ|εμετ.{0,45}(συνεχ|πολλ|μερες|ωρες|φορες|persistent|repeated)"
+    "(συνεχ|πολλ|επιμον|καθε|επαναλαμβαν).{0,45}εμετ|εμετ.{0,45}(συνεχ|πολλ|μερες|ωρες|φορες|persistent|repeated)|(synech|polla|epimon|kathe|epanalamvan).{0,45}emet|emet.{0,45}(synech|polla|meres|ores|fores|persistent|repeated)"
   ),
   notEatingUrgent: rx(
-    "(δεν|δε)\\s+τρωει\\s+.{0,70}(καθολου|24|48|ωρ|ημερ|μερες|δυο\\s+μερες|2\\s+μερες)|ανορεξ|χωρις\\s+ορεξη\\s+.{0,40}(24|48|ωρ|ημερ|μερες)|not\\s+eating\\s+(at\\s+all|for|24|48|\\d+\\s*(h|hr|hrs|hour|hours|day|days))"
+    "(δεν|δε)\\s+τρωει\\s+.{0,70}(καθολου|24|48|ωρ|ημερ|μερες|δυο\\s+μερες|2\\s+μερες)|\\bden\\b\\s+tr(o|w)ei\\s+.{0,70}(katholou|24|48|ores|imer|meres|dyo\\s+meres|2\\s+meres)|ανορεξ|χωρις\\s+ορεξη\\s+.{0,40}(24|48|ωρ|ημερ|μερες)|not\\s+eating\\s+(at\\s+all|for|24|48|\\d+\\s*(h|hr|hrs|hour|hours|day|days))"
   ),
   severePainOrCollapse: rx(
     "κατερρευ|καταρρευσ|collapse|collapsed|εντον\\w*\\s+.{0,25}πονο|ποναει\\s+πολυ|πονο\\w*\\s+.{0,25}κοιλι|διπλωνεται\\s+.{0,25}πονο|severe\\s+(abdominal\\s+)?pain"
@@ -63,6 +63,7 @@ const SAFETY_RULES: SafetyRule[] = [
       /male\s+cat.*(no\s+urine|can't\s+pee|cannot\s+pee|straining|blocked)/iu,
       /cat.*(cannot\s+urinate|can't\s+urinate|blocked|urinary\s+blockage|no\s+urine)/iu,
       rx("(αρσενικ|γατος|γατα|γατ).{0,120}(δεν|δε|προσπαθ|δυσκολ|αποφραξ|φραγμ).{0,80}(ουρ|κατουρ|τσισ|blocked|straining)"),
+      rx("(gatos|gata|gati|cat).{0,120}(den|de|prospath|diskol|blocked|straining).{0,80}(our|katour|tsis|pee|urine)"),
     ],
     message: {
       el: "Αν γάτα, ειδικά αρσενικός γάτος, ζορίζεται ή δεν μπορεί να ουρήσει, αυτό μπορεί να είναι επείγον. Μην περιμένεις αλλαγή τροφής. Επικοινώνησε άμεσα με κτηνίατρο ή εφημερεύουσα κλινική.",
