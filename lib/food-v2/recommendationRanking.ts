@@ -2058,7 +2058,13 @@ export function splitFoodV2Recommendations(
   goal?: FoodV2RecommendationGoal
 ) {
   function duplicateKey(ranking: FoodV2RankingResult) {
-    return normalizeText([ranking.brand, ranking.display_name].join(" "));
+    const brand = normalizeText(ranking.brand);
+    const displayTokens = normalizeText(ranking.display_name)
+      .split(" ")
+      .filter(Boolean)
+      .sort();
+
+    return [brand, ...displayTokens].join(" ");
   }
 
   function dedupeByCustomerName(items: FoodV2RankingResult[]) {
