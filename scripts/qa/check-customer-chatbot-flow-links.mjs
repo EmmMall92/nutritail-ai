@@ -104,7 +104,17 @@ const checks = [
   {
     label: "Chosen recommendation points user to save the plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "Press save to keep calories, food choice, and first portion on the profile.",
+    expected: "Next step: press save to keep the food, calories, and first portion on the profile.",
+  },
+  {
+    label: "Chosen recommendation explains the first daily portion",
+    file: "app/account/chatbot/page.tsx",
+    expected: "First daily portion:",
+  },
+  {
+    label: "Chosen recommendation gives practical monitoring guidance",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Watch weight, appetite, stool, and energy.",
   },
   {
     label: "Recommendation cards use customer role badges",

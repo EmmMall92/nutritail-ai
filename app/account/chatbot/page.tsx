@@ -4949,12 +4949,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΤο σημερινό πλάνο:\n- Ποσότητα: περίπου ${gramsPerDay}g/ημέρα\n- 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΧρησιμοποίησέ το ως αρχικό πλάνο για 2-4 εβδομάδες. Κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και παρακολούθησε βάρος, όρεξη και κόπρανα.\n\nΠάτησε αποθήκευση για να μείνουν στο προφίλ οι θερμίδες, η τροφή και η πρώτη ποσότητα.`,
-          `Great, we will keep ${choice.name}.\n\nToday's plan:\n- Portion: about ${gramsPerDay}g/day\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nUse this as the first 2-4 week starting point. Keep treats inside the daily allowance and monitor weight, appetite, and stool.\n\nPress save to keep calories, food choice, and first portion on the profile.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ημερήσια ποσότητα:\n- Περίπου ${gramsPerDay}g/ημέρα\n- Αν το δίνεις σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Αν το δίνεις σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΠώς να το χρησιμοποιήσεις:\n- Ξεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες.\n- Κράτα τις λιχουδιές μέσα στο ημερήσιο όριο.\n- Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΕπόμενο βήμα: πάτησε αποθήκευση για να κρατήσουμε στο προφίλ την τροφή, τις θερμίδες και την πρώτη ποσότητα.`,
+          `Great, we will keep ${choice.name}.\n\nFirst daily portion:\n- About ${gramsPerDay}g/day\n- If you feed 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- If you feed 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nHow to use it:\n- Start with this amount for 2-4 weeks.\n- Keep treats inside the daily allowance.\n- Watch weight, appetite, stool, and energy.\n\nNext step: press save to keep the food, calories, and first portion on the profile.`
         )
       : botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετές θερμίδες για αξιόπιστα γραμμάρια σε αυτή τη ροή. Μπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες για πιο πρακτική ποσότητα.`,
-          `Great, we will keep ${choice.name}.\n\nI do not have enough calorie data for reliable grams in this flow. You can save it as the chosen food or pick another card with calories for a more practical portion estimate.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετή θερμιδική πληροφορία για να δώσω αξιόπιστα γραμμάρια/ημέρα.\n\nΤι μπορείς να κάνεις τώρα:\n- Αποθήκευσε την τροφή ως επιλογή στο προφίλ.\n- Ή διάλεξε άλλη κάρτα που έχει καθαρή θερμιδική τιμή για πιο πρακτική ποσότητα.\n- Αν έχεις φωτογραφία ετικέτας με kcal, μπορείς να τη χρησιμοποιήσεις σε επόμενο έλεγχο.`,
+          `Great, we will keep ${choice.name}.\n\nI do not have enough calorie data to estimate reliable grams/day.\n\nWhat you can do now:\n- Save this food as the chosen option on the profile.\n- Or choose another card with clear calorie data for a more practical portion.\n- If you have a label photo with kcal, use it in a future check.`
         );
 
     addMessages(createMessage("bot", selectedFoodReply));
