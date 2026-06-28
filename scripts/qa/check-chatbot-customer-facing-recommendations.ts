@@ -368,6 +368,7 @@ if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
 }
 
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+const transitionGuideSource = readFileSync("lib/foodTransitionGuide.ts", "utf8");
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
 const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
 const compareRoute = readFileSync("app/api/account/foods/compare/route.ts", "utf8");
@@ -550,6 +551,7 @@ const requiredCardFlowCopy = [
   "Next step: press save to keep the food, calories, and first portion on the profile.",
   "If you feed 2 meals: about",
   "If you feed 3 meals: about",
+  "If you decide to change food, do it gradually:",
   "analysisMetadata.feedingGramsPerDay / 2",
   "getRecommendationChoiceFacts(choice, chatLanguage)",
   "calorie_aware_feeding",
@@ -656,6 +658,38 @@ const missingGreekCardFlowCopy = requiredGreekCardFlowCopy.filter(
 if (missingGreekCardFlowCopy.length > 0) {
   console.error("Chatbot food cards are missing Greek customer-facing flow copy:");
   console.error(missingGreekCardFlowCopy.join(", "));
+  process.exit(1);
+}
+
+const requiredGreekTransitionCopy = [
+  "Αν αλλάξεις τροφή, κάν' το σταδιακά:",
+  "Ημέρες 1-2: 75% παλιά τροφή + 25% νέα τροφή",
+  "Για ευαισθησία στην πέψη, κάνε τη μετάβαση πιο αργά",
+];
+const missingGreekTransitionCopy = requiredGreekTransitionCopy.filter(
+  (term) => !sourceIncludesTextOrEscapedUnicode(chatbotPage, term) &&
+    !sourceIncludesTextOrEscapedUnicode(transitionGuideSource, term)
+);
+
+if (missingGreekTransitionCopy.length > 0) {
+  console.error("Chatbot transition guide is missing Greek customer-facing copy:");
+  console.error(missingGreekTransitionCopy.join(", "));
+  process.exit(1);
+}
+
+const requiredTransitionGuideSourceCopy = [
+  "For digestive sensitivity, slow this down to 10-14 days and watch stool quality closely.",
+  "For suspected allergy, avoid mixing multiple new foods during a trial unless your veterinarian advises it.",
+  "Για ευαισθησία στην πέψη, κάνε τη μετάβαση πιο αργά",
+  "Αν υπάρχει υποψία αλλεργίας, μην ανακατεύεις πολλές νέες τροφές",
+];
+const missingTransitionGuideSourceCopy = requiredTransitionGuideSourceCopy.filter(
+  (term) => !sourceIncludesTextOrEscapedUnicode(transitionGuideSource, term)
+);
+
+if (missingTransitionGuideSourceCopy.length > 0) {
+  console.error("Food transition guide is missing localized safety copy:");
+  console.error(missingTransitionGuideSourceCopy.join(", "));
   process.exit(1);
 }
 
