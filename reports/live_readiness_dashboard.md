@@ -1,6 +1,6 @@
 # NutriTail Live Readiness Dashboard
 
-Generated: 2026-06-28T22:10:01.843Z
+Generated: 2026-06-28T22:18:49.174Z
 Result: PASS
 
 This dashboard summarizes live route, customer-flow, and chatbot QA evidence.
@@ -15,27 +15,27 @@ It is intentionally evidence-based: each row points to the authoritative report 
 - Failed or needs review: 0
 - Pass rate: 100.0%
 - Max report age: 48h
-- Oldest source report: Public launch live routes (6.7h)
-- Next stale report: Public launch live routes in 41.3h
+- Oldest source report: Chatbot live QA dashboard (3.5h)
+- Next stale report: Chatbot live QA dashboard in 44.5h
 
 ## Readiness Evidence
 
 | Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run | Age |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: |
-| Public launch live routes | homepage, auth pages, legal pages, SEO files, manifest, OpenGraph image | `reports/public_launch_live_route_smoke_qa.md` | `npm.cmd run qa:public-launch-live-routes` | PASS | 11 | 11 | 0 | 2026-06-28T15:30:23.453Z | 6.7h |
-| Food V2 live routes | admin Food V2 pages + protected Food V2 APIs | `reports/food_v2_live_route_smoke_qa.md` | `npm.cmd run qa:food-v2-live-routes` | PASS | 10 | 10 | 0 | 2026-06-28T15:30:25.096Z | 6.7h |
-| Account progress live routes | account pages, pet pages, printable reports, progress API guard | `reports/account_progress_live_route_smoke_qa.md` | `npm.cmd run qa:account-progress-live-routes` | PASS | 10 | 10 | 0 | 2026-06-28T15:30:26.199Z | 6.7h |
-| Customer chatbot flow links | saved pet deep links, progress links, customer-facing copy guards | `reports/customer_chatbot_flow_links_qa.md` | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 147 | 147 | 0 | 2026-06-28T22:06:45.745Z | 3m |
-| Vercel OpenAI production env | production OpenAI API key presence without exposing the secret | `reports/vercel_openai_env_qa.md` | `npm.cmd run qa:vercel-openai-env` | PASS | 2 | 2 | 0 | 2026-06-28T22:09:49.684Z | 0m |
-| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-28T18:46:25.087Z | 3.4h |
+| Public launch live routes | homepage, auth pages, legal pages, SEO files, manifest, OpenGraph image | `reports/public_launch_live_route_smoke_qa.md` | `npm.cmd run qa:public-launch-live-routes` | PASS | 11 | 11 | 0 | 2026-06-28T22:18:40.895Z | 0m |
+| Food V2 live routes | admin Food V2 pages + protected Food V2 APIs | `reports/food_v2_live_route_smoke_qa.md` | `npm.cmd run qa:food-v2-live-routes` | PASS | 10 | 10 | 0 | 2026-06-28T22:18:43.096Z | 0m |
+| Account progress live routes | account pages, pet pages, printable reports, progress API guard | `reports/account_progress_live_route_smoke_qa.md` | `npm.cmd run qa:account-progress-live-routes` | PASS | 10 | 10 | 0 | 2026-06-28T22:18:45.719Z | 0m |
+| Customer chatbot flow links | saved pet deep links, progress links, customer-facing copy guards | `reports/customer_chatbot_flow_links_qa.md` | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 147 | 147 | 0 | 2026-06-28T22:06:45.745Z | 12m |
+| Vercel OpenAI production env | production OpenAI API key presence without exposing the secret | `reports/vercel_openai_env_qa.md` | `npm.cmd run qa:vercel-openai-env` | PASS | 2 | 2 | 0 | 2026-06-28T22:18:48.804Z | 0m |
+| Chatbot live QA dashboard | dog/cat recommendation live QA, intake QA, response contracts, customer UX | `reports/chatbot_live_qa_dashboard.md` | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 1100 | 1100 | 0 | 2026-06-28T18:46:25.087Z | 3.5h |
 
 ## Refresh Priority
 
 | Priority | Suite | Age | Time until stale | Source report |
 | ---: | --- | ---: | ---: | --- |
-| 1 | Public launch live routes | 6.7h | 41.3h | `reports/public_launch_live_route_smoke_qa.md` |
-| 2 | Food V2 live routes | 6.7h | 41.3h | `reports/food_v2_live_route_smoke_qa.md` |
-| 3 | Account progress live routes | 6.7h | 41.3h | `reports/account_progress_live_route_smoke_qa.md` |
+| 1 | Chatbot live QA dashboard | 3.5h | 44.5h | `reports/chatbot_live_qa_dashboard.md` |
+| 2 | Customer chatbot flow links | 12m | 47.8h | `reports/customer_chatbot_flow_links_qa.md` |
+| 3 | Public launch live routes | 0m | 48.0h | `reports/public_launch_live_route_smoke_qa.md` |
 
 ## Chatbot Evidence Details
 
@@ -61,7 +61,7 @@ It is intentionally evidence-based: each row points to the authoritative report 
 ## Next Live Checks
 
 - Rerun this dashboard after each deploy that touches account, chatbot, Food V2, or report routes.
-- Refresh first: Public launch live routes (npm.cmd run qa:public-launch-live-routes).
+- Refresh first: Chatbot live QA dashboard (npm.cmd run qa:chatbot-live-dashboard).
 - Reports older than 48h are marked STALE and block readiness until rerun.
 - If a route report is older than the current deploy, rerun the source command before relying on it.
 - When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY`.
