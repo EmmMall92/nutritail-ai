@@ -402,6 +402,35 @@ const customerFoodNameCases = [
     expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Salmon",
   },
   {
+    label: "Customer visible Purina Greek salmon token is fully readable",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "MEDIUM ADULT Sensitive Skin Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Skin Σολομός",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Skin Σολομός",
+  },
+  {
+    label: "Customer visible Purina Greek lamb token is fully readable",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "MEDIUM ADULT Sensitive Digestion Ξ‘ΟΞ½Ξ―",
+    },
+    expectedDisplay: "MEDIUM ADULT Sensitive Digestion Αρνί",
+    expectedName: "Purina Pro Plan - MEDIUM ADULT Sensitive Digestion Αρνί",
+  },
+  {
+    label: "Customer Purina registered mark mojibake is removed from visible name",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name:
+        "PRO PlanΞ’Β® MEDIUM & LARGE ADULT 7+ Sensitive Skin ΞΒ£ΞΞΞΒ»ΞΞΞΞΞΒΞβ€",
+    },
+    expectedDisplay: "MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+    expectedName:
+      "Purina Pro Plan - MEDIUM & LARGE ADULT 7+ Sensitive Skin Salmon",
+  },
+  {
     label: "Purina veterinary customer label removes repeated Pro Plan prefix",
     input: {
       brand: "Purina Pro Plan Veterinary Diets",

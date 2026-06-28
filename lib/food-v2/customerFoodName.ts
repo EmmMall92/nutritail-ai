@@ -50,6 +50,23 @@ function repairKnownGreekFoodTokens(value: string) {
     .replace(/\u0395\u03cd\u03b6\u03b9/gu, "Ρύζι");
 }
 
+function normalizeCustomerGreekTokens(value: string) {
+  return value
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Σολομός")
+    .replace(/Ξ£ΞΏΞ»ΞΏΞΌΞΏΟ‚/g, "Σολομός")
+    .replace(/ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/ΞΞΏΟ„ΞΏΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
+    .replace(/Ξ‘ΟΞ½Ξ―/g, "Αρνί")
+    .replace(/Ξ‘ΟΞ½ΞΉ/g, "Αρνί")
+    .replace(/ΞΞΏΟƒΟ‡Ξ¬ΟΞΉ/g, "Μοσχάρι")
+    .replace(/ΞΞΏΟƒΟ‡Ξ±ΟΞΉ/g, "Μοσχάρι")
+    .replace(/Ξ¨Ξ¬ΟΞΉ/g, "Ψάρι")
+    .replace(/ΟΞ¬ΟΞΉ/g, "Ψάρι")
+    .replace(/ΟΞ±ΟΞΉ/g, "Ψάρι")
+    .replace(/Ξ΅ΟΞ¶ΞΉ/g, "Ρύζι")
+    .replace(/Ξ¡ΟΞ¶ΞΉ/g, "Ρύζι");
+}
+
 function getIsoGreekReverseMap() {
   if (isoGreekReverseMap) return isoGreekReverseMap;
 
@@ -96,12 +113,15 @@ function repairLegacyGreekMojibakeSegment(value: string) {
 }
 
 function cleanNamePart(value: unknown) {
-  return repairKnownGreekFoodTokens(
-    repairLegacyGreekMojibake(
-      repairUtf8AsLatinMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
+  return normalizeCustomerGreekTokens(
+    repairKnownGreekFoodTokens(
+      repairLegacyGreekMojibake(
+        repairUtf8AsLatinMojibake(repairKnownGreekFoodTokens(String(value ?? "")))
+      )
     )
   )
     .replace(/\u0392\u00ae/g, "\u00ae")
+    .replace(/Ξ['’]?\u00ae/g, "\u00ae")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -246,9 +266,11 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     });
 
   return (
-    repairKnownGreekFoodTokens(
-      repairLegacyGreekMojibake(
-        repairUtf8AsLatinMojibake(normalizedDisplayName || cleanedDisplayName)
+    normalizeCustomerGreekTokens(
+      repairKnownGreekFoodTokens(
+        repairLegacyGreekMojibake(
+          repairUtf8AsLatinMojibake(normalizedDisplayName || cleanedDisplayName)
+        )
       )
     ) || cleanedDisplayName
   );
