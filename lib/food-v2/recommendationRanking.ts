@@ -2006,9 +2006,24 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
           ? 5
           : 0)
       : 0;
+  const preferredProteinTieBreaker =
+    (input.pet.preferredProteins ?? []).length > 0
+      ? signals.some((signal) => signal.code === "preferred_protein_match")
+        ? input.goal === "sterilised" || input.goal === "weight_control"
+          ? 8
+          : 4
+        : signals.some((signal) => signal.code === "preferred_protein_missing")
+          ? input.goal === "sterilised" || input.goal === "weight_control"
+            ? -4
+            : -2
+          : 0
+      : 0;
   const totalScore = excludes
     ? 0
-    : baseTotalScore + customerVisibleTieBreaker + skinAllergyTieBreaker;
+    : baseTotalScore +
+      customerVisibleTieBreaker +
+      skinAllergyTieBreaker +
+      preferredProteinTieBreaker;
   const tier = valueTier(input.food, valueScore, fitScore, qualityScore);
   const confidence = confidenceFor({ fitScore, qualityScore, signals });
 
