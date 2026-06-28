@@ -4,21 +4,21 @@ export type TastePreferences = {
 };
 
 const PROTEIN_TERMS = [
-  { keys: ["chicken", "kotopoulo", "κοτοπουλ"], value: "chicken" },
+  { keys: ["chicken", "kotopoulo", "κοτοπουλ", "κοτόπουλ"], value: "chicken" },
   { keys: ["lamb", "arni", "αρν"], value: "lamb" },
   { keys: ["salmon", "solomos", "σολομ"], value: "salmon" },
   { keys: ["fish", "psari", "ψαρ"], value: "fish" },
-  { keys: ["duck", "papia", "παπια"], value: "duck" },
+  { keys: ["duck", "papia", "παπια", "πάπια"], value: "duck" },
   { keys: ["beef", "mosxari", "moschari", "vodino", "μοσχαρ", "βοδιν"], value: "beef" },
   { keys: ["pork", "xoirino", "choirino", "χοιριν"], value: "pork" },
   { keys: ["turkey", "galopoula", "γαλοπουλ"], value: "turkey" },
   { keys: ["rabbit", "kouneli", "κουνελ"], value: "rabbit" },
-  { keys: ["tuna", "tonos", "τονο", "τονo"], value: "tuna" },
+  { keys: ["tuna", "tonos", "τονο", "τόνο"], value: "tuna" },
   { keys: ["rice", "ryzi", "rizi", "ρυζ"], value: "rice" },
   { keys: ["grain", "sitira", "σιτηρ", "δημητριακ"], value: "grain" },
   { keys: ["wheat", "sitar", "σιταρ"], value: "wheat" },
   { keys: ["corn", "maize", "kalampoki", "καλαμποκ"], value: "corn" },
-  { keys: ["dairy", "milk", "cheese", "galakt", "gala", "γαλακτ", "γαλα"], value: "dairy" },
+  { keys: ["dairy", "milk", "cheese", "galakt", "gala", "γαλακτ", "γαλα", "τυρι", "τυρί"], value: "dairy" },
   { keys: ["legume", "pea", "lentil", "ospr", "arakas", "faki", "οσπρ", "αρακα", "φακ"], value: "legumes" },
 ];
 
@@ -32,8 +32,11 @@ const NO_PREFERENCE_TERMS = [
   "den ksero",
   "den xero",
   "δεν ξερω",
-  "οτιδηποτε",
+  "δεν ξέρω",
   "οχι",
+  "όχι",
+  "οτιδηποτε",
+  "οτιδήποτε",
 ];
 
 const AVOID_SIGNALS = [
@@ -63,16 +66,13 @@ const AVOID_SIGNALS = [
   "den mpor",
   "ton peira",
   "tin peira",
-  "allerg",
   "δεν τρω",
   "δεν του αρε",
   "δεν της αρε",
-  "δεν τησ αρε",
   "δεν αρε",
   "δεν μπορ",
   "τον πειρα",
   "την πειρα",
-  "τησ πειρα",
   "αλλεργ",
 ];
 
@@ -91,9 +91,10 @@ const PREFER_SIGNALS = [
   "troei",
   "troi",
   "αρεσει",
+  "αρέσει",
   "προτιμ",
   "τρωει",
-  "τρωει ευκολα",
+  "τρώει",
   "λατρευ",
 ];
 
@@ -102,7 +103,7 @@ export function normalizeTasteText(value: string) {
     .toLocaleLowerCase("el-GR")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[’']/g, "")
+    .replace(/[’'`]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -127,8 +128,8 @@ function includesAny(text: string, terms: string[]) {
 
 function splitPreferenceClauses(text: string) {
   return text
-    .replace(/\s+και\s+(?=(δεν|δε)\s+)/g, ". ")
     .replace(/\s+kai\s+(?=den\s+)/g, ". ")
+    .replace(/\s+και\s+(?=(δεν|δε)\s+)/g, ". ")
     .replace(/\s+and\s+(?=(does not|doesnt|dont|do not|no|not)\s+)/g, ". ")
     .split(/[.,;|\n]+|\s+αλλα\s+|\s+αλλά\s+|\s+alla\s+|\s+but\s+/)
     .map((clause) => clause.trim())
