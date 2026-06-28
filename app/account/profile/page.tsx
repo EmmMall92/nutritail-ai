@@ -61,14 +61,15 @@ export default function AccountProfilePage() {
           body: JSON.stringify({
             authUserId: user.id,
             email: user.email,
-            fullName: user.user_metadata?.full_name || user.email || "Customer",
+            fullName: user.user_metadata?.full_name || user.email || "Πελάτης",
           }),
         });
 
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Failed to load profile.");
+          console.error(result.error);
+          throw new Error("Δεν μπόρεσα να φορτώσω το προφίλ.");
         }
 
         const loadedCustomer = result as Customer;
@@ -82,7 +83,9 @@ export default function AccountProfilePage() {
         });
       } catch (err) {
         console.error(err);
-        setError(err instanceof Error ? err.message : "Failed to load profile.");
+        setError(
+          err instanceof Error ? err.message : "Δεν μπόρεσα να φορτώσω το προφίλ.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -113,7 +116,8 @@ export default function AccountProfilePage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update profile.");
+        console.error(result.error);
+        throw new Error("Δεν μπόρεσα να ενημερώσω το προφίλ.");
       }
 
       const updatedCustomer = result as Customer;
@@ -126,14 +130,16 @@ export default function AccountProfilePage() {
         notes: updatedCustomer.notes || "",
       });
 
-      setSavedMessage("Profile updated successfully.");
+      setSavedMessage("Το προφίλ ενημερώθηκε.");
 
       setTimeout(() => {
         setSavedMessage("");
       }, 2500);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Failed to update profile.");
+      setError(
+        err instanceof Error ? err.message : "Δεν μπόρεσα να ενημερώσω το προφίλ.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -143,9 +149,9 @@ export default function AccountProfilePage() {
     return (
       <section className="space-y-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Loading profile...</p>
+          <p className="text-sm font-medium text-black">Φορτώνω το προφίλ...</p>
           <p className="mt-2 text-sm text-gray-600">
-            We are fetching the account details connected to your profile.
+            Φέρνω τα στοιχεία λογαριασμού που είναι συνδεδεμένα με το προφίλ σου.
           </p>
         </div>
       </section>
@@ -156,15 +162,15 @@ export default function AccountProfilePage() {
     return (
       <section className="space-y-6">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
-          <p className="font-semibold">Could not load profile</p>
+          <p className="font-semibold">Δεν μπόρεσα να φορτώσω το προφίλ</p>
           <p className="mt-2 text-sm">
-            {error || "Please try again from your account dashboard."}
+            {error || "Δοκίμασε ξανά από τον πίνακα λογαριασμού."}
           </p>
           <Link
             href="/account"
             className="mt-4 inline-block rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100"
           >
-            Back to dashboard
+            Πίσω στον λογαριασμό
           </Link>
         </div>
       </section>
@@ -176,26 +182,28 @@ export default function AccountProfilePage() {
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-black">Profile</h1>
+            <h1 className="text-3xl font-bold text-black">Προφίλ</h1>
             <p className="mt-2 text-gray-600">
-              Manage the account details connected to your Nutritail AI profile.
+              Διαχειρίσου τα στοιχεία που συνδέονται με το προφίλ NutriTail AI.
             </p>
           </div>
           <Link
             href="/account"
             className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
           >
-            Back to dashboard
+            Πίσω στον λογαριασμό
           </Link>
         </div>
       </div>
 
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
-        <p className="font-semibold text-blue-950">How this information is used</p>
+        <p className="font-semibold text-blue-950">
+          Πώς χρησιμοποιούνται αυτά τα στοιχεία
+        </p>
         <p className="mt-2 text-sm text-blue-900">
-          Your profile helps connect saved pets, reports, and customer details.
-          Nutrition recommendations are based on pet data and food data, not on
-          optional profile notes alone.
+          Το προφίλ βοηθά να συνδέονται κατοικίδια, reports και στοιχεία πελάτη.
+          Οι διατροφικές προτάσεις βασίζονται κυρίως στα στοιχεία κατοικιδίου και
+          τροφών, όχι μόνο στις προαιρετικές σημειώσεις προφίλ.
         </p>
       </div>
 
@@ -215,12 +223,12 @@ export default function AccountProfilePage() {
         onSubmit={handleSave}
         className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       >
-        <h2 className="text-xl font-semibold text-black">Edit profile</h2>
+        <h2 className="text-xl font-semibold text-black">Επεξεργασία προφίλ</h2>
 
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-medium text-black">
-              Full name
+              Ονοματεπώνυμο
             </label>
             <input
               value={form.fullName}
@@ -228,7 +236,7 @@ export default function AccountProfilePage() {
                 setForm((prev) => ({ ...prev, fullName: e.target.value }))
               }
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
-              placeholder="Your full name"
+              placeholder="Το ονοματεπώνυμό σου"
             />
           </div>
 
@@ -242,13 +250,13 @@ export default function AccountProfilePage() {
               className="w-full rounded-xl border border-gray-300 bg-gray-100 p-3 text-gray-600"
             />
             <p className="mt-2 text-xs text-gray-500">
-              Email comes from your login account and cannot be edited here.
+              Το email έρχεται από τον λογαριασμό σύνδεσης και δεν αλλάζει εδώ.
             </p>
           </div>
 
           <div>
             <label className="mb-2 block text-sm font-medium text-black">
-              Phone
+              Τηλέφωνο
             </label>
             <input
               value={form.phone}
@@ -262,7 +270,7 @@ export default function AccountProfilePage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-black">
-              Bonus card code
+              Κωδικός bonus card
             </label>
             <input
               value={form.bonusCardCode}
@@ -279,7 +287,7 @@ export default function AccountProfilePage() {
 
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-medium text-black">
-              Notes
+              Σημειώσεις
             </label>
             <textarea
               value={form.notes}
@@ -288,11 +296,11 @@ export default function AccountProfilePage() {
               }
               rows={4}
               className="w-full rounded-xl border border-gray-300 p-3 text-black"
-              placeholder="Optional notes..."
+              placeholder="Προαιρετικές σημειώσεις..."
             />
             <p className="mt-2 text-xs text-gray-500">
-              Keep medical details in pet profiles whenever possible, so the
-              chatbot can use them in context.
+              Κράτα τις ιατρικές λεπτομέρειες στα προφίλ κατοικιδίων όπου γίνεται,
+              ώστε το chatbot να τις χρησιμοποιεί με σωστό context.
             </p>
           </div>
 
@@ -302,7 +310,7 @@ export default function AccountProfilePage() {
               disabled={isSaving}
               className="w-full rounded-xl bg-black px-6 py-3 text-white disabled:opacity-50 sm:w-auto"
             >
-              {isSaving ? "Saving..." : "Save profile"}
+              {isSaving ? "Αποθήκευση..." : "Αποθήκευση προφίλ"}
             </button>
           </div>
         </div>
