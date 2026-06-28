@@ -3,7 +3,7 @@
 import { generateIngredientInsights } from "@/lib/nutrition/ingredientInsights";
 import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
 import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { calculateFeedingGrams } from "@/lib/feedingCalculator";
@@ -3203,6 +3203,11 @@ export default function AccountChatbotPage() {
       "Γεια σου! Επίλεξε ένα αποθηκευμένο κατοικίδιο για νέα ανάλυση ή ξεκίνα με νέο κατοικίδιο."
     ),
   ]);
+  const botText = useCallback((el: string, en: string) => {
+    if (!en.trim()) return "";
+
+    return chatLanguage === "el" ? repairCustomerGreekText(el) : en;
+  }, [chatLanguage]);
   const quickReplies = getQuickReplies(step, chatLanguage);
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
@@ -3246,12 +3251,6 @@ export default function AccountChatbotPage() {
       mode,
     });
     setLatestProgressDecisionStatus(decision.status);
-  }
-
-  function botText(el: string, en: string) {
-    if (!en.trim()) return "";
-
-    return chatLanguage === "el" ? repairCustomerGreekText(el) : en;
   }
 
   function getNextMissingIntakeStep(draft: PetIntake): IntakeStep {
@@ -3643,7 +3642,10 @@ export default function AccountChatbotPage() {
           addMessages(
             createMessage(
               "bot",
-              "No saved pets yet. Let's start a new analysis. Do you have a dog or a cat?"
+              botText(
+                "Δεν υπάρχουν ακόμη αποθηκευμένα κατοικίδια. Ας ξεκινήσουμε νέα ανάλυση. Έχεις σκύλο ή γάτα;",
+                "No saved pets yet. Let's start a new analysis. Do you have a dog or a cat?"
+              )
             )
           );
         }
@@ -3653,7 +3655,10 @@ export default function AccountChatbotPage() {
         addMessages(
           createMessage(
             "bot",
-            "I could not load your saved pets, so let's start a new analysis. Do you have a dog or a cat?"
+            botText(
+              "Δεν μπόρεσα να φορτώσω τα αποθηκευμένα κατοικίδια, οπότε ας ξεκινήσουμε νέα ανάλυση. Έχεις σκύλο ή γάτα;",
+              "I could not load your saved pets, so let's start a new analysis. Do you have a dog or a cat?"
+            )
           )
         );
       } finally {
@@ -3662,7 +3667,7 @@ export default function AccountChatbotPage() {
     }
 
     loadSavedPets();
-  }, [pathname, router]);
+  }, [botText, pathname, router]);
 
   async function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);

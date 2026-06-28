@@ -1,6 +1,6 @@
 # Customer-Facing Recommendation QA
 
-Generated: 2026-06-28T12:28:18.813Z
+Generated: 2026-06-28T12:33:01.078Z
 
 This QA checks that Food V2 recommendations are presented in customer language without backend labels, raw scores, or confusing save-before-choice flows.
 
