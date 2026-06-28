@@ -239,6 +239,36 @@ if (bestOverallSplit.premium[0]?.formula_key !== "qa|higher-value-bucket|dog|dry
   process.exit(1);
 }
 
+const duplicateNameSplit = splitFoodV2Recommendations([
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|duplicate-display-name-lower|dog|dry",
+    display_name: "Duplicate Customer Name",
+    brand: "QA Brand",
+    total_score: 70,
+  },
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|duplicate-display-name-higher|dog|dry",
+    display_name: "Duplicate Customer Name",
+    brand: "QA Brand",
+    total_score: 92,
+  },
+]);
+
+const visibleDuplicateNames = [...duplicateNameSplit.premium, ...duplicateNameSplit.value].filter(
+  (ranking) => ranking.brand === "QA Brand" && ranking.display_name === "Duplicate Customer Name"
+);
+
+if (
+  visibleDuplicateNames.length !== 1 ||
+  visibleDuplicateNames[0]?.formula_key !== "qa|duplicate-display-name-higher|dog|dry"
+) {
+  console.error("Visible recommendations should dedupe duplicate customer names and keep the strongest row.");
+  console.error(duplicateNameSplit);
+  process.exit(1);
+}
+
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
   process.exit(1);

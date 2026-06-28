@@ -2057,9 +2057,27 @@ export function splitFoodV2Recommendations(
   limitPerBucket = 3,
   goal?: FoodV2RecommendationGoal
 ) {
-  const usable = rankings
-    .filter((ranking) => ranking.bucket !== "hold")
-    .sort((a, b) => b.total_score - a.total_score);
+  function duplicateKey(ranking: FoodV2RankingResult) {
+    return normalizeText([ranking.brand, ranking.display_name].join(" "));
+  }
+
+  function dedupeByCustomerName(items: FoodV2RankingResult[]) {
+    const seen = new Set<string>();
+
+    return items.filter((ranking) => {
+      const key = duplicateKey(ranking);
+      if (!key) return true;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  const usable = dedupeByCustomerName(
+    rankings
+      .filter((ranking) => ranking.bucket !== "hold")
+      .sort((a, b) => b.total_score - a.total_score)
+  );
   const premium = usable.filter((ranking) => ranking.bucket === "premium");
   const value = usable
     .filter((ranking) => ranking.bucket === "value")
@@ -2069,9 +2087,11 @@ export function splitFoodV2Recommendations(
     return {
       premium: value.slice(0, limitPerBucket),
       value: premium.slice(0, limitPerBucket),
-      hold: rankings
-        .filter((ranking) => ranking.bucket === "hold")
-        .sort((a, b) => b.quality_score - a.quality_score),
+      hold: dedupeByCustomerName(
+        rankings
+          .filter((ranking) => ranking.bucket === "hold")
+          .sort((a, b) => b.quality_score - a.quality_score)
+      ),
     };
   }
 
@@ -2083,8 +2103,10 @@ export function splitFoodV2Recommendations(
     value: value
       .filter((ranking) => !bestKeys.has(ranking.formula_key))
       .slice(0, limitPerBucket),
-    hold: rankings
-      .filter((ranking) => ranking.bucket === "hold")
-      .sort((a, b) => b.quality_score - a.quality_score),
+    hold: dedupeByCustomerName(
+      rankings
+        .filter((ranking) => ranking.bucket === "hold")
+        .sort((a, b) => b.quality_score - a.quality_score)
+    ),
   };
 }
