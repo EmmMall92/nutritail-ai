@@ -348,9 +348,9 @@ const checks = [
     expected: "formatProgressChipLabel(log.metadata?.stoolNote)",
   },
   {
-    label: "Printable timeline shows progress decision",
+    label: "Printable timeline shows Greek progress decision",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Progress decision:",
+    expected: "Απόφαση προόδου:",
   },
   {
     label: "Analysis in-progress message is localized",
@@ -364,9 +364,9 @@ const checks = [
       "Η ανάλυση ολοκληρώθηκε. Μπορείς να την αποθηκεύσεις ή να ξεκινήσεις ξανά.",
   },
   {
-    label: "Printable timeline uses customer-facing food recommendation label",
+    label: "Printable timeline uses Greek customer-facing food recommendation label",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Food recommendation:",
+    expected: "Πρόταση τροφής:",
   },
   {
     label: "Pet detail analysis history uses Greek customer-facing food recommendation label",
@@ -394,9 +394,9 @@ const checks = [
     expected: "Saved Food Insights",
   },
   {
-    label: "Printable timeline uses customer-facing saved food insights heading",
+    label: "Printable timeline uses Greek customer-facing saved food insights heading",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Latest Saved Food Insights",
+    expected: "Τελευταία αποθηκευμένα food insights",
   },
   {
     label: "Printable report gives a Greek customer follow-up plan",
@@ -419,14 +419,14 @@ const checks = [
     expected: "Πότε ζητάμε νέα λίστα",
   },
   {
-    label: "Printable timeline asks for grams and food refusal notes",
+    label: "Printable timeline asks in Greek for grams and food refusal notes",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
+    expected: "Φέρε τα τωρινά ημερήσια γραμμάρια και τυχόν άρνηση τροφής στον επόμενο έλεγχο προόδου.",
   },
   {
-    label: "Printable timeline explains resting calories in customer language",
+    label: "Printable timeline explains resting calories in Greek customer language",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Resting calories",
+    expected: "Θερμίδες ηρεμίας",
   },
   {
     label: "Pet detail explains resting calories in Greek customer language",
@@ -439,14 +439,14 @@ const checks = [
     expected: "Ημερήσιος στόχος",
   },
   {
-    label: "Printable timeline explains daily target in customer language",
+    label: "Printable timeline explains daily target in Greek customer language",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Practical calories for the current plan",
+    expected: "Πρακτικές θερμίδες για το τωρινό πλάνο",
   },
   {
-    label: "Printable timeline uses customer nutrition-notes heading",
+    label: "Printable timeline uses Greek customer nutrition-notes heading",
     file: "app/print/pet-timeline/[id]/page.tsx",
-    expected: "Latest Nutrition Notes",
+    expected: "Τελευταίες διατροφικές σημειώσεις",
   },
   {
     label: "Chat guardrails use customer-facing practical notes",
@@ -505,6 +505,26 @@ const forbiddenChecks = [
     label: "Printable timeline does not expose raw recommended food ids",
     file: "app/print/pet-timeline/[id]/page.tsx",
     forbidden: "Recommended Food IDs",
+  },
+  {
+    label: "Printable timeline does not expose English loading copy",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Loading timeline report...",
+  },
+  {
+    label: "Printable timeline does not expose English title",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Pet Nutrition Timeline Report",
+  },
+  {
+    label: "Printable timeline does not expose English progress section",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Progress Check-ins",
+  },
+  {
+    label: "Printable timeline does not expose English food insights heading",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Latest Saved Food Insights",
   },
   {
     label: "Pet detail page does not expose legacy food signal ids",

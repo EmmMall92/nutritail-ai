@@ -79,9 +79,9 @@ function formatDate(value?: string) {
 }
 
 function formatProgressMode(value?: string) {
-  if (value === "no_result") return "No visible result";
-  if (value === "progress") return "Progress check";
-  return "Progress note";
+  if (value === "no_result") return "Χωρίς ορατό αποτέλεσμα";
+  if (value === "progress") return "Έλεγχος προόδου";
+  return "Σημείωση προόδου";
 }
 
 function getTimelineUseNotes(
@@ -89,17 +89,17 @@ function getTimelineUseNotes(
   history: PetAnalysisHistory[]
 ) {
   const notes = [
-    "Compare weight, appetite, stool, treats, and energy between check-ins instead of judging from one day.",
-    "Use the same scale and similar weighing conditions whenever possible.",
-    "Bring the current daily grams and any food refusal notes into the next chatbot Progress check.",
+    "Σύγκρινε βάρος, όρεξη, κόπρανα, λιχουδιές και ενέργεια ανάμεσα στα check-ins αντί να κρίνεις από μία ημέρα.",
+    "Χρησιμοποίησε την ίδια ζυγαριά και όσο γίνεται παρόμοιες συνθήκες ζυγίσματος.",
+    "Φέρε τα τωρινά ημερήσια γραμμάρια και τυχόν άρνηση τροφής στον επόμενο έλεγχο προόδου.",
   ];
 
   if (progressLogs.length === 0) {
-    notes.push("Add the first chatbot Progress check after 2-4 weeks on a new plan.");
+    notes.push("Πρόσθεσε τον πρώτο έλεγχο προόδου μετά από 2-4 εβδομάδες σε νέο πλάνο.");
   }
 
   if (history.length <= 1) {
-    notes.push("A second saved analysis will make trend comparison more useful.");
+    notes.push("Μια δεύτερη αποθηκευμένη ανάλυση θα κάνει τη σύγκριση τάσης πιο χρήσιμη.");
   }
 
   return notes;
@@ -118,27 +118,27 @@ function formatProgressChipLabel(value?: string | null) {
   if (!value) return null;
 
   const labels: Record<string, string> = {
-    none: "none",
-    few: "few",
-    some: "some",
-    many: "many",
-    normal: "normal",
-    hungry: "hungry",
-    low: "low",
-    picky: "picky",
-    better: "better",
-    soft: "soft",
-    diarrhea: "diarrhea",
-    constipation: "constipation",
-    high: "high",
-    leaner: "leaner",
-    same: "same",
-    heavier: "heavier",
-    continue_plan: "continue plan",
-    adjust_portions: "adjust portions",
-    reduce_treats: "reduce treats",
-    review_food_fit: "review food fit",
-    needs_more_data: "needs more data",
+    none: "καθόλου",
+    few: "λίγες",
+    some: "μερικές",
+    many: "πολλές",
+    normal: "φυσιολογικό",
+    hungry: "πεινάει",
+    low: "χαμηλή",
+    picky: "επιλεκτικό",
+    better: "καλύτερα",
+    soft: "μαλακά",
+    diarrhea: "διάρροια",
+    constipation: "δυσκοιλιότητα",
+    high: "υψηλή",
+    leaner: "πιο αδύνατο",
+    same: "ίδιο",
+    heavier: "πιο βαρύ",
+    continue_plan: "συνέχισε το πλάνο",
+    adjust_portions: "ρύθμισε τη μερίδα",
+    reduce_treats: "μείωσε τις λιχουδιές",
+    review_food_fit: "επανέλεγχος τροφής",
+    needs_more_data: "χρειάζονται περισσότερα στοιχεία",
   };
 
   return labels[value] ?? value;
@@ -190,7 +190,7 @@ export default function PetTimelineReportPage() {
         setProgressLogs(progressResult.pet?.progressLogs ?? []);
       }
     } catch (error) {
-      console.error("Failed to load pet timeline report:", error);
+      console.error("Δεν μπόρεσα να φορτώσω το timeline report:", error);
     } finally {
       setIsLoaded(true);
     }
@@ -228,7 +228,7 @@ export default function PetTimelineReportPage() {
     return (
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="mx-auto max-w-4xl rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-          <p className="text-gray-600">Loading timeline report...</p>
+          <p className="text-gray-600">Φορτώνω το ιστορικό προόδου...</p>
         </div>
       </main>
     );
@@ -239,10 +239,10 @@ export default function PetTimelineReportPage() {
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="mx-auto max-w-4xl rounded-xl border border-red-200 bg-red-50 p-8 shadow-sm">
           <h1 className="text-2xl font-bold text-black">
-            No timeline report available
+            Δεν υπάρχει διαθέσιμη αναφορά ιστορικού
           </h1>
           <p className="mt-2 text-red-700">
-            The selected pet could not be loaded.
+            Δεν μπόρεσα να φορτώσω το επιλεγμένο κατοικίδιο.
           </p>
         </div>
       </main>
@@ -279,13 +279,13 @@ export default function PetTimelineReportPage() {
                 {brandSettings.appName}
               </p>
               <h1 className="mt-2 text-3xl font-bold text-black">
-                Pet Nutrition Timeline Report
+                Ιστορικό διατροφής κατοικιδίου
               </h1>
               <p className="mt-2 text-sm text-gray-600">
-                Timeline and change summary for {pet.name}
+                Ιστορικό και περίληψη αλλαγών για {pet.name}
               </p>
               <p className="mt-1 text-sm text-gray-500">
-                Generated on {new Date().toLocaleString()}
+                Δημιουργήθηκε στις {new Date().toLocaleString()}
               </p>
             </div>
           </div>
@@ -301,56 +301,56 @@ export default function PetTimelineReportPage() {
       </header>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <InfoCard label="Pet" value={pet.name} detail={pet.species} />
-        <InfoCard label="Weight" value={`${pet.weight} kg`} />
+        <InfoCard label="Κατοικίδιο" value={pet.name} detail={pet.species} />
+        <InfoCard label="Βάρος" value={`${pet.weight} kg`} />
         <InfoCard
-          label="Resting calories"
+          label="Θερμίδες ηρεμίας"
           value={`${nutrition.rer} kcal`}
-          detail="Basic energy before lifestyle adjustments"
+          detail="Βασική ενέργεια πριν από προσαρμογές"
         />
         <InfoCard
-          label="Daily target"
+          label="Ημερήσιος στόχος"
           value={`${nutrition.der} kcal`}
-          detail="Practical calories for the current plan"
+          detail="Πρακτικές θερμίδες για το τωρινό πλάνο"
         />
       </section>
 
-      <Section title="Pet Profile">
+      <Section title="Προφίλ κατοικιδίου">
         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-          <p><span className="font-semibold">Species:</span> {pet.species}</p>
-          <p><span className="font-semibold">Breed:</span> {pet.breed}</p>
-          <p><span className="font-semibold">Age:</span> {pet.age}</p>
-          <p><span className="font-semibold">Activity Level:</span> {pet.activityLevel}</p>
-          <p><span className="font-semibold">Neutered:</span> {pet.neutered ? "Yes" : "No"}</p>
+          <p><span className="font-semibold">Είδος:</span> {pet.species}</p>
+          <p><span className="font-semibold">Ράτσα:</span> {pet.breed}</p>
+          <p><span className="font-semibold">Ηλικία:</span> {pet.age}</p>
+          <p><span className="font-semibold">Δραστηριότητα:</span> {pet.activityLevel}</p>
+          <p><span className="font-semibold">Στειρωμένο:</span> {pet.neutered ? "Ναι" : "Όχι"}</p>
           <p>
-            <span className="font-semibold">Allergies:</span>{" "}
+            <span className="font-semibold">Αλλεργίες:</span>{" "}
             {pet.allergies && pet.allergies.length > 0
                 ? pet.allergies.join(", ")
-                : "None"}
+                : "Καμία"}
           </p>
           <p className="md:col-span-2">
-            <span className="font-semibold">Health Issues:</span>{" "}
+            <span className="font-semibold">Θέματα υγείας:</span>{" "}
             {pet.healthIssues && pet.healthIssues.length > 0
                 ? pet.healthIssues.join(", ")
-                : "None"}
+                : "Κανένα"}
           </p>
         </div>
       </Section>
 
-      <Section title="Latest Nutrition Summary">
+      <Section title="Τελευταία διατροφική περίληψη">
         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-          <p><span className="font-semibold">Protein:</span> {nutrition.protein}</p>
-          <p><span className="font-semibold">Fat:</span> {nutrition.fat}</p>
-          <p><span className="font-semibold">Fiber:</span> {nutrition.fiber}</p>
-          <p><span className="font-semibold">Sodium:</span> {nutrition.sodium}</p>
-          <p><span className="font-semibold">Magnesium:</span> {nutrition.magnesium}</p>
-          <p><span className="font-semibold">Calcium:</span> {nutrition.calcium}</p>
-          <p><span className="font-semibold">Phosphorus:</span> {nutrition.phosphorus}</p>
+          <p><span className="font-semibold">Πρωτεΐνη:</span> {nutrition.protein}</p>
+          <p><span className="font-semibold">Λιπαρά:</span> {nutrition.fat}</p>
+          <p><span className="font-semibold">Ίνες:</span> {nutrition.fiber}</p>
+          <p><span className="font-semibold">Νάτριο:</span> {nutrition.sodium}</p>
+          <p><span className="font-semibold">Μαγνήσιο:</span> {nutrition.magnesium}</p>
+          <p><span className="font-semibold">Ασβέστιο:</span> {nutrition.calcium}</p>
+          <p><span className="font-semibold">Φώσφορος:</span> {nutrition.phosphorus}</p>
         </div>
       </Section>
 
       {latestComparison && (
-        <Section title="Latest Change Summary">
+        <Section title="Τελευταία περίληψη αλλαγών">
           <div className="space-y-2 text-sm">
             {latestComparison.summary.map((item, index) => (
               <p key={index}>- {item}</p>
@@ -361,7 +361,7 @@ export default function PetTimelineReportPage() {
               {latestComparison.merDelta}
             </p>
             <p>
-              <span className="font-semibold">Weight delta:</span>{" "}
+              <span className="font-semibold">Διαφορά βάρους:</span>{" "}
               {latestComparison.weightDelta === undefined
                 ? "-"
                 : `${latestComparison.weightDelta > 0 ? "+" : ""}${latestComparison.weightDelta}`}
@@ -370,20 +370,20 @@ export default function PetTimelineReportPage() {
         </Section>
       )}
 
-      <Section title="Progress at a Glance">
+      <Section title="Πρόοδος με μια ματιά">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <InfoCard
-            label="Saved analyses"
+            label="Αποθηκευμένες αναλύσεις"
             value={history.length}
-            detail="Nutrition snapshots"
+            detail="Διατροφικές στιγμές"
           />
           <InfoCard
-            label="Progress checks"
+            label="Έλεγχοι προόδου"
             value={progressLogs.length}
-            detail="Chatbot follow-ups"
+            detail="Follow-ups από το chatbot"
           />
           <InfoCard
-            label="Latest check weight"
+            label="Τελευταίο βάρος ελέγχου"
             value={
               latestProgressLog?.metadata?.currentWeightKg
                 ? `${latestProgressLog.metadata.currentWeightKg} kg`
@@ -392,24 +392,24 @@ export default function PetTimelineReportPage() {
             detail={
               latestProgressLog
                 ? formatDate(latestProgressLog.created_at)
-                : "No saved check-in yet"
+                : "Δεν υπάρχει αποθηκευμένο check-in ακόμη"
             }
           />
           <InfoCard
-            label="Latest daily grams"
+            label="Τελευταία ημερήσια γραμμάρια"
             value={
               latestProgressLog?.metadata?.feedingGramsPerDay
                 ? `${latestProgressLog.metadata.feedingGramsPerDay}g`
                 : "-"
             }
-            detail="From latest progress check"
+            detail="Από τον τελευταίο έλεγχο προόδου"
           />
         </div>
       </Section>
 
-      <Section title="Progress Check-ins">
+      <Section title="Έλεγχοι προόδου">
         <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-950">
-          <p className="font-semibold">How to use this timeline</p>
+          <p className="font-semibold">Πώς να χρησιμοποιήσεις αυτό το ιστορικό</p>
           <ul className="mt-2 space-y-1">
             {getTimelineUseNotes(progressLogs, history).map((note) => (
               <li key={note}>- {note}</li>
@@ -419,7 +419,7 @@ export default function PetTimelineReportPage() {
 
         {progressLogs.length === 0 ? (
           <p className="text-sm text-gray-600">
-            No chatbot progress check-ins have been saved yet.
+            Δεν έχουν αποθηκευτεί ακόμη check-ins προόδου από το chatbot.
           </p>
         ) : (
           <div className="space-y-4">
@@ -439,53 +439,53 @@ export default function PetTimelineReportPage() {
                   </div>
                   {log.metadata?.currentWeightKg && (
                     <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-900">
-                      Current {log.metadata.currentWeightKg} kg
+                      Τωρινό βάρος {log.metadata.currentWeightKg} kg
                     </span>
                   )}
                 </div>
 
                 <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
                   <p>
-                    <span className="font-semibold">Previous weight:</span>{" "}
+                    <span className="font-semibold">Προηγούμενο βάρος:</span>{" "}
                     {log.metadata?.previousWeightKg
                       ? `${log.metadata.previousWeightKg} kg`
                       : "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Feeding:</span>{" "}
+                    <span className="font-semibold">Μερίδα:</span>{" "}
                     {log.metadata?.feedingGramsPerDay
-                      ? `${log.metadata.feedingGramsPerDay}g/day`
+                      ? `${log.metadata.feedingGramsPerDay}g/ημέρα`
                       : "-"}
                   </p>
                   <p className="md:col-span-2">
-                    <span className="font-semibold">Treats:</span>{" "}
+                    <span className="font-semibold">Λιχουδιές:</span>{" "}
                     {log.metadata?.treatsNote
                       ? formatProgressChipLabel(log.metadata.treatsNote)
                       : log.metadata?.treatsPerDay || "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Appetite:</span>{" "}
+                    <span className="font-semibold">Όρεξη:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.appetiteNote) ?? "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Stool:</span>{" "}
+                    <span className="font-semibold">Κόπρανα:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.stoolNote) ?? "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Energy:</span>{" "}
+                    <span className="font-semibold">Ενέργεια:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.energyNote) ?? "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Body change:</span>{" "}
+                    <span className="font-semibold">Αλλαγή σώματος:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.bodyChangeNote) ?? "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Progress decision:</span>{" "}
+                    <span className="font-semibold">Απόφαση προόδου:</span>{" "}
                     {formatProgressChipLabel(log.metadata?.progressDecisionStatus) ??
                       "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Decision confidence:</span>{" "}
+                    <span className="font-semibold">Σιγουριά απόφασης:</span>{" "}
                     {log.metadata?.progressDecisionConfidence ?? "-"}
                   </p>
                 </div>
@@ -507,9 +507,9 @@ export default function PetTimelineReportPage() {
         )}
       </Section>
 
-      <Section title="Analysis Timeline">
+      <Section title="Ιστορικό αναλύσεων">
         {history.length === 0 ? (
-          <p className="text-sm text-gray-600">No analysis history available.</p>
+          <p className="text-sm text-gray-600">Δεν υπάρχει διαθέσιμο ιστορικό ανάλυσης.</p>
         ) : (
           <div className="space-y-4">
             {history.map((item) => (
@@ -522,36 +522,36 @@ export default function PetTimelineReportPage() {
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
                   <p>
-                    <span className="font-semibold">Resting calories:</span>{" "}
+                    <span className="font-semibold">Θερμίδες ηρεμίας:</span>{" "}
                     {item.rer}
                   </p>
                   <p>
-                    <span className="font-semibold">Daily target:</span>{" "}
+                    <span className="font-semibold">Ημερήσιος στόχος:</span>{" "}
                     {item.mer}
                   </p>
-                  <p><span className="font-semibold">Weight:</span> {item.weight ?? "-"} kg</p>
-                  <p><span className="font-semibold">Age:</span> {item.age ?? "-"}</p>
-                  <p><span className="font-semibold">Activity:</span> {item.activityLevel ?? "-"}</p>
-                  <p><span className="font-semibold">Neutered:</span> {item.neutered === undefined ? "-" : item.neutered ? "Yes" : "No"}</p>
+                  <p><span className="font-semibold">Βάρος:</span> {item.weight ?? "-"} kg</p>
+                  <p><span className="font-semibold">Ηλικία:</span> {item.age ?? "-"}</p>
+                  <p><span className="font-semibold">Δραστηριότητα:</span> {item.activityLevel ?? "-"}</p>
+                  <p><span className="font-semibold">Στειρωμένο:</span> {item.neutered === undefined ? "-" : item.neutered ? "Ναι" : "Όχι"}</p>
                 </div>
 
                 <p className="mt-2">
-                  <span className="font-semibold">Allergies:</span>{" "}
+                  <span className="font-semibold">Αλλεργίες:</span>{" "}
                     {item.allergies && item.allergies.length > 0
                     ? item.allergies.join(", ")
-                    : "None"}                
+                    : "Καμία"}                
                 </p>
 
                 <p className="mt-1">
-                  <span className="font-semibold">Health Issues:</span>{" "}
+                  <span className="font-semibold">Θέματα υγείας:</span>{" "}
                  {item.healthIssues && item.healthIssues.length > 0
                         ? item.healthIssues.join(", ")
-                        : "None"}
+                        : "Κανένα"}
                 </p>
 
                 <p className="mt-1">
-                  <span className="font-semibold">Food recommendation:</span>{" "}
-                  Saved with this analysis in the chatbot report.
+                  <span className="font-semibold">Πρόταση τροφής:</span>{" "}
+                  Αποθηκεύτηκε με αυτή την ανάλυση στο chatbot report.
                 </p>
               </div>
             ))}
@@ -559,7 +559,7 @@ export default function PetTimelineReportPage() {
         )}
       </Section>
 
-      <Section title="Latest Nutrition Notes">
+      <Section title="Τελευταίες διατροφικές σημειώσεις">
         <div className="space-y-3">
           {advice.map((item, index) => (
             <div
@@ -573,11 +573,11 @@ export default function PetTimelineReportPage() {
         </div>
       </Section>
 
-      <Section title="Latest Saved Food Insights">
+      <Section title="Τελευταία αποθηκευμένα food insights">
         <p className="mb-4 text-sm text-gray-600">
-          These foods were saved with the latest timeline analysis as useful
-          nutrition context. For a fresh shopping shortlist, run a new chatbot
-          recommendation with the pet&apos;s current weight, food, and preferences.
+          Αυτές οι τροφές αποθηκεύτηκαν με την τελευταία ανάλυση ως χρήσιμο
+          διατροφικό context. Για νέα λίστα αγοράς, κάνε νέα πρόταση στο chatbot
+          με τωρινό βάρος, τροφή και προτιμήσεις.
         </p>
         <div className="space-y-4">
           {recommendedFoods.map((item) => (
@@ -589,11 +589,11 @@ export default function PetTimelineReportPage() {
                 {item.food.brand} - {item.food.name}
               </p>
               <p className="mt-1 text-sm text-gray-700">
-                {item.food.species} - {item.food.lifeStage} - protein{" "}
-                {item.food.protein}% - fat {item.food.fat}%
+                {item.food.species} - {item.food.lifeStage} - πρωτεΐνη{" "}
+                {item.food.protein}% - λιπαρά {item.food.fat}%
               </p>
               <p className="mt-2 text-sm">
-                <span className="font-semibold">Why it appeared:</span>{" "}
+                <span className="font-semibold">Γιατί εμφανίστηκε:</span>{" "}
                 {item.reasons.join(", ")}
               </p>
             </div>
