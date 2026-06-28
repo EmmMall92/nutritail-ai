@@ -5102,7 +5102,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             href="/account"
             className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:flex-none"
           >
-            Account
+            {botText("Λογαριασμός", "Account")}
           </a>
 
           <button
@@ -5110,7 +5110,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             onClick={restartChat}
             className="flex-1 rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100 sm:flex-none"
           >
-            Restart
+            {botText("Επανεκκίνηση", "Restart")}
           </button>
         </div>
       </div>
