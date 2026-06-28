@@ -254,6 +254,10 @@ function foodLabel(food: FoodV2Item) {
   });
 }
 
+function hasCustomerVisibleMojibake(value: string) {
+  return /(?:Ξ|Ο[\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€|\ufffd)/u.test(value);
+}
+
 function allVisibleFoods(response: RecommendationResponse) {
   return [...(response.premium ?? []), ...(response.value ?? [])];
 }
@@ -291,6 +295,11 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   }
   if (foods.length === 0 && testCase.expectedSafetyLevel !== "urgent") {
     warnings.push("No visible cat recommendations returned.");
+  }
+
+  const damagedTopFoodName = foods.slice(0, 5).map(foodLabel).find(hasCustomerVisibleMojibake);
+  if (damagedTopFoodName) {
+    warnings.push(`Customer-visible top food name contains mojibake: ${damagedTopFoodName}`);
   }
 
   if (safetyHardStop) return warnings;

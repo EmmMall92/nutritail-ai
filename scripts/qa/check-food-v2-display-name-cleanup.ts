@@ -323,6 +323,10 @@ function legacyGreekMojibake(value: string) {
   return new TextDecoder("iso-8859-7").decode(new TextEncoder().encode(value));
 }
 
+function hasLegacyGreekMojibake(value: string) {
+  return /(?:Ξ[\u0080-\u00ff\u0370-\u03ff]|Ο[\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€)/u.test(value);
+}
+
 const customerFoodNameCases = [
   {
     label: "Customer Purina UTF-8 Latin mojibake salmon title is readable",
@@ -557,6 +561,16 @@ for (const testCase of customerFoodNameCases) {
   if (actualName !== testCase.expectedName) {
     failures.push(
       `${testCase.label}: expected customer name "${testCase.expectedName}", got "${actualName}"`
+    );
+  }
+  if (hasLegacyGreekMojibake(actualDisplay)) {
+    failures.push(
+      `${testCase.label}: customer display still contains Greek mojibake "${actualDisplay}"`
+    );
+  }
+  if (hasLegacyGreekMojibake(actualName)) {
+    failures.push(
+      `${testCase.label}: customer name still contains Greek mojibake "${actualName}"`
     );
   }
 }
