@@ -1,6 +1,6 @@
 # Dog Chatbot 21 Live Cases
 
-Generated: 2026-06-23T06:43:14.584Z
+Generated: 2026-06-28T18:00:41.032Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
@@ -37,7 +37,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | Safety level | Pass rate | Common top-2 foods |
 | --- | ---: | --- |
 | normal | 8/8 | Happy Dog Fit & Vital Light (4); Brit Care Grain Free Puppy Salmon (2); Josera LIGHT & VITAL (2); N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi (2) |
-| vet_referral | 13/13 | Monge VetSolution Renal And Oxalate (5); Monge VetSolution Urinary Struvite (3); Josera GASTRO DRY (2); Josera SALMON & POTATO (2) |
+| vet_referral | 13/13 | Monge VetSolution Renal And Oxalate (5); Monge VetSolution Urinary Struvite (3); Josera GASTRO DRY (2); Monge All Breeds Adult Monoprotein Beef With Rice (2) |
 
 ### Recurring First Picks
 
@@ -61,8 +61,8 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 105 | pass | Brit Care Grain Free Puppy Salmon; N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed | - |
 | 116 | pass | Happy Dog Fit & Vital Light; Purina Pro Plan Veterinary Diets CANINE OM OBESITY MANAGEMENT; Josera LIGHT & VITAL | - |
 | 117 | pass | Josera LIGHT & VITAL; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
-| 121 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
-| 132 | pass | Josera GASTRO DRY; Josera SALMON & POTATO; Schesir Dry Medium Maintenance Chicken | - |
+| 121 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
+| 132 | pass | Josera GASTRO DRY; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
 | 141 | pass | Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes; Monge All Breeds Adult Monoprotein Salmon With Rice | - |
 | 151 | pass | Monge VetSolution Urinary Struvite; Monge VetSolution Renal And Oxalate; Royal Canin Vet Diet Urinary S/O | - |
 | 152 | pass | Monge VetSolution Urinary Struvite; Royal Canin Vet Diet Urinary S/O; Royal Canin Vet Diet Urinary S/O Small | - |

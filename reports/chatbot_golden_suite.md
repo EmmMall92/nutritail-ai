@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-23T06:43:15.325Z
+Generated: 2026-06-28T18:00:41.702Z
 
 ## Summary
 
@@ -45,7 +45,7 @@ Generated: 2026-06-23T06:43:15.325Z
 ### AI intake golden cases
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.7s
 - Command: `npm.cmd run qa:ai-intake`
 
 ```text
@@ -66,7 +66,7 @@ Generated: 2026-06-23T06:43:15.325Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -188,7 +188,7 @@ Food intelligence use-case QA passed.
 ### Medical nutrition rules
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:medical-rules`
 
 ```text
@@ -240,7 +240,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 45.3s
+- Duration: 54.8s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -250,8 +250,8 @@ Pancreatitis and fat-sensitive v2 QA passed.
   "siteUrl": "https://nutritail.ai",
   "scenarioSource": "data/evals/food-v2-recommendation-scenarios.json",
   "checked": 34,
-  "passed": 33,
-  "review": 1,
+  "passed": 34,
+  "review": 0,
   "report": "reports/food_v2_ranking_scenario_audit.md"
 }
 ```
@@ -266,7 +266,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:food-v2-guard-coverage
 > node scripts/qa/check-food-v2-guard-coverage.mjs
 {
-  "checkedExcludeSignals": 14,
+  "checkedExcludeSignals": 15,
   "missing": 0
 }
 ```
@@ -297,8 +297,8 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:customer-chatbot-flow-links
 > node scripts/qa/check-customer-chatbot-flow-links.mjs
 {
-  "checked": 78,
-  "passed": 78,
+  "checked": 146,
+  "passed": 146,
   "failed": 0,
   "report": "reports/customer_chatbot_flow_links_qa.md"
 }
@@ -307,7 +307,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer recommendation smoke
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:customer-recommendation-smoke`
 
 ```text
@@ -328,7 +328,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 35.3s
+- Duration: 34.2s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
@@ -349,7 +349,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer-facing recommendation copy
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-customer-recommendations`
 
 ```text
