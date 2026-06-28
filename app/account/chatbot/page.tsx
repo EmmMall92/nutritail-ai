@@ -2341,6 +2341,34 @@ function getLatestSavedPetAnalysis(savedPet: AccountPet) {
   return savedPet.analysisHistory?.[0] ?? null;
 }
 
+function formatSavedPetSpeciesLabel(
+  species: AccountPet["species"] | PetIntake["species"],
+  language: ChatLanguage = "en"
+) {
+  if (species === "dog") return language === "el" ? "σκύλος" : "dog";
+  if (species === "cat") return language === "el" ? "γάτα" : "cat";
+  return language === "el" ? "κατοικίδιο" : "pet";
+}
+
+function formatSavedPetActivityLabel(
+  activityLevel: AccountPet["activity_level"] | PetIntake["activityLevel"],
+  language: ChatLanguage = "en"
+) {
+  if (language !== "el") return activityLevel ?? "unknown";
+  if (activityLevel === "low") return "χαμηλή";
+  if (activityLevel === "normal") return "κανονική";
+  if (activityLevel === "high") return "υψηλή";
+  return "άγνωστη";
+}
+
+function formatSavedPetCardMeta(savedPet: AccountPet, language: ChatLanguage = "en") {
+  const species = formatSavedPetSpeciesLabel(savedPet.species, language);
+  const age = savedPet.age ?? "-";
+  const ageLabel = language === "el" ? `ηλικία ${age} ετών` : `age ${age}`;
+
+  return `${species} - ${savedPet.weight ?? "-"} kg - ${ageLabel}`;
+}
+
 function getHistoryWeightGoal(item?: AccountPetAnalysisHistoryItem | null) {
   return item?.weightGoal ?? item?.weight_goal ?? null;
 }
@@ -2437,12 +2465,12 @@ function formatSavedPetProfileSummary(
   const details =
     language === "el"
       ? [
-          `Προφίλ: ${savedPet.species === "dog" ? "σκύλος" : "γάτα"}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} ετών`,
-          `Δραστηριότητα: ${savedPet.activity_level ?? "άγνωστη"}`,
+          `Προφίλ: ${formatSavedPetCardMeta(savedPet, language)}`,
+          `Δραστηριότητα: ${formatSavedPetActivityLabel(savedPet.activity_level, language)}`,
           `Στειρωμένο: ${savedPet.neutered ? "ναι" : "όχι"}`,
         ]
       : [
-          `Profile: ${savedPet.species}, ${savedPet.weight ?? "-"} kg, ${savedPet.age ?? "-"} years`,
+          `Profile: ${formatSavedPetCardMeta(savedPet, language)}`,
           `Activity: ${savedPet.activity_level ?? "unknown"}`,
           `Neutered: ${savedPet.neutered ? "yes" : "no"}`,
         ];
@@ -5120,8 +5148,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {formatPetDisplayName(savedPet.name)}
                     </span>
                     <span className="mt-1 block text-sm text-gray-600">
-                      {savedPet.species} - {savedPet.weight} kg -{" "}
-                      {botText("ηλικία", "age")} {savedPet.age}
+                      {formatSavedPetCardMeta(savedPet, chatLanguage)}
                     </span>
                   </button>
                 ))
