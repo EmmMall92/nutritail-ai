@@ -1354,6 +1354,15 @@ function scoreFit(input: FoodV2RankingInput) {
         "Weight-control positioning does not replace digestive support."
       );
     }
+    if (hasAny(haystack, ["monoprotein", "mono protein", "single protein"]) && !hasDigestiveFit) {
+      addSignal(
+        signals,
+        "caution",
+        "monoprotein_not_digestive_fit",
+        -24,
+        "Monoprotein positioning alone does not replace digestive support for gas or stool concerns."
+      );
+    }
 
     applyLegacyRuleLabels(
       evaluateGiRules(

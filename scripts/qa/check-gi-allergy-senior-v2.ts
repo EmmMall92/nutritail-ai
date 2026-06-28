@@ -132,6 +132,23 @@ const genericFood = rankFoodV2ForPet({
   goal: "general",
 });
 
+const monoproteinOnlyFood = rankFoodV2ForPet({
+  food: food({
+    formula_key: "qa-monoprotein-adult",
+    display_name: "QA Adult Monoprotein Lamb",
+    formula_name: "Adult Monoprotein Lamb",
+    commercial_tags: ["monoprotein"],
+    ingredient_text: "lamb, rice, animal fat, minerals",
+    ingredients: ["lamb", "rice", "animal fat", "minerals"],
+    primary_animal_proteins: ["lamb"],
+    carbohydrate_sources: ["rice"],
+    fiber_sources: [],
+  }),
+  nutrients: nutrients({ fiber_percent: null }),
+  pet: giDog,
+  goal: "general",
+});
+
 assert(
   codes(digestiveFood).includes("digestive_support_positioning") &&
     codes(digestiveFood).includes("digestibility_support_context"),
@@ -144,9 +161,15 @@ assert(
   genericFood
 );
 assert(
-  digestiveFood.total_score > genericFood.total_score,
-  "Digestive-positioned food should outrank generic food for GI symptoms.",
-  { digestiveFood, genericFood }
+  codes(monoproteinOnlyFood).includes("monoprotein_not_digestive_fit"),
+  "Monoprotein positioning alone should be cautioned for chronic gas or stool concerns.",
+  monoproteinOnlyFood
+);
+assert(
+  digestiveFood.total_score > genericFood.total_score &&
+    digestiveFood.total_score > monoproteinOnlyFood.total_score,
+  "Digestive-positioned food should outrank generic or monoprotein-only food for GI symptoms.",
+  { digestiveFood, genericFood, monoproteinOnlyFood }
 );
 
 const chickenAllergy = rankFoodV2ForPet({
