@@ -130,11 +130,62 @@ function normalizeVisibleMojibakeFlavorTokens(value: string) {
     ["Ξ“Ξ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±", "Turkey"],
   ];
 
-  return replacements.reduce(
+  const normalized = replacements.reduce(
     (current, [brokenToken, readableToken]) =>
       current.split(brokenToken).join(readableToken),
     value
   );
+
+  return replaceGeneratedGreekFoodTokenVariants(normalized);
+}
+
+const CUSTOMER_GREEK_FOOD_TOKENS = [
+  ["Ψάρια Ωκεανού", "Ψάρια Ωκεανού"],
+  ["Σολομός", "Σολομός"],
+  ["Κοτόπουλο", "Κοτόπουλο"],
+  ["Γαλοπούλα", "Γαλοπούλα"],
+  ["Μοσχάρι", "Μοσχάρι"],
+  ["Κουνέλι", "Κουνέλι"],
+  ["Αρνί", "Αρνί"],
+  ["Ψάρι", "Ψάρι"],
+  ["Ρύζι", "Ρύζι"],
+  ["Με ", "Με "],
+] as const;
+
+function utf8AsLatin1Mojibake(value: string) {
+  return String.fromCharCode(...new TextEncoder().encode(value));
+}
+
+function utf8AsIsoGreekMojibake(value: string) {
+  return new TextDecoder("iso-8859-7").decode(new TextEncoder().encode(value));
+}
+
+function generatedGreekFoodTokenVariants(value: string) {
+  const variants = new Set<string>();
+  const firstPassLatin = utf8AsLatin1Mojibake(value);
+  const firstPassIsoGreek = utf8AsIsoGreekMojibake(value);
+
+  variants.add(firstPassLatin);
+  variants.add(firstPassIsoGreek);
+  variants.add(utf8AsLatin1Mojibake(firstPassLatin));
+  variants.add(utf8AsLatin1Mojibake(firstPassIsoGreek));
+  variants.add(utf8AsIsoGreekMojibake(firstPassLatin));
+  variants.add(utf8AsIsoGreekMojibake(firstPassIsoGreek));
+  variants.delete(value);
+
+  return [...variants].sort((left, right) => right.length - left.length);
+}
+
+function replaceGeneratedGreekFoodTokenVariants(value: string) {
+  let current = value;
+
+  for (const [readableToken, replacement] of CUSTOMER_GREEK_FOOD_TOKENS) {
+    for (const brokenToken of generatedGreekFoodTokenVariants(readableToken)) {
+      current = current.split(brokenToken).join(replacement);
+    }
+  }
+
+  return current;
 }
 
 function getIsoGreekReverseMap() {

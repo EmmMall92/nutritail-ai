@@ -323,11 +323,104 @@ function legacyGreekMojibake(value: string) {
   return new TextDecoder("iso-8859-7").decode(new TextEncoder().encode(value));
 }
 
+function greekFromCodePoints(...codes: number[]) {
+  return String.fromCharCode(...codes);
+}
+
+function utf8LatinMojibake(value: string) {
+  return String.fromCharCode(...new TextEncoder().encode(value));
+}
+
+function isoGreekMojibake(value: string) {
+  return new TextDecoder("iso-8859-7").decode(new TextEncoder().encode(value));
+}
+
+function doubleIsoGreekMojibake(value: string) {
+  return isoGreekMojibake(isoGreekMojibake(value));
+}
+
+const greekLamb = greekFromCodePoints(0x0391, 0x03c1, 0x03bd, 0x03af);
+const greekSalmon = greekFromCodePoints(
+  0x03a3,
+  0x03bf,
+  0x03bb,
+  0x03bf,
+  0x03bc,
+  0x03cc,
+  0x03c2
+);
+const greekChicken = greekFromCodePoints(
+  0x039a,
+  0x03bf,
+  0x03c4,
+  0x03cc,
+  0x03c0,
+  0x03bf,
+  0x03c5,
+  0x03bb,
+  0x03bf
+);
+const greekRice = greekFromCodePoints(0x03a1, 0x03cd, 0x03b6, 0x03b9);
+
 function hasLegacyGreekMojibake(value: string) {
   return /(?:Ξ[\u0080-\u00ff\u0370-\u03ff]|Ο[\u0080-\u00ff]|[ÎÏ][\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€|�)/u.test(value);
 }
 
 const customerFoodNameCases = [
+  {
+    label: "Customer Purina UTF-8 Latin lamb token becomes real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `MEDIUM ADULT Sensitive Digestion ${utf8LatinMojibake(greekLamb)}`,
+    },
+    expectedDisplay: `MEDIUM ADULT Sensitive Digestion ${greekLamb}`,
+    expectedName: `Purina Pro Plan - MEDIUM ADULT Sensitive Digestion ${greekLamb}`,
+  },
+  {
+    label: "Customer Purina UTF-8 Latin salmon token becomes real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `MEDIUM ADULT Sensitive Skin ${utf8LatinMojibake(greekSalmon)}`,
+    },
+    expectedDisplay: `MEDIUM ADULT Sensitive Skin ${greekSalmon}`,
+    expectedName: `Purina Pro Plan - MEDIUM ADULT Sensitive Skin ${greekSalmon}`,
+  },
+  {
+    label: "Customer Purina UTF-8 Latin chicken token becomes real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `MEDIUM ADULT Everyday Nutrition ${utf8LatinMojibake(greekChicken)}`,
+    },
+    expectedDisplay: `MEDIUM ADULT Everyday Nutrition ${greekChicken}`,
+    expectedName: `Purina Pro Plan - MEDIUM ADULT Everyday Nutrition ${greekChicken}`,
+  },
+  {
+    label: "Customer Happy Dog UTF-8 Latin rice token becomes real Greek",
+    input: {
+      brand: "Happy Dog",
+      display_name: `Naturcroq ${greekSalmon} & ${utf8LatinMojibake(greekRice)}`,
+    },
+    expectedDisplay: `Naturcroq ${greekSalmon} & ${greekRice}`,
+    expectedName: `Happy Dog - Naturcroq ${greekSalmon} & ${greekRice}`,
+  },
+  {
+    label: "Customer Purina ISO Greek lamb token becomes real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `MEDIUM ADULT Sensitive Digestion ${isoGreekMojibake(greekLamb)}`,
+    },
+    expectedDisplay: `MEDIUM ADULT Sensitive Digestion ${greekLamb}`,
+    expectedName: `Purina Pro Plan - MEDIUM ADULT Sensitive Digestion ${greekLamb}`,
+  },
+  {
+    label: "Customer Purina double ISO Greek salmon token becomes real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: `MEDIUM ADULT Sensitive Skin ${doubleIsoGreekMojibake(greekSalmon)}`,
+    },
+    expectedDisplay: `MEDIUM ADULT Sensitive Skin ${greekSalmon}`,
+    expectedName: `Purina Pro Plan - MEDIUM ADULT Sensitive Skin ${greekSalmon}`,
+  },
   {
     label: "Customer Purina UTF-8 Latin mojibake salmon title is readable",
     input: {
