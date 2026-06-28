@@ -1,6 +1,6 @@
 # Dog 201-600 Coverage Audit
 
-Generated: 2026-06-23T06:41:48.870Z
+Generated: 2026-06-28T17:59:06.705Z
 Fixture: `data/evals/chatbot-extra-cases-dog-201-600.json`
 Result: PASS
 
