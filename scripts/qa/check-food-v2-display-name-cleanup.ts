@@ -324,7 +324,7 @@ function legacyGreekMojibake(value: string) {
 }
 
 function hasLegacyGreekMojibake(value: string) {
-  return /(?:Ξ[\u0080-\u00ff\u0370-\u03ff]|Ο[\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€)/u.test(value);
+  return /(?:Ξ[\u0080-\u00ff\u0370-\u03ff]|Ο[\u0080-\u00ff]|[ÎÏ][\u0080-\u00ff]|[Γγ][\u0080-\u00ff]|[Ββ][®€]|β€|�)/u.test(value);
 }
 
 const customerFoodNameCases = [
