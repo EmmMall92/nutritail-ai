@@ -30,6 +30,12 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage: "Customer-visible breed-size positioning does not fit this dog.",
   },
+  small_dog_medium_visible_mismatch: {
+    code: "small_dog_medium_visible_mismatch",
+    severity: "block",
+    fallbackMessage:
+      "A visibly medium-positioned formula is not the best starting point for this small dog.",
+  },
   contradicting_species_label: {
     code: "contradicting_species_label",
     severity: "block",
