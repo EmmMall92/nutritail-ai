@@ -464,6 +464,10 @@ const forbiddenChatbotPageCopy = [
   "result.summary.note",
   "Use this as a structured comparison aid.",
   "Χρησιμοποίησέ το σαν δομημένη βοήθεια σύγκρισης.",
+  "Treat allowance:",
+  "Όριο για λιχουδιές:",
+  "Goal: weight maintenance. Calories are based on maintenance needs.",
+  "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)
@@ -518,6 +522,7 @@ const requiredCardFlowCopy = [
   "Daily calorie guide",
   "Resting need:",
   "Final daily target:",
+  "Treats: up to about",
   "What matters for this pet:",
   "The food cards below are the next step. Choose one option to estimate the daily portion.",
   "formatCompareCustomerTakeaway",
@@ -618,6 +623,7 @@ const requiredGreekCardFlowCopy = [
   "Οδηγός ημερήσιων θερμίδων",
   "Θερμίδες ηρεμίας:",
   "Τελικός ημερήσιος στόχος:",
+  "Λιχουδιές: έως περίπου",
   "Τι έχει σημασία για αυτό το κατοικίδιο:",
   "Οι κάρτες τροφών παρακάτω είναι το επόμενο βήμα.",
   "Το πλάνο σου είναι έτοιμο",

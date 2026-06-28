@@ -2926,7 +2926,12 @@ function extractReadableProgressDetails(text: string) {
 function formatAnalysisResult(
   analysis: PetAnalysis,
   language: ChatLanguage = "en",
-  finalDailyCalories?: number | null
+  finalDailyCalories?: number | null,
+  treats?: {
+    dailyCalories: number;
+    maxTreatCalories: number;
+    mainFoodCalories: number;
+  } | null
 ) {
   const { nutrition, advice } = analysis;
   const translateAdviceTitle = (title: string) => {
@@ -2959,18 +2964,24 @@ function formatAnalysisResult(
   const finalCalories =
     finalDailyCalories && finalDailyCalories > 0 ? finalDailyCalories : nutrition.der;
   const hasGoalAdjustment = finalCalories !== nutrition.der;
+  const treatsLineEl = treats
+    ? `\n- Λιχουδιές: έως περίπου ${treats.maxTreatCalories} kcal/ημέρα, μέσα στον ημερήσιο στόχο.`
+    : "";
+  const treatsLineEn = treats
+    ? `\n- Treats: up to about ${treats.maxTreatCalories} kcal/day, inside the daily target.`
+    : "";
   const englishDailyTargetBlock = hasGoalAdjustment
     ? `- Final daily target: ${finalCalories} kcal/day
-  This is the number we will use for the feeding plan. The starting estimate was ${nutrition.der} kcal/day and it was adjusted for the weight goal.`
+  This is the number we will use for the feeding plan. The starting estimate was ${nutrition.der} kcal/day and it was adjusted for the weight goal.${treatsLineEn}`
     : `- Final daily target: ${finalCalories} kcal/day
-  This is the practical target for the day, based on weight, age, activity, neuter status, and weight goal.`;
+  This is the practical target for the day, based on weight, age, activity, neuter status, and weight goal.${treatsLineEn}`;
 
   if (language === "el") {
     const greekDailyTargetBlock = hasGoalAdjustment
       ? `- Τελικός ημερήσιος στόχος: ${finalCalories} kcal/ημέρα
-  Αυτό είναι το ποσό που θα χρησιμοποιήσουμε για το πλάνο ταΐσματος. Η αρχική εκτίμηση ήταν ${nutrition.der} kcal/ημέρα και προσαρμόστηκε με βάση τον στόχο βάρους.`
+  Αυτό είναι το ποσό που θα χρησιμοποιήσουμε για το πλάνο ταΐσματος. Η αρχική εκτίμηση ήταν ${nutrition.der} kcal/ημέρα και προσαρμόστηκε με βάση τον στόχο βάρους.${treatsLineEl}`
       : `- Τελικός ημερήσιος στόχος: ${finalCalories} kcal/ημέρα
-  Αυτό είναι το πρακτικό ποσό για την ημέρα, με βάση βάρος, ηλικία, δραστηριότητα, στείρωση και στόχο βάρους.`;
+  Αυτό είναι το πρακτικό ποσό για την ημέρα, με βάση βάρος, ηλικία, δραστηριότητα, στείρωση και στόχο βάρους.${treatsLineEl}`;
 
     return `Το διατροφικό πλάνο είναι έτοιμο:
 
@@ -4057,59 +4068,14 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
           der: adjustedCalories,
         },
       };
+      const treats = calculateTreatsAllowance(adjustedCalories);
 
       addMessages(
         createMessage(
           "bot",
-          formatAnalysisResult(displayAnalysis, chatLanguage, adjustedCalories)
+          formatAnalysisResult(displayAnalysis, chatLanguage, adjustedCalories, treats)
         )
       );
-
-      if (nextPet.weightGoal) {
-        addMessages(
-          createMessage(
-          "bot",
-          nextPet.weightGoal === "maintain"
-            ? botText(
-                "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
-                "Goal: weight maintenance. Calories are based on maintenance needs."
-              )
-            : nextPet.weightGoal === "loss"
-              ? botText(
-                  "Στόχος: απώλεια βάρους. Οι θερμίδες μειώνονται προσεκτικά για πιο ασφαλή έλεγχο βάρους.",
-                  "Goal: weight loss. Calories have been reduced carefully for safer weight control."
-                )
-              : botText(
-                  "Στόχος: αύξηση βάρους. Οι θερμίδες αυξάνονται ελεγχόμενα.",
-                  "Goal: weight gain. Calories have been increased in a controlled way."
-                )
-        )
-      );
-      }
-
-      const treats = calculateTreatsAllowance(adjustedCalories);
-
-      if (treats) {
-        addMessages(
-          createMessage(
-            "bot",
-            botText(
-              `Όριο για λιχουδιές:
-Οι λιχουδιές καλό είναι να μένουν περίπου στο 10% των ημερήσιων θερμίδων.
-
-Τελικός ημερήσιος στόχος: ${treats.dailyCalories} kcal/ημέρα
-Μέγιστο από λιχουδιές: περίπου ${treats.maxTreatCalories} kcal/ημέρα
-Θερμίδες από κύρια τροφή: περίπου ${treats.mainFoodCalories} kcal/ημέρα`,
-              `Treat allowance:
-Treats should stay around 10% of daily calories.
-
-Final daily calorie target: ${treats.dailyCalories} kcal/day
-Maximum from treats: about ${treats.maxTreatCalories} kcal/day
-Main food calories: about ${treats.mainFoodCalories} kcal/day`
-            )
-          )
-        );
-      }
 
       const guardrailText = buildGuardrailText(nextPet, chatLanguage);
 
