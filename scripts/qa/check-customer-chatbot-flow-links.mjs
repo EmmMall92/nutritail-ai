@@ -207,6 +207,16 @@ const checks = [
     expected: 'botText("Άλλη τροφή", "Another food")',
   },
   {
+    label: "Chatbot account header action is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'botText("Λογαριασμός", "Account")',
+  },
+  {
+    label: "Chatbot restart header action is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'botText("Επανεκκίνηση", "Restart")',
+  },
+  {
     label: "Saved pet picker uses localized customer-facing pet metadata",
     file: "app/account/chatbot/page.tsx",
     expected: "formatSavedPetCardMeta(savedPet, chatLanguage)",
