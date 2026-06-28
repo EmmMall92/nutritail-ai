@@ -258,6 +258,9 @@ const compactForbidden = [
   "simple alternatives:",
   "save the plan",
   "save it",
+  "αποθήκευση",
+  "αποθηκεύσεις",
+  "να κρατήσω την τροφή",
 ];
 
 for (const scenario of scenarios) {
@@ -267,6 +270,11 @@ for (const scenario of scenarios) {
   });
   const compact = formatFoodV2ChatbotRecommendationSummary(scenario.response, {
     locale: "en",
+    maxItemsPerSection: 2,
+    compactForCards: true,
+  });
+  const compactGreek = formatFoodV2ChatbotRecommendationSummary(scenario.response, {
+    locale: "el",
     maxItemsPerSection: 2,
     compactForCards: true,
   });
@@ -303,13 +311,13 @@ for (const scenario of scenarios) {
   }
 
   const compactLeaks = compactForbidden.filter((term) =>
-    compact.toLowerCase().includes(term.toLowerCase())
+    `${compact}\n${compactGreek}`.toLowerCase().includes(term.toLowerCase())
   );
 
   if (compactLeaks.length > 0) {
     console.error(`Scenario ${scenario.label} compact card intro is too list-like or asks for save.`);
     console.error(compactLeaks.join(", "));
-    console.error(compact);
+    console.error(`${compact}\n${compactGreek}`);
     process.exit(1);
   }
 }
