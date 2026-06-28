@@ -492,6 +492,23 @@ if (!chatbotPage.includes("if (analysisFoodChoices.length === 0)")) {
   process.exit(1);
 }
 
+const requiredLocalizedFoodQualityNote = [
+  "function getFoodQualityNote(food: Record<string, unknown>, language: ChatLanguage)",
+  "const isGreek = language === \"el\"",
+  "qualityNote: getFoodQualityNote(matchedFood, chatLanguage)",
+  "This food has enough label detail for a clearer nutrition discussion.",
+  "I do not have every label detail yet, so I will treat this as a possible fit rather than an absolute answer.",
+];
+const missingLocalizedFoodQualityNote = requiredLocalizedFoodQualityNote.filter(
+  (term) => !chatbotPage.includes(term)
+);
+
+if (missingLocalizedFoodQualityNote.length > 0) {
+  console.error("Current-food match quality notes must be localized for Greek and English chats:");
+  console.error(missingLocalizedFoodQualityNote.join(", "));
+  process.exit(1);
+}
+
 const requiredCompareNameCleanup = [
   'import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";',
   "function getFoodV2CustomerDisplayName",
