@@ -502,6 +502,24 @@ const customerFoodNameCases = [
     expectedName: "Monge VetSolution - Renal And Oxalate",
   },
   {
+    label: "Customer Monge BWild brand does not repeat line token",
+    input: {
+      brand: "Monge BWild",
+      display_name: "Bwild Grain Free Sterilised Tuna With Peas",
+    },
+    expectedDisplay: "Grain Free Sterilised Tuna With Peas",
+    expectedName: "Monge BWild - Grain Free Sterilised Tuna With Peas",
+  },
+  {
+    label: "Customer ORIJEN name removes cross-brand Acana alias",
+    input: {
+      brand: "ORIJEN",
+      display_name: "Acana Tundra Adult Cat & Kitten",
+    },
+    expectedDisplay: "Tundra Adult Cat & Kitten",
+    expectedName: "ORIJEN - Tundra Adult Cat & Kitten",
+  },
+  {
     label: "Customer AATU repeated life-stage token is cleaned",
     input: {
       brand: "AATU",
