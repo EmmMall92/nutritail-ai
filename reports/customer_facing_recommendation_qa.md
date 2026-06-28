@@ -1,6 +1,6 @@
 # Customer-Facing Recommendation QA
 
-Generated: 2026-06-28T12:33:01.078Z
+Generated: 2026-06-28T13:57:28.856Z
 
 This QA checks that Food V2 recommendations are presented in customer language without backend labels, raw scores, or confusing save-before-choice flows.
 
@@ -8,8 +8,8 @@ This QA checks that Food V2 recommendations are presented in customer language w
 
 - Scenario summaries checked: 6
 - Forbidden customer-facing terms checked: 32
-- Required card-flow copy checks: 83
-- Required Greek card-flow copy checks: 36
+- Required card-flow copy checks: 85
+- Required Greek card-flow copy checks: 40
 - Result: PASS
 
 ## Covered Scenarios

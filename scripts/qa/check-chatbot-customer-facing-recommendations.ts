@@ -506,15 +506,16 @@ const requiredCardFlowCopy = [
   "Best match",
   "Practical option",
   "Good alternative",
-  "Estimate portions",
-  "Foods worth checking first",
+  "Get daily grams",
+  "Choose the food to start with",
   "Next: estimate the daily portion.",
-  "Estimate portion",
-  "Start with the first card, or choose another option if it fits flavour, brand, or budget better.",
-  "Choose one card to estimate the first grams/day. Then you can save the plan.",
-  "1. Review",
+  "Get grams",
+  "The first card is the strongest starting point. The others are good options if they fit flavour, brand, or budget better.",
+  "Pick the food you like to get the first daily portion in grams.",
+  "1. Compare",
   "2. Choose",
   "3. Get",
+  "At a glance",
   "Best overall match for this pet's profile.",
   "Practical alternative when you want a simpler option.",
   "Another suitable option if you want a different direction.",
@@ -602,15 +603,16 @@ const requiredGreekCardFlowCopy = [
   "Καλύτερη επιλογή",
   "Πρακτική επιλογή",
   "Καλή εναλλακτική",
-  "Υπολόγισε γραμμάρια/ημέρα",
-  "Οι τροφές που αξίζει να δεις πρώτα",
+  "Πάρε γραμμάρια/ημέρα",
+  "Διάλεξε την τροφή που σου ταιριάζει",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-  "Πάτησε για ποσότητα",
-  "Ξεκίνα από την πρώτη κάρτα",
-  "Πάτησε μία κάρτα για να δω την πρώτη ποσότητα",
-  "1. Δες",
-  "2. Πάτησε",
+  "Πάρε γραμμάρια",
+  "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση.",
+  "Πάτησε την τροφή που σου αρέσει για να πάρεις την πρώτη ποσότητα",
+  "1. Σύγκρινε",
+  "2. Διάλεξε",
   "3. Πάρε",
+  "Με μια ματιά",
   "Η πιο δυνατή πρώτη επιλογή για το προφίλ που έδωσες.",
   "Πιο απλή/value εναλλακτική",
   "Καλή εναλλακτική, αν θέλεις να δεις κι άλλη σωστή κατεύθυνση.",
@@ -654,12 +656,12 @@ const recommendationBlockIndex = chatbotPage.lastIndexOf(
   "showSave && recommendedFoodChoices.length > 0",
   recommendedChoicesIndex
 );
-const pickStepIndex = chatbotPage.lastIndexOf("1. Review", recommendedChoicesIndex);
+const pickStepIndex = chatbotPage.lastIndexOf("1. Compare", recommendedChoicesIndex);
 const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
 );
-const cardCtaIndex = chatbotPage.indexOf("Estimate portions", recommendedChoicesIndex);
+const cardCtaIndex = chatbotPage.indexOf("Get daily grams", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||
