@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-28T12:18:53.567Z
+Generated: 2026-06-28T14:50:41.454Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -35,14 +35,14 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Suite | Source report | Fixture | Checked | Passed | Needs review | Encoding repairs | Encoding issues | Runner | OpenAI extraction | Last run |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
 | Dog chatbot live QA 001-200 | `reports/dog_chatbot_200_live_cases.md` | `data/evals/chatbot-extra-cases-dog-001-100.json + data/evals/chatbot-dog-edge-cases-101-200.json` | 200 | 200 | 0 | 0 | 0 | `legacy live QA runner` | skipped | 2026-06-23T05:15:13.589Z |
-| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | 0 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-23T05:45:19.897Z |
+| Dog chatbot live QA 201-600 | `reports/dog_chatbot_live_cases_201-600.md` | `data/evals/chatbot-extra-cases-dog-201-600.json` | 400 | 400 | 0 | 0 | 0 | `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks` | skipped | 2026-06-28T14:50:03.587Z |
 | Cat chatbot live QA 001-500 | `reports/cat_chatbot_live_cases_1-500.md` | `data/evals/chatbot-extra-cases-cat-001-500.json` | 500 | 500 | 0 | 0 | 0 | `npm.cmd run qa:cat-chatbot-live-cases:500:chunks` | skipped | 2026-06-26T20:25:26.105Z |
 
 ## Intake Evidence
 
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
-| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-23T06:41:46.475Z |
+| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-28T12:28:08.306Z |
 | OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-28T12:17:57.888Z |
 
 ## Response Contract Evidence
@@ -55,8 +55,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-23T06:43:15.286Z |
-| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-22T20:26:11.701Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-28T13:57:28.856Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-28T12:41:28.106Z |
 
 ## Fixture And Coverage Evidence
 

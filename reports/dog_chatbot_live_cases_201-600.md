@@ -1,7 +1,7 @@
 # Dog Chatbot Live Cases 201-600
 
 Site: https://nutritail.ai
-Run date: 2026-06-23T05:45:19.897Z
+Run date: 2026-06-28T14:50:03.587Z
 Runner: `npm.cmd run qa:dog-chatbot-live-cases:201-600:chunks`
 OpenAI extraction: skipped
 Result: 400/400 passed, 0 review
