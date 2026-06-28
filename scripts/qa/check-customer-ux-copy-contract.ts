@@ -95,6 +95,16 @@ const bannedExactCustomerStrings = [
     text: "Save profile",
     reason: "Profile save copy should be localized for customers.",
   },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Food match",
+    reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "No matched food",
+    reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",
+  },
 ];
 
 const failures: string[] = [];

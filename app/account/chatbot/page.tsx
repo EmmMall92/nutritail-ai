@@ -5597,11 +5597,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
                     <p className="text-gray-500">
-                      {botText("Επιλογή τροφής", "Food match")}
+                      {botText("Επιλογή τροφής", "Selected food")}
                     </p>
                     <p className="font-semibold text-black">
                       {analysisMetadata?.matchedFoodName ??
-                        botText("Δεν επιλέχθηκε ακόμη τροφή", "No matched food")}
+                        botText("Δεν επιλέχθηκε ακόμη τροφή", "No food selected yet")}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
