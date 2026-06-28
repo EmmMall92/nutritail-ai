@@ -45,7 +45,10 @@ const greekPatterns = {
     "κατερρευ|καταρρευσ|collapse|collapsed|εντον\\w*\\s+.{0,25}πονο|ποναει\\s+πολυ|πονο\\w*\\s+.{0,25}κοιλι|διπλωνεται\\s+.{0,25}πονο|severe\\s+(abdominal\\s+)?pain"
   ),
   notDrinking: rx(
-    "(δεν|δε)\\s+πινει\\s+.{0,35}(καθολου|νερο)|χωρις\\s+νερο|αφυδατ|not\\s+drinking|dehydrat"
+    "(δεν|δε)\\s+πινει\\s+.{0,35}(καθολου)|χωρις\\s+νερο|αφυδατ|not\\s+drinking(?!\\s+much)|dehydrat"
+  ),
+  lowWaterIntake: rx(
+    "(δεν|δε)\\s+πινει\\s+.{0,35}(αρκετ|πολυ|νερο)|πινει\\s+λιγο\\s+νερο|low\\s+water\\s+intake|not\\s+drinking\\s+much"
   ),
   severeAllergy: rx(
     "πρηξ\\w*\\s+.{0,30}(μουτρ|προσωπ)|δυσκολ\\w*\\s+.{0,30}αναπν|πνιγ|σοβαρ\\w*\\s+.{0,30}αλλεργ|swollen\\s+face|difficulty\\s+breathing|severe\\s+allerg"
@@ -125,10 +128,19 @@ const SAFETY_RULES: SafetyRule[] = [
   {
     code: "not_drinking",
     severity: "hard_stop",
-    patterns: [/not\s+drinking/iu, /no\s+water/iu, greekPatterns.notDrinking],
+    patterns: [/not\s+drinking(?!\s+much)/iu, /no\s+water/iu, greekPatterns.notDrinking],
     message: {
       el: "Αν δεν πίνει καθόλου νερό ή δείχνει αφυδατωμένο, χρειάζεται κτηνιατρική εκτίμηση πριν από διατροφική σύσταση.",
       en: "If the pet is not drinking or seems dehydrated, veterinary assessment should come before food advice.",
+    },
+  },
+  {
+    code: "low_water_intake",
+    severity: "warning",
+    patterns: [greekPatterns.lowWaterIntake],
+    message: {
+      el: "Αν πίνει λιγότερο νερό από το συνηθισμένο, κράτα το υπό παρακολούθηση και μίλα με κτηνίατρο αν συνεχιστεί ή συνδυάζεται με αδιαθεσία. Η τροφή μπορεί να συζητηθεί, αλλά όχι σαν διάγνωση.",
+      en: "If water intake is lower than usual, monitor it and speak with a veterinarian if it persists or comes with illness signs. Food can be discussed, but not as a diagnosis.",
     },
   },
   {
