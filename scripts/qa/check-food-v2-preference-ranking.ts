@@ -269,6 +269,37 @@ if (
   process.exit(1);
 }
 
+const reorderedDuplicateSplit = splitFoodV2Recommendations([
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|reordered-duplicate-lower|dog|dry",
+    display_name: "Quinoa Grain Free Duck Neutered Adult Med/maxi",
+    brand: "N&D",
+    total_score: 82,
+  },
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|reordered-duplicate-higher|dog|dry",
+    display_name: "Quinoa Grain Free Neutered Duck Adult Med/maxi",
+    brand: "N&D",
+    total_score: 88,
+  },
+]);
+
+const visibleReorderedDuplicates = [
+  ...reorderedDuplicateSplit.premium,
+  ...reorderedDuplicateSplit.value,
+].filter((ranking) => ranking.brand === "N&D" && ranking.display_name.includes("Quinoa Grain Free"));
+
+if (
+  visibleReorderedDuplicates.length !== 1 ||
+  visibleReorderedDuplicates[0]?.formula_key !== "qa|reordered-duplicate-higher|dog|dry"
+) {
+  console.error("Visible recommendations should dedupe reordered duplicate food names.");
+  console.error(reorderedDuplicateSplit);
+  process.exit(1);
+}
+
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
   process.exit(1);
