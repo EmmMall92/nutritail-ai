@@ -220,6 +220,42 @@ function removeCustomerPackAndPromoText(displayName: string) {
     .trim();
 }
 
+function titleCaseAllCapsCustomerName(displayName: string) {
+  if (!/[A-Z]{3}/.test(displayName) || /[a-z]/.test(displayName)) {
+    return displayName;
+  }
+
+  const preservedAcronyms = new Set(["DHA", "EPA", "GI", "NF", "OM", "UC"]);
+
+  return displayName
+    .split(/(\s+)/)
+    .map((part) => {
+      if (/^\s+$/.test(part)) return part;
+
+      return part
+        .split("/")
+        .map((slashPart) => {
+          const match = slashPart.match(/^([^A-Z0-9]*)([A-Z0-9&+-]+)([^A-Z0-9]*)$/);
+          if (!match) return slashPart;
+
+          const [, leading, core, trailing] = match;
+          if (preservedAcronyms.has(core) || /\d/.test(core)) return slashPart;
+          if (core.includes("&")) {
+            return `${leading}${core
+              .split("&")
+              .map((token) =>
+                token ? `${token[0]}${token.slice(1).toLowerCase()}` : token
+              )
+              .join("&")}${trailing}`;
+          }
+
+          return `${leading}${core[0]}${core.slice(1).toLowerCase()}${trailing}`;
+        })
+        .join("/");
+    })
+    .join("");
+}
+
 export function customerFoodDisplayName(food: FoodNameInput) {
   const brand = cleanNamePart(food.brand);
   let displayName = cleanNamePart(food.display_name);
@@ -288,6 +324,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
       .replace(/\s+/g, " ")
       .trim()
   );
+  cleanedDisplayName = titleCaseAllCapsCustomerName(cleanedDisplayName);
 
   if (
     brand &&

@@ -440,9 +440,9 @@ const customerFoodNameCases = [
       brand: "Purina Pro Plan Veterinary Diets",
       display_name: "PRO Plan® VETERINARY DIETS CANINE OM OBESITY MANAGEMENT",
     },
-    expectedDisplay: "CANINE OM OBESITY MANAGEMENT",
+    expectedDisplay: "Canine OM Obesity Management",
     expectedName:
-      "Purina Pro Plan Veterinary Diets - CANINE OM OBESITY MANAGEMENT",
+      "Purina Pro Plan Veterinary Diets - Canine OM Obesity Management",
   },
   {
     label: "Regular brand and display name stays readable",
@@ -518,6 +518,33 @@ const customerFoodNameCases = [
     },
     expectedDisplay: "Tundra Adult Cat & Kitten",
     expectedName: "ORIJEN - Tundra Adult Cat & Kitten",
+  },
+  {
+    label: "Customer all-caps Josera formula is title-cased",
+    input: {
+      brand: "Josera",
+      display_name: "Josera ACTIVE NATURE",
+    },
+    expectedDisplay: "Active Nature",
+    expectedName: "Josera - Active Nature",
+  },
+  {
+    label: "Customer all-caps veterinary formula preserves medical acronym",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin URINARY S/O",
+    },
+    expectedDisplay: "Urinary S/O",
+    expectedName: "Royal Canin - Urinary S/O",
+  },
+  {
+    label: "Customer all-caps giant puppy formula is title-cased around punctuation",
+    input: {
+      brand: "Royal Canin",
+      display_name: "Royal Canin JUNIOR - GIANT",
+    },
+    expectedDisplay: "Junior - Giant",
+    expectedName: "Royal Canin - Junior - Giant",
   },
   {
     label: "Customer AATU repeated life-stage token is cleaned",
