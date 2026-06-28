@@ -55,14 +55,14 @@ export default function AccountLayout({
             onClick={handleLogout}
             className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100"
           >
-            Logout
+            Αποσύνδεση
           </button>
         </div>
       </header>
 
       <nav className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-5xl gap-2 overflow-x-auto px-4 py-3 sm:flex-wrap sm:px-6">
-          <AccountNavLink href="/account" label="Dashboard" pathname={pathname} />
+          <AccountNavLink href="/account" label="Πίνακας" pathname={pathname} />
           <AccountNavLink
             href="/account/chatbot"
             label="Chatbot"
@@ -70,12 +70,12 @@ export default function AccountLayout({
           />
           <AccountNavLink
             href="/account/pets"
-            label="My Pets"
+            label="Κατοικίδια"
             pathname={pathname}
           />
           <AccountNavLink
             href="/account/profile"
-            label="Profile"
+            label="Προφίλ"
             pathname={pathname}
           />
         </div>
