@@ -1,6 +1,6 @@
 # Vercel OpenAI Env QA
 
-Generated: 2026-06-28T18:42:56.547Z
+Generated: 2026-06-28T22:09:49.684Z
 
 This QA checks that the production Vercel project has an encrypted OpenAI API key configured.
 It never prints or stores the secret value.
@@ -8,14 +8,14 @@ It never prints or stores the secret value.
 ## Summary
 
 - Checks: 2
-- Passed: 1
-- Failed: 1
+- Passed: 2
+- Failed: 0
 
 ## Result
 
-FAIL
+PASS
 
 ## Details
 
-- OPENAI_API_KEY exists in Vercel Production but its pulled value is empty.
-- Set a non-empty Production value in Vercel before relying on OpenAI runtime behavior.
+- OPENAI_API_KEY is configured as an encrypted Production environment variable.
+- This check intentionally does not pull or inspect the secret value; runtime connectivity is checked from the admin validation page with `/api/admin/ai-status?ping=1`.
