@@ -102,6 +102,79 @@ const felineNamedDogFood = [...result.premium, ...result.value, ...result.hold].
   (item) => item.formula_key === "qa|urinary-feline|dog|dry"
 );
 
+const genericBreedAdultForSmallSterilised = food({
+  id: "generic-breed-adult-small-sterilised",
+  formula_key: "qa|generic-breed-adult-small-sterilised|dog|dry",
+  brand: "Royal Canin",
+  display_name: "Schnauzer Adult",
+  formula_name: "Schnauzer Adult",
+  dog_size: "small",
+  breed_target: "Schnauzer",
+  ingredients: ["poultry protein", "rice"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: null,
+});
+const clearSmallSterilisedFood = food({
+  id: "clear-small-sterilised",
+  formula_key: "qa|clear-small-sterilised|dog|dry",
+  display_name: "Small Adult Light Sterilised Chicken",
+  formula_name: "Small Adult Light Sterilised Chicken",
+  dog_size: "small",
+  commercial_tags: ["light", "sterilised"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 325,
+});
+const genericBreedAdultRanking = rankFoodV2ForPet({
+  food: genericBreedAdultForSmallSterilised,
+  nutrients: {
+    ...nutrients(genericBreedAdultForSmallSterilised),
+    fat_percent: null,
+  },
+  pet,
+  goal: "sterilised",
+});
+const clearSmallSterilisedRanking = rankFoodV2ForPet({
+  food: clearSmallSterilisedFood,
+  nutrients: {
+    ...nutrients(clearSmallSterilisedFood),
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet,
+  goal: "sterilised",
+});
+
+if (genericBreedAdultRanking.bucket !== "hold") {
+  console.error(
+    "Small sterilised pets should not start from generic breed/adult foods without visible sterilised/light positioning or lean kcal/fat evidence."
+  );
+  console.error(genericBreedAdultRanking);
+  process.exit(1);
+}
+
+if (
+  !genericBreedAdultRanking.signals.some(
+    (signal) => signal.code === "small_sterilised_generic_without_lean_evidence"
+  )
+) {
+  console.error("Expected small_sterilised_generic_without_lean_evidence for generic breed adult food.");
+  console.error(genericBreedAdultRanking.signals);
+  process.exit(1);
+}
+
+if (clearSmallSterilisedRanking.bucket === "hold") {
+  console.error("A clear small/light/sterilised food with lean nutrition should remain selectable.");
+  console.error(clearSmallSterilisedRanking);
+  process.exit(1);
+}
+
+if (clearSmallSterilisedRanking.total_score <= genericBreedAdultRanking.total_score) {
+  console.error("Clear small/light/sterilised food should outrank generic breed adult food.");
+  console.error({ clearSmallSterilisedRanking, genericBreedAdultRanking });
+  process.exit(1);
+}
+
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
   process.exit(1);
