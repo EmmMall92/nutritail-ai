@@ -74,8 +74,10 @@ const cases: SmokeCase[] = [
 ];
 
 function assertSmokeCaseEncoding() {
-  const mojibakePattern =
-    /(?:\?{3,}|Ξ|Ο€|Ο|Β«|Β»|\uFFFD|\u00C2|\u00CE|\u00CF)/u;
+  const mojibakePattern = new RegExp(
+    "(?:\\?{3,}|\\u039E|\\u03B2\\u201A\\u00AC|\\uFFFD|\\u00C2|\\u00CE|\\u00CF)",
+    "u"
+  );
   const damaged = cases.filter((item) => mojibakePattern.test(item.message));
   if (damaged.length > 0) {
     throw new Error(

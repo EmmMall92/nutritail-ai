@@ -33,8 +33,14 @@ function includesAll(text: string, snippets: string[], label: string) {
 
 function assertNoMojibake(sourcePath: string) {
   const source = readFileSync(sourcePath, "utf8");
-  const mojibakePattern = /(?:\?{3,}|\uFFFD|\u00C2|\u00CE|\u00CF)/u;
-  expect(!mojibakePattern.test(source), `${sourcePath} contains damaged Greek or mojibake text`);
+  const mojibakePattern = new RegExp(
+    "(?:\\?{3,}|\\u039E|\\u03B2\\u201A\\u00AC|\\uFFFD|\\u00C2|\\u00CE|\\u00CF)",
+    "u"
+  );
+  expect(
+    !mojibakePattern.test(source),
+    `${sourcePath} contains damaged Greek or mojibake text`
+  );
 }
 
 const authorityPrompt = buildAuthorityContractPrompt();
@@ -102,7 +108,9 @@ expect(
   "knowledge source priority must start from the uploaded nutrition book"
 );
 expect(
-  knowledge.guardrails.some((rule) => rule.includes("does not authorize OpenAI to rank foods")),
+  knowledge.guardrails.some((rule) =>
+    rule.includes("does not authorize OpenAI to rank foods")
+  ),
   "knowledge guardrails must keep OpenAI out of ranking"
 );
 expect(
@@ -127,8 +135,18 @@ const inferred = inferKnowledgeIntents({
     weightGoal: "loss",
   },
 });
-for (const intent of ["renal", "urinary", "allergy", "sterilised", "active_working", "weight_control"]) {
-  expect(inferred.includes(intent as (typeof inferred)[number]), `inferred intents missing ${intent}`);
+for (const intent of [
+  "renal",
+  "urinary",
+  "allergy",
+  "sterilised",
+  "active_working",
+  "weight_control",
+]) {
+  expect(
+    inferred.includes(intent as (typeof inferred)[number]),
+    `inferred intents missing ${intent}`
+  );
 }
 
 const fineTuningPhase = NUTRITAIL_CHATBOT_TRAINING_ROADMAP.find(
