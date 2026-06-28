@@ -214,6 +214,31 @@ if (
   process.exit(1);
 }
 
+const bestOverallSplit = splitFoodV2Recommendations([
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|lower-premium-bucket|dog|dry",
+    display_name: "Lower Premium Bucket",
+    total_score: 70,
+    bucket: "premium",
+    value_tier: "premium_candidate",
+  },
+  {
+    ...nonPreferredSterilisedRanking,
+    formula_key: "qa|higher-value-bucket|dog|dry",
+    display_name: "Higher Value Bucket",
+    total_score: 88,
+    bucket: "value",
+    value_tier: "value_candidate",
+  },
+]);
+
+if (bestOverallSplit.premium[0]?.formula_key !== "qa|higher-value-bucket|dog|dry") {
+  console.error("Best matches should be ordered by overall fit, not by internal premium/value bucket.");
+  console.error(bestOverallSplit);
+  process.exit(1);
+}
+
 if (!chicken) {
   console.error("Expected chicken food to be recommended.");
   process.exit(1);
