@@ -1547,22 +1547,31 @@ function isUnknownFoodAnswer(text: string) {
   ].some((phrase) => value.includes(phrase));
 }
 
-function getFoodQualityNote(food: Record<string, unknown>) {
+function getFoodQualityNote(food: Record<string, unknown>, language: ChatLanguage) {
   const status = String(food.data_quality_status ?? "").toLowerCase();
+  const isGreek = language === "el";
 
   if (status === "verified") {
-    return "Τα στοιχεία αυτής της τροφής είναι αρκετά πλήρη, οπότε μπορούμε να μιλήσουμε πιο καθαρά για τη θρεπτική της εικόνα.";
+    return isGreek
+      ? "Τα στοιχεία αυτής της τροφής είναι αρκετά πλήρη, οπότε μπορούμε να μιλήσουμε πιο καθαρά για τη θρεπτική της εικόνα."
+      : "This food has enough label detail for a clearer nutrition discussion.";
   }
 
   if (status === "partial") {
-    return "Μερικά διατροφικά στοιχεία λείπουν, οπότε θα κρατήσω την πρόταση προσεκτική.";
+    return isGreek
+      ? "Μερικά διατροφικά στοιχεία λείπουν, οπότε θα κρατήσω την πρόταση προσεκτική."
+      : "Some label details are missing, so I will keep the suggestion cautious.";
   }
 
   if (status === "needs_review" || status === "unknown") {
-    return "Δεν έχω ακόμη όλα τα στοιχεία της ετικέτας, οπότε το χρησιμοποιώ σαν πιθανό ταίριασμα και όχι σαν απόλυτη απάντηση.";
+    return isGreek
+      ? "Δεν έχω ακόμη όλα τα στοιχεία της ετικέτας, οπότε το χρησιμοποιώ σαν πιθανό ταίριασμα και όχι σαν απόλυτη απάντηση."
+      : "I do not have every label detail yet, so I will treat this as a possible fit rather than an absolute answer.";
   }
 
-  return "Τα στοιχεία δεν είναι πλήρως συμπληρωμένα, οπότε θα κρατήσω την πρόταση προσεκτική.";
+  return isGreek
+    ? "Τα στοιχεία δεν είναι πλήρως συμπληρωμένα, οπότε θα κρατήσω την πρόταση προσεκτική."
+    : "The label details are not fully complete, so I will keep the suggestion cautious.";
 }
 
 function isConfidentFoodMatch(matchResult: Record<string, unknown>) {
@@ -4238,7 +4247,7 @@ const ingredientInsights = generateIngredientInsights(
                       brand: matchedFood.brand,
                       name: matchedFood.name,
                       foodScore,
-                      qualityNote: getFoodQualityNote(matchedFood),
+                      qualityNote: getFoodQualityNote(matchedFood, chatLanguage),
                       nutritionSummary: nutritionInsights.summary,
                       nutritionPositives: nutritionInsights.positives,
                       nutritionCautions: nutritionInsights.cautions,
@@ -4268,7 +4277,7 @@ const ingredientInsights = generateIngredientInsights(
                     brand: matchedFood.brand,
                     name: matchedFood.name,
                     foodScore,
-                    qualityNote: getFoodQualityNote(matchedFood),
+                    qualityNote: getFoodQualityNote(matchedFood, chatLanguage),
                     nutritionSummary: nutritionInsights.summary,
                     nutritionPositives: nutritionInsights.positives,
                     nutritionCautions: nutritionInsights.cautions,
