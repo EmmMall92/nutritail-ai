@@ -154,6 +154,32 @@ includesAll(
   "OpenAI intake smoke source"
 );
 
+const adminAiStatusRouteSource = readFileSync("app/api/admin/ai-status/route.ts", "utf8");
+includesAll(
+  adminAiStatusRouteSource,
+  [
+    "requireAdminApiAccess",
+    "pingOpenAiRuntime",
+    'searchParams.get("ping") === "1"',
+    "getOpenAiClient",
+    "admin runtime connectivity check",
+    "openai_not_allowed_for",
+  ],
+  "admin AI status route"
+);
+
+const adminValidationPageSource = readFileSync("app/admin/validation/page.tsx", "utf8");
+includesAll(
+  adminValidationPageSource,
+  [
+    "/api/admin/ai-status?ping=1",
+    "OpenAI runtime ping",
+    "Server-side OpenAI check passed",
+    "without exposing the",
+  ],
+  "admin validation OpenAI runtime status"
+);
+
 if (failures.length > 0) {
   console.error("OpenAI chatbot training contract QA failed:");
   for (const failure of failures) console.error(`- ${failure}`);
