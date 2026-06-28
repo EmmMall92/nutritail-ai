@@ -28,6 +28,12 @@ type AccountPet = {
   analysisHistory: AnalysisHistoryItem[];
 };
 
+type ReportReadiness =
+  | "needs_analysis"
+  | "report_ready"
+  | "report_with_notes"
+  | "general_report";
+
 function formatDate(value?: string) {
   if (!value) return "-";
 
@@ -36,46 +42,66 @@ function formatDate(value?: string) {
 
 function getFoodFitLabel(score?: number | null) {
   if (typeof score !== "number" || !Number.isFinite(score)) return null;
-  if (score >= 80) return "strong";
-  if (score >= 60) return "good";
-  return "worth rechecking";
+  if (score >= 80) return "πολύ καλή επιλογή";
+  if (score >= 60) return "καλή επιλογή";
+  return "θέλει επανέλεγχο";
 }
 
-function getReportReadiness(pet: AccountPet) {
+function getReportReadiness(pet: AccountPet): ReportReadiness {
   const latest = pet.analysisHistory?.[0];
 
-  if (!latest) return "Needs analysis";
+  if (!latest) return "needs_analysis";
   if (latest.matched_food_name && latest.feeding_grams_per_day) {
-    return "Report ready";
+    return "report_ready";
   }
   if (latest.matched_food_name || latest.feeding_grams_per_day) {
-    return "Report with notes";
+    return "report_with_notes";
   }
-  return "General report";
+  return "general_report";
 }
 
-function getReadinessClass(readiness: string) {
-  if (readiness === "Report ready") {
+function getReadinessLabel(readiness: ReportReadiness) {
+  if (readiness === "report_ready") return "Report έτοιμο";
+  if (readiness === "needs_analysis") return "Θέλει ανάλυση";
+  if (readiness === "report_with_notes") return "Report με σημειώσεις";
+  return "Γενικό report";
+}
+
+function getReadinessClass(readiness: ReportReadiness) {
+  if (readiness === "report_ready") {
     return "border-green-200 bg-green-50 text-green-800";
   }
 
-  if (readiness === "Needs analysis") {
+  if (readiness === "needs_analysis") {
     return "border-amber-200 bg-amber-50 text-amber-800";
   }
 
   return "border-blue-200 bg-blue-50 text-blue-800";
 }
 
-function getReadinessHelper(readiness: string) {
-  if (readiness === "Report ready") {
-    return "This pet has food match and daily grams saved.";
+function getReadinessHelper(readiness: ReportReadiness) {
+  if (readiness === "report_ready") {
+    return "Υπάρχει αποθηκευμένη τροφή και εκτίμηση γραμμαρίων ανά ημέρα.";
   }
 
-  if (readiness === "Needs analysis") {
-    return "Run the chatbot once to create calories, shortlist, and report.";
+  if (readiness === "needs_analysis") {
+    return "Κάνε μία ανάλυση στο chatbot για θερμίδες, προτάσεις και report.";
   }
 
-  return "A report exists, but formula-specific details may be incomplete.";
+  return "Υπάρχει report, αλλά ίσως λείπουν λεπτομέρειες για συγκεκριμένη τροφή.";
+}
+
+function formatSpecies(value?: string) {
+  if (value === "dog") return "σκύλος";
+  if (value === "cat") return "γάτα";
+  return value || "-";
+}
+
+function formatActivity(value?: string) {
+  if (value === "low") return "χαμηλή δραστηριότητα";
+  if (value === "normal") return "κανονική δραστηριότητα";
+  if (value === "high") return "υψηλή δραστηριότητα";
+  return value || "-";
 }
 
 export default function AccountPetsPage() {
@@ -113,13 +139,18 @@ export default function AccountPetsPage() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Failed to load pets.");
+          console.error(result.error);
+          throw new Error("Δεν μπόρεσα να φορτώσω τα κατοικίδια.");
         }
 
         setPets(result.pets as AccountPet[]);
       } catch (err) {
         console.error(err);
-        setError(err instanceof Error ? err.message : "Failed to load pets.");
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Δεν μπόρεσα να φορτώσω τα κατοικίδια.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -132,9 +163,9 @@ export default function AccountPetsPage() {
     <section className="space-y-6">
       <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-black">My Pets</h1>
+          <h1 className="text-3xl font-bold text-black">Τα κατοικίδιά μου</h1>
           <p className="mt-2 text-gray-600">
-            Your saved pets, nutrition reports, timelines, and refresh actions.
+            Τα αποθηκευμένα κατοικίδια, τα διατροφικά reports και η πρόοδός τους.
           </p>
         </div>
 
@@ -143,13 +174,13 @@ export default function AccountPetsPage() {
             href="/account"
             className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100"
           >
-            Dashboard
+            Λογαριασμός
           </Link>
           <Link
             href="/account/chatbot"
             className="rounded-xl bg-black px-4 py-2 text-center text-sm text-white"
           >
-            New Analysis
+            Νέα ανάλυση
           </Link>
         </div>
       </div>
@@ -163,33 +194,33 @@ export default function AccountPetsPage() {
       {!isLoading && pets.length > 0 && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">Saved pets</p>
+            <p className="text-sm text-gray-500">Αποθηκευμένα κατοικίδια</p>
             <p className="mt-2 text-3xl font-bold text-black">
               {pets.length}
             </p>
           </div>
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">Reports ready</p>
+            <p className="text-sm text-gray-500">Έτοιμα reports</p>
             <p className="mt-2 text-3xl font-bold text-black">
               {
                 pets.filter(
-                  (pet) => getReportReadiness(pet) === "Report ready"
+                  (pet) => getReportReadiness(pet) === "report_ready"
                 ).length
               }
             </p>
           </div>
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">Need analysis</p>
+            <p className="text-sm text-gray-500">Θέλουν ανάλυση</p>
             <p className="mt-2 text-3xl font-bold text-black">
               {
                 pets.filter(
-                  (pet) => getReportReadiness(pet) === "Needs analysis"
+                  (pet) => getReportReadiness(pet) === "needs_analysis"
                 ).length
               }
             </p>
           </div>
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">Total analyses</p>
+            <p className="text-sm text-gray-500">Συνολικές αναλύσεις</p>
             <p className="mt-2 text-3xl font-bold text-black">
               {pets.reduce(
                 (count, pet) => count + (pet.analysisHistory?.length ?? 0),
@@ -202,28 +233,28 @@ export default function AccountPetsPage() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {isLoading ? (
-          <p className="text-sm text-gray-600">Loading pets...</p>
+          <p className="text-sm text-gray-600">Φορτώνω τα κατοικίδια...</p>
         ) : pets.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-6">
             <p className="text-lg font-semibold text-black">
-              No saved pets yet
+              Δεν έχεις αποθηκευμένα κατοικίδια ακόμη
             </p>
             <p className="mt-2 max-w-xl text-sm text-gray-600">
-              Start a nutrition analysis and Nutritail will save the pet profile
-              here, together with its report and history.
+              Ξεκίνα μία διατροφική ανάλυση και το NutriTail θα κρατήσει εδώ το
+              προφίλ του κατοικιδίου, το report και το ιστορικό του.
             </p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/account/chatbot"
                 className="rounded-xl bg-black px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
               >
-                Start first analysis
+                Ξεκίνα πρώτη ανάλυση
               </Link>
               <Link
                 href="/account"
                 className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-white"
               >
-                Back to dashboard
+                Πίσω στον λογαριασμό
               </Link>
             </div>
           </div>
@@ -250,13 +281,13 @@ export default function AccountPetsPage() {
                             readiness
                           )}`}
                         >
-                          {readiness}
+                          {getReadinessLabel(readiness)}
                         </span>
                       </div>
 
                       <p className="mt-1 text-sm text-gray-600">
-                        {pet.species} - age {pet.age} - weight {pet.weight} kg -{" "}
-                        {pet.activity_level}
+                        {formatSpecies(pet.species)} - ηλικία {pet.age} - βάρος{" "}
+                        {pet.weight} kg - {formatActivity(pet.activity_level)}
                       </p>
                       <p className="mt-2 text-sm text-gray-500">
                         {getReadinessHelper(readiness)}
@@ -265,24 +296,24 @@ export default function AccountPetsPage() {
                       {latest ? (
                         <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-700">
                           <span className="rounded-full bg-white px-3 py-1">
-                            Resting calories {latest.rer} kcal
+                            Θερμίδες ηρεμίας {latest.rer} kcal
                           </span>
                           <span className="rounded-full bg-white px-3 py-1">
-                            Daily target {latest.mer} kcal
+                            Ημερήσιος στόχος {latest.mer} kcal
                           </span>
                           {getFoodFitLabel(latest.food_score) && (
                               <span className="rounded-full bg-white px-3 py-1">
-                                Food fit: {getFoodFitLabel(latest.food_score)}
+                                Fit τροφής: {getFoodFitLabel(latest.food_score)}
                               </span>
                             )}
                           {latest.feeding_grams_per_day && (
                             <span className="rounded-full bg-white px-3 py-1">
-                              {latest.feeding_grams_per_day}g/day
+                              {latest.feeding_grams_per_day}g/ημέρα
                             </span>
                           )}
                           {latest.matched_food_name && (
                             <span className="max-w-full rounded-full bg-white px-3 py-1">
-                              Food: {latest.matched_food_name}
+                              Τροφή: {latest.matched_food_name}
                             </span>
                           )}
                           <span className="rounded-full bg-white px-3 py-1">
@@ -291,7 +322,7 @@ export default function AccountPetsPage() {
                         </div>
                       ) : (
                         <p className="mt-2 text-sm text-gray-500">
-                          No analysis history yet.
+                          Δεν υπάρχει ακόμη ιστορικό ανάλυσης.
                         </p>
                       )}
                     </div>
@@ -301,7 +332,7 @@ export default function AccountPetsPage() {
                         href={`/account/pets/${pet.id}`}
                         className="rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-white"
                       >
-                        Open
+                        Άνοιγμα
                       </Link>
                       {latest ? (
                         <>
@@ -309,19 +340,19 @@ export default function AccountPetsPage() {
                             href={`/account/chatbot?petId=${pet.id}&mode=progress`}
                             className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
                           >
-                            Progress check
+                            Έλεγχος προόδου
                           </Link>
                           <Link
                             href={`/print/pet-report/${pet.id}`}
                             className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
                           >
-                            Report
+                            Αναφορά
                           </Link>
                           <Link
                             href={`/print/pet-timeline/${pet.id}`}
                             className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-white"
                           >
-                            Timeline
+                            Ιστορικό
                           </Link>
                         </>
                       ) : (
@@ -329,7 +360,7 @@ export default function AccountPetsPage() {
                           href={`/account/chatbot?petId=${pet.id}`}
                           className="rounded-lg bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800"
                         >
-                          Run analysis
+                          Ανάλυση
                         </Link>
                       )}
                     </div>
