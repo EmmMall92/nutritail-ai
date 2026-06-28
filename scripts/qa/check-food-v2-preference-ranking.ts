@@ -144,6 +144,27 @@ const clearSmallSterilisedRanking = rankFoodV2ForPet({
   pet,
   goal: "sterilised",
 });
+const nonPreferredSterilisedFood = food({
+  id: "non-preferred-sterilised",
+  formula_key: "qa|non-preferred-sterilised|dog|dry",
+  display_name: "Small Adult Duck Rice Sterilised",
+  formula_name: "Small Adult Duck Rice Sterilised",
+  dog_size: "small",
+  commercial_tags: ["sterilised"],
+  ingredients: ["duck", "rice", "beet pulp"],
+  primary_animal_proteins: ["duck"],
+  kcal_per_100g: 325,
+});
+const nonPreferredSterilisedRanking = rankFoodV2ForPet({
+  food: nonPreferredSterilisedFood,
+  nutrients: {
+    ...nutrients(nonPreferredSterilisedFood),
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet,
+  goal: "sterilised",
+});
 
 if (genericBreedAdultRanking.bucket !== "hold") {
   console.error(
@@ -172,6 +193,24 @@ if (clearSmallSterilisedRanking.bucket === "hold") {
 if (clearSmallSterilisedRanking.total_score <= genericBreedAdultRanking.total_score) {
   console.error("Clear small/light/sterilised food should outrank generic breed adult food.");
   console.error({ clearSmallSterilisedRanking, genericBreedAdultRanking });
+  process.exit(1);
+}
+
+if (clearSmallSterilisedRanking.total_score <= nonPreferredSterilisedRanking.total_score) {
+  console.error(
+    "When sterilised candidates are similarly safe, the preferred protein should order the shortlist."
+  );
+  console.error({ clearSmallSterilisedRanking, nonPreferredSterilisedRanking });
+  process.exit(1);
+}
+
+if (
+  !nonPreferredSterilisedRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_missing"
+  )
+) {
+  console.error("Expected preferred_protein_missing for non-preferred sterilised food.");
+  console.error(nonPreferredSterilisedRanking.signals);
   process.exit(1);
 }
 
