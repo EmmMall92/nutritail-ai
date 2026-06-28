@@ -36,15 +36,15 @@ const bannedCustomerCopy = [
 const requiredCustomerCopy = [
   {
     file: "app/account/page.tsx",
-    text: "Nutrition plan status",
+    text: "Κατάσταση διατροφικού πλάνου",
   },
   {
     file: "app/account/page.tsx",
-    text: "Food fit:",
+    text: "Fit τροφής:",
   },
   {
     file: "app/account/page.tsx",
-    text: "Better label details improve the answer",
+    text: "Περισσότερα στοιχεία ετικέτας βελτιώνουν την απάντηση",
   },
   {
     file: "app/account/chatbot/page.tsx",
