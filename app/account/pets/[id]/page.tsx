@@ -99,42 +99,42 @@ function hasValidFoodScore(score?: number | null) {
 }
 
 function getFoodScoreLabel(score?: number | null) {
-  if (!hasValidFoodScore(score)) return "General guidance";
+  if (!hasValidFoodScore(score)) return "Γενική καθοδήγηση";
   const numericScore = Number(score);
-  if (numericScore >= 80) return "Strong fit";
-  if (numericScore >= 60) return "Useful fit";
-  if (numericScore >= 40) return "Worth rechecking";
-  return "Fresh analysis suggested";
+  if (numericScore >= 80) return "Πολύ καλή επιλογή";
+  if (numericScore >= 60) return "Χρήσιμη επιλογή";
+  if (numericScore >= 40) return "Θέλει επανέλεγχο";
+  return "Προτείνεται νέα ανάλυση";
 }
 
 function getReportReadiness(item?: AnalysisHistoryItem) {
-  if (!item) return "No report yet";
+  if (!item) return "Δεν υπάρχει report ακόμη";
   if (item.matched_food_name && item.feeding_grams_per_day) {
-    return "Ready to share";
+    return "Έτοιμο για χρήση";
   }
   if (item.matched_food_name || item.feeding_grams_per_day) {
-    return "Useful with notes";
+    return "Χρήσιμο με σημειώσεις";
   }
-  return "General guidance only";
+  return "Γενική καθοδήγηση";
 }
 
 function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
   const steps = [];
 
   if (!item?.matched_food_name) {
-    steps.push("Add or confirm the exact food name for formula-specific advice.");
+    steps.push("Πρόσθεσε ή επιβεβαίωσε την ακριβή τροφή για πιο συγκεκριμένη συμβουλή.");
   }
 
   if (!item?.feeding_grams_per_day) {
-    steps.push("Confirm kcal per 100g to calculate grams per day.");
+    steps.push("Επιβεβαίωσε τις θερμίδες της τροφής για υπολογισμό γραμμαρίων.");
   }
 
   if (!hasValidFoodScore(item?.food_score) || (item?.food_score ?? 0) < 60) {
-    steps.push("Review the food choice if symptoms, allergies, or weight goals matter.");
+    steps.push("Κάνε επανέλεγχο τροφής αν υπάρχουν αλλεργίες, συμπτώματα ή στόχος βάρους.");
   }
 
   if (steps.length === 0) {
-    steps.push("Use the printable report for sharing or saving this analysis.");
+    steps.push("Χρησιμοποίησε την αναφορά για αποθήκευση ή κοινοποίηση της ανάλυσης.");
   }
 
   return steps;
@@ -142,58 +142,58 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
 
 function getResultStatusDetail(item?: AnalysisHistoryItem) {
   if (!item) {
-    return "Run the chatbot to create calories, food guidance, report, and timeline.";
+    return "Ξεκίνα ανάλυση στο chatbot για θερμίδες, προτάσεις τροφής, report και ιστορικό.";
   }
 
   if (item.matched_food_name && item.feeding_grams_per_day) {
-    return "Ready for portion tracking, progress check-ins, and printable sharing.";
+    return "Έτοιμο για παρακολούθηση μερίδας, ελέγχους προόδου και αποθήκευση.";
   }
 
   if (item.matched_food_name) {
-    return "Formula is saved, but grams per day still need calorie confirmation.";
+    return "Η τροφή έχει αποθηκευτεί, αλλά τα γραμμάρια θέλουν επιβεβαίωση θερμίδων.";
   }
 
   if (item.feeding_grams_per_day) {
-    return "Portion guidance exists, but the exact food formula still needs confirmation.";
+    return "Υπάρχει εκτίμηση μερίδας, αλλά η ακριβής τροφή θέλει επιβεβαίωση.";
   }
 
-  return "Calories are useful, but this is still general guidance until the food match is confirmed.";
+  return "Οι θερμίδες είναι χρήσιμες, αλλά η συμβουλή μένει γενική μέχρι να επιβεβαιωθεί η τροφή.";
 }
 
 function getResultFollowUp(item?: AnalysisHistoryItem, progressLogCount = 0) {
-  if (!item) return "Start a nutrition analysis";
-  if (!item.matched_food_name) return "Confirm exact food";
-  if (!item.feeding_grams_per_day) return "Confirm kcal and grams";
-  if (progressLogCount === 0) return "Add first progress check";
-  return "Continue tracking progress";
+  if (!item) return "Ξεκίνα διατροφική ανάλυση";
+  if (!item.matched_food_name) return "Επιβεβαίωσε την τροφή";
+  if (!item.feeding_grams_per_day) return "Επιβεβαίωσε θερμίδες και γραμμάρια";
+  if (progressLogCount === 0) return "Πρώτος έλεγχος προόδου";
+  return "Συνέχισε την παρακολούθηση";
 }
 
 function getCareNotes(pet: AccountPet) {
   const notes = [];
 
   if (pet.allergies?.length) {
-    notes.push(`Avoid known allergens: ${pet.allergies.join(", ")}.`);
+    notes.push(`Απόφυγε γνωστά αλλεργιογόνα: ${pet.allergies.join(", ")}.`);
   }
 
   if (pet.health_issues?.length) {
-    notes.push(`Health notes to consider: ${pet.health_issues.join(", ")}.`);
+    notes.push(`Σημειώσεις υγείας που πρέπει να ληφθούν υπόψη: ${pet.health_issues.join(", ")}.`);
   }
 
   if (pet.neutered) {
-    notes.push("Neutered pets often need careful calorie control.");
+    notes.push("Τα στειρωμένα κατοικίδια συχνά χρειάζονται πιο προσεκτικό έλεγχο θερμίδων.");
   }
 
   if (notes.length === 0) {
-    notes.push("No allergies or health notes saved yet.");
+    notes.push("Δεν υπάρχουν αποθηκευμένες αλλεργίες ή σημειώσεις υγείας ακόμη.");
   }
 
   return notes;
 }
 
 function formatProgressMode(value?: string) {
-  if (value === "no_result") return "No visible result";
-  if (value === "progress") return "Progress check";
-  return "Progress note";
+  if (value === "no_result") return "Χωρίς ορατό αποτέλεσμα";
+  if (value === "progress") return "Έλεγχος προόδου";
+  return "Σημείωση προόδου";
 }
 
 function formatWeightDelta(currentWeight?: number | null, previousWeight?: number | null) {
@@ -203,13 +203,13 @@ function formatWeightDelta(currentWeight?: number | null, previousWeight?: numbe
     typeof previousWeight !== "number" ||
     !Number.isFinite(previousWeight)
   ) {
-    return "No weight comparison yet";
+    return "Δεν υπάρχει ακόμη σύγκριση βάρους";
   }
 
   const delta = Number((currentWeight - previousWeight).toFixed(1));
-  if (delta === 0) return "No weight change from saved profile";
-  if (delta < 0) return `${Math.abs(delta)} kg lower than saved profile`;
-  return `${delta} kg higher than saved profile`;
+  if (delta === 0) return "Δεν υπάρχει αλλαγή βάρους από το αποθηκευμένο προφίλ";
+  if (delta < 0) return `${Math.abs(delta)} kg χαμηλότερα από το αποθηκευμένο προφίλ`;
+  return `${delta} kg υψηλότερα από το αποθηκευμένο προφίλ`;
 }
 
 function getLatestProgressSummary(progressLogs: ProgressLog[], pet: AccountPet) {
@@ -241,27 +241,27 @@ function formatProgressChipLabel(value?: string | null) {
   if (!value) return null;
 
   const labels: Record<string, string> = {
-    none: "none",
-    few: "few",
-    some: "some",
-    many: "many",
-    normal: "normal",
-    hungry: "hungry",
-    low: "low",
-    picky: "picky",
-    better: "better",
-    soft: "soft",
-    diarrhea: "diarrhea",
-    constipation: "constipation",
-    high: "high",
-    leaner: "leaner",
-    same: "same",
-    heavier: "heavier",
-    continue_plan: "continue plan",
-    adjust_portions: "adjust portions",
-    reduce_treats: "reduce treats",
-    review_food_fit: "review food fit",
-    needs_more_data: "needs more data",
+    none: "καθόλου",
+    few: "λίγες",
+    some: "μερικές",
+    many: "πολλές",
+    normal: "φυσιολογικό",
+    hungry: "πεινάει",
+    low: "χαμηλή",
+    picky: "επιλεκτικό",
+    better: "καλύτερα",
+    soft: "μαλακά",
+    diarrhea: "διάρροια",
+    constipation: "δυσκοιλιότητα",
+    high: "υψηλή",
+    leaner: "πιο αδύνατο",
+    same: "ίδιο",
+    heavier: "πιο βαρύ",
+    continue_plan: "συνέχισε το πλάνο",
+    adjust_portions: "ρύθμισε τη μερίδα",
+    reduce_treats: "μείωσε τις λιχουδιές",
+    review_food_fit: "επανέλεγχος τροφής",
+    needs_more_data: "χρειάζονται περισσότερα στοιχεία",
   };
 
   return labels[value] ?? value;
@@ -271,11 +271,11 @@ function getProgressContextChips(metadata?: ProgressLog["metadata"]) {
   if (!metadata) return [];
 
   return [
-    ["Treats", metadata.treatsNote],
-    ["Appetite", metadata.appetiteNote],
-    ["Stool", metadata.stoolNote],
-    ["Energy", metadata.energyNote],
-    ["Body", metadata.bodyChangeNote],
+    ["Λιχουδιές", metadata.treatsNote],
+    ["Όρεξη", metadata.appetiteNote],
+    ["Κόπρανα", metadata.stoolNote],
+    ["Ενέργεια", metadata.energyNote],
+    ["Σώμα", metadata.bodyChangeNote],
   ]
     .map(([label, value]) => {
       const formatted = formatProgressChipLabel(value);
@@ -323,7 +323,8 @@ export default function AccountPetDetailPage() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Failed to load pet.");
+          console.error(result.error);
+          throw new Error("Δεν μπόρεσα να φορτώσω το κατοικίδιο.");
         }
 
         const petDetail = result as PetDetailResponse;
@@ -331,7 +332,11 @@ export default function AccountPetDetailPage() {
         setEditForm(toPetContextForm(petDetail.pet));
       } catch (err) {
         console.error(err);
-        setError(err instanceof Error ? err.message : "Failed to load pet.");
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Δεν μπόρεσα να φορτώσω το κατοικίδιο.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -379,7 +384,8 @@ export default function AccountPetDetailPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update pet context.");
+        console.error(result.error);
+        throw new Error("Δεν μπόρεσα να ενημερώσω το προφίλ κατοικιδίου.");
       }
 
       setData((current) =>
@@ -392,12 +398,14 @@ export default function AccountPetDetailPage() {
       );
       setEditForm(toPetContextForm(result.pet as AccountPet));
       setContextMessage(
-        "Pet context updated. Run a new analysis when you want fresh recommendations."
+        "Το προφίλ κατοικιδίου ενημερώθηκε. Κάνε νέα ανάλυση όταν θέλεις φρέσκες προτάσεις."
       );
     } catch (err) {
       console.error(err);
       setContextMessage(
-        err instanceof Error ? err.message : "Failed to update pet context."
+        err instanceof Error
+          ? err.message
+          : "Δεν μπόρεσα να ενημερώσω το προφίλ κατοικιδίου."
       );
     } finally {
       setIsSavingContext(false);
@@ -408,9 +416,9 @@ export default function AccountPetDetailPage() {
     return (
       <section className="mx-auto max-w-4xl space-y-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Loading pet...</p>
+          <p className="text-sm font-medium text-black">Φορτώνω το κατοικίδιο...</p>
           <p className="mt-2 text-sm text-gray-600">
-            We are fetching the saved profile and analysis history.
+            Φέρνω το αποθηκευμένο προφίλ και το ιστορικό αναλύσεων.
           </p>
         </div>
       </section>
@@ -421,15 +429,15 @@ export default function AccountPetDetailPage() {
     return (
       <section className="mx-auto max-w-4xl space-y-6">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
-          <p className="font-semibold">Could not load this pet</p>
+          <p className="font-semibold">Δεν μπόρεσα να φορτώσω αυτό το κατοικίδιο</p>
           <p className="mt-2 text-sm">
-            {error || "Pet not found."}
+            {error || "Το κατοικίδιο δεν βρέθηκε."}
           </p>
           <Link
             href="/account/pets"
             className="mt-4 inline-block rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100"
           >
-            Back to My Pets
+            Πίσω στα κατοικίδιά μου
           </Link>
         </div>
       </section>
@@ -447,7 +455,7 @@ export default function AccountPetDetailPage() {
           <div>
             <h1 className="text-3xl font-bold text-black">{pet.name}</h1>
             <p className="mt-2 text-gray-600">
-              Pet profile and nutrition analysis history.
+              Προφίλ κατοικιδίου, διατροφική ανάλυση και ιστορικό προόδου.
             </p>
           </div>
 
@@ -456,7 +464,7 @@ export default function AccountPetDetailPage() {
               href="/account/pets"
               className="rounded-xl border border-black px-4 py-2 text-sm text-black"
             >
-              Back to My Pets
+              Πίσω στα κατοικίδιά μου
             </Link>
 
             <Link
@@ -467,7 +475,7 @@ export default function AccountPetDetailPage() {
               }
               className="rounded-xl bg-black px-4 py-2 text-sm text-white"
             >
-              {latest ? "Progress check" : "Run analysis"}
+              {latest ? "Έλεγχος προόδου" : "Νέα ανάλυση"}
             </Link>
 
             {latest && (
@@ -476,14 +484,14 @@ export default function AccountPetDetailPage() {
                   href={`/print/pet-report/${pet.id}`}
                   className="rounded-xl bg-green-600 px-4 py-2 text-sm text-white transition hover:bg-green-700"
                 >
-                  Print Report
+                  Αναφορά
                 </Link>
 
                 <Link
                   href={`/print/pet-timeline/${pet.id}`}
                   className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
                 >
-                  Print Timeline
+                  Ιστορικό
                 </Link>
               </>
             )}
@@ -494,10 +502,10 @@ export default function AccountPetDetailPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
-                Care notes
+                Σημειώσεις φροντίδας
               </p>
               <h2 className="mt-2 text-xl font-bold text-amber-950">
-                Food choices should account for this profile
+                Η επιλογή τροφής πρέπει να λαμβάνει υπόψη αυτό το προφίλ
               </h2>
               <ul className="mt-3 space-y-2 text-sm text-amber-900">
                 {getCareNotes(pet).map((note) => (
@@ -514,7 +522,7 @@ export default function AccountPetDetailPage() {
               }
               className="rounded-xl bg-amber-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-amber-800"
             >
-              Recheck food fit
+              Επανέλεγχος τροφής
             </Link>
           </div>
         </div>
@@ -523,7 +531,7 @@ export default function AccountPetDetailPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Latest result
+                Τελευταίο αποτέλεσμα
               </p>
               <h2 className="mt-2 text-xl font-bold text-emerald-950">
                 {getReportReadiness(latest)}
@@ -548,36 +556,36 @@ export default function AccountPetDetailPage() {
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Daily target
+                Ημερήσιος στόχος
               </p>
               <p className="mt-2 text-lg font-semibold text-black">
-                {latest?.mer ? `${latest.mer} kcal/day` : "Not calculated"}
+                {latest?.mer ? `${latest.mer} kcal/ημέρα` : "Δεν έχει υπολογιστεί"}
               </p>
             </div>
 
             <div className="rounded-xl bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Food match
+                Τροφή
               </p>
               <p className="mt-2 text-sm font-semibold text-black">
-                {latest?.matched_food_name ?? "Needs exact food"}
+                {latest?.matched_food_name ?? "Θέλει ακριβές όνομα τροφής"}
               </p>
             </div>
 
             <div className="rounded-xl bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Feeding
+                Μερίδα
               </p>
               <p className="mt-2 text-lg font-semibold text-black">
                 {latest?.feeding_grams_per_day
-                  ? `${latest.feeding_grams_per_day}g/day`
-                  : "Needs kcal check"}
+                  ? `${latest.feeding_grams_per_day}g/ημέρα`
+                  : "Θέλει έλεγχο θερμίδων"}
               </p>
             </div>
 
             <div className="rounded-xl bg-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Follow-up
+                Συνέχεια
               </p>
               <p className="mt-2 text-sm font-semibold text-black">
                 {getResultFollowUp(latest, progressLogs.length)}
@@ -588,17 +596,19 @@ export default function AccountPetDetailPage() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Species</p>
-            <p className="mt-2 text-xl font-semibold text-black">{pet.species}</p>
+            <p className="text-sm text-gray-600">Είδος</p>
+            <p className="mt-2 text-xl font-semibold text-black">
+              {pet.species === "dog" ? "σκύλος" : pet.species === "cat" ? "γάτα" : pet.species}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Weight</p>
+            <p className="text-sm text-gray-600">Βάρος</p>
             <p className="mt-2 text-xl font-semibold text-black">{pet.weight} kg</p>
           </div>
 
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Analyses</p>
+            <p className="text-sm text-gray-600">Αναλύσεις</p>
             <p className="mt-2 text-xl font-semibold text-black">
               {analysisHistory.length}
             </p>
@@ -609,7 +619,7 @@ export default function AccountPetDetailPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-                Latest progress
+                Τελευταία πρόοδος
               </p>
               {progressSummary.latestLog ? (
                 <>
@@ -627,42 +637,42 @@ export default function AccountPetDetailPage() {
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-blue-950">
                     {progressSummary.progressDecisionStatus && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Decision: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}
+                        Απόφαση: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}
                       </span>
                     )}
                     {progressSummary.progressDecisionConfidence && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Confidence: {progressSummary.progressDecisionConfidence}
+                        Σιγουριά: {progressSummary.progressDecisionConfidence}
                       </span>
                     )}
                     {progressSummary.currentWeight && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Current {progressSummary.currentWeight} kg
+                        Τωρινό βάρος {progressSummary.currentWeight} kg
                       </span>
                     )}
                     {progressSummary.feedingGramsPerDay && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        {progressSummary.feedingGramsPerDay}g/day
+                        {progressSummary.feedingGramsPerDay}g/ημέρα
                       </span>
                     )}
                     {progressSummary.treatsNote && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Treats: {formatProgressChipLabel(progressSummary.treatsNote)}
+                        Λιχουδιές: {formatProgressChipLabel(progressSummary.treatsNote)}
                       </span>
                     )}
                     {progressSummary.appetiteNote && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Appetite: {formatProgressChipLabel(progressSummary.appetiteNote)}
+                        Όρεξη: {formatProgressChipLabel(progressSummary.appetiteNote)}
                       </span>
                     )}
                     {progressSummary.stoolNote && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Stool: {formatProgressChipLabel(progressSummary.stoolNote)}
+                        Κόπρανα: {formatProgressChipLabel(progressSummary.stoolNote)}
                       </span>
                     )}
                     {progressSummary.energyNote && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Energy: {formatProgressChipLabel(progressSummary.energyNote)}
+                        Ενέργεια: {formatProgressChipLabel(progressSummary.energyNote)}
                       </span>
                     )}
                     <span className="rounded-full bg-white px-3 py-1">
@@ -673,11 +683,11 @@ export default function AccountPetDetailPage() {
               ) : (
                 <>
                   <h2 className="mt-2 text-xl font-bold text-blue-950">
-                    No check-ins yet
+                    Δεν υπάρχουν check-ins ακόμη
                   </h2>
                   <p className="mt-2 text-sm text-blue-900">
-                    Add a progress check when weight, appetite, stool, treats,
-                    or food acceptance changes.
+                    Πρόσθεσε έλεγχο όταν αλλάξει βάρος, όρεξη, κόπρανα,
+                    λιχουδιές ή αποδοχή τροφής.
                   </p>
                 </>
               )}
@@ -687,34 +697,34 @@ export default function AccountPetDetailPage() {
               href={`/account/chatbot?petId=${pet.id}&mode=progress`}
               className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
             >
-              Add progress check
+              Πρόσθεσε έλεγχο προόδου
             </Link>
           </div>
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-black">Pet details</h2>
+          <h2 className="text-xl font-semibold text-black">Στοιχεία κατοικιδίου</h2>
 
           <div className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
             <p className="text-black">
-              <span className="font-semibold">Breed:</span> {pet.breed || "-"}
+              <span className="font-semibold">Ράτσα:</span> {pet.breed || "-"}
             </p>
             <p className="text-black">
-              <span className="font-semibold">Age:</span> {pet.age}
+              <span className="font-semibold">Ηλικία:</span> {pet.age}
             </p>
             <p className="text-black">
-              <span className="font-semibold">Activity:</span> {pet.activity_level}
+              <span className="font-semibold">Δραστηριότητα:</span> {pet.activity_level}
             </p>
             <p className="text-black">
-              <span className="font-semibold">Neutered:</span>{" "}
-              {pet.neutered ? "Yes" : "No"}
+              <span className="font-semibold">Στειρωμένο:</span>{" "}
+              {pet.neutered ? "Ναι" : "Όχι"}
             </p>
             <p className="text-black md:col-span-2">
-              <span className="font-semibold">Allergies:</span>{" "}
+              <span className="font-semibold">Αλλεργίες:</span>{" "}
               {pet.allergies?.length ? pet.allergies.join(", ") : "-"}
             </p>
             <p className="text-black md:col-span-2">
-              <span className="font-semibold">Health issues:</span>{" "}
+              <span className="font-semibold">Θέματα υγείας:</span>{" "}
               {pet.health_issues?.length ? pet.health_issues.join(", ") : "-"}
             </p>
           </div>
@@ -728,36 +738,36 @@ export default function AccountPetDetailPage() {
             <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-black">
-                  Update pet context
+                  Ενημέρωση προφίλ κατοικιδίου
                 </h2>
                 <p className="mt-2 text-sm text-gray-600">
-                  Keep weight, activity, allergies, and health notes current so
-                  the next chatbot analysis starts from the right context.
+                  Κράτα ενημερωμένα βάρος, δραστηριότητα, αλλεργίες και σημειώσεις
+                  υγείας, ώστε η επόμενη ανάλυση να ξεκινά σωστά.
                 </p>
               </div>
               <Link
                 href={`/account/chatbot?petId=${pet.id}`}
                 className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
               >
-                Re-run analysis
+                Νέα ανάλυση
               </Link>
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
               <label className="text-sm font-medium text-black">
-                Breed
+                Ράτσα
                 <input
                   value={editForm.breed}
                   onChange={(event) =>
                     setEditForm({ ...editForm, breed: event.target.value })
                   }
                   className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
-                  placeholder="e.g. Labrador"
+                  placeholder="π.χ. Labrador"
                 />
               </label>
 
               <label className="text-sm font-medium text-black">
-                Age
+                Ηλικία
                 <input
                   type="number"
                   min="0"
@@ -772,7 +782,7 @@ export default function AccountPetDetailPage() {
               </label>
 
               <label className="text-sm font-medium text-black">
-                Weight kg
+                Βάρος kg
                 <input
                   type="number"
                   min="0.1"
@@ -787,7 +797,7 @@ export default function AccountPetDetailPage() {
               </label>
 
               <label className="text-sm font-medium text-black">
-                Activity
+                Δραστηριότητα
                 <select
                   value={editForm.activity_level}
                   onChange={(event) =>
@@ -798,14 +808,14 @@ export default function AccountPetDetailPage() {
                   }
                   className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
                 >
-                  <option value="low">Low</option>
-                  <option value="normal">Normal</option>
-                  <option value="high">High</option>
+                  <option value="low">Χαμηλή</option>
+                  <option value="normal">Κανονική</option>
+                  <option value="high">Υψηλή</option>
                 </select>
               </label>
 
               <label className="text-sm font-medium text-black">
-                Neutered
+                Στειρωμένο
                 <select
                   value={editForm.neutered}
                   onChange={(event) =>
@@ -813,25 +823,25 @@ export default function AccountPetDetailPage() {
                   }
                   className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
                 >
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
+                  <option value="yes">Ναι</option>
+                  <option value="no">Όχι</option>
                 </select>
               </label>
 
               <label className="text-sm font-medium text-black">
-                Allergies
+                Αλλεργίες
                 <input
                   value={editForm.allergies}
                   onChange={(event) =>
                     setEditForm({ ...editForm, allergies: event.target.value })
                   }
                   className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
-                  placeholder="chicken, wheat"
+                  placeholder="κοτόπουλο, σιτάρι"
                 />
               </label>
 
               <label className="text-sm font-medium text-black md:col-span-2">
-                Health notes
+                Σημειώσεις υγείας
                 <input
                   value={editForm.health_issues}
                   onChange={(event) =>
@@ -841,7 +851,7 @@ export default function AccountPetDetailPage() {
                     })
                   }
                   className="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
-                  placeholder="sensitive digestion, weight loss"
+                  placeholder="ευαίσθητη πέψη, απώλεια βάρους"
                 />
               </label>
             </div>
@@ -852,7 +862,7 @@ export default function AccountPetDetailPage() {
                 disabled={isSavingContext}
                 className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
               >
-                {isSavingContext ? "Saving..." : "Save context"}
+                {isSavingContext ? "Αποθήκευση..." : "Αποθήκευση προφίλ"}
               </button>
 
               {contextMessage && (
@@ -867,7 +877,7 @@ export default function AccountPetDetailPage() {
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-black">
-                  Latest analysis
+                  Τελευταία ανάλυση
                 </h2>
                 <p className="mt-1 text-sm text-gray-700">
                   {new Date(latest.createdAt).toLocaleString()}
@@ -881,31 +891,31 @@ export default function AccountPetDetailPage() {
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Resting calories</p>
+                <p className="text-sm text-gray-600">Θερμίδες ηρεμίας</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {latest.rer} kcal
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Daily target</p>
+                <p className="text-sm text-gray-600">Ημερήσιος στόχος</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {latest.mer} kcal
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Food fit</p>
+                <p className="text-sm text-gray-600">Fit τροφής</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {getFoodScoreLabel(latest.food_score)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
-                  Based on the saved food and pet profile.
+                  Βασισμένο στην αποθηκευμένη τροφή και το προφίλ κατοικιδίου.
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Feeding amount</p>
+                <p className="text-sm text-gray-600">Ποσότητα τροφής</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {latest.feeding_grams_per_day
-                    ? `${latest.feeding_grams_per_day}g/day`
+                    ? `${latest.feeding_grams_per_day}g/ημέρα`
                     : "-"}
                 </p>
               </div>
@@ -913,15 +923,15 @@ export default function AccountPetDetailPage() {
 
             <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div className="rounded-xl border border-green-200 bg-white p-4">
-                <p className="text-sm font-semibold text-black">Food context</p>
+                <p className="text-sm font-semibold text-black">Στοιχεία τροφής</p>
                 <p className="mt-2 text-sm text-gray-700">
-                  Matched food:{" "}
+                  Τροφή:{" "}
                   <span className="font-semibold">
-                    {latest.matched_food_name ?? "No matched food"}
+                    {latest.matched_food_name ?? "Δεν έχει ταιριάξει τροφή"}
                   </span>
                 </p>
                 <p className="mt-1 text-sm text-gray-700">
-                  Weight goal:{" "}
+                  Στόχος βάρους:{" "}
                   <span className="font-semibold">
                     {latest.weight_goal ?? "-"}
                   </span>
@@ -929,7 +939,7 @@ export default function AccountPetDetailPage() {
               </div>
 
               <div className="rounded-xl border border-green-200 bg-white p-4">
-                <p className="text-sm font-semibold text-black">Next steps</p>
+                <p className="text-sm font-semibold text-black">Επόμενα βήματα</p>
                 <ul className="mt-2 space-y-2 text-sm text-gray-700">
                   {getLatestAnalysisNextSteps(latest).map((step) => (
                     <li key={step}>- {step}</li>
@@ -943,19 +953,19 @@ export default function AccountPetDetailPage() {
                 href={`/account/chatbot?petId=${pet.id}&mode=progress`}
                 className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
               >
-                Progress check
+                Έλεγχος προόδου
               </Link>
               <Link
                 href={`/print/pet-report/${pet.id}`}
                 className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
               >
-                Open printable report
+                Άνοιγμα αναφοράς
               </Link>
               <Link
                 href={`/print/pet-timeline/${pet.id}`}
                 className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
               >
-                Open timeline
+                Άνοιγμα ιστορικού
               </Link>
             </div>
           </div>
@@ -965,25 +975,25 @@ export default function AccountPetDetailPage() {
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-blue-950">
-                Progress timeline
+                Ιστορικό προόδου
               </h2>
               <p className="mt-1 text-sm text-blue-900">
-                Follow-up notes from chatbot check-ins, useful for weight-loss
-                and food acceptance tracking.
+                Σημειώσεις από check-ins του chatbot, χρήσιμες για παρακολούθηση
+                βάρους και αποδοχής τροφής.
               </p>
             </div>
             <Link
               href={`/account/chatbot?petId=${pet.id}&mode=progress`}
               className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
             >
-              Add check-in
+              Νέο check-in
             </Link>
           </div>
 
           {progressLogs.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed border-blue-300 bg-white p-5 text-sm text-blue-900">
-              No progress check-ins yet. Open the chatbot, choose this pet, and
-              use Progress check or No visible result.
+              Δεν υπάρχουν check-ins ακόμη. Άνοιξε το chatbot, διάλεξε αυτό το
+              κατοικίδιο και χρησιμοποίησε έλεγχο προόδου.
             </div>
           ) : (
             <div className="mt-4 space-y-3">
@@ -1009,29 +1019,29 @@ export default function AccountPetDetailPage() {
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-700">
-                    {log.metadata?.previousWeightKg && (
+                        {log.metadata?.previousWeightKg && (
                       <span className="rounded-full bg-gray-100 px-3 py-1">
-                        Previous {log.metadata.previousWeightKg} kg
+                        Προηγούμενο βάρος {log.metadata.previousWeightKg} kg
                       </span>
                     )}
                     {log.metadata?.feedingGramsPerDay && (
                       <span className="rounded-full bg-gray-100 px-3 py-1">
-                        {log.metadata.feedingGramsPerDay}g/day
+                        {log.metadata.feedingGramsPerDay}g/ημέρα
                       </span>
                     )}
                     {log.metadata?.treatsPerDay && (
                       <span className="rounded-full bg-gray-100 px-3 py-1">
-                        Treats: {log.metadata.treatsPerDay}
+                        Λιχουδιές: {log.metadata.treatsPerDay}
                       </span>
                     )}
                     {log.metadata?.progressDecisionStatus && (
                       <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-900">
-                        Decision: {formatProgressChipLabel(log.metadata.progressDecisionStatus)}
+                        Απόφαση: {formatProgressChipLabel(log.metadata.progressDecisionStatus)}
                       </span>
                     )}
                     {log.metadata?.progressDecisionConfidence && (
                       <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-900">
-                        Confidence: {log.metadata.progressDecisionConfidence}
+                        Σιγουριά: {log.metadata.progressDecisionConfidence}
                       </span>
                     )}
                     {getProgressContextChips(log.metadata).map((chip) => (
@@ -1061,20 +1071,20 @@ export default function AccountPetDetailPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-black">Analysis history</h2>
+          <h2 className="text-xl font-semibold text-black">Ιστορικό αναλύσεων</h2>
 
           {analysisHistory.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5">
-              <p className="font-semibold text-black">No analysis history yet</p>
+              <p className="font-semibold text-black">Δεν υπάρχει ιστορικό ανάλυσης ακόμη</p>
               <p className="mt-2 text-sm text-gray-600">
-                Run a new analysis to create this pet&apos;s first nutrition
-                report and timeline entry.
+                Κάνε νέα ανάλυση για να δημιουργηθεί το πρώτο διατροφικό report
+                και η πρώτη εγγραφή ιστορικού.
               </p>
               <Link
                 href={`/account/chatbot?petId=${pet.id}`}
                 className="mt-4 inline-block rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
               >
-                Run analysis
+                Νέα ανάλυση
               </Link>
             </div>
           ) : (
@@ -1088,30 +1098,30 @@ export default function AccountPetDetailPage() {
                     {new Date(item.createdAt).toLocaleString()}
                   </p>
                   <p className="mt-1 text-sm text-gray-700">
-                    Resting calories {item.rer} kcal - daily target {item.mer} kcal
+                    Θερμίδες ηρεμίας {item.rer} kcal - ημερήσιος στόχος {item.mer} kcal
                   </p>
                   {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">
-                    Food fit: {getFoodScoreLabel(item.food_score)}
+                    Fit τροφής: {getFoodScoreLabel(item.food_score)}
                   </p>
                 )}
 
                 {item.feeding_grams_per_day && (
                   <p className="mt-1 text-sm text-gray-700">
-                    Feeding: {item.feeding_grams_per_day}g/day
+                    Μερίδα: {item.feeding_grams_per_day}g/ημέρα
                   </p>
                 )}
 
                 {item.matched_food_name && (
                   <p className="mt-1 text-xs text-gray-500">
-                    Food: {item.matched_food_name}
+                    Τροφή: {item.matched_food_name}
                   </p>
                 )}
                   <p className="mt-1 text-xs text-gray-500">
-                    Food recommendation:{" "}
+                    Πρόταση τροφής:{" "}
                     {item.matched_food_name
-                      ? "saved with this analysis"
-                      : "choose a food in the chatbot to make this more specific"}
+                      ? "αποθηκεύτηκε με αυτή την ανάλυση"
+                      : "διάλεξε τροφή στο chatbot για πιο συγκεκριμένη συμβουλή"}
                   </p>
                 </div>
               ))}

@@ -328,14 +328,14 @@ const checks = [
     expected: "progressDecisionStatus: progressDecisionStatus || null",
   },
   {
-    label: "Pet detail latest progress shows appetite chip",
+    label: "Pet detail latest progress shows Greek appetite chip",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Appetite: {formatProgressChipLabel(progressSummary.appetiteNote)}",
+    expected: "Όρεξη: {formatProgressChipLabel(progressSummary.appetiteNote)}",
   },
   {
-    label: "Pet detail latest progress shows decision chip",
+    label: "Pet detail latest progress shows Greek decision chip",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Decision: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}",
+    expected: "Απόφαση: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}",
   },
   {
     label: "Pet detail timeline shows structured progress chips",
@@ -369,19 +369,19 @@ const checks = [
     expected: "Food recommendation:",
   },
   {
-    label: "Pet detail analysis history uses customer-facing food recommendation label",
+    label: "Pet detail analysis history uses Greek customer-facing food recommendation label",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Food recommendation:",
+    expected: "Πρόταση τροφής:",
   },
   {
-    label: "Pet detail food score uses customer-facing recheck wording",
+    label: "Pet detail food score uses Greek customer-facing recheck wording",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Worth rechecking",
+    expected: "Θέλει επανέλεγχο",
   },
   {
-    label: "Pet detail uses customer-facing food-fit card label",
+    label: "Pet detail uses Greek customer-facing food-fit card label",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Food fit",
+    expected: "Fit τροφής",
   },
   {
     label: "Pet detail weight edit uses species-aware customer limit",
@@ -429,14 +429,14 @@ const checks = [
     expected: "Resting calories",
   },
   {
-    label: "Pet detail explains resting calories in customer language",
+    label: "Pet detail explains resting calories in Greek customer language",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Resting calories",
+    expected: "Θερμίδες ηρεμίας",
   },
   {
-    label: "Pet detail explains daily target in customer language",
+    label: "Pet detail explains daily target in Greek customer language",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Daily target",
+    expected: "Ημερήσιος στόχος",
   },
   {
     label: "Printable timeline explains daily target in customer language",
@@ -525,6 +525,26 @@ const forbiddenChecks = [
     label: "Pet detail does not expose raw score fraction",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: "/100",
+  },
+  {
+    label: "Pet detail does not expose English loading copy",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Loading pet...",
+  },
+  {
+    label: "Pet detail does not expose English error heading",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Could not load this pet",
+  },
+  {
+    label: "Pet detail does not expose English print report button",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Print Report",
+  },
+  {
+    label: "Pet detail does not expose English analysis history heading",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Analysis history",
   },
   {
     label: "Pets list does not expose RER card label",
