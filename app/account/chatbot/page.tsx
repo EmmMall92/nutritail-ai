@@ -4503,15 +4503,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (compareQueries.length >= 2 && step !== "analysis") {
       if (step === "petChoice") {
         setPendingCompareQueries(compareQueries);
-        addMessages(
-          createMessage(
-            "bot",
-            botText(
-              `Το κρατάω: θα συγκρίνω ${compareQueries.join(" vs ")} μόλις έχω τα στοιχεία του κατοικιδίου. Διάλεξε αποθηκευμένο κατοικίδιο ή πάτα Νέο κατοικίδιο.`,
-              `Got it: I will compare ${compareQueries.join(" vs ")} once I have the pet details. Choose a saved pet or start with a new pet.`
-            )
-          )
-        );
+        startNewPetFromPetChoice(text, null);
         return;
       }
 
