@@ -99,7 +99,7 @@ const checks = [
   {
     label: "Recommendation cards expose customer grams/day label",
     file: "app/account/chatbot/page.tsx",
-    expected: "Foods worth checking first",
+    expected: "Choose the food to start with",
   },
   {
     label: "Chosen recommendation points user to save the plan",
@@ -124,7 +124,7 @@ const checks = [
   {
     label: "Recommendation cards expose estimate portion badge",
     file: "app/account/chatbot/page.tsx",
-    expected: "Estimate portion",
+    expected: "Get grams",
   },
   {
     label: "Recommendation composer has compact customer fallback",

@@ -5321,24 +5321,24 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {showSave && recommendedFoodChoices.length > 0 && (
           <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
             <p className="font-semibold text-emerald-950">
-              {botText("Οι τροφές που αξίζει να δεις πρώτα", "Foods worth checking first")}
+              {botText("Διάλεξε την τροφή που σου ταιριάζει", "Choose the food to start with")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Ξεκίνα από την πρώτη κάρτα ή διάλεξε άλλη επιλογή αν σε βολεύει καλύτερα σε γεύση, εταιρεία ή budget.",
-                "Start with the first card, or choose another option if it fits flavour, brand, or budget better."
+                "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή budget.",
+                "The first card is the strongest starting point. The others are good options if they fit flavour, brand, or budget better."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Πάτησε μία κάρτα για να δω την πρώτη ποσότητα σε γραμμάρια/ημέρα. Μετά μπορείς να αποθηκεύσεις το πλάνο.",
-                "Choose one card to estimate the first grams/day. Then you can save the plan."
+                "Πάτησε την τροφή που σου αρέσει για να πάρεις την πρώτη ποσότητα σε γραμμάρια/ημέρα.",
+                "Pick the food you like to get the first daily portion in grams."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block text-emerald-800">
-                  {botText("1. Δες", "1. Review")}
+                  {botText("1. Σύγκρινε", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
                   {botText("τι ταιριάζει καλύτερα", "the best fit")}
@@ -5346,7 +5346,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block text-sky-800">
-                  {botText("2. Πάτησε", "2. Choose")}
+                  {botText("2. Διάλεξε", "2. Choose")}
                 </span>
                 <span className="font-normal text-sky-950">
                   {botText("μία κάρτα τροφής", "one food card")}
@@ -5403,7 +5403,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Πάτησε για ποσότητα", "Estimate portion")}
+                      {botText("Πάρε γραμμάρια", "Get grams")}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -5413,16 +5413,21 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     {getRecommendationChoiceRoleSummary(choice, index, chatLanguage)}
                   </span>
                   {getRecommendationChoiceFacts(choice, chatLanguage).length > 0 && (
-                    <span className="mt-3 flex flex-wrap gap-1.5 text-xs font-semibold">
-                      {getRecommendationChoiceFacts(choice, chatLanguage).map((fact) => (
-                        <span
-                          key={`${fact.label}-${fact.value}`}
-                          className={`rounded-full px-2 py-1 ring-1 ${fact.tone}`}
-                        >
-                          {fact.suffix ? `${fact.value}${fact.suffix}` : fact.value}{" "}
-                          {fact.label}
-                        </span>
-                      ))}
+                    <span className="mt-3 rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
+                      <span className="block text-xs font-semibold uppercase text-gray-500">
+                        {botText("Με μια ματιά", "At a glance")}
+                      </span>
+                      <span className="mt-2 flex flex-wrap gap-1.5 text-xs font-semibold">
+                        {getRecommendationChoiceFacts(choice, chatLanguage).map((fact) => (
+                          <span
+                            key={`${fact.label}-${fact.value}`}
+                            className={`rounded-full px-2 py-1 ring-1 ${fact.tone}`}
+                          >
+                            {fact.suffix ? `${fact.value}${fact.suffix}` : fact.value}{" "}
+                            {fact.label}
+                          </span>
+                        ))}
+                      </span>
                     </span>
                   )}
                   {choice.reason && (
@@ -5514,7 +5519,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Υπολόγισε γραμμάρια/ημέρα", "Estimate portions")}
+                    {botText("Πάρε γραμμάρια/ημέρα", "Get daily grams")}
                   </span>
                 </button>
               ))}
