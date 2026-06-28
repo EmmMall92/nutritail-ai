@@ -197,6 +197,16 @@ const checks = [
     expected: "formatSavedPetCurrentFoodPrompt(savedPetName, chatLanguage)",
   },
   {
+    label: "Saved pet mobile progress shortcut is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'botText("Έλεγχος", "Progress")',
+  },
+  {
+    label: "Saved pet mobile change-food shortcut is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'botText("Άλλη τροφή", "Another food")',
+  },
+  {
     label: "Saved pet picker uses localized customer-facing pet metadata",
     file: "app/account/chatbot/page.tsx",
     expected: "formatSavedPetCardMeta(savedPet, chatLanguage)",
@@ -390,6 +400,16 @@ const forbiddenChecks = [
     label: "Saved pet prompt does not use old English-only current-food text",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Great. I will use ${savedPetName}'s saved profile.",
+  },
+  {
+    label: "Saved pet mobile shortcut does not hardcode Progress",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: ">Progress</button>",
+  },
+  {
+    label: "Saved pet mobile shortcut does not hardcode Another food",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: ">Another food</button>",
   },
   {
     label: "Current-food candidate copy does not expose matcher score",

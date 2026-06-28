@@ -5222,8 +5222,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               <div>
                 <p className="font-semibold text-blue-950">
                   {botText(
-                    `Συνέχεια για το πλάνο του/της ${followUpPet.name}`,
-                    `Continue ${followUpPet.name}'s plan`
+                    `Συνέχεια για το πλάνο του/της ${formatPetDisplayName(followUpPet.name)}`,
+                    `Continue ${formatPetDisplayName(followUpPet.name)}'s plan`
                   )}
                 </p>
                 <p className="mt-1 whitespace-pre-line text-sm text-blue-900">
@@ -5842,14 +5842,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               onClick={() => handleFollowUpAction("progress")}
               className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
             >
-              Progress
+              {botText("Έλεγχος", "Progress")}
             </button>
             <button
               type="button"
               onClick={() => handleFollowUpAction("change_food")}
               className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
             >
-              Another food
+              {botText("Άλλη τροφή", "Another food")}
             </button>
           </div>
         )}
