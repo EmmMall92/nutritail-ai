@@ -707,6 +707,14 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
   };
 
   const customerLabels: Record<string, { el: string; en: string }> = {
+    dog: { el: "σκύλους", en: "dogs" },
+    cat: { el: "γάτες", en: "cats" },
+    dry: { el: "ξηρά τροφή", en: "dry food" },
+    wet: { el: "υγρή τροφή", en: "wet food" },
+    adult: { el: "ενήλικο ζώο", en: "adult pets" },
+    puppy: { el: "κουτάβια", en: "puppies" },
+    kitten: { el: "γατάκια", en: "kittens" },
+    senior: { el: "ηλικιωμένα ζώα", en: "senior pets" },
     chewing_difficulty_without_small_kibble_support: {
       el: "δυσκολία μάσησης χωρίς μικρή κροκέτα",
       en: "chewing difficulty without small-kibble support",
@@ -5518,9 +5526,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  <span className="mt-3 text-xs font-medium text-gray-600">
-                    {getRecommendationChoiceActionHint(choice, chatLanguage)}
-                  </span>
+                  {choice.kcalPer100g == null && (
+                    <span className="mt-3 text-xs font-medium text-gray-600">
+                      {getRecommendationChoiceActionHint(choice, chatLanguage)}
+                    </span>
+                  )}
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
                       "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
