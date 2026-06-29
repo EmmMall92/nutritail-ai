@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-29T11:14:25.039Z
+Generated: 2026-06-29T22:34:07.752Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -22,6 +22,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Response contracts passed: 156
 - Response contracts failed: 0
 - Customer UX suites passing: 3/3
+- Golden suite: PASS (21/21 checks run)
 - Fixture/coverage evidence suites passing: 4/4
 
 ## Species Coverage
@@ -43,7 +44,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
-| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 0 | 2026-06-28T18:43:57.822Z |
+| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 0 | 2026-06-29T22:29:32.435Z |
 | OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-29T09:03:33.143Z |
 | Account chatbot extract live route QA | `reports/account_chatbot_extract_live_route_qa.md` | authenticated live chatbot extraction route | `npm.cmd run qa:account-chatbot-extract-live-route` | skipped | 1 | 0 | 0 | 1 | 2026-06-29T09:03:32.717Z |
 
@@ -57,18 +58,24 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T10:23:40.858Z |
-| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T10:01:27.543Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T22:33:57.916Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T22:24:18.531Z |
 | Sensitive recommendation smoke QA | `reports/chatbot_sensitive_recommendation_smoke.md` | large-breed puppy, senior, renal, urinary, allergy/preference, and live dog/cat recommendation smoke | `npm.cmd run qa:chatbot-sensitive-recommendations` | PASS | 2026-06-29T11:12:17.037Z |
+
+## Golden Suite Evidence
+
+| Suite | Source report | Layer | Command | Mode | Result | Checks run | Passed | Failed | Last run |
+| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
+| Chatbot golden suite fast | `reports/chatbot_golden_suite.md` | current fast regression gate for intake, customer UX, Food V2 ranking, dog live smoke, dog 201-600 smoke, and cat live cases | `npm.cmd run qa:chatbot-golden-suite:fast` | fast | PASS | 21/21 | 21 | 0 | 2026-06-29T22:33:57.949Z |
 
 ## Fixture And Coverage Evidence
 
 | Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | --- |
 | Dog 201-600 fixture integrity | `reports/dog_201_600_fixture_integrity.md` | UTF-8 prompt integrity + sequential dog QA fixture | `npm.cmd run qa:dog-201-600-fixture` | PASS | 400 | 0 | 2026-06-23T06:22:21.757Z |
-| Dog 201-600 coverage audit | `reports/dog_201_600_coverage_audit.md` | dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases | `npm.cmd run audit:dog-201-600-coverage` | PASS | 400 | 0 | 2026-06-28T18:44:00.353Z |
+| Dog 201-600 coverage audit | `reports/dog_201_600_coverage_audit.md` | dog scenario balance across growth, sterilised, allergy, senior, GI, renal, urinary, value, premium, and safety cases | `npm.cmd run audit:dog-201-600-coverage` | PASS | 400 | 0 | 2026-06-29T22:29:35.069Z |
 | Cat 001-500 fixture integrity | `reports/cat_case_fixture_integrity.md` | UTF-8 prompt integrity + sequential cat QA fixture | `npm.cmd run qa:cat-case-fixture` | PASS | 500 | 0 | 2026-06-23T06:16:55.533Z |
-| Cat 001-500 coverage audit | `reports/cat_chatbot_coverage_audit.md` | cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases | `npm.cmd run audit:cat-chatbot-coverage` | PASS | 500 | 0 | 2026-06-28T18:44:00.729Z |
+| Cat 001-500 coverage audit | `reports/cat_chatbot_coverage_audit.md` | cat scenario balance across growth, urinary, renal, senior, allergy, weight, and safety cases | `npm.cmd run audit:cat-chatbot-coverage` | PASS | 500 | 0 | 2026-06-29T22:29:35.515Z |
 
 ## Current Interpretation
 
@@ -78,6 +85,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
 - Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.
 - Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.
+- The fast golden suite shows the current PR-level regression gate, including the latest live dog/cat smoke checks.
 - Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.
 
 ## Next QA Gaps
