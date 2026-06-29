@@ -8,6 +8,7 @@ const customerCopyFiles = [
   "app/account/page.tsx",
   "app/account/profile/page.tsx",
   "app/dashboard/page.tsx",
+  "lib/nutrition/chatGuardrails.ts",
 ];
 
 const bannedCustomerCopy = [
@@ -112,6 +113,21 @@ const bannedExactCustomerStrings = [
     file: "app/account/chatbot/page.tsx",
     text: "No matched food",
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",
+  },
+  {
+    file: "lib/nutrition/chatGuardrails.ts",
+    text: "Safety notes:",
+    reason: "Guardrail copy should use customer wording instead of internal safety-section labels.",
+  },
+  {
+    file: "lib/nutrition/chatGuardrails.ts",
+    text: "Confidence notes:",
+    reason: "Guardrail copy should not expose confidence-section labels to customers.",
+  },
+  {
+    file: "lib/nutrition/chatGuardrails.ts",
+    text: "Useful follow-up questions:",
+    reason: "Guardrail copy should ask the next helpful question in customer language.",
   },
   {
     file: "app/dashboard/page.tsx",

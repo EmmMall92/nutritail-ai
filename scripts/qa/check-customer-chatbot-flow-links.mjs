@@ -524,9 +524,9 @@ const checks = [
     expected: "Τελευταίες διατροφικές σημειώσεις",
   },
   {
-    label: "Chat guardrails use customer-facing practical notes",
+    label: "Chat guardrails use customer-facing context notes",
     file: "lib/nutrition/chatGuardrails.ts",
-    expected: "Practical notes:",
+    expected: "Helpful context:",
   },
   {
     label: "Greek chatbot guardrail copy uses customer-friendly caution heading",

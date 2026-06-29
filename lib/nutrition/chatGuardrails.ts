@@ -160,13 +160,13 @@ export function formatChatGuardrails(result: ChatGuardrailResult) {
 
   if (result.safetyNotes.length > 0) {
     sections.push(
-      `Safety notes:\n${result.safetyNotes.map((item) => `- ${item}`).join("\n")}`
+      `What to watch:\n${result.safetyNotes.map((item) => `- ${item}`).join("\n")}`
     );
   }
 
   if (result.confidenceNotes.length > 0) {
     sections.push(
-      `Practical notes:\n${result.confidenceNotes
+      `Helpful context:\n${result.confidenceNotes
         .map((item) => `- ${item}`)
         .join("\n")}`
     );
@@ -174,7 +174,7 @@ export function formatChatGuardrails(result: ChatGuardrailResult) {
 
   if (result.followUpQuestions.length > 0) {
     sections.push(
-      `Useful follow-up questions:\n${result.followUpQuestions
+      `Next useful question:\n${result.followUpQuestions
         .map((item) => `- ${item}`)
         .join("\n")}`
     );
