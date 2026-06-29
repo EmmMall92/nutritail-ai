@@ -19,6 +19,98 @@
         "allergyReject": ["lamb", "beef"],
         "preferredProteinTop": ["chicken"]
       }
+    },
+    {
+      "id": 9002,
+      "message": "Adult sterilised dog, 10kg, 5 years old. Likes chicken, refuses lamb and beef, weight maintenance.",
+      "goal": "sterilised",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 10,
+        "ageYears": 5,
+        "neutered": true,
+        "weightGoal": "maintain",
+        "preferredProteins": ["chicken"],
+        "excludedIngredients": ["lamb", "beef"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "obesityLogic": true,
+        "allergyReject": ["lamb", "beef"],
+        "preferredProteinTop": ["chicken"]
+      }
+    },
+    {
+      "id": 9003,
+      "message": "My dog is allergic to chicken and turkey. He is 12kg and 4 years old.",
+      "goal": "allergy",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 12,
+        "ageYears": 4,
+        "allergies": ["chicken", "turkey"],
+        "excludedIngredients": ["chicken", "turkey"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "allergyReject": ["chicken", "turkey"]
+      }
+    },
+    {
+      "id": 9004,
+      "message": "I have an 18kg dog that only eats fish and I want no chicken at all.",
+      "goal": "allergy",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 18,
+        "preferredProteins": ["fish"],
+        "excludedIngredients": ["chicken"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "allergyReject": ["chicken"],
+        "preferredProteinTop": ["fish", "salmon", "tuna", "trout"]
+      }
+    },
+    {
+      "id": 9005,
+      "message": "My 8kg dog is sensitive to salmon. I do not want fish, and I prefer duck.",
+      "goal": "allergy",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 8,
+        "allergies": ["salmon"],
+        "preferredProteins": ["duck"],
+        "excludedIngredients": ["salmon", "fish"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "allergyReject": ["salmon", "fish"],
+        "preferredProteinTop": ["duck"]
+      }
+    },
+    {
+      "id": 9006,
+      "message": "Dog 22kg adult, likes salmon, avoids beef and lamb, normal activity, weight maintenance.",
+      "goal": "general",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 22,
+        "activityLevel": "normal",
+        "weightGoal": "maintain",
+        "preferredProteins": ["salmon"],
+        "excludedIngredients": ["beef", "lamb"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "allergyReject": ["beef", "lamb"],
+        "preferredProteinTop": ["salmon"]
+      }
     }
   ]
 }
