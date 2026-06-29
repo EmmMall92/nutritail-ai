@@ -143,7 +143,7 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
 
 function getResultStatusDetail(item?: AnalysisHistoryItem) {
   if (!item) {
-    return "Ξεκίνα ανάλυση στο chatbot για θερμίδες, προτάσεις τροφής, αναφορά και ιστορικό.";
+    return "Ξεκίνα ανάλυση με τον σύμβουλο για θερμίδες, προτάσεις τροφής, αναφορά και ιστορικό.";
   }
 
   if (item.matched_food_name && item.feeding_grams_per_day) {
@@ -931,7 +931,7 @@ export default function AccountPetDetailPage() {
                 <p className="mt-2 text-sm text-gray-700">
                   Τροφή:{" "}
                   <span className="font-semibold">
-                    {latest.matched_food_name ?? "Δεν έχει ταιριάξει τροφή"}
+                    {latest.matched_food_name ?? "Δεν έχει επιλεγεί τροφή"}
                   </span>
                 </p>
                 <p className="mt-1 text-sm text-gray-700">
@@ -1128,7 +1128,7 @@ export default function AccountPetDetailPage() {
                     Πρόταση τροφής:{" "}
                     {item.matched_food_name
                       ? "αποθηκεύτηκε με αυτή την ανάλυση"
-                      : "διάλεξε τροφή στο chatbot για πιο συγκεκριμένη συμβουλή"}
+                      : "διάλεξε τροφή στον σύμβουλο για πιο συγκεκριμένη συμβουλή"}
                   </p>
                 </div>
               ))}

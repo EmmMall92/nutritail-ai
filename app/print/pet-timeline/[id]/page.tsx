@@ -554,7 +554,7 @@ export default function PetTimelineReportPage() {
 
                 <p className="mt-1">
                   <span className="font-semibold">Πρόταση τροφής:</span>{" "}
-                  Αποθηκεύτηκε με αυτή την ανάλυση στο ιστορικό του chatbot.
+                  Αποθηκεύτηκε με αυτή την ανάλυση στο ιστορικό του συμβούλου.
                 </p>
               </div>
             ))}
@@ -579,7 +579,7 @@ export default function PetTimelineReportPage() {
       <Section title="Τελευταία αποθηκευμένα food insights">
         <p className="mb-4 text-sm text-gray-600">
           Αυτές οι τροφές αποθηκεύτηκαν με την τελευταία ανάλυση ως χρήσιμο
-          διατροφικό context. Για νέα λίστα αγοράς, κάνε νέα πρόταση στο chatbot
+          διατροφικό πλαίσιο. Για νέα λίστα αγοράς, κάνε νέα πρόταση στον σύμβουλο
           με τωρινό βάρος, τροφή και προτιμήσεις.
         </p>
         <div className="space-y-4">

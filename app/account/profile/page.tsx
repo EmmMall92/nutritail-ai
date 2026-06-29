@@ -300,7 +300,7 @@ export default function AccountProfilePage() {
             />
             <p className="mt-2 text-xs text-gray-500">
               Κράτα τις ιατρικές λεπτομέρειες στα προφίλ κατοικιδίων όπου γίνεται,
-              ώστε το chatbot να τις χρησιμοποιεί με σωστό context.
+              ώστε ο σύμβουλος να τις χρησιμοποιεί με σωστό πλαίσιο.
             </p>
           </div>
 

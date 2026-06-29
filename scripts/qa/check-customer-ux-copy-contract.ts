@@ -277,6 +277,41 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/page.tsx",
+    text: "Διατροφικό chatbot",
+    reason: "Account dashboard should use customer advisor wording instead of chatbot product wording.",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "τελευταίο match",
+    reason: "Account dashboard should avoid matcher/internal wording.",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Δυνατό fit",
+    reason: "Account dashboard should use fully Greek food-suitability wording.",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Χρήσιμο fit",
+    reason: "Account dashboard should use fully Greek food-suitability wording.",
+  },
+  {
+    file: "app/account/profile/page.tsx",
+    text: "σωστό context",
+    reason: "Profile guidance should use Greek wording instead of mixed-language context wording.",
+  },
+  {
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    text: "διατροφικό context",
+    reason: "Printable timeline should use Greek wording instead of mixed-language context wording.",
+  },
+  {
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    text: "ιστορικό του chatbot",
+    reason: "Printable timeline should use advisor wording instead of chatbot product wording.",
+  },
+  {
+    file: "app/account/page.tsx",
     text: "Fit τροφής",
     reason: "Account dashboard should use fully Greek customer wording for food suitability.",
   },
