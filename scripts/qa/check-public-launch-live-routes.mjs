@@ -56,12 +56,30 @@ const checks = [
     skipBody: true,
   },
   {
+    path: "/dashboard",
+    expected: [307, 308],
+    label: "Legacy dashboard redirect",
+    expectedLocationIncludes: "/account",
+    skipBody: true,
+  },
+  {
+    path: "/create-pet",
+    expected: [307, 308],
+    label: "Legacy create pet redirect",
+    expectedLocationIncludes: "/account/chatbot",
+    skipBody: true,
+  },
+  {
     path: "/sitemap.xml",
     expected: [200],
     label: "Sitemap",
     contentTypeIncludes: ["xml"],
     requiredText: ["<urlset", "https://nutritail.ai"],
-    forbiddenText: ["https://nutritail.ai/chatbot"],
+    forbiddenText: [
+      "https://nutritail.ai/chatbot",
+      "https://nutritail.ai/dashboard",
+      "https://nutritail.ai/create-pet",
+    ],
   },
   {
     path: "/robots.txt",

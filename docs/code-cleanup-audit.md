@@ -46,16 +46,16 @@ This audit separates active production code from legacy or cleanup candidates. T
 
 - `app/dashboard/page.tsx` and `app/create-pet/page.tsx`
   - Older local-session style flow.
-  - Current product direction is `/account`, but these routes still exist and are blocked from indexing in `app/robots.ts`.
-  - Recommendation: keep for now, then convert to redirects after confirming no current workflow depends on them.
+  - These now redirect to the current `/account` and `/account/chatbot` customer flows, while remaining blocked from indexing in `app/robots.ts`.
+  - Recommendation: keep the redirects while older bookmarks or links may exist.
 
 - `components/PetForm.tsx`, `components/SavedPetsList.tsx`, `components/PetSummaryStats.tsx`, `components/PetProfileCard.tsx`, `components/NutritionResult.tsx`, `components/NutritionAdvice.tsx`, `components/FoodRecommendations.tsx`, `components/DashboardHeader.tsx`, `components/SectionCard.tsx`
   - Mostly used by the older dashboard/create-pet flow.
-  - Recommendation: keep while `/dashboard` and `/create-pet` exist. Remove only together with those routes.
+  - Recommendation: remove after confirming no active route imports them.
 
 - `database/foods.ts`, `repositories/petRepository.ts`, `repositories/sessionRepository.ts`, `repositories/editingPetRepository.ts`, `services/petAnalysisService.ts`
   - Legacy/local analysis support used by the old flow and some shared analysis endpoints.
-  - Recommendation: do not delete until legacy routes are redirected and `/api/chatbot/analyze` is reviewed.
+  - Recommendation: do not delete until `/api/chatbot/analyze` and other remaining imports are reviewed.
 
 ## Cleanup Candidates
 
@@ -103,8 +103,7 @@ The following generated QA reports are ignored locally so routine checks do not 
 
 ## Recommended Next Cleanup PRs
 
-1. Redirect `/dashboard` and `/create-pet` to account routes if the account experience fully replaces them.
-2. Review `/api/chatbot/analyze` and older local analysis services after confirming no active route still depends on them.
-3. Remove unused mock/local repositories and components once those legacy routes are gone.
-4. Split `app/account/chatbot/page.tsx` into smaller modules after behavior stabilizes; it is over 3,000 lines and is the highest-maintenance file.
-5. Add a lightweight unused-export check script so future cleanup is easier and safer.
+1. Review `/api/chatbot/analyze` and older local analysis services after confirming no active route still depends on them.
+2. Remove unused mock/local repositories and components once final import checks confirm no active imports remain.
+3. Split `app/account/chatbot/page.tsx` into smaller modules after behavior stabilizes; it is over 3,000 lines and is the highest-maintenance file.
+4. Add a lightweight unused-export check script so future cleanup is easier and safer.
