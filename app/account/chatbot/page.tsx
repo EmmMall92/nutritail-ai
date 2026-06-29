@@ -4723,7 +4723,15 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (compareQueries.length >= 2 && step !== "analysis") {
       if (step === "petChoice") {
         setPendingCompareQueries(compareQueries);
-        await startNewPetFromPetChoice(text, null);
+        addMessages(
+          createMessage(
+            "bot",
+            botText(
+              `Θα κρατήσω τη σύγκριση ${compareQueries.join(" vs ")}. Πρώτα επίλεξε αποθηκευμένο κατοικίδιο ή ξεκίνα νέο, ώστε να τη δω με σωστό είδος, ηλικία, βάρος και ανάγκες.`,
+              `I will keep the ${compareQueries.join(" vs ")} comparison ready. First choose a saved pet or start a new one, so I can compare it with the right species, age, weight, and needs.`
+            )
+          )
+        );
         return;
       }
 

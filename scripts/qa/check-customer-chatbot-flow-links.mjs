@@ -849,12 +849,13 @@ async function runInitialCompareStartsIntakeCheck() {
   const body = start >= 0 && end > start ? content.slice(start, end) : "";
 
   return {
-    label: "Initial compare request starts intake instead of blocking on pet buttons",
+    label: "Initial compare request preserves intent and asks for pet context",
     file,
     ok:
       body.includes('if (step === "petChoice")') &&
       body.includes("setPendingCompareQueries(compareQueries)") &&
-      body.includes("startNewPetFromPetChoice(text, null)") &&
+      body.includes("choose a saved pet or start a new one") &&
+      !body.includes("startNewPetFromPetChoice(text, null)") &&
       !body.includes("Choose a saved pet or start with a new pet"),
   };
 }
