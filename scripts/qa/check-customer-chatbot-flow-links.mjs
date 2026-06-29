@@ -107,9 +107,9 @@ const checks = [
     expected: "Next step: press save to keep the food, calories, and first portion on the profile.",
   },
   {
-    label: "Chosen recommendation explains the first daily portion",
+    label: "Chosen recommendation explains the simple daily plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "First daily portion:",
+    expected: "Simple daily plan:",
   },
   {
     label: "Chosen recommendation gives practical monitoring guidance",
