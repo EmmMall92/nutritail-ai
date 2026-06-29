@@ -1,6 +1,6 @@
 # Customer UX Copy Contract QA
 
-Generated: 2026-06-29T21:33:16.602Z
+Generated: 2026-06-29T21:38:58.794Z
 
 This QA checks customer-facing account/chatbot copy for backend leakage and required customer guidance.
 
@@ -8,7 +8,7 @@ This QA checks customer-facing account/chatbot copy for backend leakage and requ
 
 - Files checked: 12
 - Banned copy checks: 7
-- Banned exact string checks: 78
+- Banned exact string checks: 85
 - Required copy checks: 8
 - Failed: 0
 

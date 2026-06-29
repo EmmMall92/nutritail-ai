@@ -61,9 +61,9 @@ type RecommendationSummaryOptions = {
 };
 
 const GOAL_LABELS_EN: Record<FoodV2RecommendationGoal, string> = {
-  general: "general fit",
-  premium: "premium fit",
-  value: "value fit",
+  general: "general recommendation",
+  premium: "premium options",
+  value: "budget-friendly options",
   weight_control: "weight control",
   sensitive_digestion: "sensitive digestion",
   allergy: "ingredient avoidance",
@@ -486,7 +486,7 @@ function formatFood(
 
   return [
     `${index}. ${name}${scoreLabel()}`,
-    `   Why it fits: ${reason}.`,
+    `   Good because: ${reason}.`,
     snapshot ? `   ${snapshot}.` : "",
   ].filter(Boolean).join("\n");
 }
@@ -624,7 +624,7 @@ function polishEnglishCustomerText(text: string) {
     .replace(/\bPractical first picks:/g, "Budget-friendly options:")
     .replace(/\bStronger nutrition alternatives:/g, "Stronger nutrition options:")
     .replace(/\bAt a glance:/g, "Quick nutrition:")
-    .replace(/\bWhy it fits:/g, "Why this one:")
+    .replace(/\bWhy it\s+fits:/g, "Good because:")
     .replace(/\bStart with:/g, "Start here:")
     .replace(
       /Next step: tap one food card to estimate portions\/day\./g,
