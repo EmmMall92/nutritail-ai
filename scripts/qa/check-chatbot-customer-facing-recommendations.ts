@@ -320,7 +320,7 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose one food card below and I will estimate daily portions")) {
+  if (!scenario.text.includes("Next step: tap one food card to see the first daily portion in grams")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
@@ -381,7 +381,7 @@ if (!compactCardsSample.includes("I found the best first choices and placed them
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("Choose one food card below to estimate daily portions")) {
+if (!compactCardsSample.includes("Choose one food card below to see the first daily portion in grams")) {
   console.error("Compact card-facing recommendation should include a clear card action.");
   console.error(compactCardsSample);
   process.exit(1);
@@ -432,14 +432,14 @@ if (compactCardsSample.includes("Best options for this pet:") || /\n1\./.test(co
   process.exit(1);
 }
 
-if (!valueGoalSample.includes("Budget-friendly options:")) {
+if (!valueGoalSample.includes("Budget-friendly first choices:")) {
   console.error("Value goal should label the first section as value picks.");
   console.error(valueGoalSample);
   process.exit(1);
 }
 
 if (
-  !sample.includes("Best choices:") ||
+  !sample.includes("Best first choices:") ||
   (!sample.includes("Practical alternatives:") && sampleResponse.value.length > 0)
 ) {
   console.error("Customer-facing recommendation should use polished section labels.");

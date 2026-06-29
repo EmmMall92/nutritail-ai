@@ -299,13 +299,13 @@ for (const scenario of scenarios) {
     }
   }
 
-  if (!full.includes("Next step: choose one food card below and I will estimate daily portions.")) {
+  if (!full.includes("Next step: tap one food card to see the first daily portion in grams.")) {
     console.error(`Scenario ${scenario.label} missed the full recommendation next step.`);
     console.error(full);
     process.exit(1);
   }
 
-  if (!compact.includes("Choose one food card below to estimate daily portions.")) {
+  if (!compact.includes("Choose one food card below to see the first daily portion in grams.")) {
     console.error(`Scenario ${scenario.label} missed the compact card CTA.`);
     console.error(compact);
     process.exit(1);

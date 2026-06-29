@@ -499,26 +499,26 @@ function sectionTitle(
   if (goal === "value") {
     if (locale === "el") {
       return role === "premium"
-        ? "Πρώτες οικονομικές επιλογές:"
-        : "Πιο δυνατές διατροφικά εναλλακτικές:";
+        ? "Πρώτες επιλογές που αξίζει να δεις:"
+        : "Πρακτικές εναλλακτικές:";
     }
 
     return role === "premium"
-      ? "Practical first picks:"
-      : "Stronger nutrition alternatives:";
+      ? "Budget-friendly first choices:"
+      : "Practical alternatives:";
   }
 
   if (locale === "el") {
-    return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο οικονομικές / πρακτικές επιλογές:";
+    return role === "premium" ? "Καλύτερες πρώτες επιλογές:" : "Πιο οικονομικές / πρακτικές επιλογές:";
   }
 
-  return role === "premium" ? "First picks:" : "Simple alternatives:";
+  return role === "premium" ? "Best first choices:" : "Simple alternatives:";
 }
 
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
-    ? "Επόμενο βήμα: πάτησε μία κάρτα τροφής για να δεις περίπου ποσότητα/ημέρα."
-    : "Next step: tap one food card to estimate portions/day.";
+    ? "Επόμενο βήμα: πάτησε μία κάρτα τροφής για να δεις την πρώτη ποσότητα σε γραμμάρια/ημέρα."
+    : "Next step: tap one food card to see the first daily portion in grams.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
@@ -619,16 +619,16 @@ function cleanOutput(text: string) {
 function polishEnglishCustomerText(text: string) {
   return text
     .replace(/\bRecommended foods:/g, "Your food shortlist:")
-    .replace(/\bFirst picks:/g, "Best choices:")
+    .replace(/\bFirst picks:/g, "Best first choices:")
     .replace(/\bSimple alternatives:/g, "Practical alternatives:")
-    .replace(/\bPractical first picks:/g, "Budget-friendly options:")
-    .replace(/\bStronger nutrition alternatives:/g, "Stronger nutrition options:")
+    .replace(/\bPractical first picks:/g, "Budget-friendly first choices:")
+    .replace(/\bStronger nutrition alternatives:/g, "Practical alternatives:")
     .replace(/\bAt a glance:/g, "Quick nutrition:")
     .replace(/\bWhy it\s+fits:/g, "Good because:")
     .replace(/\bStart with:/g, "Start here:")
     .replace(
       /Next step: tap one food card to estimate portions\/day\./g,
-      "Next step: choose one food card below and I will estimate daily portions."
+      "Next step: choose one food card below and I will estimate the first daily portion in grams."
     )
     .replace(
       "Done. I placed the best options below as cards.",
@@ -636,7 +636,7 @@ function polishEnglishCustomerText(text: string) {
     )
     .replace(
       "Tap one card to estimate portions/day.",
-      "Choose one food card below to estimate daily portions."
+      "Choose one food card below to see the first daily portion in grams."
     );
 }
 
