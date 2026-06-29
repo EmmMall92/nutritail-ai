@@ -5911,7 +5911,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("Προφίλ", "Pet profile")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
-                  {botText("Report διατροφής", "Nutrition report")}
+                  {botText("Διατροφική αναφορά", "Nutrition report")}
                 </span>
                 <span className="rounded-full bg-white px-3 py-1 text-center">
                   {botText("Ιστορικό", "Analysis history")}
@@ -6025,7 +6025,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 className="rounded-xl border border-green-300 bg-white px-4 py-3 text-sm font-medium text-green-900 transition hover:bg-green-100"
               >
                 <span className="block">
-                  {botText("Ιστορικό / timeline", "Timeline")}
+                  {botText("Ιστορικό αναλύσεων", "Timeline")}
                 </span>
                 <span className="mt-1 block text-xs font-normal text-green-800">
                   {botText("Προηγούμενες αναλύσεις και αλλαγές.", "Previous analyses and changes.")}

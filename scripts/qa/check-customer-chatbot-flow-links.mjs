@@ -262,6 +262,16 @@ const checks = [
     expected: "Weight, grams, treats, and results.",
   },
   {
+    label: "Saved chatbot analysis uses Greek report chip wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Διατροφική αναφορά",
+  },
+  {
+    label: "Saved chatbot analysis uses Greek timeline chip wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Ιστορικό αναλύσεων",
+  },
+  {
     label: "Saved pet selection preserves pending comparison intent",
     file: "app/account/chatbot/page.tsx",
     expected: "const pendingCompare = [...pendingCompareQueries]",
@@ -710,6 +720,16 @@ const forbiddenChecks = [
     label: "Pets list does not expose English report-ready status",
     file: "app/account/pets/page.tsx",
     forbidden: "Report ready",
+  },
+  {
+    label: "Saved chatbot analysis does not expose mixed-language Greek report chip",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Report διατροφής",
+  },
+  {
+    label: "Saved chatbot analysis does not expose mixed-language Greek timeline chip",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Ιστορικό / timeline",
   },
   {
     label: "Pets list does not expose mixed-language ready report status",
