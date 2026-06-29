@@ -27,6 +27,10 @@ function rx(pattern: string) {
   return new RegExp(pattern, "iu");
 }
 
+const englishNoUrineContext = rx(
+  "(no\\s+urine|can(?:not|'?t)\\s+(?:pee|urinate)|unable\\s+to\\s+(?:pee|urinate)|not\\s+(?:peeing|urinating)|straining|blocked|urinary\\s+blockage)"
+);
+
 const greekPatterns = {
   catContext: rx("(γατ|γατο|γατα|γατος|γατουλα|γατακι|αρσενικος γατος|gat[ao]?s?|gata|gati|cat)"),
   noUrine: rx(
@@ -219,7 +223,8 @@ export function detectSafetyWarnings({
         greekPatterns.catContext.test(text) ||
         text.includes("cat") ||
         pet?.species === "cat";
-      const noUrineContext = greekPatterns.noUrine.test(text);
+      const noUrineContext =
+        greekPatterns.noUrine.test(text) || englishNoUrineContext.test(text);
       if (!catContext || !noUrineContext) continue;
     }
 
