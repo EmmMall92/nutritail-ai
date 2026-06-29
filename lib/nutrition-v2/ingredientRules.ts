@@ -318,6 +318,10 @@ function preferredProteinText(food: IngredientFitInput["food"]) {
   );
 }
 
+function preferredProteinVisibleText(food: IngredientFitInput["food"]) {
+  return normalizeText([food.formula_name, food.display_name].join(" "));
+}
+
 function hasIngredient(text: string, value: string) {
   return termsFor(value).some((term) => text.includes(normalizeText(term)));
 }
@@ -404,6 +408,10 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
 
   if (preferred.length > 0) {
     const preferredMatches = matchingValues(preferenceText, preferred);
+    const visiblePreferredMatches = matchingValues(
+      preferredProteinVisibleText(input.food),
+      preferred
+    );
 
     if (preferredMatches.length > 0) {
       signals.push({
@@ -412,6 +420,15 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
         points: 20,
         message: "Matches a preferred protein or flavor.",
       });
+
+      if (visiblePreferredMatches.length > 0) {
+        signals.push({
+          type: "boost",
+          code: "preferred_protein_visible_match",
+          points: 6,
+          message: "Formula name visibly matches a preferred protein or flavor.",
+        });
+      }
     } else {
       signals.push({
         type: "caution",

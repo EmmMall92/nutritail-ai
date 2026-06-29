@@ -1,0 +1,24 @@
+{
+  "cases": [
+    {
+      "id": 9001,
+      "message": "I have a 10kg adult neutered dog. He likes chicken, but he does not eat lamb or beef. I want weight maintenance.",
+      "goal": "sterilised",
+      "safety": "normal",
+      "expected": {
+        "species": "dog",
+        "weightKg": 10,
+        "neutered": true,
+        "weightGoal": "maintain",
+        "preferredProteins": ["chicken"],
+        "excludedIngredients": ["lamb", "beef"]
+      },
+      "checks": {
+        "foodV2Candidates": true,
+        "obesityLogic": true,
+        "allergyReject": ["lamb", "beef"],
+        "preferredProteinTop": ["chicken"]
+      }
+    }
+  ]
+}

@@ -204,6 +204,101 @@ if (clearSmallSterilisedRanking.total_score <= nonPreferredSterilisedRanking.tot
   process.exit(1);
 }
 
+const ingredientOnlyPreferredFood = food({
+  id: "ingredient-only-preferred",
+  formula_key: "qa|ingredient-only-preferred|dog|dry",
+  display_name: "Small Adult Light Sterilised",
+  formula_name: "Small Adult Light Sterilised",
+  dog_size: "small",
+  commercial_tags: ["light", "sterilised"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 325,
+});
+const visiblePreferredFood = food({
+  id: "visible-preferred",
+  formula_key: "qa|visible-preferred|dog|dry",
+  display_name: "Small Adult Light Sterilised Chicken",
+  formula_name: "Small Adult Light Sterilised Chicken",
+  dog_size: "small",
+  commercial_tags: ["light", "sterilised"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 325,
+});
+const ingredientOnlyPreferredRanking = rankFoodV2ForPet({
+  food: ingredientOnlyPreferredFood,
+  nutrients: {
+    ...nutrients(ingredientOnlyPreferredFood),
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet,
+  goal: "sterilised",
+});
+const visiblePreferredRanking = rankFoodV2ForPet({
+  food: visiblePreferredFood,
+  nutrients: {
+    ...nutrients(visiblePreferredFood),
+    fat_percent: 9,
+    fiber_percent: 6,
+  },
+  pet,
+  goal: "sterilised",
+});
+
+if (
+  !ingredientOnlyPreferredRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_match"
+  )
+) {
+  console.error("Expected ingredient-only preferred match to still be detected.");
+  console.error(ingredientOnlyPreferredRanking.signals);
+  process.exit(1);
+}
+
+if (
+  ingredientOnlyPreferredRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_visible_match"
+  )
+) {
+  console.error("Ingredient-only preferred match should not get the visible title boost.");
+  console.error(ingredientOnlyPreferredRanking.signals);
+  process.exit(1);
+}
+
+if (
+  !visiblePreferredRanking.signals.some(
+    (signal) => signal.code === "preferred_protein_visible_match"
+  )
+) {
+  console.error("Expected visible preferred protein/flavour match in formula name.");
+  console.error(visiblePreferredRanking.signals);
+  process.exit(1);
+}
+
+const visiblePreferredSplit = splitFoodV2Recommendations([
+  ingredientOnlyPreferredRanking,
+  visiblePreferredRanking,
+]);
+const visiblePreferredTop = [
+  ...visiblePreferredSplit.premium,
+  ...visiblePreferredSplit.value,
+][0];
+
+if (visiblePreferredTop?.formula_key !== "qa|visible-preferred|dog|dry") {
+  console.error(
+    "Customer-visible preferred protein should win the shortlist tie-break when nutrition fit is otherwise equal."
+  );
+  console.error({
+    visiblePreferredTop,
+    visiblePreferredSplit,
+    visiblePreferredRanking,
+    ingredientOnlyPreferredRanking,
+  });
+  process.exit(1);
+}
+
 if (
   !nonPreferredSterilisedRanking.signals.some(
     (signal) => signal.code === "preferred_protein_missing"
