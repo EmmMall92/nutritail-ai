@@ -219,8 +219,8 @@ includesAll(
     "buildIntakeExtractionSystemPrompt",
     "buildIntakeExtractionUserPrompt",
     "extractJsonObjectFromOpenAiText",
-    "Έχω σκύλο, την λένε Κύρκη",
-    "Ο γάτος μου προσπαθεί να κατουρήσει",
+    "\\u0388\\u03c7\\u03c9 \\u03c3\\u03ba\\u03cd\\u03bb\\u03bf",
+    "\\u039f \\u03b3\\u03ac\\u03c4\\u03bf\\u03c2 \\u03bc\\u03bf\\u03c5",
     "validateAiIntakeExtraction",
   ],
   "OpenAI intake smoke source"

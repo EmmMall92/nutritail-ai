@@ -25,10 +25,10 @@ const cases: SmokeCase[] = [
   {
     id: "greek_full_pet_profile",
     message:
-      "Έχω σκύλο, την λένε Κύρκη, είναι 6 κιλά, 6 ετών, χαμηλή δραστηριότητα, στειρωμένη. Της αρέσει κοτόπουλο και δεν της αρέσει σολομός.",
+      "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.",
     expect: {
       species: "dog",
-      petName: "Κύρκη",
+      petName: "\u039a\u03cd\u03c1\u03ba\u03b7",
       weightKg: 6,
       ageYears: 6,
       activityLevel: "low",
@@ -53,7 +53,7 @@ const cases: SmokeCase[] = [
   {
     id: "greek_allergy_avoidance",
     message:
-      "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο και στη γαλοπούλα.",
+      "\u039f \u03c3\u03ba\u03cd\u03bb\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03ad\u03c7\u03b5\u03b9 \u03b1\u03bb\u03bb\u03b5\u03c1\u03b3\u03af\u03b1 \u03c3\u03c4\u03bf \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03c3\u03c4\u03b7 \u03b3\u03b1\u03bb\u03bf\u03c0\u03bf\u03cd\u03bb\u03b1.",
     expect: {
       species: "dog",
       allergies: ["chicken", "turkey"],
@@ -62,7 +62,8 @@ const cases: SmokeCase[] = [
   },
   {
     id: "greek_urinary_red_flag",
-    message: "Ο γάτος μου προσπαθεί να κατουρήσει και δεν μπορεί.",
+    message:
+      "\u039f \u03b3\u03ac\u03c4\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8\u03b5\u03af \u03bd\u03b1 \u03ba\u03b1\u03c4\u03bf\u03c5\u03c1\u03ae\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03bc\u03c0\u03bf\u03c1\u03b5\u03af.",
     expect: {
       species: "cat",
       redFlags: ["urinary_blockage"],
@@ -70,7 +71,7 @@ const cases: SmokeCase[] = [
   },
   {
     id: "implausible_weight_rejected",
-    message: "Έχω σκύλο 115 κιλά.",
+    message: "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf 115 \u03ba\u03b9\u03bb\u03ac.",
     expect: {
       species: "dog",
       weightKg: null,

@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-29T23:35:19.316Z
+Generated: 2026-06-29T23:51:17.433Z
 
 ## Summary
 
@@ -69,7 +69,7 @@ Generated: 2026-06-29T23:35:19.316Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -86,7 +86,7 @@ Generated: 2026-06-29T23:35:19.316Z
 ### Chatbot intake cleanup
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-intake-cleanup`
 
 ```text
@@ -107,7 +107,7 @@ Generated: 2026-06-29T23:35:19.316Z
 ### Dog edge fixture 101-200
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:dog-edge-fixture`
 
 ```text
@@ -227,7 +227,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Nutrition source-map intake
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:nutrition-source-map-intake`
 
 ```text
@@ -243,7 +243,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 65.1s
+- Duration: 67.9s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -293,7 +293,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer chatbot flow links
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.4s
 - Command: `npm.cmd run qa:customer-chatbot-flow-links`
 
 ```text
@@ -331,7 +331,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 44.9s
+- Duration: 43.5s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
@@ -373,7 +373,7 @@ PASS dog-600: Κουτάβι που θέλει την καλύτερη δυνα�
 ### Live cat chatbot 100 cases
 
 - Status: pass
-- Duration: 119.0s
+- Duration: 126.4s
 - Command: `npm.cmd run qa:cat-chatbot-live-cases`
 
 ```text
