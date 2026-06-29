@@ -1,6 +1,10 @@
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
 import { getOpenAiClient, getOpenAiModel, isOpenAiConfigured } from "@/lib/ai/openaiServer";
-import { buildNutriTailSystemPrompt } from "@/lib/ai/promptInstructions";
+import {
+  buildIntakeExtractionSystemPrompt,
+  buildIntakeExtractionUserPrompt,
+  extractJsonObjectFromOpenAiText,
+} from "@/lib/ai/intakePromptContract";
 import type {
   AiIntakeExtraction,
   ValidatedAiIntakeExtraction,
@@ -11,17 +15,6 @@ type ExtractIntakeOptions = {
   locale?: "el" | "en";
   timeoutMs?: number;
 };
-
-function extractJsonObject(text: string) {
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return null;
-
-  try {
-    return JSON.parse(match[0]) as AiIntakeExtraction;
-  } catch {
-    return null;
-  }
-}
 
 function mergeUnique(...arrays: Array<string[] | undefined>) {
   return [...new Set(arrays.flatMap((items) => items ?? []).filter(Boolean))];
@@ -84,15 +77,11 @@ export async function extractPetIntakeFacts(
         input: [
           {
             role: "system",
-            content: [
-              buildNutriTailSystemPrompt("fact_extraction"),
-              "",
-              "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
-            ].join("\n"),
+            content: buildIntakeExtractionSystemPrompt(),
           },
           {
             role: "user",
-            content: `Message:\n${message}\n\nReturn JSON with keys: species, petName, weightKg, ageYears, activityLevel, neutered, healthIssues, allergies, currentFoodName, preferredProteins, excludedIngredients, weightGoal, language, missingFields, redFlags, confidence, notes.`,
+            content: buildIntakeExtractionUserPrompt(message),
           },
         ],
         temperature: 0,
@@ -101,7 +90,9 @@ export async function extractPetIntakeFacts(
       { signal: controller.signal }
     );
 
-    const parsed = extractJsonObject(response.output_text ?? "");
+    const parsed = extractJsonObjectFromOpenAiText(
+      response.output_text ?? ""
+    ) as AiIntakeExtraction | null;
     if (!parsed) return { ...fallback, source: "fallback" };
 
     const validated = validateAiIntakeExtraction(

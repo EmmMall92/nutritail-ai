@@ -1,7 +1,11 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
-import { buildNutriTailSystemPrompt } from "@/lib/ai/promptInstructions";
+import {
+  buildIntakeExtractionSystemPrompt,
+  buildIntakeExtractionUserPrompt,
+  extractJsonObjectFromOpenAiText,
+} from "@/lib/ai/intakePromptContract";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 import type { AiIntakeExtraction } from "@/lib/ai/intakeTypes";
 
@@ -120,39 +124,26 @@ function renderValue(value: unknown) {
   return JSON.stringify(value);
 }
 
-function extractJsonObject(text: string) {
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return null;
-
-  try {
-    return JSON.parse(match[0]) as AiIntakeExtraction;
-  } catch {
-    return null;
-  }
-}
-
 async function extractWithOpenAi(client: OpenAI, message: string) {
   const response = await client.responses.create({
     model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
     input: [
       {
         role: "system",
-        content: [
-          buildNutriTailSystemPrompt("fact_extraction"),
-          "",
-          "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
-        ].join("\n"),
+        content: buildIntakeExtractionSystemPrompt(),
       },
       {
         role: "user",
-        content: `Message:\n${message}\n\nReturn JSON with keys: species, petName, weightKg, ageYears, activityLevel, neutered, healthIssues, allergies, currentFoodName, preferredProteins, excludedIngredients, weightGoal, language, missingFields, redFlags, confidence, notes.`,
+        content: buildIntakeExtractionUserPrompt(message),
       },
     ],
     temperature: 0,
     max_output_tokens: 700,
   });
 
-  const parsed = extractJsonObject(response.output_text ?? "");
+  const parsed = extractJsonObjectFromOpenAiText(
+    response.output_text ?? ""
+  ) as AiIntakeExtraction | null;
   if (!parsed) {
     return {
       source: "none" as const,
