@@ -648,6 +648,22 @@ function hasGiSymptomContext(pet: FoodV2RankingInput["pet"]) {
   ]);
 }
 
+function hasGasFlatulenceContext(pet: FoodV2RankingInput["pet"]) {
+  return hasAny(normalizeText((pet.healthIssues ?? []).join(" ")), [
+    "gas",
+    "flatulence",
+    "gassy",
+    "bloating",
+    "bloated",
+    "chronic gas",
+    "chronic flatulence",
+    "\u03b1\u03b5\u03c1\u03b9",
+    "\u03b1\u03ad\u03c1\u03b9",
+    "\u03c6\u03bf\u03c5\u03c3\u03ba",
+    "\u03c6\u03bf\u03c5\u03c3\u03ba\u03c9",
+  ]);
+}
+
 function hasSkinCoatPositioning(foodText: string) {
   return hasAny(foodText, [
     "skin",
@@ -1390,6 +1406,10 @@ function scoreFit(input: FoodV2RankingInput) {
 
   if (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) {
     const hasDigestiveFit = hasSensitiveDigestivePositioning(positioningText);
+    const hasGasContext = hasGasFlatulenceContext(pet);
+    const hasMonoproteinOnlyPositioning =
+      hasAny(haystack, ["monoprotein", "mono protein", "single protein"]) &&
+      !hasDigestiveFit;
 
     if (hasDigestiveFit) {
       score += 24;
@@ -1430,7 +1450,7 @@ function scoreFit(input: FoodV2RankingInput) {
         "Weight-control positioning does not replace digestive support."
       );
     }
-    if (hasAny(haystack, ["monoprotein", "mono protein", "single protein"]) && !hasDigestiveFit) {
+    if (hasMonoproteinOnlyPositioning) {
       score -= 24;
       addSignal(
         signals,
@@ -1438,6 +1458,15 @@ function scoreFit(input: FoodV2RankingInput) {
         "monoprotein_not_digestive_fit",
         -24,
         "Monoprotein positioning alone does not replace digestive support for gas or stool concerns."
+      );
+    }
+    if (hasGasContext && hasMonoproteinOnlyPositioning) {
+      addSignal(
+        signals,
+        "exclude",
+        "gas_context_monoprotein_without_digestive_support",
+        -100,
+        "Excluded because chronic gas should start with visible digestive, sensitive or gastrointestinal positioning."
       );
     }
 
