@@ -439,7 +439,7 @@ if (!valueGoalSample.includes("Budget-friendly options:")) {
 }
 
 if (
-  !sample.includes("Best matches:") ||
+  !sample.includes("Best choices:") ||
   (!sample.includes("Practical alternatives:") && sampleResponse.value.length > 0)
 ) {
   console.error("Customer-facing recommendation should use polished section labels.");
@@ -656,7 +656,7 @@ const requiredCardFlowCopy = [
   "missing some label details",
   "compare the main nutrition points",
   "Next step: tell me which one you prefer",
-  "Best matches",
+  "Best choices",
   "food option(s) with the best fit",
   "Practical options",
   "good alternatives when you want something simpler",
@@ -774,7 +774,7 @@ const requiredGreekCardFlowCopy = [
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",
   "Πώς να το διαβάσεις:",
-  "Καλύτερα ταιριάσματα",
+  "Καλύτερες επιλογές",
   "Πρακτικές επιλογές",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Οδηγός ημερήσιων θερμίδων",
