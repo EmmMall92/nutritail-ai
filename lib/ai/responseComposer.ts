@@ -84,8 +84,27 @@ const GOAL_LABELS_EN: Record<string, string> = {
   weight_control: "weight control",
 };
 
+const CLEAN_GOAL_LABELS_EL: Record<string, string> = {
+  ...GOAL_LABELS_EL,
+  allergy: "αποφυγή συστατικών",
+  general: "γενική επιλογή",
+  growth: "ανάπτυξη",
+  premium: "ποιοτική επιλογή",
+  renal: "νεφρική υποστήριξη",
+  sensitive_digestion: "ευαίσθητη πέψη",
+  senior: "senior ανάγκες",
+  sterilised: "στειρωμένο κατοικίδιο",
+  urinary: "ουρολογική υποστήριξη",
+  value: "οικονομική επιλογή",
+  weight_control: "έλεγχος βάρους",
+};
+
 function displayFoodName(food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]) {
   return customerFoodName(food);
+}
+
+function isGreekLocale(locale: ComposerLocale): boolean {
+  return locale === "el";
 }
 
 function formatNumber(value: unknown, digits = 1) {
@@ -281,8 +300,72 @@ function foodBullet(
     .join("\n");
 }
 
-function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
-  const locale = input.locale ?? "el";
+function cleanGreekReason(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]
+) {
+  const reasons = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
+  const cautions = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
+
+  if (reasons.includes("preferred protein") || reasons.includes("preferred flavor")) {
+    return "ταιριάζει με την προτίμηση γεύσης ή πρωτεΐνης";
+  }
+
+  if (reasons.includes("weight") || reasons.includes("sterilised") || cautions.includes("fat")) {
+    return "έχει λογική για έλεγχο θερμίδων και βάρους";
+  }
+
+  if (reasons.includes("excluded ingredients") || reasons.includes("allergens were not detected")) {
+    return "σέβεται τις δηλωμένες αποφυγές συστατικών";
+  }
+
+  if (reasons.includes("sensitive") || reasons.includes("digest")) {
+    return "έχει λογική για πιο ευαίσθητη πέψη";
+  }
+
+  if (reasons.includes("senior")) {
+    return "είναι πιο κοντά σε senior ανάγκες";
+  }
+
+  if (reasons.includes("growth") || reasons.includes("puppy") || reasons.includes("kitten")) {
+    return "είναι πιο κοντά στις ανάγκες ανάπτυξης";
+  }
+
+  return "ταιριάζει στο βασικό προφίλ του κατοικιδίου";
+}
+
+function cleanGreekNutritionLine(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]
+) {
+  const kcal = formatNumber(food.nutrition?.kcal_per_100g, 1);
+  const protein = formatNumber(food.nutrition?.protein_percent, 1);
+  const fat = formatNumber(food.nutrition?.fat_percent, 1);
+  const fiber = formatNumber(food.nutrition?.fiber_percent, 1);
+  const values = [
+    kcal !== null ? `${kcal} kcal/100g` : "",
+    protein !== null ? `${protein}% πρωτεΐνη` : "",
+    fat !== null ? `${fat}% λιπαρά` : "",
+    fiber !== null ? `${fiber}% ίνες` : "",
+  ].filter(Boolean);
+
+  return values.length > 0 ? values.join("; ") : null;
+}
+
+function cleanGreekFoodBullet(
+  food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number],
+  index: number
+) {
+  const nutrition = cleanGreekNutritionLine(food);
+
+  return [
+    `${index}. ${displayFoodName(food)}`,
+    `   Γιατί: ${cleanGreekReason(food)}.`,
+    nutrition ? `   Με μια ματιά: ${nutrition}.` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function buildCleanGreekCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
   const foods = [...premium.slice(0, 3), ...value.slice(0, 2)].filter((food) =>
@@ -292,7 +375,51 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   if (foods.length === 0) return "";
 
   const goal = String(input.recommendation.goal ?? "general");
-  const goalLabel = locale === "el" ? (GOAL_LABELS_EL[goal] ?? goal) : (GOAL_LABELS_EN[goal] ?? goal);
+  const goalLabel = CLEAN_GOAL_LABELS_EL[goal] ?? goal;
+  const topFood = displayFoodName(foods[0]);
+  const topReason = cleanGreekReason(foods[0]);
+
+  if (input.cardsFollow) {
+    return [
+      "Έτοιμο. Οι πιο κατάλληλες επιλογές είναι στις κάρτες από κάτω.",
+      "",
+      `Τι κοιτάμε: ${goalLabel}.`,
+      `Καλύτερη αφετηρία: ${topFood} - ${topReason}.`,
+      "",
+      "Πάτησε μία κάρτα για να δεις περίπου γραμμάρια/ημέρα.",
+    ].join("\n");
+  }
+
+  const petName = input.petSummary?.name?.trim();
+
+  return [
+    petName
+      ? `Για ${petName}, θα ξεκινούσα με αυτές τις επιλογές:`
+      : "Θα ξεκινούσα με αυτές τις επιλογές:",
+    "",
+    `Στόχος: ${goalLabel}.`,
+    "",
+    foods.map((food, index) => cleanGreekFoodBullet(food, index + 1)).join("\n\n"),
+    "",
+    "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις περίπου γραμμάρια/ημέρα.",
+    "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
+  ].join("\n");
+}
+
+function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
+  const locale = input.locale ?? "el";
+  if (isGreekLocale(locale)) return buildCleanGreekCustomerFallbackText(input);
+
+  const premium = input.recommendation.premium ?? [];
+  const value = input.recommendation.value ?? [];
+  const foods = [...premium.slice(0, 3), ...value.slice(0, 2)].filter((food) =>
+    String(food.display_name ?? "").trim()
+  );
+
+  if (foods.length === 0) return "";
+
+  const goal = String(input.recommendation.goal ?? "general");
+  const goalLabel = GOAL_LABELS_EN[goal] ?? goal;
   const topFood = displayFoodName(foods[0]);
   const topReason = simpleReason(foods[0], locale);
 
