@@ -61,10 +61,10 @@ function getReportReadiness(pet: AccountPet): ReportReadiness {
 }
 
 function getReadinessLabel(readiness: ReportReadiness) {
-  if (readiness === "report_ready") return "Report έτοιμο";
+  if (readiness === "report_ready") return "Αναφορά έτοιμη";
   if (readiness === "needs_analysis") return "Θέλει ανάλυση";
-  if (readiness === "report_with_notes") return "Report με σημειώσεις";
-  return "Γενικό report";
+  if (readiness === "report_with_notes") return "Αναφορά με σημειώσεις";
+  return "Γενική αναφορά";
 }
 
 function getReadinessClass(readiness: ReportReadiness) {
