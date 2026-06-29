@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-29T09:12:10.916Z
+Generated: 2026-06-29T09:24:49.552Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -57,8 +57,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T09:10:30.928Z |
-| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T09:10:30.868Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T09:24:37.092Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T09:24:36.469Z |
 
 ## Fixture And Coverage Evidence
 
