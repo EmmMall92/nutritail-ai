@@ -9,9 +9,9 @@ type AuthShellProps = {
 };
 
 const TRUST_POINTS = [
-  "Personalized guidance for dogs and cats",
-  "Food suggestions based on pet context",
-  "Saved profiles, nutrition summaries, and future analyses",
+  "Προσωπική καθοδήγηση για σκύλους και γάτες",
+  "Προτάσεις τροφής με βάση το κατοικίδιο",
+  "Αποθηκευμένα προφίλ, αναφορές και νέες αναλύσεις",
 ];
 
 export function AuthShell({
@@ -39,12 +39,12 @@ export function AuthShell({
               {eyebrow}
             </p>
             <h1 className="mt-4 text-3xl font-bold leading-tight text-black sm:text-5xl">
-              Pet nutrition guidance that feels clear from the first step.
+              Διατροφική καθοδήγηση που βγάζει νόημα από το πρώτο βήμα.
             </h1>
             <p className="mt-5 text-base leading-7 text-gray-700">
-              Nutritail AI helps pet parents understand calories, food fit,
-              sensitivities, and practical next steps without turning nutrition
-              into a confusing spreadsheet.
+              Το Nutritail AI βοηθά να καταλάβεις θερμίδες, ποσότητα τροφής,
+              ευαισθησίες και πρακτικά επόμενα βήματα χωρίς να μπερδεύει τη
+              διατροφή με δύσκολους πίνακες.
             </p>
           </div>
 

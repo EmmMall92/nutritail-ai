@@ -902,6 +902,26 @@ const forbiddenChecks = [
     forbidden: "Saved profiles, reports",
   },
   {
+    label: "Auth shell does not expose English hero heading",
+    file: "components/AuthShell.tsx",
+    forbidden: "Pet nutrition guidance that feels clear from the first step.",
+  },
+  {
+    label: "Auth shell does not expose English hero body",
+    file: "components/AuthShell.tsx",
+    forbidden: "Nutritail AI helps pet parents understand calories",
+  },
+  {
+    label: "Auth shell does not expose English dog-cat trust point",
+    file: "components/AuthShell.tsx",
+    forbidden: "Personalized guidance for dogs and cats",
+  },
+  {
+    label: "Auth shell does not expose English food suggestion trust point",
+    file: "components/AuthShell.tsx",
+    forbidden: "Food suggestions based on pet context",
+  },
+  {
     label: "Printable report page does not expose Greek report loading wording",
     file: "app/print/pet-report/page.tsx",
     forbidden: "Ετοιμάζουμε το report",
