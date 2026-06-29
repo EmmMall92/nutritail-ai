@@ -53,6 +53,8 @@ export type FoodV2ChatbotPetContext = {
 type RecommendationSummaryOptions = {
   mode?: "default" | "alternative";
   excludedBrands?: string[];
+  preferredProteins?: string[];
+  excludedIngredients?: string[];
   locale?: "el" | "en";
   maxItemsPerSection?: number;
   compactForCards?: boolean;
@@ -247,6 +249,57 @@ function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
     ? `Κύρια ανάγκη που καλύπτουμε: ${goalLabel}.`
     : `What I matched for: ${goalLabel}.`;
+}
+
+function cleanPreferenceTerms(values: string[] | undefined) {
+  const seen = new Set<string>();
+  const cleaned: string[] = [];
+
+  for (const value of values ?? []) {
+    const item = String(value ?? "").trim();
+    if (!item) continue;
+
+    const key = normalizeText(item);
+    if (seen.has(key)) continue;
+
+    seen.add(key);
+    cleaned.push(item);
+  }
+
+  return cleaned.slice(0, 4);
+}
+
+function preferenceContextLine(
+  locale: "el" | "en",
+  options: Pick<
+    RecommendationSummaryOptions,
+    "preferredProteins" | "excludedIngredients"
+  >
+) {
+  const preferred = cleanPreferenceTerms(options.preferredProteins);
+  const excluded = cleanPreferenceTerms(options.excludedIngredients);
+
+  if (preferred.length === 0 && excluded.length === 0) return "";
+
+  if (locale === "el") {
+    const parts = [
+      preferred.length > 0
+        ? `προτίμησα γεύσεις/πρωτεΐνες όπως ${preferred.join(", ")}`
+        : "",
+      excluded.length > 0 ? `απέφυγα ${excluded.join(", ")}` : "",
+    ].filter(Boolean);
+
+    return `Έλαβα υπόψη τις προτιμήσεις του κατοικιδίου: ${parts.join(" και ")}.`;
+  }
+
+  const parts = [
+    preferred.length > 0
+      ? `preferred flavours/proteins such as ${preferred.join(", ")}`
+      : "",
+    excluded.length > 0 ? `avoided ${excluded.join(", ")}` : "",
+  ].filter(Boolean);
+
+  return `I also respected the pet's preferences: ${parts.join(" and ")}.`;
 }
 
 function nutritionSnapshot(food: FoodV2ChatbotRecommendationItem, locale: "el" | "en") {
@@ -508,11 +561,13 @@ function compactCardsIntro({
   goalLabel,
   top,
   locale,
+  preferenceLine,
 }: {
   goal: FoodV2RecommendationGoal;
   goalLabel: string;
   top: FoodV2ChatbotRecommendationItem;
   locale: "el" | "en";
+  preferenceLine?: string;
 }) {
   const name = foodName(top);
   const reason = customerReason(top, goal, locale);
@@ -524,6 +579,7 @@ function compactCardsIntro({
       [
         "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         recommendationFocusLine(locale, goalLabel),
+        preferenceLine,
         customerMedicalContextLine(locale, goal),
         `Ξεκίνα από: ${name}, γιατί ${reason}.`,
         snapshot,
@@ -539,6 +595,7 @@ function compactCardsIntro({
     [
       "Done. I placed the best options below as cards.",
       recommendationFocusLine(locale, goalLabel),
+      preferenceLine,
       customerMedicalContextLine(locale, goal),
       `Start with: ${name}, because it ${reason}.`,
       snapshot,
@@ -616,6 +673,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
   const locale = options.locale ?? "el";
   const maxItemsPerSection = Math.min(Math.max(options.maxItemsPerSection ?? 3, 1), 3);
   const goalLabel = locale === "el" ? GOAL_LABELS_EL[goal] : GOAL_LABELS_EN[goal];
+  const preferenceLine = preferenceContextLine(locale, options);
   const intro =
     options.mode === "alternative"
       ? locale === "el"
@@ -632,6 +690,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       goalLabel: goalLabel ?? goal,
       top: topForCards,
       locale,
+      preferenceLine,
     });
   }
 
@@ -640,6 +699,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       intro,
       "",
       recommendationFocusLine(locale, goalLabel ?? goal),
+      preferenceLine,
       excludedBrands.length > 0
         ? locale === "el"
           ? `Αποφεύγω προσωρινά την τωρινή εταιρεία: ${excludedBrands.join(", ")}`
@@ -665,6 +725,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     intro,
     "",
     recommendationFocusLine(locale, goalLabel ?? goal),
+    preferenceLine,
     customerMedicalContextLine(locale, goal),
     top
       ? locale === "el"

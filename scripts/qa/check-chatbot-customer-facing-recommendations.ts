@@ -61,12 +61,14 @@ const sampleResponse = {
 function summary(
   response: Parameters<typeof formatFoodV2ChatbotRecommendationSummary>[0],
   locale: "el" | "en" = "en",
-  compactForCards = false
+  compactForCards = false,
+  extraOptions: Partial<Parameters<typeof formatFoodV2ChatbotRecommendationSummary>[1]> = {}
 ) {
   return formatFoodV2ChatbotRecommendationSummary(response, {
     locale,
     maxItemsPerSection: 2,
     compactForCards,
+    ...extraOptions,
   });
 }
 
@@ -74,6 +76,17 @@ const sample = summary(sampleResponse);
 const greekSample = summary(sampleResponse, "el");
 const compactCardsSample = summary(sampleResponse, "en", true);
 const compactGreekCardsSample = summary(sampleResponse, "el", true);
+const preferenceSample = summary(sampleResponse, "en", true, {
+  preferredProteins: ["chicken"],
+  excludedIngredients: ["lamb", "beef"],
+});
+const greekPreferenceSample = summary(sampleResponse, "el", true, {
+  preferredProteins: ["\u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf"],
+  excludedIngredients: [
+    "\u03b1\u03c1\u03bd\u03af",
+    "\u03bc\u03bf\u03c3\u03c7\u03ac\u03c1\u03b9",
+  ],
+});
 const valueGoalSample = summary({ ...sampleResponse, goal: "value" as const });
 const greekAdapterPlan = planFoodV2RecommendationResponse({
   ...sampleResponse,
@@ -254,7 +267,7 @@ const forbiddenTerms = [
   "Ο",
 ];
 
-const allSummaries = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${valueGoalSample}\n${greekAdapterText}\n${coreScenarioSamples
+const allSummaries = `${sample}\n${greekSample}\n${compactCardsSample}\n${compactGreekCardsSample}\n${preferenceSample}\n${greekPreferenceSample}\n${valueGoalSample}\n${greekAdapterText}\n${coreScenarioSamples
   .map((scenario) => scenario.text)
   .join("\n")}`;
 const leakedTerms = forbiddenTerms.filter((term) =>
@@ -374,9 +387,29 @@ if (!compactCardsSample.includes("Choose one food card below to estimate daily p
   process.exit(1);
 }
 
+if (
+  !preferenceSample.includes("I also respected the pet's preferences") ||
+  !preferenceSample.includes("preferred flavours/proteins such as chicken") ||
+  !preferenceSample.includes("avoided lamb, beef")
+) {
+  console.error("English customer recommendation should explain applied flavour preferences and avoidances.");
+  console.error(preferenceSample);
+  process.exit(1);
+}
+
 if (!compactGreekCardsSample.includes("κάρτες από κάτω")) {
   console.error("Compact Greek card-facing recommendation should point to the cards.");
   console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
+if (
+  !greekPreferenceSample.includes("Έλαβα υπόψη τις προτιμήσεις του κατοικιδίου") ||
+  !greekPreferenceSample.includes("κοτόπουλο") ||
+  !greekPreferenceSample.includes("αρνί, μοσχάρι")
+) {
+  console.error("Greek customer recommendation should explain applied flavour preferences and avoidances.");
+  console.error(greekPreferenceSample);
   process.exit(1);
 }
 
@@ -425,6 +458,10 @@ const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 const transitionGuideSource = readFileSync("lib/foodTransitionGuide.ts", "utf8");
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
 const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
+const recommendationSummarySource = readFileSync(
+  "lib/food-v2/chatbotRecommendationSummary.ts",
+  "utf8"
+);
 const compareRoute = readFileSync("app/api/account/foods/compare/route.ts", "utf8");
 
 const forbiddenComposerCopy = [
@@ -609,6 +646,8 @@ const requiredCardFlowCopy = [
   "Treats: up to about",
   "What matters for this pet:",
   "The food cards below are the next step. Choose one option to estimate the daily portion.",
+  "preferredProteins: pet.preferredProteins ?? []",
+  "excludedIngredients: pet.excludedIngredients ?? []",
   "formatCompareCustomerTakeaway",
   "How to choose:",
   "I need the exact product name before I can compare it well.",
@@ -704,6 +743,23 @@ if (missingCardFlowCopy.length > 0) {
   process.exit(1);
 }
 
+const requiredRecommendationSummaryPreferenceCopy = [
+  "I also respected the pet's preferences",
+  "Έλαβα υπόψη τις προτιμήσεις του κατοικιδίου",
+  "preferredProteins",
+  "excludedIngredients",
+];
+const missingRecommendationSummaryPreferenceCopy =
+  requiredRecommendationSummaryPreferenceCopy.filter(
+    (term) => !recommendationSummarySource.includes(term)
+  );
+
+if (missingRecommendationSummaryPreferenceCopy.length > 0) {
+  console.error("Recommendation summary is missing customer-facing preference context copy:");
+  console.error(missingRecommendationSummaryPreferenceCopy.join(", "));
+  process.exit(1);
+}
+
 const requiredGreekCardFlowCopy = [
   "Καλύτερη επιλογή",
   "Πρακτική επιλογή",
@@ -711,21 +767,13 @@ const requiredGreekCardFlowCopy = [
   "Πάρε γραμμάρια/ημέρα",
   "Διάλεξε την τροφή που σου ταιριάζει",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-  "Πάρε γραμμάρια",
   "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση.",
-  "Πάτησε την τροφή που σου αρέσει για να πάρεις την πρώτη ποσότητα",
-  "1. Σύγκρινε",
-  "2. Διάλεξε",
-  "3. Πάρε",
+  "Πάτησε την τροφή που σου αρέσει",
   "Με μια ματιά",
-  "Η πιο δυνατή πρώτη επιλογή για το προφίλ που έδωσες.",
   "Πιο οικονομική / πρακτική εναλλακτική",
-  "Καλή εναλλακτική, αν θέλεις να δεις κι άλλη σωστή κατεύθυνση.",
   "Πώς να το διαβάσεις:",
-  "Επόμενο βήμα: πες μου ποια από αυτές σε ενδιαφέρει",
   "Καλύτερα ταιριάσματα",
   "Πρακτικές επιλογές",
-  "Ταιριάζει καλύτερα στο μέγεθος του σκύλου",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Οδηγός ημερήσιων θερμίδων",
   "Θερμίδες ηρεμίας:",
@@ -761,7 +809,9 @@ if (missingGreekCardFlowCopy.length > 0) {
 const requiredGreekTransitionCopy = [
   "Αν αλλάξεις τροφή, κάν' το σταδιακά:",
   "Ημέρες 1-2: 75% παλιά τροφή + 25% νέα τροφή",
-  "Για ευαισθησία στην πέψη, κάνε τη μετάβαση πιο αργά",
+  "Ημέρες 3-4: 50% παλιά τροφή + 50% νέα τροφή",
+  "Ημέρες 5-6: 25% παλιά τροφή + 75% νέα τροφή",
+  "Ημέρα 7+: 100% νέα τροφή",
 ];
 const missingGreekTransitionCopy = requiredGreekTransitionCopy.filter(
   (term) => !sourceIncludesTextOrEscapedUnicode(chatbotPage, term) &&

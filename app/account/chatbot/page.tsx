@@ -2274,6 +2274,8 @@ async function getFoodV2RecommendationMessage(
       options.mode === "alternative"
         ? getExcludedBrandsForAlternative(pet.currentFoodName)
         : [],
+    preferredProteins: pet.preferredProteins ?? [],
+    excludedIngredients: pet.excludedIngredients ?? [],
     maxItemsPerSection: 2,
     compactForCards: foodChoices.length > 0,
   });
