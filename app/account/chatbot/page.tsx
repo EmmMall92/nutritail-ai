@@ -4268,7 +4268,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
 
       const petForAnalysis = createPetFromIntake(nextPet);
 
-      const response = await fetch("/api/chatbot/analyze", {
+      const response = await fetch("/api/account/chatbot/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
