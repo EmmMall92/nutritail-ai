@@ -3664,4 +3664,87 @@ if (growthSplit.premium[0]?.formula_key !== "qa|acana-puppy-large-breed|dog|dry"
   process.exit(1);
 }
 
+const adultSterilisedValueSplit = splitFoodV2Recommendations(
+  [
+    {
+      ...clearSmallSterilisedRanking,
+      formula_key: "qa|visible-adult-value|dog|dry",
+      display_name: "Adult Light Chicken",
+      brand: "Happy Dog",
+      total_score: 74,
+      value_score: 82,
+      bucket: "value",
+      value_tier: "value_candidate",
+    },
+    {
+      ...clearSmallSterilisedRanking,
+      formula_key: "qa|senior-value-leak|dog|dry",
+      display_name: "Senior Light Chicken",
+      brand: "Josera",
+      total_score: 92,
+      value_score: 95,
+      bucket: "value",
+      value_tier: "value_candidate",
+    },
+    {
+      ...clearSmallSterilisedRanking,
+      formula_key: "qa|renal-value-leak|dog|dry",
+      display_name: "Renal Veterinary Chicken",
+      brand: "QA Vet",
+      total_score: 90,
+      value_score: 94,
+      bucket: "value",
+      value_tier: "value_candidate",
+    },
+  ],
+  3,
+  "sterilised"
+);
+
+const visibleAdultSterilisedValueKeys = [
+  ...adultSterilisedValueSplit.premium,
+  ...adultSterilisedValueSplit.value,
+].map((ranking) => ranking.formula_key);
+
+if (visibleAdultSterilisedValueKeys.includes("qa|senior-value-leak|dog|dry")) {
+  console.error("Adult/sterilised value alternatives should not surface senior-positioned foods.");
+  console.error(adultSterilisedValueSplit);
+  process.exit(1);
+}
+
+if (visibleAdultSterilisedValueKeys.includes("qa|renal-value-leak|dog|dry")) {
+  console.error("Adult/sterilised value alternatives should not surface renal/veterinary foods.");
+  console.error(adultSterilisedValueSplit);
+  process.exit(1);
+}
+
+if (!visibleAdultSterilisedValueKeys.includes("qa|visible-adult-value|dog|dry")) {
+  console.error("A normal adult/light value alternative should remain visible.");
+  console.error(adultSterilisedValueSplit);
+  process.exit(1);
+}
+
+const renalValueSplit = splitFoodV2Recommendations(
+  [
+    {
+      ...clearSmallSterilisedRanking,
+      formula_key: "qa|renal-value-allowed|dog|dry",
+      display_name: "Renal Veterinary Chicken",
+      brand: "QA Vet",
+      total_score: 90,
+      value_score: 94,
+      bucket: "value",
+      value_tier: "value_candidate",
+    },
+  ],
+  3,
+  "renal"
+);
+
+if (renalValueSplit.premium[0]?.formula_key !== "qa|renal-value-allowed|dog|dry") {
+  console.error("Renal-positioned value foods should remain visible when the goal is renal.");
+  console.error(renalValueSplit);
+  process.exit(1);
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");

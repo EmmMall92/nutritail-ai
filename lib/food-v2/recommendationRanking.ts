@@ -2160,13 +2160,81 @@ export function splitFoodV2Recommendations(
     });
   }
 
+  function isCustomerVisibleValueAlternative(ranking: FoodV2RankingResult) {
+    const visibleText = normalizeText([ranking.brand, ranking.display_name].join(" "));
+    const effectiveGoal = goal ?? "general";
+    const allowedMedicalValueGoals: FoodV2RecommendationGoal[] = [
+      "allergy",
+      "renal",
+      "sensitive_digestion",
+      "urinary",
+      "weight_control",
+    ];
+
+    const seniorVisible = hasAny(visibleText, [
+      "senior",
+      "mature",
+      "ageing",
+      "aging",
+      "7+",
+      "8+",
+      "10+",
+      "11+",
+      "12+",
+    ]);
+    const growthVisible = hasAny(visibleText, ["puppy", "junior", "kitten", "growth"]);
+    const renalVisible = hasAny(visibleText, ["renal", "kidney"]);
+    const urinaryVisible = hasAny(visibleText, ["urinary", "struvite", "oxalate"]);
+    const veterinaryVisible = hasAny(visibleText, [
+      "vet",
+      "veterinary",
+      "vetsolution",
+      "prescription",
+      "dietetic",
+      "therapeutic",
+    ]);
+    const medicalVisible = hasAny(visibleText, [
+      "cardiac",
+      "diabetic",
+      "dermatosis",
+      "gastrointestinal",
+      "hepatic",
+      "hydrolysed",
+      "hydrolyzed",
+      "hypoallergenic",
+      "liver",
+      "mobility",
+      "obesity",
+      "pancreatic",
+      "satiety",
+    ]);
+
+    if (seniorVisible && effectiveGoal !== "senior") return false;
+    if (growthVisible && effectiveGoal !== "growth") return false;
+    if (renalVisible && effectiveGoal !== "renal") return false;
+    if (urinaryVisible && effectiveGoal !== "urinary") return false;
+
+    if (
+      (veterinaryVisible || medicalVisible) &&
+      !allowedMedicalValueGoals.includes(effectiveGoal)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   const usable = dedupeByCustomerName(
     rankings
       .filter((ranking) => ranking.bucket !== "hold")
       .sort(compareCustomerRecommendations)
   );
-  const premium = usable.filter((ranking) => ranking.bucket === "premium");
-  const value = usable
+  const customerVisibleUsable = usable.filter(
+    (ranking) =>
+      ranking.bucket !== "value" || isCustomerVisibleValueAlternative(ranking)
+  );
+  const premium = customerVisibleUsable.filter((ranking) => ranking.bucket === "premium");
+  const value = customerVisibleUsable
     .filter((ranking) => ranking.bucket === "value")
     .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score);
 
@@ -2182,7 +2250,7 @@ export function splitFoodV2Recommendations(
     };
   }
 
-  const bestOverall = usable.slice(0, limitPerBucket);
+  const bestOverall = customerVisibleUsable.slice(0, limitPerBucket);
   const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
 
   return {
