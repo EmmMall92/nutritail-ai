@@ -9,6 +9,10 @@ type ReadinessSummary = {
   failedOrReview: string;
   passRate: string;
   generated: string;
+  maxReportAge: string;
+  deployFreshnessGate: string;
+  oldestSourceReport: string;
+  nextStaleReport: string;
 };
 
 function readLiveReadinessSummary(): ReadinessSummary {
@@ -19,6 +23,10 @@ function readLiveReadinessSummary(): ReadinessSummary {
     failedOrReview: "unknown",
     passRate: "unknown",
     generated: "unknown",
+    maxReportAge: "unknown",
+    deployFreshnessGate: "unknown",
+    oldestSourceReport: "unknown",
+    nextStaleReport: "unknown",
   };
 
   try {
@@ -41,6 +49,18 @@ function readLiveReadinessSummary(): ReadinessSummary {
       passRate: report.match(/- Pass rate:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.passRate,
       generated:
         report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.generated,
+      maxReportAge:
+        report.match(/- Max report age:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.maxReportAge,
+      deployFreshnessGate:
+        report.match(/- Deploy freshness gate:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.deployFreshnessGate,
+      oldestSourceReport:
+        report.match(/- Oldest source report:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.oldestSourceReport,
+      nextStaleReport:
+        report.match(/- Next stale report:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.nextStaleReport,
     };
   } catch {
     return fallback;
@@ -226,7 +246,7 @@ export default function FoodV2LiveQaPage() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-5">
           <div className="rounded-xl border border-current/20 bg-white/60 p-4">
             <p className="text-sm font-medium">Result</p>
             <p className="mt-2 text-2xl font-bold">{readiness.result}</p>
@@ -243,6 +263,24 @@ export default function FoodV2LiveQaPage() {
             <p className="text-sm font-medium">Review items</p>
             <p className="mt-2 text-2xl font-bold">{readiness.failedOrReview}</p>
             <p className="mt-1 text-xs">Pass rate: {readiness.passRate}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Freshness gate</p>
+            <p className="mt-2 break-words text-sm font-semibold">
+              {readiness.deployFreshnessGate}
+            </p>
+            <p className="mt-1 text-xs">Max age: {readiness.maxReportAge}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
+            <p className="font-semibold">Oldest source report</p>
+            <p className="mt-1 break-words">{readiness.oldestSourceReport}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
+            <p className="font-semibold">Next stale report</p>
+            <p className="mt-1 break-words">{readiness.nextStaleReport}</p>
           </div>
         </div>
       </div>
