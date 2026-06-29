@@ -1044,6 +1044,11 @@ const forbiddenChecks = [
     forbidden: "{log.metadata?.progressDecisionConfidence ?? \"-\"}",
   },
   {
+    label: "Printable timeline does not expose MER delta technical label",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "MER delta:",
+  },
+  {
     label: "Chatbot calorie explanation does not expose RER acronym",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Resting calories (RER)",

@@ -357,7 +357,7 @@ export default function PetTimelineReportPage() {
               <p key={index}>- {item}</p>
             ))}
             <p>
-              <span className="font-semibold">MER delta:</span>{" "}
+              <span className="font-semibold">Αλλαγή ημερήσιου στόχου:</span>{" "}
               {latestComparison.merDelta > 0 ? "+" : ""}
               {latestComparison.merDelta}
             </p>
