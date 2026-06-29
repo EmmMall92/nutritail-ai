@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-29T21:58:23.847Z
+Generated: 2026-06-29T22:33:57.949Z
 
 ## Summary
 
@@ -69,7 +69,7 @@ Generated: 2026-06-29T21:58:23.847Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -107,7 +107,7 @@ Generated: 2026-06-29T21:58:23.847Z
 ### Dog edge fixture 101-200
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:dog-edge-fixture`
 
 ```text
@@ -119,7 +119,7 @@ Dog edge case fixture QA passed.
 ### Dog golden coverage audit
 
 - Status: pass
-- Duration: 0.4s
+- Duration: 0.5s
 - Command: `npm.cmd run audit:dog-chatbot-golden-coverage`
 
 ```text
@@ -227,7 +227,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Nutrition source-map intake
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:nutrition-source-map-intake`
 
 ```text
@@ -243,7 +243,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 68.3s
+- Duration: 67.5s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -310,7 +310,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer recommendation smoke
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.7s
 - Command: `npm.cmd run qa:customer-recommendation-smoke`
 
 ```text
@@ -331,7 +331,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 46.0s
+- Duration: 40.6s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
@@ -352,7 +352,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot 201-600 smoke cases
 
 - Status: pass
-- Duration: 41.8s
+- Duration: 36.8s
 - Command: `npm.cmd run qa:dog-chatbot-live-201-600-smoke`
 
 ```text
@@ -373,7 +373,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live cat chatbot 100 cases
 
 - Status: pass
-- Duration: 130.0s
+- Duration: 111.9s
 - Command: `npm.cmd run qa:cat-chatbot-live-cases`
 
 ```text
