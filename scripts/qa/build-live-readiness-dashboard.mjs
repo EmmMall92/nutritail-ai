@@ -9,6 +9,12 @@ const maxReportAgeHours =
   Number.isFinite(configuredMaxReportAgeHours) && configuredMaxReportAgeHours > 0
     ? configuredMaxReportAgeHours
     : 48;
+const deployedAtRaw = process.env.NUTRITAIL_QA_DEPLOYED_AT?.trim() ?? "";
+const deployedAtMs = deployedAtRaw ? Date.parse(deployedAtRaw) : null;
+const deployedAtIso =
+  deployedAtMs != null && Number.isFinite(deployedAtMs)
+    ? new Date(deployedAtMs).toISOString()
+    : null;
 
 const routeSuites = [
   {
@@ -83,6 +89,7 @@ function missingSuite(suite) {
     runDate: "missing",
     ageHours: null,
     age: "missing",
+    staleReason: "report missing",
     status: "MISSING",
   };
 }
@@ -119,6 +126,11 @@ function reportAgeHours(runDate) {
   return Math.max(0, (generatedAt.getTime() - parsed) / 36e5);
 }
 
+function reportRunMs(runDate) {
+  const parsed = Date.parse(runDate);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function formatAge(hours) {
   if (hours == null) return "unknown";
   if (hours < 1) return `${Math.round(hours * 60)}m`;
@@ -134,7 +146,25 @@ function formatRemaining(hours) {
 
 function isStale(runDate) {
   const ageHours = reportAgeHours(runDate);
-  return ageHours == null || ageHours > maxReportAgeHours;
+  const runMs = reportRunMs(runDate);
+  return (
+    ageHours == null ||
+    ageHours > maxReportAgeHours ||
+    (deployedAtMs != null && Number.isFinite(deployedAtMs) && (runMs == null || runMs < deployedAtMs))
+  );
+}
+
+function staleReason(runDate) {
+  const ageHours = reportAgeHours(runDate);
+  const runMs = reportRunMs(runDate);
+
+  if (ageHours == null) return "unknown run date";
+  if (ageHours > maxReportAgeHours) return `older than ${maxReportAgeHours}h`;
+  if (deployedAtMs != null && Number.isFinite(deployedAtMs) && (runMs == null || runMs < deployedAtMs)) {
+    return `older than deploy ${deployedAtIso}`;
+  }
+
+  return "";
 }
 
 function parseRouteSuite(suite) {
@@ -156,6 +186,7 @@ function parseRouteSuite(suite) {
     runDate,
     ageHours,
     age: formatAge(ageHours),
+    staleReason: stale ? staleReason(runDate) : "",
     status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
@@ -179,6 +210,7 @@ function parseStaticSuite(suite) {
     runDate,
     ageHours,
     age: formatAge(ageHours),
+    staleReason: stale ? staleReason(runDate) : "",
     status: failed === 0 && checked === passed && !stale ? "PASS" : stale ? "STALE" : "REVIEW",
   };
 }
@@ -221,6 +253,7 @@ function parseOpenAiSmokeSuite(suite) {
     runDate,
     ageHours,
     age: formatAge(ageHours),
+    staleReason: stale ? staleReason(runDate) : "",
     status,
     note:
       status === "SKIPPED"
@@ -267,6 +300,7 @@ function parseAdvisoryRouteSuite(suite) {
     runDate,
     ageHours,
     age: formatAge(ageHours),
+    staleReason: stale ? staleReason(runDate) : "",
     status,
     note:
       status === "SKIPPED"
@@ -351,6 +385,7 @@ function parseChatbotSuite(suite) {
     runDate,
     ageHours,
     age: formatAge(ageHours),
+    staleReason: stale ? staleReason(runDate) : "",
     status:
       review === 0 &&
       responseFailures === 0 &&
@@ -413,6 +448,7 @@ const lines = [
   `- Failed or needs review: ${totals.failed}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
   `- Max report age: ${maxReportAgeHours}h`,
+  `- Deploy freshness gate: ${deployedAtIso ? `reports must be newer than ${deployedAtIso}` : "not configured"}`,
   `- Oldest source report: ${oldestSuite ? `${oldestSuite.name} (${oldestSuite.age})` : "unknown"}`,
   `- Next stale report: ${
     nextStaleSuite
@@ -423,22 +459,22 @@ const lines = [
   "",
   "## Readiness Evidence",
   "",
-  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run | Age |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: |",
+  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed/review | Last run | Age | Freshness note |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
   ...allSuites.map(
     (suite) =>
-      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} | ${suite.age} |`,
+      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} | ${suite.age} | ${suite.staleReason || "-"} |`,
   ),
   "",
   "## Advisory Evidence",
   "",
   "These checks add confidence but do not block live readiness when skipped locally.",
   "",
-  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed | Skipped | Last run | Age | Note |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | ---: | --- |",
+  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed | Skipped | Last run | Age | Freshness note | Note |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | ---: | --- | --- |",
   ...parsedAdvisorySuites.map(
     (suite) =>
-      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} | ${suite.age} | ${suite.note} |`,
+      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} | ${suite.age} | ${suite.staleReason || "-"} | ${suite.note} |`,
   ),
   "",
   "## Refresh Priority",
@@ -478,7 +514,8 @@ const lines = [
     nextStaleSuite ? `${nextStaleSuite.name} (${nextStaleSuite.command})` : "no current source report found"
   }.`,
   `- Reports older than ${maxReportAgeHours}h are marked STALE and block readiness until rerun.`,
-  "- If a route report is older than the current deploy, rerun the source command before relying on it.",
+  "- Set `NUTRITAIL_QA_DEPLOYED_AT` to the production deploy timestamp to require reports generated after that deploy.",
+  "- If a report is older than the current deploy, rerun the source command before relying on it.",
   "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY`.",
   "",
 ];
