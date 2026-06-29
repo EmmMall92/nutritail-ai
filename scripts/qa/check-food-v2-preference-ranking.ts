@@ -336,6 +336,75 @@ if (visiblePreferredTop?.formula_key !== "qa|visible-preferred|dog|dry") {
   process.exit(1);
 }
 
+const generalActivePreferencePet = {
+  ...pet,
+  weight: 6,
+  age: 3,
+  activityLevel: "high" as const,
+  neutered: false,
+  healthIssues: [],
+  allergies: [],
+  excludedIngredients: [],
+  preferredProteins: ["salmon"],
+};
+const activeNonPreferredFood = food({
+  id: "active-non-preferred",
+  formula_key: "qa|active-non-preferred|dog|dry",
+  display_name: "Active Nature",
+  formula_name: "Active Nature",
+  dog_size: "small",
+  commercial_tags: ["active"],
+  ingredients: ["lamb", "rice", "corn", "beet pulp", "animal fat"],
+  primary_animal_proteins: ["lamb"],
+  kcal_per_100g: 385,
+});
+const visibleSalmonActiveAlternative = food({
+  id: "visible-salmon-active-alternative",
+  formula_key: "qa|visible-salmon-active-alternative|dog|dry",
+  display_name: "Salmon & Potato",
+  formula_name: "Salmon & Potato",
+  dog_size: "small",
+  ingredients: ["salmon", "potato", "rice", "fish oil", "beet pulp"],
+  primary_animal_proteins: ["salmon"],
+  kcal_per_100g: 378,
+});
+const generalActivePreferenceSplit = splitFoodV2Recommendations([
+  rankFoodV2ForPet({
+    food: activeNonPreferredFood,
+    nutrients: {
+      ...nutrients(activeNonPreferredFood),
+      protein_percent: 28,
+      fat_percent: 16,
+      fiber_percent: 2,
+    },
+    pet: generalActivePreferencePet,
+    goal: "general",
+  }),
+  rankFoodV2ForPet({
+    food: visibleSalmonActiveAlternative,
+    nutrients: {
+      ...nutrients(visibleSalmonActiveAlternative),
+      protein_percent: 22,
+      fat_percent: 14,
+      fiber_percent: 2.5,
+    },
+    pet: generalActivePreferencePet,
+    goal: "general",
+  }),
+]);
+const generalActivePreferenceTop = [
+  ...generalActivePreferenceSplit.premium,
+  ...generalActivePreferenceSplit.value,
+][0];
+
+if (generalActivePreferenceTop?.formula_key !== "qa|visible-salmon-active-alternative|dog|dry") {
+  console.error(
+    "A safe customer-visible preferred flavor should lead a general active shortlist over a non-preferred active formula."
+  );
+  console.error({ generalActivePreferenceTop, generalActivePreferenceSplit });
+  process.exit(1);
+}
+
 if (
   !nonPreferredSterilisedRanking.signals.some(
     (signal) => signal.code === "preferred_protein_missing"

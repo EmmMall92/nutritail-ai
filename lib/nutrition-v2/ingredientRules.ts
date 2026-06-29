@@ -425,7 +425,7 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
         signals.push({
           type: "boost",
           code: "preferred_protein_visible_match",
-          points: 6,
+          points: 18,
           message: "Formula name visibly matches a preferred protein or flavor.",
         });
       }
