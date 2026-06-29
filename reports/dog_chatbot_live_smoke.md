@@ -1,6 +1,6 @@
 # Dog Chatbot 21 Live Cases
 
-Generated: 2026-06-29T05:22:21.652Z
+Generated: 2026-06-29T21:55:31.359Z
 Site: https://nutritail.ai
 OpenAI extraction: skipped
 
@@ -24,7 +24,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 | --- | ---: | --- |
 | allergy | 3/3 | Monge All Breeds Adult Monoprotein Beef With Rice (1); Monge VetSolution An Hydro (1); Purina Pro Plan MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός (1) |
 | general | 2/2 | Josera Active Nature (1); Purina Pro Plan MEDIUM ADULT Everyday Nutrition Κοτόπουλο (1) |
-| growth | 2/2 | Brit Care Grain Free Puppy Salmon (2) |
+| growth | 2/2 | Acana Puppy Large Breed (2) |
 | renal | 2/2 | Monge VetSolution Renal And Oxalate (2) |
 | senior | 2/2 | Josera Senior Balance (2) |
 | sensitive_digestion | 2/2 | Josera Gastro Dry (2) |
@@ -36,7 +36,7 @@ OpenAI fact extraction was not checked in this run because no usable OPENAI_API_
 
 | Safety level | Pass rate | Common top-2 foods |
 | --- | ---: | --- |
-| normal | 8/8 | Happy Dog Naturcroq Duck & Rice Sterilised (4); Josera Light & Vital Adult (3); Brit Care Grain Free Puppy Salmon (2); Josera Senior Balance (2) |
+| normal | 8/8 | Happy Dog Naturcroq Duck & Rice Sterilised (4); Josera Light & Vital Adult (3); Acana Puppy Large Breed (2); Orijen Puppy Large (2) |
 | vet_referral | 13/13 | Monge VetSolution Renal And Oxalate (5); Monge VetSolution Urinary Struvite (3); Josera Gastro Dry (2); Monge All Breeds Adult Monoprotein Beef With Rice (2) |
 
 ### Recurring First Picks
@@ -49,8 +49,8 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 
 | # | Status | Top foods | Review notes |
 | --- | --- | --- | --- |
-| 2 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Senior Balance; Purina Pro Plan MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός | - |
-| 4 | pass | Brit Care Grain Free Puppy Salmon; N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed | - |
+| 2 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Happy Dog Fit & Vital Light; N&D Quinoa Grain Free Duck Neutered Adult Med/maxi | - |
+| 4 | pass | Acana Puppy Large Breed; Orijen Puppy Large; Purina Pro Plan LARGE ROBUST PUPPY Healthy Start Κοτόπουλο | - |
 | 9 | pass | Josera Active Nature; Monge All Breeds Adult Active; Royal Canin Sporting Life Trail 4300 | - |
 | 10 | pass | Monge VetSolution An Hydro; Monge Hypo With Salmon And Tuna; Josera Hypoallergenic Dry | - |
 | 14 | pass | Monge VetSolution Renal And Oxalate; Josera Renal Dry; Royal Canin Vet Diet Small Renal | - |
@@ -58,7 +58,7 @@ Use this section for qualitative review: repeated first picks can be healthy if 
 | 41 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Light & Vital Adult; Happy Dog Fit & Vital Light | - |
 | 51 | pass | Josera Senior Balance; Josera Mini Senior Salmon; Brit Care Sustainable Senior Chicken & Insect | - |
 | 103 | pass | Purina Pro Plan MEDIUM & LARGE ADULT 7+ Sensitive Skin Σολομός; Monge All Breeds Adult Monoprotein Beef With Rice; Monge All Breeds Adult Monoprotein Pork With Rice And Potatoes | - |
-| 105 | pass | Brit Care Grain Free Puppy Salmon; N&D Pumpkin Grain Free Chicken & Pomegranate Puppy Med/maxi; Acana Puppy Large Breed | - |
+| 105 | pass | Acana Puppy Large Breed; Orijen Puppy Large; Purina Pro Plan LARGE ROBUST PUPPY Healthy Start Κοτόπουλο | - |
 | 116 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Light & Vital Adult; Happy Dog Fit & Vital Light | - |
 | 117 | pass | Happy Dog Naturcroq Duck & Rice Sterilised; Josera Light & Vital Adult; Happy Dog Fit & Vital Light | - |
 | 121 | pass | Josera Gastro Dry; Schesir Dry Medium Maintenance Chicken; Monge Hypo With Salmon And Tuna | - |
