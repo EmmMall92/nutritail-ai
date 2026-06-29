@@ -39,6 +39,13 @@ const cases: SafetyCase[] = [
     expectedCode: "male_cat_no_urine",
   },
   {
+    id: "live-greek-male-cat-not-peeing-colloquial",
+    message: "Έχω αρσενική γάτα που πάει στην άμμο αλλά δεν κατουράει και κλαίει",
+    expectedHardStop: true,
+    expectedInterrupt: true,
+    expectedCode: "male_cat_no_urine",
+  },
+  {
     id: "greeklish-male-cat-no-urine",
     message: "o gatos mou prospathiei na katourisei kai den mporei. ti trofi na paro?",
     expectedHardStop: true,

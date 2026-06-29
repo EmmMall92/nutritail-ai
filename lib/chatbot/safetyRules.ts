@@ -30,7 +30,7 @@ function rx(pattern: string) {
 const greekPatterns = {
   catContext: rx("(γατ|γατο|γατα|γατος|γατουλα|γατακι|αρσενικος γατος|gat[ao]?s?|gata|gati|cat)"),
   noUrine: rx(
-    "(δεν|δε).{0,20}(ουρησει|κατουρησει|κανει\\s*τσισα)|δεν\\s*βγαινουν\\s*(ουρα|τσισα)|προσπαθ.{0,35}(ουρησει|κατουρησει|κανει\\s*τσισα|ουρ|κατουρ|τσισ)|δυσκολ.{0,35}(ουρησει|κατουρησει|ουρ|κατουρ|τσισ)|\\bden\\b.{0,30}(mporei|borei|vgainei|vgazei|kanei).{0,35}(our|katour|tsis|pee)|prospath.{0,45}(our|katour|tsis|pee)|diskol.{0,45}(our|katour|tsis|pee)|αποφραξ|φραγμ|blocked|straining"
+    "(δεν|δε).{0,20}(ουρησει|ουρει|ουρα|ουρ|κατουρησει|κατουρα|κατουρ|κανει\\s*τσισα|τσισ)|δεν\\s*βγαινουν\\s*(ουρα|τσισα)|προσπαθ.{0,35}(ουρησει|κατουρησει|κανει\\s*τσισα|ουρ|κατουρ|τσισ)|δυσκολ.{0,35}(ουρησει|κατουρησει|ουρ|κατουρ|τσισ)|\\bden\\b.{0,30}(mporei|borei|vgainei|vgazei|kanei).{0,35}(our|katour|tsis|pee)|prospath.{0,45}(our|katour|tsis|pee)|diskol.{0,45}(our|katour|tsis|pee)|αποφραξ|φραγμ|blocked|straining"
   ),
   blood: rx(
     "\\bαιμα\\b|αιματ\\w+|με\\s+αιμα|αιμα\\s+(στα|στα\\s+κοπρανα|στα\\s+ουρα)|κοπρανα\\s+με\\s+αιμα|ουρα\\s+με\\s+αιμα|\\baima\\b|oura\\s+me\\s+aima|koprana\\s+me\\s+aima|bloody|blood"
