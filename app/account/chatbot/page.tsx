@@ -1046,7 +1046,7 @@ function getRecommendationChoiceRoleSummary(
     }
 
     if (choice.role === "value") {
-      return "\u03a0\u03b9\u03bf \u03b1\u03c0\u03bb\u03ae/value \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae, \u03b1\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ba\u03ac\u03c4\u03b9 \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03cc \u03c0\u03bf\u03c5 \u03c0\u03b1\u03c1\u03b1\u03bc\u03ad\u03bd\u03b5\u03b9 \u03ba\u03b1\u03bb\u03cc fit.";
+      return "\u03a0\u03b9\u03bf \u03bf\u03b9\u03ba\u03bf\u03bd\u03bf\u03bc\u03b9\u03ba\u03ae / \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae, \u03b1\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ba\u03ac\u03c4\u03b9 \u03c0\u03bf\u03c5 \u03c0\u03b1\u03c1\u03b1\u03bc\u03ad\u03bd\u03b5\u03b9 \u03ba\u03b1\u03bb\u03ae \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae.";
     }
 
     return "\u039a\u03b1\u03bb\u03ae \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae, \u03b1\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03bd\u03b1 \u03b4\u03b5\u03b9\u03c2 \u03ba\u03b9 \u03ac\u03bb\u03bb\u03b7 \u03c3\u03c9\u03c3\u03c4\u03ae \u03ba\u03b1\u03c4\u03b5\u03cd\u03b8\u03c5\u03bd\u03c3\u03b7.";
@@ -5483,7 +5483,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή budget.",
+                "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
                 "The first card is the strongest starting point. The others are good options if they fit flavour, brand, or budget better."
               )}
             </p>

@@ -248,7 +248,7 @@ export function planFoodV2RecommendationResponse(
   const summary =
     locale === "el"
       ? premium.length || value.length
-        ? "Βρήκα επιλογές χωρισμένες σε δυνατές διατροφικά και πιο value προτάσεις."
+        ? "Βρήκα επιλογές χωρισμένες σε δυνατές διατροφικά και πιο οικονομικές/πρακτικές προτάσεις."
         : "Δεν βρήκα αρκετά ασφαλή πρόταση με τα τωρινά δεδομένα."
       : premium.length || value.length
         ? "I found options split into stronger nutrition fits and value picks."
@@ -268,7 +268,7 @@ export function planFoodV2RecommendationResponse(
     sections.push({
       title:
         locale === "el"
-          ? "Πιο οικονομικές/value επιλογές"
+          ? "Πιο οικονομικές / πρακτικές επιλογές"
           : "Value options",
       items: value
         .slice(0, 3)
