@@ -114,6 +114,14 @@ function hasAny(values: string[] | undefined, terms: string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
 
+function hasPreferredProteinReason(text: string) {
+  return (
+    text.includes("matches a preferred protein") ||
+    text.includes("matches a preferred flavor") ||
+    text.includes("matches a preferred flavour")
+  );
+}
+
 export function goalFromPetContext(
   pet: FoodV2ChatbotPetContext
 ): FoodV2RecommendationGoal {
@@ -273,10 +281,20 @@ function customerReason(
     ...(food.food_intelligence?.best_use_cases ?? []),
   ].join(" "));
 
+  if ((goal === "sterilised" || goal === "weight_control") && hasPreferredProteinReason(text)) {
+    return locale === "el"
+      ? "ταιριάζει σε έλεγχο θερμίδων/βάρους και κρατάει τη γευστική προτίμηση"
+      : "fits calorie and weight-control needs while matching the pet's flavour preference";
+  }
   if (goal === "sterilised" || goal === "weight_control") {
     return locale === "el"
       ? "ταιριάζει καλύτερα σε έλεγχο θερμίδων και βάρους"
       : "fits calorie and weight-control needs";
+  }
+  if (goal === "allergy" && hasPreferredProteinReason(text)) {
+    return locale === "el"
+      ? "σέβεται τις δηλωμένες αποφυγές και κρατάει προτίμηση γεύσης όπου γίνεται"
+      : "respects the declared ingredient avoidances while matching a preferred flavour";
   }
   if (goal === "allergy") {
     return locale === "el"
@@ -318,7 +336,7 @@ function customerReason(
       ? "είναι πιο κοντά σε senior ανάγκες"
       : "is closer to senior needs";
   }
-  if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+  if (hasPreferredProteinReason(text) || text.includes("preferred protein") || text.includes("preferred flavor")) {
     return locale === "el"
       ? "ταιριάζει με προτίμηση γεύσης ή πρωτεΐνης"
       : "matches a preferred flavour or protein";

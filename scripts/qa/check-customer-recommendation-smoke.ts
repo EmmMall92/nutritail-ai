@@ -47,6 +47,7 @@ const scenarios: Array<{
             reasons: [
               "Useful weight-aware positioning for a sterilised pet.",
               "Lower calorie density fits a sterilised or weight-prone pet.",
+              "Matches a preferred protein or flavor.",
             ],
           },
           food_intelligence: {
@@ -59,7 +60,7 @@ const scenarios: Array<{
       value: [],
       hold: [],
     },
-    expected: ["sterilised pet", "calorie and weight-control"],
+    expected: ["sterilised pet", "flavour preference"],
   },
   {
     label: "weight loss dog",
