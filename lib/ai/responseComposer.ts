@@ -72,15 +72,15 @@ const GOAL_LABELS_EL: Record<string, string> = {
 
 const GOAL_LABELS_EN: Record<string, string> = {
   allergy: "ingredient avoidance",
-  general: "general fit",
+  general: "general recommendation",
   growth: "growth",
-  premium: "premium fit",
+  premium: "premium choice",
   renal: "renal support",
   sensitive_digestion: "sensitive digestion",
   senior: "senior needs",
   sterilised: "sterilised pet",
   urinary: "urinary support",
-  value: "value fit",
+  value: "value choice",
   weight_control: "weight control",
 };
 
