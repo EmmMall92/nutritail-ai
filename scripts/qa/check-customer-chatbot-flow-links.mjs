@@ -147,6 +147,16 @@ const checks = [
     expected: "useLayoutEffect(() =>",
   },
   {
+    label: "Chatbot scroll effect updates the message container directly",
+    file: "app/account/chatbot/page.tsx",
+    expected: "container.scrollTop = targetTop",
+  },
+  {
+    label: "Chatbot scroll effect computes the bottom of the message container",
+    file: "app/account/chatbot/page.tsx",
+    expected: "container.scrollHeight - container.clientHeight",
+  },
+  {
     label: "Chatbot scroll effect responds while a reply is being prepared",
     file: "app/account/chatbot/page.tsx",
     expected: "isProcessingMessage, recommendedFoodChoices.length",
@@ -491,6 +501,11 @@ const checks = [
 ];
 
 const forbiddenChecks = [
+  {
+    label: "Chatbot auto-scroll does not use page-level scrollIntoView",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "scrollIntoView",
+  },
   {
     label: "Saved pet handoff does not use raw English Use echo",
     file: "app/account/chatbot/page.tsx",
