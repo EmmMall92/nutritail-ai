@@ -5,6 +5,10 @@ const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/customer_ux_copy_contract_qa.md";
 
 const customerCopyFiles = [
+  "app/login/page.tsx",
+  "app/register/page.tsx",
+  "app/forgot-password/page.tsx",
+  "app/reset-password/page.tsx",
   "app/account/page.tsx",
   "app/account/profile/page.tsx",
   "lib/nutrition/chatGuardrails.ts",
@@ -73,6 +77,56 @@ const requiredCustomerCopy = [
 ];
 
 const bannedExactCustomerStrings = [
+  {
+    file: "app/login/page.tsx",
+    text: "Signing in...",
+    reason: "Login loading copy should be localized for customers.",
+  },
+  {
+    file: "app/login/page.tsx",
+    text: "Forgot password?",
+    reason: "Login recovery link should be localized for customers.",
+  },
+  {
+    file: "app/register/page.tsx",
+    text: "Creating account...",
+    reason: "Register loading copy should be localized for customers.",
+  },
+  {
+    file: "app/register/page.tsx",
+    text: "Create account",
+    reason: "Register action copy should be localized for customers.",
+  },
+  {
+    file: "app/forgot-password/page.tsx",
+    text: "Reset password",
+    reason: "Forgot-password heading should be localized for customers.",
+  },
+  {
+    file: "app/forgot-password/page.tsx",
+    text: "Sending...",
+    reason: "Forgot-password loading copy should be localized for customers.",
+  },
+  {
+    file: "app/forgot-password/page.tsx",
+    text: "Send reset link",
+    reason: "Forgot-password action copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Set a new password for your Nutritail AI account.",
+    reason: "Reset-password helper copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Updating...",
+    reason: "Reset-password loading copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Update password",
+    reason: "Reset-password action copy should be localized for customers.",
+  },
   {
     file: "app/account/profile/page.tsx",
     text: "Loading profile...",
