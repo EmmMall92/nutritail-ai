@@ -234,4 +234,168 @@ if (/\bdog\b|\bdogs\b|working-dog|working dog/i.test(activeCatCopy)) {
   process.exit(1);
 }
 
+const sterilisedIndoorCat = {
+  ...adultNonNeuteredCat,
+  weight: 5.5,
+  activityLevel: "low" as const,
+  neutered: true,
+  healthIssues: ["sterilised", "indoor"],
+};
+const leanSterilisedCat = catFood({
+  id: "lean-sterilised-cat",
+  formula_key: "qa-cat|lean-sterilised|cat|dry",
+  display_name: "Sterilised Light Chicken",
+  commercial_tags: ["sterilised", "light"],
+  kcal_per_100g: 330,
+});
+const richAdultCat = catFood({
+  id: "rich-adult-cat",
+  formula_key: "qa-cat|rich-adult|cat|dry",
+  display_name: "Adult Active Chicken",
+  commercial_tags: ["adult", "active"],
+  kcal_per_100g: 390,
+});
+const sterilisedRankings = [leanSterilisedCat, richAdultCat].map((food) =>
+  rankFoodV2ForPet({
+    food,
+    nutrients: nutrients(
+      food === richAdultCat
+        ? { protein_percent: 34, fat_percent: 18 }
+        : { protein_percent: 32, fat_percent: 9 }
+    ),
+    pet: sterilisedIndoorCat,
+    goal: "sterilised",
+  })
+);
+const sterilisedSplit = splitFoodV2Recommendations(sterilisedRankings, 2, "sterilised");
+const richAdultRanking = sterilisedRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|rich-adult|cat|dry"
+);
+
+if (sterilisedSplit.premium[0]?.formula_key !== "qa-cat|lean-sterilised|cat|dry") {
+  console.error("Sterilised indoor cat should start from a lean sterilised-positioned food.");
+  console.error({ sterilisedRankings, sterilisedSplit });
+  process.exit(1);
+}
+
+if (!richAdultRanking?.signals.some((signal) => signal.code === "sterilised_rich_formula_mismatch")) {
+  console.error("Expected rich adult cat food to be rejected for sterilised cat shortlist.");
+  console.error(richAdultRanking);
+  process.exit(1);
+}
+
+const renalCatPet = {
+  ...adultNonNeuteredCat,
+  age: 12,
+  weight: 4.2,
+  activityLevel: "low" as const,
+  neutered: true,
+  healthIssues: ["renal", "kidney disease"],
+};
+const renalCatFood = catFood({
+  id: "renal-cat",
+  formula_key: "qa-cat|renal|cat|dry",
+  display_name: "Renal Cat",
+  medical_tags: ["renal"],
+  commercial_tags: ["veterinary"],
+  kcal_per_100g: 400,
+});
+const urinaryOnlyCatFood = catFood({
+  id: "urinary-only-cat",
+  formula_key: "qa-cat|urinary-only|cat|dry",
+  display_name: "Urinary Oxalate Cat",
+  medical_tags: ["urinary"],
+  commercial_tags: ["veterinary", "urinary", "oxalate"],
+  kcal_per_100g: 370,
+});
+const renalRankings = [renalCatFood, urinaryOnlyCatFood].map((food) =>
+  rankFoodV2ForPet({
+    food,
+    nutrients: nutrients(
+      food === renalCatFood
+        ? { phosphorus_percent: 0.45, sodium_percent: 0.25, protein_percent: 26 }
+        : { phosphorus_percent: 0.9, sodium_percent: 0.4, protein_percent: 32 }
+    ),
+    pet: renalCatPet,
+    goal: "renal",
+  })
+);
+const renalSplit = splitFoodV2Recommendations(renalRankings, 2, "renal");
+const urinaryOnlyRenalRanking = renalRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|urinary-only|cat|dry"
+);
+
+if (renalSplit.premium[0]?.formula_key !== "qa-cat|renal|cat|dry") {
+  console.error("Renal cat should start from renal-positioned food.");
+  console.error({ renalRankings, renalSplit });
+  process.exit(1);
+}
+
+if (
+  urinaryOnlyRenalRanking?.bucket !== "hold" ||
+  !urinaryOnlyRenalRanking.signals.some((signal) => signal.code === "renal_urinary_mismatch")
+) {
+  console.error("Urinary-only cat food should stay on hold for renal cat cases.");
+  console.error(urinaryOnlyRenalRanking);
+  process.exit(1);
+}
+
+const seniorCatPet = {
+  ...adultNonNeuteredCat,
+  age: 13,
+  weight: 4.8,
+  activityLevel: "low" as const,
+  neutered: true,
+  healthIssues: ["senior", "low activity"],
+};
+const seniorCatFood = catFood({
+  id: "senior-cat",
+  formula_key: "qa-cat|senior|cat|dry",
+  display_name: "Senior 11+ Chicken",
+  life_stage: "senior",
+  commercial_tags: ["senior"],
+  kcal_per_100g: 350,
+});
+const renalTherapeuticForSenior = catFood({
+  id: "renal-therapeutic-for-senior",
+  formula_key: "qa-cat|renal-therapeutic-for-senior|cat|dry",
+  display_name: "Renal Cat",
+  medical_tags: ["renal"],
+  commercial_tags: ["veterinary", "renal"],
+  kcal_per_100g: 390,
+});
+const seniorRankings = [seniorCatFood, renalTherapeuticForSenior].map((food) =>
+  rankFoodV2ForPet({
+    food,
+    nutrients: nutrients(
+      food === seniorCatFood
+        ? { protein_percent: 30, fat_percent: 12 }
+        : { protein_percent: 26, fat_percent: 17, phosphorus_percent: 0.45 }
+    ),
+    pet: seniorCatPet,
+    goal: "senior",
+  })
+);
+const seniorSplit = splitFoodV2Recommendations(seniorRankings, 2, "senior");
+const renalTherapeuticSeniorRanking = seniorRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|renal-therapeutic-for-senior|cat|dry"
+);
+
+if (seniorSplit.premium[0]?.formula_key !== "qa-cat|senior|cat|dry") {
+  console.error("Senior cat without renal history should start from visible senior food.");
+  console.error({ seniorRankings, seniorSplit });
+  process.exit(1);
+}
+
+if (
+  renalTherapeuticSeniorRanking?.bucket !== "hold" ||
+  !renalTherapeuticSeniorRanking.signals.some(
+    (signal) => signal.code === "therapeutic_food_without_matching_condition"
+  )
+) {
+  console.error("Renal therapeutic food should not be visible for senior cat without renal context.");
+  console.error(renalTherapeuticSeniorRanking);
+  process.exit(1);
+}
+
 console.log("Cat Food V2 ranking balance checks passed.");
