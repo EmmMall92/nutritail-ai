@@ -80,7 +80,7 @@ export default function PetReportPage() {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Ετοιμάζουμε το report...</p>
+          <p className="text-sm font-medium text-black">Ετοιμάζουμε την αναφορά...</p>
           <p className="mt-2 text-sm text-gray-600">
             Ετοιμάζουμε την εκτυπώσιμη διατροφική αναφορά.
           </p>
@@ -92,7 +92,7 @@ export default function PetReportPage() {
   if (!session || !analysis || !brandSettings) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-2xl font-bold text-black">Δεν υπάρχουν διαθέσιμα στοιχεία report</h1>
+        <h1 className="text-2xl font-bold text-black">Δεν υπάρχουν διαθέσιμα στοιχεία αναφοράς</h1>
         <p className="mt-2 text-gray-600">
           Δημιούργησε ή άνοιξε πρώτα ένα προφίλ κατοικιδίου και δοκίμασε ξανά.
         </p>
@@ -131,7 +131,7 @@ export default function PetReportPage() {
                 {brandSettings.appName}
               </p>
               <h1 className="mt-2 text-3xl font-bold">
-                Προσωπικό διατροφικό report κατοικιδίου
+                Προσωπική διατροφική αναφορά κατοικιδίου
               </h1>
               <p className="mt-2 text-sm text-gray-600">
                 {brandSettings.tagline}
@@ -272,7 +272,7 @@ export default function PetReportPage() {
               {brandSettings.businessName}
             </p>
             <p className="mt-2">
-              Το report δημιουργήθηκε από το {brandSettings.appName} ως
+              Η αναφορά δημιουργήθηκε από το {brandSettings.appName} ως
               οργανωμένη διατροφική σύνοψη με βάση το ενεργό προφίλ κατοικιδίου.
             </p>
           </div>

@@ -117,7 +117,7 @@ export default function RegisterPage() {
     <AuthShell
       eyebrow="Ξεκίνα δωρεάν"
       title="Δημιουργία λογαριασμού"
-      description="Αποθήκευσε κατοικίδια, διατροφικές αναλύσεις και reports για να επιστρέφεις όποτε τα χρειάζεσαι."
+      description="Αποθήκευσε κατοικίδια, διατροφικές αναλύσεις και αναφορές για να επιστρέφεις όποτε τα χρειάζεσαι."
     >
       <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
         <p className="font-semibold text-green-950">
@@ -125,7 +125,7 @@ export default function RegisterPage() {
         </p>
         <ul className="mt-2 space-y-1">
           <li>- Αποθηκεύεις προφίλ κατοικιδίων και σημειώσεις υγείας.</li>
-          <li>- Κρατάς printable reports σε ένα σημείο.</li>
+          <li>- Κρατάς εκτυπώσιμες αναφορές σε ένα σημείο.</li>
           <li>- Ξανατρέχεις προτάσεις όταν αλλάζει τροφή ή βάρος.</li>
         </ul>
       </div>
