@@ -687,7 +687,7 @@ export default function AccountPetDetailPage() {
               ) : (
                 <>
                   <h2 className="mt-2 text-xl font-bold text-blue-950">
-                    Δεν υπάρχουν check-ins ακόμη
+                    Δεν υπάρχουν έλεγχοι προόδου ακόμη
                   </h2>
                   <p className="mt-2 text-sm text-blue-900">
                     Πρόσθεσε έλεγχο όταν αλλάξει βάρος, όρεξη, κόπρανα,
@@ -982,7 +982,7 @@ export default function AccountPetDetailPage() {
                 Ιστορικό προόδου
               </h2>
               <p className="mt-1 text-sm text-blue-900">
-                Σημειώσεις από check-ins του chatbot, χρήσιμες για παρακολούθηση
+                Σημειώσεις από ελέγχους προόδου, χρήσιμες για παρακολούθηση
                 βάρους και αποδοχής τροφής.
               </p>
             </div>
@@ -990,13 +990,13 @@ export default function AccountPetDetailPage() {
               href={`/account/chatbot?petId=${pet.id}&mode=progress`}
               className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
             >
-              Νέο check-in
+              Νέος έλεγχος
             </Link>
           </div>
 
           {progressLogs.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed border-blue-300 bg-white p-5 text-sm text-blue-900">
-              Δεν υπάρχουν check-ins ακόμη. Άνοιξε το chatbot, διάλεξε αυτό το
+              Δεν υπάρχουν έλεγχοι προόδου ακόμη. Άνοιξε τον σύμβουλο, διάλεξε αυτό το
               κατοικίδιο και χρησιμοποίησε έλεγχο προόδου.
             </div>
           ) : (

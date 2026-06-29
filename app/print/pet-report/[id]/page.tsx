@@ -644,7 +644,7 @@ export default function PrintablePetReportPage() {
             </h2>
             <p className="mt-2 text-sm text-blue-900">
               Χρησιμοποίησε αυτή την ενότητα ανάμεσα στις αναφορές ώστε το
-              επόμενο check-in να έχει πραγματικά δεδομένα προόδου.
+              επόμενος έλεγχος να έχει πραγματικά δεδομένα προόδου.
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">

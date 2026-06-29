@@ -90,7 +90,7 @@ function getTimelineUseNotes(
   history: PetAnalysisHistory[]
 ) {
   const notes = [
-    "Σύγκρινε βάρος, όρεξη, κόπρανα, λιχουδιές και ενέργεια ανάμεσα στα check-ins αντί να κρίνεις από μία ημέρα.",
+    "Σύγκρινε βάρος, όρεξη, κόπρανα, λιχουδιές και ενέργεια ανάμεσα στους ελέγχους προόδου αντί να κρίνεις από μία ημέρα.",
     "Χρησιμοποίησε την ίδια ζυγαριά και όσο γίνεται παρόμοιες συνθήκες ζυγίσματος.",
     "Φέρε τα τωρινά ημερήσια γραμμάρια και τυχόν άρνηση τροφής στον επόμενο έλεγχο προόδου.",
   ];
@@ -381,7 +381,7 @@ export default function PetTimelineReportPage() {
           <InfoCard
             label="Έλεγχοι προόδου"
             value={progressLogs.length}
-            detail="Follow-ups από το chatbot"
+            detail="Σημειώσεις προόδου από τον σύμβουλο"
           />
           <InfoCard
             label="Τελευταίο βάρος ελέγχου"
@@ -393,7 +393,7 @@ export default function PetTimelineReportPage() {
             detail={
               latestProgressLog
                 ? formatDate(latestProgressLog.created_at)
-                : "Δεν υπάρχει αποθηκευμένο check-in ακόμη"
+                : "Δεν υπάρχει αποθηκευμένος έλεγχος προόδου ακόμη"
             }
           />
           <InfoCard
@@ -420,7 +420,7 @@ export default function PetTimelineReportPage() {
 
         {progressLogs.length === 0 ? (
           <p className="text-sm text-gray-600">
-            Δεν έχουν αποθηκευτεί ακόμη check-ins προόδου από το chatbot.
+            Δεν έχουν αποθηκευτεί ακόμη έλεγχοι προόδου από τον σύμβουλο.
           </p>
         ) : (
           <div className="space-y-4">
