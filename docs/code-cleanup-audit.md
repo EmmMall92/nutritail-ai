@@ -1,6 +1,6 @@
 # Code Cleanup Audit
 
-Last reviewed: 2026-06-14
+Last reviewed: 2026-06-29
 
 This audit separates active production code from legacy or cleanup candidates. The goal is to reduce noise without changing database schema, removing live routes, or weakening the Food V2/chatbot flow.
 
@@ -41,8 +41,8 @@ This audit separates active production code from legacy or cleanup candidates. T
 
 - `app/chatbot/page.tsx`
   - Public/legacy chatbot route.
-  - It is still listed in `app/sitemap.ts`, has its own layout metadata, and uses `/api/chatbot/analyze`.
-  - Recommendation: decide whether this should remain a public demo or redirect users to `/account/chatbot`. Do not delete until that product decision is made.
+  - This now redirects to `/account/chatbot`, is noindexed through metadata, and is excluded from `app/sitemap.ts`.
+  - Recommendation: keep the redirect while older links may exist, then revisit only if a dedicated public demo is intentionally rebuilt.
 
 - `app/dashboard/page.tsx` and `app/create-pet/page.tsx`
   - Older local-session style flow.
@@ -103,8 +103,8 @@ The following generated QA reports are ignored locally so routine checks do not 
 
 ## Recommended Next Cleanup PRs
 
-1. Redirect or retire the legacy public `/chatbot` route after deciding whether public demo access is still useful.
-2. Redirect `/dashboard` and `/create-pet` to account routes if the account experience fully replaces them.
+1. Redirect `/dashboard` and `/create-pet` to account routes if the account experience fully replaces them.
+2. Review `/api/chatbot/analyze` and older local analysis services after confirming no active route still depends on them.
 3. Remove unused mock/local repositories and components once those legacy routes are gone.
 4. Split `app/account/chatbot/page.tsx` into smaller modules after behavior stabilizes; it is over 3,000 lines and is the highest-maintenance file.
 5. Add a lightweight unused-export check script so future cleanup is easier and safer.
