@@ -429,6 +429,10 @@ const nextStaleSuite = [...ageKnownSuites]
 const nextStaleRemainingHours =
   nextStaleSuite?.ageHours == null ? null : maxReportAgeHours - nextStaleSuite.ageHours;
 const refreshPrioritySuites = [...ageKnownSuites].sort((a, b) => b.ageHours - a.ageHours).slice(0, 3);
+const advisoryAgeKnownSuites = parsedAdvisorySuites.filter((suite) => suite.ageHours != null);
+const advisoryRefreshPrioritySuites = [...advisoryAgeKnownSuites]
+  .sort((a, b) => b.ageHours - a.ageHours)
+  .slice(0, 3);
 
 const lines = [
   "# NutriTail Live Readiness Dashboard",
@@ -476,6 +480,17 @@ const lines = [
     (suite) =>
       `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} | ${suite.age} | ${suite.staleReason || "-"} | ${suite.note} |`,
   ),
+  "",
+  "## Advisory Refresh Priority",
+  "",
+  "These checks are non-blocking, but they show the next best QA evidence to refresh when the needed key or auth cookie is available.",
+  "",
+  "| Priority | Suite | Status | Age | Time until stale | Source report | Command |",
+  "| ---: | --- | --- | ---: | ---: | --- | --- |",
+  ...advisoryRefreshPrioritySuites.map((suite, index) => {
+    const remainingHours = maxReportAgeHours - suite.ageHours;
+    return `| ${index + 1} | ${suite.name} | ${suite.status} | ${suite.age} | ${formatRemaining(remainingHours)} | \`${suite.source}\` | \`${suite.command}\` |`;
+  }),
   "",
   "## Refresh Priority",
   "",
