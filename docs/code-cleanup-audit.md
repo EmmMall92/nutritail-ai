@@ -21,6 +21,10 @@ This audit separates active production code from legacy or cleanup candidates. T
   - Active API surface for customer/admin flows.
   - Keep protected by existing server-side auth/admin checks.
 
+- `app/api/chatbot/save/route.ts`
+  - Legacy public save endpoint.
+  - Kept as a route for compatibility, but now returns `410 Gone` and points callers to `/api/account/chatbot/save`.
+
 - `lib/food-v2/**`
   - Active Food V2 recommendation, retrieval, validation, ranking, and chatbot summary layer.
   - Keep; this is currently central to the product recommendation engine.
