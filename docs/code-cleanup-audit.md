@@ -21,6 +21,10 @@ This audit separates active production code from legacy or cleanup candidates. T
   - Active API surface for customer/admin flows.
   - Keep protected by existing server-side auth/admin checks.
 
+- `app/api/account/chatbot/analyze/route.ts`
+  - Active account-scoped analysis endpoint for the customer chatbot.
+  - Requires a Supabase user session before running the shared pet analysis service.
+
 - `app/api/chatbot/save/route.ts`
   - Legacy public save endpoint.
   - Kept as a route for compatibility, but now returns `410 Gone` and points callers to `/api/account/chatbot/save`.
@@ -59,7 +63,11 @@ This audit separates active production code from legacy or cleanup candidates. T
 
 - `database/foods.ts`, `repositories/petRepository.ts`, `repositories/sessionRepository.ts`, `repositories/editingPetRepository.ts`, `services/petAnalysisService.ts`
   - Legacy/local analysis support used by the old flow and some shared analysis endpoints.
-  - Recommendation: do not delete until `/api/chatbot/analyze` and other remaining imports are reviewed.
+  - Recommendation: do not delete until `/api/chatbot/analyze` compatibility usage and older QA dependencies are reviewed.
+
+- `app/api/chatbot/analyze/route.ts`
+  - Legacy-compatible public analysis endpoint.
+  - The account chatbot now uses `/api/account/chatbot/analyze`; keep this route only while older tests or external links may still call it.
 
 ## Cleanup Candidates
 
@@ -107,7 +115,7 @@ The following generated QA reports are ignored locally so routine checks do not 
 
 ## Recommended Next Cleanup PRs
 
-1. Review `/api/chatbot/analyze` and older local analysis services after confirming no active route still depends on them.
+1. Review `/api/chatbot/analyze` and older local analysis services after older QA/external compatibility needs are retired.
 2. Remove unused mock/local repositories and components once final import checks confirm no active imports remain.
 3. Split `app/account/chatbot/page.tsx` into smaller modules after behavior stabilizes; it is over 3,000 lines and is the highest-maintenance file.
 4. Add a lightweight unused-export check script so future cleanup is easier and safer.

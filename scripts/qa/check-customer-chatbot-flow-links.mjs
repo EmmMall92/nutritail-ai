@@ -132,6 +132,21 @@ const checks = [
     expected: 'fetch("/api/account/chatbot/save"',
   },
   {
+    label: "Account chatbot uses the authenticated analyze endpoint",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'fetch("/api/account/chatbot/analyze"',
+  },
+  {
+    label: "Account chatbot analyze endpoint checks the Supabase user session",
+    file: "app/api/account/chatbot/analyze/route.ts",
+    expected: "supabase.auth.getUser()",
+  },
+  {
+    label: "Account chatbot analyze endpoint reuses shared pet payload validation",
+    file: "app/api/account/chatbot/analyze/route.ts",
+    expected: "validatePetAnalysisPayload",
+  },
+  {
     label: "Legacy chatbot save endpoint is disabled",
     file: "app/api/chatbot/save/route.ts",
     expected: "{ status: 410 }",
