@@ -804,6 +804,36 @@ const forbiddenChecks = [
     forbidden: "`${confidenceLabel}: ${decision.confidence}`",
   },
   {
+    label: "Account dashboard does not expose raw progress confidence label",
+    file: "app/account/page.tsx",
+    forbidden: "Σιγουριά:",
+  },
+  {
+    label: "Pet detail does not expose raw progress confidence label",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Σιγουριά:",
+  },
+  {
+    label: "Printable timeline does not expose raw progress confidence label",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Σιγουριά απόφασης:",
+  },
+  {
+    label: "Account dashboard does not print raw progress confidence enum",
+    file: "app/account/page.tsx",
+    forbidden: "{latestProgressMetadata.progressDecisionConfidence}",
+  },
+  {
+    label: "Pet detail does not print raw progress confidence enum",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "{progressSummary.progressDecisionConfidence}",
+  },
+  {
+    label: "Printable timeline does not print raw progress confidence enum",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "{log.metadata?.progressDecisionConfidence ?? \"-\"}",
+  },
+  {
     label: "Chatbot calorie explanation does not expose RER acronym",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Resting calories (RER)",

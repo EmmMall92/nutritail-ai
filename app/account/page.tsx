@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
 type Customer = {
   id: string;
@@ -496,7 +497,10 @@ export default function AccountPage() {
             )}
             {latestProgressMetadata?.progressDecisionConfidence && (
               <span className="rounded-full bg-white px-3 py-1">
-                Σιγουριά: {latestProgressMetadata.progressDecisionConfidence}
+                Πώς το βλέπουμε:{" "}
+                {formatProgressDecisionConfidence(
+                  latestProgressMetadata.progressDecisionConfidence
+                )}
               </span>
             )}
             {latestProgressMetadata?.currentWeightKg && (
