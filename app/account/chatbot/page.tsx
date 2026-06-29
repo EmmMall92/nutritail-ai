@@ -3745,18 +3745,18 @@ export default function AccountChatbotPage() {
   useLayoutEffect(() => {
     const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
       const container = messagesContainerRef.current;
-      if (container) {
+      if (!container) return;
+
+      const targetTop = Math.max(container.scrollHeight - container.clientHeight, 0);
+
+      if (behavior === "auto") {
+        container.scrollTop = targetTop;
+      } else {
         container.scrollTo({
-          top: Math.max(container.scrollHeight - container.clientHeight, 0),
+          top: targetTop,
           behavior,
         });
-        return;
       }
-
-      messagesEndRef.current?.scrollIntoView({
-        behavior,
-        block: "end",
-      });
     };
 
     const frame = window.requestAnimationFrame(() => scrollToBottom("auto"));
