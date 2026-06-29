@@ -1,6 +1,6 @@
 # Vercel OpenAI Env QA
 
-Generated: 2026-06-28T22:18:48.804Z
+Generated: 2026-06-29T22:12:45.875Z
 
 This QA checks that the production Vercel project has an encrypted OpenAI API key configured.
 It never prints or stores the secret value.

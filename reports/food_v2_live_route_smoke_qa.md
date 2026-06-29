@@ -1,6 +1,6 @@
 # Food V2 Live Route Smoke QA
 
-Generated: 2026-06-28T22:18:43.096Z
+Generated: 2026-06-29T22:12:36.689Z
 Site: https://nutritail.ai
 
 ## Summary
@@ -15,13 +15,13 @@ Admin API routes may return 401/403 without an authenticated admin session; that
 
 | Route | Status | Result | Time | Notes |
 | --- | ---: | --- | ---: | --- |
-| / | 200 | pass | 244ms | - |
-| /admin/foods | 200 | pass | 214ms | - |
-| /admin/foods/v2-preview | 200 | pass | 96ms | - |
-| /admin/foods/v2-post-import-qa | 200 | pass | 98ms | - |
-| /admin/foods/v2-recommendation-visibility | 200 | pass | 93ms | - |
-| /admin/validation | 200 | pass | 88ms | - |
-| /api/admin/foods/v2-best-candidates/summary | 401 | pass | 365ms | - |
-| /api/admin/foods/v2-post-import-qa | 401 | pass | 187ms | - |
-| /api/admin/foods/v2-brand-batches | 401 | pass | 211ms | - |
-| /api/admin/ai-status | 401 | pass | 231ms | - |
+| / | 200 | pass | 221ms | - |
+| /admin/foods | 200 | pass | 432ms | - |
+| /admin/foods/v2-preview | 200 | pass | 350ms | - |
+| /admin/foods/v2-post-import-qa | 200 | pass | 455ms | - |
+| /admin/foods/v2-recommendation-visibility | 200 | pass | 534ms | - |
+| /admin/validation | 200 | pass | 374ms | - |
+| /api/admin/foods/v2-best-candidates/summary | 401 | pass | 625ms | - |
+| /api/admin/foods/v2-post-import-qa | 401 | pass | 347ms | - |
+| /api/admin/foods/v2-brand-batches | 401 | pass | 379ms | - |
+| /api/admin/ai-status | 401 | pass | 333ms | - |
