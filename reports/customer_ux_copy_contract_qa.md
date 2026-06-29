@@ -1,6 +1,6 @@
 # Customer UX Copy Contract QA
 
-Generated: 2026-06-29T09:53:32.930Z
+Generated: 2026-06-29T10:01:27.543Z
 
 This QA checks customer-facing account/chatbot copy for backend leakage and required customer guidance.
 

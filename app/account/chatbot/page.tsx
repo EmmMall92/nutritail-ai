@@ -22,6 +22,7 @@ import {
   type FoodV2ChatbotRecommendationItem,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
 import { formatPetDisplayName } from "@/lib/petName";
@@ -510,7 +511,9 @@ function formatRecommendationChoiceReason(
 
 function formatRecommendationChoiceCaution(
   food: FoodV2ChatbotRecommendationItem,
-  language: ChatLanguage
+  language: ChatLanguage,
+  pet: PetIntake,
+  goal: FoodV2RecommendationGoal
 ) {
   const text = [
     ...(food.ranking?.cautions ?? []),
@@ -520,6 +523,7 @@ function formatRecommendationChoiceCaution(
     .join(" ")
     .toLowerCase();
   if (!text) return undefined;
+  if (!isRelevantCustomerMedicalLine(text, pet, goal)) return undefined;
 
   if (language === "el") {
     if (
@@ -838,10 +842,62 @@ function formatFoodIntelligenceLabels(values: string[] | undefined, language: Ch
     .slice(0, 3);
 }
 
+function isRelevantCustomerMedicalLine(
+  value: string,
+  pet: PetIntake,
+  goal: FoodV2RecommendationGoal
+) {
+  const text = normalizeUserText(value);
+  const petText = normalizeUserText(
+    [
+      ...(pet.healthIssues ?? []),
+      ...(pet.allergies ?? []),
+      ...(pet.excludedIngredients ?? []),
+    ].join(" ")
+  );
+  const isPuppy = (pet.age ?? 99) < 1.5;
+
+  if (text.includes("chicken allergy") || text.includes("allergy")) {
+    return (
+      goal === "allergy" ||
+      (pet.allergies ?? []).length > 0 ||
+      (pet.excludedIngredients ?? []).length > 0
+    );
+  }
+  if (text.includes("renal") || text.includes("kidney")) {
+    return goal === "renal" || /renal|kidney|nephr|nef|νεφρ/.test(petText);
+  }
+  if (text.includes("urinary") || text.includes("struvite") || text.includes("oxalate")) {
+    return goal === "urinary" || /urinary|struvite|oxalate|ουρο|στρουβ|οξαλ/.test(petText);
+  }
+  if (text.includes("pancreatitis") || text.includes("pancreatic")) {
+    return /pancrea|παγκρεα/.test(petText);
+  }
+  if (text.includes("large-breed") || text.includes("large breed")) {
+    return goal === "growth" && isPuppy;
+  }
+
+  return true;
+}
+
+function formatRelevantFoodIntelligenceLabels(
+  values: string[] | undefined,
+  language: ChatLanguage,
+  pet: PetIntake,
+  goal: FoodV2RecommendationGoal
+) {
+  return formatFoodIntelligenceLabels(
+    (values ?? []).filter((value) => isRelevantCustomerMedicalLine(value, pet, goal)),
+    language
+  );
+}
+
 function toRecommendationChoice(
   food: FoodV2ChatbotRecommendationItem,
   role: RecommendedFoodChoice["role"],
-  language: ChatLanguage
+  language: ChatLanguage,
+  pet: PetIntake,
+  goal: FoodV2RecommendationGoal
 ): RecommendedFoodChoice | null {
   const name = formatRecommendationChoiceName(food);
   if (!name) return null;
@@ -851,14 +907,16 @@ function toRecommendationChoice(
     role,
     score: food.ranking?.total_score ?? null,
     reason: formatRecommendationChoiceReason(food, role, language),
-    caution: formatRecommendationChoiceCaution(food, language),
+    caution: formatRecommendationChoiceCaution(food, language, pet, goal),
     bestUseCases: formatFoodIntelligenceLabels(
       food.food_intelligence?.best_use_cases,
       language
     ),
-    notIdealCases: formatFoodIntelligenceLabels(
+    notIdealCases: formatRelevantFoodIntelligenceLabels(
       food.food_intelligence?.not_ideal_cases,
-      language
+      language,
+      pet,
+      goal
     ),
     kcalPer100g: food.nutrition?.kcal_per_100g ?? null,
     proteinPercent: food.nutrition?.protein_percent ?? null,
@@ -2147,10 +2205,10 @@ async function getFoodV2RecommendationMessage(
 
   const foodChoices = [
     ...(result.premium ?? []).map((food) =>
-      toRecommendationChoice(food, "best", options.language ?? "el")
+      toRecommendationChoice(food, "best", options.language ?? "el", pet, goal)
     ),
     ...(result.value ?? []).map((food) =>
-      toRecommendationChoice(food, "value", options.language ?? "el")
+      toRecommendationChoice(food, "value", options.language ?? "el", pet, goal)
     ),
   ]
     .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
