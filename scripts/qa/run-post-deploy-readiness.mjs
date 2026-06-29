@@ -20,6 +20,7 @@ const deployedAt = (
   deployedAtArg ||
   (deployFreshnessRequested ? runStartedAt.toISOString() : "")
 );
+const shouldRefreshFreshnessSources = Boolean(deployedAt);
 
 const commands = [
   {
@@ -38,6 +39,14 @@ const commands = [
     label: "Vercel OpenAI production env",
     command: "npm.cmd run qa:vercel-openai-env",
   },
+  ...(shouldRefreshFreshnessSources
+    ? [
+        {
+          label: "Customer chatbot flow links",
+          command: "npm.cmd run qa:customer-chatbot-flow-links",
+        },
+      ]
+    : []),
   ...(shouldRefreshChatbot
     ? [
         {
@@ -48,6 +57,14 @@ const commands = [
           label: "Chatbot sensitive recommendation smoke",
           command: "npm.cmd run qa:chatbot-sensitive-recommendations",
         },
+        {
+          label: "Chatbot live QA dashboard",
+          command: "npm.cmd run qa:chatbot-live-dashboard",
+        },
+      ]
+    : []),
+  ...(shouldRefreshFreshnessSources && !shouldRefreshChatbot
+    ? [
         {
           label: "Chatbot live QA dashboard",
           command: "npm.cmd run qa:chatbot-live-dashboard",
@@ -115,6 +132,7 @@ const lines = [
   `- Failed or needs review: ${failed.length}`,
   `- Chatbot QA refreshed in this run: ${shouldRefreshChatbot ? "yes" : "no"}`,
   `- Deploy freshness gate used: ${deployedAt ? deployedAt : "no"}`,
+  `- Freshness source reports refreshed: ${shouldRefreshFreshnessSources ? "yes" : "no"}`,
   "",
   "## Commands",
   "",
