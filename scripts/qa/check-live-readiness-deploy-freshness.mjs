@@ -51,6 +51,21 @@ const checks = [
     expected: "Deploy freshness gate used:",
   },
   {
+    label: "post-deploy deploy freshness refreshes customer flow report",
+    source: postDeploySource,
+    expected: "qa:customer-chatbot-flow-links",
+  },
+  {
+    label: "post-deploy deploy freshness refreshes chatbot dashboard report",
+    source: postDeploySource,
+    expected: "qa:chatbot-live-dashboard",
+  },
+  {
+    label: "post-deploy report records freshness source refresh",
+    source: postDeploySource,
+    expected: "Freshness source reports refreshed:",
+  },
+  {
     label: "admin live QA summary parses deploy freshness gate",
     source: adminLiveQaSource,
     expected: "deployFreshnessGate",
