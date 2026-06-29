@@ -32,6 +32,10 @@ const commands = [
           command: "npm.cmd run qa:chatbot-golden-suite:fast",
         },
         {
+          label: "Chatbot sensitive recommendation smoke",
+          command: "npm.cmd run qa:chatbot-sensitive-recommendations",
+        },
+        {
           label: "Chatbot live QA dashboard",
           command: "npm.cmd run qa:chatbot-live-dashboard",
         },
@@ -106,7 +110,7 @@ const lines = [
   "",
   "## Notes",
   "",
-  "- Run with `--refresh-chatbot` or `NUTRITAIL_QA_REFRESH_CHATBOT=1` when the deploy touches chatbot recommendation logic; this runs the fast golden suite before refreshing the chatbot QA dashboard.",
+  "- Run with `--refresh-chatbot` or `NUTRITAIL_QA_REFRESH_CHATBOT=1` when the deploy touches chatbot recommendation logic; this runs the fast golden suite and sensitive recommendation smoke before refreshing the chatbot QA dashboard.",
   "- The live readiness dashboard remains the authoritative rollup; this report records the post-deploy command sequence.",
   "- The OpenAI env check confirms encrypted Production env presence without pulling or printing the secret.",
   "",
