@@ -9,10 +9,12 @@ type RecommendationFood = {
   display_name?: string | null;
   data_quality_status?: string | null;
   data_source_url?: string | null;
-  ranking?: Partial<Pick<
-    FoodV2RankingResult,
-    "confidence" | "reasons" | "cautions" | "bucket" | "value_score"
-  >> | null;
+  ranking?: Partial<
+    Pick<
+      FoodV2RankingResult,
+      "confidence" | "reasons" | "cautions" | "bucket" | "value_score"
+    >
+  > | null;
   nutrition?: {
     kcal_per_100g?: number | null;
     protein_percent?: number | null;
@@ -74,38 +76,17 @@ const GOAL_LABELS_EN: Record<string, string> = {
   senior: "senior pet",
 };
 
-const legacyGreekMojibakePattern =
-  /(?:\?{3,}|\u0392\u00ae|\ufffd|[\u039e\u039f][\u0080-\u00ff\u0370-\u03ff])/gu;
-const isoGreekDecoder = new TextDecoder("iso-8859-7");
-const isoGreekReverseMap = new Map<string, number>();
-
-for (let byte = 0; byte <= 255; byte += 1) {
-  isoGreekReverseMap.set(isoGreekDecoder.decode(Uint8Array.of(byte)), byte);
-}
-
-function repairLegacyGreekMojibake(value: string) {
-  const markers = value.match(legacyGreekMojibakePattern) ?? [];
-  if (markers.length < 2) return value;
-
-  const bytes: number[] = [];
-  for (const char of value) {
-    const byte = isoGreekReverseMap.get(char);
-    if (byte !== undefined) {
-      bytes.push(byte);
-    } else if (char.charCodeAt(0) <= 255) {
-      bytes.push(char.charCodeAt(0));
-    } else {
-      return value;
-    }
-  }
-
-  const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
-  return repaired.includes("\ufffd") ? value : repaired;
-}
-
-function customerText(value: string) {
-  return repairLegacyGreekMojibake(value);
-}
+const INTERNAL_COPY_PATTERNS = [
+  /needs[_\s-]?review/i,
+  /retailer/i,
+  /data quality/i,
+  /source tier/i,
+  /source priority/i,
+  /missing nutrition/i,
+  /data is usable/i,
+  /candidate kept out/i,
+  /value ranking is a proxy/i,
+];
 
 function foodName(food: RecommendationFood) {
   return customerFoodName(food, " ");
@@ -133,19 +114,14 @@ function translateCustomerReason(reason: string, locale: "el" | "en") {
   return reason;
 }
 
+function isCustomerSafeLine(value: string) {
+  return !INTERNAL_COPY_PATTERNS.some((pattern) => pattern.test(value));
+}
+
 function customerReasons(food: RecommendationFood, locale: "el" | "en") {
   return (food.ranking?.reasons ?? [])
     .map((reason) => translateCustomerReason(reason, locale))
-    .filter((reason) => {
-      const text = reason.toLowerCase();
-      return (
-        !text.includes("needs review") &&
-        !text.includes("retailer") &&
-        !text.includes("data quality") &&
-        !text.includes("source tier") &&
-        !text.includes("missing nutrition")
-      );
-    })
+    .filter(isCustomerSafeLine)
     .slice(0, 2);
 }
 
@@ -178,25 +154,16 @@ function renderFoodItem(
   index: number,
   locale: "el" | "en"
 ) {
-  const name = foodName(food);
-  const reasons = compactReasons(food, locale);
-  const confidence = confidencePhrase(food, locale);
-
-  return `${index}. ${name}: ${reasons}. (${confidence})`;
+  return `${index}. ${foodName(food)}: ${compactReasons(
+    food,
+    locale
+  )}. (${confidencePhrase(food, locale)})`;
 }
 
 function translateCustomerCaution(caution: string, locale: "el" | "en") {
   const text = caution.toLowerCase();
 
-  if (
-    text.includes("needs review") ||
-    text.includes("retailer source") ||
-    text.includes("data is usable") ||
-    text.includes("source tier") ||
-    text.includes("missing nutrition")
-  ) {
-    return null;
-  }
+  if (!isCustomerSafeLine(caution)) return null;
   if (text.includes("fat looks high") || text.includes("fat is not low enough")) {
     return locale === "el"
       ? "Τα λιπαρά θέλουν προσοχή αν υπάρχει τάση για βάρος ή ευαισθησία."
@@ -311,13 +278,10 @@ export function planFoodV2RecommendationResponse(
 
   return {
     locale,
-    title: customerText(title),
-    summary: customerText(summary),
-    sections: sections.map((section) => ({
-      title: customerText(section.title),
-      items: section.items.map(customerText),
-    })),
-    cautions: collectCautions(input, locale).map(customerText),
-    followUpQuestion: customerText(followUpFor(goal, locale)),
+    title,
+    summary,
+    sections,
+    cautions: collectCautions(input, locale),
+    followUpQuestion: followUpFor(goal, locale),
   };
 }
