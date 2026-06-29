@@ -157,8 +157,8 @@ export default function PetReportPage() {
       <section className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <InfoCard label="Pet Name" value={pet.name} />
         <InfoCard label="Weight" value={`${pet.weight} kg`} />
-        <InfoCard label="RER" value={`${nutrition.rer} kcal`} />
-        <InfoCard label="DER" value={`${nutrition.der} kcal`} />
+        <InfoCard label="Resting calories" value={`${nutrition.rer} kcal`} />
+        <InfoCard label="Daily calorie target" value={`${nutrition.der} kcal`} />
       </section>
 
       <Section title="Pet Profile">
@@ -223,7 +223,7 @@ export default function PetReportPage() {
         </div>
       </Section>
 
-      <Section title="AI Nutrition Advice">
+      <Section title="Nutrition Advice">
         <div className="space-y-3">
           {advice.map((item, index) => (
             <div

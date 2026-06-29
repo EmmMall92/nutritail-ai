@@ -722,6 +722,21 @@ const forbiddenChecks = [
     forbidden: "Legacy Food Analysis Signals",
   },
   {
+    label: "Printable report does not expose RER card label",
+    file: "app/print/pet-report/page.tsx",
+    forbidden: 'label="RER"',
+  },
+  {
+    label: "Printable report does not expose DER card label",
+    file: "app/print/pet-report/page.tsx",
+    forbidden: 'label="DER"',
+  },
+  {
+    label: "Printable report does not expose AI-branded nutrition heading",
+    file: "app/print/pet-report/page.tsx",
+    forbidden: 'title="AI Nutrition Advice"',
+  },
+  {
     label: "Printable saved report does not expose back-office review wording",
     file: "app/print/pet-report/[id]/page.tsx",
     forbidden: "Needs review",
