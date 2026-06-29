@@ -87,6 +87,16 @@ const requiredCustomerCopy = [
 const bannedExactCustomerStrings = [
   {
     file: "app/page.tsx",
+    text: "Fit τροφής",
+    reason: "Homepage example card should use Greek food suitability wording, not mixed fit wording.",
+  },
+  {
+    file: "app/page.tsx",
+    text: "78/100",
+    reason: "Homepage example card should not expose raw internal food scores.",
+  },
+  {
+    file: "app/page.tsx",
     text: "Feed your pet with more confidence.",
     reason: "Homepage hero copy should be localized for customers.",
   },

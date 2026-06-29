@@ -208,9 +208,9 @@ export default function HomePage() {
               </div>
 
               <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <p className="text-xs text-gray-500">Fit τροφής</p>
-                <p className="mt-2 text-2xl font-black">78/100</p>
-                <p className="text-xs text-gray-500">πολύ καλό</p>
+                <p className="text-xs text-gray-500">Καταλληλότητα τροφής</p>
+                <p className="mt-2 text-2xl font-black">Καλή</p>
+                <p className="text-xs text-gray-500">χωρίς τεχνικό score</p>
               </div>
             </div>
 
