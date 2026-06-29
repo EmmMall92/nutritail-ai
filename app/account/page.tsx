@@ -279,14 +279,14 @@ export default function AccountPage() {
             </h1>
             <p className="mt-2 max-w-3xl text-gray-600">
               Το Nutritail AI dashboard σου για διατροφική καθοδήγηση,
-              αποθηκευμένα κατοικίδια, reports και επόμενα βήματα.
+              αποθηκευμένα κατοικίδια, αναφορές και επόμενα βήματα.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {profileProgress}% κάλυψη report
+                {profileProgress}% κάλυψη αναφορών
               </span>
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {readyReports} έτοιμα reports
+                {readyReports} έτοιμες αναφορές
               </span>
               <span className="rounded-full bg-gray-100 px-3 py-1">
                 {petsNeedingAnalysisCount} θέλουν ανάλυση
@@ -323,7 +323,7 @@ export default function AccountPage() {
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Έτοιμα reports</p>
+          <p className="text-sm text-gray-500">Έτοιμες αναφορές</p>
           <p className="mt-2 text-3xl font-bold text-black">{readyReports}</p>
         </div>
 
@@ -346,16 +346,16 @@ export default function AccountPage() {
                 ? "Δημιούργησε το πρώτο προφίλ"
                 : nextPetToAnalyze
                   ? `Ανάλυση για ${nextPetToAnalyze.name ?? "το κατοικίδιο"}`
-                  : "Δες το τελευταίο report"}
+                  : "Δες την τελευταία αναφορά"}
             </h2>
             <p className="mt-2 text-sm text-emerald-900">
               {pets.length === 0
-                ? "Ξεκίνα τη ροή του chatbot για προφίλ, θερμίδες και πρώτο report."
+                ? "Ξεκίνα τη ροή του chatbot για προφίλ, θερμίδες και πρώτη αναφορά."
                 : nextPetToAnalyze
                   ? `${getPetLabel(
                       nextPetToAnalyze
                     )} δεν έχει ακόμη αποθηκευμένη διατροφική ανάλυση.`
-                  : "Όλα τα κατοικίδια έχουν ιστορικό report. Άνοιξε το τελευταίο report ή κάνε νέα ανάλυση αν άλλαξε κάτι."}
+                  : "Όλα τα κατοικίδια έχουν ιστορικό αναφορών. Άνοιξε την τελευταία αναφορά ή κάνε νέα ανάλυση αν άλλαξε κάτι."}
             </p>
           </div>
 
@@ -375,9 +375,9 @@ export default function AccountPage() {
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-sm text-gray-500">Τελευταίο report</p>
+            <p className="text-sm text-gray-500">Τελευταία αναφορά</p>
             <h2 className="mt-2 text-xl font-semibold text-black">
-              {latestPet?.name ?? "Δεν υπάρχει αποθηκευμένο report"}
+              {latestPet?.name ?? "Δεν υπάρχει αποθηκευμένη αναφορά"}
             </h2>
             <p className="mt-1 text-sm text-gray-600">
               {latestAnalysis
@@ -386,7 +386,7 @@ export default function AccountPage() {
                       ? ` - ${latestAnalysis.matched_food_name}`
                       : ""
                   }`
-                : "Κάνε ανάλυση για να δημιουργηθεί το πρώτο report."}
+                : "Κάνε ανάλυση για να δημιουργηθεί η πρώτη αναφορά."}
             </p>
           </div>
 
@@ -403,7 +403,7 @@ export default function AccountPage() {
                   href={`/print/pet-report/${latestPet.id}`}
                   className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
                 >
-                  Άνοιγμα report
+                  Άνοιγμα αναφοράς
                 </Link>
                 <Link
                   href={`/print/pet-timeline/${latestPet.id}`}
@@ -562,11 +562,11 @@ export default function AccountPage() {
               ? "Δημιούργησε το πρώτο κατοικίδιο"
               : petsNeedingAnalysisCount > 0
                 ? "Κάνε τις αναλύσεις που λείπουν"
-                : "Δες το τελευταίο report"}
+                : "Δες την τελευταία αναφορά"}
           </p>
           <p className="mt-2 text-sm text-gray-600">
             {pets.length === 0
-              ? "Ξεκίνα από το chatbot για να αποθηκευτούν προφίλ και report."
+              ? "Ξεκίνα από το chatbot για να αποθηκευτούν προφίλ και αναφορά."
               : petsNeedingAnalysisCount > 0
                 ? "Κάποια αποθηκευμένα κατοικίδια δεν έχουν ακόμη ανάλυση."
                 : "Τα κατοικίδια έχουν αποθηκευμένο ιστορικό αναλύσεων."}
@@ -591,7 +591,7 @@ export default function AccountPage() {
         >
           <h2 className="text-lg font-semibold text-black">Κατοικίδια</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Δες προφίλ, ιστορικό αναλύσεων, reports και timeline.
+            Δες προφίλ, ιστορικό αναλύσεων, αναφορές και πορεία.
           </p>
         </Link>
 
