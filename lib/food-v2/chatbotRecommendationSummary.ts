@@ -248,7 +248,7 @@ function scoreLabel() {
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
     ? `Κύρια ανάγκη που καλύπτουμε: ${goalLabel}.`
-    : `What I matched for: ${goalLabel}.`;
+    : `Recommendation focus: ${goalLabel}.`;
 }
 
 function cleanPreferenceTerms(values: string[] | undefined) {
