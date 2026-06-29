@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 
 const dashboardSource = readFileSync("scripts/qa/build-live-readiness-dashboard.mjs", "utf8");
 const postDeploySource = readFileSync("scripts/qa/run-post-deploy-readiness.mjs", "utf8");
+const adminLiveQaSource = readFileSync("app/admin/foods/v2-live-qa/page.tsx", "utf8");
 
 const checks = [
   {
@@ -48,6 +49,21 @@ const checks = [
     label: "post-deploy report records whether deploy freshness was used",
     source: postDeploySource,
     expected: "Deploy freshness gate used:",
+  },
+  {
+    label: "admin live QA summary parses deploy freshness gate",
+    source: adminLiveQaSource,
+    expected: "deployFreshnessGate",
+  },
+  {
+    label: "admin live QA summary shows oldest source report",
+    source: adminLiveQaSource,
+    expected: "oldestSourceReport",
+  },
+  {
+    label: "admin live QA summary shows next stale report",
+    source: adminLiveQaSource,
+    expected: "nextStaleReport",
   },
 ];
 
