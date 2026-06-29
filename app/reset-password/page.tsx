@@ -44,11 +44,11 @@ export default function ResetPasswordPage() {
       setSuccess("");
 
       if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters.");
+        throw new Error("Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.");
       }
 
       if (password !== confirmPassword) {
-        throw new Error("Passwords do not match.");
+        throw new Error("Οι δύο κωδικοί δεν ταιριάζουν.");
       }
 
       const supabase = createClient();
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
         throw error;
       }
 
-      setSuccess("Password updated. Redirecting to login...");
+      setSuccess("Ο κωδικός ενημερώθηκε. Σε μεταφέρουμε στη σύνδεση...");
 
       await supabase.auth.signOut();
 
@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
     } catch (err) {
       console.error(err);
       setError(
-        err instanceof Error ? err.message : "Failed to update password."
+        err instanceof Error ? err.message : "Δεν μπόρεσε να ενημερωθεί ο κωδικός."
       );
     } finally {
       setIsLoading(false);

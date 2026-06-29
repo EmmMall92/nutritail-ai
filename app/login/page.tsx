@@ -76,7 +76,7 @@ export default function LoginPage() {
       setError("");
 
       if (!email.trim() || !password) {
-        throw new Error("Enter your email and password to continue.");
+        throw new Error("Γράψε email και κωδικό για να συνεχίσεις.");
       }
 
       const supabase = createClient();
@@ -91,7 +91,7 @@ export default function LoginPage() {
       }
 
       if (!data.session || !data.user) {
-        throw new Error("Login failed. No session returned.");
+        throw new Error("Δεν ολοκληρώθηκε η σύνδεση. Δοκίμασε ξανά.");
       }
 
       await fetch("/api/account/me", {
@@ -115,7 +115,7 @@ export default function LoginPage() {
       router.refresh();
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Login failed.");
+      setError(err instanceof Error ? err.message : "Δεν ολοκληρώθηκε η σύνδεση.");
     } finally {
       setIsLoading(false);
     }

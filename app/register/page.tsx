@@ -56,7 +56,7 @@ export default function RegisterPage() {
 
       if (!fullName.trim() || !email.trim() || password.length < 6) {
         throw new Error(
-          "Enter your name, email, and a password with at least 6 characters."
+          "Γράψε ονοματεπώνυμο, email και κωδικό με τουλάχιστον 6 χαρακτήρες."
         );
       }
 
@@ -78,7 +78,7 @@ export default function RegisterPage() {
       }
 
       if (!data.user) {
-        throw new Error("Failed to create user.");
+        throw new Error("Δεν μπόρεσε να δημιουργηθεί ο λογαριασμός.");
       }
 
       await fetch("/api/account/me", {
@@ -94,7 +94,7 @@ export default function RegisterPage() {
       });
 
       if (data.session) {
-        setSuccess("Account created. Redirecting to your dashboard...");
+        setSuccess("Ο λογαριασμός δημιουργήθηκε. Σε μεταφέρουμε στον πίνακά σου...");
         setTimeout(() => {
           router.push(redirectPath);
         }, 1000);
@@ -107,7 +107,7 @@ export default function RegisterPage() {
     } catch (err) {
       console.error(err);
 
-      setError(err instanceof Error ? err.message : "Failed to register.");
+      setError(err instanceof Error ? err.message : "Δεν ολοκληρώθηκε η εγγραφή.");
     } finally {
       setIsLoading(false);
     }

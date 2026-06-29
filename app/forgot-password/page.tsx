@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
       setSuccess("");
 
       if (!email.trim()) {
-        throw new Error("Enter your email address.");
+        throw new Error("Γράψε το email σου.");
       }
 
       const supabase = createClient();
@@ -36,12 +36,12 @@ export default function ForgotPasswordPage() {
       }
 
       setSuccess(
-        "If an account exists for that email, a password reset link has been sent."
+        "Αν υπάρχει λογαριασμός με αυτό το email, έχει σταλεί link επαναφοράς κωδικού."
       );
     } catch (err) {
       console.error(err);
       setError(
-        err instanceof Error ? err.message : "Failed to send reset email."
+        err instanceof Error ? err.message : "Δεν μπόρεσε να σταλεί email επαναφοράς."
       );
     } finally {
       setIsLoading(false);
