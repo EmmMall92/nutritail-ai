@@ -856,17 +856,33 @@ function isRelevantCustomerMedicalLine(
     ].join(" ")
   );
   const isPuppy = (pet.age ?? 99) < 1.5;
+  const petIngredientText = normalizeUserText(
+    [
+      ...(pet.allergies ?? []),
+      ...(pet.excludedIngredients ?? []),
+    ].join(" ")
+  );
+  const mentionedIngredientGroups = [
+    ["chicken", "κοτοπουλ"],
+    ["salmon", "σολομ"],
+    ["lamb", "αρν"],
+    ["beef", "μοσχ", "βοδ"],
+    ["duck", "παπια"],
+    ["fish", "ψαρ"],
+    ["turkey", "γαλοπουλ"],
+  ].filter((terms) => terms.some((term) => text.includes(term)));
+  const matchesDeclaredIngredientIssue =
+    mentionedIngredientGroups.length > 0 &&
+    mentionedIngredientGroups.some((terms) =>
+      terms.some((term) => petIngredientText.includes(term))
+    );
 
   if (
     text.includes("chicken allergy") ||
     text.includes("allergy") ||
     text.includes("αλλεργ")
   ) {
-    return (
-      goal === "allergy" ||
-      (pet.allergies ?? []).length > 0 ||
-      (pet.excludedIngredients ?? []).length > 0
-    );
+    return goal === "allergy" || (pet.allergies ?? []).length > 0 || matchesDeclaredIngredientIssue;
   }
   if (text.includes("renal") || text.includes("kidney") || text.includes("νεφρ")) {
     return goal === "renal" || /renal|kidney|nephr|nef|νεφρ/.test(petText);
