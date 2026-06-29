@@ -2,8 +2,45 @@ import {
   rankFoodV2ForPet,
   splitFoodV2Recommendations,
 } from "@/lib/food-v2/recommendationRanking";
+import {
+  normalizeFoodV2RecommendationPetContext,
+  recommendationGoalFrom,
+} from "@/lib/food-v2/recommendationRequest";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
+
+const aiPayloadPet = normalizeFoodV2RecommendationPetContext({
+  species: "dog",
+  pet: {
+    species: "dog",
+    weightKg: 6,
+    ageYears: 4,
+    activity_level: "low",
+    neutered: true,
+    health_issues: "sensitive digestion",
+    preferred_proteins: ["chicken"],
+    excluded_ingredients: "lamb, beef",
+  },
+});
+
+if (
+  aiPayloadPet.weight !== 6 ||
+  aiPayloadPet.age !== 4 ||
+  aiPayloadPet.activityLevel !== "low" ||
+  aiPayloadPet.healthIssues[0] !== "sensitive digestion" ||
+  !aiPayloadPet.preferredProteins.includes("chicken") ||
+  !aiPayloadPet.excludedIngredients.includes("lamb") ||
+  !aiPayloadPet.excludedIngredients.includes("beef")
+) {
+  console.error("Food V2 recommendation request normalization should accept OpenAI-shaped pet payload fields.");
+  console.error(aiPayloadPet);
+  process.exit(1);
+}
+
+if (recommendationGoalFrom("not-a-real-goal") !== "general") {
+  console.error("Unknown Food V2 recommendation goals should fall back to general.");
+  process.exit(1);
+}
 
 function food(overrides: Partial<FoodProductV2>): FoodProductV2 {
   return {

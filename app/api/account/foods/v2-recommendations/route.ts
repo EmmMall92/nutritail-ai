@@ -3,8 +3,13 @@ import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import {
   rankFoodV2ForPet,
   splitFoodV2Recommendations,
-  type FoodV2RecommendationGoal,
 } from "@/lib/food-v2/recommendationRanking";
+import {
+  normalizeFoodV2RecommendationPetContext,
+  numberFromRecommendationValue,
+  recommendationGoalFrom,
+  stringArrayFromRecommendationValue,
+} from "@/lib/food-v2/recommendationRequest";
 import { normalizeBrandlessFoodDisplayName } from "@/lib/food-v2/canonicalFood";
 import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";
 import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendationGuards";
@@ -13,7 +18,7 @@ import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence"
 import { evaluateFoodIntelligence } from "@/lib/food-intelligence/evaluateFood";
 import { detectSafetyWarnings, hasHardStop } from "@/lib/chatbot/safetyRules";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
-import type { PetActivityLevel, PetSpecies } from "@/types/pet";
+import type { PetSpecies } from "@/types/pet";
 
 type FoodProductV2Row = FoodProductV2 & {
   id: string;
@@ -54,52 +59,8 @@ const PRODUCT_COLUMNS = [
   "is_recommendable",
 ].join(", ");
 
-const VALID_GOALS = new Set<FoodV2RecommendationGoal>([
-  "general",
-  "premium",
-  "value",
-  "weight_control",
-  "sensitive_digestion",
-  "allergy",
-  "urinary",
-  "renal",
-  "growth",
-  "sterilised",
-  "senior",
-]);
-
-function stringArray(value: unknown) {
-  if (Array.isArray(value)) {
-    return value.map((item) => String(item).trim()).filter(Boolean);
-  }
-
-  if (typeof value === "string") {
-    return value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
-
-  return [];
-}
-
 function normalizedText(value: unknown) {
   return String(value ?? "").trim().toLowerCase();
-}
-
-function numberValue(value: unknown, fallback = 0) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
-
-function goalFrom(value: unknown): FoodV2RecommendationGoal {
-  const goal = String(value ?? "general").trim() as FoodV2RecommendationGoal;
-  return VALID_GOALS.has(goal) ? goal : "general";
-}
-
-function activityLevelFrom(value: unknown): PetActivityLevel {
-  if (value === "low" || value === "normal" || value === "high") return value;
-  return "normal";
 }
 
 function safetyMessageFromRequest(body: Record<string, unknown>, pet: Record<string, unknown>) {
@@ -109,10 +70,14 @@ function safetyMessageFromRequest(body: Record<string, unknown>, pet: Record<str
     body.query,
     pet.currentFood,
     pet.currentFoodName,
-    ...stringArray(pet.healthIssues),
-    ...stringArray(pet.allergies),
-    ...stringArray(pet.excludedIngredients),
-    ...stringArray(pet.dislikedIngredients),
+    ...stringArrayFromRecommendationValue(pet.healthIssues ?? pet.health_issues),
+    ...stringArrayFromRecommendationValue(pet.allergies),
+    ...stringArrayFromRecommendationValue(
+      pet.excludedIngredients ?? pet.excluded_ingredients
+    ),
+    ...stringArrayFromRecommendationValue(
+      pet.dislikedIngredients ?? pet.disliked_ingredients
+    ),
   ]
     .filter(Boolean)
     .join(" ");
@@ -244,9 +209,9 @@ export async function POST(request: Request) {
     const pet = body.pet ?? {};
     const species = String(pet.species ?? body.species ?? "").trim();
     const format = String(body.format ?? "dry").trim();
-    const goal = goalFrom(body.goal);
+    const goal = recommendationGoalFrom(body.goal);
     const limitPerBucket = Math.min(
-      Math.max(numberValue(body.limit_per_bucket, 3), 1),
+      Math.max(numberFromRecommendationValue(body.limit_per_bucket, 3), 1),
       6
     );
 
@@ -257,20 +222,11 @@ export async function POST(request: Request) {
       );
     }
     const petSpecies = species as PetSpecies;
-    const petContext = {
+    const petContext = normalizeFoodV2RecommendationPetContext({
+      pet,
+      body,
       species: petSpecies,
-      breed: String(pet.breed ?? ""),
-      age: numberValue(pet.age, petSpecies === "cat" ? 3 : 4),
-      weight: numberValue(pet.weight, petSpecies === "cat" ? 4 : 10),
-      activityLevel: activityLevelFrom(pet.activityLevel),
-      neutered: Boolean(pet.neutered),
-      allergies: stringArray(pet.allergies),
-      healthIssues: stringArray(pet.healthIssues),
-      excludedIngredients: stringArray(
-        pet.excludedIngredients ?? pet.dislikedIngredients
-      ),
-      preferredProteins: stringArray(pet.preferredProteins ?? pet.preferredFlavors),
-    };
+    });
     const safetyWarnings = detectSafetyWarnings({
       message: safetyMessageFromRequest(body, pet),
       pet: petContext,
@@ -315,7 +271,9 @@ export async function POST(request: Request) {
     if (productsError) throw productsError;
 
     const excludedBrands = new Set(
-      stringArray(body.excluded_brands ?? body.excludedBrands).map(normalizedText)
+      stringArrayFromRecommendationValue(
+        body.excluded_brands ?? body.excludedBrands
+      ).map(normalizedText)
     );
     const productRows = ((products ?? []) as unknown as FoodProductV2Row[])
       .filter((product) => !isLikelyNonCompleteFoodProduct(product))
