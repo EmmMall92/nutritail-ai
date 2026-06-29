@@ -621,7 +621,7 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
     },
     pancreatitis_without_low_fat_review: {
       el: "παγκρεατικό ιστορικό χωρίς ξεκάθαρα χαμηλά λιπαρά",
-      en: "pancreatitis history without clear low-fat fit",
+      en: "pancreatitis history without clear low-fat suitability",
     },
     puppy: { el: "κουτάβι", en: "puppy" },
     renal: { el: "νεφρική υποστήριξη", en: "renal support" },
@@ -795,8 +795,8 @@ function formatFoodIntelligenceLabel(value: string, language: ChatLanguage) {
       en: "low-fat veterinary review",
     },
     pancreatitis_without_low_fat_review: {
-      el: "ιστορικό παγκρεατίτιδας χωρίς καθαρό low-fat fit",
-      en: "pancreatitis without clear low-fat fit",
+      el: "ιστορικό παγκρεατίτιδας χωρίς καθαρή χαμηλή περιεκτικότητα σε λιπαρά",
+      en: "pancreatitis without clear low-fat suitability",
     },
     skin_coat_omega_review: {
       el: "δέρμα/τρίχωμα με omega στοιχεία",
@@ -1839,7 +1839,7 @@ function formatCurrentFoodMatchMessage(params: {
 
   const sections = [
     isGreek
-      ? `Βρήκα πιθανό match για την τωρινή τροφή:\n${foodName}`
+      ? `Βρήκα πιθανή επιλογή για την τωρινή τροφή:\n${foodName}`
       : `I found a likely match for the current food:\n${foodName}`,
     params.qualityNote,
     isGreek ? `Πώς τη βλέπω για το προφίλ: ${fit}.` : `How it fits this profile: ${fit}.`,
@@ -2065,7 +2065,7 @@ function formatFoodComparison(
   const rows = comparisons.map((item, index) => {
     if (!item.match) {
       return greek
-        ? `${index + 1}. ${item.query}: δεν βρήκα αρκετά σίγουρο match στη βάση.
+        ? `${index + 1}. ${item.query}: δεν βρήκα αρκετά σίγουρη επιλογή στη βάση.
 Επόμενο βήμα: στείλε την ακριβή εταιρεία και φόρμουλα από τη συσκευασία ή δοκίμασε πιο σύντομο όνομα με brand + σειρά.`
         : `${index + 1}. ${item.query}: I need the exact product name before I can compare it well.
 Next step: send the exact brand and formula from the bag, or try a shorter query with brand + line name.`;
@@ -3284,7 +3284,7 @@ function getProgressDecisionActions(status: ProgressDecisionStatus) {
         title: "Try another food",
         titleEl: "Άλλη τροφή",
         helper: "Look for a better calorie or satiety fit.",
-        helperEl: "Ψάξε καλύτερο fit σε θερμίδες ή κορεσμό.",
+        helperEl: "Ψάξε καλύτερη επιλογή σε θερμίδες ή κορεσμό.",
         action: "change_food",
         tone: "secondary",
       },
@@ -5289,7 +5289,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       <div className="flex shrink-0 flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
         <div className="min-w-0">
           <h1 className="text-2xl font-bold text-black">
-            Nutritail AI Chatbot
+            {botText("Διατροφικός σύμβουλος NutriTail AI", "NutriTail AI Nutrition Advisor")}
           </h1>
 
           <p className="mt-1 text-sm text-gray-600">
