@@ -59,6 +59,14 @@ const advisorySuites = [
     source: "reports/openai_intake_smoke_qa.md",
     command: "npm.cmd run qa:openai-intake-smoke",
     layer: "structured pet-fact extraction through OpenAI when a key is available",
+    parser: "case",
+  },
+  {
+    name: "Account chatbot extract live route",
+    source: "reports/account_chatbot_extract_live_route_qa.md",
+    command: "npm.cmd run qa:account-chatbot-extract-live-route",
+    layer: "authenticated live chatbot intake extraction endpoint",
+    parser: "route",
   },
 ];
 
@@ -90,6 +98,15 @@ function parseNumber(text, patterns, label) {
   }
 
   throw new Error(`Could not parse ${label}`);
+}
+
+function parseOptionalNumber(text, patterns, fallback = 0) {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match?.[1] != null) return Number(match[1]);
+  }
+
+  return fallback;
 }
 
 function parseRunDate(text) {
@@ -176,10 +193,10 @@ function parseOpenAiSmokeSuite(suite) {
   }
 
   const text = readReport(suite.source);
-  const checked = parseNumber(text, [/- Cases checked:\s*(\d+)/i], `${suite.source} checked`);
-  const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
-  const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
-  const skipped = parseNumber(text, [/- Skipped:\s*(\d+)/i], `${suite.source} skipped`);
+  const checked = parseOptionalNumber(text, [/- Cases checked:\s*(\d+)/i]);
+  const passed = parseOptionalNumber(text, [/- Passed:\s*(\d+)/i]);
+  const failed = parseOptionalNumber(text, [/- Failed:\s*(\d+)/i]);
+  const skipped = parseOptionalNumber(text, [/- Skipped:\s*(\d+)/i]);
   const declaredStatus = text.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim().toLowerCase() ?? "unknown";
   const runDate = parseRunDate(text);
   const ageHours = reportAgeHours(runDate);
@@ -210,6 +227,56 @@ function parseOpenAiSmokeSuite(suite) {
         ? "OPENAI_API_KEY was not available in this QA environment; production env is checked separately."
         : declaredStatus,
   };
+}
+
+function parseAdvisoryRouteSuite(suite) {
+  if (!reportExists(suite.source)) {
+    return {
+      ...missingSuite(suite),
+      skipped: 0,
+      note: "report missing",
+    };
+  }
+
+  const text = readReport(suite.source);
+  const checked = parseOptionalNumber(text, [/- Routes checked:\s*(\d+)/i]);
+  const passed = parseOptionalNumber(text, [/- Passed:\s*(\d+)/i]);
+  const failed = parseOptionalNumber(text, [/- Failed:\s*(\d+)/i]);
+  const skipped = parseOptionalNumber(text, [/- Skipped:\s*(\d+)/i]);
+  const declaredStatus = text.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim().toLowerCase() ?? "unknown";
+  const runDate = parseRunDate(text);
+  const ageHours = reportAgeHours(runDate);
+  const stale = isStale(runDate);
+  const status =
+    failed > 0
+      ? "REVIEW"
+      : stale
+        ? "STALE"
+        : declaredStatus === "completed"
+          ? "PASS"
+          : declaredStatus === "skipped"
+            ? "SKIPPED"
+            : "REVIEW";
+
+  return {
+    ...suite,
+    checked,
+    passed,
+    failed,
+    skipped,
+    runDate,
+    ageHours,
+    age: formatAge(ageHours),
+    status,
+    note:
+      status === "SKIPPED"
+        ? "NUTRITAIL_QA_AUTH_COOKIE was not available; provide an authenticated account cookie for full live endpoint verification."
+        : declaredStatus,
+  };
+}
+
+function parseAdvisorySuite(suite) {
+  return suite.parser === "route" ? parseAdvisoryRouteSuite(suite) : parseOpenAiSmokeSuite(suite);
 }
 
 function parseChatbotSuite(suite) {
@@ -306,7 +373,7 @@ function percent(value, total) {
 const parsedRouteSuites = routeSuites.map(parseRouteSuite);
 const parsedStaticSuites = staticSuites.map(parseStaticSuite);
 const parsedChatbotSuite = parseChatbotSuite(chatbotSuite);
-const parsedAdvisorySuites = advisorySuites.map(parseOpenAiSmokeSuite);
+const parsedAdvisorySuites = advisorySuites.map(parseAdvisorySuite);
 const allSuites = [...parsedRouteSuites, ...parsedStaticSuites, parsedChatbotSuite];
 const totals = allSuites.reduce(
   (acc, suite) => {

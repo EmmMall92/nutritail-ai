@@ -1,10 +1,17 @@
 # OpenAI Intake Smoke QA
 
-Generated: 2026-06-28T12:17:57.888Z
+Generated: 2026-06-29T09:03:33.143Z
 Status: skipped
 
 No usable `OPENAI_API_KEY` was available in the QA environment.
 This is expected in CI unless the secret is intentionally enabled there.
 
-The smoke fixture still validates clean Greek prompts and the same fact-extraction prompt contract used by the app.
+## Summary
+
+- Cases checked: 5
+- Passed: 0
+- Failed: 0
+- Skipped: 5
+
+The smoke fixture validates clean Greek prompts, the same NutriTail fact-extraction prompt contract, and the same intake validation layer used by the app.
 The deterministic fallback intake QA still runs separately through `npm.cmd run qa:ai-intake`.
