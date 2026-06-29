@@ -48,7 +48,8 @@ const cases: SmokeCase[] = [
   },
   {
     id: "greek_allergy_avoidance",
-    message: "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο και στη γαλοπούλα.",
+    message:
+      "Ο σκύλος μου έχει αλλεργία στο κοτόπουλο και στη γαλοπούλα.",
     expect: {
       species: "dog",
       allergies: ["chicken", "turkey"],
@@ -75,7 +76,7 @@ const cases: SmokeCase[] = [
 
 function assertSmokeCaseEncoding() {
   const mojibakePattern = new RegExp(
-    "(?:\\?{3,}|\\u039E|\\u03B2\\u201A\\u00AC|\\uFFFD|\\u00C2|\\u00CE|\\u00CF)",
+    "(?:[?]{3,}|\\uFFFD|\\u00C2|\\u00CE|\\u00CF|[\\u0080-\\u009f])",
     "u"
   );
   const damaged = cases.filter((item) => mojibakePattern.test(item.message));
@@ -86,6 +87,37 @@ function assertSmokeCaseEncoding() {
         .join(", ")}`
     );
   }
+}
+
+async function loadEnvFile() {
+  try {
+    const raw = await readFile(envPath, "utf8");
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+      if (!match) continue;
+      const [, key, rawValue] = match;
+      if (process.env[key]) continue;
+      process.env[key] = rawValue.replace(/^['"]|['"]$/g, "");
+    }
+  } catch {
+    // Local and CI environments may inject env vars without an .env.local file.
+  }
+}
+
+function includesExpectedArray(actual: unknown, expected: string[]) {
+  if (!Array.isArray(actual)) return false;
+  return expected.every((item) => actual.includes(item));
+}
+
+function matchesExpected(actual: unknown, expected: ExpectedValue) {
+  if (Array.isArray(expected)) return includesExpectedArray(actual, expected);
+  return actual === expected;
+}
+
+function renderValue(value: unknown) {
+  return JSON.stringify(value);
 }
 
 function extractJsonObject(text: string) {
@@ -134,37 +166,6 @@ async function extractWithOpenAi(client: OpenAI, message: string) {
   };
 }
 
-async function loadEnvFile() {
-  try {
-    const raw = await readFile(envPath, "utf8");
-    for (const line of raw.split(/\r?\n/)) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#")) continue;
-      const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
-      if (!match) continue;
-      const [, key, rawValue] = match;
-      if (process.env[key]) continue;
-      process.env[key] = rawValue.replace(/^['"]|['"]$/g, "");
-    }
-  } catch {
-    // Local and CI environments may inject env vars without an .env.local file.
-  }
-}
-
-function includesExpectedArray(actual: unknown, expected: string[]) {
-  if (!Array.isArray(actual)) return false;
-  return expected.every((item) => actual.includes(item));
-}
-
-function matchesExpected(actual: unknown, expected: ExpectedValue) {
-  if (Array.isArray(expected)) return includesExpectedArray(actual, expected);
-  return actual === expected;
-}
-
-function renderValue(value: unknown) {
-  return JSON.stringify(value);
-}
-
 async function writeReport(lines: string[]) {
   await mkdir(path.dirname(reportPath), { recursive: true });
   await writeFile(reportPath, `${lines.join("\n")}\n`, "utf8");
@@ -186,7 +187,7 @@ async function main() {
       "No usable `OPENAI_API_KEY` was available in the QA environment.",
       "This is expected in CI unless the secret is intentionally enabled there.",
       "",
-      "The smoke fixture still validates clean Greek prompts and the same fact-extraction prompt contract used by the app.",
+      "The smoke fixture validates clean Greek prompts, the same NutriTail fact-extraction prompt contract, and the same intake validation layer used by the app.",
       "The deterministic fallback intake QA still runs separately through `npm.cmd run qa:ai-intake`.",
     ]);
 
@@ -195,6 +196,7 @@ async function main() {
         {
           status: "skipped",
           reason: "OPENAI_API_KEY is not configured",
+          clean_fixture_cases: cases.length,
           report: reportPath,
         },
         null,
@@ -241,7 +243,7 @@ async function main() {
     "Status: completed",
     "",
     "This smoke test checks that OpenAI is used only for structured pet fact extraction.",
-    "It uses the same NutriTail fact-extraction prompt contract as the app.",
+    "It uses the same NutriTail fact-extraction prompt contract and intake validation layer as the chatbot.",
     "It does not rank foods or invent nutrient values.",
     "",
     "## Summary",

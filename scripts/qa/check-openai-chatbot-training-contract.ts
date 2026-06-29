@@ -34,7 +34,7 @@ function includesAll(text: string, snippets: string[], label: string) {
 function assertNoMojibake(sourcePath: string) {
   const source = readFileSync(sourcePath, "utf8");
   const mojibakePattern = new RegExp(
-    "(?:\\?{3,}|\\u039E|\\u03B2\\u201A\\u00AC|\\uFFFD|\\u00C2|\\u00CE|\\u00CF)",
+    "(?:[?]{3,}|\\uFFFD|\\u00C2|\\u00CE|\\u00CF|[\\u0080-\\u009f])",
     "u"
   );
   expect(
@@ -168,6 +168,7 @@ includesAll(
     'buildNutriTailSystemPrompt("fact_extraction")',
     "Έχω σκύλο, την λένε Κύρκη",
     "Ο γάτος μου προσπαθεί να κατουρήσει",
+    "validateAiIntakeExtraction",
   ],
   "OpenAI intake smoke source"
 );
