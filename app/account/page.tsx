@@ -278,7 +278,7 @@ export default function AccountPage() {
               Καλώς ήρθες, {customer.fullName}
             </h1>
             <p className="mt-2 max-w-3xl text-gray-600">
-              Το Nutritail AI dashboard σου για διατροφική καθοδήγηση,
+              Ο προσωπικός σου πίνακας Nutritail AI για διατροφική καθοδήγηση,
               αποθηκευμένα κατοικίδια, αναφορές και επόμενα βήματα.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">

@@ -13,6 +13,7 @@ const customerCopyFiles = [
   "app/forgot-password/page.tsx",
   "app/reset-password/page.tsx",
   "app/account/page.tsx",
+  "app/account/layout.tsx",
   "app/account/profile/page.tsx",
   "lib/nutrition/chatGuardrails.ts",
 ];
@@ -76,6 +77,10 @@ const requiredCustomerCopy = [
   {
     file: "app/account/profile/page.tsx",
     text: "Αποθήκευση προφίλ",
+  },
+  {
+    file: "app/account/layout.tsx",
+    text: "Σύμβουλος",
   },
 ];
 
@@ -259,6 +264,16 @@ const bannedExactCustomerStrings = [
     file: "app/account/profile/page.tsx",
     text: "Save profile",
     reason: "Profile save copy should be localized for customers.",
+  },
+  {
+    file: "app/account/layout.tsx",
+    text: 'label="Chatbot"',
+    reason: "Account navigation should use customer wording instead of the product-internal chatbot label.",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Nutritail AI dashboard",
+    reason: "Account dashboard intro should use localized customer wording.",
   },
   {
     file: "app/account/chatbot/page.tsx",

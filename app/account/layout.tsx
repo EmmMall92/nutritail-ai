@@ -65,7 +65,7 @@ export default function AccountLayout({
           <AccountNavLink href="/account" label="Πίνακας" pathname={pathname} />
           <AccountNavLink
             href="/account/chatbot"
-            label="Chatbot"
+            label="Σύμβουλος"
             pathname={pathname}
           />
           <AccountNavLink
