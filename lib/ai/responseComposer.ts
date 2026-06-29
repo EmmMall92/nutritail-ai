@@ -26,7 +26,7 @@ const CUSTOMER_CARD_FLOW_RULES = [
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
-  "The strongest matches are in the cards below.",
+  "The strongest choices are in the cards below.",
   "Tap one card to see estimated grams/day.",
 ] as const;
 
@@ -379,7 +379,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     }
 
     return [
-      "Done. The strongest matches are in the cards below.",
+      "Done. The strongest choices are in the cards below.",
       "",
       `What we are optimizing for: ${goalLabel}.`,
       `Best starting point: ${topFood} - it ${topReason}.`,
@@ -455,6 +455,7 @@ function isCompactCardIntro(text: string) {
   const normalized = text.toLowerCase();
   const listLikeTerms = [
     "option 1",
+    "best choices:",
     "best matches:",
     "first picks:",
     "simple alternatives:",

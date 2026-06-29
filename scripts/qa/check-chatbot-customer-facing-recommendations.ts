@@ -375,7 +375,7 @@ if (!greekSample.includes("παγκρεατίτιδας")) {
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("I found the strongest matches and placed them below as cards")) {
+if (!compactCardsSample.includes("I found the strongest choices and placed them below as cards")) {
   console.error("Compact card-facing recommendation should point to the cards.");
   console.error(compactCardsSample);
   process.exit(1);
@@ -502,7 +502,7 @@ if (missingComposerNameCleanup.length > 0) {
 }
 
 const requiredCompactComposerFlow = [
-  "The strongest matches are in the cards below.",
+  "The strongest choices are in the cards below.",
   "Tap one card to see estimated grams/day.",
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
@@ -623,7 +623,7 @@ if (missingCompareNameCleanup.length > 0) {
 }
 
 const requiredCardFlowCopy = [
-  "Best match",
+  "Best choice",
   "Practical option",
   "Good alternative",
   "Get daily grams",

@@ -632,7 +632,7 @@ function polishEnglishCustomerText(text: string) {
     )
     .replace(
       "Done. I placed the best options below as cards.",
-      "Done. I found the strongest matches and placed them below as cards."
+      "Done. I found the strongest choices and placed them below as cards."
     )
     .replace(
       "Tap one card to estimate portions/day.",
