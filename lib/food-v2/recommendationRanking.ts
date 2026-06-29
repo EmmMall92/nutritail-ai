@@ -1112,6 +1112,31 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   if (
+    ["puppy", "kitten"].includes(stage) &&
+    normalizeText(food.format) === "dry" &&
+    hasNumber(nutrients.fat_percent)
+  ) {
+    if (nutrients.fat_percent < 5) {
+      addSignal(
+        signals,
+        "exclude",
+        "implausibly_low_fat_growth_food",
+        -100,
+        "Excluded because the declared fat looks implausibly low for a dry growth food and needs data review."
+      );
+    } else if (nutrients.fat_percent < 8) {
+      score -= 30;
+      addSignal(
+        signals,
+        "caution",
+        "very_low_fat_growth_food",
+        -30,
+        "Very low declared fat weakens confidence for a dry growth food."
+      );
+    }
+  }
+
+  if (
     pet.species === "cat" &&
     !pet.neutered &&
     !["sterilised", "weight_control", "urinary", "renal"].includes(goal) &&

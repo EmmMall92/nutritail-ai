@@ -90,6 +90,12 @@ const SIGNAL_GUARDS: Record<
     severity: "block",
     fallbackMessage: "Kitten growth cases need kitten or all-life-stage food.",
   },
+  implausibly_low_fat_growth_food: {
+    code: "implausibly_low_fat_growth_food",
+    severity: "block",
+    fallbackMessage:
+      "Declared fat looks implausibly low for a dry growth food and needs data review.",
+  },
   obesity_active_formula_mismatch: {
     code: "obesity_active_formula_mismatch",
     severity: "block",

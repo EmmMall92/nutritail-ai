@@ -3582,4 +3582,86 @@ if (renalDogSplit.premium[0]?.formula_key !== "qa|visible-renal-dog|dog|dry") {
   process.exit(1);
 }
 
+const implausiblyLowFatPuppyFood = food({
+  id: "implausibly-low-fat-puppy",
+  formula_key: "qa|implausibly-low-fat-puppy|dog|dry",
+  brand: "Brit",
+  display_name: "Care Grain Free Puppy Salmon",
+  formula_name: "Care Grain Free Puppy Salmon",
+  life_stage: "puppy",
+  dog_size: "large",
+  primary_animal_proteins: ["salmon"],
+  ingredients: ["salmon", "potato"],
+  kcal_per_100g: 393,
+});
+const acanaLargeBreedPuppyFood = food({
+  id: "acana-large-breed-puppy",
+  formula_key: "qa|acana-puppy-large-breed|dog|dry",
+  brand: "Acana",
+  display_name: "Puppy Large Breed",
+  formula_name: "Puppy Large Breed",
+  life_stage: "puppy",
+  dog_size: "large",
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "oats"],
+  kcal_per_100g: 337.5,
+});
+const largeBreedGrowthPet = {
+  ...pet,
+  age: 0.58,
+  weight: 30,
+  neutered: false,
+  healthIssues: ["large breed puppy", "growth"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const implausiblyLowFatPuppyRanking = rankFoodV2ForPet({
+  food: implausiblyLowFatPuppyFood,
+  nutrients: {
+    ...nutrients(implausiblyLowFatPuppyFood),
+    protein_percent: 30,
+    fat_percent: 2.3,
+    fiber_percent: 2.5,
+  },
+  pet: largeBreedGrowthPet,
+  goal: "growth",
+});
+const acanaLargeBreedPuppyRanking = rankFoodV2ForPet({
+  food: acanaLargeBreedPuppyFood,
+  nutrients: {
+    ...nutrients(acanaLargeBreedPuppyFood),
+    protein_percent: 33,
+    fat_percent: 15,
+    fiber_percent: 6,
+  },
+  pet: largeBreedGrowthPet,
+  goal: "growth",
+});
+const growthSplit = splitFoodV2Recommendations([
+  implausiblyLowFatPuppyRanking,
+  acanaLargeBreedPuppyRanking,
+]);
+
+if (implausiblyLowFatPuppyRanking.bucket !== "hold") {
+  console.error("Dry growth foods with implausibly low fat should be held for data review.");
+  console.error(implausiblyLowFatPuppyRanking);
+  process.exit(1);
+}
+
+if (
+  !implausiblyLowFatPuppyRanking.signals.some(
+    (signal) => signal.code === "implausibly_low_fat_growth_food"
+  )
+) {
+  console.error("Expected implausibly_low_fat_growth_food signal for suspicious puppy fat data.");
+  console.error(implausiblyLowFatPuppyRanking.signals);
+  process.exit(1);
+}
+
+if (growthSplit.premium[0]?.formula_key !== "qa|acana-puppy-large-breed|dog|dry") {
+  console.error("A large-breed puppy formula with plausible nutrition should outrank suspicious low-fat puppy data.");
+  console.error(growthSplit);
+  process.exit(1);
+}
+
 console.log("Food V2 preference, weight, and puppy guard QA passed.");
