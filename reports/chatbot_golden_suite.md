@@ -1,10 +1,11 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-28T18:45:39.949Z
+Generated: 2026-06-29T05:22:22.323Z
 
 ## Summary
 
 - Mode: fast
+- Per-check timeout: 180s
 - Checks run: 19/19
 - Passed: 19
 - Failed: 0
@@ -45,7 +46,7 @@ Generated: 2026-06-28T18:45:39.949Z
 ### AI intake golden cases
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:ai-intake`
 
 ```text
@@ -176,7 +177,7 @@ Dog edge case fixture QA passed.
 ### Food Intelligence use cases
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:food-intelligence-use-cases`
 
 ```text
@@ -224,7 +225,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Nutrition source-map intake
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:nutrition-source-map-intake`
 
 ```text
@@ -240,7 +241,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 56.9s
+- Duration: 63.0s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -266,7 +267,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:food-v2-guard-coverage
 > node scripts/qa/check-food-v2-guard-coverage.mjs
 {
-  "checkedExcludeSignals": 15,
+  "checkedExcludeSignals": 16,
   "missing": 0
 }
 ```
@@ -297,8 +298,8 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:customer-chatbot-flow-links
 > node scripts/qa/check-customer-chatbot-flow-links.mjs
 {
-  "checked": 146,
-  "passed": 146,
+  "checked": 147,
+  "passed": 147,
   "failed": 0,
   "report": "reports/customer_chatbot_flow_links_qa.md"
 }
@@ -328,7 +329,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 36.9s
+- Duration: 43.1s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
