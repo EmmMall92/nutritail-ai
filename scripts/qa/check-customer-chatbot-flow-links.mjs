@@ -712,6 +712,21 @@ const forbiddenChecks = [
     forbidden: "Report ready",
   },
   {
+    label: "Pets list does not expose mixed-language ready report status",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Report έτοιμο",
+  },
+  {
+    label: "Pets list does not expose mixed-language notes report status",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Report με σημειώσεις",
+  },
+  {
+    label: "Pets list does not expose mixed-language general report status",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Γενικό report",
+  },
+  {
     label: "Pet detail weight edit does not allow unrealistic legacy limit",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: 'max="150"',
