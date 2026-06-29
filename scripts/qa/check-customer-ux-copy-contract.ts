@@ -422,6 +422,41 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "possible fit",
+    reason: "Chatbot customer copy should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "strong fit",
+    reason: "Chatbot customer copy should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "good fit",
+    reason: "Chatbot customer copy should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "cautious fit",
+    reason: "Chatbot customer copy should use choice wording instead of fit wording.",
+  },
+  {
+    file: "lib/food-v2/recommendationResponseAdapter.ts",
+    text: "strong fit",
+    reason: "Food V2 response adapter should use choice wording instead of fit wording.",
+  },
+  {
+    file: "lib/food-v2/recommendationResponseAdapter.ts",
+    text: "good fit",
+    reason: "Food V2 response adapter should use choice wording instead of fit wording.",
+  },
+  {
+    file: "lib/food-v2/recommendationResponseAdapter.ts",
+    text: "cautious fit",
+    reason: "Food V2 response adapter should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "No matched food",
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",
   },

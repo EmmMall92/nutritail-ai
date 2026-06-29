@@ -144,9 +144,9 @@ function confidencePhrase(food: RecommendationFood, locale: "el" | "en") {
     return "καλή επιλογή";
   }
 
-  if (confidence === "high" || quality === "verified") return "strong fit";
-  if (confidence === "low") return "cautious fit";
-  return "good fit";
+  if (confidence === "high" || quality === "verified") return "strong choice";
+  if (confidence === "low") return "choice to review";
+  return "good choice";
 }
 
 function renderFoodItem(
