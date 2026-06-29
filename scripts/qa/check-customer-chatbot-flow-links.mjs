@@ -892,6 +892,16 @@ const forbiddenChecks = [
     forbidden: "printable reports",
   },
   {
+    label: "Login page does not expose mixed-language saved reports wording",
+    file: "app/login/page.tsx",
+    forbidden: "αποθηκευμένα reports",
+  },
+  {
+    label: "Auth shell does not expose report wording in shared trust points",
+    file: "components/AuthShell.tsx",
+    forbidden: "Saved profiles, reports",
+  },
+  {
     label: "Printable report page does not expose Greek report loading wording",
     file: "app/print/pet-report/page.tsx",
     forbidden: "Ετοιμάζουμε το report",
