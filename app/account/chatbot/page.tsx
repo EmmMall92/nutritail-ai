@@ -2950,13 +2950,25 @@ function formatProgressDecisionReply(
   const headline = isGreek ? decision.headline.el : decision.headline.en;
   const reasons = isGreek ? decision.reasons.el : decision.reasons.en;
   const nextSteps = isGreek ? decision.nextSteps.el : decision.nextSteps.en;
-  const confidenceLabel = isGreek ? "Σιγουριά" : "Confidence";
+  const confidenceLabel = isGreek ? "Πώς το βλέπω" : "How I read it";
+  const confidenceText =
+    decision.confidence === "high"
+      ? isGreek
+        ? "έχω αρκετά στοιχεία για καθαρή πρώτη εκτίμηση"
+        : "there is enough context for a clear first read"
+      : decision.confidence === "medium"
+        ? isGreek
+          ? "έχω χρήσιμη εικόνα, αλλά θέλω λίγη παρακολούθηση ακόμη"
+          : "there is useful context, but I would still monitor closely"
+        : isGreek
+          ? "λείπουν στοιχεία, οπότε το βλέπουμε προσεκτικά"
+          : "some details are missing, so this should be treated cautiously";
   const reasonsLabel = isGreek ? "Γιατί" : "Why";
   const nextLabel = isGreek ? "Τι κάνουμε τώρα" : "What to do now";
 
   return [
     headline,
-    `${confidenceLabel}: ${decision.confidence}`,
+    `${confidenceLabel}: ${confidenceText}`,
     `${reasonsLabel}:\n${reasons.map((reason) => `- ${reason}`).join("\n")}`,
     `${nextLabel}:\n${nextSteps.map((step) => `- ${step}`).join("\n")}`,
   ].join("\n");

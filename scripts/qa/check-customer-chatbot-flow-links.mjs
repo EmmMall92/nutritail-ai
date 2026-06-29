@@ -794,6 +794,16 @@ const forbiddenChecks = [
     forbidden: "Confidence notes:",
   },
   {
+    label: "Progress replies do not expose raw confidence label",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: 'const confidenceLabel = isGreek ? "Σιγουριά" : "Confidence"',
+  },
+  {
+    label: "Progress replies do not print raw confidence enum",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "`${confidenceLabel}: ${decision.confidence}`",
+  },
+  {
     label: "Chatbot calorie explanation does not expose RER acronym",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Resting calories (RER)",
