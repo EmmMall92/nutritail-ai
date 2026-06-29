@@ -76,6 +76,14 @@ const customerUxSuites = [
   },
 ];
 
+const goldenSuite = {
+  name: "Chatbot golden suite fast",
+  source: "reports/chatbot_golden_suite.md",
+  command: "npm.cmd run qa:chatbot-golden-suite:fast",
+  layer:
+    "current fast regression gate for intake, customer UX, Food V2 ranking, dog live smoke, dog 201-600 smoke, and cat live cases",
+};
+
 const fixtureCoverageSuites = [
   {
     name: "Dog 201-600 fixture integrity",
@@ -233,6 +241,29 @@ function parsePassFailReport(suite) {
   };
 }
 
+function parseGoldenSuiteReport(suite) {
+  const text = readReport(suite.source);
+  const mode = text.match(/^- Mode:\s*([^\n]+)/im)?.[1]?.trim() ?? "unknown";
+  const checksMatch = text.match(/^- Checks run:\s*(\d+)\/(\d+)/im);
+  const checked = checksMatch?.[2] ? Number(checksMatch[2]) : 0;
+  const run = checksMatch?.[1] ? Number(checksMatch[1]) : 0;
+  const passed = matchNumber(text, [/^- Passed:\s*(\d+)/im], `${suite.source} passed`);
+  const failed = matchNumber(text, [/^- Failed:\s*(\d+)/im], `${suite.source} failed`);
+  const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
+  const result = run === checked && failed === 0 && passed === checked ? "PASS" : "REVIEW";
+
+  return {
+    ...suite,
+    mode,
+    checked,
+    run,
+    passed,
+    failed,
+    result,
+    runDate,
+  };
+}
+
 function parseFixtureIntegrityReport(suite) {
   const text = readReport(suite.source);
   const result = text.match(/^Result:\s*([A-Z]+)/im)?.[1]?.trim() ?? "unknown";
@@ -258,6 +289,7 @@ const parsed = suites.map(parseReport);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
 const parsedResponseContract = parseResponseContractReport(responseContractSuite);
 const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
+const parsedGoldenSuite = parseGoldenSuiteReport(goldenSuite);
 const parsedFixtureCoverage = fixtureCoverageSuites.map(parseFixtureIntegrityReport);
 const totals = parsed.reduce(
   (acc, suite) => {
@@ -315,6 +347,7 @@ const lines = [
   `- Response contracts passed: ${parsedResponseContract.passed}`,
   `- Response contracts failed: ${parsedResponseContract.failed}`,
   `- Customer UX suites passing: ${parsedCustomerUx.filter((suite) => suite.result === "PASS").length}/${parsedCustomerUx.length}`,
+  `- Golden suite: ${parsedGoldenSuite.result} (${parsedGoldenSuite.run}/${parsedGoldenSuite.checked} checks run)`,
   `- Fixture/coverage evidence suites passing: ${parsedFixtureCoverage.filter((suite) => suite.result === "PASS").length}/${parsedFixtureCoverage.length}`,
   "",
   "## Species Coverage",
@@ -362,6 +395,12 @@ const lines = [
       `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} |`,
   ),
   "",
+  "## Golden Suite Evidence",
+  "",
+  "| Suite | Source report | Layer | Command | Mode | Result | Checks run | Passed | Failed | Last run |",
+  "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+  `| ${parsedGoldenSuite.name} | \`${parsedGoldenSuite.source}\` | ${parsedGoldenSuite.layer} | \`${parsedGoldenSuite.command}\` | ${parsedGoldenSuite.mode} | ${parsedGoldenSuite.result} | ${parsedGoldenSuite.run}/${parsedGoldenSuite.checked} | ${parsedGoldenSuite.passed} | ${parsedGoldenSuite.failed} | ${parsedGoldenSuite.runDate} |`,
+  "",
   "## Fixture And Coverage Evidence",
   "",
   "| Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |",
@@ -379,6 +418,7 @@ const lines = [
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "- Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.",
+  "- The fast golden suite shows the current PR-level regression gate, including the latest live dog/cat smoke checks.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.",
   "",
   "## Next QA Gaps",
@@ -416,6 +456,10 @@ if (failingCustomerUx.length > 0) {
       .map((suite) => suite.name)
       .join(", ")}`,
   );
+}
+
+if (parsedGoldenSuite.result !== "PASS") {
+  throw new Error("Chatbot golden suite is not passing.");
 }
 
 const failingFixtureCoverage = parsedFixtureCoverage.filter((suite) => suite.result !== "PASS");
