@@ -2061,6 +2061,17 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
           ? 5
           : 0)
       : 0;
+  const skinPreferenceTieBreaker =
+    hasSkinCoatContext(input.pet) && (input.pet.preferredProteins ?? []).length > 0
+      ? (signals.some((signal) => signal.code === "skin_coat_omega_fit") ? 8 : -8) +
+        (signals.some((signal) => signal.code === "preferred_protein_visible_match")
+          ? 6
+          : signals.some((signal) => signal.code === "preferred_protein_match")
+            ? 3
+            : signals.some((signal) => signal.code === "preferred_protein_missing")
+              ? -6
+              : 0)
+      : 0;
   const preferredProteinTieBreaker =
     (input.pet.preferredProteins ?? []).length > 0
       ? signals.some((signal) => signal.code === "preferred_protein_match")
@@ -2083,6 +2094,7 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
     : baseTotalScore +
       customerVisibleTieBreaker +
       skinAllergyTieBreaker +
+      skinPreferenceTieBreaker +
       preferredProteinTieBreaker;
   const tier = valueTier(input.food, valueScore, fitScore, qualityScore);
   const confidence = confidenceFor({ fitScore, qualityScore, signals });

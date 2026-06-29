@@ -209,6 +209,24 @@
       "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick", "no_low_fat_active_gain_top_picks"]
     },
     {
+      "label": "Small active dog skin itch likes salmon needs weight gain",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Small athletic mixed breed",
+        "age": 3,
+        "weight": 6,
+        "activityLevel": "high",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": ["salmon"],
+        "excludedIngredients": [],
+        "weightGoal": "gain",
+        "healthIssues": ["skin itch", "weight gain", "high activity"]
+      },
+      "expectations": ["premium_or_value", "active_energy_fit", "skin_allergy_fit", "no_weight_control_top_pick", "no_unrelated_therapeutic_top_picks"]
+    },
+    {
       "label": "Low activity weight-loss dog",
       "goal": "weight_control",
       "pet": {
