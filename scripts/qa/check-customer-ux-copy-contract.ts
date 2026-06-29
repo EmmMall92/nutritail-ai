@@ -352,6 +352,31 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "Nutritail AI Chatbot",
+    reason: "Chatbot page heading should use customer advisor wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "πιθανό match",
+    reason: "Greek chatbot copy should not expose internal matching wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "σίγουρο match",
+    reason: "Greek chatbot copy should not expose internal matching wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "low-fat fit",
+    reason: "Greek chatbot copy should use plain nutrition wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "καλύτερο fit",
+    reason: "Greek chatbot copy should use customer-facing suitability wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "Food match",
     reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
   },

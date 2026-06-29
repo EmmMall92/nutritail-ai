@@ -696,7 +696,7 @@ const requiredCardFlowCopy = [
   "large_breed_growth_mineral_review",
   "large-breed puppy mineral check",
   "lower-fat vet-guided review",
-  "pancreatitis history without clear low-fat fit",
+  "pancreatitis history without clear low-fat suitability",
   "skin_coat_omega_review",
   "summer_low_appetite_feeding_review",
   "hot weather and low appetite",
