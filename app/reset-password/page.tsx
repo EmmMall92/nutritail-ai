@@ -80,16 +80,15 @@ export default function ResetPasswordPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <section className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">Choose new password</h1>
+        <h1 className="text-3xl font-bold text-black">Νέος κωδικός</h1>
 
         <p className="mt-2 text-sm text-gray-600">
-          Set a new password for your Nutritail AI account.
+          Όρισε νέο κωδικό για τον λογαριασμό NutriTail AI.
         </p>
 
         {!isReady && (
           <div className="mt-6 rounded-xl bg-yellow-50 p-3 text-sm text-yellow-800">
-            Open this page from the password reset email link. If the link has
-            expired, request a new one.
+            Άνοιξε αυτή τη σελίδα από το email επαναφοράς κωδικού. Αν το link έχει λήξει, ζήτησε νέο.
           </div>
         )}
 
@@ -97,7 +96,7 @@ export default function ResetPasswordPage() {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="New password"
+            placeholder="Νέος κωδικός"
             type="password"
             autoComplete="new-password"
             className="w-full rounded-xl border border-gray-300 p-3 text-black"
@@ -106,7 +105,7 @@ export default function ResetPasswordPage() {
           <input
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm new password"
+            placeholder="Επιβεβαίωση νέου κωδικού"
             type="password"
             autoComplete="new-password"
             className="w-full rounded-xl border border-gray-300 p-3 text-black"
@@ -129,14 +128,14 @@ export default function ResetPasswordPage() {
             disabled={isLoading || !isReady}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
-            {isLoading ? "Updating..." : "Update password"}
+            {isLoading ? "Ενημερώνεται..." : "Ενημέρωση κωδικού"}
           </button>
 
           <Link
             href="/forgot-password"
             className="block text-center text-sm text-gray-600 underline"
           >
-            Request a new reset link
+            Ζήτησε νέο link επαναφοράς
           </Link>
         </form>
       </section>

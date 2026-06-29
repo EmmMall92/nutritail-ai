@@ -51,10 +51,10 @@ export default function ForgotPasswordPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <section className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">Reset password</h1>
+        <h1 className="text-3xl font-bold text-black">Επαναφορά κωδικού</h1>
 
         <p className="mt-2 text-sm text-gray-600">
-          Enter your email and we will send a secure password reset link.
+          Γράψε το email σου και θα σου στείλουμε ασφαλές link επαναφοράς.
         </p>
 
         <form onSubmit={handleResetRequest} className="mt-6 space-y-4">
@@ -84,14 +84,14 @@ export default function ForgotPasswordPage() {
             disabled={isLoading}
             className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
           >
-            {isLoading ? "Sending..." : "Send reset link"}
+            {isLoading ? "Αποστολή..." : "Αποστολή link επαναφοράς"}
           </button>
 
           <Link
             href="/login"
             className="block text-center text-sm text-gray-600 underline"
           >
-            Back to login
+            Πίσω στη σύνδεση
           </Link>
         </form>
       </section>

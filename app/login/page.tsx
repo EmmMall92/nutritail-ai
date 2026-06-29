@@ -123,16 +123,16 @@ export default function LoginPage() {
 
   return (
     <AuthShell
-      eyebrow="Welcome back"
-      title="Sign in"
-      description="Continue to your saved pets, nutrition reports, and food recommendations."
+      eyebrow="Καλωσήρθες ξανά"
+      title="Σύνδεση"
+      description="Συνέχισε στα κατοικίδια, τις αναλύσεις και τις προτάσεις τροφών που έχεις αποθηκεύσει."
     >
       <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
-        <p className="font-semibold text-green-950">After login you can:</p>
+        <p className="font-semibold text-green-950">Μετά τη σύνδεση μπορείς να:</p>
         <ul className="mt-2 space-y-1">
-          <li>- Continue a pet nutrition analysis.</li>
-          <li>- Open saved reports and feeding notes.</li>
-          <li>- Refresh recommendations when weight, food, or symptoms change.</li>
+          <li>- Συνεχίσεις μια διατροφική ανάλυση κατοικιδίου.</li>
+          <li>- Δεις αποθηκευμένα reports και σημειώσεις σίτισης.</li>
+          <li>- Ανανεώσεις προτάσεις όταν αλλάξει βάρος, τροφή ή συμπτώματα.</li>
         </ul>
       </div>
 
@@ -150,11 +150,11 @@ export default function LoginPage() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-800">Password</span>
+          <span className="text-sm font-medium text-gray-800">Κωδικός</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="Κωδικός"
             type="password"
             autoComplete="current-password"
             className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
@@ -166,7 +166,7 @@ export default function LoginPage() {
             href="/forgot-password"
             className="text-sm font-medium text-gray-700 underline decoration-gray-300 underline-offset-4 transition hover:text-black"
           >
-            Forgot password?
+            Ξέχασες τον κωδικό;
           </Link>
         </div>
 
@@ -174,8 +174,7 @@ export default function LoginPage() {
           <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
             {error}
             <p className="mt-1 text-xs text-red-600">
-              Check the email/password, or reset your password if you are not
-              sure.
+              Έλεγξε email και κωδικό ή κάνε επαναφορά αν δεν είσαι σίγουρος/η.
             </p>
           </div>
         )}
@@ -185,16 +184,16 @@ export default function LoginPage() {
           disabled={isLoading}
           className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading ? "Γίνεται σύνδεση..." : "Σύνδεση"}
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          New to Nutritail?{" "}
+          Νέος/α στο NutriTail;{" "}
           <Link
             href={registerHref}
             className="font-semibold text-black underline decoration-gray-300 underline-offset-4"
           >
-            Create an account
+            Δημιουργία λογαριασμού
           </Link>
         </p>
       </form>

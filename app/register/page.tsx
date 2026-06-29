@@ -102,7 +102,7 @@ export default function RegisterPage() {
       }
 
       setSuccess(
-        "Account created. Check your email to confirm your address before signing in."
+        "Ο λογαριασμός δημιουργήθηκε. Έλεγξε το email σου για επιβεβαίωση πριν συνδεθείς."
       );
     } catch (err) {
       console.error(err);
@@ -115,28 +115,28 @@ export default function RegisterPage() {
 
   return (
     <AuthShell
-      eyebrow="Start free"
-      title="Create account"
-      description="Save your pets, keep nutrition analyses, and return to reports whenever you need them."
+      eyebrow="Ξεκίνα δωρεάν"
+      title="Δημιουργία λογαριασμού"
+      description="Αποθήκευσε κατοικίδια, διατροφικές αναλύσεις και reports για να επιστρέφεις όποτε τα χρειάζεσαι."
     >
       <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
         <p className="font-semibold text-green-950">
-          Your account keeps Nutritail useful over time.
+          Ο λογαριασμός κρατά το NutriTail χρήσιμο όσο περνάει ο καιρός.
         </p>
         <ul className="mt-2 space-y-1">
-          <li>- Save pet profiles and health notes.</li>
-          <li>- Keep printable reports in one place.</li>
-          <li>- Re-run recommendations when food or weight changes.</li>
+          <li>- Αποθηκεύεις προφίλ κατοικιδίων και σημειώσεις υγείας.</li>
+          <li>- Κρατάς printable reports σε ένα σημείο.</li>
+          <li>- Ξανατρέχεις προτάσεις όταν αλλάζει τροφή ή βάρος.</li>
         </ul>
       </div>
 
       <form onSubmit={handleRegister} className="space-y-4">
         <label className="block">
-          <span className="text-sm font-medium text-gray-800">Full name</span>
+          <span className="text-sm font-medium text-gray-800">Ονοματεπώνυμο</span>
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full name"
+            placeholder="Ονοματεπώνυμο"
             autoComplete="name"
             className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
           />
@@ -155,11 +155,11 @@ export default function RegisterPage() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-800">Password</span>
+          <span className="text-sm font-medium text-gray-800">Κωδικός</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
+            placeholder="Τουλάχιστον 6 χαρακτήρες"
             type="password"
             autoComplete="new-password"
             className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
@@ -176,8 +176,7 @@ export default function RegisterPage() {
           <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
             {success}
             <p className="mt-1 text-xs text-green-700">
-              If confirmation is required, open the email on the same device
-              and then return to Nutritail.
+              Αν ζητηθεί επιβεβαίωση, άνοιξε το email στην ίδια συσκευή και μετά γύρνα στο NutriTail.
             </p>
           </div>
         )}
@@ -187,16 +186,16 @@ export default function RegisterPage() {
           disabled={isLoading}
           className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? "Δημιουργείται λογαριασμός..." : "Δημιουργία λογαριασμού"}
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Έχεις ήδη λογαριασμό;{" "}
           <Link
             href={loginHref}
             className="font-semibold text-black underline decoration-gray-300 underline-offset-4"
           >
-            Sign in
+            Σύνδεση
           </Link>
         </p>
       </form>
