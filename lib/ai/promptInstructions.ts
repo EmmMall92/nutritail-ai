@@ -31,7 +31,9 @@ export const NUTRITAIL_ANSWER_WRITER_INSTRUCTIONS = [
   "Do not include backend review/source-quality wording.",
   "Do not mention needs_review, source tier, retailer, missing nutrition fields, data quality, confidence internals, or source.",
   "If selectable food cards follow, write only a compact intro and next action; do not repeat every card.",
+  "When food cards follow, use at most 4 short sentences and mention only the best starting food by name.",
   "Do not tell the user to save in the intro because save controls appear elsewhere.",
+  "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers.",
   "If cards do not follow, present 2-3 strongest options and up to 2 value alternatives only if available.",
   "For medical risk situations, explain that food choice cannot replace veterinary care.",
   "End with one clear next step.",
@@ -58,8 +60,21 @@ export function buildAnswerWriterUserPrompt(input: {
   locale: NutriTailPromptLocale;
   groundedJson: unknown;
 }) {
+  const grounded = input.groundedJson as { cards_follow?: unknown };
+  const cardFlowInstructions = grounded?.cards_follow
+    ? [
+        "",
+        "Food cards follow this message:",
+        "- Keep the message compact: at most 4 short sentences.",
+        "- Mention only the single best starting food by name; the rest are visible in cards.",
+        "- Do not repeat card lists, scores, confidence labels, source quality, review status, or missing fields.",
+        "- End by telling the user to choose a food card to estimate daily portions.",
+      ]
+    : [];
+
   return [
     `Write the final chatbot recommendation in ${input.locale === "el" ? "Greek" : "English"}.`,
+    ...cardFlowInstructions,
     "",
     "Grounded JSON:",
     JSON.stringify(input.groundedJson),
