@@ -382,7 +382,7 @@ export default function PrintablePetReportPage() {
             detail="Πρακτικές θερμίδες ανά ημέρα"
           />
           <ReportCard
-            label="Fit τροφής"
+            label="Καταλληλότητα τροφής"
             value={getFoodScoreLabel(latestAnalysis?.food_score)}
             detail="Βασισμένο στο προφίλ και την επιλεγμένη τροφή."
           />
@@ -727,7 +727,7 @@ export default function PrintablePetReportPage() {
                       {item.food_score !== null &&
                         item.food_score !== undefined && (
                           <p>
-                            <strong>Fit τροφής:</strong>{" "}
+                            <strong>Καταλληλότητα τροφής:</strong>{" "}
                             {getFoodScoreLabel(item.food_score)}
                           </p>
                         )}

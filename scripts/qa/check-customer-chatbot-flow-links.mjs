@@ -99,7 +99,7 @@ const checks = [
   {
     label: "Pets list uses customer-facing food-fit wording",
     file: "app/account/pets/page.tsx",
-    expected: "Fit τροφής:",
+    expected: "Καταλληλότητα τροφής:",
   },
   {
     label: "Pet detail progress action deep-links to saved pet",
@@ -389,7 +389,7 @@ const checks = [
   {
     label: "Account dashboard food fit chip is customer-localized",
     file: "app/account/page.tsx",
-    expected: "Fit τροφής:",
+    expected: "Καταλληλότητα τροφής:",
   },
   {
     label: "Saved pet picker uses localized customer-facing pet metadata",
@@ -496,7 +496,7 @@ const checks = [
   {
     label: "Pet detail uses Greek customer-facing food-fit card label",
     file: "app/account/pets/[id]/page.tsx",
-    expected: "Fit τροφής",
+    expected: "Καταλληλότητα τροφής",
   },
   {
     label: "Pet detail weight edit uses species-aware customer limit",

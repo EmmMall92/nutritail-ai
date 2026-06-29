@@ -907,7 +907,7 @@ export default function AccountPetDetailPage() {
                 </p>
               </div>
               <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Fit τροφής</p>
+                <p className="text-sm text-gray-600">Καταλληλότητα τροφής</p>
                 <p className="mt-1 text-xl font-semibold text-black">
                   {getFoodScoreLabel(latest.food_score)}
                 </p>
@@ -1109,7 +1109,7 @@ export default function AccountPetDetailPage() {
                   </p>
                   {hasValidFoodScore(item.food_score) && (
                   <p className="mt-1 text-sm text-gray-700">
-                    Fit τροφής: {getFoodScoreLabel(item.food_score)}
+                    Καταλληλότητα τροφής: {getFoodScoreLabel(item.food_score)}
                   </p>
                 )}
 
