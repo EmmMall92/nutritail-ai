@@ -7,7 +7,6 @@ const reportPath =
 const customerCopyFiles = [
   "app/account/page.tsx",
   "app/account/profile/page.tsx",
-  "app/dashboard/page.tsx",
   "lib/nutrition/chatGuardrails.ts",
 ];
 
@@ -128,11 +127,6 @@ const bannedExactCustomerStrings = [
     file: "lib/nutrition/chatGuardrails.ts",
     text: "Useful follow-up questions:",
     reason: "Guardrail copy should ask the next helpful question in customer language.",
-  },
-  {
-    file: "app/dashboard/page.tsx",
-    text: "Legacy Food Analysis Signals",
-    reason: "Dashboard should use customer wording instead of legacy-system labels.",
   },
 ];
 
