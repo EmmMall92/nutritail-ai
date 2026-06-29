@@ -26,8 +26,8 @@ const CUSTOMER_CARD_FLOW_RULES = [
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
-  "The strongest choices are in the cards below.",
-  "Tap one card to see estimated grams/day.",
+  "The best first choices are in the cards below.",
+  "Tap one card to see the first daily portion in grams.",
 ] as const;
 
 export type ChatbotRecommendationComposerInput = {
@@ -369,22 +369,22 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   if (input.cardsFollow) {
     if (locale === "el") {
       return [
-        "Έτοιμο. Οι πιο κατάλληλες επιλογές είναι στις κάρτες από κάτω.",
+        "Έτοιμο. Οι καλύτερες πρώτες επιλογές είναι στις κάρτες από κάτω.",
         "",
         `Τι κοιτάμε: ${goalLabel}.`,
-        `Καλύτερη αφετηρία: ${topFood} - ${topReason}.`,
+        `Καλύτερη πρώτη επιλογή: ${topFood} - ${topReason}.`,
         "",
         "Πάτησε μία κάρτα για να δεις περίπου γραμμάρια/ημέρα.",
       ].join("\n");
     }
 
     return [
-      "Done. The strongest choices are in the cards below.",
+      "Done. The best first choices are in the cards below.",
       "",
       `Main goal: ${goalLabel}.`,
-      `Best starting point: ${topFood} - it ${topReason}.`,
+      `Best first choice: ${topFood} - it ${topReason}.`,
       "",
-      "Tap one card to see estimated grams/day.",
+      "Tap one card to see the first daily portion in grams.",
     ].join("\n");
   }
 
@@ -400,7 +400,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
       "",
       foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
       "",
-      "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις περίπου γραμμάρια/ημέρα.",
+      "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις την πρώτη ποσότητα σε γραμμάρια/ημέρα.",
       "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
     ].join("\n");
   }
@@ -412,7 +412,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     "",
     foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
     "",
-    "Next step: choose one food card to see estimated grams/day.",
+    "Next step: choose one food card to see the first daily portion in grams.",
     "For urinary, kidney, diabetes, pancreatitis, severe vomiting, diarrhea, blood, or not eating, speak with a veterinarian first.",
   ].join("\n");
 }
