@@ -86,7 +86,7 @@ function getNutritionPlanStatusCopy(score?: number | null) {
 
   if (score >= 80) {
     return {
-      label: "Δυνατό τελευταίο fit",
+      label: "Πολύ καλή τελευταία επιλογή",
       text: "Το τελευταίο πλάνο φαίνεται καλό. Ξανατσέκαρέ το αν αλλάξει βάρος, όρεξη, κόπρανα, αλλεργίες ή τροφή.",
     };
   }
@@ -100,7 +100,7 @@ function getNutritionPlanStatusCopy(score?: number | null) {
 
   return {
     label: "Προτείνεται νέος έλεγχος",
-    text: "Το τελευταίο match ήταν προσεκτικό. Χρησιμοποίησε ξανά το chatbot με ακριβές όνομα τροφής, φωτογραφία ετικέτας ή νεότερα στοιχεία.",
+    text: "Η τελευταία επιλογή θέλει επανέλεγχο. Χρησιμοποίησε ξανά τον σύμβουλο με ακριβές όνομα τροφής, φωτογραφία ετικέτας ή νεότερα στοιχεία.",
   };
 }
 
@@ -109,8 +109,8 @@ function getFoodFitLabel(score?: number | null) {
     return "Γενική καθοδήγηση";
   }
 
-  if (score >= 80) return "Δυνατό fit";
-  if (score >= 60) return "Χρήσιμο fit";
+  if (score >= 80) return "Πολύ καλή επιλογή";
+  if (score >= 60) return "Χρήσιμη επιλογή";
   if (score >= 40) return "Θέλει επανέλεγχο";
   return "Προτείνεται νέα ανάλυση";
 }
@@ -350,7 +350,7 @@ export default function AccountPage() {
             </h2>
             <p className="mt-2 text-sm text-emerald-900">
               {pets.length === 0
-                ? "Ξεκίνα τη ροή του chatbot για προφίλ, θερμίδες και πρώτη αναφορά."
+                ? "Ξεκίνα τη ροή του συμβούλου για προφίλ, θερμίδες και πρώτη αναφορά."
                 : nextPetToAnalyze
                   ? `${getPetLabel(
                       nextPetToAnalyze
@@ -367,7 +367,7 @@ export default function AccountPage() {
             }
             className="rounded-xl bg-emerald-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-emerald-800"
           >
-            {nextPetToAnalyze ? "Άνοιγμα κατοικιδίου" : "Άνοιγμα chatbot"}
+            {nextPetToAnalyze ? "Άνοιγμα κατοικιδίου" : "Άνοιγμα συμβούλου"}
           </Link>
         </div>
       </div>
@@ -566,7 +566,7 @@ export default function AccountPage() {
           </p>
           <p className="mt-2 text-sm text-gray-600">
             {pets.length === 0
-              ? "Ξεκίνα από το chatbot για να αποθηκευτούν προφίλ και αναφορά."
+              ? "Ξεκίνα από τον σύμβουλο για να αποθηκευτούν προφίλ και αναφορά."
               : petsNeedingAnalysisCount > 0
                 ? "Κάποια αποθηκευμένα κατοικίδια δεν έχουν ακόμη ανάλυση."
                 : "Τα κατοικίδια έχουν αποθηκευμένο ιστορικό αναλύσεων."}
@@ -578,7 +578,7 @@ export default function AccountPage() {
           className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
         >
           <h2 className="text-lg font-semibold text-black">
-            Διατροφικό chatbot
+            Διατροφικός σύμβουλος
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Ξεκίνα νέα καθοδηγούμενη ανάλυση για αποθηκευμένο ή νέο κατοικίδιο.

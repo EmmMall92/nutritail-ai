@@ -85,7 +85,7 @@ function getReadinessHelper(readiness: ReportReadiness) {
   }
 
   if (readiness === "needs_analysis") {
-    return "Κάνε μία ανάλυση στο chatbot για θερμίδες, προτάσεις και αναφορά.";
+    return "Κάνε μία ανάλυση με τον σύμβουλο για θερμίδες, προτάσεις και αναφορά.";
   }
 
   return "Υπάρχει αναφορά, αλλά ίσως λείπουν λεπτομέρειες για συγκεκριμένη τροφή.";
