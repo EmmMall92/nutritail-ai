@@ -115,7 +115,12 @@ function hasAny(values: string[] | undefined, terms: string[]) {
 }
 
 function hasVisiblePreferredProteinReason(text: string) {
-  return text.includes("formula name visibly matches a preferred protein");
+  return (
+    text.includes("formula name visibly matches a preferred protein") ||
+    text.includes("matches a preferred protein") ||
+    text.includes("matches a preferred flavor") ||
+    text.includes("matches a preferred flavour")
+  );
 }
 
 export function goalFromPetContext(
