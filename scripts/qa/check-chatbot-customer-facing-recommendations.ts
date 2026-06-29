@@ -628,6 +628,8 @@ const requiredCardFlowCopy = [
   "mergeTastePreferencesFromText",
   "await continueIntakeOrRunAnalysis(startingPet)",
   "matchesDeclaredIngredientIssue",
+  "if (mentionedIngredientGroups.length > 0)",
+  "return matchesDeclaredIngredientIssue;",
   "[\"chicken\", \"κοτοπουλ\"]",
   "[\"salmon\", \"σολομ\"]",
   "calorie_aware_feeding",
