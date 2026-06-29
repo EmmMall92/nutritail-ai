@@ -432,6 +432,16 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "lib/food-v2/chatbotRecommendationSummary.ts",
+    text: "Recommendation focus",
+    reason: "Food V2 customer summaries should use plain customer wording for the main need.",
+  },
+  {
+    file: "lib/ai/responseComposer.ts",
+    text: "optimizing for",
+    reason: "OpenAI fallback copy should use plain customer wording for the main goal.",
+  },
+  {
+    file: "lib/food-v2/chatbotRecommendationSummary.ts",
     text: "Why it fits",
     reason: "Food V2 customer summaries should use choice wording instead of fit wording.",
   },
