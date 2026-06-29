@@ -331,6 +331,26 @@ const bannedExactCustomerStrings = [
     reason: "Printable report should use fully Greek customer wording for food suitability.",
   },
   {
+    file: "app/print/pet-report/[id]/page.tsx",
+    text: "fit τροφής",
+    reason: "Printable report should use fully Greek customer wording for food suitability.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "fit τροφής",
+    reason: "Greek chatbot copy should use fully Greek customer wording for food suitability.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "ένα progress check",
+    reason: "Greek chatbot copy should use Greek progress-check wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "νέο progress check",
+    reason: "Greek chatbot copy should use Greek progress-check wording.",
+  },
+  {
     file: "app/account/chatbot/page.tsx",
     text: "Food match",
     reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
