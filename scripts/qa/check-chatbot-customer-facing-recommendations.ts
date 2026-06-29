@@ -624,6 +624,8 @@ const requiredCardFlowCopy = [
   "async function startNewPetFromPetChoice",
   "hasNoHealthIssueAnswer(text)",
   "currentFoodAnswered:",
+  "preferencesAnswered:",
+  "mergeTastePreferencesFromText",
   "await continueIntakeOrRunAnalysis(startingPet)",
   "calorie_aware_feeding",
   "sterilised_weight_management",

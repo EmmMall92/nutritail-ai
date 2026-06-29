@@ -120,6 +120,7 @@ type PetIntake = {
   healthAnswered?: boolean;
   excludedIngredients?: string[];
   preferredProteins?: string[];
+  preferencesAnswered?: boolean;
   currentFoodName?: string;
   currentFoodAnswered?: boolean;
   weightGoal?: WeightGoal;
@@ -1300,6 +1301,14 @@ function mergeExtractedPetFacts(
     ],
     next.excludedIngredients ?? []
   );
+  if (
+    extracted.excludedIngredients?.length ||
+    extracted.preferredProteins?.length ||
+    next.excludedIngredients.length > 0 ||
+    next.preferredProteins.length > 0
+  ) {
+    next.preferencesAnswered = true;
+  }
 
   return sanitizePetIntake(next);
 }
@@ -1309,6 +1318,36 @@ function parseTastePreferences(text: string): {
   preferredProteins: string[];
 } {
   return parseSharedTastePreferences(text);
+}
+
+function mergeTastePreferencesFromText(current: PetIntake, text: string): PetIntake {
+  const preferences = parseTastePreferences(text);
+
+  if (
+    preferences.excludedIngredients.length === 0 &&
+    preferences.preferredProteins.length === 0
+  ) {
+    return current;
+  }
+
+  const excludedIngredients = uniqueTerms([
+    ...(current.excludedIngredients ?? []),
+    ...preferences.excludedIngredients,
+  ]);
+  const preferredProteins = removeExcludedFromPreferred(
+    [
+      ...(current.preferredProteins ?? []),
+      ...preferences.preferredProteins,
+    ],
+    excludedIngredients
+  );
+
+  return sanitizePetIntake({
+    ...current,
+    excludedIngredients,
+    preferredProteins,
+    preferencesAnswered: true,
+  });
 }
 
 function sanitizePetIntake(intake: PetIntake): PetIntake {
@@ -3292,7 +3331,11 @@ export default function AccountChatbotPage() {
       return "health";
     }
     if (!draft.currentFoodAnswered && !draft.currentFoodName) return "currentFood";
-    if ((draft.preferredProteins ?? []).length === 0 && (draft.excludedIngredients ?? []).length === 0) {
+    if (
+      !draft.preferencesAnswered &&
+      (draft.preferredProteins ?? []).length === 0 &&
+      (draft.excludedIngredients ?? []).length === 0
+    ) {
       return "preferences";
     }
     if (!draft.weightGoal) return "weightGoal";
@@ -3399,7 +3442,7 @@ export default function AccountChatbotPage() {
       },
       extracted
     );
-    const startingPet = sanitizePetIntake({
+    const startingPet = mergeTastePreferencesFromText(sanitizePetIntake({
       ...extractedPet,
       species: species ?? extractedPet.species,
       healthAnswered:
@@ -3411,7 +3454,7 @@ export default function AccountChatbotPage() {
         extractedPet.currentFoodAnswered ||
         isUnknownFoodAnswer(text) ||
         Boolean(extractedPet.currentFoodName),
-    });
+    }), text);
 
     setSelectedPetId(null);
     setFollowUpMode(null);
@@ -4531,7 +4574,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     const intakeExtraction = await extractIntakeFactsFromMessage(text);
-    const workingPet = sanitizePetIntake({
+    const workingPet = mergeTastePreferencesFromText(sanitizePetIntake({
       ...mergeExtractedPetFacts(pet, intakeExtraction?.data),
       healthAnswered:
         pet.healthAnswered ||
@@ -4542,7 +4585,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         pet.currentFoodAnswered ||
         isUnknownFoodAnswer(text) ||
         Boolean(intakeExtraction?.data?.currentFoodName),
-    });
+    }), text);
 
     if (step === "petChoice") {
       if (isNewPetRequest(text) || parseSpeciesInput(text) || workingPet.species) {
@@ -4736,17 +4779,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       };
 
       setPet(sanitizePetIntake(nextPet));
-      setStep("preferences");
-
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Υπάρχει γεύση ή πρωτεΐνη που προτιμά ή αποφεύγει; Π.χ. του αρέσει αρνί ή σολομός, δεν τρώει κοτόπουλο. Αν δεν υπάρχει προτίμηση, γράψε όχι.",
-            "Does your pet prefer or avoid any flavors or proteins? For example: likes lamb or salmon, does not eat chicken. If there is no preference, type no."
-          )
-        )
-      );
+      await continueIntakeOrRunAnalysis(nextPet);
 
       return;
     }
@@ -4769,6 +4802,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         ...workingPet,
         excludedIngredients,
         preferredProteins,
+        preferencesAnswered: true,
       };
 
       setPet(sanitizePetIntake(nextPet));
