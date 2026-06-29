@@ -1779,10 +1779,11 @@ function scoreFit(input: FoodV2RankingInput) {
   }
 
   let adjustedScore = score;
-  if (goal === "sterilised") {
+  if (goal === "sterilised" || goal === "weight_control") {
     const expectedSize = expectedDogSize(pet);
     const strictSmallSterilisedContext =
       pet.species === "dog" &&
+      (goal === "sterilised" || goal === "weight_control" || pet.neutered) &&
       (pet.activityLevel === "low" ||
         (hasNumber(pet.weight) && pet.weight <= 10) ||
         expectedSize === "mini" ||

@@ -821,6 +821,76 @@ if (!weightControlRanking.signals.some((signal) => signal.code === "obesity_sati
   process.exit(1);
 }
 
+const smallSterilisedWeightLossPet = {
+  ...pet,
+  weight: 7,
+  age: 4,
+  neutered: true,
+  activityLevel: "low" as const,
+  healthIssues: ["weight loss", "sensitive stomach"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const smallWeightLossLeanFood = food({
+  id: "small-weight-loss-lean",
+  formula_key: "qa|small-weight-loss-lean|dog|dry",
+  display_name: "Small Adult Light Sterilised Chicken",
+  dog_size: "small",
+  commercial_tags: ["light", "sterilised", "weight_control"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const smallWeightLossHighFatFood = food({
+  id: "small-weight-loss-high-fat",
+  formula_key: "qa|small-weight-loss-high-fat|dog|dry",
+  display_name: "Small Adult Maintenance Chicken",
+  dog_size: "small",
+  ingredients: ["chicken", "rice", "animal fat"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 360,
+});
+const smallWeightLossLeanRanking = rankFoodV2ForPet({
+  food: smallWeightLossLeanFood,
+  nutrients: {
+    ...nutrients(smallWeightLossLeanFood),
+    protein_percent: 23,
+    fat_percent: 9,
+    fiber_percent: 5,
+  },
+  pet: smallSterilisedWeightLossPet,
+  goal: "weight_control",
+});
+const smallWeightLossHighFatRanking = rankFoodV2ForPet({
+  food: smallWeightLossHighFatFood,
+  nutrients: {
+    ...nutrients(smallWeightLossHighFatFood),
+    protein_percent: 25,
+    fat_percent: 16,
+    fiber_percent: 3,
+  },
+  pet: smallSterilisedWeightLossPet,
+  goal: "weight_control",
+});
+
+if (smallWeightLossLeanRanking.total_score <= smallWeightLossHighFatRanking.total_score) {
+  console.error(
+    "Small sterilised weight-loss pets should start from lean/light foods over higher-fat maintenance foods."
+  );
+  console.error({ smallWeightLossLeanRanking, smallWeightLossHighFatRanking });
+  process.exit(1);
+}
+
+if (
+  !smallWeightLossHighFatRanking.signals.some(
+    (signal) => signal.code === "small_sterilised_fat_density_high"
+  )
+) {
+  console.error("Expected small_sterilised_fat_density_high for small weight-loss high-fat food.");
+  console.error(smallWeightLossHighFatRanking.signals);
+  process.exit(1);
+}
+
 const activeGainPet = {
   ...pet,
   weight: 22,
