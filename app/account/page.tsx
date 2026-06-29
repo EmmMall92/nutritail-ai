@@ -431,7 +431,7 @@ export default function AccountPage() {
             {latestAnalysis.food_score !== null &&
               latestAnalysis.food_score !== undefined && (
                 <span className="rounded-full bg-gray-100 px-3 py-1">
-                  Fit τροφής: {getFoodFitLabel(latestAnalysis.food_score)}
+                  Καταλληλότητα τροφής: {getFoodFitLabel(latestAnalysis.food_score)}
                 </span>
               )}
             {latestAnalysis.feeding_grams_per_day && (

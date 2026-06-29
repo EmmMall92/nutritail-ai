@@ -56,7 +56,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/page.tsx",
-    text: "Fit τροφής:",
+    text: "Καταλληλότητα τροφής:",
   },
   {
     file: "app/account/page.tsx",
@@ -274,6 +274,26 @@ const bannedExactCustomerStrings = [
     file: "app/account/page.tsx",
     text: "Nutritail AI dashboard",
     reason: "Account dashboard intro should use localized customer wording.",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Fit τροφής",
+    reason: "Account dashboard should use fully Greek customer wording for food suitability.",
+  },
+  {
+    file: "app/account/pets/page.tsx",
+    text: "Fit τροφής",
+    reason: "Pet list should use fully Greek customer wording for food suitability.",
+  },
+  {
+    file: "app/account/pets/[id]/page.tsx",
+    text: "Fit τροφής",
+    reason: "Pet detail should use fully Greek customer wording for food suitability.",
+  },
+  {
+    file: "app/print/pet-report/[id]/page.tsx",
+    text: "Fit τροφής",
+    reason: "Printable report should use fully Greek customer wording for food suitability.",
   },
   {
     file: "app/account/chatbot/page.tsx",

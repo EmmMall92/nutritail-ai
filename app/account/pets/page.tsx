@@ -303,7 +303,7 @@ export default function AccountPetsPage() {
                           </span>
                           {getFoodFitLabel(latest.food_score) && (
                               <span className="rounded-full bg-white px-3 py-1">
-                                Fit τροφής: {getFoodFitLabel(latest.food_score)}
+                                Καταλληλότητα τροφής: {getFoodFitLabel(latest.food_score)}
                               </span>
                             )}
                           {latest.feeding_grams_per_day && (
