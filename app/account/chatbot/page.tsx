@@ -5177,7 +5177,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         addMessages(
           createMessage(
             "bot",
-            "There is no analysis to save yet. Run an analysis first."
+            botText(
+              "Δεν υπάρχει ακόμη ανάλυση για αποθήκευση. Κάνε πρώτα μια διατροφική ανάλυση.",
+              "There is no analysis to save yet. Run a nutrition analysis first."
+            )
           )
         );
 
@@ -5235,7 +5238,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       addMessages(
         createMessage(
           "bot",
-          "There was a problem saving the analysis. Please try again."
+          botText(
+            "Υπήρξε πρόβλημα στην αποθήκευση της ανάλυσης. Δοκίμασε ξανά σε λίγο.",
+            "There was a problem saving the analysis. Please try again in a moment."
+          )
         )
       );
     } finally {

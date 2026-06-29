@@ -568,6 +568,8 @@ const forbiddenChatbotPageCopy = [
   "Treat allowance:",
   "Όριο για λιχουδιές:",
   "Goal: weight maintenance. Calories are based on maintenance needs.",
+  "There is no analysis to save yet. Run an analysis first.",
+  "There was a problem saving the analysis. Please try again.",
   "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
