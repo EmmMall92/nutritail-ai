@@ -42,6 +42,21 @@ const checks = [
     expected: "skipInitialLanguageSaveRef.current",
   },
   {
+    label: "Chatbot initial welcome uses the shared language helper",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'createMessage("bot", getChatbotWelcomeMessage("el"))',
+  },
+  {
+    label: "Chatbot saved language restore reuses initial welcome updater",
+    file: "app/account/chatbot/page.tsx",
+    expected: "updateInitialWelcomeMessage(storedLanguage)",
+  },
+  {
+    label: "Chatbot language toggle updates the initial welcome before intake starts",
+    file: "app/account/chatbot/page.tsx",
+    expected: "handleChatLanguageChange(language)",
+  },
+  {
     label: "Account dashboard progress action deep-links to saved pet",
     file: "app/account/page.tsx",
     expected: "/account/chatbot?petId=${latestPet.id}&mode=progress",
@@ -525,6 +540,11 @@ const forbiddenChecks = [
     label: "Chatbot auto-scroll does not use page-level scrollIntoView",
     file: "app/account/chatbot/page.tsx",
     forbidden: "scrollIntoView",
+  },
+  {
+    label: "Chatbot language buttons do not bypass welcome synchronization",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "onClick={() => setChatLanguage(language)}",
   },
   {
     label: "Saved pet handoff does not use raw English Use echo",

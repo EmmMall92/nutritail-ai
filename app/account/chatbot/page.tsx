@@ -55,6 +55,8 @@ type WeightGoal = "maintain" | "loss" | "gain";
 type ChatLanguage = "el" | "en";
 
 const CHATBOT_LANGUAGE_STORAGE_KEY = "nutritail.accountChatbot.language";
+const GREEK_CHATBOT_WELCOME =
+  "Γεια σου! Επίλεξε ένα αποθηκευμένο κατοικίδιο για νέα ανάλυση ή ξεκίνα με νέο κατοικίδιο.";
 const ENGLISH_CHATBOT_WELCOME =
   "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet.";
 
@@ -90,6 +92,12 @@ function repairCustomerGreekText(value: string) {
   const repaired = new TextDecoder("utf-8").decode(Uint8Array.from(bytes));
   const repairedMarkers = repaired.match(legacyGreekMojibakePattern) ?? [];
   return repairedMarkers.length < markers.length ? repaired : value;
+}
+
+function getChatbotWelcomeMessage(language: ChatLanguage) {
+  return language === "en"
+    ? ENGLISH_CHATBOT_WELCOME
+    : repairCustomerGreekText(GREEK_CHATBOT_WELCOME);
 }
 
 type IntakeStep =
@@ -3373,10 +3381,7 @@ export default function AccountChatbotPage() {
   );
 
   const [messages, setMessages] = useState<ChatMessage[]>([
-    createMessage(
-      "bot",
-      "Γεια σου! Επίλεξε ένα αποθηκευμένο κατοικίδιο για νέα ανάλυση ή ξεκίνα με νέο κατοικίδιο."
-    ),
+    createMessage("bot", getChatbotWelcomeMessage("el")),
   ]);
   const botText = useCallback((el: string, en: string) => {
     if (!en.trim()) return "";
@@ -3384,28 +3389,41 @@ export default function AccountChatbotPage() {
     return chatLanguage === "el" ? repairCustomerGreekText(el) : en;
   }, [chatLanguage]);
 
+  const updateInitialWelcomeMessage = useCallback((language: ChatLanguage) => {
+    setMessages((currentMessages) => {
+      if (
+        currentMessages.length === 1 &&
+        currentMessages[0]?.role === "bot" &&
+        (currentMessages[0].text === getChatbotWelcomeMessage("el") ||
+          currentMessages[0].text === getChatbotWelcomeMessage("en") ||
+          currentMessages[0].text === GREEK_CHATBOT_WELCOME)
+      ) {
+        return [createMessage("bot", getChatbotWelcomeMessage(language))];
+      }
+
+      return currentMessages;
+    });
+  }, []);
+
+  const handleChatLanguageChange = useCallback(
+    (language: ChatLanguage) => {
+      setChatLanguage(language);
+      updateInitialWelcomeMessage(language);
+    },
+    [updateInitialWelcomeMessage]
+  );
+
   useEffect(() => {
     try {
       const storedLanguage = window.localStorage.getItem(CHATBOT_LANGUAGE_STORAGE_KEY);
       if (storedLanguage !== "el" && storedLanguage !== "en") return;
 
       setChatLanguage(storedLanguage);
-      if (storedLanguage === "en") {
-        setMessages((currentMessages) => {
-          if (
-            currentMessages.length === 1 &&
-            currentMessages[0]?.role === "bot"
-          ) {
-            return [createMessage("bot", ENGLISH_CHATBOT_WELCOME)];
-          }
-
-          return currentMessages;
-        });
-      }
+      updateInitialWelcomeMessage(storedLanguage);
     } catch {
       // Keep the default Greek experience when browser storage is unavailable.
     }
-  }, []);
+  }, [updateInitialWelcomeMessage]);
 
   useEffect(() => {
     if (skipInitialLanguageSaveRef.current) {
@@ -5260,7 +5278,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               <button
                 key={language}
                 type="button"
-                onClick={() => setChatLanguage(language)}
+                onClick={() => handleChatLanguageChange(language)}
                 className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
                   chatLanguage === language
                     ? "bg-black text-white"
