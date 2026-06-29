@@ -857,23 +857,42 @@ function isRelevantCustomerMedicalLine(
   );
   const isPuppy = (pet.age ?? 99) < 1.5;
 
-  if (text.includes("chicken allergy") || text.includes("allergy")) {
+  if (
+    text.includes("chicken allergy") ||
+    text.includes("allergy") ||
+    text.includes("αλλεργ")
+  ) {
     return (
       goal === "allergy" ||
       (pet.allergies ?? []).length > 0 ||
       (pet.excludedIngredients ?? []).length > 0
     );
   }
-  if (text.includes("renal") || text.includes("kidney")) {
+  if (text.includes("renal") || text.includes("kidney") || text.includes("νεφρ")) {
     return goal === "renal" || /renal|kidney|nephr|nef|νεφρ/.test(petText);
   }
-  if (text.includes("urinary") || text.includes("struvite") || text.includes("oxalate")) {
+  if (
+    text.includes("urinary") ||
+    text.includes("struvite") ||
+    text.includes("oxalate") ||
+    text.includes("ουρο") ||
+    text.includes("στρουβ") ||
+    text.includes("οξαλ")
+  ) {
     return goal === "urinary" || /urinary|struvite|oxalate|ουρο|στρουβ|οξαλ/.test(petText);
   }
-  if (text.includes("pancreatitis") || text.includes("pancreatic")) {
+  if (
+    text.includes("pancreatitis") ||
+    text.includes("pancreatic") ||
+    text.includes("παγκρεα")
+  ) {
     return /pancrea|παγκρεα/.test(petText);
   }
-  if (text.includes("large-breed") || text.includes("large breed")) {
+  if (
+    text.includes("large-breed") ||
+    text.includes("large breed") ||
+    text.includes("μεγαλοσωμ")
+  ) {
     return goal === "growth" && isPuppy;
   }
 
