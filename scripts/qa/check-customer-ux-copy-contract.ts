@@ -396,9 +396,44 @@ const bannedExactCustomerStrings = [
     reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
   },
   {
+    file: "app/account/chatbot/page.tsx",
+    text: "Food fit:",
+    reason: "Chatbot summary should use food suitability wording, not fit labels.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "food fit",
+    reason: "Chatbot progress copy should use food suitability wording, not fit labels.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Best overall match",
+    reason: "Food card helper copy should use choice wording, not matching internals.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "the best fit",
+    reason: "Food card flow should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "food option(s) with the best fit",
+    reason: "Food card grouping should use choice wording instead of fit wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Why it fits",
+    reason: "Food card explanation should use choice wording instead of fit wording.",
+  },
+  {
     file: "lib/food-v2/chatbotRecommendationSummary.ts",
     text: "What I matched for",
     reason: "Food V2 customer summaries should use recommendation-focus wording instead of matching internals.",
+  },
+  {
+    file: "lib/food-v2/chatbotRecommendationSummary.ts",
+    text: "Why it fits",
+    reason: "Food V2 customer summaries should use choice wording instead of fit wording.",
   },
   {
     file: "lib/food-v2/chatbotRecommendationSummary.ts",

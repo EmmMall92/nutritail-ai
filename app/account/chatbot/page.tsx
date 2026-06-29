@@ -308,7 +308,7 @@ const followUpActions: {
     id: "no_result",
     title: "No visible result",
     titleEl: "Δεν είδα αποτέλεσμα",
-    helper: "Review calories, treats, grams per day, activity, and food fit.",
+    helper: "Review calories, treats, grams per day, activity, and food suitability.",
     helperEl:
       "Ελέγχουμε θερμίδες, λιχουδιές, γραμμάρια/ημέρα, δραστηριότητα και καταλληλότητα τροφής.",
   },
@@ -1065,7 +1065,7 @@ function getRecommendationChoiceRoleSummary(
   }
 
   if (index === 0) {
-    return "Best overall match for this pet's profile.";
+    return "Strongest starting choice for this pet's profile.";
   }
 
   if (choice.role === "value") {
@@ -1840,9 +1840,9 @@ function formatCurrentFoodMatchMessage(params: {
   const sections = [
     isGreek
       ? `Βρήκα πιθανή επιλογή για την τωρινή τροφή:\n${foodName}`
-      : `I found a likely match for the current food:\n${foodName}`,
+      : `I found a likely choice for the current food:\n${foodName}`,
     params.qualityNote,
-    isGreek ? `Πώς τη βλέπω για το προφίλ: ${fit}.` : `How it fits this profile: ${fit}.`,
+    isGreek ? `Πώς τη βλέπω για το προφίλ: ${fit}.` : `How I see this choice: ${fit}.`,
     params.nutritionSummary,
     formatCustomerBulletSection(
       isGreek ? "Θετικά σημεία" : "Positive points",
@@ -2674,7 +2674,7 @@ function formatLatestAnalysisSummary(
     typeof getHistoryFoodScore(latest) === "number"
       ? language === "el"
         ? `Ταίριασμα τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
-        : `Food fit: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
+        : `Food suitability: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
       : null,
   ].filter(Boolean);
 
@@ -2753,7 +2753,7 @@ ${formatLatestAnalysisSummary(savedPet, language)}
 
 What would you like to do next?
 - Progress check: tell me current weight, grams/day, treats, and visible changes.
-- No visible result: we review calories, treats, consistency, and whether the food fits.
+- No visible result: we review calories, treats, consistency, and whether the current food still suits the pet.
 - Try another food: I keep this pet context and suggest different options.
 - Open timeline: review previous reports and progress.`;
 }
@@ -5590,7 +5590,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("1. Σύγκρινε", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("τι ταιριάζει καλύτερα", "the best fit")}
+                  {botText("τι ταιριάζει καλύτερα", "the strongest choice")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
@@ -5617,7 +5617,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "food option(s) with the best fit")}
+                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "strongest food option(s)")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
@@ -5682,7 +5682,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {choice.reason && (
                     <span className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100">
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
-                        {botText("Γιατί ταιριάζει", "Why it fits")}
+                        {botText("Γιατί ταιριάζει", "Why this choice")}
                       </span>
                       <span>{choice.reason}</span>
                     </span>
