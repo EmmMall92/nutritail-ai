@@ -387,6 +387,11 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "Καλύτερα ταιριάσματα",
+    reason: "Food card grouping should use natural customer wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "Food match",
     reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
   },

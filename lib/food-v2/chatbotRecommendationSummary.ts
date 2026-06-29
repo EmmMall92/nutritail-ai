@@ -619,7 +619,7 @@ function cleanOutput(text: string) {
 function polishEnglishCustomerText(text: string) {
   return text
     .replace(/\bRecommended foods:/g, "Your food shortlist:")
-    .replace(/\bFirst picks:/g, "Best matches:")
+    .replace(/\bFirst picks:/g, "Best choices:")
     .replace(/\bSimple alternatives:/g, "Practical alternatives:")
     .replace(/\bPractical first picks:/g, "Budget-friendly options:")
     .replace(/\bStronger nutrition alternatives:/g, "Stronger nutrition options:")
