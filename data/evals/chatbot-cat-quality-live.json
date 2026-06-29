@@ -1,0 +1,106 @@
+{
+  "cases": [
+    {
+      "id": "cat-quality-001",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Sterilised indoor cat, 5kg, 4 years old. I need dry food for weight maintenance.",
+      "expectedSignals": ["sterilised", "weight_control"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["sterilised", "calorie"],
+      "expectedFirstFoodMustMention": ["sterili[sz]ed", "neutered", "indoor", "light", "weight"]
+    },
+    {
+      "id": "cat-quality-002",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Sterilised indoor cat, 6.5kg, gained weight after neutering. I want dry food for weight loss.",
+      "expectedSignals": ["sterilised", "weight_control"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["weight", "calorie"],
+      "expectedFirstFoodMustMention": ["sterili[sz]ed", "neutered", "light", "weight", "obesity"]
+    },
+    {
+      "id": "cat-quality-003",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Kitten, 5 months old, 2kg. I need dry food for healthy growth.",
+      "expectedSignals": ["kitten_growth"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["kitten", "growth"],
+      "expectedFirstFoodMustMention": ["kitten", "growth", "junior"]
+    },
+    {
+      "id": "cat-quality-004",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Senior cat, 13 years old, 4.5kg, low activity, no kidney or urinary diagnosis. I need senior dry food.",
+      "expectedSignals": ["senior"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["senior"],
+      "expectedFirstFoodMustMention": ["senior", "mature", "7\\+", "10\\+", "11\\+", "12\\+"],
+      "expectedVisibleFoodsMustNotMention": ["renal", "urinary", "struvite", "oxalate"]
+    },
+    {
+      "id": "cat-quality-005",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Senior cat, 12 years old, 4kg, diagnosed with chronic kidney disease. I need dry renal food.",
+      "expectedSignals": ["renal", "senior"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["renal", "veterinarian"],
+      "expectedFirstFoodMustMention": ["renal", "kidney"]
+    },
+    {
+      "id": "cat-quality-006",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Cat with struvite crystal history. I need dry urinary support food.",
+      "expectedSignals": ["urinary"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["urinary", "struvite", "veterinarian"],
+      "expectedFirstFoodMustMention": ["urinary", "struvite"]
+    },
+    {
+      "id": "cat-quality-007",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Cat with oxalate stone history. I need dry urinary support food.",
+      "expectedSignals": ["urinary"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["urinary", "oxalate", "veterinarian"],
+      "expectedFirstFoodMustMention": ["urinary", "oxalate"]
+    },
+    {
+      "id": "cat-quality-008",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Adult cat allergic to chicken and turkey, prefers salmon dry food.",
+      "expectedSignals": ["allergy"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["allergy", "salmon"],
+      "expectedVisibleFoodsMustNotMention": ["chicken", "turkey"]
+    },
+    {
+      "id": "cat-quality-009",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Adult cat with sensitive digestion and soft stool after food changes. I need dry food.",
+      "expectedSignals": ["sensitive_digestion"],
+      "expectedSafetyLevel": "caution",
+      "expectedResponseMustMention": ["digestive", "transition"],
+      "expectedFirstFoodMustMention": ["gastro", "digest", "sensitive", "intestinal", "hypo"]
+    },
+    {
+      "id": "cat-quality-010",
+      "species": "cat",
+      "locale": "en",
+      "prompt": "Adult sterilised cat, 4.8kg, loves salmon but refuses beef and lamb.",
+      "expectedSignals": ["sterilised", "weight_control", "preference"],
+      "expectedSafetyLevel": "normal",
+      "expectedResponseMustMention": ["sterilised", "salmon"],
+      "expectedFirstFoodMustMention": ["sterili[sz]ed", "neutered", "light", "salmon", "fish"],
+      "expectedVisibleFoodsMustNotMention": ["beef", "lamb"]
+    }
+  ]
+}

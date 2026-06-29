@@ -30,10 +30,13 @@ function runChecks(): Check[] {
     "\u03c4\u03bf\u03c5 \u03b1\u03c1\u03b5\u03c3\u03b5\u03b9 \u03c4\u03bf \u03ba\u03bf\u03c4\u03bf\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03c1\u03c9\u03b5\u03b9 \u03c4\u03bf \u03b1\u03c1\u03bd\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03bf \u03bc\u03bf\u03c3\u03c7\u03b1\u03c1\u03b9";
   const greeklishChickenYesLambBeefNo =
     "tou aresei to kotopoulo kai den troei arni kai mosxari";
+  const englishLovesSalmonRefusesBeefLamb =
+    "adult cat loves salmon but refuses beef and lamb";
 
   const parsedSalmon = parseTastePreferences(chickenYesSalmonNo);
   const parsedLambBeef = parseTastePreferences(chickenYesLambBeefNo);
   const parsedGreeklishLambBeef = parseTastePreferences(greeklishChickenYesLambBeefNo);
+  const parsedEnglishRefuses = parseTastePreferences(englishLovesSalmonRefusesBeefLamb);
   const fallbackGreatDane = fallbackExtractIntake(
     "Έχω Great Dane 7 μηνών 45kg και θέλω τροφή για ανάπτυξη."
   );
@@ -118,6 +121,15 @@ function runChecks(): Check[] {
         !parsedGreeklishLambBeef.preferredProteins.includes("lamb") &&
         !parsedGreeklishLambBeef.preferredProteins.includes("beef"),
       details: JSON.stringify(parsedGreeklishLambBeef),
+    },
+    {
+      name: "English preferences keep loved salmon and avoid refused beef plus lamb",
+      pass:
+        hasAll(parsedEnglishRefuses.preferredProteins, ["salmon"]) &&
+        hasAll(parsedEnglishRefuses.excludedIngredients, ["beef", "lamb"]) &&
+        !parsedEnglishRefuses.preferredProteins.includes("beef") &&
+        !parsedEnglishRefuses.preferredProteins.includes("lamb"),
+      details: JSON.stringify(parsedEnglishRefuses),
     },
     {
       name: "Fallback handles Greeklish unknown food plus preferences",

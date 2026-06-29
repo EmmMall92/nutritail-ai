@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
+import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
 
 type SafetyExpectation = "normal" | "caution" | "urgent";
 type RecommendationGoal =
@@ -24,6 +25,8 @@ type CatFixtureCase = {
   expectedSignals: string[];
   expectedSafetyLevel: SafetyExpectation;
   expectedResponseMustMention: string[];
+  expectedFirstFoodMustMention?: string[];
+  expectedVisibleFoodsMustNotMention?: string[];
 };
 
 type CatFixtureCaseWithEncoding = CatFixtureCase & {
@@ -174,6 +177,7 @@ function inferGoal(testCase: CatFixtureCase): RecommendationGoal {
   if (signals.has("urinary")) return "urinary";
   if (signals.has("kitten_growth")) return "growth";
   if (signals.has("allergy")) return "allergy";
+  if (signals.has("sensitive_digestion")) return "sensitive_digestion";
   if (signals.has("weight_control")) return "weight_control";
   if (signals.has("sterilised")) return "sterilised";
   if (signals.has("senior")) return "senior";
@@ -184,6 +188,15 @@ function inferGoal(testCase: CatFixtureCase): RecommendationGoal {
 function inferPet(testCase: CatFixtureCase) {
   const prompt = normalizeText(testCase.prompt);
   const signals = new Set(testCase.expectedSignals);
+  const tastePreferences = parseTastePreferences(testCase.prompt);
+  const allergies = inferAllergies(prompt);
+  const excludedIngredients = [
+    ...new Set([...allergies, ...tastePreferences.excludedIngredients]),
+  ];
+  const preferredProteins =
+    tastePreferences.preferredProteins.length > 0
+      ? tastePreferences.preferredProteins
+      : inferPreferredProteins(prompt);
   const weight = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*kg/) ?? 4;
   const monthAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:\u03bc\u03b7\u03bd|month)/);
   const weekAge = numberFromPrompt(prompt, /(\d+(?:[.,]\d+)?)\s*(?:\u03b5\u03b2\u03b4\u03bf\u03bc\u03b1\u03b4|week)/);
@@ -209,9 +222,9 @@ function inferPet(testCase: CatFixtureCase) {
     activityLevel: prompt.includes("outdoor") || prompt.includes("\u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1") || signals.has("active") ? "high" : "low",
     neutered: signals.has("sterilised") || prompt.includes("\u03c3\u03c4\u03b5\u03b9\u03c1"),
     healthIssues,
-    allergies: inferAllergies(prompt),
-    excludedIngredients: inferAllergies(prompt),
-    preferredProteins: inferPreferredProteins(prompt),
+    allergies,
+    excludedIngredients,
+    preferredProteins,
   };
 }
 
@@ -227,8 +240,11 @@ function inferAllergies(prompt: string) {
   if (prompt.includes("\u03c3\u03b9\u03c4\u03b7\u03c1") || prompt.includes("grain")) allergies.push("grain");
   if (prompt.includes("\u03ba\u03b1\u03bb\u03b1\u03bc\u03c0\u03bf\u03ba") || prompt.includes("corn")) allergies.push("corn");
   return prompt.includes("\u03b1\u03bb\u03bb\u03b5\u03c1\u03b3") ||
+    prompt.includes("allerg") ||
     prompt.includes("\u03b5\u03c5\u03b1\u03b9\u03c3\u03b8\u03b7") ||
+    prompt.includes("sensitive") ||
     prompt.includes("\u03b4\u03c5\u03c3\u03b1\u03bd\u03b5\u03be") ||
+    prompt.includes("intoler") ||
     prompt.includes("elimination")
     ? allergies
     : [];
@@ -279,6 +295,22 @@ function hasFoodMatch(foods: FoodV2Item[], patterns: RegExp[]) {
   });
 }
 
+function termPattern(term: string) {
+  return new RegExp(term, "i");
+}
+
+function visibleFoodText(food: FoodV2Item) {
+  return [
+    food.brand,
+    food.display_name,
+    food.formula_key,
+    food.life_stage,
+    ...(food.ranking?.reasons ?? []),
+    ...(food.ranking?.cautions ?? []),
+    ...(food.ranking?.signals ?? []).map((signal) => signal.message ?? ""),
+  ].join(" ");
+}
+
 function validateCase(testCase: CatFixtureCase, response: RecommendationResponse, goal: RecommendationGoal) {
   const warnings: string[] = [];
   const foods = allVisibleFoods(response);
@@ -306,6 +338,30 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
 
   if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /\u03c3\u03ba\u03c5\u03bb/, /puppy/])) {
     warnings.push("Visible shortlist appears to contain dog food terms.");
+  }
+
+  if (testCase.expectedFirstFoodMustMention?.length && foods[0]) {
+    const firstFoodText = normalizeText(visibleFoodText(foods[0]));
+    const matched = testCase.expectedFirstFoodMustMention.some((term) =>
+      termPattern(term).test(firstFoodText)
+    );
+    if (!matched) {
+      warnings.push(
+        `First food does not match expected positioning terms: ${testCase.expectedFirstFoodMustMention.join(", ")}.`
+      );
+    }
+  }
+
+  if (testCase.expectedVisibleFoodsMustNotMention?.length && foods.length > 0) {
+    const forbiddenPatterns = testCase.expectedVisibleFoodsMustNotMention.map(termPattern);
+    const forbiddenFood = foods.slice(0, 5).find((food) =>
+      forbiddenPatterns.some((pattern) => pattern.test(normalizeText(visibleFoodText(food))))
+    );
+    if (forbiddenFood) {
+      warnings.push(
+        `Visible shortlist includes forbidden positioning for this case: ${foodLabel(forbiddenFood)}.`
+      );
+    }
   }
 
   if (signals.has("urinary") && !hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /\u03bf\u03c5\u03c1\u03bf/])) {

@@ -49,6 +49,9 @@ const AVOID_SIGNALS = [
   "dont like",
   "do not like",
   "not like",
+  "refuse",
+  "refuses",
+  "refused",
   "does not eat",
   "doesnt eat",
   "don't eat",
@@ -79,6 +82,8 @@ const AVOID_SIGNALS = [
 const PREFER_SIGNALS = [
   "like",
   "likes",
+  "love",
+  "loves",
   "prefer",
   "prefers",
   "favorite",
