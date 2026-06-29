@@ -68,6 +68,12 @@ const customerUxSuites = [
     command: "npm.cmd run qa:customer-ux-copy",
     layer: "account/chatbot copy leakage guard",
   },
+  {
+    name: "Sensitive recommendation smoke QA",
+    source: "reports/chatbot_sensitive_recommendation_smoke.md",
+    command: "npm.cmd run qa:chatbot-sensitive-recommendations",
+    layer: "large-breed puppy, senior, renal, urinary, allergy/preference, and live dog/cat recommendation smoke",
+  },
 ];
 
 const fixtureCoverageSuites = [
@@ -372,7 +378,7 @@ const lines = [
   "- The live suites currently show no review cases.",
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
-  "- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.",
+  "- Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.",
   "",
   "## Next QA Gaps",

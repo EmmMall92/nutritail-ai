@@ -1,6 +1,11 @@
 import { spawnSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
 const command = process.platform === "win32" ? "npm.cmd" : "npm";
+const reportPath =
+  process.env.NUTRITAIL_QA_SENSITIVE_RECOMMENDATION_REPORT_PATH ??
+  "reports/chatbot_sensitive_recommendation_smoke.md";
 
 const checks = [
   {
@@ -38,6 +43,33 @@ const checks = [
 const startedAt = new Date();
 const results = [];
 
+function writeReport(status) {
+  mkdirSync(path.dirname(reportPath), { recursive: true });
+  const checked = results.length;
+  const passed = results.filter((result) => result.status === "pass").length;
+  const review = results.filter((result) => result.status !== "pass").length;
+  const lines = [
+    "# Chatbot Sensitive Recommendation Smoke QA",
+    "",
+    `Run date: ${startedAt.toISOString()}`,
+    `Finished: ${new Date().toISOString()}`,
+    `- Result: ${status}`,
+    "",
+    "This focused smoke suite protects the recommendation cases most likely to harm customer trust if they regress.",
+    "",
+    `- Checks: ${checked}`,
+    `- Passed: ${passed}`,
+    `- Needs review: ${review}`,
+    "",
+    "| Suite | Status | Covers |",
+    "| --- | --- | --- |",
+    ...results.map((result) => `| ${result.name} | ${result.status} | ${result.covers} |`),
+    "",
+  ];
+
+  writeFileSync(reportPath, `${lines.join("\n")}\n`);
+}
+
 for (const check of checks) {
   console.log(`\n=== ${check.name} ===`);
   const result =
@@ -61,12 +93,14 @@ for (const check of checks) {
   });
 
   if (result.status !== 0) {
+    writeReport("REVIEW");
     console.error(`\n${check.name} failed.`);
     console.error(JSON.stringify({ startedAt, finishedAt: new Date(), results }, null, 2));
     process.exit(result.status ?? 1);
   }
 }
 
+writeReport("PASS");
 console.log(
   JSON.stringify(
     {

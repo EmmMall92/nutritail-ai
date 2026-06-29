@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-29T10:21:45.833Z
+Generated: 2026-06-29T11:14:25.039Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -21,7 +21,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Response contracts checked: 156
 - Response contracts passed: 156
 - Response contracts failed: 0
-- Customer UX suites passing: 2/2
+- Customer UX suites passing: 3/3
 - Fixture/coverage evidence suites passing: 4/4
 
 ## Species Coverage
@@ -57,8 +57,9 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T10:16:39.924Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T10:23:40.858Z |
 | Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T10:01:27.543Z |
+| Sensitive recommendation smoke QA | `reports/chatbot_sensitive_recommendation_smoke.md` | large-breed puppy, senior, renal, urinary, allergy/preference, and live dog/cat recommendation smoke | `npm.cmd run qa:chatbot-sensitive-recommendations` | PASS | 2026-06-29T11:12:17.037Z |
 
 ## Fixture And Coverage Evidence
 
@@ -76,7 +77,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - The live suites currently show no review cases.
 - OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.
 - Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.
-- Customer-facing UX checks protect against backend labels, raw scores, and confusing recommendation flows leaking into the customer experience.
+- Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.
 - Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.
 
 ## Next QA Gaps
