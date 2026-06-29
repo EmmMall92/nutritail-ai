@@ -11,7 +11,7 @@ type AuthShellProps = {
 const TRUST_POINTS = [
   "Personalized guidance for dogs and cats",
   "Food suggestions based on pet context",
-  "Saved profiles, reports, and future analyses",
+  "Saved profiles, nutrition summaries, and future analyses",
 ];
 
 export function AuthShell({
