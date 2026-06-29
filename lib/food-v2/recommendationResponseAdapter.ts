@@ -63,9 +63,9 @@ const GOAL_LABELS_EL: Record<string, string> = {
 };
 
 const GOAL_LABELS_EN: Record<string, string> = {
-  general: "general fit",
-  premium: "premium fit",
-  value: "value fit",
+  general: "general recommendation",
+  premium: "premium choice",
+  value: "value choice",
   weight_control: "weight control",
   sensitive_digestion: "sensitive digestion",
   allergy: "allergy or ingredient avoidance",
