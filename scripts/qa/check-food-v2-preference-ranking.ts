@@ -2687,6 +2687,82 @@ if (
   process.exit(1);
 }
 
+const chronicGasPet = {
+  ...pet,
+  breed: "Boxer",
+  weight: 28,
+  age: 2,
+  activityLevel: "normal" as const,
+  neutered: false,
+  healthIssues: ["χρόνια αέρια", "sensitive digestion"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const monoproteinOnlyForGasFood = food({
+  id: "monoprotein-only-for-gas",
+  formula_key: "qa|monoprotein-only-for-gas|dog|dry",
+  display_name: "All Breeds Adult Monoprotein Beef With Rice",
+  life_stage: "adult",
+  dog_size: "all",
+  ingredients: ["beef", "rice"],
+  commercial_tags: ["monoprotein"],
+  primary_animal_proteins: ["beef"],
+});
+const visibleDigestiveForGasFood = food({
+  id: "visible-digestive-for-gas",
+  formula_key: "qa|visible-digestive-for-gas|dog|dry",
+  display_name: "Adult Sensitive Digestion Salmon",
+  life_stage: "adult",
+  dog_size: "all",
+  ingredients: ["salmon", "rice", "beet pulp", "chicory"],
+  fiber_sources: ["beet pulp", "chicory"],
+  commercial_tags: ["sensitive_digestion"],
+  primary_animal_proteins: ["salmon"],
+});
+const monoproteinOnlyForGasRanking = rankFoodV2ForPet({
+  food: monoproteinOnlyForGasFood,
+  nutrients: nutrients(monoproteinOnlyForGasFood),
+  pet: chronicGasPet,
+  goal: "sensitive_digestion",
+});
+const visibleDigestiveForGasRanking = rankFoodV2ForPet({
+  food: visibleDigestiveForGasFood,
+  nutrients: nutrients(visibleDigestiveForGasFood),
+  pet: chronicGasPet,
+  goal: "sensitive_digestion",
+});
+const chronicGasSplit = splitFoodV2Recommendations(
+  [monoproteinOnlyForGasRanking, visibleDigestiveForGasRanking],
+  3,
+  "sensitive_digestion"
+);
+const chronicGasVisibleFoods = [
+  ...chronicGasSplit.premium,
+  ...chronicGasSplit.value,
+].map((ranking) => ranking.formula_key);
+
+if (monoproteinOnlyForGasRanking.bucket !== "hold") {
+  console.error("Chronic gas should not start from monoprotein-only positioning without visible digestive support.");
+  console.error(monoproteinOnlyForGasRanking);
+  process.exit(1);
+}
+
+if (
+  !monoproteinOnlyForGasRanking.signals.some(
+    (signal) => signal.code === "gas_context_monoprotein_without_digestive_support"
+  )
+) {
+  console.error("Expected gas_context_monoprotein_without_digestive_support for monoprotein-only gas case.");
+  console.error(monoproteinOnlyForGasRanking.signals);
+  process.exit(1);
+}
+
+if (!chronicGasVisibleFoods.includes("qa|visible-digestive-for-gas|dog|dry")) {
+  console.error("Chronic gas shortlist should keep visible digestive-positioned foods available.");
+  console.error({ chronicGasSplit, visibleDigestiveForGasRanking });
+  process.exit(1);
+}
+
 const twelveMonthGiantPuppy = {
   ...pet,
   breed: "Cane Corso",
