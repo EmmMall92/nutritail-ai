@@ -3314,6 +3314,17 @@ const genericChickenFoodForSkin = food({
   primary_animal_proteins: ["chicken"],
   kcal_per_100g: 360,
 });
+const activeFoodWithoutSkinPreference = food({
+  id: "active-without-skin-preference",
+  formula_key: "qa|active-without-skin-preference|dog|dry",
+  brand: "QA Active",
+  display_name: "Active Nature",
+  formula_name: "Active Nature",
+  commercial_tags: ["active", "performance"],
+  ingredients: ["lamb", "rice", "potato"],
+  primary_animal_proteins: ["lamb"],
+  kcal_per_100g: 386,
+});
 
 for (const item of [unrelatedGastroFood, unrelatedLiverFood]) {
   const ranking = rankFoodV2ForPet({
@@ -3362,10 +3373,26 @@ const genericChickenSkinRanking = rankFoodV2ForPet({
   pet: generalSkinPet,
   goal: "general",
 });
+const activeWithoutSkinPreferenceRanking = rankFoodV2ForPet({
+  food: activeFoodWithoutSkinPreference,
+  nutrients: {
+    ...nutrients(activeFoodWithoutSkinPreference),
+    protein_percent: 28,
+    fat_percent: 16,
+  },
+  pet: generalSkinPet,
+  goal: "general",
+});
 
 if (skinCoatSalmonRanking.total_score <= genericChickenSkinRanking.total_score) {
   console.error("Skin/coat salmon food should outrank generic chicken for itchy-skin salmon preference.");
   console.error({ skinCoatSalmonRanking, genericChickenSkinRanking });
+  process.exit(1);
+}
+
+if (skinCoatSalmonRanking.total_score <= activeWithoutSkinPreferenceRanking.total_score) {
+  console.error("Skin/coat salmon food should outrank active food that misses the stated salmon/skin context.");
+  console.error({ skinCoatSalmonRanking, activeWithoutSkinPreferenceRanking });
   process.exit(1);
 }
 
