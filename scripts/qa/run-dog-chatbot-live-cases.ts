@@ -1331,6 +1331,10 @@ async function main() {
       foodWarnings,
       topFoods,
     });
+    console.log(
+      `${warnings.length === 0 ? "PASS" : "REVIEW"} dog-${testCase.id}: ${testCase.message}`
+    );
+    for (const warning of warnings) console.log(`  - ${warning}`);
   }
 
   await mkdir(path.dirname(reportPath), { recursive: true });
