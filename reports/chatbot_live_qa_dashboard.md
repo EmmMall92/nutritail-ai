@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-28T18:46:25.087Z
+Generated: 2026-06-29T09:12:10.916Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -13,10 +13,11 @@ It points to the authoritative per-suite reports instead of duplicating every te
 - Pass rate: 100.0%
 - Prompt encoding repairs applied: 0
 - Prompt encoding issues after repair: 0
-- Intake QA checked: 18
+- Intake QA checked: 24
 - Intake QA passed: 18
 - Intake QA failed: 0
-- Intake QA skipped suites: 1
+- Intake QA skipped checks: 6
+- Intake QA skipped suites: 2
 - Response contracts checked: 156
 - Response contracts passed: 156
 - Response contracts failed: 0
@@ -40,10 +41,11 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 ## Intake Evidence
 
-| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |
-| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
-| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 2026-06-28T18:43:57.822Z |
-| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 0 | 0 | 0 | 2026-06-28T12:17:57.888Z |
+| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 0 | 2026-06-28T18:43:57.822Z |
+| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-29T09:03:33.143Z |
+| Account chatbot extract live route QA | `reports/account_chatbot_extract_live_route_qa.md` | authenticated live chatbot extraction route | `npm.cmd run qa:account-chatbot-extract-live-route` | skipped | 1 | 0 | 0 | 1 | 2026-06-29T09:03:32.717Z |
 
 ## Response Contract Evidence
 
@@ -55,8 +57,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 | Suite | Source report | Layer | Command | Result | Last run |
 | --- | --- | --- | --- | --- | --- |
-| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-28T18:45:39.915Z |
-| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-28T18:41:27.357Z |
+| Customer-facing recommendation QA | `reports/customer_facing_recommendation_qa.md` | customer food shortlist language + card flow | `npm.cmd run qa:chatbot-customer-recommendations` | PASS | 2026-06-29T09:10:30.928Z |
+| Customer UX copy contract QA | `reports/customer_ux_copy_contract_qa.md` | account/chatbot copy leakage guard | `npm.cmd run qa:customer-ux-copy` | PASS | 2026-06-29T09:10:30.868Z |
 
 ## Fixture And Coverage Evidence
 
@@ -79,7 +81,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 ## Next QA Gaps
 
-- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove live OpenAI fact extraction separately from deterministic recommendation quality.
+- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.
+- Run `npm.cmd run qa:account-chatbot-extract-live-route` with `NUTRITAIL_QA_AUTH_COOKIE` set to prove the authenticated live chatbot extraction route end to end.
 - Keep adding real customer-style cases when new foods or new clinical rules are introduced.
 - When recommendation ranking changes, rerun the affected dog/cat suite before merge.
 
