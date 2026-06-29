@@ -357,6 +357,16 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "το bot",
+    reason: "Greek chatbot entry cards should use advisor wording instead of bot wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "the bot stays",
+    reason: "English chatbot entry cards should use advisor wording instead of bot wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "πιθανό match",
     reason: "Greek chatbot copy should not expose internal matching wording.",
   },

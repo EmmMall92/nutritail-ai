@@ -280,9 +280,9 @@ const starterCards = [
   {
     title: "Health caution",
     titleEl: "Θέμα υγείας",
-    helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the bot stays careful.",
+    helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the advisor stays careful.",
     helperEl:
-      "Για ουρολογικό, νεφρικό, παγκρεατίτιδα, εμετό, διάρροια ή ανορεξία, το bot απαντά προσεκτικά.",
+      "Για ουρολογικό, νεφρικό, παγκρεατίτιδα, εμετό, διάρροια ή ανορεξία, ο σύμβουλος απαντά προσεκτικά.",
     prompt: "My pet has a health concern and I need safe food guidance.",
     promptEl:
       "Το κατοικίδιό μου έχει θέμα υγείας και θέλω ασφαλή διατροφική καθοδήγηση.",
