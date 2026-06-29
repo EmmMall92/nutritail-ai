@@ -155,7 +155,8 @@
     "qa:chatbot-golden-cases": "node scripts/qa/check-chatbot-golden-cases.mjs",
     "qa:chatbot-live-dashboard": "node scripts/qa/build-live-qa-dashboard.mjs",
     "qa:live-readiness-dashboard": "node scripts/qa/build-live-readiness-dashboard.mjs",
-    "qa:openai-intake-smoke": "tsx scripts/qa/check-openai-intake-smoke.ts"
+    "qa:openai-intake-smoke": "tsx scripts/qa/check-openai-intake-smoke.ts",
+    "qa:account-chatbot-extract-live-route": "node scripts/qa/check-account-chatbot-extract-live-route.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
