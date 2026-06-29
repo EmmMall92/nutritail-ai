@@ -152,7 +152,7 @@ function getFollowUpPlan(analysis?: AnalysisHistoryItem | null) {
 
 function getReportSummary(analysis?: AnalysisHistoryItem | null) {
   if (!analysis) {
-    return "Αυτή η αναφορά χρειάζεται αποθηκευμένη ανάλυση για να δείξει θερμίδες, μερίδα και fit τροφής.";
+    return "Αυτή η αναφορά χρειάζεται αποθηκευμένη ανάλυση για να δείξει θερμίδες, μερίδα και καταλληλότητα τροφής.";
   }
 
   if (analysis.matched_food_name && analysis.feeding_grams_per_day) {

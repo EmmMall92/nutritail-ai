@@ -310,7 +310,7 @@ const followUpActions: {
     titleEl: "Δεν είδα αποτέλεσμα",
     helper: "Review calories, treats, grams per day, activity, and food fit.",
     helperEl:
-      "Ελέγχουμε θερμίδες, λιχουδιές, γραμμάρια/ημέρα, δραστηριότητα και fit τροφής.",
+      "Ελέγχουμε θερμίδες, λιχουδιές, γραμμάρια/ημέρα, δραστηριότητα και καταλληλότητα τροφής.",
   },
   {
     id: "change_food",
@@ -5158,11 +5158,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΑπλό πλάνο ημέρας:\n- Κύρια τροφή: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΠώς να το ξεκινήσεις:\n- Κράτα αυτή την ποσότητα για 2-4 εβδομάδες.\n- Οι λιχουδιές να μένουν μέσα στο ημερήσιο όριο.\n- Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΜετά από 2-4 εβδομάδες, ξανακάνε ένα progress check με νέο βάρος και πόσα γραμμάρια έτρωγε πραγματικά.\n\nΕπόμενο βήμα: πάτησε αποθήκευση για να κρατήσουμε στο προφίλ την τροφή, τις θερμίδες και την πρώτη ποσότητα.`,
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΑπλό πλάνο ημέρας:\n- Κύρια τροφή: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΠώς να το ξεκινήσεις:\n- Κράτα αυτή την ποσότητα για 2-4 εβδομάδες.\n- Οι λιχουδιές να μένουν μέσα στο ημερήσιο όριο.\n- Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΜετά από 2-4 εβδομάδες, ξανακάνε έναν έλεγχο προόδου με νέο βάρος και πόσα γραμμάρια έτρωγε πραγματικά.\n\nΕπόμενο βήμα: πάτησε αποθήκευση για να κρατήσουμε στο προφίλ την τροφή, τις θερμίδες και την πρώτη ποσότητα.`,
           `Great, we will keep ${choice.name}.\n\nSimple daily plan:\n- Main food: about ${gramsPerDay}g/day\n- Split into 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- Split into 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nHow to start:\n- Keep this amount for 2-4 weeks.\n- Keep treats inside the daily allowance.\n- Watch weight, appetite, stool, and energy.\n\nAfter 2-4 weeks, run a progress check with the new weight and the grams actually fed.\n\nNext step: press save to keep the food, calories, and first portion on the profile.`
         )
       : botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετή θερμιδική πληροφορία για να δώσω αξιόπιστα γραμμάρια/ημέρα.\n\nΤι μπορείς να κάνεις τώρα:\n- Αποθήκευσε την τροφή ως επιλογή στο προφίλ.\n- Ή διάλεξε άλλη κάρτα που έχει καθαρή θερμιδική τιμή για πιο πρακτική ποσότητα.\n- Αν βρεις kcal στην ετικέτα, μπορείς να κάνεις νέο progress check για να βγει ποσότητα.`,
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετή θερμιδική πληροφορία για να δώσω αξιόπιστα γραμμάρια/ημέρα.\n\nΤι μπορείς να κάνεις τώρα:\n- Αποθήκευσε την τροφή ως επιλογή στο προφίλ.\n- Ή διάλεξε άλλη κάρτα που έχει καθαρή θερμιδική τιμή για πιο πρακτική ποσότητα.\n- Αν βρεις kcal στην ετικέτα, μπορείς να κάνεις νέο έλεγχο προόδου για να βγει ποσότητα.`,
           `Great, we will keep ${choice.name}.\n\nI do not have enough calorie data to estimate reliable grams/day.\n\nWhat you can do now:\n- Save this food as the chosen option on the profile.\n- Or choose another card with clear calorie data for a more practical portion.\n- If you find kcal on the label, run a new progress check to calculate the portion.`
         );
 
