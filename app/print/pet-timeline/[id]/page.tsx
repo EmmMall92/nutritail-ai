@@ -191,7 +191,7 @@ export default function PetTimelineReportPage() {
         setProgressLogs(progressResult.pet?.progressLogs ?? []);
       }
     } catch (error) {
-      console.error("Δεν μπόρεσα να φορτώσω το timeline report:", error);
+      console.error("Δεν μπόρεσα να φορτώσω την αναφορά ιστορικού:", error);
     } finally {
       setIsLoaded(true);
     }
@@ -554,7 +554,7 @@ export default function PetTimelineReportPage() {
 
                 <p className="mt-1">
                   <span className="font-semibold">Πρόταση τροφής:</span>{" "}
-                  Αποθηκεύτηκε με αυτή την ανάλυση στο chatbot report.
+                  Αποθηκεύτηκε με αυτή την ανάλυση στο ιστορικό του chatbot.
                 </p>
               </div>
             ))}
