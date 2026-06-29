@@ -30,12 +30,21 @@ const intakeSuites = [
     source: "reports/ai_intake_golden_qa.md",
     command: "npm.cmd run qa:ai-intake",
     layer: "deterministic fallback + validation",
+    checkedLabel: "Cases",
   },
   {
     name: "OpenAI intake smoke QA",
     source: "reports/openai_intake_smoke_qa.md",
     command: "npm.cmd run qa:openai-intake-smoke",
     layer: "OpenAI structured fact extraction",
+    checkedLabel: "Cases",
+  },
+  {
+    name: "Account chatbot extract live route QA",
+    source: "reports/account_chatbot_extract_live_route_qa.md",
+    command: "npm.cmd run qa:account-chatbot-extract-live-route",
+    layer: "authenticated live chatbot extraction route",
+    checkedLabel: "Routes",
   },
 ];
 
@@ -101,6 +110,15 @@ function matchNumber(text, patterns, label) {
   throw new Error(`Could not parse ${label}`);
 }
 
+function matchOptionalNumber(text, patterns, fallback = 0) {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match?.[1]) return Number(match[1]);
+  }
+
+  return fallback;
+}
+
 function parseReport(suite) {
   const text = readReport(suite.source);
   const checked = matchNumber(
@@ -149,16 +167,14 @@ function parseReport(suite) {
 function parseIntakeReport(suite) {
   const text = readReport(suite.source);
   const status = text.match(/^Status:\s*([^\n]+)/im)?.[1]?.trim() ?? "completed";
-  const skipped = status.toLowerCase() === "skipped";
-  const checked = skipped
-    ? 0
-    : matchNumber(text, [/- Cases checked:\s*(\d+)/i], `${suite.source} cases checked`);
-  const passed = skipped
-    ? 0
-    : matchNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
-  const failed = skipped
-    ? 0
-    : matchNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const checked = matchNumber(
+    text,
+    [/- Cases checked:\s*(\d+)/i, /- Routes checked:\s*(\d+)/i],
+    `${suite.source} checked`,
+  );
+  const passed = matchNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
+  const failed = matchNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const skipped = matchOptionalNumber(text, [/- Skipped:\s*(\d+)/i]);
   const runDate = text.match(/(?:Generated|Run date):\s*([^\n]+)/i)?.[1]?.trim() ?? "unknown";
 
   return {
@@ -167,6 +183,7 @@ function parseIntakeReport(suite) {
     checked,
     passed,
     failed,
+    skipped,
     runDate,
   };
 }
@@ -252,10 +269,11 @@ const intakeTotals = parsedIntake.reduce(
     acc.checked += suite.checked;
     acc.passed += suite.passed;
     acc.failed += suite.failed;
-    acc.skipped += suite.status.toLowerCase() === "skipped" ? 1 : 0;
+    acc.skipped += suite.skipped;
+    acc.skippedSuites += suite.status.toLowerCase() === "skipped" ? 1 : 0;
     return acc;
   },
-  { checked: 0, passed: 0, failed: 0, skipped: 0 },
+  { checked: 0, passed: 0, failed: 0, skipped: 0, skippedSuites: 0 },
 );
 
 const bySpecies = parsed.reduce((acc, suite) => {
@@ -285,7 +303,8 @@ const lines = [
   `- Intake QA checked: ${intakeTotals.checked}`,
   `- Intake QA passed: ${intakeTotals.passed}`,
   `- Intake QA failed: ${intakeTotals.failed}`,
-  `- Intake QA skipped suites: ${intakeTotals.skipped}`,
+  `- Intake QA skipped checks: ${intakeTotals.skipped}`,
+  `- Intake QA skipped suites: ${intakeTotals.skippedSuites}`,
   `- Response contracts checked: ${parsedResponseContract.checked}`,
   `- Response contracts passed: ${parsedResponseContract.passed}`,
   `- Response contracts failed: ${parsedResponseContract.failed}`,
@@ -315,11 +334,11 @@ const lines = [
   "",
   "## Intake Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Last run |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
+  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |",
   ...parsedIntake.map(
     (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} |`,
+      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} |`,
   ),
   "",
   "## Response Contract Evidence",
@@ -358,7 +377,8 @@ const lines = [
   "",
   "## Next QA Gaps",
   "",
-  "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove live OpenAI fact extraction separately from deterministic recommendation quality.",
+  "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.",
+  "- Run `npm.cmd run qa:account-chatbot-extract-live-route` with `NUTRITAIL_QA_AUTH_COOKIE` set to prove the authenticated live chatbot extraction route end to end.",
   "- Keep adding real customer-style cases when new foods or new clinical rules are introduced.",
   "- When recommendation ranking changes, rerun the affected dog/cat suite before merge.",
   "",
