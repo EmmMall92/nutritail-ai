@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
+import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 import { petAnalysisService } from "@/services/petAnalysisService";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import { comparePetAnalyses } from "@/services/petAnalysisComparisonService";
@@ -485,8 +486,10 @@ export default function PetTimelineReportPage() {
                       "-"}
                   </p>
                   <p>
-                    <span className="font-semibold">Σιγουριά απόφασης:</span>{" "}
-                    {log.metadata?.progressDecisionConfidence ?? "-"}
+                    <span className="font-semibold">Πώς το βλέπουμε:</span>{" "}
+                    {formatProgressDecisionConfidence(
+                      log.metadata?.progressDecisionConfidence
+                    ) ?? "-"}
                   </p>
                 </div>
 

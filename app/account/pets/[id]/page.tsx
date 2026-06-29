@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
 type AnalysisHistoryItem = {
   id: string;
@@ -642,7 +643,10 @@ export default function AccountPetDetailPage() {
                     )}
                     {progressSummary.progressDecisionConfidence && (
                       <span className="rounded-full bg-white px-3 py-1">
-                        Σιγουριά: {progressSummary.progressDecisionConfidence}
+                        Πώς το βλέπουμε:{" "}
+                        {formatProgressDecisionConfidence(
+                          progressSummary.progressDecisionConfidence
+                        )}
                       </span>
                     )}
                     {progressSummary.currentWeight && (
@@ -1041,7 +1045,10 @@ export default function AccountPetDetailPage() {
                     )}
                     {log.metadata?.progressDecisionConfidence && (
                       <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-900">
-                        Σιγουριά: {log.metadata.progressDecisionConfidence}
+                        Πώς το βλέπουμε:{" "}
+                        {formatProgressDecisionConfidence(
+                          log.metadata.progressDecisionConfidence
+                        )}
                       </span>
                     )}
                     {getProgressContextChips(log.metadata).map((chip) => (
