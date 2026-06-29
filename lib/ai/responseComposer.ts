@@ -20,7 +20,11 @@ type ComposerLocale = "el" | "en";
 const CUSTOMER_CARD_FLOW_RULES = [
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
+  "If cards_follow is true, use at most 4 short sentences",
+  "If cards_follow is true, mention only the single best starting food, not every card",
   "If cards_follow is true, do not tell the user to save the plan in this intro",
+  "Do not mention scores, confidence labels, source quality, review status, or missing fields",
+  "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
   "The strongest matches are in the cards below.",
   "Tap one card to see estimated grams/day.",

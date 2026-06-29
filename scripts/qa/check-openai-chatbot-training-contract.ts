@@ -5,6 +5,7 @@ import {
   NUTRITAIL_AI_FORBIDDEN_ACTIONS,
 } from "@/lib/ai/authorityContract";
 import {
+  buildAnswerWriterUserPrompt,
   buildNutriTailSystemPrompt,
   NUTRITAIL_ANSWER_WRITER_INSTRUCTIONS,
   NUTRITAIL_FACT_EXTRACTION_INSTRUCTIONS,
@@ -88,6 +89,8 @@ includesAll(
     "Use only ranked foods",
     "Do not add new brands",
     "Do not include backend review/source-quality wording",
+    "When food cards follow, use at most 4 short sentences",
+    "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers",
   ],
   "answer writer prompt"
 );
@@ -96,6 +99,25 @@ expect(
     rule.includes("Preserve exact customer food names")
   ),
   "answer writer must preserve food names from NutriTail payload"
+);
+const cardWriterPrompt = buildAnswerWriterUserPrompt({
+  locale: "el",
+  groundedJson: {
+    cards_follow: true,
+    premium: [{ customer_name: "Royal Canin Mini Adult" }],
+    value: [{ customer_name: "Josera Sensi Plus Adult" }],
+  },
+});
+includesAll(
+  cardWriterPrompt,
+  [
+    "Food cards follow this message:",
+    "at most 4 short sentences",
+    "Mention only the single best starting food by name",
+    "Do not repeat card lists, scores, confidence labels, source quality, review status, or missing fields",
+    "choose a food card to estimate daily portions",
+  ],
+  "answer writer card-flow user prompt"
 );
 expect(
   NUTRITAIL_TONE_INSTRUCTIONS.some((rule) => rule.includes("Greek")),
