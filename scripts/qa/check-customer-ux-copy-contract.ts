@@ -401,6 +401,26 @@ const bannedExactCustomerStrings = [
     reason: "Food V2 customer summaries should use recommendation-focus wording instead of matching internals.",
   },
   {
+    file: "lib/food-v2/chatbotRecommendationSummary.ts",
+    text: "strongest matches",
+    reason: "Compact customer summaries should call recommendations choices, not matches.",
+  },
+  {
+    file: "lib/ai/responseComposer.ts",
+    text: "strongest matches",
+    reason: "OpenAI customer-facing guidance should call recommendations choices, not matches.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "best matches",
+    reason: "Chatbot customer copy should call food cards choices, not matches.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Best match",
+    reason: "Food card badges should use choice wording, not matching internals.",
+  },
+  {
     file: "app/account/chatbot/page.tsx",
     text: "No matched food",
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",

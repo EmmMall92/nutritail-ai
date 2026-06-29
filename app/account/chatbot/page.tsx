@@ -1021,7 +1021,7 @@ function getRecommendationChoiceBadgeLabel(
   language: ChatLanguage
 ) {
   if (index === 0) {
-    return language === "el" ? "Καλύτερη επιλογή" : "Best match";
+    return language === "el" ? "Καλύτερη επιλογή" : "Best choice";
   }
   if (choice.role === "value") {
     return language === "el" ? "Πρακτική επιλογή" : "Practical option";
@@ -2191,7 +2191,7 @@ function formatCompactFoodV2RecommendationFallback({
   const intro =
     mode === "alternative"
       ? "I found a few alternative options for the same pet profile."
-      : "I placed the best matches below as food cards.";
+      : "I placed the best choices below as food cards.";
   const reason = topChoice.reason ? `\nWhy it stands out: ${topChoice.reason}` : "";
 
   return `${intro}
