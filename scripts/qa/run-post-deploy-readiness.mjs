@@ -36,17 +36,13 @@ const commands = [
     command: "npm.cmd run qa:account-progress-live-routes",
   },
   {
+    label: "Customer chatbot flow links",
+    command: "npm.cmd run qa:customer-chatbot-flow-links",
+  },
+  {
     label: "Vercel OpenAI production env",
     command: "npm.cmd run qa:vercel-openai-env",
   },
-  ...(shouldRefreshFreshnessSources
-    ? [
-        {
-          label: "Customer chatbot flow links",
-          command: "npm.cmd run qa:customer-chatbot-flow-links",
-        },
-      ]
-    : []),
   ...(shouldRefreshChatbot
     ? [
         {
@@ -131,6 +127,7 @@ const lines = [
   `- Passed: ${results.length - failed.length}`,
   `- Failed or needs review: ${failed.length}`,
   `- Chatbot QA refreshed in this run: ${shouldRefreshChatbot ? "yes" : "no"}`,
+  "- Customer chatbot flow refreshed in this run: yes",
   `- Deploy freshness gate used: ${deployedAt ? deployedAt : "no"}`,
   `- Freshness source reports refreshed: ${shouldRefreshFreshnessSources ? "yes" : "no"}`,
   "",
@@ -148,6 +145,7 @@ const lines = [
   "## Notes",
   "",
   "- Run with `--refresh-chatbot` or `NUTRITAIL_QA_REFRESH_CHATBOT=1` when the deploy touches chatbot recommendation logic; this runs the fast golden suite and sensitive recommendation smoke before refreshing the chatbot QA dashboard.",
+  "- Customer chatbot flow links run by default because saved-pet navigation, scrolling, language, and customer-facing copy are production-critical.",
   "- Run with `--deploy-freshness` or set `NUTRITAIL_QA_DEPLOY_FRESHNESS=1` to require the live readiness dashboard reports to be newer than the start of this post-deploy run.",
   "- Use `--deployed-at=<ISO timestamp>` or `NUTRITAIL_QA_DEPLOYED_AT=<ISO timestamp>` when you know the exact production deploy time.",
   "- The live readiness dashboard remains the authoritative rollup; this report records the post-deploy command sequence.",
