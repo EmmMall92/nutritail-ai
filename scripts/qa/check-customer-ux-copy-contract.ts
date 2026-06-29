@@ -5,6 +5,7 @@ const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/customer_ux_copy_contract_qa.md";
 
 const customerCopyFiles = [
+  "app/page.tsx",
   "app/login/page.tsx",
   "app/register/page.tsx",
   "app/forgot-password/page.tsx",
@@ -77,6 +78,31 @@ const requiredCustomerCopy = [
 ];
 
 const bannedExactCustomerStrings = [
+  {
+    file: "app/page.tsx",
+    text: "Feed your pet with more confidence.",
+    reason: "Homepage hero copy should be localized for customers.",
+  },
+  {
+    file: "app/page.tsx",
+    text: "Start free analysis",
+    reason: "Homepage primary CTA should be localized for customers.",
+  },
+  {
+    file: "app/page.tsx",
+    text: "I already have an account",
+    reason: "Homepage secondary CTA should be localized for customers.",
+  },
+  {
+    file: "app/page.tsx",
+    text: "Food shortlist",
+    reason: "Homepage feature labels should be localized for customers.",
+  },
+  {
+    file: "app/page.tsx",
+    text: "Clear recommendations, with confidence you can understand.",
+    reason: "Homepage trust copy should be localized for customers.",
+  },
   {
     file: "app/login/page.tsx",
     text: "Signing in...",
