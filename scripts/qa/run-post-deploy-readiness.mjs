@@ -7,6 +7,19 @@ const reportPath =
 const shouldRefreshChatbot =
   process.env.NUTRITAIL_QA_REFRESH_CHATBOT === "1" ||
   process.argv.includes("--refresh-chatbot");
+const runStartedAt = new Date();
+const deployFreshnessRequested =
+  process.env.NUTRITAIL_QA_DEPLOY_FRESHNESS === "1" ||
+  process.argv.includes("--deploy-freshness");
+const deployedAtArg = process.argv
+  .find((arg) => arg.startsWith("--deployed-at="))
+  ?.slice("--deployed-at=".length)
+  .trim();
+const deployedAt = (
+  process.env.NUTRITAIL_QA_DEPLOYED_AT?.trim() ||
+  deployedAtArg ||
+  (deployFreshnessRequested ? runStartedAt.toISOString() : "")
+);
 
 const commands = [
   {
@@ -44,14 +57,19 @@ const commands = [
   {
     label: "Live readiness dashboard",
     command: "npm.cmd run qa:live-readiness-dashboard",
+    env: deployedAt ? { NUTRITAIL_QA_DEPLOYED_AT: deployedAt } : {},
   },
 ];
 
-function runCommand(command) {
+function runCommand(command, env = {}) {
   const startedAt = Date.now();
   const result = spawnSync(command, {
     cwd: process.cwd(),
     encoding: "utf8",
+    env: {
+      ...process.env,
+      ...env,
+    },
     shell: true,
   });
 
@@ -67,7 +85,7 @@ function runCommand(command) {
 const results = commands.map((item) => {
   console.log(`\n=== ${item.label} ===`);
   console.log(item.command);
-  const result = runCommand(item.command);
+  const result = runCommand(item.command, item.env);
   if (result.stdout.trim()) console.log(result.stdout.trim());
   if (result.stderr.trim()) console.error(result.stderr.trim());
   if (result.error) console.error(result.error);
@@ -96,6 +114,7 @@ const lines = [
   `- Passed: ${results.length - failed.length}`,
   `- Failed or needs review: ${failed.length}`,
   `- Chatbot QA refreshed in this run: ${shouldRefreshChatbot ? "yes" : "no"}`,
+  `- Deploy freshness gate used: ${deployedAt ? deployedAt : "no"}`,
   "",
   "## Commands",
   "",
@@ -111,6 +130,8 @@ const lines = [
   "## Notes",
   "",
   "- Run with `--refresh-chatbot` or `NUTRITAIL_QA_REFRESH_CHATBOT=1` when the deploy touches chatbot recommendation logic; this runs the fast golden suite and sensitive recommendation smoke before refreshing the chatbot QA dashboard.",
+  "- Run with `--deploy-freshness` or set `NUTRITAIL_QA_DEPLOY_FRESHNESS=1` to require the live readiness dashboard reports to be newer than the start of this post-deploy run.",
+  "- Use `--deployed-at=<ISO timestamp>` or `NUTRITAIL_QA_DEPLOYED_AT=<ISO timestamp>` when you know the exact production deploy time.",
   "- The live readiness dashboard remains the authoritative rollup; this report records the post-deploy command sequence.",
   "- The OpenAI env check confirms encrypted Production env presence without pulling or printing the secret.",
   "",

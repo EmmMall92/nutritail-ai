@@ -1,31 +1,57 @@
 import { readFileSync } from "node:fs";
 
-const source = readFileSync("scripts/qa/build-live-readiness-dashboard.mjs", "utf8");
+const dashboardSource = readFileSync("scripts/qa/build-live-readiness-dashboard.mjs", "utf8");
+const postDeploySource = readFileSync("scripts/qa/run-post-deploy-readiness.mjs", "utf8");
 
 const checks = [
   {
     label: "reads deploy freshness timestamp from environment",
+    source: dashboardSource,
     expected: "NUTRITAIL_QA_DEPLOYED_AT",
   },
   {
     label: "marks reports older than deploy as stale",
+    source: dashboardSource,
     expected: "older than deploy",
   },
   {
     label: "exposes freshness notes in readiness evidence",
+    source: dashboardSource,
     expected: "Freshness note",
   },
   {
     label: "documents deploy freshness gate in next live checks",
+    source: dashboardSource,
     expected: "Set `NUTRITAIL_QA_DEPLOYED_AT`",
   },
   {
     label: "keeps default behavior optional when deploy timestamp is absent",
+    source: dashboardSource,
     expected: "not configured",
+  },
+  {
+    label: "post-deploy script can enable deploy freshness from CLI",
+    source: postDeploySource,
+    expected: "--deploy-freshness",
+  },
+  {
+    label: "post-deploy script can accept exact deployed-at timestamp",
+    source: postDeploySource,
+    expected: "--deployed-at=",
+  },
+  {
+    label: "post-deploy script forwards deployed timestamp to readiness dashboard",
+    source: postDeploySource,
+    expected: "NUTRITAIL_QA_DEPLOYED_AT: deployedAt",
+  },
+  {
+    label: "post-deploy report records whether deploy freshness was used",
+    source: postDeploySource,
+    expected: "Deploy freshness gate used:",
   },
 ];
 
-const failures = checks.filter((check) => !source.includes(check.expected));
+const failures = checks.filter((check) => !check.source.includes(check.expected));
 
 if (failures.length > 0) {
   console.error("Live readiness deploy freshness QA failed:");
