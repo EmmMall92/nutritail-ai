@@ -381,7 +381,7 @@ function formatRecommendationChoiceReason(
     ) {
       return "Ταιριάζει καλύτερα στο μέγεθος του σκύλου, με πιο σωστή λογική φυλής/μεγέθους για την επιλογή τροφής.";
     }
-    if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+    if (text.includes("formula name visibly matches a preferred protein")) {
       return "Ταιριάζει με γεύση ή πρωτεΐνη που δήλωσες ότι προτιμά.";
     }
     if (
@@ -448,7 +448,7 @@ function formatRecommendationChoiceReason(
   ) {
     return "It better matches this dog's size, with clearer breed-size positioning for the food choice.";
   }
-  if (text.includes("preferred protein") || text.includes("preferred flavor")) {
+  if (text.includes("formula name visibly matches a preferred protein")) {
     return "It matches a flavour or protein preference you gave.";
   }
   if (
@@ -531,7 +531,10 @@ function formatRecommendationChoiceCaution(
     if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
       return "Έλεγξε τη μερίδα προσεκτικά, ειδικά αν υπάρχει τάση για βάρος.";
     }
-    if (text.includes("large-breed") || text.includes("calcium") || text.includes("phosphorus")) {
+    if (
+      text.includes("large-breed") &&
+      (text.includes("puppy") || text.includes("growth"))
+    ) {
       return "Για μεγαλόσωμο κουτάβι θέλουμε προσοχή σε ασβέστιο και φώσφορο.";
     }
     if (text.includes("senior")) {
@@ -559,7 +562,10 @@ function formatRecommendationChoiceCaution(
   if (text.includes("fat") || text.includes("energy") || text.includes("calories")) {
     return "Watch the daily portion carefully, especially if weight is a concern.";
   }
-  if (text.includes("large-breed") || text.includes("calcium") || text.includes("phosphorus")) {
+  if (
+    text.includes("large-breed") &&
+    (text.includes("puppy") || text.includes("growth"))
+  ) {
     return "Large-breed puppies need extra care around calcium and phosphorus.";
   }
   if (text.includes("senior")) {

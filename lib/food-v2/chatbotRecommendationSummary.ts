@@ -114,12 +114,8 @@ function hasAny(values: string[] | undefined, terms: string[]) {
   return terms.some((term) => text.includes(normalizeText(term)));
 }
 
-function hasPreferredProteinReason(text: string) {
-  return (
-    text.includes("matches a preferred protein") ||
-    text.includes("matches a preferred flavor") ||
-    text.includes("matches a preferred flavour")
-  );
+function hasVisiblePreferredProteinReason(text: string) {
+  return text.includes("formula name visibly matches a preferred protein");
 }
 
 export function goalFromPetContext(
@@ -281,7 +277,10 @@ function customerReason(
     ...(food.food_intelligence?.best_use_cases ?? []),
   ].join(" "));
 
-  if ((goal === "sterilised" || goal === "weight_control") && hasPreferredProteinReason(text)) {
+  if (
+    (goal === "sterilised" || goal === "weight_control") &&
+    hasVisiblePreferredProteinReason(text)
+  ) {
     return locale === "el"
       ? "ταιριάζει σε έλεγχο θερμίδων/βάρους και κρατάει τη γευστική προτίμηση"
       : "fits calorie and weight-control needs while matching the pet's flavour preference";
@@ -291,7 +290,7 @@ function customerReason(
       ? "ταιριάζει καλύτερα σε έλεγχο θερμίδων και βάρους"
       : "fits calorie and weight-control needs";
   }
-  if (goal === "allergy" && hasPreferredProteinReason(text)) {
+  if (goal === "allergy" && hasVisiblePreferredProteinReason(text)) {
     return locale === "el"
       ? "σέβεται τις δηλωμένες αποφυγές και κρατάει προτίμηση γεύσης όπου γίνεται"
       : "respects the declared ingredient avoidances while matching a preferred flavour";
@@ -336,7 +335,7 @@ function customerReason(
       ? "είναι πιο κοντά σε senior ανάγκες"
       : "is closer to senior needs";
   }
-  if (hasPreferredProteinReason(text) || text.includes("preferred protein") || text.includes("preferred flavor")) {
+  if (hasVisiblePreferredProteinReason(text)) {
     return locale === "el"
       ? "ταιριάζει με προτίμηση γεύσης ή πρωτεΐνης"
       : "matches a preferred flavour or protein";
@@ -376,7 +375,10 @@ function customerCaution(value: string, locale: "el" | "en") {
       ? "Σε ουρολογικό ιστορικό χρειάζεται επιβεβαίωση από κτηνίατρο."
       : "Urinary history should be confirmed with a veterinarian.";
   }
-  if (text.includes("large breed") || text.includes("calcium") || text.includes("phosphorus")) {
+  if (
+    text.includes("large breed") &&
+    (text.includes("puppy") || text.includes("growth"))
+  ) {
     return locale === "el"
       ? "Σε μεγαλόσωμο κουτάβι θέλουμε έλεγχο ασβεστίου και φωσφόρου."
       : "Large-breed puppies need calcium and phosphorus checked.";
