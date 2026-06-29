@@ -12,6 +12,12 @@ import {
   NUTRITAIL_TONE_INSTRUCTIONS,
 } from "@/lib/ai/promptInstructions";
 import {
+  buildIntakeExtractionSystemPrompt,
+  buildIntakeExtractionUserPrompt,
+  NUTRITAIL_INTAKE_ALLOWED_ENUMS,
+  NUTRITAIL_INTAKE_JSON_KEYS,
+} from "@/lib/ai/intakePromptContract";
+import {
   buildNutritionKnowledgeContext,
   inferKnowledgeIntents,
 } from "@/lib/ai/knowledgeRetrieval";
@@ -80,6 +86,28 @@ expect(
     rule.includes("Keep liked proteins and avoided/allergy proteins separate")
   ),
   "fact extraction must keep liked and avoided proteins separate"
+);
+const intakeSystemPrompt = buildIntakeExtractionSystemPrompt();
+includesAll(
+  intakeSystemPrompt,
+  [
+    "Return strict JSON only",
+    NUTRITAIL_INTAKE_ALLOWED_ENUMS,
+    "Do not recommend foods",
+  ],
+  "shared intake extraction system prompt"
+);
+expect(
+  NUTRITAIL_INTAKE_JSON_KEYS.includes("preferredProteins") &&
+    NUTRITAIL_INTAKE_JSON_KEYS.includes("excludedIngredients") &&
+    NUTRITAIL_INTAKE_JSON_KEYS.includes("redFlags"),
+  "shared intake JSON keys must cover preferences, exclusions, and red flags"
+);
+const intakeUserPrompt = buildIntakeExtractionUserPrompt("Dog 10kg likes salmon.");
+includesAll(
+  intakeUserPrompt,
+  ["Message:", "Dog 10kg likes salmon.", "Return JSON with keys:"],
+  "shared intake extraction user prompt"
 );
 
 const answerPrompt = buildNutriTailSystemPrompt("answer_writer");
@@ -182,12 +210,15 @@ expect(
 
 assertNoMojibake("scripts/qa/check-openai-intake-smoke.ts");
 assertNoMojibake("scripts/qa/check-openai-chatbot-training-contract.ts");
+assertNoMojibake("lib/ai/intakePromptContract.ts");
 
 const openAiSmokeSource = readFileSync("scripts/qa/check-openai-intake-smoke.ts", "utf8");
 includesAll(
   openAiSmokeSource,
   [
-    'buildNutriTailSystemPrompt("fact_extraction")',
+    "buildIntakeExtractionSystemPrompt",
+    "buildIntakeExtractionUserPrompt",
+    "extractJsonObjectFromOpenAiText",
     "Έχω σκύλο, την λένε Κύρκη",
     "Ο γάτος μου προσπαθεί να κατουρήσει",
     "validateAiIntakeExtraction",
