@@ -7,10 +7,6 @@ const publicRoutes = [
     priority: 1,
   },
   {
-    path: "/chatbot",
-    priority: 0.7,
-  },
-  {
     path: "/privacy",
     priority: 0.3,
   },

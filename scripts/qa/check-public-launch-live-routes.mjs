@@ -49,11 +49,19 @@ const checks = [
     requiredText: ["Terms", "Nutritail AI"],
   },
   {
+    path: "/chatbot",
+    expected: [307, 308],
+    label: "Legacy chatbot redirect",
+    expectedLocationIncludes: "/account/chatbot",
+    skipBody: true,
+  },
+  {
     path: "/sitemap.xml",
     expected: [200],
     label: "Sitemap",
     contentTypeIncludes: ["xml"],
     requiredText: ["<urlset", "https://nutritail.ai"],
+    forbiddenText: ["https://nutritail.ai/chatbot"],
   },
   {
     path: "/robots.txt",
@@ -91,13 +99,20 @@ async function checkRoute(check) {
     const contentType = response.headers.get("content-type") ?? "";
     const body = check.skipBody ? "" : await response.text();
     const missingText = (check.requiredText ?? []).filter((needle) => !body.includes(needle));
+    const forbiddenText = (check.forbiddenText ?? []).filter((needle) => body.includes(needle));
     const missingContentType = (check.contentTypeIncludes ?? []).filter(
       (needle) => !contentType.toLowerCase().includes(needle.toLowerCase()),
     );
+    const location = response.headers.get("location") ?? "";
+    const missingLocation = check.expectedLocationIncludes && !location.includes(check.expectedLocationIncludes)
+      ? [check.expectedLocationIncludes]
+      : [];
     const ok =
       check.expected.includes(response.status) &&
       missingText.length === 0 &&
-      missingContentType.length === 0;
+      forbiddenText.length === 0 &&
+      missingContentType.length === 0 &&
+      missingLocation.length === 0;
 
     return {
       ...check,
@@ -106,9 +121,11 @@ async function checkRoute(check) {
       ok,
       duration_ms: Date.now() - started,
       contentType,
-      location: response.headers.get("location") ?? "",
+      location,
       missingText,
+      forbiddenText,
       missingContentType,
+      missingLocation,
       error: "",
     };
   } catch (error) {
@@ -121,7 +138,9 @@ async function checkRoute(check) {
       contentType: "",
       location: "",
       missingText: check.requiredText ?? [],
+      forbiddenText: [],
       missingContentType: check.contentTypeIncludes ?? [],
+      missingLocation: check.expectedLocationIncludes ? [check.expectedLocationIncludes] : [],
       error: error instanceof Error ? error.message : "Unknown request error",
     };
   }
@@ -136,9 +155,11 @@ function renderTable(rows) {
         row.error,
         row.location ? `redirect=${row.location}` : "",
         row.missingText.length > 0 ? `missing text: ${row.missingText.join(", ")}` : "",
+        row.forbiddenText.length > 0 ? `forbidden text: ${row.forbiddenText.join(", ")}` : "",
         row.missingContentType.length > 0
           ? `missing content-type: ${row.missingContentType.join(", ")}`
           : "",
+        row.missingLocation.length > 0 ? `missing redirect target: ${row.missingLocation.join(", ")}` : "",
       ]
         .filter(Boolean)
         .join("; ");
