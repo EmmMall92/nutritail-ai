@@ -45,6 +45,7 @@ next-env.d.ts
 
 # Generated local QA reports
 /reports/account_progress_live_route_smoke_qa.md
+/reports/cat_chatbot_live_safety.md
 /reports/chatbot_golden_qa.md
 /reports/customer_chatbot_flow_links_qa.md
 /reports/food_v2_ranking_scenario_audit.md
