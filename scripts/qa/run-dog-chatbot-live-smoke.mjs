@@ -25,6 +25,14 @@ const SMOKE_CASE_IDS = [
 ];
 
 const command = process.platform === "win32" ? "npm.cmd" : "npm";
+const defaultTimeoutMs = 180_000;
+const configuredTimeoutMs = Number(
+  process.env.NUTRITAIL_DOG_CHATBOT_LIVE_SMOKE_TIMEOUT_MS ?? defaultTimeoutMs
+);
+const timeoutMs =
+  Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
+    ? configuredTimeoutMs
+    : defaultTimeoutMs;
 const result = spawnSync(
   command,
   ["run", "qa:dog-chatbot-live-cases"],
@@ -38,11 +46,19 @@ const result = spawnSync(
     },
     shell: process.platform === "win32",
     stdio: "inherit",
+    timeout: timeoutMs,
+    killSignal: "SIGTERM",
   }
 );
 
 if (result.error) {
   console.error(result.error);
+}
+
+if (result.error?.code === "ETIMEDOUT") {
+  console.error(
+    `Dog chatbot live smoke exceeded ${(timeoutMs / 1000).toFixed(0)}s timeout.`
+  );
 }
 
 process.exit(result.status ?? 1);

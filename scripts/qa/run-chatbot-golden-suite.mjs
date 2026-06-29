@@ -7,6 +7,14 @@ const reportPath =
   "reports/chatbot_golden_suite.md";
 const strictMode = process.argv.includes("--strict");
 const fastMode = process.argv.includes("--fast");
+const defaultTimeoutMs = fastMode ? 180_000 : 600_000;
+const configuredTimeoutMs = Number(
+  process.env.NUTRITAIL_CHATBOT_GOLDEN_SUITE_TIMEOUT_MS ?? defaultTimeoutMs
+);
+const timeoutMs =
+  Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
+    ? configuredTimeoutMs
+    : defaultTimeoutMs;
 
 if (strictMode) {
   process.env.NUTRITAIL_QA_DOG_QUALITY_MAX_REVIEW ??= "0";
@@ -239,6 +247,7 @@ const objectiveCoverage = fastMode ? fastObjectiveCoverage : fullObjectiveCovera
 function runCheck(check) {
   return new Promise((resolve) => {
     const startedAt = Date.now();
+    let settled = false;
     const command =
       process.platform === "win32" ? "cmd.exe" : check.command;
     const args =
@@ -252,6 +261,38 @@ function runCheck(check) {
     });
     let stdout = "";
     let stderr = "";
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      resolve(result);
+    };
+    const timeout = setTimeout(() => {
+      const durationMs = Date.now() - startedAt;
+      const message = `${check.name} exceeded ${(timeoutMs / 1000).toFixed(
+        0
+      )}s timeout.`;
+
+      if (process.platform === "win32" && child.pid) {
+        spawn("taskkill", ["/pid", String(child.pid), "/t", "/f"], {
+          stdio: "ignore",
+          shell: false,
+        });
+      } else {
+        child.kill("SIGTERM");
+      }
+
+      stderr += `\n${message}\n`;
+      process.stderr.write(`\n${message}\n`);
+      finish({
+        ...check,
+        status: "fail",
+        exitCode: "timeout",
+        durationMs,
+        stdout,
+        stderr,
+      });
+    }, timeoutMs);
 
     child.stdout.on("data", (chunk) => {
       const text = chunk.toString();
@@ -265,8 +306,20 @@ function runCheck(check) {
       process.stderr.write(text);
     });
 
+    child.on("error", (error) => {
+      stderr += `\n${error.message}\n`;
+      finish({
+        ...check,
+        status: "fail",
+        exitCode: "spawn_error",
+        durationMs: Date.now() - startedAt,
+        stdout,
+        stderr,
+      });
+    });
+
     child.on("close", (code) => {
-      resolve({
+      finish({
         ...check,
         status: code === 0 ? "pass" : "fail",
         exitCode: code,
@@ -309,6 +362,7 @@ async function main() {
     "## Summary",
     "",
     `- Mode: ${strictMode ? "strict" : fastMode ? "fast" : "full"}`,
+    `- Per-check timeout: ${(timeoutMs / 1000).toFixed(0)}s`,
     `- Checks run: ${results.length}/${checks.length}`,
     `- Passed: ${results.filter((result) => result.status === "pass").length}`,
     `- Failed: ${failed.length}`,
