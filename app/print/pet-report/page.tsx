@@ -80,9 +80,9 @@ export default function PetReportPage() {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Loading report...</p>
+          <p className="text-sm font-medium text-black">Ετοιμάζουμε το report...</p>
           <p className="mt-2 text-sm text-gray-600">
-            We are preparing the printable nutrition report.
+            Ετοιμάζουμε την εκτυπώσιμη διατροφική αναφορά.
           </p>
         </div>
       </main>
@@ -92,9 +92,9 @@ export default function PetReportPage() {
   if (!session || !analysis || !brandSettings) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-2xl font-bold text-black">No report data available</h1>
+        <h1 className="text-2xl font-bold text-black">Δεν υπάρχουν διαθέσιμα στοιχεία report</h1>
         <p className="mt-2 text-gray-600">
-          Create or open a pet profile first, then try again.
+          Δημιούργησε ή άνοιξε πρώτα ένα προφίλ κατοικιδίου και δοκίμασε ξανά.
         </p>
       </main>
     );
@@ -131,13 +131,13 @@ export default function PetReportPage() {
                 {brandSettings.appName}
               </p>
               <h1 className="mt-2 text-3xl font-bold">
-                Personalized Pet Nutrition Report
+                Προσωπικό διατροφικό report κατοικιδίου
               </h1>
               <p className="mt-2 text-sm text-gray-600">
                 {brandSettings.tagline}
               </p>
               <p className="mt-2 text-sm text-gray-600">
-                Generated on {new Date().toLocaleString()}
+                Δημιουργήθηκε στις {new Date().toLocaleString()}
               </p>
             </div>
           </div>
@@ -155,75 +155,75 @@ export default function PetReportPage() {
       </header>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <InfoCard label="Pet Name" value={pet.name} />
-        <InfoCard label="Weight" value={`${pet.weight} kg`} />
-        <InfoCard label="Resting calories" value={`${nutrition.rer} kcal`} />
-        <InfoCard label="Daily calorie target" value={`${nutrition.der} kcal`} />
+        <InfoCard label="Κατοικίδιο" value={pet.name} />
+        <InfoCard label="Βάρος" value={`${pet.weight} kg`} />
+        <InfoCard label="Θερμίδες ηρεμίας" value={`${nutrition.rer} kcal`} />
+        <InfoCard label="Ημερήσιος στόχος" value={`${nutrition.der} kcal`} />
       </section>
 
-      <Section title="Pet Profile">
+      <Section title="Προφίλ κατοικιδίου">
         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
           <p>
-            <span className="font-semibold">Species:</span> {pet.species}
+            <span className="font-semibold">Είδος:</span> {pet.species}
           </p>
           <p>
-            <span className="font-semibold">Breed:</span> {pet.breed}
+            <span className="font-semibold">Φυλή:</span> {pet.breed}
           </p>
           <p>
-            <span className="font-semibold">Age:</span> {pet.age}
+            <span className="font-semibold">Ηλικία:</span> {pet.age}
           </p>
           <p>
-            <span className="font-semibold">Activity Level:</span>{" "}
+            <span className="font-semibold">Δραστηριότητα:</span>{" "}
             {pet.activityLevel}
           </p>
           <p>
-            <span className="font-semibold">Neutered:</span>{" "}
-            {pet.neutered ? "Yes" : "No"}
+            <span className="font-semibold">Στειρωμένο:</span>{" "}
+            {pet.neutered ? "Ναι" : "Όχι"}
           </p>
           <p>
-            <span className="font-semibold">Allergies:</span>{" "}
+            <span className="font-semibold">Αλλεργίες:</span>{" "}
             {pet.allergies && pet.allergies.length > 0
               ? pet.allergies.join(", ")
-              : "None"}
+              : "Δεν δηλώθηκαν"}
           </p>
           <p className="md:col-span-2">
-            <span className="font-semibold">Health Issues:</span>{" "}
+            <span className="font-semibold">Θέματα υγείας:</span>{" "}
             {pet.healthIssues && pet.healthIssues.length > 0
               ? pet.healthIssues.join(", ")
-              : "None"}
+              : "Δεν δηλώθηκαν"}
           </p>
         </div>
       </Section>
 
-      <Section title="Nutrition Summary">
+      <Section title="Διατροφική σύνοψη">
         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
           <p>
-            <span className="font-semibold">Protein:</span> {nutrition.protein}
+            <span className="font-semibold">Πρωτεΐνη:</span> {nutrition.protein}
           </p>
           <p>
-            <span className="font-semibold">Fat:</span> {nutrition.fat}
+            <span className="font-semibold">Λιπαρά:</span> {nutrition.fat}
           </p>
           <p>
-            <span className="font-semibold">Fiber:</span> {nutrition.fiber}
+            <span className="font-semibold">Ίνες:</span> {nutrition.fiber}
           </p>
           <p>
-            <span className="font-semibold">Sodium:</span> {nutrition.sodium}
+            <span className="font-semibold">Νάτριο:</span> {nutrition.sodium}
           </p>
           <p>
-            <span className="font-semibold">Magnesium:</span>{" "}
+            <span className="font-semibold">Μαγνήσιο:</span>{" "}
             {nutrition.magnesium}
           </p>
           <p>
-            <span className="font-semibold">Calcium:</span> {nutrition.calcium}
+            <span className="font-semibold">Ασβέστιο:</span> {nutrition.calcium}
           </p>
           <p>
-            <span className="font-semibold">Phosphorus:</span>{" "}
+            <span className="font-semibold">Φώσφορος:</span>{" "}
             {nutrition.phosphorus}
           </p>
         </div>
       </Section>
 
-      <Section title="Nutrition Advice">
+      <Section title="Διατροφικές σημειώσεις">
         <div className="space-y-3">
           {advice.map((item, index) => (
             <div
@@ -237,11 +237,11 @@ export default function PetReportPage() {
         </div>
       </Section>
 
-      <Section title="Saved Food Insights">
+      <Section title="Αποθηκευμένες σημειώσεις τροφών">
         <p className="mb-4 text-sm text-gray-600">
-          These foods were saved with the analysis as useful nutrition context.
-          For a fresh shopping shortlist, run a new chatbot recommendation with
-          the pet&apos;s current weight, food, and preferences.
+          Αυτές οι τροφές αποθηκεύτηκαν μαζί με την ανάλυση ως χρήσιμο διατροφικό
+          πλαίσιο. Για νέα λίστα αγοράς, τρέξε νέα πρόταση στο chatbot με το
+          τωρινό βάρος, την τροφή και τις προτιμήσεις του κατοικιδίου.
         </p>
         <div className="space-y-4">
           {recommendedFoods.map((item) => (
@@ -253,11 +253,11 @@ export default function PetReportPage() {
                 {item.food.brand} - {item.food.name}
               </p>
               <p className="mt-1 text-sm text-gray-700">
-                {item.food.species} / {item.food.lifeStage} / protein{" "}
-                {item.food.protein}% / fat {item.food.fat}%
+                {item.food.species} / {item.food.lifeStage} / πρωτεΐνη{" "}
+                {item.food.protein}% / λιπαρά {item.food.fat}%
               </p>
               <p className="mt-2 text-sm">
-                <span className="font-semibold">Why it appeared:</span>{" "}
+                <span className="font-semibold">Γιατί εμφανίστηκε:</span>{" "}
                 {item.reasons.join(", ")}
               </p>
             </div>
@@ -272,9 +272,8 @@ export default function PetReportPage() {
               {brandSettings.businessName}
             </p>
             <p className="mt-2">
-              This report was generated by {brandSettings.appName} as a
-              structured nutrition guidance summary based on the active pet
-              profile.
+              Το report δημιουργήθηκε από το {brandSettings.appName} ως
+              οργανωμένη διατροφική σύνοψη με βάση το ενεργό προφίλ κατοικιδίου.
             </p>
           </div>
 
