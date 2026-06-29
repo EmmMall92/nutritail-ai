@@ -600,6 +600,8 @@ const requiredCardFlowCopy = [
   "Daily calorie guide",
   "Resting need:",
   "Final daily target:",
+  "Γράψε μια ρεαλιστική ηλικία σε χρόνια",
+  "Preparing reply...",
   "Treats: up to about",
   "What matters for this pet:",
   "The food cards below are the next step. Choose one option to estimate the daily portion.",
