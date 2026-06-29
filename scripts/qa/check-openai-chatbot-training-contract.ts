@@ -201,6 +201,27 @@ includesAll(
   "admin validation OpenAI runtime status"
 );
 
+const postDeployReadinessSource = readFileSync(
+  "scripts/qa/run-post-deploy-readiness.mjs",
+  "utf8"
+);
+includesAll(
+  postDeployReadinessSource,
+  [
+    "NUTRITAIL_QA_REFRESH_CHATBOT",
+    "--refresh-chatbot",
+    "qa:chatbot-golden-suite:fast",
+    "qa:chatbot-live-dashboard",
+    "Chatbot QA refreshed in this run",
+  ],
+  "post-deploy chatbot refresh gate"
+);
+expect(
+  postDeployReadinessSource.indexOf("qa:chatbot-golden-suite:fast") <
+    postDeployReadinessSource.indexOf("qa:chatbot-live-dashboard"),
+  "post-deploy refresh must run the fast golden suite before the live chatbot dashboard"
+);
+
 const responseComposerSource = readFileSync("lib/ai/responseComposer.ts", "utf8");
 includesAll(
   responseComposerSource,
