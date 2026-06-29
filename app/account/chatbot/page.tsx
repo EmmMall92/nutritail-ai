@@ -518,7 +518,7 @@ function formatRecommendationChoiceReason(
 
   return role === "value"
     ? "A simpler option with useful available data."
-    : "A strong fit based on this pet profile.";
+    : "A strong choice based on this pet profile.";
 }
 
 function formatRecommendationChoiceCaution(
@@ -1728,7 +1728,7 @@ function getFoodQualityNote(food: Record<string, unknown>, language: ChatLanguag
   if (status === "needs_review" || status === "unknown") {
     return isGreek
       ? "Δεν έχω ακόμη όλα τα στοιχεία της ετικέτας, οπότε το χρησιμοποιώ σαν πιθανό ταίριασμα και όχι σαν απόλυτη απάντηση."
-      : "I do not have every label detail yet, so I will treat this as a possible fit rather than an absolute answer.";
+      : "I do not have every label detail yet, so I will treat this as a possible choice rather than an absolute answer.";
   }
 
   return isGreek
@@ -2617,9 +2617,9 @@ function formatCustomerFoodFit(score?: number | null, language: ChatLanguage = "
     return language === "el" ? "χρήσιμη ένδειξη" : "useful context";
   }
 
-  if (score >= 80) return language === "el" ? "πολύ δυνατή επιλογή" : "strong fit";
-  if (score >= 60) return language === "el" ? "καλή επιλογή" : "good fit";
-  return language === "el" ? "πιο προσεκτική επιλογή" : "cautious fit";
+  if (score >= 80) return language === "el" ? "πολύ δυνατή επιλογή" : "strong choice";
+  if (score >= 60) return language === "el" ? "καλή επιλογή" : "good choice";
+  return language === "el" ? "πιο προσεκτική επιλογή" : "choice to review";
 }
 
 function parseSavedWeightGoal(value?: string | null): WeightGoal | undefined {

@@ -594,7 +594,7 @@ const requiredLocalizedFoodQualityNote = [
   "const isGreek = language === \"el\"",
   "qualityNote: getFoodQualityNote(matchedFood, chatLanguage)",
   "This food has enough label detail for a clearer nutrition discussion.",
-  "I do not have every label detail yet, so I will treat this as a possible fit rather than an absolute answer.",
+  "I do not have every label detail yet, so I will treat this as a possible choice rather than an absolute answer.",
 ];
 const missingLocalizedFoodQualityNote = requiredLocalizedFoodQualityNote.filter(
   (term) => !chatbotPage.includes(term)
