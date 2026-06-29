@@ -5224,7 +5224,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         createMessage(
           "bot",
           botText(
-            "Η ανάλυση αποθηκεύτηκε. Παρακάτω θα βρεις τα επόμενα βήματα: προφίλ, report, ιστορικό και έλεγχο προόδου.",
+            "Η ανάλυση αποθηκεύτηκε. Παρακάτω θα βρεις τα επόμενα βήματα: προφίλ, αναφορά, ιστορικό και έλεγχο προόδου.",
             "Saved. Your next steps are ready below: profile, report, timeline, and progress check."
           )
         )
@@ -5902,7 +5902,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
               <p className="mt-1 text-sm text-gray-700">
                 {botText(
-                  "Θα αποθηκευτούν το προφίλ κατοικιδίου, η τελευταία ανάλυση και το report στον λογαριασμό σου.",
+                  "Θα αποθηκευτούν το προφίλ κατοικιδίου, η τελευταία ανάλυση και η αναφορά στον λογαριασμό σου.",
                   "This will save the pet profile, latest nutrition analysis, and report entry in your account."
                 )}
               </p>
@@ -5979,7 +5979,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </p>
               <p className="mt-1 text-sm text-gray-700">
                 {botText(
-                  "Το προφίλ, το report και το ιστορικό είναι έτοιμα. Διάλεξε τι θέλεις να κάνεις τώρα.",
+                  "Το προφίλ, η αναφορά και το ιστορικό είναι έτοιμα. Διάλεξε τι θέλεις να κάνεις τώρα.",
                   "Your pet profile, report, timeline, and progress check are ready. Choose what you want to do next."
                 )}
               </p>
@@ -5991,7 +5991,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </p>
               <p className="mt-1 text-green-900">
                 {botText(
-                  "Άνοιξε πρώτα το report για να κρατήσεις τις θερμίδες, τη μερίδα και την επιλογή τροφής. Μετά από 2-4 εβδομάδες κάνε έλεγχο προόδου με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.",
+                  "Άνοιξε πρώτα την αναφορά για να κρατήσεις τις θερμίδες, τη μερίδα και την επιλογή τροφής. Μετά από 2-4 εβδομάδες κάνε έλεγχο προόδου με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.",
                   "Open the report first to keep calories, portion, and food choice in one place. After 2-4 weeks, run a progress check with updated weight, grams/day, and treats."
                 )}
               </p>
@@ -6014,7 +6014,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 className="rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700"
               >
                 <span className="block">
-                  {botText("Άνοιγμα report", "Open report")}
+                  {botText("Άνοιγμα αναφοράς", "Open report")}
                 </span>
                 <span className="mt-1 block text-xs font-normal text-green-50">
                   {botText("Εκτυπώσιμη σύνοψη για τον πελάτη.", "Printable customer summary.")}
