@@ -138,6 +138,13 @@ const fullChecks = [
     covers: "Live extraction, safety expectations, Food V2 candidates, and recommendation guards.",
   },
   {
+    name: "Live cat chatbot 100 cases",
+    command: "npm.cmd",
+    args: ["run", "qa:cat-chatbot-live-cases"],
+    covers:
+      "Live cat recommendation behavior across sterilised, kitten/growth, urinary, renal, weight-control, allergy, hairball, senior, fussy-eater, rescue, and climate scenarios.",
+  },
+  {
     name: "Dog chatbot quality audit",
     command: "npm.cmd",
     args: ["run", "audit:dog-chatbot-quality"],
@@ -170,6 +177,7 @@ const fastCheckNames = new Set([
   "Customer chatbot flow links",
   "Customer recommendation smoke",
   "Live dog chatbot smoke cases",
+  "Live cat chatbot 100 cases",
   "Customer-facing recommendation copy",
 ]);
 
@@ -227,7 +235,7 @@ const fastObjectiveCoverage = fullObjectiveCoverage.map((item) => {
     return {
       ...item,
       evidence:
-        "Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, and cat 001-500 coverage prove the large case bank is structurally sound and balanced. The fast suite runs representative live smoke cases for quick regression feedback; run the full or strict suite before release-level signoff.",
+        "Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, and cat live 100-case checks prove the large case bank is structurally sound and has live regression feedback.",
     };
   }
 
