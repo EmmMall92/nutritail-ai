@@ -53,6 +53,15 @@ const chatbotSuite = {
   layer: "dog/cat recommendation live QA, intake QA, response contracts, customer UX",
 };
 
+const advisorySuites = [
+  {
+    name: "OpenAI intake smoke",
+    source: "reports/openai_intake_smoke_qa.md",
+    command: "npm.cmd run qa:openai-intake-smoke",
+    layer: "structured pet-fact extraction through OpenAI when a key is available",
+  },
+];
+
 function readReport(relativePath) {
   return readFileSync(path.join(root, relativePath), "utf8");
 }
@@ -157,6 +166,52 @@ function parseStaticSuite(suite) {
   };
 }
 
+function parseOpenAiSmokeSuite(suite) {
+  if (!reportExists(suite.source)) {
+    return {
+      ...missingSuite(suite),
+      skipped: 0,
+      note: "report missing",
+    };
+  }
+
+  const text = readReport(suite.source);
+  const checked = parseNumber(text, [/- Cases checked:\s*(\d+)/i], `${suite.source} checked`);
+  const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
+  const failed = parseNumber(text, [/- Failed:\s*(\d+)/i], `${suite.source} failed`);
+  const skipped = parseNumber(text, [/- Skipped:\s*(\d+)/i], `${suite.source} skipped`);
+  const declaredStatus = text.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim().toLowerCase() ?? "unknown";
+  const runDate = parseRunDate(text);
+  const ageHours = reportAgeHours(runDate);
+  const stale = isStale(runDate);
+  const status =
+    failed > 0
+      ? "REVIEW"
+      : stale
+        ? "STALE"
+        : declaredStatus === "completed"
+          ? "PASS"
+          : declaredStatus === "skipped"
+            ? "SKIPPED"
+            : "REVIEW";
+
+  return {
+    ...suite,
+    checked,
+    passed,
+    failed,
+    skipped,
+    runDate,
+    ageHours,
+    age: formatAge(ageHours),
+    status,
+    note:
+      status === "SKIPPED"
+        ? "OPENAI_API_KEY was not available in this QA environment; production env is checked separately."
+        : declaredStatus,
+  };
+}
+
 function parseChatbotSuite(suite) {
   if (!reportExists(suite.source)) {
     return {
@@ -251,6 +306,7 @@ function percent(value, total) {
 const parsedRouteSuites = routeSuites.map(parseRouteSuite);
 const parsedStaticSuites = staticSuites.map(parseStaticSuite);
 const parsedChatbotSuite = parseChatbotSuite(chatbotSuite);
+const parsedAdvisorySuites = advisorySuites.map(parseOpenAiSmokeSuite);
 const allSuites = [...parsedRouteSuites, ...parsedStaticSuites, parsedChatbotSuite];
 const totals = allSuites.reduce(
   (acc, suite) => {
@@ -296,6 +352,7 @@ const lines = [
       ? `${nextStaleSuite.name} in ${formatRemaining(nextStaleRemainingHours)}`
       : "unknown"
   }`,
+  `- Advisory evidence suites: ${parsedAdvisorySuites.length}`,
   "",
   "## Readiness Evidence",
   "",
@@ -304,6 +361,17 @@ const lines = [
   ...allSuites.map(
     (suite) =>
       `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.runDate} | ${suite.age} |`,
+  ),
+  "",
+  "## Advisory Evidence",
+  "",
+  "These checks add confidence but do not block live readiness when skipped locally.",
+  "",
+  "| Suite | Layer | Source report | Command | Status | Checked | Passed | Failed | Skipped | Last run | Age | Note |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | ---: | --- |",
+  ...parsedAdvisorySuites.map(
+    (suite) =>
+      `| ${suite.name} | ${suite.layer} | \`${suite.source}\` | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} | ${suite.age} | ${suite.note} |`,
   ),
   "",
   "## Refresh Priority",
