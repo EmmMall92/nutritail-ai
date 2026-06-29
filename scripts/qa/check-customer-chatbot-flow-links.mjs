@@ -22,6 +22,26 @@ const checks = [
     expected: 'mode === "progress"',
   },
   {
+    label: "Chatbot stores language preference with a stable key",
+    file: "app/account/chatbot/page.tsx",
+    expected: "CHATBOT_LANGUAGE_STORAGE_KEY",
+  },
+  {
+    label: "Chatbot reads saved language preference from browser storage",
+    file: "app/account/chatbot/page.tsx",
+    expected: "window.localStorage.getItem(CHATBOT_LANGUAGE_STORAGE_KEY)",
+  },
+  {
+    label: "Chatbot persists language preference changes",
+    file: "app/account/chatbot/page.tsx",
+    expected: "window.localStorage.setItem(CHATBOT_LANGUAGE_STORAGE_KEY, chatLanguage)",
+  },
+  {
+    label: "Chatbot avoids overwriting saved language before initial load",
+    file: "app/account/chatbot/page.tsx",
+    expected: "skipInitialLanguageSaveRef.current",
+  },
+  {
     label: "Account dashboard progress action deep-links to saved pet",
     file: "app/account/page.tsx",
     expected: "/account/chatbot?petId=${latestPet.id}&mode=progress",
