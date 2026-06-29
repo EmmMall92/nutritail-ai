@@ -402,6 +402,11 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "Ταίριασμα τροφής",
+    reason: "Greek chatbot summary should use the same food suitability wording as account and report screens.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "food fit",
     reason: "Chatbot progress copy should use food suitability wording, not fit labels.",
   },

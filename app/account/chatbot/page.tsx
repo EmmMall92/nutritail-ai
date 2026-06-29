@@ -2673,7 +2673,7 @@ function formatLatestAnalysisSummary(
       : null,
     typeof getHistoryFoodScore(latest) === "number"
       ? language === "el"
-        ? `Ταίριασμα τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
+        ? `Καταλληλότητα τροφής: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
         : `Food suitability: ${formatCustomerFoodFit(getHistoryFoodScore(latest), language)}`
       : null,
   ].filter(Boolean);
