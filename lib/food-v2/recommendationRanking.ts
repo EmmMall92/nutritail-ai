@@ -1376,6 +1376,7 @@ function scoreFit(input: FoodV2RankingInput) {
         "Positioned for sensitive digestion."
       );
     } else if (goal === "sensitive_digestion") {
+      score -= 22;
       addSignal(
         signals,
         "caution",
@@ -1384,6 +1385,7 @@ function scoreFit(input: FoodV2RankingInput) {
         "Sensitive digestion cases should prefer digestive-positioned foods."
       );
     } else {
+      score -= 14;
       addSignal(
         signals,
         "caution",
@@ -1394,6 +1396,7 @@ function scoreFit(input: FoodV2RankingInput) {
     }
 
     if (hasWeightControlPositioning(haystack) && !hasDigestiveFit) {
+      score -= 18;
       addSignal(
         signals,
         "caution",
@@ -1403,6 +1406,7 @@ function scoreFit(input: FoodV2RankingInput) {
       );
     }
     if (hasAny(haystack, ["monoprotein", "mono protein", "single protein"]) && !hasDigestiveFit) {
+      score -= 24;
       addSignal(
         signals,
         "caution",
