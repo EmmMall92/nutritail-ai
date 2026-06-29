@@ -85,10 +85,10 @@ function getReadinessHelper(readiness: ReportReadiness) {
   }
 
   if (readiness === "needs_analysis") {
-    return "Κάνε μία ανάλυση στο chatbot για θερμίδες, προτάσεις και report.";
+    return "Κάνε μία ανάλυση στο chatbot για θερμίδες, προτάσεις και αναφορά.";
   }
 
-  return "Υπάρχει report, αλλά ίσως λείπουν λεπτομέρειες για συγκεκριμένη τροφή.";
+  return "Υπάρχει αναφορά, αλλά ίσως λείπουν λεπτομέρειες για συγκεκριμένη τροφή.";
 }
 
 function formatSpecies(value?: string) {
@@ -165,7 +165,7 @@ export default function AccountPetsPage() {
         <div>
           <h1 className="text-3xl font-bold text-black">Τα κατοικίδιά μου</h1>
           <p className="mt-2 text-gray-600">
-            Τα αποθηκευμένα κατοικίδια, τα διατροφικά reports και η πρόοδός τους.
+            Τα αποθηκευμένα κατοικίδια, οι διατροφικές αναφορές και η πρόοδός τους.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function AccountPetsPage() {
             </p>
           </div>
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">Έτοιμα reports</p>
+            <p className="text-sm text-gray-500">Έτοιμες αναφορές</p>
             <p className="mt-2 text-3xl font-bold text-black">
               {
                 pets.filter(
@@ -241,7 +241,7 @@ export default function AccountPetsPage() {
             </p>
             <p className="mt-2 max-w-xl text-sm text-gray-600">
               Ξεκίνα μία διατροφική ανάλυση και το NutriTail θα κρατήσει εδώ το
-              προφίλ του κατοικιδίου, το report και το ιστορικό του.
+              προφίλ του κατοικιδίου, την αναφορά και το ιστορικό του.
             </p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <Link

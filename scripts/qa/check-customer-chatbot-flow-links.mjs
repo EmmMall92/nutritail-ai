@@ -767,6 +767,51 @@ const forbiddenChecks = [
     forbidden: "Γενικό report",
   },
   {
+    label: "Pets list does not expose mixed-language ready reports wording",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Έτοιμα reports",
+  },
+  {
+    label: "Pets list does not expose mixed-language nutrition reports wording",
+    file: "app/account/pets/page.tsx",
+    forbidden: "διατροφικά reports",
+  },
+  {
+    label: "Pets list does not expose mixed-language report helper wording",
+    file: "app/account/pets/page.tsx",
+    forbidden: "Υπάρχει report",
+  },
+  {
+    label: "Pet detail does not expose mixed-language missing report wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "Δεν υπάρχει report ακόμη",
+  },
+  {
+    label: "Pet detail does not expose mixed-language first report wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "πρώτο διατροφικό report",
+  },
+  {
+    label: "Account profile does not expose mixed-language reports wording",
+    file: "app/account/profile/page.tsx",
+    forbidden: "κατοικίδια, reports",
+  },
+  {
+    label: "Saved chatbot analysis does not expose Greek report noun in next steps",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "προφίλ, report, ιστορικό",
+  },
+  {
+    label: "Saved chatbot analysis does not expose mixed-language open report action",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Άνοιγμα report",
+  },
+  {
+    label: "Saved chatbot analysis does not expose Greek report-first wording",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "Άνοιξε πρώτα το report",
+  },
+  {
     label: "Pet detail weight edit does not allow unrealistic legacy limit",
     file: "app/account/pets/[id]/page.tsx",
     forbidden: 'max="150"',

@@ -109,7 +109,7 @@ function getFoodScoreLabel(score?: number | null) {
 }
 
 function getReportReadiness(item?: AnalysisHistoryItem) {
-  if (!item) return "Δεν υπάρχει report ακόμη";
+  if (!item) return "Δεν υπάρχει αναφορά ακόμη";
   if (item.matched_food_name && item.feeding_grams_per_day) {
     return "Έτοιμο για χρήση";
   }
@@ -143,7 +143,7 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
 
 function getResultStatusDetail(item?: AnalysisHistoryItem) {
   if (!item) {
-    return "Ξεκίνα ανάλυση στο chatbot για θερμίδες, προτάσεις τροφής, report και ιστορικό.";
+    return "Ξεκίνα ανάλυση στο chatbot για θερμίδες, προτάσεις τροφής, αναφορά και ιστορικό.";
   }
 
   if (item.matched_food_name && item.feeding_grams_per_day) {
@@ -1084,7 +1084,7 @@ export default function AccountPetDetailPage() {
             <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5">
               <p className="font-semibold text-black">Δεν υπάρχει ιστορικό ανάλυσης ακόμη</p>
               <p className="mt-2 text-sm text-gray-600">
-                Κάνε νέα ανάλυση για να δημιουργηθεί το πρώτο διατροφικό report
+                Κάνε νέα ανάλυση για να δημιουργηθεί η πρώτη διατροφική αναφορά
                 και η πρώτη εγγραφή ιστορικού.
               </p>
               <Link
