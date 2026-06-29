@@ -1,6 +1,6 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-29T22:51:03.462Z
+Generated: 2026-06-29T23:35:19.316Z
 
 ## Summary
 
@@ -69,7 +69,7 @@ Generated: 2026-06-29T22:51:03.462Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -86,7 +86,7 @@ Generated: 2026-06-29T22:51:03.462Z
 ### Chatbot intake cleanup
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.7s
 - Command: `npm.cmd run qa:chatbot-intake-cleanup`
 
 ```text
@@ -107,7 +107,7 @@ Generated: 2026-06-29T22:51:03.462Z
 ### Dog edge fixture 101-200
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:dog-edge-fixture`
 
 ```text
@@ -227,7 +227,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Nutrition source-map intake
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.7s
 - Command: `npm.cmd run qa:nutrition-source-map-intake`
 
 ```text
@@ -243,7 +243,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 65.4s
+- Duration: 65.1s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -269,7 +269,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:food-v2-guard-coverage
 > node scripts/qa/check-food-v2-guard-coverage.mjs
 {
-  "checkedExcludeSignals": 17,
+  "checkedExcludeSignals": 18,
   "missing": 0
 }
 ```
@@ -277,7 +277,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Chatbot portion estimates
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:chatbot-portions`
 
 ```text
@@ -310,7 +310,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer recommendation smoke
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:customer-recommendation-smoke`
 
 ```text
@@ -331,14 +331,14 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 44.2s
+- Duration: 44.9s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
-> nutritail@0.1.0 qa:dog-chatbot-live-smoke
-> node scripts/qa/run-dog-chatbot-live-smoke.mjs
-> nutritail@0.1.0 qa:dog-chatbot-live-cases
-> tsx scripts/qa/run-dog-chatbot-live-cases.ts
+PASS dog-153: Έχω σκύλο με ιστορικό οξαλικών λίθων.
+PASS dog-154: Έχω σκύλο με χρόνια νεφρική νόσο.
+PASS dog-181: Έχω σκύλο 16 ετών.
+PASS dog-200: Έχω σκύλο rescue που βρέθηκε υποσιτισμένος.
 {
   "siteUrl": "https://nutritail.ai",
   "openaiExtraction": "skipped",
@@ -352,14 +352,14 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot 201-600 smoke cases
 
 - Status: pass
-- Duration: 39.8s
+- Duration: 40.0s
 - Command: `npm.cmd run qa:dog-chatbot-live-201-600-smoke`
 
 ```text
-> nutritail@0.1.0 qa:dog-chatbot-live-201-600-smoke
-> node scripts/qa/run-dog-chatbot-live-201-600-smoke.mjs
-> nutritail@0.1.0 qa:dog-chatbot-live-cases
-> tsx scripts/qa/run-dog-chatbot-live-cases.ts
+PASS dog-521: Labrador 4 μηνών, 14kg.
+PASS dog-541: Κουτάβι με αλλεργία στο κοτόπουλο.
+PASS dog-561: Κουτάβι με διάρροια μετά από αλλαγή τροφής.
+PASS dog-600: Κουτάβι που θέλει την καλύτερη δυνατή τροφή ανεξαρτήτως κόστους.
 {
   "siteUrl": "https://nutritail.ai",
   "openaiExtraction": "skipped",
@@ -373,7 +373,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live cat chatbot 100 cases
 
 - Status: pass
-- Duration: 128.8s
+- Duration: 119.0s
 - Command: `npm.cmd run qa:cat-chatbot-live-cases`
 
 ```text

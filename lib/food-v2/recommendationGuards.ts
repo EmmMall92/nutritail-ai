@@ -168,6 +168,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Senior shortlists should prefer foods with senior positioning visible to customers.",
   },
+  gas_context_monoprotein_without_digestive_support: {
+    code: "gas_context_monoprotein_without_digestive_support",
+    severity: "block",
+    fallbackMessage:
+      "Chronic gas contexts need visible digestive, sensitive, or GI support rather than monoprotein positioning alone.",
+  },
   adjacent_dog_size_mismatch: {
     code: "adjacent_dog_size_mismatch",
     severity: "warning",
