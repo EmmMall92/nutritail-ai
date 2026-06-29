@@ -446,7 +446,7 @@ function sectionTitle(
   if (goal === "value") {
     if (locale === "el") {
       return role === "premium"
-        ? "Πρώτες value επιλογές:"
+        ? "Πρώτες οικονομικές επιλογές:"
         : "Πιο δυνατές διατροφικά εναλλακτικές:";
     }
 
@@ -456,7 +456,7 @@ function sectionTitle(
   }
 
   if (locale === "el") {
-    return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο απλές / value επιλογές:";
+    return role === "premium" ? "Καλύτερες διατροφικά επιλογές:" : "Πιο οικονομικές / πρακτικές επιλογές:";
   }
 
   return role === "premium" ? "First picks:" : "Simple alternatives:";

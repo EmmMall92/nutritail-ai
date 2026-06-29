@@ -268,6 +268,13 @@ if (leakedTerms.length > 0) {
   process.exit(1);
 }
 
+const greekCustomerText = `${greekSample}\n${compactGreekCardsSample}\n${greekAdapterText}`;
+if (/\bvalue\b/i.test(greekCustomerText)) {
+  console.error("Greek customer-facing recommendation should not expose the English 'value' label:");
+  console.error(greekCustomerText);
+  process.exit(1);
+}
+
 if (
   !greekAdapterPlan.title.includes("Προτάσεις τροφής") ||
   !greekAdapterText.includes("Καλύτερες διατροφικά επιλογές") ||
@@ -702,7 +709,7 @@ const requiredGreekCardFlowCopy = [
   "3. Πάρε",
   "Με μια ματιά",
   "Η πιο δυνατή πρώτη επιλογή για το προφίλ που έδωσες.",
-  "Πιο απλή/value εναλλακτική",
+  "Πιο οικονομική / πρακτική εναλλακτική",
   "Καλή εναλλακτική, αν θέλεις να δεις κι άλλη σωστή κατεύθυνση.",
   "Πώς να το διαβάσεις:",
   "Επόμενο βήμα: πες μου ποια από αυτές σε ενδιαφέρει",
