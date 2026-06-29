@@ -45,6 +45,7 @@ type DogQaCase = {
     activeFit?: boolean;
     medicalNoTreatment?: boolean;
     foodV2Candidates?: boolean;
+    preferredProteinTop?: string[];
   };
 };
 
@@ -1044,6 +1045,16 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.checks?.allergyReject?.length && hasAny(top, testCase.checks.allergyReject)) {
     warnings.push(`Top recommendations may conflict with allergy/rejection: ${testCase.checks.allergyReject.join(", ")}`);
+  }
+
+  if (testCase.checks?.preferredProteinTop?.length && top.length > 0) {
+    const first = top[0];
+    const preferredTerms = testCase.checks.preferredProteinTop;
+    if (!hasAny([first], preferredTerms)) {
+      warnings.push(
+        `Top recommendation does not visibly match preferred protein/flavour: ${preferredTerms.join(", ")}`
+      );
+    }
   }
 
   if (testCase.goal === "renal" && top.length > 0 && !hasAnyInFirst(top, ["renal", "kidney"], 3)) {

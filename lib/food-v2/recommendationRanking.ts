@@ -2034,9 +2034,14 @@ export function rankFoodV2ForPet(input: FoodV2RankingInput): FoodV2RankingResult
   const preferredProteinTieBreaker =
     (input.pet.preferredProteins ?? []).length > 0
       ? signals.some((signal) => signal.code === "preferred_protein_match")
-        ? input.goal === "sterilised" || input.goal === "weight_control"
-          ? 8
-          : 4
+        ? (input.goal === "sterilised" || input.goal === "weight_control"
+            ? 8
+            : 4) +
+          (signals.some((signal) => signal.code === "preferred_protein_visible_match")
+            ? input.goal === "sterilised" || input.goal === "weight_control"
+              ? 8
+              : 3
+            : 0)
         : signals.some((signal) => signal.code === "preferred_protein_missing")
           ? input.goal === "sterilised" || input.goal === "weight_control"
             ? -4
@@ -2082,6 +2087,26 @@ export function splitFoodV2Recommendations(
   limitPerBucket = 3,
   goal?: FoodV2RecommendationGoal
 ) {
+  function visiblePreferenceSortBonus(ranking: FoodV2RankingResult) {
+    return ranking.signals.some(
+      (signal) => signal.code === "preferred_protein_visible_match"
+    )
+      ? 1
+      : 0;
+  }
+
+  function compareCustomerRecommendations(
+    a: FoodV2RankingResult,
+    b: FoodV2RankingResult
+  ) {
+    return (
+      b.total_score - a.total_score ||
+      visiblePreferenceSortBonus(b) - visiblePreferenceSortBonus(a) ||
+      b.quality_score - a.quality_score ||
+      b.value_score - a.value_score
+    );
+  }
+
   function duplicateKey(ranking: FoodV2RankingResult) {
     const brand = normalizeText(ranking.brand);
     const displayTokens = normalizeText(ranking.display_name)
@@ -2108,7 +2133,7 @@ export function splitFoodV2Recommendations(
   const usable = dedupeByCustomerName(
     rankings
       .filter((ranking) => ranking.bucket !== "hold")
-      .sort((a, b) => b.total_score - a.total_score)
+      .sort(compareCustomerRecommendations)
   );
   const premium = usable.filter((ranking) => ranking.bucket === "premium");
   const value = usable
