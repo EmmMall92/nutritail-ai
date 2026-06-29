@@ -3385,7 +3385,7 @@ export default function AccountChatbotPage() {
     );
   }
 
-  function startNewPetFromPetChoice(
+  async function startNewPetFromPetChoice(
     text: string,
     extracted?: AiIntakeExtraction | null
   ) {
@@ -3402,6 +3402,15 @@ export default function AccountChatbotPage() {
     const startingPet = sanitizePetIntake({
       ...extractedPet,
       species: species ?? extractedPet.species,
+      healthAnswered:
+        extractedPet.healthAnswered ||
+        hasNoHealthIssueAnswer(text) ||
+        (extracted?.healthIssues?.length ?? 0) > 0 ||
+        (extracted?.allergies?.length ?? 0) > 0,
+      currentFoodAnswered:
+        extractedPet.currentFoodAnswered ||
+        isUnknownFoodAnswer(text) ||
+        Boolean(extractedPet.currentFoodName),
     });
 
     setSelectedPetId(null);
@@ -3411,12 +3420,7 @@ export default function AccountChatbotPage() {
     setRecommendedFoodChoices([]);
     setPet(startingPet);
 
-    if (!startingPet.species) {
-      askNextMissingIntakeQuestion(startingPet);
-      return true;
-    }
-
-    askNextMissingIntakeQuestion(startingPet);
+    await continueIntakeOrRunAnalysis(startingPet);
     return true;
   }
 
@@ -4511,7 +4515,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (compareQueries.length >= 2 && step !== "analysis") {
       if (step === "petChoice") {
         setPendingCompareQueries(compareQueries);
-        startNewPetFromPetChoice(text, null);
+        await startNewPetFromPetChoice(text, null);
         return;
       }
 
@@ -4542,7 +4546,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "petChoice") {
       if (isNewPetRequest(text) || parseSpeciesInput(text) || workingPet.species) {
-        startNewPetFromPetChoice(text, intakeExtraction?.data);
+        await startNewPetFromPetChoice(text, intakeExtraction?.data);
         return;
       }
 
