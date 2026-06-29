@@ -4782,7 +4782,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         addMessages(
           createMessage(
             "bot",
-            `Please enter a realistic age in years, for example 3. Maximum supported age is ${MAX_PET_AGE_YEARS}.`
+            botText(
+              `Γράψε μια ρεαλιστική ηλικία σε χρόνια, π.χ. 3. Μέγιστη υποστηριζόμενη ηλικία: ${MAX_PET_AGE_YEARS}.`,
+              `Please enter a realistic age in years, for example 3. Maximum supported age is ${MAX_PET_AGE_YEARS}.`
+            )
           )
         );
 
@@ -6007,6 +6010,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
         {inputHelper && (
           <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
+        )}
+
+        {isProcessingMessage && !isAnalyzing && !isSaving && (
+          <p className="mb-2 text-xs font-medium leading-5 text-emerald-700">
+            {botText("Το ετοιμάζω...", "Preparing reply...")}
+          </p>
         )}
 
         <div className="flex items-end gap-2 sm:gap-3">
