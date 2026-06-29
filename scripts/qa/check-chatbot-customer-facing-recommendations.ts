@@ -90,6 +90,17 @@ const greekAdapterText = [
   greekAdapterPlan.followUpQuestion,
 ].join("\n");
 
+const requiredCleanGreekAdapterCopy = [
+  "Προτάσεις τροφής",
+  "στειρωμένο κατοικίδιο",
+  "Βρήκα επιλογές χωρισμένες σε δυνατές διατροφικά",
+  "Καλύτερες διατροφικά επιλογές",
+  "ταιριάζει σε ενήλικο κατοικίδιο",
+  "δυνατή επιλογή",
+  "Οι προτάσεις είναι διατροφική καθοδήγηση, όχι διάγνωση ή θεραπεία.",
+  "Θέλεις να δούμε και πιο οικονομικές επιλογές",
+];
+
 const coreScenarioSamples = [
   {
     label: "sterilised small dog",
@@ -263,6 +274,17 @@ if (
   /Ξ|Ξ|Ξ |Ο€|οΏ½/.test(greekAdapterText)
 ) {
   console.error("Food V2 recommendation response adapter should render clean Greek customer copy.");
+  console.error(greekAdapterText);
+  process.exit(1);
+}
+
+const missingCleanGreekAdapterCopy = requiredCleanGreekAdapterCopy.filter(
+  (term) => !greekAdapterText.includes(term)
+);
+
+if (missingCleanGreekAdapterCopy.length > 0) {
+  console.error("Food V2 recommendation response adapter is missing clean Greek customer copy:");
+  console.error(missingCleanGreekAdapterCopy.join(", "));
   console.error(greekAdapterText);
   process.exit(1);
 }
