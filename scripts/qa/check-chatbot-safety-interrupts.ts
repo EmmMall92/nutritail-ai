@@ -53,6 +53,14 @@ const cases: SafetyCase[] = [
     expectedCode: "male_cat_no_urine",
   },
   {
+    id: "english-male-cat-cannot-pee",
+    message: "Male cat, 5kg, keeps going to the litter box, cries, and cannot pee.",
+    species: "cat",
+    expectedHardStop: true,
+    expectedInterrupt: true,
+    expectedCode: "male_cat_no_urine",
+  },
+  {
     id: "blood-urine-el",
     message: "Γάτα με αίμα στα ούρα",
     species: "cat",
