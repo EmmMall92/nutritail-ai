@@ -396,6 +396,11 @@ const bannedExactCustomerStrings = [
     reason: "Chatbot summary should use customer wording such as selected food, not matching internals.",
   },
   {
+    file: "lib/food-v2/chatbotRecommendationSummary.ts",
+    text: "What I matched for",
+    reason: "Food V2 customer summaries should use recommendation-focus wording instead of matching internals.",
+  },
+  {
     file: "app/account/chatbot/page.tsx",
     text: "No matched food",
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",

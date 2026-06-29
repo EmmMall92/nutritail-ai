@@ -312,7 +312,7 @@ if (missingCleanGreekAdapterCopy.length > 0) {
 for (const scenario of coreScenarioSamples) {
   if (
     !scenario.text.includes(
-      `What I matched for: ${scenario.expectedGoalLabel}.`
+      `Recommendation focus: ${scenario.expectedGoalLabel}.`
     )
   ) {
     console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
