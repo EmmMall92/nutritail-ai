@@ -6,6 +6,8 @@ const reportPath =
 
 const customerCopyFiles = [
   "app/page.tsx",
+  "app/privacy/page.tsx",
+  "app/terms/page.tsx",
   "app/login/page.tsx",
   "app/register/page.tsx",
   "app/forgot-password/page.tsx",
@@ -102,6 +104,36 @@ const bannedExactCustomerStrings = [
     file: "app/page.tsx",
     text: "Clear recommendations, with confidence you can understand.",
     reason: "Homepage trust copy should be localized for customers.",
+  },
+  {
+    file: "app/privacy/page.tsx",
+    text: "Privacy Policy",
+    reason: "Privacy page heading and metadata should be localized for customers.",
+  },
+  {
+    file: "app/privacy/page.tsx",
+    text: "Information we collect",
+    reason: "Privacy page section headings should be localized for customers.",
+  },
+  {
+    file: "app/privacy/page.tsx",
+    text: "Back to home",
+    reason: "Privacy page navigation should be localized for customers.",
+  },
+  {
+    file: "app/terms/page.tsx",
+    text: "Terms of Use",
+    reason: "Terms page heading and metadata should be localized for customers.",
+  },
+  {
+    file: "app/terms/page.tsx",
+    text: "Educational guidance only",
+    reason: "Terms page section headings should be localized for customers.",
+  },
+  {
+    file: "app/terms/page.tsx",
+    text: "Back to home",
+    reason: "Terms page navigation should be localized for customers.",
   },
   {
     file: "app/login/page.tsx",
