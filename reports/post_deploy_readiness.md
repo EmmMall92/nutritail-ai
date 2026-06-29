@@ -1,6 +1,6 @@
 # NutriTail Post-Deploy Readiness
 
-Generated: 2026-06-29T23:22:17.913Z
+Generated: 2026-06-29T23:38:45.908Z
 Result: PASS
 
 This report is the quick post-deploy command summary for the live NutriTail surface.
@@ -20,12 +20,12 @@ It refreshes the core route, Food V2, account, OpenAI env, and readiness evidenc
 
 | Step | Command | Status | Duration |
 | --- | --- | --- | ---: |
-| Public launch live routes | `npm.cmd run qa:public-launch-live-routes` | PASS | 1.6s |
-| Food V2 live routes | `npm.cmd run qa:food-v2-live-routes` | PASS | 1.9s |
-| Account progress live routes | `npm.cmd run qa:account-progress-live-routes` | PASS | 2.4s |
+| Public launch live routes | `npm.cmd run qa:public-launch-live-routes` | PASS | 6.5s |
+| Food V2 live routes | `npm.cmd run qa:food-v2-live-routes` | PASS | 4.3s |
+| Account progress live routes | `npm.cmd run qa:account-progress-live-routes` | PASS | 4.7s |
 | Customer chatbot flow links | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 0.5s |
-| Vercel OpenAI production env | `npm.cmd run qa:vercel-openai-env` | PASS | 3.1s |
-| Live readiness dashboard | `npm.cmd run qa:live-readiness-dashboard` | PASS | 0.5s |
+| Vercel OpenAI production env | `npm.cmd run qa:vercel-openai-env` | PASS | 3.0s |
+| Live readiness dashboard | `npm.cmd run qa:live-readiness-dashboard` | PASS | 0.4s |
 
 ## Notes
 
