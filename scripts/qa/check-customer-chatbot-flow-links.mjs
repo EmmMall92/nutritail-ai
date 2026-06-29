@@ -127,6 +127,21 @@ const checks = [
     expected: "/account/chatbot?petId=${savedPetId}&mode=progress",
   },
   {
+    label: "Account chatbot uses the authenticated save endpoint",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'fetch("/api/account/chatbot/save"',
+  },
+  {
+    label: "Legacy chatbot save endpoint is disabled",
+    file: "app/api/chatbot/save/route.ts",
+    expected: "{ status: 410 }",
+  },
+  {
+    label: "Legacy chatbot save points to the account save endpoint",
+    file: "app/api/chatbot/save/route.ts",
+    expected: "/api/account/chatbot/save",
+  },
+  {
     label: "Recommendation cards preview grams before choosing food",
     file: "app/account/chatbot/page.tsx",
     expected: "getRecommendationChoicePortionPreview",
