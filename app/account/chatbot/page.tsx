@@ -54,6 +54,10 @@ type ActivityLevel = "low" | "normal" | "high";
 type WeightGoal = "maintain" | "loss" | "gain";
 type ChatLanguage = "el" | "en";
 
+const CHATBOT_LANGUAGE_STORAGE_KEY = "nutritail.accountChatbot.language";
+const ENGLISH_CHATBOT_WELCOME =
+  "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet.";
+
 const MAX_DOG_WEIGHT_KG = 90;
 const MAX_CAT_WEIGHT_KG = 15;
 const MAX_PET_AGE_YEARS = 40;
@@ -3326,6 +3330,7 @@ export default function AccountChatbotPage() {
   const router = useRouter();
   const pathname = usePathname();
   const handledDeepLinkRef = useRef<string | null>(null);
+  const skipInitialLanguageSaveRef = useRef(true);
   const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -3378,6 +3383,43 @@ export default function AccountChatbotPage() {
 
     return chatLanguage === "el" ? repairCustomerGreekText(el) : en;
   }, [chatLanguage]);
+
+  useEffect(() => {
+    try {
+      const storedLanguage = window.localStorage.getItem(CHATBOT_LANGUAGE_STORAGE_KEY);
+      if (storedLanguage !== "el" && storedLanguage !== "en") return;
+
+      setChatLanguage(storedLanguage);
+      if (storedLanguage === "en") {
+        setMessages((currentMessages) => {
+          if (
+            currentMessages.length === 1 &&
+            currentMessages[0]?.role === "bot"
+          ) {
+            return [createMessage("bot", ENGLISH_CHATBOT_WELCOME)];
+          }
+
+          return currentMessages;
+        });
+      }
+    } catch {
+      // Keep the default Greek experience when browser storage is unavailable.
+    }
+  }, []);
+
+  useEffect(() => {
+    if (skipInitialLanguageSaveRef.current) {
+      skipInitialLanguageSaveRef.current = false;
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CHATBOT_LANGUAGE_STORAGE_KEY, chatLanguage);
+    } catch {
+      // Language persistence is a convenience; chat should still work without it.
+    }
+  }, [chatLanguage]);
+
   const quickReplies = getQuickReplies(step, chatLanguage);
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
