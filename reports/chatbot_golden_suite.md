@@ -1,13 +1,13 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-29T05:22:22.323Z
+Generated: 2026-06-29T21:58:23.847Z
 
 ## Summary
 
 - Mode: fast
 - Per-check timeout: 180s
-- Checks run: 19/19
-- Passed: 19
+- Checks run: 21/21
+- Passed: 21
 - Failed: 0
 
 ## Coverage
@@ -30,13 +30,15 @@ Generated: 2026-06-29T05:22:22.323Z
 - Customer chatbot flow links: Saved analysis next steps, pet profile/report/timeline/progress links, and customer-facing recommendation card actions.
 - Customer recommendation smoke: Customer-facing summaries for sterilised, weight loss, allergy, GI, urinary, renal, growth, active, and senior scenarios stay simple and card-action oriented.
 - Live dog chatbot smoke cases: Representative live dog chatbot smoke cases across growth, sterilised, allergy, urinary, renal, active, senior, and rescue contexts.
+- Live dog chatbot 201-600 smoke cases: Representative live dog scenarios from the 201-600 bank across picky eating, pregnancy, urinary, underweight, allergy, climate, rescue, sterilised, value, active, puppy, and premium requests.
+- Live cat chatbot 100 cases: Live cat recommendation behavior across sterilised, kitten/growth, urinary, renal, weight-control, allergy, hairball, senior, fussy-eater, rescue, and climate scenarios.
 - Customer-facing recommendation copy: No back-office wording in customer chatbot recommendations and card action flow.
 
 ## Objective Coverage
 
 - 1. Recommendation accuracy: Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-breed puppy, and active-dog logic.
 - 2. Customer-facing answer quality: Customer recommendation copy, customer recommendation smoke, and customer chatbot flow links guard against back-office wording and verify food-card action flow.
-- 3. Large dog/cat live chatbot case coverage: Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, and cat 001-500 coverage prove the large case bank is structurally sound and balanced. The fast suite runs representative live smoke cases for quick regression feedback; run the full or strict suite before release-level signoff.
+- 3. Large dog/cat live chatbot case coverage: Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, and cat live 100-case checks prove the large case bank is structurally sound and has live regression feedback.
 - 4. Brand data cleanup: Title/source/duplicate/product-form QA scripts keep customer-facing food names, duplicate risks, and non-complete-food guards visible.
 - 5. Food Intelligence: Food Intelligence use-case QA checks strengths, cautions, best use cases, and not-ideal cases for major nutrition contexts.
 - 6. End-to-end user experience: Customer flow links cover account chatbot, report, timeline, progress, and food-selection next steps. The fast suite skips slower live route checks; run the full or strict suite for live route signoff.
@@ -67,7 +69,7 @@ Generated: 2026-06-29T05:22:22.323Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -177,7 +179,7 @@ Dog edge case fixture QA passed.
 ### Food Intelligence use cases
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:food-intelligence-use-cases`
 
 ```text
@@ -241,7 +243,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 63.0s
+- Duration: 68.3s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -250,8 +252,8 @@ Pancreatitis and fat-sensitive v2 QA passed.
 {
   "siteUrl": "https://nutritail.ai",
   "scenarioSource": "data/evals/food-v2-recommendation-scenarios.json",
-  "checked": 34,
-  "passed": 34,
+  "checked": 35,
+  "passed": 35,
   "review": 0,
   "report": "reports/food_v2_ranking_scenario_audit.md"
 }
@@ -267,7 +269,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:food-v2-guard-coverage
 > node scripts/qa/check-food-v2-guard-coverage.mjs
 {
-  "checkedExcludeSignals": 16,
+  "checkedExcludeSignals": 17,
   "missing": 0
 }
 ```
@@ -291,15 +293,15 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer chatbot flow links
 
 - Status: pass
-- Duration: 0.4s
+- Duration: 0.5s
 - Command: `npm.cmd run qa:customer-chatbot-flow-links`
 
 ```text
 > nutritail@0.1.0 qa:customer-chatbot-flow-links
 > node scripts/qa/check-customer-chatbot-flow-links.mjs
 {
-  "checked": 147,
-  "passed": 147,
+  "checked": 220,
+  "passed": 220,
   "failed": 0,
   "report": "reports/customer_chatbot_flow_links_qa.md"
 }
@@ -329,7 +331,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 43.1s
+- Duration: 46.0s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
@@ -345,6 +347,48 @@ Pancreatitis and fat-sensitive v2 QA passed.
   "review": 0,
   "report": "reports/dog_chatbot_live_smoke.md"
 }
+```
+
+### Live dog chatbot 201-600 smoke cases
+
+- Status: pass
+- Duration: 41.8s
+- Command: `npm.cmd run qa:dog-chatbot-live-201-600-smoke`
+
+```text
+> nutritail@0.1.0 qa:dog-chatbot-live-201-600-smoke
+> node scripts/qa/run-dog-chatbot-live-201-600-smoke.mjs
+> nutritail@0.1.0 qa:dog-chatbot-live-cases
+> tsx scripts/qa/run-dog-chatbot-live-cases.ts
+{
+  "siteUrl": "https://nutritail.ai",
+  "openaiExtraction": "skipped",
+  "checked": 20,
+  "passed": 20,
+  "review": 0,
+  "report": "reports/dog_chatbot_live_201_600_smoke.md"
+}
+```
+
+### Live cat chatbot 100 cases
+
+- Status: pass
+- Duration: 130.0s
+- Command: `npm.cmd run qa:cat-chatbot-live-cases`
+
+```text
+PASS cat-091: Rescue γάτα με άγνωστη ηλικία.
+PASS cat-092: Rescue γάτα με άγνωστο ιστορικό.
+PASS cat-093: Rescue γάτα υποσιτισμένη.
+PASS cat-094: Rescue γάτα πολύ φοβική.
+PASS cat-095: Rescue γάτα που τρώει λαίμαργα.
+PASS cat-096: Γάτα σε σπίτι με 5 γάτες.
+PASS cat-097: Γάτα που μοιράζεται την τροφή με άλλη γάτα.
+PASS cat-098: Γάτα σε πολύ ζεστό κλίμα.
+PASS cat-099: Γάτα σε πολύ ψυχρό κλίμα.
+PASS cat-100: Γάτα που θέλει την καλύτερη δυνατή τροφή ανεξαρτήτως κόστους.
+Wrote reports/cat_chatbot_live_cases_1-100.md
+Result: 100/100 passed, 0 review
 ```
 
 ### Customer-facing recommendation copy

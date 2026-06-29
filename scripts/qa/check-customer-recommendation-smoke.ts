@@ -211,7 +211,7 @@ const scenarios: Array<{
       value: [],
       hold: [],
     },
-    expected: ["general fit", "basic profile"],
+    expected: ["general recommendation", "basic profile"],
   },
   {
     label: "senior dog",
