@@ -1049,6 +1049,31 @@ const forbiddenChecks = [
     forbidden: "MER delta:",
   },
   {
+    label: "Printable timeline does not expose check-ins wording",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "check-ins",
+  },
+  {
+    label: "Printable timeline does not expose follow-ups wording",
+    file: "app/print/pet-timeline/[id]/page.tsx",
+    forbidden: "Follow-ups",
+  },
+  {
+    label: "Pet detail does not expose check-ins wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "check-ins",
+  },
+  {
+    label: "Pet detail does not expose check-in wording",
+    file: "app/account/pets/[id]/page.tsx",
+    forbidden: "check-in",
+  },
+  {
+    label: "Printable report does not expose check-in wording",
+    file: "app/print/pet-report/[id]/page.tsx",
+    forbidden: "check-in",
+  },
+  {
     label: "Chatbot calorie explanation does not expose RER acronym",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Resting calories (RER)",
