@@ -375,7 +375,7 @@ if (!greekSample.includes("παγκρεατίτιδας")) {
   process.exit(1);
 }
 
-if (!compactCardsSample.includes("I found the strongest choices and placed them below as cards")) {
+if (!compactCardsSample.includes("I found the best first choices and placed them below as cards")) {
   console.error("Compact card-facing recommendation should point to the cards.");
   console.error(compactCardsSample);
   process.exit(1);
@@ -502,8 +502,8 @@ if (missingComposerNameCleanup.length > 0) {
 }
 
 const requiredCompactComposerFlow = [
-  "The strongest choices are in the cards below.",
-  "Tap one card to see estimated grams/day.",
+  "The best first choices are in the cards below.",
+  "Tap one card to see the first daily portion in grams.",
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
   "If cards_follow is true, use at most 4 short sentences",
@@ -633,13 +633,13 @@ const requiredCardFlowCopy = [
   "Choose the food to start with",
   "Next: estimate the daily portion.",
   "Get grams",
-  "The first card is the strongest starting point. The others are good options if they fit flavour, brand, or budget better.",
+  "The first card is the best first choice. The others are good options if flavour, brand, or budget fits you better.",
   "Pick the food you like to get the first daily portion in grams.",
   "1. Compare",
   "2. Choose",
   "3. Get",
   "At a glance",
-  "Strongest starting choice for this pet's profile.",
+  "Best first choice for this pet's profile.",
   "Practical alternative when you want a simpler option.",
   "Another suitable option if you want a different direction.",
   "Your nutrition plan is ready:",
@@ -772,7 +772,7 @@ const requiredGreekCardFlowCopy = [
   "Πάρε γραμμάρια/ημέρα",
   "Διάλεξε την τροφή που σου ταιριάζει",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-  "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση.",
+  "Η πρώτη κάρτα είναι η καλύτερη πρώτη επιλογή.",
   "Πάτησε την τροφή που σου αρέσει",
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",

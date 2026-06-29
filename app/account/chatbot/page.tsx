@@ -1054,7 +1054,7 @@ function getRecommendationChoiceRoleSummary(
 ) {
   if (language === "el") {
     if (index === 0) {
-      return "\u0397 \u03c0\u03b9\u03bf \u03b4\u03c5\u03bd\u03b1\u03c4\u03ae \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb \u03c0\u03bf\u03c5 \u03ad\u03b4\u03c9\u03c3\u03b5\u03c2.";
+      return "\u0397 \u03ba\u03b1\u03bb\u03cd\u03c4\u03b5\u03c1\u03b7 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb \u03c0\u03bf\u03c5 \u03ad\u03b4\u03c9\u03c3\u03b5\u03c2.";
     }
 
     if (choice.role === "value") {
@@ -1065,7 +1065,7 @@ function getRecommendationChoiceRoleSummary(
   }
 
   if (index === 0) {
-    return "Strongest starting choice for this pet's profile.";
+    return "Best first choice for this pet's profile.";
   }
 
   if (choice.role === "value") {
@@ -5574,8 +5574,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Η πρώτη κάρτα είναι η πιο δυνατή αρχική πρόταση. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
-                "The first card is the strongest starting point. The others are good options if they fit flavour, brand, or budget better."
+                "Η πρώτη κάρτα είναι η καλύτερη πρώτη επιλογή. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
+                "The first card is the best first choice. The others are good options if flavour, brand, or budget fits you better."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
@@ -5590,7 +5590,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("1. Σύγκρινε", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("τι ταιριάζει καλύτερα", "the strongest choice")}
+                  {botText("τι ταιριάζει καλύτερα", "the best first choice")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
