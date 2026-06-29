@@ -88,6 +88,16 @@ const bannedExactCustomerStrings = [
     reason: "Login recovery link should be localized for customers.",
   },
   {
+    file: "app/login/page.tsx",
+    text: "Enter your email and password to continue.",
+    reason: "Login validation copy should be localized for customers.",
+  },
+  {
+    file: "app/login/page.tsx",
+    text: "Login failed.",
+    reason: "Login fallback error copy should be localized for customers.",
+  },
+  {
     file: "app/register/page.tsx",
     text: "Creating account...",
     reason: "Register loading copy should be localized for customers.",
@@ -96,6 +106,16 @@ const bannedExactCustomerStrings = [
     file: "app/register/page.tsx",
     text: "Create account",
     reason: "Register action copy should be localized for customers.",
+  },
+  {
+    file: "app/register/page.tsx",
+    text: "Enter your name, email, and a password with at least 6 characters.",
+    reason: "Register validation copy should be localized for customers.",
+  },
+  {
+    file: "app/register/page.tsx",
+    text: "Failed to register.",
+    reason: "Register fallback error copy should be localized for customers.",
   },
   {
     file: "app/forgot-password/page.tsx",
@@ -113,6 +133,16 @@ const bannedExactCustomerStrings = [
     reason: "Forgot-password action copy should be localized for customers.",
   },
   {
+    file: "app/forgot-password/page.tsx",
+    text: "Enter your email address.",
+    reason: "Forgot-password validation copy should be localized for customers.",
+  },
+  {
+    file: "app/forgot-password/page.tsx",
+    text: "Failed to send reset email.",
+    reason: "Forgot-password fallback error copy should be localized for customers.",
+  },
+  {
     file: "app/reset-password/page.tsx",
     text: "Set a new password for your Nutritail AI account.",
     reason: "Reset-password helper copy should be localized for customers.",
@@ -126,6 +156,21 @@ const bannedExactCustomerStrings = [
     file: "app/reset-password/page.tsx",
     text: "Update password",
     reason: "Reset-password action copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Password must be at least 6 characters.",
+    reason: "Reset-password validation copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Passwords do not match.",
+    reason: "Reset-password validation copy should be localized for customers.",
+  },
+  {
+    file: "app/reset-password/page.tsx",
+    text: "Failed to update password.",
+    reason: "Reset-password fallback error copy should be localized for customers.",
   },
   {
     file: "app/account/profile/page.tsx",
