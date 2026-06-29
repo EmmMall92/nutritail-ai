@@ -381,7 +381,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     return [
       "Done. The strongest choices are in the cards below.",
       "",
-      `What we are optimizing for: ${goalLabel}.`,
+      `Main goal: ${goalLabel}.`,
       `Best starting point: ${topFood} - it ${topReason}.`,
       "",
       "Tap one card to see estimated grams/day.",
