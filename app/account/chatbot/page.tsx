@@ -882,7 +882,11 @@ function isRelevantCustomerMedicalLine(
     text.includes("allergy") ||
     text.includes("αλλεργ")
   ) {
-    return goal === "allergy" || (pet.allergies ?? []).length > 0 || matchesDeclaredIngredientIssue;
+    if (mentionedIngredientGroups.length > 0) {
+      return matchesDeclaredIngredientIssue;
+    }
+
+    return goal === "allergy" || (pet.allergies ?? []).length > 0;
   }
   if (text.includes("renal") || text.includes("kidney") || text.includes("νεφρ")) {
     return goal === "renal" || /renal|kidney|nephr|nef|νεφρ/.test(petText);
