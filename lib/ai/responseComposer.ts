@@ -84,20 +84,7 @@ const GOAL_LABELS_EN: Record<string, string> = {
   weight_control: "weight control",
 };
 
-const CLEAN_GOAL_LABELS_EL: Record<string, string> = {
-  ...GOAL_LABELS_EL,
-  allergy: "αποφυγή συστατικών",
-  general: "γενική επιλογή",
-  growth: "ανάπτυξη",
-  premium: "ποιοτική επιλογή",
-  renal: "νεφρική υποστήριξη",
-  sensitive_digestion: "ευαίσθητη πέψη",
-  senior: "senior ανάγκες",
-  sterilised: "στειρωμένο κατοικίδιο",
-  urinary: "ουρολογική υποστήριξη",
-  value: "οικονομική επιλογή",
-  weight_control: "έλεγχος βάρους",
-};
+const CLEAN_GOAL_LABELS_EL = GOAL_LABELS_EL;
 
 function displayFoodName(food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]) {
   return customerFoodName(food);
@@ -164,20 +151,14 @@ function simpleReason(
   }
 
   if (reasons.includes("senior")) {
-    return locale === "el"
-      ? "είναι πιο κοντά σε senior ανάγκες"
-      : "is closer to senior needs";
+    return locale === "el" ? "είναι πιο κοντά σε senior ανάγκες" : "is closer to senior needs";
   }
 
   if (reasons.includes("growth") || reasons.includes("puppy") || reasons.includes("kitten")) {
-    return locale === "el"
-      ? "είναι πιο κοντά στις ανάγκες ανάπτυξης"
-      : "is closer to growth needs";
+    return locale === "el" ? "είναι πιο κοντά στις ανάγκες ανάπτυξης" : "is closer to growth needs";
   }
 
-  return locale === "el"
-    ? "ταιριάζει στο βασικό προφίλ του κατοικιδίου"
-    : "fits the pet's basic profile";
+  return locale === "el" ? "ταιριάζει στο βασικό προφίλ του κατοικιδίου" : "fits the pet's basic profile";
 }
 
 function simpleCaution(
@@ -303,51 +284,13 @@ function foodBullet(
 function cleanGreekReason(
   food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]
 ) {
-  const reasons = (food.ranking?.reasons ?? []).join(" ").toLowerCase();
-  const cautions = (food.ranking?.cautions ?? []).join(" ").toLowerCase();
-
-  if (reasons.includes("preferred protein") || reasons.includes("preferred flavor")) {
-    return "ταιριάζει με την προτίμηση γεύσης ή πρωτεΐνης";
-  }
-
-  if (reasons.includes("weight") || reasons.includes("sterilised") || cautions.includes("fat")) {
-    return "έχει λογική για έλεγχο θερμίδων και βάρους";
-  }
-
-  if (reasons.includes("excluded ingredients") || reasons.includes("allergens were not detected")) {
-    return "σέβεται τις δηλωμένες αποφυγές συστατικών";
-  }
-
-  if (reasons.includes("sensitive") || reasons.includes("digest")) {
-    return "έχει λογική για πιο ευαίσθητη πέψη";
-  }
-
-  if (reasons.includes("senior")) {
-    return "είναι πιο κοντά σε senior ανάγκες";
-  }
-
-  if (reasons.includes("growth") || reasons.includes("puppy") || reasons.includes("kitten")) {
-    return "είναι πιο κοντά στις ανάγκες ανάπτυξης";
-  }
-
-  return "ταιριάζει στο βασικό προφίλ του κατοικιδίου";
+  return simpleReason(food, "el");
 }
 
 function cleanGreekNutritionLine(
   food: NonNullable<FoodV2ChatbotRecommendationResponse["premium"]>[number]
 ) {
-  const kcal = formatNumber(food.nutrition?.kcal_per_100g, 1);
-  const protein = formatNumber(food.nutrition?.protein_percent, 1);
-  const fat = formatNumber(food.nutrition?.fat_percent, 1);
-  const fiber = formatNumber(food.nutrition?.fiber_percent, 1);
-  const values = [
-    kcal !== null ? `${kcal} kcal/100g` : "",
-    protein !== null ? `${protein}% πρωτεΐνη` : "",
-    fat !== null ? `${fat}% λιπαρά` : "",
-    fiber !== null ? `${fiber}% ίνες` : "",
-  ].filter(Boolean);
-
-  return values.length > 0 ? values.join("; ") : null;
+  return nutritionLine(food, "el");
 }
 
 function cleanGreekFoodBullet(
