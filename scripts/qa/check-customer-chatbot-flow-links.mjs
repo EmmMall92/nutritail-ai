@@ -379,7 +379,7 @@ const checks = [
   {
     label: "Account dashboard latest report card is customer-localized",
     file: "app/account/page.tsx",
-    expected: "Τελευταίο report",
+    expected: "Τελευταία αναφορά",
   },
   {
     label: "Account dashboard progress decision card is customer-localized",
@@ -715,6 +715,26 @@ const forbiddenChecks = [
     label: "Pets list does not expose English empty-state heading",
     file: "app/account/pets/page.tsx",
     forbidden: "No saved pets yet",
+  },
+  {
+    label: "Account dashboard does not expose mixed-language reports wording",
+    file: "app/account/page.tsx",
+    forbidden: "έτοιμα reports",
+  },
+  {
+    label: "Account dashboard does not expose mixed-language latest report wording",
+    file: "app/account/page.tsx",
+    forbidden: "Τελευταίο report",
+  },
+  {
+    label: "Account dashboard does not expose mixed-language open report action",
+    file: "app/account/page.tsx",
+    forbidden: "Άνοιγμα report",
+  },
+  {
+    label: "Account dashboard does not expose mixed-language reports timeline wording",
+    file: "app/account/page.tsx",
+    forbidden: "reports και timeline",
   },
   {
     label: "Pets list does not expose English report-ready status",
