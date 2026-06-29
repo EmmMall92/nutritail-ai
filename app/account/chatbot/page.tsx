@@ -4681,12 +4681,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       ...mergeExtractedPetFacts(pet, intakeExtraction?.data),
       healthAnswered:
         pet.healthAnswered ||
-        hasNoHealthIssueAnswer(text) ||
+        (step === "health" && hasNoHealthIssueAnswer(text)) ||
         (intakeExtraction?.data?.healthIssues?.length ?? 0) > 0 ||
         (intakeExtraction?.data?.allergies?.length ?? 0) > 0,
       currentFoodAnswered:
         pet.currentFoodAnswered ||
-        isUnknownFoodAnswer(text) ||
+        (step === "currentFood" && isUnknownFoodAnswer(text)) ||
         Boolean(intakeExtraction?.data?.currentFoodName),
     }), text);
 
