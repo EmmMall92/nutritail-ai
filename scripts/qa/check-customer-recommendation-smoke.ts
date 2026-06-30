@@ -28,6 +28,12 @@ const baseFood = {
   },
 };
 
+function hasCustomerVisibleMojibake(value: string) {
+  return /(?:\u039e[\u0080-\u00ff]|\u039f[\u0080-\u00ff]|[\u0393\u03b3][\u0080-\u00ff]|[\u0392\u03b2][\u00ae\u20ac]|\u03b2\u20ac|\ufffd)/u.test(
+    value
+  );
+}
+
 const scenarios: Array<{
   label: string;
   response: FoodV2ChatbotRecommendationResponse;
@@ -329,6 +335,38 @@ const scenarios: Array<{
     },
     expected: ["senior pet", "senior needs"],
   },
+  {
+    label: "customer Greek food-name cleanup",
+    response: {
+      goal: "general",
+      premium: [
+        {
+          ...baseFood,
+          brand: "Purina Pro Plan",
+          display_name:
+            "PRO PlanΞ’Β® MEDIUM & LARGE ADULT 7+ Sensitive Skin ΞΒ£ΞΞΞΒ»ΞΞΞΞΞΒΞβ€",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Matches adult life stage.", "Ingredient data is available."],
+          },
+        },
+      ],
+      value: [
+        {
+          ...baseFood,
+          brand: "Purina Pro Plan",
+          display_name:
+            "PRO PlanΞ’Β® MEDIUM & LARGE ADULT Age Defence 7+ ΞΒΞΞΞβ€ΞΒΞβ‚¬ΞΞΞβ€¦ΞΒ»ΞΞ",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Matches adult life stage.", "Ingredient data is available."],
+          },
+        },
+      ],
+      hold: [],
+    },
+    expected: ["general recommendation", "Σολομός", "Κοτόπουλο"],
+  },
 ];
 
 const forbidden = [
@@ -376,6 +414,7 @@ for (const scenario of scenarios) {
     compactForCards: true,
   });
   const combined = `${full}\n${compact}`;
+  const allRenderedText = `${full}\n${compact}\n${compactGreek}`;
   const leaked = forbidden.filter((term) =>
     combined.toLowerCase().includes(term.toLowerCase())
   );
@@ -387,10 +426,16 @@ for (const scenario of scenarios) {
     process.exit(1);
   }
 
+  if (hasCustomerVisibleMojibake(allRenderedText)) {
+    console.error(`Scenario ${scenario.label} rendered customer-visible mojibake.`);
+    console.error(allRenderedText);
+    process.exit(1);
+  }
+
   for (const expected of scenario.expected) {
-    if (!combined.toLowerCase().includes(expected.toLowerCase())) {
+    if (!allRenderedText.toLowerCase().includes(expected.toLowerCase())) {
       console.error(`Scenario ${scenario.label} missed expected copy: ${expected}`);
-      console.error(combined);
+      console.error(allRenderedText);
       process.exit(1);
     }
   }
