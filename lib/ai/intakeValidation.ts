@@ -119,6 +119,22 @@ function cleanIngredientArray(value: unknown) {
   return cleanStringArray(value).map(canonicalizeIngredientTerm);
 }
 
+function cleanAllergyArray(value: unknown) {
+  return cleanStringArray(value).map((item) =>
+    looksLikeBareIngredient(item) ? canonicalizeIngredientTerm(item) : item
+  );
+}
+
+function allergyIngredientTerms(allergies: string[]) {
+  const canonicalIngredients = new Set<string>(
+    INGREDIENT_ALIASES.map((item) => item.canonical)
+  );
+
+  return allergies.filter((item) =>
+    canonicalIngredients.has(normalizeLookup(item))
+  );
+}
+
 function cleanNumber(value: unknown) {
   const numberValue = Number(value);
   return Number.isFinite(numberValue) ? numberValue : null;
@@ -201,10 +217,15 @@ export function validateAiIntakeExtraction(
     errors,
   });
 
+  const allergies = cleanAllergyArray(input.allergies);
   const excludedIngredients = cleanIngredientArray(input.excludedIngredients);
+  const effectiveExcludedIngredients = [
+    ...excludedIngredients,
+    ...allergyIngredientTerms(allergies),
+  ];
   const preferredProteins = removeExcludedFromPreferred(
     cleanIngredientArray(input.preferredProteins),
-    excludedIngredients
+    effectiveExcludedIngredients
   );
 
   const data: AiIntakeExtraction = {
@@ -216,8 +237,8 @@ export function validateAiIntakeExtraction(
     neutered:
       typeof input.neutered === "boolean" ? input.neutered : null,
     healthIssues: cleanStringArray(input.healthIssues),
-    allergies: cleanStringArray(input.allergies),
-    currentFoodName: cleanCurrentFoodName(input.currentFoodName, excludedIngredients),
+    allergies,
+    currentFoodName: cleanCurrentFoodName(input.currentFoodName, effectiveExcludedIngredients),
     preferredProteins,
     excludedIngredients,
     weightGoal,
