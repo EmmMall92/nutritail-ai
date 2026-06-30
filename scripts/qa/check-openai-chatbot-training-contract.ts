@@ -282,9 +282,30 @@ includesAll(
   [
     "repairLegacyGreekMojibakeText",
     "polishCustomerFacingLanguage",
+    "sanitizeGroundingText",
+    "deterministic_text: sanitizeGroundingText(input.deterministicText)",
   ],
   "response composer fallback language repair"
 );
+expect(
+  responseComposerSource.includes(".map(sanitizeGroundingText)") &&
+    responseComposerSource.includes(".filter(Boolean) ?? []"),
+  "response composer must sanitize recommendation notes before sending them to OpenAI"
+);
+for (const forbiddenGroundingTerm of [
+  "needs[_\\s-]?review",
+  "source\\s*tier",
+  "data\\s*quality",
+  "missing\\s*nutrition\\s*fields?",
+  "confidence\\s*internals",
+  "retailer\\s*source",
+  "source:\\s*[^\\n\\r]+",
+]) {
+  expect(
+    responseComposerSource.includes(forbiddenGroundingTerm),
+    `response composer grounding sanitizer must strip ${forbiddenGroundingTerm}`
+  );
+}
 expect(
   !/\?{3,}/.test(responseComposerSource),
   "response composer must not contain replacement-question-mark customer text"

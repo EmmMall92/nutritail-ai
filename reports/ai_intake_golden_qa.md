@@ -1,6 +1,6 @@
 # AI Intake Golden QA
 
-Generated: 2026-06-29T23:46:31.343Z
+Generated: 2026-06-30T00:09:21.092Z
 
 This QA checks deterministic intake fallback, validation cleanup, pet-name cleanup, and taste-preference parsing.
 
