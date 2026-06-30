@@ -371,6 +371,19 @@ const followUpActions: {
   },
 ];
 
+type FollowUpActionConfig = (typeof followUpActions)[number];
+
+const mobileFollowUpActionIds: FollowUpAction[] = [
+  "progress",
+  "change_food",
+  "timeline",
+  "new_analysis",
+];
+
+const mobileFollowUpActions = mobileFollowUpActionIds
+  .map((id) => followUpActions.find((action) => action.id === id))
+  .filter((action): action is FollowUpActionConfig => Boolean(action));
+
 const KNOWN_FOOD_BRANDS = [
   "royal canin",
   "ambrosia",
@@ -6304,21 +6317,24 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       <div className="sticky bottom-0 z-20 shrink-0 border-t border-gray-200 bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sm:p-5">
         {followUpPet && step === "petChoice" && !followUpMode && (
-          <div className="mb-3 grid grid-cols-2 gap-2 sm:hidden">
-            <button
-              type="button"
-              onClick={() => handleFollowUpAction("progress")}
-              className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
-            >
-              {botText("Έλεγχος", "Progress")}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFollowUpAction("change_food")}
-              className="min-h-11 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-900"
-            >
-              {botText("Άλλη τροφή", "Another food")}
-            </button>
+          <div className="mb-3 sm:hidden">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">
+              {botText("Συνέχεια πλάνου", "Continue plan")}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {mobileFollowUpActions.map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  onClick={() => handleFollowUpAction(action.id)}
+                  className="min-h-12 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-left text-sm font-medium text-blue-900"
+                >
+                  <span className="block leading-5">
+                    {botText(action.titleEl, action.title)}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
