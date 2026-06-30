@@ -251,11 +251,20 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
   const locale = input.locale ?? "el";
+  const allowedFoods = [...premium.slice(0, 3), ...value.slice(0, 3)]
+    .map((food) => customerFoodName(food))
+    .filter(Boolean);
 
   return {
     locale,
     pet: input.petSummary ?? {},
     goal: input.recommendation.goal ?? "general",
+    allowed_food_names: allowedFoods,
+    product_grounding_policy: [
+      "Mention recommended foods only when their exact customer name appears in allowed_food_names.",
+      "Do not add brand-level winners or unlisted alternatives.",
+      "If the user's current food is uncertain, ask for the exact bag name or a label photo before formula-specific conclusions.",
+    ],
     premium: premium.slice(0, 3).map((food) => compactFood(food, locale)),
     value: value.slice(0, 3).map((food) => compactFood(food, locale)),
     notes:
