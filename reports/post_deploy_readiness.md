@@ -1,6 +1,6 @@
 # NutriTail Post-Deploy Readiness
 
-Generated: 2026-06-30T05:39:06.383Z
+Generated: 2026-06-30T05:45:48.428Z
 Result: PASS
 
 This report is the quick post-deploy command summary for the live NutriTail surface.
@@ -8,29 +8,32 @@ It refreshes the core route, Food V2, account, OpenAI env, and readiness evidenc
 
 ## Summary
 
-- Commands checked: 6
-- Passed: 6
+- Commands checked: 9
+- Passed: 9
 - Failed or needs review: 0
 - Chatbot QA refreshed in this run: no
 - Customer chatbot flow refreshed in this run: yes
-- Deploy freshness gate used: no
-- Freshness source reports refreshed: no
+- Deploy freshness gate used: 2026-06-30T05:45:36.609Z
+- Freshness source reports refreshed: yes
 - Live readiness result: PASS
 - Live readiness score: 95/100
 - Minimum readiness score: 95/100
 - Core evidence score: 100.0% (blocks readiness)
 - Advisory evidence score: 50.0% (non-blocking but needed for full OpenAI proof)
-- Live readiness generated: 2026-06-30T05:39:06.351Z
+- Live readiness generated: 2026-06-30T05:45:48.400Z
 
 ## Commands
 
 | Step | Command | Status | Duration |
 | --- | --- | --- | ---: |
-| Public launch live routes | `npm.cmd run qa:public-launch-live-routes` | PASS | 6.4s |
-| Food V2 live routes | `npm.cmd run qa:food-v2-live-routes` | PASS | 4.0s |
-| Account progress live routes | `npm.cmd run qa:account-progress-live-routes` | PASS | 4.9s |
+| Public launch live routes | `npm.cmd run qa:public-launch-live-routes` | PASS | 1.9s |
+| Food V2 live routes | `npm.cmd run qa:food-v2-live-routes` | PASS | 2.2s |
+| Account progress live routes | `npm.cmd run qa:account-progress-live-routes` | PASS | 2.4s |
 | Customer chatbot flow links | `npm.cmd run qa:customer-chatbot-flow-links` | PASS | 0.4s |
-| Vercel OpenAI production env | `npm.cmd run qa:vercel-openai-env` | PASS | 12.7s |
+| Vercel OpenAI production env | `npm.cmd run qa:vercel-openai-env` | PASS | 2.8s |
+| OpenAI intake smoke | `npm.cmd run qa:openai-intake-smoke` | PASS | 0.9s |
+| Account chatbot extract live route | `npm.cmd run qa:account-chatbot-extract-live-route` | PASS | 0.4s |
+| Chatbot live QA dashboard | `npm.cmd run qa:chatbot-live-dashboard` | PASS | 0.4s |
 | Live readiness dashboard | `npm.cmd run qa:live-readiness-dashboard` | PASS | 0.4s |
 
 ## Notes

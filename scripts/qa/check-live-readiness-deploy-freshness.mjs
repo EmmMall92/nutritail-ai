@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 const dashboardSource = readFileSync("scripts/qa/build-live-readiness-dashboard.mjs", "utf8");
 const postDeploySource = readFileSync("scripts/qa/run-post-deploy-readiness.mjs", "utf8");
 const adminLiveQaSource = readFileSync("app/admin/foods/v2-live-qa/page.tsx", "utf8");
+const packageSource = readFileSync("package.json", "utf8");
 
 const checks = [
   {
@@ -56,6 +57,21 @@ const checks = [
     expected: "--deploy-freshness",
   },
   {
+    label: "package exposes post-deploy chatbot refresh script",
+    source: packageSource,
+    expected: "qa:post-deploy-readiness:refresh-chatbot",
+  },
+  {
+    label: "package exposes post-deploy deploy freshness script",
+    source: packageSource,
+    expected: "qa:post-deploy-readiness:deploy-freshness",
+  },
+  {
+    label: "package exposes full post-deploy release signoff script",
+    source: packageSource,
+    expected: "qa:post-deploy-readiness:full",
+  },
+  {
     label: "post-deploy script can accept exact deployed-at timestamp",
     source: postDeploySource,
     expected: "--deployed-at=",
@@ -69,6 +85,16 @@ const checks = [
     label: "post-deploy report records whether deploy freshness was used",
     source: postDeploySource,
     expected: "Deploy freshness gate used:",
+  },
+  {
+    label: "post-deploy refreshes OpenAI intake smoke advisory report",
+    source: postDeploySource,
+    expected: "qa:openai-intake-smoke",
+  },
+  {
+    label: "post-deploy refreshes authenticated extract route advisory report",
+    source: postDeploySource,
+    expected: "qa:account-chatbot-extract-live-route",
   },
   {
     label: "post-deploy deploy freshness refreshes customer flow report",

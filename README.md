@@ -96,6 +96,35 @@ https://nutritail.ai/manifest.webmanifest
 https://nutritail.ai/opengraph-image
 ```
 
+Post-deploy QA:
+
+```bash
+npm.cmd run qa:post-deploy-readiness
+```
+
+Use the stricter freshness gate when you want the readiness source reports to be
+newer than the current deploy run:
+
+```bash
+npm.cmd run qa:post-deploy-readiness:deploy-freshness
+```
+
+If the deploy touches chatbot intake, recommendation logic, Food V2 ranking, or
+customer chatbot copy, refresh the chatbot QA evidence too:
+
+```bash
+npm.cmd run qa:post-deploy-readiness:refresh-chatbot
+```
+
+For a full release signoff, run:
+
+```bash
+npm.cmd run qa:post-deploy-readiness:full
+```
+
+The post-deploy report includes the live readiness result, the 95/100 readiness
+score, the minimum readiness gate, and the core/advisory evidence split.
+
 ## Data Notes
 
 Food data quality is tracked with `data_quality_status`, `data_source_url`,
