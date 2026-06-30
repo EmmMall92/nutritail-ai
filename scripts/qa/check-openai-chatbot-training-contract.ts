@@ -124,6 +124,7 @@ includesAll(
     "Do not mention OpenAI, model names, prompts, QA checks, proof status, or internal tooling to customers",
     "When food cards follow, use at most 4 short sentences",
     "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers",
+    "Use customer words like budget-friendly, practical, or economical",
   ],
   "answer writer prompt"
 );

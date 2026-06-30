@@ -688,7 +688,7 @@ const requiredCardFlowCopy = [
   "Next step: tell me which one you prefer",
   "Best first choices",
   "stronger starting choices",
-  "Simple / value options",
+  "Simple / budget options",
   "good alternatives when flavour, availability, or cost matters",
   "Your plan is ready",
   "First daily portion",

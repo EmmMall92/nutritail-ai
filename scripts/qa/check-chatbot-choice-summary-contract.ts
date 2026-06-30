@@ -38,6 +38,18 @@ assert(
   "Food shortlist summary must show how many strong and value choices are visible."
 );
 assert(
+  chatbotPage.includes("πιο απλές ή οικονομικές εναλλακτικές"),
+  "Greek food shortlist summary must describe value choices in customer-friendly Greek."
+);
+assert(
+  !chatbotPage.includes("απλές/value"),
+  "Greek customer-facing shortlist copy must not expose the English value label."
+);
+assert(
+  chatbotPage.includes("Simple / budget options"),
+  "English food shortlist section should use customer-friendly budget wording."
+);
+assert(
   chatbotPage.includes("md:grid-cols-4"),
   "Food shortlist summary should have room for first pick, portion, list shape, and alternatives."
 );
