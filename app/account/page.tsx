@@ -57,6 +57,14 @@ type DashboardNextAction = {
   tone: "primary" | "secondary";
 };
 
+type AccountReadinessStep = {
+  title: string;
+  detail: string;
+  isComplete: boolean;
+  href: string;
+  actionLabel: string;
+};
+
 const ACCOUNT_LOAD_ERROR_MESSAGE =
   "Δεν ήταν δυνατή η φόρτωση λογαριασμού. Δοκίμασε ξανά σε λίγο.";
 
@@ -221,6 +229,73 @@ function getDashboardNextActions({
   return visibleActions.slice(0, 3);
 }
 
+function getAccountReadinessSteps({
+  pets,
+  totalAnalyses,
+  readyReports,
+  latestProgress,
+  nextPetToAnalyze,
+  latestPet,
+  latestProgressPet,
+}: {
+  pets: AccountPet[];
+  totalAnalyses: number;
+  readyReports: number;
+  latestProgress?: AccountPet["latestProgressLog"];
+  nextPetToAnalyze?: AccountPet;
+  latestPet?: AccountPet;
+  latestProgressPet?: AccountPet;
+}): AccountReadinessStep[] {
+  const analysisTarget = nextPetToAnalyze ?? latestPet;
+  const progressTarget = latestProgressPet ?? latestPet;
+
+  return [
+    {
+      title: "Προφίλ κατοικιδίου",
+      detail:
+        pets.length > 0
+          ? `${pets.length} αποθηκευμένα κατοικίδια`
+          : "Ξεκίνα με ένα σκύλο ή μία γάτα για να χτιστεί το προφίλ.",
+      isComplete: pets.length > 0,
+      href: pets.length > 0 ? "/account/pets" : "/account/chatbot",
+      actionLabel: pets.length > 0 ? "Δες κατοικίδια" : "Ξεκίνα",
+    },
+    {
+      title: "Διατροφική ανάλυση",
+      detail:
+        totalAnalyses > 0
+          ? `${totalAnalyses} αποθηκευμένες αναλύσεις`
+          : "Υπολόγισε θερμίδες, στόχο και πρώτη λίστα τροφών.",
+      isComplete: totalAnalyses > 0,
+      href: analysisTarget
+        ? `/account/chatbot?petId=${analysisTarget.id}`
+        : "/account/chatbot",
+      actionLabel: totalAnalyses > 0 ? "Νέα ανάλυση" : "Κάνε ανάλυση",
+    },
+    {
+      title: "Πλάνο τροφής",
+      detail:
+        readyReports > 0
+          ? `${readyReports} αναφορές με τροφή και ποσότητα`
+          : "Διάλεξε τροφή για να κρατηθούν γραμμάρια/ημέρα και report.",
+      isComplete: readyReports > 0,
+      href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
+      actionLabel: readyReports > 0 ? "Άνοιξε report" : "Διάλεξε τροφή",
+    },
+    {
+      title: "Έλεγχος προόδου",
+      detail: latestProgress
+        ? "Υπάρχει πρόσφατος έλεγχος με βάρος, ποσότητα και απόφαση."
+        : "Μετά από 2-4 εβδομάδες κάνε έλεγχο με νέο βάρος και γραμμάρια.",
+      isComplete: Boolean(latestProgress),
+      href: progressTarget
+        ? `/account/chatbot?petId=${progressTarget.id}&mode=progress`
+        : "/account/chatbot",
+      actionLabel: latestProgress ? "Νέος έλεγχος" : "Έλεγχος προόδου",
+    },
+  ];
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -359,6 +434,18 @@ export default function AccountPage() {
     latestProgressPet,
     nextPetToAnalyze,
   });
+  const readinessSteps = getAccountReadinessSteps({
+    pets,
+    totalAnalyses,
+    readyReports,
+    latestProgress,
+    nextPetToAnalyze,
+    latestPet,
+    latestProgressPet,
+  });
+  const completedReadinessSteps = readinessSteps.filter(
+    (step) => step.isComplete
+  ).length;
 
   return (
     <section className="space-y-6">
@@ -399,6 +486,77 @@ export default function AccountPage() {
               Δες τα κατοικίδια
             </Link>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Η πορεία σου
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-black">
+              {completedReadinessSteps}/4 βασικά βήματα έτοιμα
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600">
+              Έτσι βλέπεις γρήγορα αν ο λογαριασμός έχει προφίλ, ανάλυση,
+              πλάνο τροφής και επόμενο έλεγχο προόδου.
+            </p>
+          </div>
+          <div className="w-full max-w-sm">
+            <div className="h-2 rounded-full bg-gray-100">
+              <div
+                className="h-2 rounded-full bg-black transition-all"
+                style={{
+                  width: `${Math.round(
+                    (completedReadinessSteps / readinessSteps.length) * 100
+                  )}%`,
+                }}
+              />
+            </div>
+            <p className="mt-2 text-right text-xs font-medium text-gray-500">
+              {Math.round((completedReadinessSteps / readinessSteps.length) * 100)}
+              % ολοκλήρωση λογαριασμού
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+          {readinessSteps.map((step, index) => (
+            <Link
+              key={step.title}
+              href={step.href}
+              className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-black hover:bg-white"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                    step.isComplete
+                      ? "bg-black text-white"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  {step.isComplete ? "✓" : index + 1}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                    step.isComplete
+                      ? "bg-green-100 text-green-800"
+                      : "bg-white text-gray-600"
+                  }`}
+                >
+                  {step.isComplete ? "Έτοιμο" : "Επόμενο"}
+                </span>
+              </div>
+              <h3 className="mt-4 font-semibold text-black">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                {step.detail}
+              </p>
+              <p className="mt-3 text-sm font-semibold text-black">
+                {step.actionLabel}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
 
