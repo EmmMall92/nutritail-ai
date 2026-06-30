@@ -323,6 +323,44 @@ function getDailyPlanCards(
   ];
 }
 
+function getReportPlanSnapshot(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  return [
+    {
+      label: "Κατοικίδιο",
+      value: `${pet.name} · ${pet.species}`,
+      detail: `${pet.weight} kg · ${pet.age} έτη`,
+    },
+    {
+      label: "Στόχος",
+      value: analysis ? getGoalLabel(analysis.weight_goal) : "Χρειάζεται ανάλυση",
+      detail: analysis
+        ? `${analysis.mer} kcal/ημέρα ως σημερινός στόχος`
+        : "Ξεκίνα νέα ανάλυση για θερμίδες και τροφή.",
+    },
+    {
+      label: "Τροφή",
+      value: analysis?.matched_food_name ?? "Δεν έχει επιλεγεί ακόμη",
+      detail: analysis?.matched_food_name
+        ? "Η τροφή που κρατήθηκε από την τελευταία ανάλυση."
+        : "Διάλεξε τροφή από το chatbot για πιο πλήρες πλάνο.",
+    },
+    {
+      label: "Ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : "Θέλει kcal τροφής",
+      detail:
+        analysis?.feeding_grams_per_day && mealSplit
+          ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+          : "Η ποσότητα γίνεται ακριβής όταν ξέρουμε θερμίδες ανά 100g.",
+    },
+  ];
+}
+
 function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
   const basePlan = [
     {
@@ -475,6 +513,8 @@ export default function PrintablePetReportPage() {
     );
   }
 
+  const reportPlanSnapshot = getReportPlanSnapshot(pet, latestAnalysis, mealSplit);
+
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
       <section className="mx-auto max-w-5xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 print:max-w-none print:border-0 print:p-0 print:shadow-none">
@@ -558,6 +598,41 @@ export default function PrintablePetReportPage() {
                 </p>
                 <p className="mt-2 font-bold">{item.value}</p>
                 <p className="mt-1 text-xs text-emerald-900">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-black/10 bg-[#f7f7f4] p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-plan-snapshot"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
+                Πλάνο με μια ματιά
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                Η πρακτική περίληψη που κρατά ο πελάτης.
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm text-gray-600">
+              Τροφή, ημερήσια ποσότητα, γεύματα και επανέλεγχος σε ένα σημείο,
+              για να μη χρειάζεται να ψάχνει μέσα σε όλη την αναφορά.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportPlanSnapshot.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-black/10 bg-white p-4 text-sm print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-black">{item.value}</p>
+                <p className="mt-1 text-xs text-gray-600">{item.detail}</p>
               </div>
             ))}
           </div>
