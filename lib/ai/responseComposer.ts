@@ -30,6 +30,42 @@ const CUSTOMER_CARD_FLOW_RULES = [
   "Choose one food card below to see the first daily portion in grams.",
 ] as const;
 
+const NUTRITAIL_GUARDED_FOOD_BRANDS = [
+  "aatu",
+  "acana",
+  "ambrosia",
+  "barking heads",
+  "belcando",
+  "briantos",
+  "brit",
+  "calibra",
+  "farmina",
+  "gemon",
+  "happy dog",
+  "hill's",
+  "hills",
+  "josera",
+  "lechat",
+  "monge",
+  "n&d",
+  "orijen",
+  "prestige",
+  "pro plan",
+  "prochoice",
+  "purina",
+  "royal canin",
+  "sam's field",
+  "sams field",
+  "schesir",
+  "simba",
+  "special dog",
+  "trovet",
+  "unica",
+  "vet expert",
+  "virbac",
+  "wellness core",
+] as const;
+
 export type ChatbotRecommendationComposerInput = {
   locale?: ComposerLocale;
   deterministicText: string;
@@ -587,6 +623,48 @@ function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] 
   };
 }
 
+function normalizeComposerGuardText(value: unknown) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['’]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function allowedFoodGuardText(input: ChatbotRecommendationComposerInput) {
+  const foods = [...(input.recommendation.premium ?? []), ...(input.recommendation.value ?? [])];
+
+  return foods
+    .slice(0, 6)
+    .flatMap((food) => [
+      food.brand,
+      food.display_name,
+      customerFoodDisplayName(food),
+      customerFoodName(food),
+    ])
+    .filter(Boolean)
+    .map(normalizeComposerGuardText)
+    .join(" ");
+}
+
+function mentionsUnallowedGuardedBrand(text: string, input: ChatbotRecommendationComposerInput) {
+  const foods = [...(input.recommendation.premium ?? []), ...(input.recommendation.value ?? [])];
+  if (foods.length === 0) return false;
+
+  const outputText = normalizeComposerGuardText(text);
+  const allowedText = allowedFoodGuardText(input);
+  if (!outputText || !allowedText) return false;
+
+  return NUTRITAIL_GUARDED_FOOD_BRANDS.some((brand) => {
+    const normalizedBrand = normalizeComposerGuardText(brand);
+    return outputText.includes(normalizedBrand) && !allowedText.includes(normalizedBrand);
+  });
+}
+
 function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationComposerInput) {
   if (input.cardsFollow) return true;
 
@@ -594,9 +672,16 @@ function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationCompos
   if (foods.length === 0) return true;
 
   return foods.slice(0, 4).some((food) => {
-    const name = String(food.display_name ?? "").trim();
-    if (!name) return false;
-    return text.toLowerCase().includes(name.toLowerCase());
+    const names = [
+      food.display_name,
+      customerFoodDisplayName(food),
+      customerFoodName(food),
+    ]
+      .map(normalizeComposerGuardText)
+      .filter(Boolean);
+
+    const normalizedText = normalizeComposerGuardText(text);
+    return names.some((name) => normalizedText.includes(name));
   });
 }
 
@@ -649,6 +734,9 @@ export async function composeChatbotRecommendationResponse(
     if (text.length < 80) return fallback(input, ["composer_output_too_short"]);
     if (input.cardsFollow && !isCompactCardIntro(text)) {
       return fallback(input, ["composer_card_intro_not_compact"]);
+    }
+    if (mentionsUnallowedGuardedBrand(text, input)) {
+      return fallback(input, ["composer_mentioned_unlisted_food_brand"]);
     }
     if (!hasAtLeastOneKnownFood(text, input)) {
       return fallback(input, ["composer_did_not_preserve_known_food"]);
