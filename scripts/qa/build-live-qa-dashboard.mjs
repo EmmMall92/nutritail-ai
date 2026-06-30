@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
@@ -27,12 +27,16 @@ const suites = [
     species: "cat",
     source: "reports/cat_chatbot_live_safety.md",
     fixture: "data/evals/chatbot-cat-safety-live.json",
+    command: "npm.cmd run qa:cat-chatbot-live-safety",
+    optional: true,
   },
   {
     name: "Cat chatbot quality smoke",
     species: "cat",
     source: "reports/cat_chatbot_live_quality.md",
     fixture: "data/evals/chatbot-cat-quality-live.json",
+    command: "npm.cmd run qa:cat-chatbot-live-quality",
+    optional: true,
   },
 ];
 
@@ -146,6 +150,25 @@ function matchOptionalNumber(text, patterns, fallback = 0) {
 }
 
 function parseReport(suite) {
+  if (!existsSync(path.join(root, suite.source))) {
+    if (!suite.optional) {
+      throw new Error(`Required live QA report is missing: ${suite.source}`);
+    }
+
+    return {
+      ...suite,
+      checked: 0,
+      passed: 0,
+      review: 0,
+      promptEncodingRepairs: 0,
+      promptEncodingIssues: 0,
+      runDate: `missing - run ${suite.command}`,
+      runner: "not generated",
+      openAiExtraction: "not checked",
+      missing: true,
+    };
+  }
+
   const text = readReport(suite.source);
   const checked = matchNumber(
     text,
@@ -187,6 +210,7 @@ function parseReport(suite) {
     runDate,
     runner: runner ?? "legacy live QA runner",
     openAiExtraction: openAiLine ?? "not recorded",
+    missing: false,
   };
 }
 
@@ -298,6 +322,7 @@ function percent(value, total) {
 }
 
 const parsed = suites.map(parseReport);
+const missingOptionalSuites = parsed.filter((suite) => suite.missing);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
 const parsedResponseContract = parseResponseContractReport(responseContractSuite);
 const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
@@ -436,6 +461,10 @@ const lines = [
   "",
   "## Next QA Gaps",
   "",
+  ...missingOptionalSuites.map(
+    (suite) =>
+      `- Generate \`${suite.source}\` with \`${suite.command}\` before treating ${suite.name} as fresh dashboard evidence.`,
+  ),
   "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` or `NUTRITAIL_QA_OPENAI_API_KEY_FILE` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.",
   "- Run `npm.cmd run qa:account-chatbot-extract-live-route` with `NUTRITAIL_QA_AUTH_COOKIE` or `NUTRITAIL_QA_AUTH_COOKIE_FILE` set to prove the authenticated live chatbot extraction route end to end without committing or printing the cookie.",
   "- Keep adding real customer-style cases when new foods or new clinical rules are introduced.",
