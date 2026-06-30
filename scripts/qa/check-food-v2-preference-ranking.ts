@@ -997,6 +997,90 @@ if (
   process.exit(1);
 }
 
+const largeSterilisedPet = {
+  ...pet,
+  weight: 30,
+  age: 5,
+  neutered: true,
+  activityLevel: "low" as const,
+  healthIssues: ["sterilised", "weight maintenance"],
+  excludedIngredients: [],
+  preferredProteins: [],
+};
+const smallOnlySterilisedFood = food({
+  id: "large-pet-small-only-sterilised",
+  formula_key: "qa|large-pet-small-only-sterilised|dog|dry",
+  display_name: "Small Adult Light Sterilised Chicken",
+  dog_size: "small",
+  commercial_tags: ["light", "sterilised"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 332,
+});
+const largeSterilisedFood = food({
+  id: "large-pet-large-sterilised",
+  formula_key: "qa|large-pet-large-sterilised|dog|dry",
+  display_name: "Large Adult Light Sterilised Chicken",
+  dog_size: "large",
+  commercial_tags: ["light", "sterilised"],
+  ingredients: ["chicken", "rice", "beet pulp"],
+  primary_animal_proteins: ["chicken"],
+  kcal_per_100g: 334,
+});
+const smallOnlySterilisedForLargePetRanking = rankFoodV2ForPet({
+  food: smallOnlySterilisedFood,
+  nutrients: {
+    ...nutrients(smallOnlySterilisedFood),
+    protein_percent: 24,
+    fat_percent: 9,
+    fiber_percent: 5,
+  },
+  pet: largeSterilisedPet,
+  goal: "sterilised",
+});
+const largeSterilisedForLargePetRanking = rankFoodV2ForPet({
+  food: largeSterilisedFood,
+  nutrients: {
+    ...nutrients(largeSterilisedFood),
+    protein_percent: 24,
+    fat_percent: 9,
+    fiber_percent: 5,
+  },
+  pet: largeSterilisedPet,
+  goal: "sterilised",
+});
+
+if (smallOnlySterilisedForLargePetRanking.bucket !== "hold") {
+  console.error("Large dogs should not start from visibly small-only sterilised foods.");
+  console.error(smallOnlySterilisedForLargePetRanking);
+  process.exit(1);
+}
+
+if (
+  !smallOnlySterilisedForLargePetRanking.signals.some(
+    (signal) =>
+      signal.code === "dog_size_mismatch" ||
+      signal.code === "customer_visible_dog_size_mismatch"
+  )
+) {
+  console.error("Expected size mismatch signal for small-only food recommended to a large dog.");
+  console.error(smallOnlySterilisedForLargePetRanking.signals);
+  process.exit(1);
+}
+
+if (
+  largeSterilisedForLargePetRanking.bucket === "hold" ||
+  largeSterilisedForLargePetRanking.total_score <=
+    smallOnlySterilisedForLargePetRanking.total_score
+) {
+  console.error("Large/all-size sterilised food should remain selectable and outrank small-only food for a large dog.");
+  console.error({
+    largeSterilisedForLargePetRanking,
+    smallOnlySterilisedForLargePetRanking,
+  });
+  process.exit(1);
+}
+
 const activeGainPet = {
   ...pet,
   weight: 22,
