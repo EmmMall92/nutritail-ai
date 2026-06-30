@@ -9,6 +9,11 @@ const maxReportAgeHours =
   Number.isFinite(configuredMaxReportAgeHours) && configuredMaxReportAgeHours > 0
     ? configuredMaxReportAgeHours
     : 48;
+const configuredMinReadinessScore = Number(process.env.NUTRITAIL_QA_MIN_READINESS_SCORE ?? 95);
+const minReadinessScore =
+  Number.isFinite(configuredMinReadinessScore) && configuredMinReadinessScore >= 0
+    ? Math.min(100, configuredMinReadinessScore)
+    : 95;
 const deployedAtRaw = process.env.NUTRITAIL_QA_DEPLOYED_AT?.trim() ?? "";
 const deployedAtMs = deployedAtRaw ? Date.parse(deployedAtRaw) : null;
 const deployedAtIso =
@@ -431,13 +436,14 @@ const totals = allSuites.reduce(
   { checked: 0, passed: 0, failed: 0 },
 );
 const failingSuites = allSuites.filter((suite) => suite.status !== "PASS");
-const status = failingSuites.length === 0 ? "PASS" : "REVIEW";
 const coreReadinessRatio = scoreRatio(totals.passed, totals.checked);
 const advisoryReadinessRatio = scoreRatio(
   parsedAdvisorySuites.reduce((sum, suite) => sum + advisorySuiteScore(suite), 0),
   parsedAdvisorySuites.length,
 );
 const readinessScore = Math.round((coreReadinessRatio * 0.9 + advisoryReadinessRatio * 0.1) * 100);
+const readinessScorePass = readinessScore >= minReadinessScore;
+const status = failingSuites.length === 0 && readinessScorePass ? "PASS" : "REVIEW";
 const ageKnownSuites = allSuites.filter((suite) => suite.ageHours != null);
 const oldestSuite = [...ageKnownSuites].sort((a, b) => b.ageHours - a.ageHours)[0];
 const nextStaleSuite = [...ageKnownSuites]
@@ -469,6 +475,7 @@ const lines = [
   `- Failed or needs review: ${totals.failed}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
   `- 95% readiness score: ${readinessScore}/100`,
+  `- Minimum readiness score: ${minReadinessScore}/100`,
   `- Core evidence score: ${percent(coreReadinessRatio, 1)} (blocks readiness)`,
   `- Advisory evidence score: ${percent(advisoryReadinessRatio, 1)} (non-blocking but needed for full OpenAI proof)`,
   `- Max report age: ${maxReportAgeHours}h`,
@@ -553,6 +560,7 @@ const lines = [
   "- Set `NUTRITAIL_QA_DEPLOYED_AT` to the production deploy timestamp to require reports generated after that deploy.",
   "- If a report is older than the current deploy, rerun the source command before relying on it.",
   "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` or `NUTRITAIL_QA_OPENAI_API_KEY_FILE`.",
+  `- If the readiness score falls below ${minReadinessScore}/100, this script exits non-zero even when individual core suites are passing.`,
   "",
 ];
 
@@ -563,4 +571,8 @@ console.log(`Suites passing: ${allSuites.length - failingSuites.length}/${allSui
 
 if (failingSuites.length > 0) {
   throw new Error(`Live readiness needs review: ${failingSuites.map((suite) => suite.name).join(", ")}`);
+}
+
+if (!readinessScorePass) {
+  throw new Error(`Live readiness score ${readinessScore}/100 is below the ${minReadinessScore}/100 gate.`);
 }
