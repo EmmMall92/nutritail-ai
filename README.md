@@ -63,6 +63,18 @@ On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm`:
 npm.cmd run build
 ```
 
+Optional live chatbot QA checks can use local secret files so keys and cookies
+do not appear in shell history or reports. Put them under `.qa-secrets/`, which
+is ignored by git:
+
+```bash
+NUTRITAIL_QA_OPENAI_API_KEY_FILE=.qa-secrets/openai-key.txt npm.cmd run qa:openai-intake-smoke
+NUTRITAIL_QA_AUTH_COOKIE_FILE=.qa-secrets/account-cookie.txt npm.cmd run qa:account-chatbot-extract-live-route
+```
+
+The QA reports record only whether the secret came from an env var, a local
+file, or was missing. They never print the key or cookie value.
+
 ## Deployment
 
 The project is linked to Vercel as `nutritail-ai` and production is served at

@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-30T00:22:25.425Z
+Generated: 2026-06-30T05:15:09.318Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -45,8 +45,8 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
 | AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 0 | 2026-06-30T00:09:21.092Z |
-| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-30T00:22:25.000Z |
-| Account chatbot extract live route QA | `reports/account_chatbot_extract_live_route_qa.md` | authenticated live chatbot extraction route | `npm.cmd run qa:account-chatbot-extract-live-route` | skipped | 1 | 0 | 0 | 1 | 2026-06-30T00:04:00.450Z |
+| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-30T05:14:58.156Z |
+| Account chatbot extract live route QA | `reports/account_chatbot_extract_live_route_qa.md` | authenticated live chatbot extraction route | `npm.cmd run qa:account-chatbot-extract-live-route` | skipped | 1 | 0 | 0 | 1 | 2026-06-30T05:14:57.630Z |
 
 ## Response Contract Evidence
 
