@@ -277,6 +277,21 @@ const checks = [
     expected: "const pendingCompare = [...pendingCompareQueries]",
   },
   {
+    label: "Compare intent is deferred during incomplete pet intake",
+    file: "app/account/chatbot/page.tsx",
+    expected: "shouldDeferComparisonUntilPetContext({ step, pet })",
+  },
+  {
+    label: "Compare deferral treats guided intake steps as incomplete context",
+    file: "app/account/chatbot/page.tsx",
+    expected: "function isPetIntakeStep(step: IntakeStep)",
+  },
+  {
+    label: "Deferred comparison is kept for after the pet context is ready",
+    file: "app/account/chatbot/page.tsx",
+    expected: "setPendingCompareQueries(compareQueries)",
+  },
+  {
     label: "Initial natural pet details can start intake without button tap",
     file: "app/account/chatbot/page.tsx",
     expected: "isNewPetRequest(text) || parseSpeciesInput(text) || workingPet.species",
@@ -1132,7 +1147,7 @@ async function runInitialCompareStartsIntakeCheck() {
     label: "Initial compare request preserves intent and asks for pet context",
     file,
     ok:
-      body.includes('if (step === "petChoice")') &&
+      body.includes("shouldDeferComparisonUntilPetContext({ step, pet })") &&
       body.includes("setPendingCompareQueries(compareQueries)") &&
       body.includes("choose a saved pet or start a new one") &&
       !body.includes("startNewPetFromPetChoice(text, null)") &&

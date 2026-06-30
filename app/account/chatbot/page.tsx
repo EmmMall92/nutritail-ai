@@ -1929,6 +1929,33 @@ function parseCompareQueries(text: string) {
     .slice(0, 5);
 }
 
+function isPetIntakeStep(step: IntakeStep) {
+  return [
+    "species",
+    "name",
+    "weight",
+    "age",
+    "activity",
+    "neutered",
+    "health",
+    "currentFood",
+    "preferences",
+    "weightGoal",
+  ].includes(step);
+}
+
+function shouldDeferComparisonUntilPetContext({
+  step,
+  pet,
+}: {
+  step: IntakeStep;
+  pet: PetIntake;
+}) {
+  if (step === "petChoice") return true;
+  if (isPetIntakeStep(step)) return true;
+  return !pet.species;
+}
+
 function getStandaloneNutritionReply(text: string) {
   const value = normalizeUserText(text);
 
@@ -4733,7 +4760,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     const compareQueries = parseCompareQueries(text);
 
     if (compareQueries.length >= 2 && step !== "analysis") {
-      if (step === "petChoice") {
+      if (shouldDeferComparisonUntilPetContext({ step, pet })) {
         setPendingCompareQueries(compareQueries);
         addMessages(
           createMessage(
