@@ -361,6 +361,41 @@ function getReportPlanSnapshot(
   ];
 }
 
+function getCustomerHandoffSteps(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null
+) {
+  const hasFoodAndPortion = Boolean(
+    analysis?.matched_food_name && analysis?.feeding_grams_per_day
+  );
+
+  return [
+    {
+      label: "1. Σήμερα",
+      title: hasFoodAndPortion
+        ? "Ξεκίνα με την αποθηκευμένη τροφή και ποσότητα"
+        : "Κράτα τον στόχο θερμίδων και επιβεβαίωσε τροφή",
+      detail: hasFoodAndPortion
+        ? `Δώσε περίπου ${analysis?.feeding_grams_per_day}g/ημέρα, μέτρα και τις λιχουδιές, και κράτα το πλάνο σταθερό.`
+        : "Στείλε ακριβές όνομα σακούλας ή ετικέτα ώστε το πλάνο να γίνει συγκεκριμένο σε γραμμάρια.",
+    },
+    {
+      label: "2. Παρακολούθηση",
+      title: "Κοίτα βάρος, όρεξη, κόπρανα και αποδοχή τροφής",
+      detail:
+        pet.species === "cat"
+          ? "Στις γάτες σημείωσε ειδικά όρεξη, ούρηση, βάρος και αν τρώει κανονικά κάθε μέρα."
+          : "Στους σκύλους σημείωσε βάρος, ενέργεια, κόπρανα, λιχουδιές και αν η τροφή τους κάθεται καλά.",
+    },
+    {
+      label: "3. Επανέλεγχος",
+      title: getRecheckWindow(analysis),
+      detail:
+        "Γύρνα στο NutriTail με νέο βάρος και τα πραγματικά γραμμάρια/ημέρα για progress check ή νέα πρόταση τροφής.",
+    },
+  ];
+}
+
 function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
   const basePlan = [
     {
@@ -514,6 +549,7 @@ export default function PrintablePetReportPage() {
   }
 
   const reportPlanSnapshot = getReportPlanSnapshot(pet, latestAnalysis, mealSplit);
+  const customerHandoffSteps = getCustomerHandoffSteps(pet, latestAnalysis);
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -633,6 +669,41 @@ export default function PrintablePetReportPage() {
                 </p>
                 <p className="mt-2 font-bold text-black">{item.value}</p>
                 <p className="mt-1 text-xs text-gray-600">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-sky-100 bg-sky-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-customer-handoff"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
+                Τι κάνουμε από εδώ και πέρα
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-sky-950">
+                Τρία απλά βήματα για να μη χαθεί το πλάνο.
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm text-sky-900">
+              Η αναφορά γίνεται πιο χρήσιμη όταν ο πελάτης ξέρει τι κάνει σήμερα,
+              τι παρακολουθεί και πότε επιστρέφει για επανέλεγχο.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {customerHandoffSteps.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-sky-100 bg-white p-4 text-sm text-sky-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold">{item.title}</p>
+                <p className="mt-1 text-xs leading-5 text-sky-900">{item.detail}</p>
               </div>
             ))}
           </div>
