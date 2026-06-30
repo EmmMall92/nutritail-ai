@@ -530,8 +530,8 @@ function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
   }
 
   return medicalGoal
-    ? "For urinary or kidney history, final diet choice should match veterinary guidance."
-    : "This is nutrition guidance and does not replace veterinary advice.";
+    ? "For urinary or kidney history, use this as a starting shortlist and confirm the final food with your veterinarian."
+    : "This is nutrition guidance for choosing food and does not replace veterinary advice.";
 }
 
 function customerMedicalContextLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
