@@ -188,6 +188,7 @@ function buildSafetyMessageFromIntake(pet: PetIntake) {
 
 type RecommendedFoodChoice = {
   name: string;
+  brand?: string | null;
   role?: "best" | "value";
   score?: number | null;
   reason?: string;
@@ -1003,6 +1004,7 @@ function toRecommendationChoice(
 
   return {
     name,
+    brand: food.brand ?? null,
     role,
     score: food.ranking?.total_score ?? null,
     reason: formatRecommendationChoiceReason(food, role, language),
@@ -4764,6 +4766,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           dailyCalories: adjustedCalories,
           recommendationCount: analysisFoodChoices.length,
           hasFoodChoices: analysisFoodChoices.length > 0,
+          recommendedFoodBrands: [
+            ...new Set(
+              analysisFoodChoices
+                .map((choice) => choice.brand)
+                .filter(Boolean)
+            ),
+          ],
+          recommendedFoodNames: analysisFoodChoices.map((choice) => choice.name),
           recommendationMode,
           selectedPetId,
           currentFoodName: nextPet.currentFoodName ?? null,
@@ -5352,6 +5362,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       message: `User selected recommended food: ${choice.name}.`,
       context: {
         selectedFoodName: choice.name,
+        selectedFoodBrand: choice.brand ?? null,
         selectedFoodRole: choice.role,
         selectedFoodScore: choice.score ?? null,
         selectedFoodKcalPer100g: choice.kcalPer100g ?? null,
