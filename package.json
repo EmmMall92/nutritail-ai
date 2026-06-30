@@ -155,6 +155,8 @@
     "qa:openai-chatbot-training-contract": "tsx scripts/qa/check-openai-chatbot-training-contract.ts",
     "qa:openai-food-brand-guard": "tsx scripts/qa/check-openai-food-brand-guard.ts",
     "qa:vercel-openai-env": "node scripts/qa/check-vercel-openai-env.mjs",
+    "qa:openai-full-proof": "node scripts/qa/check-openai-full-proof.mjs --run",
+    "qa:openai-full-proof:report": "node scripts/qa/check-openai-full-proof.mjs",
     "qa:post-deploy-readiness": "node scripts/qa/run-post-deploy-readiness.mjs",
     "qa:post-deploy-readiness:refresh-chatbot": "node scripts/qa/run-post-deploy-readiness.mjs --refresh-chatbot",
     "qa:post-deploy-readiness:deploy-freshness": "node scripts/qa/run-post-deploy-readiness.mjs --deploy-freshness",
