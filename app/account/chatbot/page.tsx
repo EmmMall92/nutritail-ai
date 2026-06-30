@@ -2889,15 +2889,6 @@ function buildFollowUpProgressReply({
       .join("\n\n");
   }
 
-  if (currentWeight && currentGrams && mode === "progress") {
-    const nextQuestion =
-      language === "el"
-        ? "Πες μου τώρα μόνο λιχουδιές/σνακ ανά ημέρα και πώς είναι όρεξη, κόπρανα και ενέργεια."
-        : "Now tell me only treats/snacks per day plus appetite, stool quality, and energy.";
-
-    return [weightLine, currentGramsLine, nextQuestion].filter(Boolean).join("\n\n");
-  }
-
   if (mode === "no_result") {
     if (language === "el") {
       return `${weightLine}
