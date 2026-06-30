@@ -29,12 +29,20 @@ export async function POST(request: Request) {
     const role = cleanText(body.role, 120);
     const pets = cleanText(body.pets, 300);
     const goal = cleanText(body.goal, 300);
+    const website = cleanText(body.website, 300);
 
     if (!EMAIL_PATTERN.test(email)) {
       return NextResponse.json(
         { error: "Γράψε ένα έγκυρο email για τη beta λίστα." },
         { status: 400 }
       );
+    }
+
+    if (website) {
+      return NextResponse.json({
+        success: true,
+        message: "Σε βάλαμε στη beta λίστα. Θα επικοινωνήσουμε όταν ανοίξει το επόμενο κύμα πρόσβασης.",
+      });
     }
 
     const id = crypto.randomUUID();
@@ -47,6 +55,7 @@ export async function POST(request: Request) {
       message: "New beta waitlist signup.",
       metadata: {
         source: "public_beta_page",
+        accessPlan: "limited_beta",
         email,
         name,
         role,

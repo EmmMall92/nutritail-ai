@@ -33,6 +33,21 @@ const limits = [
   "Το feedback από beta χρήστες θα βοηθήσει να βελτιωθούν οι προτάσεις και οι αναφορές.",
 ];
 
+const betaAccessPlan = [
+  {
+    title: "Πρώτη beta πρόσβαση",
+    text: "Ξεκίνα με αποθηκευμένο κατοικίδιο, πρώτη ανάλυση, προτεινόμενες τροφές και report.",
+  },
+  {
+    title: "Συνέχεια πλάνου",
+    text: "Δοκίμασε progress check, αλλαγή γεύσης ή νέα πρόταση όταν αλλάζει η ανάγκη.",
+  },
+  {
+    title: "Feedback που μετράει",
+    text: "Οι απαντήσεις που δεν βοήθησαν και οι τροφές που επιλέγονται θα δείχνουν τι πρέπει να βελτιωθεί.",
+  },
+];
+
 export default function BetaPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -90,6 +105,34 @@ export default function BetaPage() {
               </p>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-12">
+        <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm md:p-8">
+          <p className="text-sm font-bold uppercase tracking-wide text-green-700">
+            Beta access plan
+          </p>
+          <h2 className="mt-3 text-3xl font-black">
+            Ξεκινάμε ελεγχόμενα για να κρατήσουμε καλή ποιότητα.
+          </h2>
+          <p className="mt-4 max-w-3xl leading-7 text-gray-700">
+            Πριν περάσουμε σε συνδρομές ή πληρωμές, το Nutritail θα λειτουργεί σαν
+            περιορισμένη beta. Έτσι μπορούμε να μετράμε ποιες αναλύσεις βοηθούν,
+            ποιες προτάσεις τροφών επιλέγονται και πού χρειάζεται βελτίωση.
+          </p>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {betaAccessPlan.map((item) => (
+              <article key={item.title} className="rounded-2xl border border-black/10 bg-[#f7f7f4] p-5">
+                <h3 className="font-black">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-700">{item.text}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-6 rounded-2xl bg-black px-5 py-4 text-sm leading-6 text-white">
+            Στόχος beta: λίγοι χρήστες, καθαρό feedback, καλύτερη εμπειρία πριν
+            ανοίξουμε πιο επίσημο πλάνο πρόσβασης.
+          </p>
         </div>
       </section>
     </main>

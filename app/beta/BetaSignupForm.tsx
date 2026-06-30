@@ -9,6 +9,7 @@ export function BetaSignupForm() {
   const [role, setRole] = useState("pet_parent");
   const [pets, setPets] = useState("");
   const [goal, setGoal] = useState("");
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -29,6 +30,7 @@ export function BetaSignupForm() {
           role,
           pets,
           goal,
+          website,
         }),
       });
       const result = await response.json();
@@ -43,6 +45,7 @@ export function BetaSignupForm() {
       setEmail("");
       setPets("");
       setGoal("");
+      setWebsite("");
       setRole("pet_parent");
     } catch (error) {
       setStatus("error");
@@ -87,6 +90,16 @@ export function BetaSignupForm() {
           autoComplete="email"
           required
           className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
+        />
+      </label>
+
+      <label className="hidden" aria-hidden="true">
+        Website
+        <input
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
         />
       </label>
 
