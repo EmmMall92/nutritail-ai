@@ -67,6 +67,14 @@ const requiredCustomerCopy = [
     text: "Get daily grams",
   },
   {
+    file: "app/account/chatbot/page.tsx",
+    text: "Πρακτικές σημειώσεις:",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Τι κρατάμε με προσοχή:",
+  },
+  {
     file: "app/account/profile/page.tsx",
     text: "Διαχειρίσου τα στοιχεία που συνδέονται με το προφίλ NutriTail AI.",
   },
