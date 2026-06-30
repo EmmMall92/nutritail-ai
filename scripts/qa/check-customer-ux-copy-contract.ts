@@ -75,6 +75,14 @@ const requiredCustomerCopy = [
     text: "Τι κρατάμε με προσοχή:",
   },
   {
+    file: "app/account/chatbot/page.tsx",
+    text: "πες μου μόνο πόσες λιχουδιές ή σνακ",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "tell me only how many treats or snacks",
+  },
+  {
     file: "app/account/profile/page.tsx",
     text: "Διαχειρίσου τα στοιχεία που συνδέονται με το προφίλ NutriTail AI.",
   },
