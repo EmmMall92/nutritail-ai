@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm run build",
+    "qa:ci-readiness": "npm run qa:live-readiness-deploy-freshness && npm run qa:openai-chatbot-training-contract && npm run qa:customer-ux-copy && npm run qa:chatbot-customer-recommendations && npm run qa:food-v2-guard-coverage",
     "validate:foods": "node scripts/data/validate-food-import.mjs",
     "collect:ambrosia": "node scripts/data/collect/collect-ambrosia-products.mjs",
     "collect:gatoskilo-products": "node scripts/data/collect/collect-gatoskilo-products.mjs",
