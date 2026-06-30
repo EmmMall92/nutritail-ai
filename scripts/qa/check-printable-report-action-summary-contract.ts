@@ -11,7 +11,9 @@ const packageJson = readFileSync("package.json", "utf8");
 
 const requiredReportMarkers = [
   "getReportActionSummary",
+  "getReportPlanSnapshot",
   'data-testid="report-next-action-summary"',
+  'data-testid="report-plan-snapshot"',
   "Τι κρατάμε για σήμερα",
   "Απλό πλάνο για τάισμα, λιχουδιές και επανέλεγχο",
   "Σήμερα ταΐζουμε",
@@ -20,6 +22,7 @@ const requiredReportMarkers = [
   "Επανέλεγχος",
   "mealSplit.twoMeals",
   "mealSplit.threeMeals",
+  "reportPlanSnapshot.map",
   "getTreatAllowance(analysis)",
 ];
 
