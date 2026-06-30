@@ -193,6 +193,12 @@ export default function AdminChatFeedbackPage() {
   const selectedFoodChoices = feedbackLogs.filter(
     (log) => getFeedbackType(log) === "food_choice_selected"
   );
+  const analysisCompleted = feedbackLogs.filter(
+    (log) => getFeedbackType(log) === "analysis_completed"
+  );
+  const savedPlans = feedbackLogs.filter(
+    (log) => getFeedbackType(log) === "plan_saved"
+  );
   const helpful = feedbackLogs.filter(
     (log) => String(log.metadata?.rating ?? "") === "helpful"
   );
@@ -202,6 +208,14 @@ export default function AdminChatFeedbackPage() {
   const helpfulnessTotal = helpful.length + notHelpful.length;
   const helpfulRate =
     helpfulnessTotal > 0 ? Math.round((helpful.length / helpfulnessTotal) * 100) : 0;
+  const foodSelectionRate =
+    analysisCompleted.length > 0
+      ? Math.round((selectedFoodChoices.length / analysisCompleted.length) * 100)
+      : 0;
+  const planSaveRate =
+    analysisCompleted.length > 0
+      ? Math.round((savedPlans.length / analysisCompleted.length) * 100)
+      : 0;
   const selectedFoodGroups = selectedFoodChoices.reduce<
     Record<string, { count: number; latestLog: AdminActivityLog }>
   >((acc, log) => {
@@ -280,11 +294,23 @@ export default function AdminChatFeedbackPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-8">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total feedback</p>
           <p className="mt-2 text-3xl font-bold text-black">
             {feedbackLogs.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">Analyses</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {analysisCompleted.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">Saved plans</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {savedPlans.length}
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -341,7 +367,27 @@ export default function AdminChatFeedbackPage() {
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <TriageButton
+            label="Analyses"
+            value={analysisCompleted.length}
+            helper="Completed nutrition analyses from the customer chatbot"
+            onClick={() => {
+              setTypeFilter("analysis_completed");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="Saved plans"
+            value={savedPlans.length}
+            helper="Customers who saved the result to their account"
+            onClick={() => {
+              setTypeFilter("plan_saved");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
           <TriageButton
             label="Failed matches"
             value={failedMatches.length}
@@ -402,6 +448,40 @@ export default function AdminChatFeedbackPage() {
               setSearch("");
             }}
           />
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">Analysis Funnel</h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Customer path from completed nutrition analysis to selected food and
+          saved plan.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-sm text-gray-600">Completed analyses</p>
+            <p className="mt-2 text-2xl font-bold text-black">
+              {analysisCompleted.length}
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm text-emerald-700">Food selection rate</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-800">
+              {analysisCompleted.length > 0 ? `${foodSelectionRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs text-emerald-700">
+              {selectedFoodChoices.length} selected food events
+            </p>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <p className="text-sm text-blue-700">Save rate</p>
+            <p className="mt-2 text-2xl font-bold text-blue-800">
+              {analysisCompleted.length > 0 ? `${planSaveRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs text-blue-700">
+              {savedPlans.length} saved nutrition plans
+            </p>
+          </div>
         </div>
       </div>
 

@@ -4670,6 +4670,26 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       setShowSave(true);
       setStep("done");
 
+      void submitChatFeedback({
+        eventType: "analysis_completed",
+        rating: "unknown",
+        message: "User completed chatbot nutrition analysis.",
+        context: {
+          petSpecies: nextPet.species ?? null,
+          petAge: nextPet.age ?? null,
+          petWeightKg: nextPet.weight ?? null,
+          activityLevel: nextPet.activityLevel ?? null,
+          neutered: nextPet.neutered ?? null,
+          weightGoal: nextPet.weightGoal ?? null,
+          dailyCalories: adjustedCalories,
+          recommendationCount: analysisFoodChoices.length,
+          hasFoodChoices: analysisFoodChoices.length > 0,
+          recommendationMode,
+          selectedPetId,
+          currentFoodName: nextPet.currentFoodName ?? null,
+        },
+      });
+
       if (analysisFoodChoices.length === 0) {
         addMessages(
           createMessage(
@@ -5329,6 +5349,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         console.error(result.error || "Save analysis request failed.");
         throw new Error(getChatbotApiErrorMessage("save", chatLanguage));
       }
+
+      void submitChatFeedback({
+        eventType: "plan_saved",
+        rating: "unknown",
+        message: "User saved chatbot nutrition plan.",
+        context: {
+          savedPetId: String(result.pet.id),
+          existingPetId: selectedPetId,
+          petSpecies: pet.species ?? null,
+          petAge: pet.age ?? null,
+          petWeightKg: pet.weight ?? null,
+          weightGoal: pet.weightGoal ?? null,
+          dailyCalories: latestAnalysis.nutrition.der,
+          matchedFoodName: analysisMetadata?.matchedFoodName ?? null,
+          feedingGramsPerDay: analysisMetadata?.feedingGramsPerDay ?? null,
+          foodScore: analysisMetadata?.foodScore ?? null,
+          recommendationMode,
+        },
+      });
 
       addMessages(
         createMessage(
