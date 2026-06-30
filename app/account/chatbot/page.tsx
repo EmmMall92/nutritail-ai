@@ -1179,6 +1179,8 @@ function getRecommendationShortlistHighlights(
   const firstChoice = choices[0];
   const premiumCount = choices.filter((choice) => choice.role !== "value").length;
   const valueCount = choices.filter((choice) => choice.role === "value").length;
+  const visiblePremiumCount = Math.min(premiumCount, 3);
+  const visibleValueCount = Math.min(valueCount, 3);
   const firstPortion = firstChoice
     ? getRecommendationChoicePortionPreview(firstChoice, analysis, weightGoal)
     : null;
@@ -1207,6 +1209,18 @@ function getRecommendationShortlistHighlights(
           ? "Πάτησε κάρτα τροφής για να κρατήσουμε ποσότητα και πλάνο."
           : "Tap a food card to keep the portion and plan.",
       tone: "border-lime-200 bg-lime-50 text-lime-950",
+    },
+    {
+      label: language === "el" ? "Δομή λίστας" : "List shape",
+      value:
+        language === "el"
+          ? `${visiblePremiumCount} δυνατές + ${visibleValueCount} πρακτικές`
+          : `${visiblePremiumCount} strong + ${visibleValueCount} value`,
+      detail:
+        language === "el"
+          ? "Πρώτα βλέπεις τις πιο δυνατές επιλογές και μετά πιο απλές/value εναλλακτικές."
+          : "Strongest choices appear first, followed by simpler value alternatives.",
+      tone: "border-violet-200 bg-violet-50 text-violet-950",
     },
     {
       label: language === "el" ? "Εναλλακτικές" : "Alternatives",
@@ -5838,7 +5852,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more."
               )}
             </p>
-            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
               {getRecommendationShortlistHighlights(
                 recommendedFoodChoices,
                 latestAnalysis,
