@@ -27,7 +27,7 @@ const CUSTOMER_CARD_FLOW_RULES = [
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
   "The best first choices are in the cards below.",
-  "Tap one card to see the first daily portion in grams.",
+  "Choose one food card below to see the first daily portion in grams.",
 ] as const;
 
 export type ChatbotRecommendationComposerInput = {
@@ -406,7 +406,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
       `Main goal: ${goalLabel}.`,
       `Best first choice: ${topFood} - it ${topReason}.`,
       "",
-      "Tap one card to see the first daily portion in grams.",
+      "Choose one food card below to see the first daily portion in grams.",
     ].join("\n");
   }
 

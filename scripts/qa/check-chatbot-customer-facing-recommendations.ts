@@ -503,7 +503,7 @@ if (missingComposerNameCleanup.length > 0) {
 
 const requiredCompactComposerFlow = [
   "The best first choices are in the cards below.",
-  "Tap one card to see the first daily portion in grams.",
+  "Choose one food card below to see the first daily portion in grams.",
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
   "If cards_follow is true, use at most 4 short sentences",
@@ -525,6 +525,7 @@ if (missingCompactComposerFlow.length > 0) {
 
 const forbiddenCompactComposerFlow = [
   "Tap one card to see estimated grams/day, then save the plan.",
+  "Tap one card to see the first daily portion in grams.",
 ];
 const leakedCompactComposerFlow = forbiddenCompactComposerFlow.filter((term) =>
   responseComposer.includes(term)
