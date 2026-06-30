@@ -92,6 +92,21 @@ const checks = [
     expected: "qa:openai-intake-smoke",
   },
   {
+    label: "post-deploy refreshes OpenAI food brand guard report",
+    source: postDeploySource,
+    expected: "qa:openai-food-brand-guard",
+  },
+  {
+    label: "readiness dashboard includes OpenAI food brand guard evidence",
+    source: dashboardSource,
+    expected: "OpenAI food brand guard",
+  },
+  {
+    label: "readiness dashboard points to OpenAI food brand guard report",
+    source: dashboardSource,
+    expected: "reports/openai_food_brand_guard_qa.md",
+  },
+  {
     label: "post-deploy refreshes authenticated extract route advisory report",
     source: postDeploySource,
     expected: "qa:account-chatbot-extract-live-route",
