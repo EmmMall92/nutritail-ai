@@ -151,6 +151,12 @@ const bannedExactCustomerStrings = [
     reason: "Terms page navigation should be localized for customers.",
   },
   {
+    file: "app/account/chatbot/page.tsx",
+    text: "throw new Error(result.error ||",
+    reason:
+      "Account chatbot should log backend API errors but show localized customer-safe fallback copy.",
+  },
+  {
     file: "app/login/page.tsx",
     text: "Signing in...",
     reason: "Login loading copy should be localized for customers.",
