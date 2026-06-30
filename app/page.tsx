@@ -147,6 +147,12 @@ export default function HomePage() {
             >
               Ξεκίνα δωρεάν
             </Link>
+            <Link
+              href="/beta"
+              className="flex-1 rounded-full border border-green-700 px-5 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-50 sm:flex-none"
+            >
+              Beta
+            </Link>
           </nav>
         </div>
       </header>
@@ -377,6 +383,9 @@ export default function HomePage() {
             </Link>
             <Link href="/how-it-works" className="hover:text-black">
               Πώς δουλεύει
+            </Link>
+            <Link href="/beta" className="hover:text-black">
+              Beta
             </Link>
             <Link href="/privacy" className="hover:text-black">
               Πολιτική απορρήτου
