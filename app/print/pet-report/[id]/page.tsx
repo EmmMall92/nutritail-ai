@@ -396,6 +396,51 @@ function getCustomerHandoffSteps(
   ];
 }
 
+function getCustomerPocketSummary(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Τροφή",
+      value: analysis?.matched_food_name ?? "Επιβεβαίωσε τροφή",
+      detail: analysis?.matched_food_name
+        ? "Η επιλεγμένη φόρμουλα για το σημερινό πλάνο."
+        : "Στείλε όνομα σακούλας ή φωτογραφία ετικέτας πριν βασιστείς σε μερίδα.",
+    },
+    {
+      label: "Ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : analysis?.mer
+          ? `${analysis.mer} kcal/ημέρα`
+          : "Θέλει ανάλυση",
+      detail:
+        analysis?.feeding_grams_per_day && mealSplit
+          ? `${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+          : "Η ποσότητα σε γραμμάρια χρειάζεται συγκεκριμένη τροφή με θερμίδες.",
+    },
+    {
+      label: "Λιχουδιές",
+      value: treatAllowance ? `έως ${treatAllowance.treats} kcal` : "Κράτα χαμηλά",
+      detail: treatAllowance
+        ? `Η κύρια τροφή μένει περίπου στις ${treatAllowance.mainFood} kcal/ημέρα.`
+        : "Μέτρα τις λιχουδιές μέσα στο ημερήσιο πλάνο.",
+    },
+    {
+      label: "Επιστροφή",
+      value: getRecheckWindow(analysis),
+      detail:
+        pet.species === "cat"
+          ? "Γύρνα με βάρος, όρεξη, ούρηση, κόπρανα και ποσότητα που έτρωγε."
+          : "Γύρνα με βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη και κόπρανα.",
+    },
+  ];
+}
+
 function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
   const basePlan = [
     {
@@ -550,6 +595,11 @@ export default function PrintablePetReportPage() {
 
   const reportPlanSnapshot = getReportPlanSnapshot(pet, latestAnalysis, mealSplit);
   const customerHandoffSteps = getCustomerHandoffSteps(pet, latestAnalysis);
+  const customerPocketSummary = getCustomerPocketSummary(
+    pet,
+    latestAnalysis,
+    mealSplit
+  );
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -704,6 +754,43 @@ export default function PrintablePetReportPage() {
                 </p>
                 <p className="mt-2 font-bold">{item.title}</p>
                 <p className="mt-1 text-xs leading-5 text-sky-900">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-pocket-summary"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
+                Μικρή κάρτα για το σπίτι
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-violet-950">
+                Τα 4 σημεία που χρειάζεται να θυμάσαι
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-violet-900">
+              Αν δεν θέλεις να διαβάζεις όλη την αναφορά κάθε φορά, κράτα αυτά
+              τα στοιχεία για τάισμα, λιχουδιές και επόμενο progress check.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {customerPocketSummary.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-violet-100 bg-white p-4 text-sm text-violet-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-violet-900">
+                  {item.detail}
+                </p>
               </div>
             ))}
           </div>
