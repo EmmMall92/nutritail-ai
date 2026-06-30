@@ -3049,32 +3049,31 @@ function formatProgressMissingQuestion(
 ) {
   if (details.missingFollowUpFields.length === 0) return null;
 
-  const labels =
+  const firstMissing = details.missingFollowUpFields[0];
+  const prompts =
     language === "el"
       ? {
-          treats: "λιχουδιές/σνακ",
-          appetite: "όρεξη",
-          stool: "κόπρανα",
-          energy: "ενέργεια",
+          treats:
+            "Για να το κρίνω πιο σωστά, πες μου μόνο πόσες λιχουδιές ή σνακ παίρνει μέσα στη μέρα.",
+          appetite:
+            "Για να το κρίνω πιο σωστά, πες μου μόνο πώς είναι η όρεξη: φυσιολογική, αυξημένη ή μειωμένη;",
+          stool:
+            "Για να το κρίνω πιο σωστά, πες μου μόνο πώς είναι τα κόπρανα: κανονικά, μαλακά, καλύτερα ή διάρροια;",
+          energy:
+            "Για να το κρίνω πιο σωστά, πες μου μόνο πώς είναι η ενέργεια: φυσιολογική, καλύτερη ή χαμηλή;",
         }
       : {
-          treats: "treats/snacks",
-          appetite: "appetite",
-          stool: "stool quality",
-          energy: "energy",
+          treats:
+            "To judge this more accurately, tell me only how many treats or snacks your pet gets per day.",
+          appetite:
+            "To judge this more accurately, tell me only how appetite is: normal, increased, or low?",
+          stool:
+            "To judge this more accurately, tell me only stool quality: normal, soft, better, or diarrhea?",
+          energy:
+            "To judge this more accurately, tell me only energy level: normal, better, or low?",
         };
 
-  const missing = details.missingFollowUpFields.map((field) => labels[field]);
-  const joined =
-    missing.length === 1
-      ? missing[0]
-      : `${missing.slice(0, -1).join(", ")} ${language === "el" ? "και" : "and"} ${
-          missing[missing.length - 1]
-        }`;
-
-  return language === "el"
-    ? `Για να το κρίνω πιο σωστά, πες μου μόνο: ${joined}.`
-    : `To judge this more accurately, tell me only: ${joined}.`;
+  return prompts[firstMissing];
 }
 
 function formatProgressNote(value: string, language: ChatLanguage) {

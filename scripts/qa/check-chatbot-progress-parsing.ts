@@ -49,6 +49,19 @@ const cases: Expected[] = [
     enough: false,
   },
   {
+    text: "τώρα 6,4 κιλά και τρώει 70 γραμμάρια τη μέρα",
+    weight: 6.4,
+    grams: 70,
+    enough: false,
+    missing: ["treats", "appetite", "stool", "energy"],
+  },
+  {
+    text: "70 γραμμαρια την ημερα",
+    weight: null,
+    grams: 70,
+    enough: false,
+  },
+  {
     text: "7κιλα",
     weight: 7,
     grams: null,
