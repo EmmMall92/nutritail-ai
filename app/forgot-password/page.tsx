@@ -64,6 +64,17 @@ export default function ForgotPasswordPage() {
         </ul>
       </div>
 
+      <div
+        className="mb-5 rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm leading-6 text-gray-700"
+        data-testid="auth-next-step-card"
+      >
+        <p className="font-semibold text-gray-950">Δεν χάνεις τα αποθηκευμένα στοιχεία σου.</p>
+        <p className="mt-1">
+          Μετά την αλλαγή κωδικού θα συνδεθείς ξανά και θα βρεις τα pets,
+          reports και progress checks στον λογαριασμό σου.
+        </p>
+      </div>
+
       <form onSubmit={handleResetRequest} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
