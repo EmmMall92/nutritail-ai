@@ -129,6 +129,7 @@
     "qa:dog-edge-fixture": "tsx scripts/qa/check-dog-edge-case-fixture.ts",
     "qa:dog-201-600-fixture": "node scripts/qa/check-dog-201-600-fixture-integrity.mjs",
     "qa:dog-chatbot-live-smoke": "node scripts/qa/run-dog-chatbot-live-smoke.mjs",
+    "qa:dog-chatbot-live-smoke:openai": "node scripts/qa/run-dog-chatbot-live-smoke.mjs --openai",
     "qa:dog-chatbot-live-cases": "tsx scripts/qa/run-dog-chatbot-live-cases.ts",
     "qa:dog-chatbot-live-201-600-smoke": "node scripts/qa/run-dog-chatbot-live-201-600-smoke.mjs",
     "qa:dog-chatbot-live-preferences": "node scripts/qa/run-dog-chatbot-live-preferences.mjs",

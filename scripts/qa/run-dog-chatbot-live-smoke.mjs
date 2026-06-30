@@ -33,6 +33,11 @@ const timeoutMs =
   Number.isFinite(configuredTimeoutMs) && configuredTimeoutMs > 0
     ? configuredTimeoutMs
     : defaultTimeoutMs;
+const openAiMode =
+  process.argv.includes("--openai") ||
+  process.env.NUTRITAIL_DOG_CHATBOT_LIVE_SMOKE_OPENAI === "1"
+    ? "1"
+    : "0";
 const result = spawnSync(
   command,
   ["run", "qa:dog-chatbot-live-cases"],
@@ -40,9 +45,12 @@ const result = spawnSync(
     cwd: process.cwd(),
     env: {
       ...process.env,
-      NUTRITAIL_QA_OPENAI: "0",
+      NUTRITAIL_QA_OPENAI: openAiMode,
       NUTRITAIL_QA_CASE_IDS: SMOKE_CASE_IDS.join(","),
-      NUTRITAIL_QA_REPORT_PATH: "reports/dog_chatbot_live_smoke.md",
+      NUTRITAIL_QA_REPORT_PATH:
+        openAiMode === "1"
+          ? "reports/dog_chatbot_live_smoke_openai.md"
+          : "reports/dog_chatbot_live_smoke.md",
     },
     shell: process.platform === "win32",
     stdio: "inherit",
