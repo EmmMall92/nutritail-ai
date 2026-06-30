@@ -312,15 +312,15 @@ if (missingCleanGreekAdapterCopy.length > 0) {
 for (const scenario of coreScenarioSamples) {
   if (
     !scenario.text.includes(
-      `Main need: ${scenario.expectedGoalLabel}.`
+      `Based on what you told me, I am looking first for ${scenario.expectedGoalLabel}.`
     )
   ) {
-    console.error(`Scenario ${scenario.label} did not show the expected customer goal.`);
+    console.error(`Scenario ${scenario.label} did not show the expected customer priority.`);
     console.error(scenario.text);
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: tap one food card to see the first daily portion in grams")) {
+  if (!scenario.text.includes("Next step: choose one food card below to see the first daily portion in grams")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
@@ -567,6 +567,9 @@ const forbiddenChatbotPageCopy = [
   "nutrition gaps",
   "directional rather than final",
   "structured comparison",
+  "Main need:",
+  "Next step: tap one food card to see the first daily portion in grams",
+  "Tap one card to estimate portions/day",
   "Χρησιμοποίησέ το σαν δομημένη βοήθεια σύγκρισης.",
   "Treat allowance:",
   "Όριο για λιχουδιές:",
@@ -582,6 +585,22 @@ const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
 if (leakedChatbotPageCopy.length > 0) {
   console.error("Account chatbot still exposes report-style score/confidence copy:");
   console.error(leakedChatbotPageCopy.join(", "));
+  process.exit(1);
+}
+
+const forbiddenRecommendationSummaryCopy = [
+  "Main need:",
+  "Κύρια ανάγκη που καλύπτουμε:",
+  "Next step: tap one food card to see the first daily portion in grams",
+  "Tap one card to estimate portions/day",
+];
+const leakedRecommendationSummaryCopy = forbiddenRecommendationSummaryCopy.filter((term) =>
+  recommendationSummarySource.includes(term)
+);
+
+if (leakedRecommendationSummaryCopy.length > 0) {
+  console.error("Food V2 chatbot summary still exposes mechanical customer copy:");
+  console.error(leakedRecommendationSummaryCopy.join(", "));
   process.exit(1);
 }
 

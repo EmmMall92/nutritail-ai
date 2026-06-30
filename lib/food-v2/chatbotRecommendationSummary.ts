@@ -247,8 +247,8 @@ function scoreLabel() {
 
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
-    ? `Κύρια ανάγκη που καλύπτουμε: ${goalLabel}.`
-    : `Main need: ${goalLabel}.`;
+    ? `Με βάση αυτά που μου είπες, κοιτάω πρώτα επιλογές για ${goalLabel}.`
+    : `Based on what you told me, I am looking first for ${goalLabel}.`;
 }
 
 function cleanPreferenceTerms(values: string[] | undefined) {
@@ -518,7 +518,7 @@ function sectionTitle(
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
     ? "Επόμενο βήμα: πάτησε μία κάρτα τροφής για να δεις την πρώτη ποσότητα σε γραμμάρια/ημέρα."
-    : "Next step: tap one food card to see the first daily portion in grams.";
+    : "Next step: choose one food card below to see the first daily portion in grams.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
@@ -599,7 +599,7 @@ function compactCardsIntro({
       customerMedicalContextLine(locale, goal),
       `Start with: ${name}, because it ${reason}.`,
       snapshot,
-      "Tap one card to estimate portions/day.",
+      "Choose one food card below to see the first daily portion in grams.",
       safetyLine,
     ]
       .filter(Boolean)
@@ -633,10 +633,6 @@ function polishEnglishCustomerText(text: string) {
     .replace(
       "Done. I placed the best options below as cards.",
       "Done. I found the best first choices and placed them below as cards."
-    )
-    .replace(
-      "Tap one card to estimate portions/day.",
-      "Choose one food card below to see the first daily portion in grams."
     );
 }
 
