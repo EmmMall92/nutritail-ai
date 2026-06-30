@@ -314,6 +314,11 @@ includesAll(
     "Do not add brand-level winners or unlisted alternatives.",
     "ask for the exact bag name or a label photo",
     "deterministic_text: sanitizeGroundingText(input.deterministicText)",
+    "NUTRITAIL_GUARDED_FOOD_BRANDS",
+    "mentionsUnallowedGuardedBrand",
+    "composer_mentioned_unlisted_food_brand",
+    "customerFoodDisplayName(food)",
+    "customerFoodName(food)",
   ],
   "response composer fallback language repair"
 );
