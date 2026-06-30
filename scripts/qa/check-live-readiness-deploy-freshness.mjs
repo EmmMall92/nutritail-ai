@@ -52,6 +52,21 @@ const checks = [
     expected: "Minimum readiness score",
   },
   {
+    label: "readiness dashboard separates customer-ready core status",
+    source: dashboardSource,
+    expected: "Customer-ready core status",
+  },
+  {
+    label: "readiness dashboard separates full OpenAI proof status",
+    source: dashboardSource,
+    expected: "Full OpenAI proof status",
+  },
+  {
+    label: "full OpenAI proof only passes after both advisory checks pass",
+    source: dashboardSource,
+    expected: "it becomes PASS only after the OpenAI intake smoke and authenticated chatbot extract route both run successfully",
+  },
+  {
     label: "post-deploy script can enable deploy freshness from CLI",
     source: postDeploySource,
     expected: "--deploy-freshness",
@@ -177,9 +192,24 @@ const checks = [
     expected: "advisoryEvidenceScore",
   },
   {
+    label: "admin live QA summary parses customer-ready core status",
+    source: adminLiveQaSource,
+    expected: "customerReadyCoreStatus",
+  },
+  {
+    label: "admin live QA summary parses full OpenAI proof status",
+    source: adminLiveQaSource,
+    expected: "fullOpenAiProofStatus",
+  },
+  {
     label: "admin live QA card shows readiness score",
     source: adminLiveQaSource,
     expected: "Readiness score",
+  },
+  {
+    label: "admin live QA card shows OpenAI proof status",
+    source: adminLiveQaSource,
+    expected: "OpenAI proof:",
   },
   {
     label: "admin live QA summary shows oldest source report",

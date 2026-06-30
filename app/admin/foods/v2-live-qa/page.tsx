@@ -10,6 +10,8 @@ type ReadinessSummary = {
   passRate: string;
   readinessScore: string;
   minimumReadinessScore: string;
+  customerReadyCoreStatus: string;
+  fullOpenAiProofStatus: string;
   coreEvidenceScore: string;
   advisoryEvidenceScore: string;
   generated: string;
@@ -28,6 +30,8 @@ function readLiveReadinessSummary(): ReadinessSummary {
     passRate: "unknown",
     readinessScore: "unknown",
     minimumReadinessScore: "unknown",
+    customerReadyCoreStatus: "unknown",
+    fullOpenAiProofStatus: "unknown",
     coreEvidenceScore: "unknown",
     advisoryEvidenceScore: "unknown",
     generated: "unknown",
@@ -61,6 +65,12 @@ function readLiveReadinessSummary(): ReadinessSummary {
       minimumReadinessScore:
         report.match(/- Minimum readiness score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.minimumReadinessScore,
+      customerReadyCoreStatus:
+        report.match(/- Customer-ready core status:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.customerReadyCoreStatus,
+      fullOpenAiProofStatus:
+        report.match(/- Full OpenAI proof status:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.fullOpenAiProofStatus,
       coreEvidenceScore:
         report.match(/- Core evidence score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.coreEvidenceScore,
@@ -302,10 +312,12 @@ export default function FoodV2LiveQaPage() {
           <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
             <p className="font-semibold">Core evidence</p>
             <p className="mt-1 break-words">{readiness.coreEvidenceScore}</p>
+            <p className="mt-1 text-xs">Status: {readiness.customerReadyCoreStatus}</p>
           </div>
           <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
             <p className="font-semibold">Advisory evidence</p>
             <p className="mt-1 break-words">{readiness.advisoryEvidenceScore}</p>
+            <p className="mt-1 text-xs">OpenAI proof: {readiness.fullOpenAiProofStatus}</p>
           </div>
           <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
             <p className="font-semibold">Oldest source report</p>
