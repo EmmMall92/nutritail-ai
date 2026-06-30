@@ -29,6 +29,11 @@ function getCurrentFoodName(log: AdminActivityLog) {
   return String(context.currentFoodName ?? log.metadata?.message ?? "").trim();
 }
 
+function getSelectedFoodName(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  return String(context.selectedFoodName ?? context.currentFoodName ?? "").trim();
+}
+
 function getCleanupMetadata(log: AdminActivityLog) {
   const cleanup = log.metadata?.cleanup;
   return typeof cleanup === "object" && cleanup !== null
@@ -162,6 +167,8 @@ export default function AdminChatFeedbackPage() {
         type,
         rating,
         context.currentFoodName,
+        context.selectedFoodName,
+        context.selectedFoodRole,
         context.weightGoal,
         context.petSpecies,
         ...(Array.isArray(context.healthIssues) ? context.healthIssues : []),
@@ -183,6 +190,9 @@ export default function AdminChatFeedbackPage() {
   const followUpActions = feedbackLogs.filter(
     (log) => getFeedbackType(log) === "chat_followup_action"
   );
+  const selectedFoodChoices = feedbackLogs.filter(
+    (log) => getFeedbackType(log) === "food_choice_selected"
+  );
   const helpful = feedbackLogs.filter(
     (log) => String(log.metadata?.rating ?? "") === "helpful"
   );
@@ -192,6 +202,24 @@ export default function AdminChatFeedbackPage() {
   const helpfulnessTotal = helpful.length + notHelpful.length;
   const helpfulRate =
     helpfulnessTotal > 0 ? Math.round((helpful.length / helpfulnessTotal) * 100) : 0;
+  const selectedFoodGroups = selectedFoodChoices.reduce<
+    Record<string, { count: number; latestLog: AdminActivityLog }>
+  >((acc, log) => {
+    const foodName = getSelectedFoodName(log) || "Unknown selected food";
+    acc[foodName] = {
+      count: (acc[foodName]?.count ?? 0) + 1,
+      latestLog: log,
+    };
+    return acc;
+  }, {});
+  const selectedFoodTrends = Object.entries(selectedFoodGroups)
+    .map(([foodName, data]) => ({
+      foodName,
+      count: data.count,
+      latestLog: data.latestLog,
+    }))
+    .sort((a, b) => b.count - a.count || a.foodName.localeCompare(b.foodName))
+    .slice(0, 8);
   const failedMatchGroups = failedMatches.reduce<
     Record<string, { count: number; latestLog: AdminActivityLog }>
   >((acc, log) => {
@@ -252,7 +280,7 @@ export default function AdminChatFeedbackPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-gray-500">Total feedback</p>
           <p className="mt-2 text-3xl font-bold text-black">
@@ -269,6 +297,12 @@ export default function AdminChatFeedbackPage() {
           <p className="text-sm text-gray-500">Follow-ups</p>
           <p className="mt-2 text-3xl font-bold text-black">
             {followUpActions.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">Food choices</p>
+          <p className="mt-2 text-3xl font-bold text-black">
+            {selectedFoodChoices.length}
           </p>
         </div>
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -307,7 +341,7 @@ export default function AdminChatFeedbackPage() {
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
           <TriageButton
             label="Failed matches"
             value={failedMatches.length}
@@ -324,6 +358,16 @@ export default function AdminChatFeedbackPage() {
             helper="Progress, no-result, timeline, or alternative-food actions"
             onClick={() => {
               setTypeFilter("chat_followup_action");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+          />
+          <TriageButton
+            label="Food choices"
+            value={selectedFoodChoices.length}
+            helper="Recommended foods customers actually tapped"
+            onClick={() => {
+              setTypeFilter("food_choice_selected");
               setRatingFilter("all");
               setSearch("");
             }}
@@ -415,6 +459,53 @@ export default function AdminChatFeedbackPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Selected Food Trends
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Foods customers tapped after seeing the recommendation cards.
+        </p>
+
+        {selectedFoodTrends.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No selected food events have been recorded yet.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {selectedFoodTrends.map((item) => {
+              const context = getFeedbackContext(item.latestLog);
+
+              return (
+                <div
+                  key={item.foodName}
+                  className="rounded-xl border border-green-200 bg-green-50 p-4"
+                >
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <p className="font-semibold text-black">{item.foodName}</p>
+                      <p className="mt-1 text-sm text-green-800">
+                        Goal: {String(context.weightGoal ?? "unknown")} / Role:{" "}
+                        {String(context.selectedFoodRole ?? "unknown")}
+                      </p>
+                      <p className="mt-1 text-sm text-green-800">
+                        Portion:{" "}
+                        {context.feedingGramsPerDay
+                          ? `${String(context.feedingGramsPerDay)}g/day`
+                          : "not estimated"}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-green-700 px-2 py-1 text-xs font-semibold text-white">
+                      {item.count}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
