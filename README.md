@@ -149,6 +149,9 @@ npm.cmd run qa:post-deploy-readiness:full
 
 The post-deploy report includes the live readiness result, the 95/100 readiness
 score, the minimum readiness gate, and the core/advisory evidence split.
+Command rows can be `PASS`, `SKIP`, or `REVIEW`. `SKIP` is non-blocking and
+usually means local-only credentials such as `OPENAI_API_KEY` or an authenticated
+account cookie were intentionally unavailable in the terminal session.
 
 ## Data Notes
 
