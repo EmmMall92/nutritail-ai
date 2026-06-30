@@ -165,6 +165,32 @@ function checkValidatedOpenAiCleanup() {
     failures.push("validated proteins: expected salmon in excludedIngredients");
   }
 
+  const allergyConflict = validateAiIntakeExtraction({
+    preferredProteins: [
+      "\u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf",
+      "salmon",
+    ],
+    allergies: ["\u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2"],
+    currentFoodName: "\u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2",
+    confidence: "medium",
+  });
+
+  if (!allergyConflict.data.preferredProteins?.includes("chicken")) {
+    failures.push("validated allergy conflict: expected chicken in preferredProteins");
+  }
+
+  if (allergyConflict.data.preferredProteins?.includes("salmon")) {
+    failures.push("validated allergy conflict: salmon must be removed from preferredProteins");
+  }
+
+  if (!allergyConflict.data.allergies?.includes("salmon")) {
+    failures.push("validated allergy conflict: expected canonical salmon in allergies");
+  }
+
+  if (allergyConflict.data.currentFoodName) {
+    failures.push("validated allergy conflict: avoided bare ingredient must not become currentFoodName");
+  }
+
   return {
     id: "validated_openai_cleanup",
     status: failures.length === 0 ? "pass" : "fail",
