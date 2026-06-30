@@ -304,7 +304,7 @@ function parseAdvisoryRouteSuite(suite) {
     status,
     note:
       status === "SKIPPED"
-        ? "NUTRITAIL_QA_AUTH_COOKIE was not available; provide an authenticated account cookie for full live endpoint verification."
+        ? "NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE was not available; provide an authenticated account cookie for full live endpoint verification without committing or printing it."
         : declaredStatus,
   };
 }

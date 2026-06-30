@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -5,11 +6,50 @@ const siteUrl = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH ||
   "reports/account_chatbot_extract_live_route_qa.md";
-const authCookie = process.env.NUTRITAIL_QA_AUTH_COOKIE?.trim() || "";
+const authCookieFile = process.env.NUTRITAIL_QA_AUTH_COOKIE_FILE?.trim() || "";
 
 const routePath = "/api/account/chatbot/extract-intake";
 const sampleMessage =
-  "Έχω σκύλο, τη λένε Κύρκη, είναι 6 κιλά, 6 ετών, χαμηλή δραστηριότητα, στειρωμένη. Της αρέσει κοτόπουλο και δεν της αρέσει σολομός.";
+  "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7 \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.";
+
+function loadAuthCookie() {
+  const fromEnv = process.env.NUTRITAIL_QA_AUTH_COOKIE?.trim() || "";
+  if (fromEnv) {
+    return {
+      value: fromEnv,
+      source: "NUTRITAIL_QA_AUTH_COOKIE",
+      warning: "",
+    };
+  }
+
+  if (!authCookieFile) {
+    return {
+      value: "",
+      source: "missing",
+      warning: "",
+    };
+  }
+
+  try {
+    const fromFile = readFileSync(authCookieFile, "utf8").trim();
+
+    return {
+      value: fromFile,
+      source: fromFile
+        ? "NUTRITAIL_QA_AUTH_COOKIE_FILE"
+        : "empty NUTRITAIL_QA_AUTH_COOKIE_FILE",
+      warning: fromFile
+        ? ""
+        : "The configured cookie file was readable but empty.",
+    };
+  } catch (error) {
+    return {
+      value: "",
+      source: "unreadable NUTRITAIL_QA_AUTH_COOKIE_FILE",
+      warning: error instanceof Error ? error.message : "Unknown cookie file read error",
+    };
+  }
+}
 
 function renderTable(rows) {
   return [
@@ -29,7 +69,7 @@ function hasExpectedStructuredData(payload) {
 
   return (
     data?.species === "dog" &&
-    data?.petName === "Κύρκη" &&
+    data?.petName === "\u039a\u03cd\u03c1\u03ba\u03b7" &&
     data?.weightKg === 6 &&
     data?.ageYears === 6 &&
     data?.activityLevel === "low" &&
@@ -49,6 +89,7 @@ async function writeReport({
   failed,
   skipped,
   notes,
+  authCookieSource,
 }) {
   await mkdir(path.dirname(reportPath), { recursive: true });
   await writeFile(
@@ -69,6 +110,7 @@ async function writeReport({
       `- Passed: ${passed}`,
       `- Failed: ${failed}`,
       `- Skipped: ${skipped}`,
+      `- Auth cookie source: ${authCookieSource}`,
       "",
       notes,
       "",
@@ -83,8 +125,9 @@ async function writeReport({
 async function checkRoute() {
   const url = new URL(routePath, siteUrl).toString();
   const started = Date.now();
+  const authCookie = loadAuthCookie();
 
-  if (!authCookie) {
+  if (!authCookie.value) {
     return {
       path: routePath,
       method: "POST",
@@ -94,8 +137,9 @@ async function checkRoute() {
       source: "",
       duration_ms: Date.now() - started,
       notes:
-        "Set NUTRITAIL_QA_AUTH_COOKIE to run this against an authenticated live account session.",
-      error: "",
+        "Set NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE to run this against an authenticated live account session.",
+      error: authCookie.warning,
+      authCookieSource: authCookie.source,
     };
   }
 
@@ -105,7 +149,7 @@ async function checkRoute() {
       redirect: "manual",
       headers: {
         "Content-Type": "application/json",
-        Cookie: authCookie,
+        Cookie: authCookie.value,
         "User-Agent": "NutriTail-account-chatbot-extract-live-route-qa/1.0",
       },
       body: JSON.stringify({
@@ -128,8 +172,9 @@ async function checkRoute() {
         source,
         duration_ms,
         notes:
-          "Authenticated cookie was provided but the live route rejected it; refresh NUTRITAIL_QA_AUTH_COOKIE.",
+          "Authenticated cookie was provided but the live route rejected it; refresh the QA account cookie.",
         error: "",
+        authCookieSource: authCookie.source,
       };
     }
 
@@ -145,8 +190,11 @@ async function checkRoute() {
       duration_ms,
       notes: ok
         ? `structured extraction succeeded through ${source || "unknown"} source`
-        : `unexpected extraction payload shape; acceptedFields=${payload?.acceptedFields?.join(",") || "-"}`,
+        : `unexpected extraction payload shape; acceptedFields=${
+            payload?.acceptedFields?.join(",") || "-"
+          }`,
       error: "",
+      authCookieSource: authCookie.source,
     };
   } catch (error) {
     return {
@@ -159,6 +207,7 @@ async function checkRoute() {
       duration_ms: Date.now() - started,
       notes: "",
       error: error instanceof Error ? error.message : "Unknown request error",
+      authCookieSource: authCookie.source,
     };
   }
 }
@@ -170,6 +219,7 @@ async function main() {
   const skipped = rows.filter((item) => item.skipped).length;
   const failed = rows.length - passed - skipped;
   const status = skipped > 0 ? "skipped" : failed === 0 ? "completed" : "failed";
+  const authCookieSource = row.authCookieSource || "unknown";
 
   await writeReport({
     rows,
@@ -178,10 +228,11 @@ async function main() {
     passed,
     failed,
     skipped,
+    authCookieSource,
     notes:
       skipped > 0
-        ? "No authenticated cookie was available locally, so this test was skipped safely. Production route availability is still covered by account live-route smoke tests."
-        : "The route was called with an authenticated session cookie from the QA environment.",
+        ? "No authenticated cookie was available locally, so this test was skipped safely. To run it, set NUTRITAIL_QA_AUTH_COOKIE directly or set NUTRITAIL_QA_AUTH_COOKIE_FILE to a local ignored file containing the Cookie header. Do not commit or print the cookie."
+        : `The route was called with an authenticated session cookie from ${authCookieSource}. The cookie value was not written to this report.`,
   });
 
   console.log(
@@ -193,6 +244,7 @@ async function main() {
         passed,
         failed,
         skipped,
+        auth_cookie_source: authCookieSource,
         report: reportPath,
       },
       null,
