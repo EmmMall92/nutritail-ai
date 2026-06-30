@@ -1,6 +1,6 @@
 # Public Launch Live Route Smoke QA
 
-Generated: 2026-06-30T00:04:14.572Z
+Generated: 2026-06-30T05:38:43.918Z
 Site: https://nutritail.ai
 
 ## Summary
@@ -15,17 +15,17 @@ This smoke check guards the public launch surface: homepage, auth pages, legal p
 
 | Route | Status | Result | Time | Content-Type | Notes |
 | --- | ---: | --- | ---: | --- | --- |
-| / | 200 | pass | 902ms | text/html; charset=utf-8 | - |
-| /login | 200 | pass | 682ms | text/html; charset=utf-8 | - |
-| /register | 200 | pass | 630ms | text/html; charset=utf-8 | - |
-| /forgot-password | 200 | pass | 469ms | text/html; charset=utf-8 | - |
-| /reset-password | 200 | pass | 485ms | text/html; charset=utf-8 | - |
-| /privacy | 200 | pass | 478ms | text/html; charset=utf-8 | - |
-| /terms | 200 | pass | 407ms | text/html; charset=utf-8 | - |
-| /chatbot | 307 | pass | 313ms | text/html; charset=utf-8 | redirect=/account/chatbot |
-| /dashboard | 307 | pass | 604ms | text/html; charset=utf-8 | redirect=/account |
-| /create-pet | 307 | pass | 324ms | text/html; charset=utf-8 | redirect=/account/chatbot |
-| /sitemap.xml | 200 | pass | 222ms | application/xml | - |
-| /robots.txt | 200 | pass | 210ms | text/plain; charset=utf-8 | - |
-| /manifest.webmanifest | 200 | pass | 181ms | application/manifest+json; charset=utf-8 | - |
-| /opengraph-image | 200 | pass | 390ms | image/png | - |
+| / | 200 | pass | 921ms | text/html; charset=utf-8 | - |
+| /login | 200 | pass | 587ms | text/html; charset=utf-8 | - |
+| /register | 200 | pass | 358ms | text/html; charset=utf-8 | - |
+| /forgot-password | 200 | pass | 556ms | text/html; charset=utf-8 | - |
+| /reset-password | 200 | pass | 538ms | text/html; charset=utf-8 | - |
+| /privacy | 200 | pass | 500ms | text/html; charset=utf-8 | - |
+| /terms | 200 | pass | 340ms | text/html; charset=utf-8 | - |
+| /chatbot | 307 | pass | 320ms | text/html; charset=utf-8 | redirect=/account/chatbot |
+| /dashboard | 307 | pass | 586ms | text/html; charset=utf-8 | redirect=/account |
+| /create-pet | 307 | pass | 326ms | text/html; charset=utf-8 | redirect=/account/chatbot |
+| /sitemap.xml | 200 | pass | 178ms | application/xml | - |
+| /robots.txt | 200 | pass | 193ms | text/plain; charset=utf-8 | - |
+| /manifest.webmanifest | 200 | pass | 221ms | application/manifest+json; charset=utf-8 | - |
+| /opengraph-image | 200 | pass | 365ms | image/png | - |
