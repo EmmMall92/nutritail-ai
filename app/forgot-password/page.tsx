@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { AuthShell } from "@/components/AuthShell";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
@@ -49,52 +50,70 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <section className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold text-black">Επαναφορά κωδικού</h1>
+    <AuthShell
+      eyebrow="Βοήθεια σύνδεσης"
+      title="Επαναφορά κωδικού"
+      description="Γράψε το email του λογαριασμού σου και θα στείλουμε ασφαλές link για να ορίσεις νέο κωδικό."
+    >
+      <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
+        <p className="font-semibold text-blue-950">Τι να περιμένεις</p>
+        <ul className="mt-2 space-y-1">
+          <li>- Αν υπάρχει λογαριασμός, θα λάβεις link επαναφοράς στο email.</li>
+          <li>- Το link ανοίγει τη σελίδα νέου κωδικού στο NutriTail.</li>
+          <li>- Αν δεν το δεις, έλεγξε και spam/promotions.</li>
+        </ul>
+      </div>
 
-        <p className="mt-2 text-sm text-gray-600">
-          Γράψε το email σου και θα σου στείλουμε ασφαλές link επαναφοράς.
-        </p>
-
-        <form onSubmit={handleResetRequest} className="mt-6 space-y-4">
+      <form onSubmit={handleResetRequest} className="space-y-4">
+        <label className="block">
+          <span className="text-sm font-medium text-gray-800">Email</span>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder="you@example.com"
             type="email"
             autoComplete="email"
-            className="w-full rounded-xl border border-gray-300 p-3 text-black"
+            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
           />
+        </label>
 
-          {error && (
-            <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+            {error}
+            <p className="mt-1 text-xs text-red-600">
+              Έλεγξε ότι το email είναι σωστό και δοκίμασε ξανά σε λίγο.
+            </p>
+          </div>
+        )}
 
-          {success && (
-            <div className="rounded-xl bg-green-50 p-3 text-sm text-green-700">
-              {success}
-            </div>
-          )}
+        {success && (
+          <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
+            {success}
+            <p className="mt-1 text-xs text-green-700">
+              Άνοιξε το link από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
+              ζητήσεις νέο.
+            </p>
+          </div>
+        )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-xl bg-black py-3 text-white disabled:opacity-50"
-          >
-            {isLoading ? "Αποστολή..." : "Αποστολή link επαναφοράς"}
-          </button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isLoading ? "Στέλνουμε το link..." : "Στείλε link επαναφοράς"}
+        </button>
 
+        <p className="text-center text-sm text-gray-600">
+          Θυμήθηκες τον κωδικό;{" "}
           <Link
             href="/login"
-            className="block text-center text-sm text-gray-600 underline"
+            className="font-semibold text-black underline decoration-gray-300 underline-offset-4"
           >
             Πίσω στη σύνδεση
           </Link>
-        </form>
-      </section>
-    </main>
+        </p>
+      </form>
+    </AuthShell>
   );
 }
