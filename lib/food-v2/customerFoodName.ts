@@ -79,7 +79,9 @@ function repairCustomerGreekMojibake(value: string) {
       )
     );
 
-    if (next === current) return normalizeVisibleMojibakeFlavorTokens(current);
+    if (next === current) {
+      return polishReadableGreekFoodTokens(normalizeVisibleMojibakeFlavorTokens(current));
+    }
     current = next;
   }
 
@@ -186,6 +188,19 @@ function replaceGeneratedGreekFoodTokenVariants(value: string) {
   }
 
   return current;
+}
+
+function polishReadableGreekFoodTokens(value: string) {
+  return value
+    .replace(/\u039e\u009e\u03b2\u20actm\u03be'\u00ae/gu, " ")
+    .replace(/\u039e'\u00ae/gu, " ")
+    .replace(
+      /\u039e\u009a\u03be\u03ce\u03bf\u201e\u03bf\u008c\u03bf\u20ac\u03be\u03ce\u03bf\.{3}\u03bb\u03bf/gu,
+      "\u039a\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf"
+    )
+    .replace(/\u03b5\u03cd\u03b6\u03b9/giu, "\u03a1\u03cd\u03b6\u03b9")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function getIsoGreekReverseMap() {
@@ -441,7 +456,11 @@ export function customerFoodDisplayName(food: FoodNameInput) {
       formula_name: food.formula_name,
     });
 
-  return repairCustomerGreekMojibake(normalizedDisplayName || cleanedDisplayName) || cleanedDisplayName;
+  return (
+    polishReadableGreekFoodTokens(
+      repairCustomerGreekMojibake(normalizedDisplayName || cleanedDisplayName)
+    ) || cleanedDisplayName
+  );
 }
 
 export function customerFoodName(food: FoodNameInput, separator = " - ") {
