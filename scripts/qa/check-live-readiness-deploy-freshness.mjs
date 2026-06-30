@@ -86,6 +86,31 @@ const checks = [
     expected: "Freshness source reports refreshed:",
   },
   {
+    label: "post-deploy report reads live readiness rollup",
+    source: postDeploySource,
+    expected: "readLiveReadinessRollup",
+  },
+  {
+    label: "post-deploy report records live readiness score",
+    source: postDeploySource,
+    expected: "Live readiness score:",
+  },
+  {
+    label: "post-deploy report records minimum readiness score",
+    source: postDeploySource,
+    expected: "Minimum readiness score:",
+  },
+  {
+    label: "post-deploy report records core evidence score",
+    source: postDeploySource,
+    expected: "Core evidence score:",
+  },
+  {
+    label: "post-deploy report records advisory evidence score",
+    source: postDeploySource,
+    expected: "Advisory evidence score:",
+  },
+  {
     label: "admin live QA summary parses deploy freshness gate",
     source: adminLiveQaSource,
     expected: "deployFreshnessGate",

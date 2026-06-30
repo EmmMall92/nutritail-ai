@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
@@ -95,6 +95,38 @@ function runCommand(command, env = {}) {
   };
 }
 
+function readLiveReadinessRollup() {
+  const source = "reports/live_readiness_dashboard.md";
+
+  if (!existsSync(source)) {
+    return {
+      source,
+      result: "missing",
+      readinessScore: "unknown",
+      minimumReadinessScore: "unknown",
+      coreEvidenceScore: "unknown",
+      advisoryEvidenceScore: "unknown",
+      generated: "unknown",
+    };
+  }
+
+  const report = readFileSync(source, "utf8");
+
+  return {
+    source,
+    result: report.match(/^Result:\s*([^\n\r]+)/im)?.[1]?.trim() ?? "unknown",
+    readinessScore:
+      report.match(/- 95% readiness score:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+    minimumReadinessScore:
+      report.match(/- Minimum readiness score:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+    coreEvidenceScore:
+      report.match(/- Core evidence score:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+    advisoryEvidenceScore:
+      report.match(/- Advisory evidence score:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+    generated: report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ?? "unknown",
+  };
+}
+
 const results = commands.map((item) => {
   console.log(`\n=== ${item.label} ===`);
   console.log(item.command);
@@ -111,6 +143,7 @@ const results = commands.map((item) => {
 });
 
 const failed = results.filter((item) => !item.passed);
+const liveReadiness = readLiveReadinessRollup();
 const generatedAt = new Date().toISOString();
 const lines = [
   "# NutriTail Post-Deploy Readiness",
@@ -130,6 +163,12 @@ const lines = [
   "- Customer chatbot flow refreshed in this run: yes",
   `- Deploy freshness gate used: ${deployedAt ? deployedAt : "no"}`,
   `- Freshness source reports refreshed: ${shouldRefreshFreshnessSources ? "yes" : "no"}`,
+  `- Live readiness result: ${liveReadiness.result}`,
+  `- Live readiness score: ${liveReadiness.readinessScore}`,
+  `- Minimum readiness score: ${liveReadiness.minimumReadinessScore}`,
+  `- Core evidence score: ${liveReadiness.coreEvidenceScore}`,
+  `- Advisory evidence score: ${liveReadiness.advisoryEvidenceScore}`,
+  `- Live readiness generated: ${liveReadiness.generated}`,
   "",
   "## Commands",
   "",
