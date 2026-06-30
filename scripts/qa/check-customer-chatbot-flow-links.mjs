@@ -322,6 +322,16 @@ const checks = [
     expected: "name: formatPetDisplayName(savedPet.name)",
   },
   {
+    label: "Chatbot summary uses clear English weight-goal wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Weight goal: ${goalLabel}",
+  },
+  {
+    label: "Saved pet latest analysis uses clear English weight-goal wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Weight goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}",
+  },
+  {
     label: "Saved pet chatbot messages use formatted pet display names",
     file: "app/account/chatbot/page.tsx",
     expected: "const savedPetName = formatPetDisplayName(savedPet.name)",
@@ -1107,6 +1117,16 @@ const forbiddenChecks = [
     label: "Chatbot calorie explanation does not expose MER/DER acronym",
     file: "app/account/chatbot/page.tsx",
     forbidden: "Base daily target (MER/DER)",
+  },
+  {
+    label: "Chatbot summary does not use generic English goal wording",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "`Goal: ${goalLabel}`",
+  },
+  {
+    label: "Saved pet latest analysis does not use generic English goal wording",
+    file: "app/account/chatbot/page.tsx",
+    forbidden: "`Goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`",
   },
   {
     label: "Pet detail does not expose RER card label",
