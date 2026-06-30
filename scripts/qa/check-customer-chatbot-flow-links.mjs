@@ -169,17 +169,27 @@ const checks = [
   {
     label: "Chosen recommendation points user to save the plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "Next step: press save to keep the food, calories, and first portion on the profile.",
+    expected: "Press save to keep this plan on the profile.",
   },
   {
-    label: "Chosen recommendation explains the simple daily plan",
+    label: "Chosen recommendation explains the first daily portion",
     file: "app/account/chatbot/page.tsx",
-    expected: "Simple daily plan:",
+    expected: "First daily portion:",
+  },
+  {
+    label: "Chosen recommendation splits the daily portion into meals",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Split into 2 meals: about",
   },
   {
     label: "Chosen recommendation gives practical monitoring guidance",
     file: "app/account/chatbot/page.tsx",
-    expected: "Watch weight, appetite, stool, and energy.",
+    expected: "watch weight, appetite, stool, and energy.",
+  },
+  {
+    label: "Chosen recommendation has Greek first-portion copy",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Πρώτη ποσότητα ημέρας",
   },
   {
     label: "Recommendation cards use customer role badges",
@@ -1216,7 +1226,7 @@ async function main() {
       `- Passed: ${passed}`,
       `- Failed: ${failed}`,
       "",
-      "This guards the customer flow where account and pet pages should open the chatbot with the correct saved pet context, especially progress checks.",
+      "This guards the customer flow where account and pet pages should open the chatbot with the correct saved pet context, and where chatbot recommendations move from food cards to daily grams, save actions, and progress checks.",
       "",
       "## Results",
       "",
