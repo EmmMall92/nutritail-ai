@@ -8,6 +8,10 @@ type ReadinessSummary = {
   totalChecks: string;
   failedOrReview: string;
   passRate: string;
+  readinessScore: string;
+  minimumReadinessScore: string;
+  coreEvidenceScore: string;
+  advisoryEvidenceScore: string;
   generated: string;
   maxReportAge: string;
   deployFreshnessGate: string;
@@ -22,6 +26,10 @@ function readLiveReadinessSummary(): ReadinessSummary {
     totalChecks: "unknown",
     failedOrReview: "unknown",
     passRate: "unknown",
+    readinessScore: "unknown",
+    minimumReadinessScore: "unknown",
+    coreEvidenceScore: "unknown",
+    advisoryEvidenceScore: "unknown",
     generated: "unknown",
     maxReportAge: "unknown",
     deployFreshnessGate: "unknown",
@@ -47,6 +55,18 @@ function readLiveReadinessSummary(): ReadinessSummary {
         report.match(/- Failed or needs review:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.failedOrReview,
       passRate: report.match(/- Pass rate:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.passRate,
+      readinessScore:
+        report.match(/- 95% readiness score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.readinessScore,
+      minimumReadinessScore:
+        report.match(/- Minimum readiness score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.minimumReadinessScore,
+      coreEvidenceScore:
+        report.match(/- Core evidence score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.coreEvidenceScore,
+      advisoryEvidenceScore:
+        report.match(/- Advisory evidence score:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.advisoryEvidenceScore,
       generated:
         report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.generated,
       maxReportAge:
@@ -246,10 +266,15 @@ export default function FoodV2LiveQaPage() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-5">
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-6">
           <div className="rounded-xl border border-current/20 bg-white/60 p-4">
             <p className="text-sm font-medium">Result</p>
             <p className="mt-2 text-2xl font-bold">{readiness.result}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/60 p-4">
+            <p className="text-sm font-medium">Readiness score</p>
+            <p className="mt-2 text-2xl font-bold">{readiness.readinessScore}</p>
+            <p className="mt-1 text-xs">Minimum: {readiness.minimumReadinessScore}</p>
           </div>
           <div className="rounded-xl border border-current/20 bg-white/60 p-4">
             <p className="text-sm font-medium">Suites passing</p>
@@ -273,7 +298,15 @@ export default function FoodV2LiveQaPage() {
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
+            <p className="font-semibold">Core evidence</p>
+            <p className="mt-1 break-words">{readiness.coreEvidenceScore}</p>
+          </div>
+          <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
+            <p className="font-semibold">Advisory evidence</p>
+            <p className="mt-1 break-words">{readiness.advisoryEvidenceScore}</p>
+          </div>
           <div className="rounded-xl border border-current/20 bg-white/50 p-4 text-sm">
             <p className="font-semibold">Oldest source report</p>
             <p className="mt-1 break-words">{readiness.oldestSourceReport}</p>
