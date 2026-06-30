@@ -1,6 +1,6 @@
 # Chatbot Live QA Dashboard
 
-Generated: 2026-06-30T00:14:31.833Z
+Generated: 2026-06-30T00:22:25.425Z
 
 This dashboard summarizes the current live recommendation QA evidence for NutriTail.
 It points to the authoritative per-suite reports instead of duplicating every test case.
@@ -45,7 +45,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 | Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
 | AI intake golden QA | `reports/ai_intake_golden_qa.md` | deterministic fallback + validation | `npm.cmd run qa:ai-intake` | completed | 18 | 18 | 0 | 0 | 2026-06-30T00:09:21.092Z |
-| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-29T23:52:19.473Z |
+| OpenAI intake smoke QA | `reports/openai_intake_smoke_qa.md` | OpenAI structured fact extraction | `npm.cmd run qa:openai-intake-smoke` | skipped | 5 | 0 | 0 | 5 | 2026-06-30T00:22:25.000Z |
 | Account chatbot extract live route QA | `reports/account_chatbot_extract_live_route_qa.md` | authenticated live chatbot extraction route | `npm.cmd run qa:account-chatbot-extract-live-route` | skipped | 1 | 0 | 0 | 1 | 2026-06-30T00:04:00.450Z |
 
 ## Response Contract Evidence
@@ -90,7 +90,7 @@ It points to the authoritative per-suite reports instead of duplicating every te
 
 ## Next QA Gaps
 
-- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.
+- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` or `NUTRITAIL_QA_OPENAI_API_KEY_FILE` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.
 - Run `npm.cmd run qa:account-chatbot-extract-live-route` with `NUTRITAIL_QA_AUTH_COOKIE` or `NUTRITAIL_QA_AUTH_COOKIE_FILE` set to prove the authenticated live chatbot extraction route end to end without committing or printing the cookie.
 - Keep adding real customer-style cases when new foods or new clinical rules are introduced.
 - When recommendation ranking changes, rerun the affected dog/cat suite before merge.

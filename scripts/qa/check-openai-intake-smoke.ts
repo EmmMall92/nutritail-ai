@@ -18,6 +18,7 @@ type SmokeCase = {
 };
 
 const envPath = process.env.NUTRITAIL_QA_ENV_PATH || ".env.local";
+const openAiKeyFile = process.env.NUTRITAIL_QA_OPENAI_API_KEY_FILE?.trim() || "";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/openai_intake_smoke_qa.md";
 
@@ -111,6 +112,43 @@ async function loadEnvFile() {
   }
 }
 
+async function loadOpenAiApiKey() {
+  const fromEnv = process.env.OPENAI_API_KEY?.trim() || "";
+  if (fromEnv) {
+    return {
+      value: fromEnv,
+      source: "OPENAI_API_KEY",
+      warning: "",
+    };
+  }
+
+  if (!openAiKeyFile) {
+    return {
+      value: "",
+      source: "missing",
+      warning: "",
+    };
+  }
+
+  try {
+    const fromFile = (await readFile(openAiKeyFile, "utf8")).trim();
+
+    return {
+      value: fromFile,
+      source: fromFile
+        ? "NUTRITAIL_QA_OPENAI_API_KEY_FILE"
+        : "empty NUTRITAIL_QA_OPENAI_API_KEY_FILE",
+      warning: fromFile ? "" : "The configured OpenAI key file was readable but empty.",
+    };
+  } catch (error) {
+    return {
+      value: "",
+      source: "unreadable NUTRITAIL_QA_OPENAI_API_KEY_FILE",
+      warning: error instanceof Error ? error.message : "Unknown OpenAI key file read error",
+    };
+  }
+}
+
 function includesExpectedArray(actual: unknown, expected: string[]) {
   if (!Array.isArray(actual)) return false;
   return expected.every((item) => actual.includes(item));
@@ -167,7 +205,8 @@ async function main() {
   assertSmokeCaseEncoding();
   await loadEnvFile();
 
-  const hasOpenAiKey = Boolean(process.env.OPENAI_API_KEY?.trim());
+  const openAiKey = await loadOpenAiApiKey();
+  const hasOpenAiKey = Boolean(openAiKey.value);
 
   if (!hasOpenAiKey) {
     await writeReport([
@@ -178,6 +217,7 @@ async function main() {
       "",
       "No usable `OPENAI_API_KEY` was available in the QA environment.",
       "This is expected in CI unless the secret is intentionally enabled there.",
+      "You can also set `NUTRITAIL_QA_OPENAI_API_KEY_FILE` to a local ignored file containing the key. The key value is never written to this report.",
       "",
       "## Summary",
       "",
@@ -185,6 +225,8 @@ async function main() {
       "- Passed: 0",
       "- Failed: 0",
       `- Skipped: ${cases.length}`,
+      `- OpenAI key source: ${openAiKey.source}`,
+      ...(openAiKey.warning ? [`- Key warning: ${openAiKey.warning}`] : []),
       "",
       "The smoke fixture validates clean Greek prompts, the same NutriTail fact-extraction prompt contract, and the same intake validation layer used by the app.",
       "The deterministic fallback intake QA still runs separately through `npm.cmd run qa:ai-intake`.",
@@ -195,6 +237,7 @@ async function main() {
         {
           status: "skipped",
           reason: "OPENAI_API_KEY is not configured",
+          openai_key_source: openAiKey.source,
           clean_fixture_cases: cases.length,
           report: reportPath,
         },
@@ -206,7 +249,7 @@ async function main() {
   }
 
   const results = [];
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = new OpenAI({ apiKey: openAiKey.value });
 
   for (const item of cases) {
     const result = await extractWithOpenAi(client, item.message);
@@ -251,6 +294,9 @@ async function main() {
     `- Passed: ${results.length - failed.length}`,
     `- Failed: ${failed.length}`,
     "- Skipped: 0",
+    `- OpenAI key source: ${openAiKey.source}`,
+    "",
+    "The key value was not written to this report.",
     "",
     "## Results",
     "",
