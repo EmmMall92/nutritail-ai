@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    name: Lint, typecheck, and build
+    name: Lint, typecheck, build, and readiness
     runs-on: ubuntu-latest
 
     env:
