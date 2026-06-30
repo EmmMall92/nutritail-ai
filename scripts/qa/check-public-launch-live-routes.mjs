@@ -38,6 +38,12 @@ const checks = [
     requiredText: ["Nutritail AI", "Πώς δουλεύει", "Food V2"],
   },
   {
+    path: "/beta",
+    expected: [200],
+    label: "Beta waitlist page",
+    requiredText: ["Nutritail beta", "Θέλω beta πρόσβαση", "Beta πρόσβαση"],
+  },
+  {
     path: "/forgot-password",
     expected: [200],
     label: "Forgot password page",
@@ -92,6 +98,7 @@ const checks = [
       "https://nutritail.ai",
       "https://nutritail.ai/about",
       "https://nutritail.ai/how-it-works",
+      "https://nutritail.ai/beta",
     ],
     forbiddenText: [
       "https://nutritail.ai/chatbot",
