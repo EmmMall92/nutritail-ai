@@ -1,7 +1,7 @@
 # Chatbot Sensitive Recommendation Smoke QA
 
-Run date: 2026-06-29T11:12:17.037Z
-Finished: 2026-06-29T11:14:16.570Z
+Run date: 2026-06-30T13:55:55.997Z
+Finished: 2026-06-30T13:57:59.017Z
 - Result: PASS
 
 This focused smoke suite protects the recommendation cases most likely to harm customer trust if they regress.

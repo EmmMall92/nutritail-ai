@@ -1,6 +1,6 @@
 # OpenAI Food Brand Guard QA
 
-Generated: 2026-06-30T13:31:16.040Z
+Generated: 2026-06-30T13:50:31.728Z
 Result: PASS
 
 This QA verifies that OpenAI customer-facing answers stay grounded in NutriTail's allowed Food V2 shortlist.
