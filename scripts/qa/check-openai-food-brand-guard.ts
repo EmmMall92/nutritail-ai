@@ -1,8 +1,13 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import {
   mentionsAtLeastOneAllowedFood,
   mentionsUnallowedGuardedBrand,
   normalizeComposerGuardText,
 } from "@/lib/ai/foodBrandGuard";
+
+const reportPath =
+  process.env.NUTRITAIL_QA_REPORT_PATH || "reports/openai_food_brand_guard_qa.md";
 
 type GuardCase = {
   name: string;
@@ -97,6 +102,44 @@ for (const item of cases) {
   );
 }
 
+function writeReport() {
+  const generatedAt = new Date().toISOString();
+  const lines = [
+    "# OpenAI Food Brand Guard QA",
+    "",
+    `Generated: ${generatedAt}`,
+    `Result: ${failures.length === 0 ? "PASS" : "REVIEW"}`,
+    "",
+    "This QA verifies that OpenAI customer-facing answers stay grounded in NutriTail's allowed Food V2 shortlist.",
+    "",
+    "## Summary",
+    "",
+    `- Checks: ${cases.length}`,
+    `- Passed: ${cases.length - failures.length}`,
+    `- Failed: ${failures.length}`,
+    "",
+    "## Coverage",
+    "",
+    "- Allows exact allowed food names.",
+    "- Blocks extra guarded brands that are not in the allowed shortlist.",
+    "- Allows compare-style answers only when both brands are listed.",
+    "- Does not block generic no-shortlist clarification answers.",
+    "- Normalizes Hill's/Hills and N&D/N and D variants.",
+    "",
+  ];
+
+  if (failures.length > 0) {
+    lines.push("## Failures", "");
+    for (const failure of failures) lines.push(`- ${failure}`);
+    lines.push("");
+  }
+
+  mkdirSync(path.dirname(reportPath), { recursive: true });
+  writeFileSync(reportPath, `${lines.join("\n")}\n`, "utf8");
+}
+
+writeReport();
+
 if (failures.length > 0) {
   console.error("OpenAI food brand guard QA failed:");
   for (const failure of failures) console.error(`- ${failure}`);
@@ -108,6 +151,7 @@ console.log(
     {
       checked: cases.length,
       passed: cases.length,
+      report: reportPath,
     },
     null,
     2

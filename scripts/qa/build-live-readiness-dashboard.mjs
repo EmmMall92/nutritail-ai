@@ -55,6 +55,12 @@ const staticSuites = [
     command: "npm.cmd run qa:vercel-openai-env",
     layer: "production OpenAI API key presence without exposing the secret",
   },
+  {
+    name: "OpenAI food brand guard",
+    source: "reports/openai_food_brand_guard_qa.md",
+    command: "npm.cmd run qa:openai-food-brand-guard",
+    layer: "answer-writer guard that blocks unlisted food brands from customer replies",
+  },
 ];
 
 const chatbotSuite = {

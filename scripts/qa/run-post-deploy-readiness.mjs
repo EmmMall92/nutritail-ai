@@ -48,6 +48,10 @@ const commands = [
     command: "npm.cmd run qa:openai-intake-smoke",
   },
   {
+    label: "OpenAI food brand guard",
+    command: "npm.cmd run qa:openai-food-brand-guard",
+  },
+  {
     label: "Account chatbot extract live route",
     command: "npm.cmd run qa:account-chatbot-extract-live-route",
   },
