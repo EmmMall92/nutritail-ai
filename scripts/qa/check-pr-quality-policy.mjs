@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 
 const read = (path) => readFileSync(path, "utf8");
+const normalizeLineEndings = (value) => value.replace(/\r\n/g, "\n");
 
 const packageJson = read("package.json");
-const readme = read("README.md");
+const readme = normalizeLineEndings(read("README.md"));
 const prTemplate = read(".github/pull_request_template.md");
 
 const checks = [
