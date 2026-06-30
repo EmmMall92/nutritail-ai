@@ -9,6 +9,8 @@ const ALLOWED_EVENT_TYPES = new Set([
   "chat_followup_action",
   "failed_food_match",
   "food_choice_selected",
+  "analysis_completed",
+  "plan_saved",
 ]);
 const ALLOWED_RATINGS = new Set([
   "helpful",
