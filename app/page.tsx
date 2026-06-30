@@ -121,6 +121,13 @@ export default function HomePage() {
 
           <nav className="flex w-full gap-2 sm:w-auto">
             <Link
+              href="/about"
+              className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
+            >
+              Σχετικά
+            </Link>
+
+            <Link
               href="/how-it-works"
               className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
             >
@@ -365,6 +372,12 @@ export default function HomePage() {
           <p>(c) {new Date().getFullYear()} Nutritail AI. Με την επιφύλαξη κάθε δικαιώματος.</p>
 
           <div className="flex gap-4">
+            <Link href="/about" className="hover:text-black">
+              Σχετικά
+            </Link>
+            <Link href="/how-it-works" className="hover:text-black">
+              Πώς δουλεύει
+            </Link>
             <Link href="/privacy" className="hover:text-black">
               Πολιτική απορρήτου
             </Link>
