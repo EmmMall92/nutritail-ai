@@ -600,6 +600,78 @@ export default function AccountPage() {
         </div>
       </div>
 
+      <div
+        className="rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm"
+        data-testid="account-weekly-rhythm"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
+              Ρυθμός παρακολούθησης
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-violet-950">
+              Τι να κάνεις από σήμερα μέχρι τον επόμενο έλεγχο
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-violet-900">
+              Το NutriTail δουλεύει καλύτερα όταν κρατάς λίγα απλά στοιχεία:
+              τροφή, γραμμάρια, λιχουδιές, βάρος, όρεξη και κόπρανα.
+            </p>
+          </div>
+
+          <Link
+            href={
+              latestPet
+                ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
+                : "/account/chatbot"
+            }
+            className="rounded-xl bg-violet-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-violet-800"
+          >
+            {latestPet ? "Κάνε progress check" : "Ξεκίνα ανάλυση"}
+          </Link>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-violet-100 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+              Σήμερα
+            </p>
+            <h3 className="mt-2 font-semibold text-violet-950">
+              Κράτα το πλάνο καθαρό
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-violet-900">
+              Άνοιξε την αναφορά, διάλεξε τροφή και κράτα την πρώτη ποσότητα σε
+              γραμμάρια/ημέρα.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-violet-100 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+              Σε 7 ημέρες
+            </p>
+            <h3 className="mt-2 font-semibold text-violet-950">
+              Έλεγξε αποδοχή τροφής
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-violet-900">
+              Παρατήρησε όρεξη, ενέργεια, κόπρανα, φαγούρα και αν βαρέθηκε τη
+              γεύση ή την εταιρεία.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-violet-100 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+              Σε 2-4 εβδομάδες
+            </p>
+            <h3 className="mt-2 font-semibold text-violet-950">
+              Κάνε νέο progress check
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-violet-900">
+              Δώσε νέο βάρος, ποσότητα, λιχουδιές και αλλαγές για να δούμε αν
+              συνεχίζουμε ή αλλάζουμε πλάνο.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Αποθηκευμένα κατοικίδια</p>

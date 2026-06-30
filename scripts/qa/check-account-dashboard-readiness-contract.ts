@@ -42,6 +42,18 @@ assert(
   "Readiness flow must include progress-check status."
 );
 assert(
+  accountPage.includes('data-testid="account-weekly-rhythm"'),
+  "Account dashboard must expose the weekly monitoring rhythm section."
+);
+assert(
+  accountPage.includes("Ρυθμός παρακολούθησης"),
+  "Account dashboard must explain the customer monitoring rhythm."
+);
+assert(
+  accountPage.includes("Σε 2-4 εβδομάδες"),
+  "Account dashboard must guide customers back to a progress check window."
+);
+assert(
   packageJson.includes("\"qa:account-dashboard-readiness-contract\""),
   "package.json must expose the account dashboard readiness QA script."
 );
