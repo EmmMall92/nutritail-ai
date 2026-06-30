@@ -1,7 +1,7 @@
 import { buildNutriTailSystemPrompt } from "@/lib/ai/promptInstructions";
 
 export const NUTRITAIL_INTAKE_ALLOWED_ENUMS =
-  "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.";
+  "Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low. Treat indoor/apartment-only pets as activityLevel low unless the message says they are active. Use redFlags urinary_blockage for no urine, cannot pee, difficulty urinating, or straining to urinate.";
 
 export const NUTRITAIL_INTAKE_JSON_KEYS = [
   "species",
