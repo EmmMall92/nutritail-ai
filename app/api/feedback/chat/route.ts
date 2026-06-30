@@ -8,6 +8,7 @@ const ALLOWED_EVENT_TYPES = new Set([
   "chat_helpfulness",
   "chat_followup_action",
   "failed_food_match",
+  "food_choice_selected",
 ]);
 const ALLOWED_RATINGS = new Set([
   "helpful",

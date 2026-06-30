@@ -5246,6 +5246,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       weightGoal: pet.weightGoal ?? "maintain",
     }));
 
+    void submitChatFeedback({
+      eventType: "food_choice_selected",
+      rating: "unknown",
+      message: `User selected recommended food: ${choice.name}.`,
+      context: {
+        selectedFoodName: choice.name,
+        selectedFoodRole: choice.role,
+        selectedFoodScore: choice.score ?? null,
+        selectedFoodKcalPer100g: choice.kcalPer100g ?? null,
+        selectedFoodProteinPercent: choice.proteinPercent ?? null,
+        selectedFoodFatPercent: choice.fatPercent ?? null,
+        selectedFoodFiberPercent: choice.fiberPercent ?? null,
+        feedingGramsPerDay: gramsPerDay,
+        hasPortionEstimate: gramsPerDay !== null,
+        recommendationMode,
+        selectedPetId,
+      },
+    });
+
     const selectedFoodReply = gramsPerDay
       ? botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα ημέρας:\n- Σύνολο: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΞεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες. Κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΜετά γύρνα για έλεγχο προόδου με νέο βάρος και τα πραγματικά γραμμάρια που έτρωγε.\n\nΠάτησε αποθήκευση για να κρατήσουμε αυτό το πλάνο στο προφίλ.`,
