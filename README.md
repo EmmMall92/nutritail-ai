@@ -49,7 +49,13 @@ Open http://localhost:3000.
 
 ## Quality Checks
 
-Run these before opening or merging a PR:
+Run the full local gate before opening or merging a PR:
+
+```bash
+npm run check
+```
+
+Or run the steps separately when you need to isolate a failure:
 
 ```bash
 npm run lint
@@ -59,6 +65,12 @@ npm run qa:ci-readiness
 ```
 
 On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm`:
+
+```bash
+npm.cmd run check
+```
+
+Or separately:
 
 ```bash
 npm.cmd run build
