@@ -1,6 +1,6 @@
 export const NUTRITAIL_AI_AUTHORITY_CONTRACT = {
   databaseTruth:
-    "Food V2, retrieved product rows, and deterministic NutriTail ranking are the only source of truth for foods, nutrients, scores, and suitability.",
+    "Food V2, retrieved product rows, and deterministic NutriTail ranking are the only source of truth for foods, nutrients, scores, suitability, product matching, and brand comparisons.",
   rulesTruth:
     "NutriTail rules decide exclusions, safety interrupts, goal fit, allergy conflicts, life-stage fit, and medical cautions.",
   openAiRole:
@@ -14,6 +14,8 @@ export const NUTRITAIL_AI_AUTHORITY_CONTRACT = {
 export const NUTRITAIL_AI_FORBIDDEN_ACTIONS = [
   "Do not choose foods outside the ranked Food V2/NutriTail payload.",
   "Do not invent brands, formulas, calories, ingredients, nutrient values, scores, or source quality.",
+  "Do not declare a generic brand winner; compare only the exact retrieved products and NutriTail ranking context.",
+  "Do not pretend a current food was matched when NutriTail marked the food name as uncertain or missing.",
   "Do not hide a NutriTail hard-stop safety warning.",
   "Do not diagnose disease or claim treatment/cure.",
   "Do not replace veterinarian-directed diets for renal, urinary, pancreatitis, diabetes, severe allergy, or emergency symptoms.",
@@ -24,6 +26,7 @@ export const NUTRITAIL_AI_ALLOWED_ACTIONS = [
   "Extract structured pet facts from natural Greek, English, Greeklish, or mixed messages.",
   "Ask one concise missing-question at a time when NutriTail validation says data is insufficient.",
   "Explain deterministic NutriTail recommendations in friendly customer language.",
+  "For brand comparisons, explain the tradeoffs only for the product rows NutriTail retrieved.",
   "Explain uncertainty when NutriTail data is missing or when medical context needs a veterinarian.",
   "Use retrieved knowledge context only to clarify principles already represented by NutriTail rules.",
 ] as const;

@@ -59,6 +59,8 @@ includesAll(
     "OpenAI role",
     "Do not choose foods outside",
     "Do not invent brands",
+    "Do not declare a generic brand winner",
+    "Do not pretend a current food was matched",
   ],
   "authority prompt"
 );
@@ -116,6 +118,8 @@ includesAll(
   [
     "Use only ranked foods",
     "Do not add new brands",
+    "For brand comparisons, compare only retrieved products",
+    "If the current food or product match is uncertain",
     "Do not include backend review/source-quality wording",
     "When food cards follow, use at most 4 short sentences",
     "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers",
@@ -162,6 +166,18 @@ expect(
     rule.includes("does not authorize OpenAI to rank foods")
   ),
   "knowledge guardrails must keep OpenAI out of ranking"
+);
+expect(
+  knowledge.guardrails.some((rule) =>
+    rule.includes("product comparisons must use retrieved Food V2 rows")
+  ),
+  "knowledge guardrails must keep brand comparisons grounded in retrieved products"
+);
+expect(
+  knowledge.guardrails.some((rule) =>
+    rule.includes("ask for a label/photo instead of filling gaps from model memory")
+  ),
+  "knowledge guardrails must block model-memory formula gap filling"
 );
 expect(
   knowledge.principles.some((rule) => rule.includes("Renal cases")),

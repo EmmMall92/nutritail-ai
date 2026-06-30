@@ -104,6 +104,8 @@ export function buildNutritionKnowledgeContext(intents: ChatbotKnowledgeIntent[]
       "This context explains NutriTail rules; it does not authorize OpenAI to rank foods.",
       "Use concepts only. Do not copy source text.",
       "Exact nutrient values must come from Food V2 payload, not from knowledge context.",
+      "Brand-level knowledge can explain positioning, but product comparisons must use retrieved Food V2 rows.",
+      "If NutriTail did not resolve the exact formula, ask for a label/photo instead of filling gaps from model memory.",
     ],
   };
 }
