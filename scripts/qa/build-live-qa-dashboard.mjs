@@ -22,6 +22,18 @@ const suites = [
     source: "reports/cat_chatbot_live_cases_1-500.md",
     fixture: "data/evals/chatbot-extra-cases-cat-001-500.json",
   },
+  {
+    name: "Cat chatbot safety smoke",
+    species: "cat",
+    source: "reports/cat_chatbot_live_safety.md",
+    fixture: "data/evals/chatbot-cat-safety-live.json",
+  },
+  {
+    name: "Cat chatbot quality smoke",
+    species: "cat",
+    source: "reports/cat_chatbot_live_quality.md",
+    fixture: "data/evals/chatbot-cat-quality-live.json",
+  },
 ];
 
 const intakeSuites = [
@@ -81,7 +93,7 @@ const goldenSuite = {
   source: "reports/chatbot_golden_suite.md",
   command: "npm.cmd run qa:chatbot-golden-suite:fast",
   layer:
-    "current fast regression gate for intake, customer UX, Food V2 ranking, dog live smoke, dog 201-600 smoke, and cat live cases",
+    "current fast regression gate for intake, customer UX, Food V2 ranking, dog live smoke, dog 201-600 smoke, cat live cases, and focused cat safety/quality smoke",
 };
 
 const fixtureCoverageSuites = [
@@ -414,11 +426,12 @@ const lines = [
   "",
   "- Dog coverage is proven across 600 live recommendation scenarios.",
   "- Cat coverage is proven across 500 live recommendation scenarios.",
+  "- Focused cat safety and quality smoke checks keep urinary, renal, kitten, allergy, senior, sterilised, weight-control, digestion, and preference regressions visible in the fast gate.",
   "- The live suites currently show no review cases.",
   "- OpenAI fact extraction is tracked separately from the large live recommendation suites so cost, auth, and deterministic ranking quality stay easy to reason about.",
   "- Response contracts are tracked separately so safety, context-question, comparison, nutrition-reasoning, and transition-guidance expectations remain visible.",
   "- Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.",
-  "- The fast golden suite shows the current PR-level regression gate, including the latest live dog/cat smoke checks.",
+  "- The fast golden suite shows the current PR-level regression gate, including the latest live dog/cat smoke checks and focused cat safety/quality checks.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.",
   "",
   "## Next QA Gaps",
