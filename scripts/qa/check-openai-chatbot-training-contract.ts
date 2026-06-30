@@ -302,6 +302,11 @@ includesAll(
     "repairLegacyGreekMojibakeText",
     "polishCustomerFacingLanguage",
     "sanitizeGroundingText",
+    "allowed_food_names",
+    "product_grounding_policy",
+    "Mention recommended foods only when their exact customer name appears in allowed_food_names.",
+    "Do not add brand-level winners or unlisted alternatives.",
+    "ask for the exact bag name or a label photo",
     "deterministic_text: sanitizeGroundingText(input.deterministicText)",
   ],
   "response composer fallback language repair"
