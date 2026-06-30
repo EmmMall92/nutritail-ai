@@ -31,6 +31,26 @@ const checks = [
     expected: "not configured",
   },
   {
+    label: "readiness dashboard has a configurable minimum readiness score",
+    source: dashboardSource,
+    expected: "NUTRITAIL_QA_MIN_READINESS_SCORE",
+  },
+  {
+    label: "readiness dashboard defaults to the 95 target score",
+    source: dashboardSource,
+    expected: "?? 95",
+  },
+  {
+    label: "readiness dashboard exits non-zero below the target score",
+    source: dashboardSource,
+    expected: "below the ${minReadinessScore}/100 gate",
+  },
+  {
+    label: "readiness dashboard reports the minimum readiness score",
+    source: dashboardSource,
+    expected: "Minimum readiness score",
+  },
+  {
     label: "post-deploy script can enable deploy freshness from CLI",
     source: postDeploySource,
     expected: "--deploy-freshness",
