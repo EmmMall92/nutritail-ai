@@ -229,6 +229,21 @@ function compactFood(
   };
 }
 
+function sanitizeGroundingText(value: unknown) {
+  if (typeof value !== "string") return "";
+
+  return removeBackOfficeLines(value)
+    .replace(/\bneeds[_\s-]?review\b/gi, "")
+    .replace(/\bsource\s*tier\b/gi, "")
+    .replace(/\bdata\s*quality\b/gi, "")
+    .replace(/\bmissing\s*nutrition\s*fields?\b/gi, "")
+    .replace(/\bconfidence\s*internals\b/gi, "")
+    .replace(/\bretailer\s*source\b/gi, "")
+    .replace(/\bsource:\s*[^\n\r]+/gi, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
@@ -240,7 +255,11 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
     goal: input.recommendation.goal ?? "general",
     premium: premium.slice(0, 3).map((food) => compactFood(food, locale)),
     value: value.slice(0, 3).map((food) => compactFood(food, locale)),
-    notes: input.recommendation.notes?.slice(0, 4) ?? [],
+    notes:
+      input.recommendation.notes
+        ?.slice(0, 4)
+        .map(sanitizeGroundingText)
+        .filter(Boolean) ?? [],
     knowledge_context: buildNutritionKnowledgeContext(
       inferKnowledgeIntents({
         goal: input.recommendation.goal,
@@ -249,7 +268,7 @@ function buildGroundedPayload(input: ChatbotRecommendationComposerInput) {
     ),
     cards_follow: Boolean(input.cardsFollow),
     card_flow_rules: input.cardsFollow ? CUSTOMER_CARD_FLOW_RULES : [],
-    deterministic_text: input.deterministicText,
+    deterministic_text: sanitizeGroundingText(input.deterministicText),
   };
 }
 
