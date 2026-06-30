@@ -1,13 +1,13 @@
 # Chatbot Golden Suite
 
-Generated: 2026-06-30T00:14:15.492Z
+Generated: 2026-06-30T13:55:55.620Z
 
 ## Summary
 
 - Mode: fast
 - Per-check timeout: 180s
-- Checks run: 21/21
-- Passed: 21
+- Checks run: 23/23
+- Passed: 23
 - Failed: 0
 
 ## Coverage
@@ -32,13 +32,15 @@ Generated: 2026-06-30T00:14:15.492Z
 - Live dog chatbot smoke cases: Representative live dog chatbot smoke cases across growth, sterilised, allergy, urinary, renal, active, senior, and rescue contexts.
 - Live dog chatbot 201-600 smoke cases: Representative live dog scenarios from the 201-600 bank across picky eating, pregnancy, urinary, underweight, allergy, climate, rescue, sterilised, value, active, puppy, and premium requests.
 - Live cat chatbot 100 cases: Live cat recommendation behavior across sterilised, kitten/growth, urinary, renal, weight-control, allergy, hairball, senior, fussy-eater, rescue, and climate scenarios.
+- Live cat chatbot safety smoke: Fast live cat safety smoke for urinary blockage, urinary stones, renal disease, kitten growth, allergy, senior appetite, and sensitive digestion guardrails.
+- Live cat chatbot quality smoke: Fast live cat recommendation quality smoke for sterilised, weight loss, kitten, senior, renal, urinary, allergy, digestion, and preference fit.
 - Customer-facing recommendation copy: No back-office wording in customer chatbot recommendations and card action flow.
 
 ## Objective Coverage
 
 - 1. Recommendation accuracy: Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-dog size fit, large-breed puppy, and active-dog logic.
 - 2. Customer-facing answer quality: Customer recommendation copy, customer recommendation smoke, and customer chatbot flow links guard against back-office wording and verify food-card action flow.
-- 3. Large dog/cat live chatbot case coverage: Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, and cat live 100-case checks prove the large case bank is structurally sound and has live regression feedback.
+- 3. Large dog/cat live chatbot case coverage: Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, cat live 100-case checks, and focused cat safety/quality smoke checks prove the large case bank is structurally sound and has live regression feedback.
 - 4. Brand data cleanup: Title/source/duplicate/product-form QA scripts keep customer-facing food names, duplicate risks, and non-complete-food guards visible.
 - 5. Food Intelligence: Food Intelligence use-case QA checks strengths, cautions, best use cases, and not-ideal cases for major nutrition contexts.
 - 6. End-to-end user experience: Customer flow links cover account chatbot, report, timeline, progress, and food-selection next steps. The fast suite skips slower live route checks; run the full or strict suite for live route signoff.
@@ -48,7 +50,7 @@ Generated: 2026-06-30T00:14:15.492Z
 ### AI intake golden cases
 
 - Status: pass
-- Duration: 0.7s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:ai-intake`
 
 ```text
@@ -69,7 +71,7 @@ Generated: 2026-06-30T00:14:15.492Z
 ### Bulk chatbot case intake
 
 - Status: pass
-- Duration: 0.8s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-case-intake`
 
 ```text
@@ -86,7 +88,7 @@ Generated: 2026-06-30T00:14:15.492Z
 ### Chatbot intake cleanup
 
 - Status: pass
-- Duration: 1.2s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:chatbot-intake-cleanup`
 
 ```text
@@ -107,7 +109,7 @@ Generated: 2026-06-30T00:14:15.492Z
 ### Dog edge fixture 101-200
 
 - Status: pass
-- Duration: 1.3s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:dog-edge-fixture`
 
 ```text
@@ -119,7 +121,7 @@ Dog edge case fixture QA passed.
 ### Dog golden coverage audit
 
 - Status: pass
-- Duration: 0.5s
+- Duration: 0.4s
 - Command: `npm.cmd run audit:dog-chatbot-golden-coverage`
 
 ```text
@@ -139,7 +141,7 @@ Dog edge case fixture QA passed.
 ### Dog 201-600 coverage audit
 
 - Status: pass
-- Duration: 0.9s
+- Duration: 0.4s
 - Command: `npm.cmd run audit:dog-201-600-coverage`
 
 ```text
@@ -159,7 +161,7 @@ Dog edge case fixture QA passed.
 ### Cat 001-500 coverage audit
 
 - Status: pass
-- Duration: 0.8s
+- Duration: 0.4s
 - Command: `npm.cmd run audit:cat-chatbot-coverage`
 
 ```text
@@ -179,7 +181,7 @@ Dog edge case fixture QA passed.
 ### Food Intelligence use cases
 
 - Status: pass
-- Duration: 1.5s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:food-intelligence-use-cases`
 
 ```text
@@ -191,7 +193,7 @@ Food intelligence use-case QA passed.
 ### Medical nutrition rules
 
 - Status: pass
-- Duration: 1.0s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:medical-rules`
 
 ```text
@@ -203,7 +205,7 @@ Medical renal/urinary rule edge cases passed.
 ### GI allergy senior v2 rules
 
 - Status: pass
-- Duration: 0.8s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:gi-allergy-senior-v2`
 
 ```text
@@ -215,7 +217,7 @@ GI, allergy/intolerance, and senior v2 QA passed.
 ### Pancreatitis fat-sensitive v2 rules
 
 - Status: pass
-- Duration: 0.8s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:pancreatitis-fat-sensitive-v2`
 
 ```text
@@ -227,7 +229,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Nutrition source-map intake
 
 - Status: pass
-- Duration: 0.8s
+- Duration: 0.6s
 - Command: `npm.cmd run qa:nutrition-source-map-intake`
 
 ```text
@@ -243,7 +245,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Food V2 ranking scenarios
 
 - Status: pass
-- Duration: 67.7s
+- Duration: 68.4s
 - Command: `npm.cmd run audit:food-v2-ranking-scenarios`
 
 ```text
@@ -300,8 +302,8 @@ Pancreatitis and fat-sensitive v2 QA passed.
 > nutritail@0.1.0 qa:customer-chatbot-flow-links
 > node scripts/qa/check-customer-chatbot-flow-links.mjs
 {
-  "checked": 220,
-  "passed": 220,
+  "checked": 229,
+  "passed": 229,
   "failed": 0,
   "report": "reports/customer_chatbot_flow_links_qa.md"
 }
@@ -310,20 +312,20 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Customer recommendation smoke
 
 - Status: pass
-- Duration: 0.6s
+- Duration: 0.7s
 - Command: `npm.cmd run qa:customer-recommendation-smoke`
 
 ```text
-  "scenarios": [
-    "sterilised dog",
-    "weight loss dog",
-    "chicken allergy dog",
-    "sensitive digestion dog",
     "urinary cat",
     "renal cat",
     "large breed puppy",
     "active dog",
-    "senior dog"
+    "budget request",
+    "fussy eater with preferred protein",
+    "pancreatitis-sensitive digestion dog",
+    "kitten growth",
+    "senior dog",
+    "customer Greek food-name cleanup"
   ]
 }
 ```
@@ -331,7 +333,7 @@ Pancreatitis and fat-sensitive v2 QA passed.
 ### Live dog chatbot smoke cases
 
 - Status: pass
-- Duration: 43.6s
+- Duration: 46.0s
 - Command: `npm.cmd run qa:dog-chatbot-live-smoke`
 
 ```text
@@ -352,7 +354,7 @@ PASS dog-200: Έχω σκύλο rescue που βρέθηκε υποσιτισμ�
 ### Live dog chatbot 201-600 smoke cases
 
 - Status: pass
-- Duration: 39.7s
+- Duration: 42.6s
 - Command: `npm.cmd run qa:dog-chatbot-live-201-600-smoke`
 
 ```text
@@ -373,7 +375,7 @@ PASS dog-600: Κουτάβι που θέλει την καλύτερη δυνα�
 ### Live cat chatbot 100 cases
 
 - Status: pass
-- Duration: 130.3s
+- Duration: 129.7s
 - Command: `npm.cmd run qa:cat-chatbot-live-cases`
 
 ```text
@@ -389,6 +391,48 @@ PASS cat-099: Γάτα σε πολύ ψυχρό κλίμα.
 PASS cat-100: Γάτα που θέλει την καλύτερη δυνατή τροφή ανεξαρτήτως κόστους.
 Wrote reports/cat_chatbot_live_cases_1-100.md
 Result: 100/100 passed, 0 review
+```
+
+### Live cat chatbot safety smoke
+
+- Status: pass
+- Duration: 13.0s
+- Command: `npm.cmd run qa:cat-chatbot-live-safety`
+
+```text
+PASS cat-safety-001: Male cat, 5kg, keeps going to the litter box, cries, and cannot pee.
+PASS cat-safety-002: Sterilised indoor cat, 4kg, 2 years old, loves chicken. I need dry food for weight maintenance.
+PASS cat-safety-003: Sterilised cat, 6kg, indoor, gained weight after neutering.
+PASS cat-safety-004: Cat with urinary struvite history. I need dry urinary food.
+PASS cat-safety-005: Cat with oxalate stone history. I need urinary support food.
+PASS cat-safety-006: Senior cat, 12 years old, 4kg, diagnosed with chronic kidney disease.
+PASS cat-safety-007: Kitten, 5 months old, 2kg. I need dry food for healthy growth.
+PASS cat-safety-008: Adult cat allergic to chicken and turkey, prefers salmon.
+PASS cat-safety-009: Senior cat, 13 years old, losing appetite and weight.
+PASS cat-safety-010: Adult cat with sensitive digestion and soft stool after food changes.
+Wrote reports/cat_chatbot_live_safety.md
+Result: 10/10 passed, 0 review
+```
+
+### Live cat chatbot quality smoke
+
+- Status: pass
+- Duration: 14.1s
+- Command: `npm.cmd run qa:cat-chatbot-live-quality`
+
+```text
+PASS cat-quality-001: Sterilised indoor cat, 5kg, 4 years old. I need dry food for weight maintenance.
+PASS cat-quality-002: Sterilised indoor cat, 6.5kg, gained weight after neutering. I want dry food for weight loss.
+PASS cat-quality-003: Kitten, 5 months old, 2kg. I need dry food for healthy growth.
+PASS cat-quality-004: Senior cat, 13 years old, 4.5kg, low activity, no kidney or urinary diagnosis. I need senior dry food.
+PASS cat-quality-005: Senior cat, 12 years old, 4kg, diagnosed with chronic kidney disease. I need dry renal food.
+PASS cat-quality-006: Cat with struvite crystal history. I need dry urinary support food.
+PASS cat-quality-007: Cat with oxalate stone history. I need dry urinary support food.
+PASS cat-quality-008: Adult cat allergic to chicken and turkey, prefers salmon dry food.
+PASS cat-quality-009: Adult cat with sensitive digestion and soft stool after food changes. I need dry food.
+PASS cat-quality-010: Adult sterilised cat, 4.8kg, loves salmon but refuses beef and lamb.
+Wrote reports/cat_chatbot_live_quality.md
+Result: 10/10 passed, 0 review
 ```
 
 ### Customer-facing recommendation copy
