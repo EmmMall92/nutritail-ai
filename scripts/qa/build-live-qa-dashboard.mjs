@@ -423,7 +423,7 @@ const lines = [
   "",
   "## Next QA Gaps",
   "",
-  "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.",
+  "- Run `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` or `NUTRITAIL_QA_OPENAI_API_KEY_FILE` enabled to prove OpenAI fact extraction separately from deterministic recommendation quality.",
   "- Run `npm.cmd run qa:account-chatbot-extract-live-route` with `NUTRITAIL_QA_AUTH_COOKIE` or `NUTRITAIL_QA_AUTH_COOKIE_FILE` set to prove the authenticated live chatbot extraction route end to end without committing or printing the cookie.",
   "- Keep adding real customer-style cases when new foods or new clinical rules are introduced.",
   "- When recommendation ranking changes, rerun the affected dog/cat suite before merge.",

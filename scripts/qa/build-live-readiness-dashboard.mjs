@@ -257,7 +257,7 @@ function parseOpenAiSmokeSuite(suite) {
     status,
     note:
       status === "SKIPPED"
-        ? "OPENAI_API_KEY was not available in this QA environment; production env is checked separately."
+        ? "OPENAI_API_KEY or NUTRITAIL_QA_OPENAI_API_KEY_FILE was not available in this QA environment; production env is checked separately."
         : declaredStatus,
   };
 }
@@ -531,7 +531,7 @@ const lines = [
   `- Reports older than ${maxReportAgeHours}h are marked STALE and block readiness until rerun.`,
   "- Set `NUTRITAIL_QA_DEPLOYED_AT` to the production deploy timestamp to require reports generated after that deploy.",
   "- If a report is older than the current deploy, rerun the source command before relying on it.",
-  "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY`.",
+  "- When OpenAI settings change, rerun `npm.cmd run qa:openai-intake-smoke` in an environment with `OPENAI_API_KEY` or `NUTRITAIL_QA_OPENAI_API_KEY_FILE`.",
   "",
 ];
 
