@@ -34,6 +34,14 @@ assert(
   "Food shortlist summary must explain that tapping a card keeps the portion and plan."
 );
 assert(
+  chatbotPage.includes("Δομή λίστας") && chatbotPage.includes("visiblePremiumCount"),
+  "Food shortlist summary must show how many strong and value choices are visible."
+);
+assert(
+  chatbotPage.includes("md:grid-cols-4"),
+  "Food shortlist summary should have room for first pick, portion, list shape, and alternatives."
+);
+assert(
   chatbotPage.includes("getRecommendationShortlistHighlights("),
   "Chatbot UI must render the shortlist summary before detailed food cards."
 );
