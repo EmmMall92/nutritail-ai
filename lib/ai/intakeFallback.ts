@@ -151,7 +151,31 @@ function detectNeutered(text: string) {
 }
 
 function detectLanguage(message: string) {
-  return /[\u0370-\u03ff\u1f00-\u1fff]/.test(message) ? "el" : "en";
+  if (/[\u0370-\u03ff\u1f00-\u1fff]/.test(message)) return "el";
+
+  const text = normalizeText(message);
+  if (
+    includesAny(text, [
+      "skyl",
+      "skil",
+      "gat",
+      "kou",
+      "trofi",
+      "fagito",
+      "kaka",
+      "aera",
+      "aeria",
+      "stomaxi",
+      "stomachi",
+      "peirazei",
+      "aresei",
+      "troei",
+    ])
+  ) {
+    return "el";
+  }
+
+  return "en";
 }
 
 function detectPetName(message: string) {
@@ -269,7 +293,12 @@ export function fallbackExtractIntake(
           "διαρ",
           "μαλακα κακα",
           "μαλακά κακά",
+          "malaka kaka",
+          "aera",
+          "aeria",
           "στομαχ",
+          "stomaxi",
+          "stomachi",
         ],
         "sensitive_digestion",
       ],

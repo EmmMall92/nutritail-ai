@@ -54,6 +54,9 @@ function runChecks(): Check[] {
   const fallbackGreeklishPreferences = fallbackExtractIntake(
     "den ksero tin trofi. tou aresei to kotopoulo kai den troei arni kai mosxari"
   );
+  const fallbackGreeklishDigestive = fallbackExtractIntake(
+    "to skylaki mou kanei malaka kaka kai aera"
+  );
 
   return [
     {
@@ -138,6 +141,15 @@ function runChecks(): Check[] {
         hasAll(fallbackGreeklishPreferences.data.preferredProteins, ["chicken"]) &&
         hasAll(fallbackGreeklishPreferences.data.excludedIngredients, ["lamb", "beef"]),
       details: JSON.stringify(fallbackGreeklishPreferences.data),
+    },
+    {
+      name: "Fallback handles Greeklish dog digestive message",
+      pass:
+        fallbackGreeklishDigestive.data.species === "dog" &&
+        fallbackGreeklishDigestive.data.petName == null &&
+        fallbackGreeklishDigestive.data.language === "el" &&
+        hasAll(fallbackGreeklishDigestive.data.healthIssues, ["sensitive_digestion"]),
+      details: JSON.stringify(fallbackGreeklishDigestive.data),
     },
     {
       name: "Validation removes OpenAI preference conflicts",
