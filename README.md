@@ -77,6 +77,17 @@ npm.cmd run build
 npm.cmd run qa:ci-readiness
 ```
 
+When a PR changes chatbot intake, Food V2 recommendation ranking, customer
+recommendation copy, nutrition rules, or medical/safety guardrails, also run:
+
+```bash
+npm.cmd run qa:chatbot-golden-suite:fast
+```
+
+This suite intentionally includes live production smoke coverage, so it is kept
+out of the default `npm run check` loop. Use it as the deeper signoff for
+recommendation-quality changes.
+
 Optional live chatbot QA checks can use local secret files so keys and cookies
 do not appear in shell history or reports. Put them under `.qa-secrets/`, which
 is ignored by git:
