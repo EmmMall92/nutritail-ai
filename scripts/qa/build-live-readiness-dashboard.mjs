@@ -324,6 +324,25 @@ function parseAdvisorySuite(suite) {
   return suite.parser === "route" ? parseAdvisoryRouteSuite(suite) : parseOpenAiSmokeSuite(suite);
 }
 
+function readOpenAiFullProofReport() {
+  const source = "reports/openai_full_proof_qa.md";
+  if (!reportExists(source)) {
+    return {
+      source,
+      status: "MISSING",
+      generated: "missing",
+    };
+  }
+
+  const text = readReport(source);
+
+  return {
+    source,
+    status: text.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim() ?? "unknown",
+    generated: parseRunDate(text),
+  };
+}
+
 function parseChatbotSuite(suite) {
   if (!reportExists(suite.source)) {
     return {
@@ -431,6 +450,7 @@ const parsedRouteSuites = routeSuites.map(parseRouteSuite);
 const parsedStaticSuites = staticSuites.map(parseStaticSuite);
 const parsedChatbotSuite = parseChatbotSuite(chatbotSuite);
 const parsedAdvisorySuites = advisorySuites.map(parseAdvisorySuite);
+const openAiFullProofReport = readOpenAiFullProofReport();
 const allSuites = [...parsedRouteSuites, ...parsedStaticSuites, parsedChatbotSuite];
 const totals = allSuites.reduce(
   (acc, suite) => {
@@ -493,6 +513,7 @@ const lines = [
   `- Minimum readiness score: ${minReadinessScore}/100`,
   `- Customer-ready core status: ${customerReadyCoreStatus}`,
   `- Full OpenAI proof status: ${fullOpenAiProofStatus}`,
+  `- Full OpenAI proof report: ${openAiFullProofReport.status} (${openAiFullProofReport.source})`,
   `- Core evidence score: ${percent(coreReadinessRatio, 1)} (blocks readiness)`,
   `- Advisory evidence score: ${percent(advisoryReadinessRatio, 1)} (non-blocking but needed for full OpenAI proof)`,
   `- Max report age: ${maxReportAgeHours}h`,
@@ -566,6 +587,7 @@ const lines = [
   "- Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches before live tests run.",
   `- Customer-ready core status is ${customerReadyCoreStatus}. Full OpenAI proof status is ${fullOpenAiProofStatus}; it becomes PASS only after the OpenAI intake smoke and authenticated chatbot extract route both run successfully.`,
+  `- Dedicated OpenAI proof report: ${openAiFullProofReport.source} (${openAiFullProofReport.status}, generated ${openAiFullProofReport.generated}).`,
   `- The readiness score weights blocking core evidence at 90% and advisory OpenAI/authenticated-route evidence at 10%. Skipped advisory checks count as partial evidence because the route and secret-handling code are present, but the live credentialed smoke was not executed in this environment.`,
   "",
   "## Next Live Checks",

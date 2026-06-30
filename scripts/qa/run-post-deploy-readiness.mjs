@@ -55,6 +55,10 @@ const commands = [
     label: "Account chatbot extract live route",
     command: "npm.cmd run qa:account-chatbot-extract-live-route",
   },
+  {
+    label: "OpenAI full proof report",
+    command: "npm.cmd run qa:openai-full-proof:report",
+  },
   ...(shouldRefreshChatbot
     ? [
         {

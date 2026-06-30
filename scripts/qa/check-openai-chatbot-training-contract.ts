@@ -121,6 +121,7 @@ includesAll(
     "For brand comparisons, compare only retrieved products",
     "If the current food or product match is uncertain",
     "Do not include backend review/source-quality wording",
+    "Do not mention OpenAI, model names, prompts, QA checks, proof status, or internal tooling to customers",
     "When food cards follow, use at most 4 short sentences",
     "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers",
   ],
@@ -251,6 +252,22 @@ includesAll(
   "OpenAI intake smoke source"
 );
 
+const openAiFullProofSource = readFileSync("scripts/qa/check-openai-full-proof.mjs", "utf8");
+includesAll(
+  openAiFullProofSource,
+  [
+    "OpenAI Full Proof QA",
+    "qa:openai-intake-smoke",
+    "qa:account-chatbot-extract-live-route",
+    "Full OpenAI proof",
+    "NUTRITAIL_QA_OPENAI_API_KEY_FILE",
+    "NUTRITAIL_QA_AUTH_COOKIE_FILE",
+    "Do not commit, print, paste, or screenshot the key or cookie.",
+    "Food ranking, exclusions, medical safety and nutrient truth stay in NutriTail deterministic code.",
+  ],
+  "OpenAI full proof source"
+);
+
 const adminAiStatusRouteSource = readFileSync("app/api/admin/ai-status/route.ts", "utf8");
 includesAll(
   adminAiStatusRouteSource,
@@ -291,6 +308,7 @@ includesAll(
     "--refresh-chatbot",
     "qa:chatbot-golden-suite:fast",
     "qa:chatbot-live-dashboard",
+    "qa:openai-full-proof:report",
     "Chatbot QA refreshed in this run",
   ],
   "post-deploy chatbot refresh gate"
