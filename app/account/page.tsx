@@ -50,6 +50,13 @@ type AccountPet = {
   } | null;
 };
 
+type DashboardNextAction = {
+  title: string;
+  detail: string;
+  href: string;
+  tone: "primary" | "secondary";
+};
+
 const ACCOUNT_LOAD_ERROR_MESSAGE =
   "Δεν ήταν δυνατή η φόρτωση λογαριασμού. Δοκίμασε ξανά σε λίγο.";
 
@@ -139,6 +146,79 @@ function getLatestProgressEntry(pets: AccountPet[]) {
         new Date(b.progress?.created_at ?? 0).getTime() -
         new Date(a.progress?.created_at ?? 0).getTime()
     )[0];
+}
+
+function getDashboardNextActions({
+  pets,
+  latestPet,
+  latestAnalysis,
+  latestProgressPet,
+  nextPetToAnalyze,
+}: {
+  pets: AccountPet[];
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+  latestProgressPet?: AccountPet;
+  nextPetToAnalyze?: AccountPet;
+}): DashboardNextAction[] {
+  const primaryPet = latestProgressPet ?? latestPet;
+
+  if (pets.length === 0) {
+    return [
+      {
+        title: "Ξεκίνα με το πρώτο κατοικίδιο",
+        detail: "Ο σύμβουλος θα φτιάξει προφίλ, θερμίδες και πρώτη λίστα τροφών.",
+        href: "/account/chatbot",
+        tone: "primary",
+      },
+      {
+        title: "Δες πώς λειτουργεί",
+        detail: "Μάθε τι κρατάει το NutriTail και γιατί οι προτάσεις βασίζονται σε δεδομένα.",
+        href: "/account/profile",
+        tone: "secondary",
+      },
+    ];
+  }
+
+  const actions: Array<DashboardNextAction | null> = [
+    nextPetToAnalyze
+      ? {
+          title: `Κάνε ανάλυση για ${nextPetToAnalyze.name ?? "κατοικίδιο"}`,
+          detail: "Δεν έχει ακόμη αποθηκευμένη αναφορά, οπότε αυτό είναι το πιο χρήσιμο επόμενο βήμα.",
+          href: `/account/pets/${nextPetToAnalyze.id}`,
+          tone: "primary",
+        }
+      : primaryPet
+        ? {
+            title: `Έλεγχος προόδου για ${primaryPet.name ?? "κατοικίδιο"}`,
+            detail: "Δώσε τωρινό βάρος, γραμμάρια, λιχουδιές, όρεξη και κόπρανα.",
+            href: `/account/chatbot?petId=${primaryPet.id}&mode=progress`,
+            tone: "primary",
+          }
+        : null,
+    latestPet && latestAnalysis
+      ? {
+          title: "Άνοιξε την τελευταία αναφορά",
+          detail: latestAnalysis.feeding_grams_per_day
+            ? "Δες θερμίδες, τροφή, γραμμάρια/ημέρα και πλάνο μετάβασης."
+            : "Δες τη σύνοψη και συμπλήρωσε τροφή για πιο ακριβή ποσότητα.",
+          href: `/print/pet-report/${latestPet.id}`,
+          tone: "secondary",
+        }
+      : null,
+    {
+      title: "Νέα ανάλυση ή άλλη τροφή",
+      detail: "Χρήσιμο αν άλλαξε βάρος, γεύση, εταιρεία, υγεία ή αποδοχή της τροφής.",
+      href: latestPet ? `/account/chatbot?petId=${latestPet.id}` : "/account/chatbot",
+      tone: "secondary",
+    },
+  ];
+
+  const visibleActions: DashboardNextAction[] = actions.filter(
+    (action): action is DashboardNextAction => Boolean(action)
+  );
+
+  return visibleActions.slice(0, 3);
 }
 
 export default function AccountPage() {
@@ -272,6 +352,13 @@ export default function AccountPage() {
   const planStatusCopy = getNutritionPlanStatusCopy(
     latestAnalysis?.food_score
   );
+  const dashboardNextActions = getDashboardNextActions({
+    pets,
+    latestPet,
+    latestAnalysis,
+    latestProgressPet,
+    nextPetToAnalyze,
+  });
 
   return (
     <section className="space-y-6">
@@ -312,6 +399,46 @@ export default function AccountPage() {
               Δες τα κατοικίδια
             </Link>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Σήμερα μπορείς να κάνεις
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-black">
+              Τα πιο χρήσιμα επόμενα βήματα
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm text-gray-600">
+            Διάλεξε γρήγορα αν θέλεις πρόοδο, αναφορά ή νέα πρόταση τροφής,
+            χωρίς να ψάχνεις σε όλες τις σελίδες.
+          </p>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {dashboardNextActions.map((action) => (
+            <Link
+              key={action.title}
+              href={action.href}
+              className={`rounded-xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
+                action.tone === "primary"
+                  ? "border-black bg-black text-white"
+                  : "border-gray-200 bg-gray-50 text-black hover:border-gray-400"
+              }`}
+            >
+              <span className="block font-semibold">{action.title}</span>
+              <span
+                className={`mt-2 block text-sm leading-5 ${
+                  action.tone === "primary" ? "text-gray-100" : "text-gray-600"
+                }`}
+              >
+                {action.detail}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 
