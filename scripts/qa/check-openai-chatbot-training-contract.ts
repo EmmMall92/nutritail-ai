@@ -314,11 +314,9 @@ includesAll(
     "Do not add brand-level winners or unlisted alternatives.",
     "ask for the exact bag name or a label photo",
     "deterministic_text: sanitizeGroundingText(input.deterministicText)",
-    "NUTRITAIL_GUARDED_FOOD_BRANDS",
+    "mentionsAtLeastOneAllowedFood",
     "mentionsUnallowedGuardedBrand",
     "composer_mentioned_unlisted_food_brand",
-    "customerFoodDisplayName(food)",
-    "customerFoodName(food)",
   ],
   "response composer fallback language repair"
 );
@@ -351,6 +349,24 @@ expect(
 expect(
   responseComposerSource.includes("\\u0388\\u03bb\\u03b5\\u03b3\\u03c7\\u03bf\\u03c2 \\u03b2\\u03ac\\u03c1\\u03bf\\u03c5\\u03c2"),
   "response composer must keep Greek fallback replacements ASCII-safe"
+);
+
+const foodBrandGuardSource = readFileSync("lib/ai/foodBrandGuard.ts", "utf8");
+includesAll(
+  foodBrandGuardSource,
+  [
+    "NUTRITAIL_GUARDED_FOOD_BRANDS",
+    "normalizeComposerGuardText",
+    "mentionsUnallowedGuardedBrand",
+    "mentionsAtLeastOneAllowedFood",
+    "customerFoodDisplayName(food)",
+    "customerFoodName(food)",
+    "royal canin",
+    "acana",
+    "hill's",
+    "n&d",
+  ],
+  "OpenAI food brand guard source"
 );
 
 if (failures.length > 0) {
