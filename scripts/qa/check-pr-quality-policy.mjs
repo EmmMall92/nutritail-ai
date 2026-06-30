@@ -24,6 +24,11 @@ const checks = [
     expected: "npm.cmd run qa:chatbot-golden-suite:fast",
   },
   {
+    label: "README explains post-deploy skipped checks",
+    source: readme,
+    expected: "Command rows can be `PASS`, `SKIP`, or `REVIEW`",
+  },
+  {
     label: "README explains why fast golden suite is not default check",
     source: readme,
     expected: "kept\nout of the default `npm run check` loop",
