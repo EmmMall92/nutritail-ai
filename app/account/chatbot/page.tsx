@@ -5696,6 +5696,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </div>
             </div>
+            <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm leading-5 text-gray-700 ring-1 ring-gray-100">
+              {botText(
+                "Οι πρακτικές επιλογές δεν είναι «λάθος» τροφές. Είναι καλές εναλλακτικές όταν μετράνε περισσότερο η τιμή, η διαθεσιμότητα ή η γεύση.",
+                "Practical options are not bad choices. They are good alternatives when budget, availability, or flavour matters more."
+              )}
+            </p>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {recommendedFoodChoices.map((choice, index) => (
                 <button
