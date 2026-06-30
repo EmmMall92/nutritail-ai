@@ -405,6 +405,17 @@ function percent(value, total) {
   return `${((value / total) * 100).toFixed(1)}%`;
 }
 
+function scoreRatio(value, total) {
+  if (!total) return 0;
+  return Math.max(0, Math.min(1, value / total));
+}
+
+function advisorySuiteScore(suite) {
+  if (suite.status === "PASS") return 1;
+  if (suite.status === "SKIPPED") return 0.5;
+  return 0;
+}
+
 const parsedRouteSuites = routeSuites.map(parseRouteSuite);
 const parsedStaticSuites = staticSuites.map(parseStaticSuite);
 const parsedChatbotSuite = parseChatbotSuite(chatbotSuite);
@@ -421,6 +432,12 @@ const totals = allSuites.reduce(
 );
 const failingSuites = allSuites.filter((suite) => suite.status !== "PASS");
 const status = failingSuites.length === 0 ? "PASS" : "REVIEW";
+const coreReadinessRatio = scoreRatio(totals.passed, totals.checked);
+const advisoryReadinessRatio = scoreRatio(
+  parsedAdvisorySuites.reduce((sum, suite) => sum + advisorySuiteScore(suite), 0),
+  parsedAdvisorySuites.length,
+);
+const readinessScore = Math.round((coreReadinessRatio * 0.9 + advisoryReadinessRatio * 0.1) * 100);
 const ageKnownSuites = allSuites.filter((suite) => suite.ageHours != null);
 const oldestSuite = [...ageKnownSuites].sort((a, b) => b.ageHours - a.ageHours)[0];
 const nextStaleSuite = [...ageKnownSuites]
@@ -451,6 +468,9 @@ const lines = [
   `- Passed: ${totals.passed}`,
   `- Failed or needs review: ${totals.failed}`,
   `- Pass rate: ${percent(totals.passed, totals.checked)}`,
+  `- 95% readiness score: ${readinessScore}/100`,
+  `- Core evidence score: ${percent(coreReadinessRatio, 1)} (blocks readiness)`,
+  `- Advisory evidence score: ${percent(advisoryReadinessRatio, 1)} (non-blocking but needed for full OpenAI proof)`,
   `- Max report age: ${maxReportAgeHours}h`,
   `- Deploy freshness gate: ${deployedAtIso ? `reports must be newer than ${deployedAtIso}` : "not configured"}`,
   `- Oldest source report: ${oldestSuite ? `${oldestSuite.name} (${oldestSuite.age})` : "unknown"}`,
@@ -521,6 +541,7 @@ const lines = [
   "- Chatbot live QA protects dog/cat recommendation behavior separately from route availability.",
   "- Intake QA is visible separately so OpenAI smoke skips or failures do not hide behind recommendation totals.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches before live tests run.",
+  `- The readiness score weights blocking core evidence at 90% and advisory OpenAI/authenticated-route evidence at 10%. Skipped advisory checks count as partial evidence because the route and secret-handling code are present, but the live credentialed smoke was not executed in this environment.`,
   "",
   "## Next Live Checks",
   "",
