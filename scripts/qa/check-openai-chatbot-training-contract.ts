@@ -136,6 +136,7 @@ const cardWriterPrompt = buildAnswerWriterUserPrompt({
   locale: "el",
   groundedJson: {
     cards_follow: true,
+    allowed_food_names: ["Royal Canin Mini Adult", "Josera Sensi Plus Adult"],
     premium: [{ customer_name: "Royal Canin Mini Adult" }],
     value: [{ customer_name: "Josera Sensi Plus Adult" }],
   },
@@ -143,6 +144,11 @@ const cardWriterPrompt = buildAnswerWriterUserPrompt({
 includesAll(
   cardWriterPrompt,
   [
+    "Allowed food names:",
+    "- Royal Canin Mini Adult",
+    "- Josera Sensi Plus Adult",
+    "Mention only foods from the Allowed food names list.",
+    "Do not add other foods, brands, variants, or generic brand winners.",
     "Food cards follow this message:",
     "at most 4 short sentences",
     "Mention only the single best starting food by name",

@@ -62,7 +62,28 @@ export function buildAnswerWriterUserPrompt(input: {
   locale: NutriTailPromptLocale;
   groundedJson: unknown;
 }) {
-  const grounded = input.groundedJson as { cards_follow?: unknown };
+  const grounded = input.groundedJson as {
+    allowed_food_names?: unknown;
+    cards_follow?: unknown;
+  };
+  const allowedFoodNames = Array.isArray(grounded?.allowed_food_names)
+    ? grounded.allowed_food_names
+        .map((name) => String(name ?? "").trim())
+        .filter(Boolean)
+        .slice(0, 6)
+    : [];
+  const foodGroundingInstructions =
+    allowedFoodNames.length > 0
+      ? [
+          "",
+          "Allowed food names:",
+          ...allowedFoodNames.map((name) => `- ${name}`),
+          "",
+          "Food-name rule:",
+          "- Mention only foods from the Allowed food names list.",
+          "- Do not add other foods, brands, variants, or generic brand winners.",
+        ]
+      : [];
   const cardFlowInstructions = grounded?.cards_follow
     ? [
         "",
@@ -76,6 +97,7 @@ export function buildAnswerWriterUserPrompt(input: {
 
   return [
     `Write the final chatbot recommendation in ${input.locale === "el" ? "Greek" : "English"}.`,
+    ...foodGroundingInstructions,
     ...cardFlowInstructions,
     "",
     "Grounded JSON:",
