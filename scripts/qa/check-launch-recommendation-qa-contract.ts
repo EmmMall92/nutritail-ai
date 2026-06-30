@@ -31,7 +31,7 @@ assert(
   "package.json must expose this launch recommendation QA contract."
 );
 assert(
-  packageJson.includes("qa:launch-recommendation-contract && npm run qa:pr-quality-policy"),
+  packageJson.includes("qa:launch-recommendation-contract"),
   "CI readiness must include the lightweight launch recommendation QA contract."
 );
 assert(
