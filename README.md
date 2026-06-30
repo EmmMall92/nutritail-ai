@@ -55,12 +55,14 @@ Run these before opening or merging a PR:
 npm run lint
 npx tsc --noEmit
 npm run build
+npm run qa:ci-readiness
 ```
 
 On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm`:
 
 ```bash
 npm.cmd run build
+npm.cmd run qa:ci-readiness
 ```
 
 Optional live chatbot QA checks can use local secret files so keys and cookies

@@ -44,3 +44,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: CI readiness QA
+        run: npm run qa:ci-readiness
