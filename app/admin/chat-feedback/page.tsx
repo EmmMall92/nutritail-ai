@@ -34,6 +34,11 @@ function getSelectedFoodName(log: AdminActivityLog) {
   return String(context.selectedFoodName ?? context.currentFoodName ?? "").trim();
 }
 
+function getSelectedFoodBrand(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  return String(context.selectedFoodBrand ?? "").trim() || "Unknown brand";
+}
+
 function getCleanupMetadata(log: AdminActivityLog) {
   const cleanup = log.metadata?.cleanup;
   return typeof cleanup === "object" && cleanup !== null
@@ -168,9 +173,13 @@ export default function AdminChatFeedbackPage() {
         rating,
         context.currentFoodName,
         context.selectedFoodName,
+        context.selectedFoodBrand,
         context.selectedFoodRole,
         context.weightGoal,
         context.petSpecies,
+        ...(Array.isArray(context.recommendedFoodBrands)
+          ? context.recommendedFoodBrands
+          : []),
         ...(Array.isArray(context.healthIssues) ? context.healthIssues : []),
         ...(Array.isArray(context.allergies) ? context.allergies : []),
       ]
@@ -233,6 +242,24 @@ export default function AdminChatFeedbackPage() {
       latestLog: data.latestLog,
     }))
     .sort((a, b) => b.count - a.count || a.foodName.localeCompare(b.foodName))
+    .slice(0, 8);
+  const selectedBrandGroups = selectedFoodChoices.reduce<
+    Record<string, { count: number; latestLog: AdminActivityLog }>
+  >((acc, log) => {
+    const brand = getSelectedFoodBrand(log);
+    acc[brand] = {
+      count: (acc[brand]?.count ?? 0) + 1,
+      latestLog: log,
+    };
+    return acc;
+  }, {});
+  const selectedBrandTrends = Object.entries(selectedBrandGroups)
+    .map(([brand, data]) => ({
+      brand,
+      count: data.count,
+      latestLog: data.latestLog,
+    }))
+    .sort((a, b) => b.count - a.count || a.brand.localeCompare(b.brand))
     .slice(0, 8);
   const failedMatchGroups = failedMatches.reduce<
     Record<string, { count: number; latestLog: AdminActivityLog }>
@@ -485,6 +512,57 @@ export default function AdminChatFeedbackPage() {
         </div>
       </div>
 
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-black">
+          Brand Selection Trends
+        </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Brands customers choose after the recommendation cards. Use this to
+          spot which premium/value suggestions are actually converting.
+        </p>
+
+        {selectedBrandTrends.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No selected brand events have been recorded yet.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {selectedBrandTrends.map((item) => {
+              const context = getFeedbackContext(item.latestLog);
+
+              return (
+                <button
+                  key={item.brand}
+                  type="button"
+                  onClick={() => {
+                    setTypeFilter("food_choice_selected");
+                    setRatingFilter("all");
+                    setSearch(item.brand === "Unknown brand" ? "" : item.brand);
+                  }}
+                  className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left transition hover:border-black hover:bg-white"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-black">{item.brand}</p>
+                      <p className="mt-1 text-sm text-gray-600">
+                        Latest goal: {String(context.weightGoal ?? "unknown")}
+                      </p>
+                      <p className="mt-1 text-sm text-gray-600">
+                        Latest role:{" "}
+                        {String(context.selectedFoodRole ?? "unknown")}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-black px-2 py-1 text-xs font-semibold text-white">
+                      {item.count}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-black">
@@ -566,6 +644,9 @@ export default function AdminChatFeedbackPage() {
                   <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                     <div>
                       <p className="font-semibold text-black">{item.foodName}</p>
+                      <p className="mt-1 text-sm text-green-800">
+                        Brand: {String(context.selectedFoodBrand ?? "unknown")}
+                      </p>
                       <p className="mt-1 text-sm text-green-800">
                         Goal: {String(context.weightGoal ?? "unknown")} / Role:{" "}
                         {String(context.selectedFoodRole ?? "unknown")}

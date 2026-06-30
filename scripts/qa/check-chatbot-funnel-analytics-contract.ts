@@ -32,6 +32,10 @@ assert(
   "Analysis completion analytics must include recommendation count."
 );
 assert(
+  chatbotPage.includes("recommendedFoodBrands"),
+  "Analysis completion analytics must include recommended food brands."
+);
+assert(
   chatbotPage.includes("eventType: \"plan_saved\""),
   "Customer chatbot must log saved nutrition plans."
 );

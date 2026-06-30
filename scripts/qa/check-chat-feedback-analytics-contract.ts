@@ -27,6 +27,10 @@ assert(
   "Food-choice analytics must include the selected food name."
 );
 assert(
+  chatbotPage.includes("selectedFoodBrand: choice.brand"),
+  "Food-choice analytics must include the selected food brand."
+);
+assert(
   chatbotPage.includes("feedingGramsPerDay: gramsPerDay"),
   "Food-choice analytics must include the estimated grams/day when available."
 );
@@ -35,8 +39,16 @@ assert(
   "Admin feedback page must show selected food trends."
 );
 assert(
+  adminFeedbackPage.includes("Brand Selection Trends"),
+  "Admin feedback page must show selected brand trends."
+);
+assert(
   adminFeedbackPage.includes("getSelectedFoodName"),
   "Admin feedback page must group selected-food analytics by food name."
+);
+assert(
+  adminFeedbackPage.includes("getSelectedFoodBrand"),
+  "Admin feedback page must group selected-food analytics by brand."
 );
 assert(
   adminFeedbackPage.includes("setTypeFilter(\"food_choice_selected\")"),
