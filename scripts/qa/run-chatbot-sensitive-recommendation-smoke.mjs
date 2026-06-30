@@ -21,7 +21,8 @@ const checks = [
   {
     name: "Food preference and puppy ranking",
     args: ["run", "qa:food-v2-preference-ranking"],
-    covers: "taste avoidances, preferred proteins, weight control, and large-breed puppy guards",
+    covers:
+      "taste avoidances, preferred proteins, weight control, large-dog size fit, and large-breed puppy guards",
   },
   {
     name: "Food V2 ranking scenarios",

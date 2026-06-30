@@ -36,7 +36,7 @@ Generated: 2026-06-30T00:14:15.492Z
 
 ## Objective Coverage
 
-- 1. Recommendation accuracy: Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-breed puppy, and active-dog logic.
+- 1. Recommendation accuracy: Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-dog size fit, large-breed puppy, and active-dog logic.
 - 2. Customer-facing answer quality: Customer recommendation copy, customer recommendation smoke, and customer chatbot flow links guard against back-office wording and verify food-card action flow.
 - 3. Large dog/cat live chatbot case coverage: Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, and cat live 100-case checks prove the large case bank is structurally sound and has live regression feedback.
 - 4. Brand data cleanup: Title/source/duplicate/product-form QA scripts keep customer-facing food names, duplicate risks, and non-complete-food guards visible.

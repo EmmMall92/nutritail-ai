@@ -209,7 +209,7 @@ const fullObjectiveCoverage = [
   {
     objective: "1. Recommendation accuracy",
     evidence:
-      "Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-breed puppy, and active-dog logic.",
+      "Food V2 ranking scenarios, food preference ranking, dog live cases, and feeding rules cover sterilised, senior, allergy, urinary, renal, large-dog size fit, large-breed puppy, and active-dog logic.",
   },
   {
     objective: "2. Customer-facing answer quality",
