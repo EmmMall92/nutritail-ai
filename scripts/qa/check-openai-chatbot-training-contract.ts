@@ -301,6 +301,9 @@ for (const forbiddenGroundingTerm of [
   "data\\s*quality",
   "missing\\s*nutrition\\s*fields?",
   "confidence\\s*internals",
+  "(?:score|total_score|match_score)\\s*[:=]?\\s*\\d{1,3}",
+  "(?:high|medium|low)\\s+confidence",
+  "confidence\\s*[:=]\\s*(?:high|medium|low)",
   "retailer\\s*source",
   "source:\\s*[^\\n\\r]+",
 ]) {
