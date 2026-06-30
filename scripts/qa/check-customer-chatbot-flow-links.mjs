@@ -554,6 +554,26 @@ const checks = [
     expected: "Πλάνο επανελέγχου",
   },
   {
+    label: "Printable saved report gives a Greek daily plan summary",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Πλάνο ημέρας",
+  },
+  {
+    label: "Printable saved report explains treats in the daily plan",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "Λιχουδιές",
+  },
+  {
+    label: "Printable saved report includes a Greek food transition plan",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "7ήμερο πλάνο αλλαγής τροφής",
+  },
+  {
+    label: "Printable saved report includes gradual transition steps",
+    file: "app/print/pet-report/[id]/page.tsx",
+    expected: "75% παλιά + 25% νέα",
+  },
+  {
     label: "Printable report uses Greek customer-facing plan status wording",
     file: "app/print/pet-report/[id]/page.tsx",
     expected: "Κατάσταση πλάνου",

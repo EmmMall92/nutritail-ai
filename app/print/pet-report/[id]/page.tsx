@@ -223,6 +223,105 @@ function getMealSplit(gramsPerDay?: number | null) {
   };
 }
 
+function getTreatAllowance(analysis?: AnalysisHistoryItem | null) {
+  if (!analysis?.mer || !Number.isFinite(analysis.mer)) return null;
+
+  const treatCalories = Math.round(analysis.mer * 0.1);
+
+  return {
+    treats: treatCalories,
+    mainFood: Math.max(0, analysis.mer - treatCalories),
+  };
+}
+
+function getDailyPlanCards(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Ημερήσιος στόχος",
+      value: analysis ? `${analysis.mer} kcal/ημέρα` : "-",
+      detail:
+        "Ο πρακτικός στόχος ενέργειας για το σημερινό πλάνο του κατοικιδίου.",
+    },
+    {
+      label: "Κύρια τροφή",
+      value: analysis?.matched_food_name ?? "Δεν έχει επιλεγεί ακόμη",
+      detail: analysis?.matched_food_name
+        ? "Αυτή είναι η τροφή που κρατήθηκε στην τελευταία ανάλυση."
+        : "Διάλεξε τροφή από το chatbot για να γίνει πιο συγκεκριμένο το πλάνο.",
+    },
+    {
+      label: "Ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : "Θέλει τροφή με kcal",
+      detail: analysis?.feeding_grams_per_day
+        ? "Χώρισέ το σε 2 ή 3 γεύματα και επανέλεγξε την εικόνα σώματος."
+        : "Χρειάζεται επιλεγμένη τροφή με θερμίδες για ακριβή γραμμάρια.",
+    },
+    {
+      label: "Λιχουδιές",
+      value: treatAllowance
+        ? `έως ${treatAllowance.treats} kcal/ημέρα`
+        : "έως 10%",
+      detail: treatAllowance
+        ? `Περίπου ${treatAllowance.mainFood} kcal μένουν για κύρια τροφή.`
+        : "Κράτα τις λιχουδιές μικρές και μέτρησέ τες στο σύνολο.",
+    },
+    {
+      label: "Επανέλεγχος",
+      value: getRecheckWindow(analysis),
+      detail:
+        pet.species === "cat"
+          ? "Για γάτα, όρεξη, ούρηση και βάρος θέλουν πιο στενή παρακολούθηση."
+          : "Φέρε νέο βάρος, γραμμάρια, λιχουδιές και παρατήρηση κοπράνων.",
+    },
+  ];
+}
+
+function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
+  const basePlan = [
+    {
+      label: "Ημέρες 1-2",
+      value: "75% παλιά + 25% νέα",
+      detail: "Παρατήρησε όρεξη, κόπρανα και αν υπάρχει εμετός.",
+    },
+    {
+      label: "Ημέρες 3-4",
+      value: "50% παλιά + 50% νέα",
+      detail: "Κράτα σταθερή τη συνολική ποσότητα της ημέρας.",
+    },
+    {
+      label: "Ημέρες 5-6",
+      value: "25% παλιά + 75% νέα",
+      detail: "Αν τα κόπρανα μαλακώσουν πολύ, μείνε περισσότερο σε αυτό το βήμα.",
+    },
+    {
+      label: "Ημέρα 7+",
+      value: "100% νέα τροφή",
+      detail: "Συνέχισε με το πλάνο γραμμαρίων και κάνε επανέλεγχο όταν χρειάζεται.",
+    },
+  ];
+
+  if (!analysis?.matched_food_name) {
+    return [
+      {
+        label: "Πριν τη μετάβαση",
+        value: "Διάλεξε πρώτα συγκεκριμένη τροφή",
+        detail:
+          "Το transition plan είναι πιο χρήσιμο όταν ξέρουμε την ακριβή φόρμουλα.",
+      },
+      ...basePlan,
+    ];
+  }
+
+  return basePlan;
+}
+
 function ReportCard({
   label,
   value,
@@ -429,6 +528,38 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        <div className="mt-8 break-inside-avoid rounded-2xl border border-gray-200 bg-white p-6 shadow-sm print:border-gray-300 print:shadow-none">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Πλάνο ημέρας
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                Τι κρατάμε πρακτικά από την ανάλυση
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm text-gray-600">
+              Αυτή είναι η γρήγορη εικόνα για θερμίδες, τροφή, ποσότητα,
+              λιχουδιές και πότε χρειάζεται επανέλεγχος.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-5">
+            {getDailyPlanCards(pet, latestAnalysis).map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-black">{item.value}</p>
+                <p className="mt-1 text-xs text-gray-600">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.15fr]">
           <div className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-6 print:border-gray-300">
             <h2 className="text-lg font-semibold text-black">
@@ -631,6 +762,40 @@ export default function PrintablePetReportPage() {
                   className="break-inside-avoid rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-black print:border-gray-300"
                 >
                   {index + 1}. {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {latestAnalysis && (
+          <div className="mt-8 rounded-xl border border-emerald-200 bg-white p-6 print:border-gray-300">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Μετάβαση τροφής
+                </p>
+                <h2 className="mt-1 text-xl font-semibold text-black">
+                  7ήμερο πλάνο αλλαγής τροφής
+                </h2>
+              </div>
+              <p className="max-w-xl text-sm text-gray-600">
+                Αν αλλάξεις τροφή, κάνε τη μετάβαση σταδιακά. Σε ευαίσθητη πέψη
+                μπορεί να χρειαστούν 10-14 ημέρες.
+              </p>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+              {getTransitionPlan(latestAnalysis).map((item) => (
+                <div
+                  key={item.label}
+                  className="break-inside-avoid rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-950 print:border-gray-300"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 font-bold">{item.value}</p>
+                  <p className="mt-1 text-xs text-emerald-900">{item.detail}</p>
                 </div>
               ))}
             </div>
