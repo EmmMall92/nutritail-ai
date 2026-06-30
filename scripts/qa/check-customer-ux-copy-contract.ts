@@ -63,6 +63,14 @@ const requiredCustomerCopy = [
     text: "Περισσότερα στοιχεία ετικέτας βελτιώνουν την απάντηση",
   },
   {
+    file: "app/account/page.tsx",
+    text: "Σήμερα μπορείς να κάνεις",
+  },
+  {
+    file: "app/account/page.tsx",
+    text: "Τα πιο χρήσιμα επόμενα βήματα",
+  },
+  {
     file: "app/account/chatbot/page.tsx",
     text: "Estimate portion",
   },

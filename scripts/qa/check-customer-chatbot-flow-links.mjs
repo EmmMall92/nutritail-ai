@@ -422,6 +422,26 @@ const checks = [
     expected: "Τελευταία απόφαση προόδου",
   },
   {
+    label: "Account dashboard gives customer next-action section",
+    file: "app/account/page.tsx",
+    expected: "Σήμερα μπορείς να κάνεις",
+  },
+  {
+    label: "Account dashboard links progress as a next action",
+    file: "app/account/page.tsx",
+    expected: "Έλεγχος προόδου για",
+  },
+  {
+    label: "Account dashboard links latest report as a next action",
+    file: "app/account/page.tsx",
+    expected: "Άνοιξε την τελευταία αναφορά",
+  },
+  {
+    label: "Account dashboard links new recommendation as a next action",
+    file: "app/account/page.tsx",
+    expected: "Νέα ανάλυση ή άλλη τροφή",
+  },
+  {
     label: "Account dashboard food fit chip is customer-localized",
     file: "app/account/page.tsx",
     expected: "Καταλληλότητα τροφής:",
