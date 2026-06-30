@@ -758,6 +758,7 @@ const requiredCardFlowCopy = [
   "protein",
   "fat",
   "fiber",
+  "Practical options are not bad choices. They are good alternatives when budget, availability, or flavour matters more.",
 ];
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
@@ -800,6 +801,8 @@ const requiredGreekCardFlowCopy = [
   "Πώς να το διαβάσεις:",
   "Καλύτερες επιλογές",
   "Πρακτικές επιλογές",
+  "Οι πρακτικές επιλογές δεν είναι «λάθος» τροφές.",
+  "καλές εναλλακτικές όταν μετράνε περισσότερο η τιμή, η διαθεσιμότητα ή η γεύση",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Οδηγός ημερήσιων θερμίδων",
   "Θερμίδες ηρεμίας:",
