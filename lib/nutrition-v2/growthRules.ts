@@ -174,8 +174,9 @@ export function evaluateGrowthFitRules(input: GrowthFitInput) {
       signals.push({
         type: "caution",
         code: "large_breed_growth_mineral_gap",
-        points: -32,
-        message: "Large-breed puppy ranking needs calcium and phosphorus data.",
+        points: -72,
+        message:
+          "Large-breed puppy first picks need calcium and phosphorus data when mineral-complete options exist.",
       });
     } else {
       const caP = nutrients.calcium_percent / nutrients.phosphorus_percent;

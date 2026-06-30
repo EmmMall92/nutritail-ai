@@ -3957,6 +3957,90 @@ if (growthSplit.premium[0]?.formula_key !== "qa|acana-puppy-large-breed|dog|dry"
   process.exit(1);
 }
 
+const athleticLargePuppyWithoutMinerals = food({
+  id: "athletic-large-puppy-no-minerals",
+  formula_key: "qa|athletic-large-puppy-no-minerals|dog|dry",
+  brand: "QA Athletic",
+  display_name: "Large Athletic Puppy Chicken",
+  formula_name: "Large Athletic Puppy Chicken",
+  life_stage: "puppy",
+  dog_size: "large",
+  commercial_tags: ["athletic", "active", "high_energy"],
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "rice"],
+  kcal_per_100g: 395,
+});
+const mineralCompleteLargePuppy = food({
+  id: "mineral-complete-large-puppy",
+  formula_key: "qa|mineral-complete-large-puppy|dog|dry",
+  brand: "QA Growth",
+  display_name: "Puppy Large Breed",
+  formula_name: "Puppy Large Breed",
+  life_stage: "puppy",
+  dog_size: "large",
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "oats"],
+  kcal_per_100g: 360,
+});
+const largeBreedTrainingPet = {
+  ...largeBreedGrowthPet,
+  activityLevel: "high" as const,
+  healthIssues: ["large breed puppy", "training", "high energy"],
+};
+const athleticNoMineralsRanking = rankFoodV2ForPet({
+  food: athleticLargePuppyWithoutMinerals,
+  nutrients: {
+    ...nutrients(athleticLargePuppyWithoutMinerals),
+    protein_percent: 31,
+    fat_percent: 18,
+    calcium_percent: null,
+    phosphorus_percent: null,
+  },
+  pet: largeBreedTrainingPet,
+  goal: "growth",
+});
+const mineralCompleteLargePuppyRanking = rankFoodV2ForPet({
+  food: mineralCompleteLargePuppy,
+  nutrients: {
+    ...nutrients(mineralCompleteLargePuppy),
+    protein_percent: 30,
+    fat_percent: 15,
+    calcium_percent: 1.2,
+    phosphorus_percent: 0.9,
+  },
+  pet: largeBreedTrainingPet,
+  goal: "growth",
+});
+const largeBreedTrainingSplit = splitFoodV2Recommendations([
+  athleticNoMineralsRanking,
+  mineralCompleteLargePuppyRanking,
+]);
+
+if (
+  largeBreedTrainingSplit.premium[0]?.formula_key !==
+  "qa|mineral-complete-large-puppy|dog|dry"
+) {
+  console.error(
+    "Large-breed puppy training/high-energy cases should not start from athletic puppy foods without calcium/phosphorus data."
+  );
+  console.error({
+    largeBreedTrainingSplit,
+    athleticNoMineralsRanking,
+    mineralCompleteLargePuppyRanking,
+  });
+  process.exit(1);
+}
+
+if (
+  !athleticNoMineralsRanking.signals.some(
+    (signal) => signal.code === "large_breed_growth_mineral_gap"
+  )
+) {
+  console.error("Expected large_breed_growth_mineral_gap for athletic puppy food without Ca/P.");
+  console.error(athleticNoMineralsRanking.signals);
+  process.exit(1);
+}
+
 const adultSterilisedValueSplit = splitFoodV2Recommendations(
   [
     {
