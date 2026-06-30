@@ -60,6 +60,33 @@ const GREEK_CHATBOT_WELCOME =
 const ENGLISH_CHATBOT_WELCOME =
   "Hi! Choose one of your saved pets for a new nutrition analysis, or start with a new pet.";
 
+const CHATBOT_API_ERROR_MESSAGES = {
+  recommendations: {
+    el: "Δεν μπόρεσα να φορτώσω προτάσεις τροφής τώρα. Δοκίμασε ξανά σε λίγο.",
+    en: "I could not load food suggestions right now. Please try again in a moment.",
+  },
+  compare: {
+    el: "Δεν μπόρεσα να ολοκληρώσω τη σύγκριση τώρα. Δοκίμασε με πιο ακριβές όνομα εταιρείας και τροφής.",
+    en: "I could not complete the comparison right now. Try using exact brand and food names.",
+  },
+  feedback: {
+    el: "Δεν μπόρεσα να καταγράψω το feedback τώρα.",
+    en: "I could not record feedback right now.",
+  },
+  savedPets: {
+    el: "Δεν μπόρεσα να φορτώσω τα αποθηκευμένα κατοικίδια. Μπορούμε να ξεκινήσουμε νέα ανάλυση.",
+    en: "I could not load your saved pets. We can start a new analysis.",
+  },
+  analysis: {
+    el: "Δεν μπόρεσα να ολοκληρώσω την ανάλυση τώρα. Δοκίμασε ξανά σε λίγο.",
+    en: "I could not complete the analysis right now. Please try again in a moment.",
+  },
+  save: {
+    el: "Δεν μπόρεσα να αποθηκεύσω την ανάλυση τώρα. Δοκίμασε ξανά σε λίγο.",
+    en: "I could not save the analysis right now. Please try again in a moment.",
+  },
+} as const;
+
 const MAX_DOG_WEIGHT_KG = 90;
 const MAX_CAT_WEIGHT_KG = 15;
 const MAX_PET_AGE_YEARS = 40;
@@ -98,6 +125,14 @@ function getChatbotWelcomeMessage(language: ChatLanguage) {
   return language === "en"
     ? ENGLISH_CHATBOT_WELCOME
     : repairCustomerGreekText(GREEK_CHATBOT_WELCOME);
+}
+
+function getChatbotApiErrorMessage(
+  key: keyof typeof CHATBOT_API_ERROR_MESSAGES,
+  language: ChatLanguage
+) {
+  const message = CHATBOT_API_ERROR_MESSAGES[key][language];
+  return language === "el" ? repairCustomerGreekText(message) : message;
 }
 
 type IntakeStep =
@@ -2278,7 +2313,10 @@ async function getFoodV2RecommendationMessage(
   };
 
   if (!response.ok) {
-    throw new Error(result.error || "Could not load Food V2 recommendations.");
+    console.error(result.error || "Food V2 recommendations request failed.");
+    throw new Error(
+      getChatbotApiErrorMessage("recommendations", options.language ?? "el")
+    );
   }
 
   const foodChoices = [
@@ -3722,7 +3760,8 @@ export default function AccountChatbotPage() {
       const result = (await response.json()) as FoodCompareResponse;
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to compare foods.");
+        console.error(result.error || "Food comparison request failed.");
+        throw new Error(getChatbotApiErrorMessage("compare", chatLanguage));
       }
 
       addMessages(createMessage("bot", formatFoodComparison(result, chatLanguage)));
@@ -3776,16 +3815,19 @@ export default function AccountChatbotPage() {
 
       if (!response.ok) {
         const result = await response.json();
-        throw new Error(result.error || "Failed to record feedback.");
+        console.error(result.error || "Chat feedback request failed.");
+        throw new Error(getChatbotApiErrorMessage("feedback", chatLanguage));
       }
 
       if (showConfirmation) {
-        setFeedbackStatus("Thanks. Your feedback was recorded.");
+        setFeedbackStatus(
+          botText("Ευχαριστούμε. Το feedback καταγράφηκε.", "Thanks. Your feedback was recorded.")
+        );
       }
     } catch (error) {
       console.error(error);
       if (showConfirmation) {
-        setFeedbackStatus("I could not record feedback right now.");
+        setFeedbackStatus(getChatbotApiErrorMessage("feedback", chatLanguage));
       }
     }
   }
@@ -3910,7 +3952,8 @@ export default function AccountChatbotPage() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Failed to load saved pets.");
+          console.error(result.error || "Saved pets request failed.");
+          throw new Error(getChatbotApiErrorMessage("savedPets", chatLanguage));
         }
 
         const pets = (result.pets ?? []) as AccountPet[];
@@ -3946,7 +3989,7 @@ export default function AccountChatbotPage() {
     }
 
     loadSavedPets();
-  }, [botText, pathname, router]);
+  }, [botText, chatLanguage, pathname, router]);
 
   async function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
@@ -4320,7 +4363,8 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to analyze pet.");
+        console.error(result.error || "Pet analysis request failed.");
+        throw new Error(getChatbotApiErrorMessage("analysis", chatLanguage));
       }
 
       const analysis = result.analysis as PetAnalysis;
@@ -5244,7 +5288,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to save result.");
+        console.error(result.error || "Save analysis request failed.");
+        throw new Error(getChatbotApiErrorMessage("save", chatLanguage));
       }
 
       addMessages(
