@@ -199,7 +199,7 @@ const checks = [
   {
     label: "Recommendation cards expose estimate portion badge",
     file: "app/account/chatbot/page.tsx",
-    expected: "Get grams",
+    expected: "Estimate portion",
   },
   {
     label: "Recommendation composer has compact customer fallback",

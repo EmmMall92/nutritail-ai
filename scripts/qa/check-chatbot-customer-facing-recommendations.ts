@@ -657,11 +657,10 @@ const requiredCardFlowCopy = [
   "Best choice",
   "Practical option",
   "Good alternative",
-  "Get daily grams",
+  "Estimate portion",
   "Choose the food to start with",
   "Next: estimate the daily portion.",
-  "Get grams",
-  "The first card is the best first choice. The others are good options if flavour, brand, or budget fits you better.",
+  "The first card is the strongest start for this pet profile. The others are useful options if flavour, brand, or budget fits you better.",
   "Pick the food you like to get the first daily portion in grams.",
   "1. Compare",
   "2. Choose",
@@ -687,10 +686,10 @@ const requiredCardFlowCopy = [
   "missing some label details",
   "compare the main nutrition points",
   "Next step: tell me which one you prefer",
-  "Best choices",
-  "strongest food option(s)",
-  "Practical options",
-  "good alternatives when you want something simpler",
+  "Best first choices",
+  "stronger starting choices",
+  "Simple / value options",
+  "good alternatives when flavour, availability, or cost matters",
   "Your plan is ready",
   "First daily portion",
   "Total: about",
@@ -764,7 +763,7 @@ const requiredCardFlowCopy = [
   "protein",
   "fat",
   "fiber",
-  "Practical options are not bad choices. They are good alternatives when budget, availability, or flavour matters more.",
+  "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more.",
 ];
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
@@ -797,18 +796,18 @@ const requiredGreekCardFlowCopy = [
   "Καλύτερη επιλογή",
   "Πρακτική επιλογή",
   "Καλή εναλλακτική",
-  "Πάρε γραμμάρια/ημέρα",
+  "Υπολόγισε ποσότητα",
   "Διάλεξε την τροφή που σου ταιριάζει",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-  "Η πρώτη κάρτα είναι η καλύτερη πρώτη επιλογή.",
+  "Η πρώτη κάρτα είναι η πιο δυνατή αρχή για το προφίλ του κατοικιδίου.",
   "Πάτησε την τροφή που σου αρέσει",
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",
   "Πώς να το διαβάσεις:",
-  "Καλύτερες επιλογές",
-  "Πρακτικές επιλογές",
-  "Οι πρακτικές επιλογές δεν είναι «λάθος» τροφές.",
-  "καλές εναλλακτικές όταν μετράνε περισσότερο η τιμή, η διαθεσιμότητα ή η γεύση",
+  "Καλύτερες πρώτες επιλογές",
+  "Πιο απλές / οικονομικές επιλογές",
+  "Οι πιο απλές επιλογές δεν είναι «λάθος» τροφές.",
+  "καλές εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή κόστος",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Οδηγός ημερήσιων θερμίδων",
   "Θερμίδες ηρεμίας:",
@@ -884,7 +883,7 @@ const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
 );
-const cardCtaIndex = chatbotPage.indexOf("Get daily grams", recommendedChoicesIndex);
+const cardCtaIndex = chatbotPage.indexOf("Estimate portion", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||

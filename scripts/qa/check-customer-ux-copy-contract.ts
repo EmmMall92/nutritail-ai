@@ -64,7 +64,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "Get daily grams",
+    text: "Estimate portion",
   },
   {
     file: "app/account/chatbot/page.tsx",

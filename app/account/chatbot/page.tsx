@@ -1065,6 +1065,31 @@ function getRecommendationChoiceBadgeLabel(
   return language === "el" ? "Καλή εναλλακτική" : "Good alternative";
 }
 
+function getRecommendationChoiceFitLabel(
+  choice: RecommendedFoodChoice,
+  index: number,
+  language: ChatLanguage
+) {
+  if (index === 0) {
+    return language === "el" ? "Πιο δυνατή αρχή" : "Strongest start";
+  }
+
+  if (choice.role === "value") {
+    return language === "el" ? "Πρακτική λύση" : "Practical pick";
+  }
+
+  if (typeof choice.score === "number" && Number.isFinite(choice.score)) {
+    if (choice.score >= 80) {
+      return language === "el" ? "Πολύ καλή επιλογή" : "Very good choice";
+    }
+    if (choice.score >= 65) {
+      return language === "el" ? "Καλή επιλογή" : "Good choice";
+    }
+  }
+
+  return language === "el" ? "Αξίζει να τη δεις" : "Worth considering";
+}
+
 function getRecommendationChoiceActionHint(
   choice: RecommendedFoodChoice,
   language: ChatLanguage
@@ -2328,7 +2353,7 @@ async function getFoodV2RecommendationMessage(
     ),
   ]
     .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
-    .slice(0, 5);
+    .slice(0, 6);
 
   options.onChoices?.(foodChoices);
 
@@ -5640,8 +5665,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Η πρώτη κάρτα είναι η καλύτερη πρώτη επιλογή. Οι υπόλοιπες είναι καλές επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
-                "The first card is the best first choice. The others are good options if flavour, brand, or budget fits you better."
+                "Η πρώτη κάρτα είναι η πιο δυνατή αρχή για το προφίλ του κατοικιδίου. Οι υπόλοιπες είναι αξιόλογες επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
+                "The first card is the strongest start for this pet profile. The others are useful options if flavour, brand, or budget fits you better."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
@@ -5679,27 +5704,27 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("Καλύτερες επιλογές", "Best choices")}
+                  {botText("Καλύτερες πρώτες επιλογές", "Best first choices")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("τροφή/τροφές που ταιριάζουν περισσότερο", "strongest food option(s)")}
+                  {botText("πιο δυνατές προτάσεις για να ξεκινήσεις", "stronger starting choices")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Πρακτικές επιλογές", "Practical options")}
+                  {botText("Πιο απλές / οικονομικές επιλογές", "Simple / value options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("καλές εναλλακτικές όταν θέλεις κάτι πιο απλό", "good alternatives when you want something simpler")}
+                  {botText("καλές εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή κόστος", "good alternatives when flavour, availability, or cost matters")}
                 </span>
               </div>
             </div>
             <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm leading-5 text-gray-700 ring-1 ring-gray-100">
               {botText(
-                "Οι πρακτικές επιλογές δεν είναι «λάθος» τροφές. Είναι καλές εναλλακτικές όταν μετράνε περισσότερο η τιμή, η διαθεσιμότητα ή η γεύση.",
-                "Practical options are not bad choices. They are good alternatives when budget, availability, or flavour matters more."
+                "Οι πιο απλές επιλογές δεν είναι «λάθος» τροφές. Απλώς τις κρατάμε ως εναλλακτικές όταν η τιμή, η διαθεσιμότητα ή η γεύση μετράνε περισσότερο.",
+                "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -5724,7 +5749,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
                     </span>
                     <span className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200">
-                      {botText("Πάρε γραμμάρια", "Get grams")}
+                      {getRecommendationChoiceFitLabel(choice, index, chatLanguage)}
                     </span>
                   </span>
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
@@ -5754,7 +5779,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {choice.reason && (
                     <span className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100">
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
-                        {botText("Γιατί ταιριάζει", "Why this choice")}
+                        {botText("Γιατί την προτείνουμε", "Why we suggest it")}
                       </span>
                       <span>{choice.reason}</span>
                     </span>
@@ -5842,7 +5867,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Πάρε γραμμάρια/ημέρα", "Get daily grams")}
+                    {botText("Υπολόγισε ποσότητα", "Estimate portion")}
                   </span>
                 </button>
               ))}
