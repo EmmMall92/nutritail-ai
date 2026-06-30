@@ -43,6 +43,14 @@ const commands = [
     label: "Vercel OpenAI production env",
     command: "npm.cmd run qa:vercel-openai-env",
   },
+  {
+    label: "OpenAI intake smoke",
+    command: "npm.cmd run qa:openai-intake-smoke",
+  },
+  {
+    label: "Account chatbot extract live route",
+    command: "npm.cmd run qa:account-chatbot-extract-live-route",
+  },
   ...(shouldRefreshChatbot
     ? [
         {
