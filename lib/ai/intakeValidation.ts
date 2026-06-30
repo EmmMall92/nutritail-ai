@@ -16,6 +16,29 @@ const VALID_WEIGHT_GOALS = new Set<ExtractedWeightGoal>([
   "gain",
 ]);
 
+const RED_FLAG_ALIASES = [
+  {
+    canonical: "urinary_blockage",
+    aliases: [
+      "urinary_blockage",
+      "urinary_blockage_risk",
+      "difficulty urinating",
+      "straining",
+      "straining to urinate",
+      "unable to urinate",
+      "no urine",
+      "cannot pee",
+      "can't pee",
+      "blocked",
+      "\u03b4\u03b5\u03bd \u03ba\u03b1\u03c4\u03bf\u03c5\u03c1",
+      "\u03b4\u03b5\u03bd \u03bf\u03c5\u03c1",
+      "\u03b4\u03c5\u03c3\u03ba\u03bf\u03bb\u03b9\u03b1 \u03bf\u03c5\u03c1",
+      "\u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8\u03b5\u03b9 \u03bd\u03b1 \u03ba\u03b1\u03c4\u03bf\u03c5\u03c1",
+      "\u03c0\u03c1\u03bf\u03c3\u03c0\u03b1\u03b8\u03b5\u03b9 \u03bd\u03b1 \u03bf\u03c5\u03c1",
+    ],
+  },
+] as const;
+
 const DOG_MAX_WEIGHT_KG = 90;
 const CAT_MAX_WEIGHT_KG = 15;
 const MAX_AGE_YEARS = 40;
@@ -76,6 +99,18 @@ function cleanStringArray(value: unknown) {
   }
 
   return items.slice(0, 12);
+}
+
+function canonicalizeRedFlagTerm(value: string) {
+  const normalized = normalizeLookup(value);
+
+  for (const item of RED_FLAG_ALIASES) {
+    if (item.aliases.some((alias) => normalized.includes(normalizeLookup(alias)))) {
+      return item.canonical;
+    }
+  }
+
+  return normalized.replace(/\s+/g, "_");
 }
 
 function canonicalizeIngredientTerm(value: string) {
@@ -244,7 +279,7 @@ export function validateAiIntakeExtraction(
     weightGoal,
     language: input.language === "en" ? "en" : input.language === "el" ? "el" : null,
     missingFields: cleanStringArray(input.missingFields),
-    redFlags: cleanStringArray(input.redFlags),
+    redFlags: cleanStringArray(input.redFlags).map(canonicalizeRedFlagTerm),
     confidence: input.confidence ?? "low",
     notes: cleanStringArray(input.notes),
   };

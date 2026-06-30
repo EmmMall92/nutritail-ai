@@ -108,7 +108,7 @@ function detectSpecies(text: string): ExtractedSpecies | null {
 }
 
 function detectActivity(text: string): ExtractedActivityLevel | null {
-  if (includesAny(text, ["low", "χαμηλ", "lazy", "ηρεμ"])) return "low";
+  if (includesAny(text, ["low", "indoor", "apartment", "χαμηλ", "lazy", "ηρεμ"])) return "low";
   if (includesAny(text, ["high", "υψηλ", "active", "τρεχει", "τρεχ", "πολυ", "πολύ"])) {
     return "high";
   }

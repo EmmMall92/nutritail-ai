@@ -1,6 +1,6 @@
 # OpenAI Full Proof QA
 
-Generated: 2026-06-30T14:17:13.302Z
+Generated: 2026-06-30T14:24:20.762Z
 Status: PENDING
 
 This report summarizes the two pieces of evidence required before NutriTail can call OpenAI proof fully complete.
@@ -9,8 +9,8 @@ It does not write OpenAI keys, cookies, tokens, raw secrets, or extracted secret
 ## Summary
 
 - Checks required: 2
-- Passed: 0
-- Pending: 2
+- Passed: 1
+- Pending: 1
 - Review: 0
 - Full OpenAI proof: PENDING
 
@@ -18,8 +18,8 @@ It does not write OpenAI keys, cookies, tokens, raw secrets, or extracted secret
 
 | Check | Status | Checked | Passed | Failed | Skipped | Source report | Last run | Note |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
-| OpenAI intake smoke | PENDING | 5 | 0 | 0 | 5 | `reports/openai_intake_smoke_qa.md` | 2026-06-30T14:14:23.075Z | Set OPENAI_API_KEY or NUTRITAIL_QA_OPENAI_API_KEY_FILE to a local ignored key file. |
-| Authenticated chatbot extract live route | PENDING | 1 | 0 | 0 | 1 | `reports/account_chatbot_extract_live_route_qa.md` | 2026-06-30T14:14:23.447Z | Set NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE to a local ignored file containing an authenticated QA account Cookie header. |
+| OpenAI intake smoke | PASS | 5 | 5 | 0 | 0 | `reports/openai_intake_smoke_qa.md` | 2026-06-30T14:24:20.311Z | OpenAI can extract structured pet facts through NutriTail's prompt contract without ranking foods. |
+| Authenticated chatbot extract live route | PENDING | 1 | 0 | 0 | 1 | `reports/account_chatbot_extract_live_route_qa.md` | 2026-06-30T14:24:20.736Z | Set NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE to a local ignored file containing an authenticated QA account Cookie header. |
 
 ## How To Make This PASS
 
