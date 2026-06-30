@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import path from "node:path";
 
 const reportPath =
@@ -83,24 +83,57 @@ const commands = [
 ];
 
 function runCommand(command, env = {}) {
-  const startedAt = Date.now();
-  const result = spawnSync(command, {
-    cwd: process.cwd(),
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...env,
-    },
-    shell: true,
-  });
+  return new Promise((resolve) => {
+    const startedAt = Date.now();
+    const child = spawn(command, {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        ...env,
+      },
+      shell: true,
+    });
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
 
-  return {
-    status: result.status ?? 1,
-    durationSeconds: (Date.now() - startedAt) / 1000,
-    stdout: result.stdout ?? "",
-    stderr: result.stderr ?? "",
-    error: result.error?.message ?? null,
-  };
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      resolve({
+        ...result,
+        durationSeconds: (Date.now() - startedAt) / 1000,
+        stdout,
+        stderr,
+      });
+    };
+
+    child.stdout?.on("data", (chunk) => {
+      const text = chunk.toString();
+      stdout += text;
+      process.stdout.write(text);
+    });
+
+    child.stderr?.on("data", (chunk) => {
+      const text = chunk.toString();
+      stderr += text;
+      process.stderr.write(text);
+    });
+
+    child.on("error", (error) => {
+      finish({
+        status: 1,
+        error: error.message,
+      });
+    });
+
+    child.on("close", (code) => {
+      finish({
+        status: code ?? 1,
+        error: null,
+      });
+    });
+  });
 }
 
 function readLiveReadinessRollup() {
@@ -135,20 +168,20 @@ function readLiveReadinessRollup() {
   };
 }
 
-const results = commands.map((item) => {
+const results = [];
+
+for (const item of commands) {
   console.log(`\n=== ${item.label} ===`);
   console.log(item.command);
-  const result = runCommand(item.command, item.env);
-  if (result.stdout.trim()) console.log(result.stdout.trim());
-  if (result.stderr.trim()) console.error(result.stderr.trim());
+  const result = await runCommand(item.command, item.env);
   if (result.error) console.error(result.error);
 
-  return {
+  results.push({
     ...item,
     ...result,
     passed: result.status === 0 && !result.error,
-  };
-});
+  });
+}
 
 const failed = results.filter((item) => !item.passed);
 const liveReadiness = readLiveReadinessRollup();
@@ -193,6 +226,7 @@ const lines = [
   "",
   "- Run with `--refresh-chatbot` or `NUTRITAIL_QA_REFRESH_CHATBOT=1` when the deploy touches chatbot recommendation logic; this runs the fast golden suite and sensitive recommendation smoke before refreshing the chatbot QA dashboard.",
   "- Customer chatbot flow links run by default because saved-pet navigation, scrolling, language, and customer-facing copy are production-critical.",
+  "- Long chatbot suites stream their output while they run, so post-deploy checks should show progress instead of appearing silent.",
   "- Run with `--deploy-freshness` or set `NUTRITAIL_QA_DEPLOY_FRESHNESS=1` to require the live readiness dashboard reports to be newer than the start of this post-deploy run.",
   "- Use `--deployed-at=<ISO timestamp>` or `NUTRITAIL_QA_DEPLOYED_AT=<ISO timestamp>` when you know the exact production deploy time.",
   "- The live readiness dashboard remains the authoritative rollup; this report records the post-deploy command sequence.",
