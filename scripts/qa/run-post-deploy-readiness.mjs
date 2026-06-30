@@ -168,6 +168,14 @@ function readLiveReadinessRollup() {
   };
 }
 
+function commandWasSkipped(output) {
+  return (
+    /^Status:\s*skipped\b/im.test(output) ||
+    /"status"\s*:\s*"skipped"/i.test(output) ||
+    /^-\s*Skipped:\s*[1-9]\d*\b/im.test(output)
+  );
+}
+
 const results = [];
 
 for (const item of commands) {
@@ -175,15 +183,18 @@ for (const item of commands) {
   console.log(item.command);
   const result = await runCommand(item.command, item.env);
   if (result.error) console.error(result.error);
+  const skipped = result.status === 0 && commandWasSkipped(`${result.stdout}\n${result.stderr}`);
 
   results.push({
     ...item,
     ...result,
+    skipped,
     passed: result.status === 0 && !result.error,
   });
 }
 
 const failed = results.filter((item) => !item.passed);
+const skipped = results.filter((item) => item.skipped);
 const liveReadiness = readLiveReadinessRollup();
 const generatedAt = new Date().toISOString();
 const lines = [
@@ -198,7 +209,8 @@ const lines = [
   "## Summary",
   "",
   `- Commands checked: ${results.length}`,
-  `- Passed: ${results.length - failed.length}`,
+  `- Passed: ${results.length - failed.length - skipped.length}`,
+  `- Skipped: ${skipped.length}`,
   `- Failed or needs review: ${failed.length}`,
   `- Chatbot QA refreshed in this run: ${shouldRefreshChatbot ? "yes" : "no"}`,
   "- Customer chatbot flow refreshed in this run: yes",
@@ -218,7 +230,7 @@ const lines = [
   ...results.map(
     (item) =>
       `| ${item.label} | \`${item.command}\` | ${
-        item.passed ? "PASS" : "REVIEW"
+        item.skipped ? "SKIP" : item.passed ? "PASS" : "REVIEW"
       } | ${item.durationSeconds.toFixed(1)}s |`,
   ),
   "",
@@ -231,6 +243,7 @@ const lines = [
   "- Use `--deployed-at=<ISO timestamp>` or `NUTRITAIL_QA_DEPLOYED_AT=<ISO timestamp>` when you know the exact production deploy time.",
   "- The live readiness dashboard remains the authoritative rollup; this report records the post-deploy command sequence.",
   "- The OpenAI env check confirms encrypted Production env presence without pulling or printing the secret.",
+  "- Skipped checks are non-blocking local evidence gaps, usually because local credentials such as `OPENAI_API_KEY` or an authenticated cookie are intentionally unavailable.",
   "",
 ];
 
