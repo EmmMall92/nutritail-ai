@@ -1,6 +1,6 @@
 # Account Chatbot Extract Live Route QA
 
-Generated: 2026-06-29T09:03:32.717Z
+Generated: 2026-06-30T00:04:00.450Z
 Site: https://nutritail.ai
 Status: skipped
 
@@ -13,11 +13,12 @@ It never writes cookies, tokens, or extracted raw secrets to the report.
 - Passed: 0
 - Failed: 0
 - Skipped: 1
+- Auth cookie source: missing
 
-No authenticated cookie was available locally, so this test was skipped safely. Production route availability is still covered by account live-route smoke tests.
+No authenticated cookie was available locally, so this test was skipped safely. To run it, set NUTRITAIL_QA_AUTH_COOKIE directly or set NUTRITAIL_QA_AUTH_COOKIE_FILE to a local ignored file containing the Cookie header. Do not commit or print the cookie.
 
 ## Results
 
 | Route | Method | Status | Result | Source | Time | Notes |
 | --- | --- | ---: | --- | --- | ---: | --- |
-| /api/account/chatbot/extract-intake | POST | error | skip | - | 0ms | Set NUTRITAIL_QA_AUTH_COOKIE to run this against an authenticated live account session. |
+| /api/account/chatbot/extract-intake | POST | error | skip | - | 0ms | Set NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE to run this against an authenticated live account session. |
