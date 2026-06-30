@@ -352,14 +352,19 @@ const checks = [
     expected: "formatSavedPetCurrentFoodPrompt(savedPetName, chatLanguage)",
   },
   {
-    label: "Saved pet mobile progress shortcut is localized",
+    label: "Saved pet mobile shortcuts use shared follow-up action config",
     file: "app/account/chatbot/page.tsx",
-    expected: 'botText("Έλεγχος", "Progress")',
+    expected: "mobileFollowUpActions.map",
   },
   {
-    label: "Saved pet mobile change-food shortcut is localized",
+    label: "Saved pet mobile shortcuts include timeline and fresh analysis",
     file: "app/account/chatbot/page.tsx",
-    expected: 'botText("Άλλη τροφή", "Another food")',
+    expected: "const mobileFollowUpActionIds: FollowUpAction[] = [",
+  },
+  {
+    label: "Saved pet mobile shortcut heading is localized",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'botText("Συνέχεια πλάνου", "Continue plan")',
   },
   {
     label: "Chatbot account header action is localized",
