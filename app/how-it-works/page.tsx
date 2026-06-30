@@ -82,6 +82,59 @@ export default function HowItWorksPage() {
         </p>
       </section>
 
+      <section
+        className="border-y border-black/10 bg-white"
+        data-testid="public-trust-decision-model"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Πώς κρατάμε την πρόταση αξιόπιστη
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Το AI εξηγεί. Το NutriTail αποφασίζει με δεδομένα.
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Η πρόταση δεν βασίζεται σε τυχαία μνήμη ή γενικές υποθέσεις. Πρώτα
+              χρησιμοποιούμε στοιχεία κατοικιδίου, μετά τη βάση Food V2, έπειτα
+              κανόνες διατροφής και ασφάλειας. Το OpenAI βοηθά να γραφτεί η
+              απάντηση φυσικά, χωρίς να εφευρίσκει τροφές ή θρεπτικές τιμές.
+            </p>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-4">
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">1. Food V2 βάση</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Από εδώ έρχονται οι τροφές, θερμίδες, συστατικά και θρεπτικά
+                στοιχεία που χρησιμοποιούνται στις προτάσεις.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">2. Κανόνες NutriTail</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Κόβουν ακατάλληλες επιλογές για είδος, ηλικία, μέγεθος,
+                αλλεργίες, στόχο βάρους και βασικά θέματα υγείας.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">3. OpenAI απάντηση</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Μετατρέπει τα αποτελέσματα σε απλή ανθρώπινη εξήγηση, χωρίς να
+                αποφασίζει μόνο του ποια τροφή θα προταθεί.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">4. Όρια ασφάλειας</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Σε επείγοντα ή ιατρικά περιστατικά η ροή σταματά την “αγορά
+                τροφής” και προτείνει επικοινωνία με κτηνίατρο.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="border-y border-black/10 bg-white">
         <div className="mx-auto grid max-w-6xl gap-4 px-6 py-10 md:grid-cols-5">
           {steps.map((step) => (

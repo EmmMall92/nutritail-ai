@@ -71,6 +71,46 @@ export default function AboutPage() {
         </p>
       </section>
 
+      <section
+        className="border-y border-black/10 bg-white"
+        data-testid="public-trust-promise"
+      >
+        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 md:grid-cols-[0.85fr_1.15fr] md:items-start">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Η δέσμευσή μας
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Λιγότερες υποθέσεις. Περισσότερα δεδομένα.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Δεν εφευρίσκουμε τροφές</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Οι επιλογές πρέπει να έρχονται από τη βάση NutriTail και όχι από
+                γενική μνήμη AI.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Εξηγούμε τα όρια</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Όταν λείπουν στοιχεία ή υπάρχει θέμα υγείας, η απάντηση γίνεται
+                πιο προσεκτική.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Δεν κάνουμε διάγνωση</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Για επείγοντα ή ιατρικά περιστατικά, η σωστή επόμενη κίνηση
+                είναι ο κτηνίατρος.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="border-y border-black/10 bg-white">
         <div className="mx-auto grid max-w-6xl gap-5 px-6 py-12 md:grid-cols-4">
           {values.map((item) => (
