@@ -253,6 +253,7 @@ export function validateAiIntakeExtraction(
   });
 
   const allergies = cleanAllergyArray(input.allergies);
+  const healthIssues = cleanStringArray(input.healthIssues);
   const excludedIngredients = cleanIngredientArray(input.excludedIngredients);
   const effectiveExcludedIngredients = [
     ...excludedIngredients,
@@ -271,14 +272,18 @@ export function validateAiIntakeExtraction(
     activityLevel,
     neutered:
       typeof input.neutered === "boolean" ? input.neutered : null,
-    healthIssues: cleanStringArray(input.healthIssues),
+    healthIssues:
+      allergies.length > 0 &&
+      !healthIssues.some((item) => normalizeLookup(item).includes("allerg"))
+        ? [...healthIssues, "allergy"]
+        : healthIssues,
     allergies,
     currentFoodName: cleanCurrentFoodName(input.currentFoodName, effectiveExcludedIngredients),
     preferredProteins,
     excludedIngredients,
     weightGoal,
     language: input.language === "en" ? "en" : input.language === "el" ? "el" : null,
-    missingFields: cleanStringArray(input.missingFields),
+    missingFields: [],
     redFlags: cleanStringArray(input.redFlags).map(canonicalizeRedFlagTerm),
     confidence: input.confidence ?? "low",
     notes: cleanStringArray(input.notes),
@@ -290,18 +295,16 @@ export function validateAiIntakeExtraction(
   }
 
   const missingFields = [
-    "species",
-    "weightKg",
-    "ageYears",
-    "activityLevel",
-    "neutered",
-    "weightGoal",
-  ].filter((field) => !acceptedFields.includes(field));
+    species ? null : "species",
+    cleanWeight ? null : "weight",
+    cleanAge ? null : "age_or_life_stage",
+  ].filter((field): field is string => Boolean(field));
+  data.missingFields = missingFields;
 
   return {
     data,
     acceptedFields,
-    missingFields: [...new Set([...missingFields, ...(data.missingFields ?? [])])],
+    missingFields,
     warnings,
     errors,
     canUse: errors.length === 0 && acceptedFields.length > 0,
