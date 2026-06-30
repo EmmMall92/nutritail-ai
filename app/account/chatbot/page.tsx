@@ -2439,7 +2439,7 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
         `Neutered: ${
           pet.neutered === undefined ? "unknown" : pet.neutered ? "yes" : "no"
         }`,
-        `Goal: ${goalLabel}`,
+        `Weight goal: ${goalLabel}`,
         `Current food: ${pet.currentFoodName ?? "not provided"}`,
       ];
 
@@ -2724,7 +2724,7 @@ function formatLatestAnalysisSummary(
     getHistoryWeightGoal(latest)
       ? language === "el"
         ? `Στόχος: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`
-        : `Goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`
+        : `Weight goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}`
       : null,
     getHistoryFoodName(latest)
       ? language === "el"
