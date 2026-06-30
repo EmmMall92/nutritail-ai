@@ -8,7 +8,7 @@ This QA checks customer-facing account/chatbot copy for backend leakage and requ
 
 - Files checked: 12
 - Banned copy checks: 7
-- Banned exact string checks: 90
+- Banned exact string checks: 91
 - Required copy checks: 8
 - Failed: 0
 
