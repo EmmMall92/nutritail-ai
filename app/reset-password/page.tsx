@@ -96,6 +96,17 @@ export default function ResetPasswordPage() {
         </div>
       )}
 
+      <div
+        className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900"
+        data-testid="auth-next-step-card"
+      >
+        <p className="font-semibold text-blue-950">Μετά την αλλαγή θα συνδεθείς ξανά με ασφάλεια.</p>
+        <p className="mt-1">
+          Θα σε μεταφέρουμε στη σύνδεση, ώστε να συνεχίσεις με τα αποθηκευμένα
+          κατοικίδια, reports και νέα ανάλυση αν χρειάζεται.
+        </p>
+      </div>
+
       <form onSubmit={handlePasswordUpdate} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Νέος κωδικός</span>

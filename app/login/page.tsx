@@ -136,6 +136,17 @@ export default function LoginPage() {
         </ul>
       </div>
 
+      <div
+        className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900"
+        data-testid="auth-next-step-card"
+      >
+        <p className="font-semibold text-blue-950">Θα συνεχίσεις από εκεί που έμεινες.</p>
+        <p className="mt-1">
+          Αν ήρθες από report, admin link ή progress check, θα σε γυρίσουμε αυτόματα
+          στη σωστή σελίδα μετά τη σύνδεση.
+        </p>
+      </div>
+
       <form onSubmit={handleLogin} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
