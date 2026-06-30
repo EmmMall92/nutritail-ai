@@ -91,6 +91,31 @@ const checks = [
     expected: "deployFreshnessGate",
   },
   {
+    label: "admin live QA summary parses readiness score",
+    source: adminLiveQaSource,
+    expected: "readinessScore",
+  },
+  {
+    label: "admin live QA summary parses minimum readiness score",
+    source: adminLiveQaSource,
+    expected: "minimumReadinessScore",
+  },
+  {
+    label: "admin live QA summary parses core evidence score",
+    source: adminLiveQaSource,
+    expected: "coreEvidenceScore",
+  },
+  {
+    label: "admin live QA summary parses advisory evidence score",
+    source: adminLiveQaSource,
+    expected: "advisoryEvidenceScore",
+  },
+  {
+    label: "admin live QA card shows readiness score",
+    source: adminLiveQaSource,
+    expected: "Readiness score",
+  },
+  {
     label: "admin live QA summary shows oldest source report",
     source: adminLiveQaSource,
     expected: "oldestSourceReport",
