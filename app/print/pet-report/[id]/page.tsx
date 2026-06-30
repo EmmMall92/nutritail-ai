@@ -234,6 +234,46 @@ function getTreatAllowance(analysis?: AnalysisHistoryItem | null) {
   };
 }
 
+function getReportActionSummary(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Σήμερα ταΐζουμε",
+      value: analysis?.matched_food_name ?? "Επιβεβαίωσε πρώτα την τροφή",
+      detail: analysis?.matched_food_name
+        ? "Αυτή είναι η τροφή που κρατήθηκε στην τελευταία ανάλυση."
+        : "Διάλεξε τροφή από το chatbot ή στείλε φωτογραφία ετικέτας για πιο ακριβές πλάνο.",
+    },
+    {
+      label: "Πρώτη ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : "Θέλει kcal τροφής",
+      detail:
+        analysis?.feeding_grams_per_day && mealSplit
+          ? `Πρακτικά: περίπου ${mealSplit.twoMeals}g ανά γεύμα σε 2 γεύματα ή ${mealSplit.threeMeals}g ανά γεύμα σε 3 γεύματα.`
+          : "Η ποσότητα γίνεται ακριβής όταν έχουμε συγκεκριμένη τροφή με θερμίδες.",
+    },
+    {
+      label: "Λιχουδιές",
+      value: treatAllowance ? `έως ${treatAllowance.treats} kcal/ημέρα` : "έως 10%",
+      detail: treatAllowance
+        ? `Κράτα περίπου ${treatAllowance.mainFood} kcal για την κύρια τροφή.`
+        : "Οι λιχουδιές καλό είναι να μένουν μικρό μέρος της ημέρας.",
+    },
+    {
+      label: "Επανέλεγχος",
+      value: getRecheckWindow(analysis),
+      detail:
+        "Στον επανέλεγχο φέρε βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
+    },
+  ];
+}
+
 function getDailyPlanCards(
   pet: PetDetail,
   analysis?: AnalysisHistoryItem | null
@@ -408,6 +448,7 @@ export default function PrintablePetReportPage() {
 
   const calorieExplanation = getCalorieExplanation(latestAnalysis);
   const mealSplit = getMealSplit(latestAnalysis?.feeding_grams_per_day);
+  const reportActionSummary = getReportActionSummary(latestAnalysis, mealSplit);
 
   if (isLoading) {
     return (
@@ -485,6 +526,41 @@ export default function PrintablePetReportPage() {
             value={getFoodScoreLabel(latestAnalysis?.food_score)}
             detail="Βασισμένο στο προφίλ και την επιλεγμένη τροφή."
           />
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm print:border-gray-300 print:shadow-none"
+          data-testid="report-next-action-summary"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Τι κρατάμε για σήμερα
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                Απλό πλάνο για τάισμα, λιχουδιές και επανέλεγχο
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm text-gray-600">
+              Αυτό είναι το γρήγορο κομμάτι που μπορείς να κρατήσεις ή να
+              εκτυπώσεις. Οι λεπτομέρειες υπάρχουν πιο κάτω.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportActionSummary.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold">{item.value}</p>
+                <p className="mt-1 text-xs text-emerald-900">{item.detail}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 break-inside-avoid rounded-xl border border-emerald-200 bg-emerald-50 p-6 print:border-gray-300">
