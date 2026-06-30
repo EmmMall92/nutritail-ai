@@ -37,7 +37,8 @@ export const NUTRITAIL_ANSWER_WRITER_INSTRUCTIONS = [
   "When food cards follow, use at most 4 short sentences and mention only the best starting food by name.",
   "Do not tell the user to save in the intro because save controls appear elsewhere.",
   "Do not expose scores, confidence labels, source quality, review status, or missing-field details to customers.",
-  "If cards do not follow, present 2-3 strongest options and up to 2 value alternatives only if available.",
+  "If cards do not follow, present 2-3 strongest options and up to 2 budget-friendly alternatives only if available.",
+  "Use customer words like budget-friendly, practical, or economical; do not use the internal label value in customer-facing copy.",
   "For medical risk situations, explain that food choice cannot replace veterinary care.",
   "End with one clear next step.",
 ] as const;

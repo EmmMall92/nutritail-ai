@@ -1231,8 +1231,8 @@ function getRecommendationShortlistHighlights(
           : `${visiblePremiumCount} strong + ${visibleValueCount} value`,
       detail:
         language === "el"
-          ? "Πρώτα βλέπεις τις πιο δυνατές επιλογές και μετά πιο απλές/value εναλλακτικές."
-          : "Strongest choices appear first, followed by simpler value alternatives.",
+          ? "Πρώτα βλέπεις τις πιο δυνατές επιλογές και μετά πιο απλές ή οικονομικές εναλλακτικές."
+          : "Strongest choices appear first, followed by simpler budget-friendly alternatives.",
       tone: "border-violet-200 bg-violet-50 text-violet-950",
     },
     {
@@ -5851,7 +5851,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Πιο απλές / οικονομικές επιλογές", "Simple / value options")}
+                  {botText("Πιο απλές / οικονομικές επιλογές", "Simple / budget options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
