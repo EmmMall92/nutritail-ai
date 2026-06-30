@@ -50,6 +50,9 @@ type AccountPet = {
   } | null;
 };
 
+const ACCOUNT_LOAD_ERROR_MESSAGE =
+  "Δεν ήταν δυνατή η φόρτωση λογαριασμού. Δοκίμασε ξανά σε λίγο.";
+
 function formatDate(value?: string) {
   if (!value) return "Δεν υπάρχει ανάλυση ακόμη";
 
@@ -177,7 +180,8 @@ export default function AccountPage() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Δεν ήταν δυνατή η φόρτωση λογαριασμού.");
+          console.error(result.error);
+          throw new Error(ACCOUNT_LOAD_ERROR_MESSAGE);
         }
 
         setCustomer(result as Customer);
@@ -202,7 +206,7 @@ export default function AccountPage() {
         setError(
           error instanceof Error
             ? error.message
-            : "Δεν ήταν δυνατή η φόρτωση λογαριασμού."
+            : ACCOUNT_LOAD_ERROR_MESSAGE
         );
       } finally {
         setIsLoading(false);

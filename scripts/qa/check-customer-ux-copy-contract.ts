@@ -287,6 +287,11 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/page.tsx",
+    text: "throw new Error(result.error ||",
+    reason: "Account dashboard should log backend errors but show localized customer fallback copy.",
+  },
+  {
+    file: "app/account/page.tsx",
     text: "Διατροφικό chatbot",
     reason: "Account dashboard should use customer advisor wording instead of chatbot product wording.",
   },
