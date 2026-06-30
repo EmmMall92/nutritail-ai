@@ -2488,7 +2488,11 @@ function localizeGuardrailText(text: string, language: ChatLanguage) {
     )
     .replace(
       "Practical notes:",
-      "Σημειώσεις σιγουριάς:"
+      "Πρακτικές σημειώσεις:"
+    )
+    .replace(
+      "Confidence notes:",
+      "Τι κρατάμε με προσοχή:"
     )
     .replace(
       "Useful follow-up questions:",
