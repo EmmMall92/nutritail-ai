@@ -214,6 +214,102 @@ const scenarios: Array<{
     expected: ["general recommendation", "basic profile"],
   },
   {
+    label: "budget request",
+    response: {
+      goal: "value",
+      premium: [
+        {
+          ...baseFood,
+          brand: "Josera",
+          display_name: "Sensi Plus Adult",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Practical value positioning.", "Ingredient data is available."],
+          },
+          nutrition: { ...baseFood.nutrition, kcal_per_100g: 344, fat_percent: 12 },
+        },
+      ],
+      value: [
+        {
+          ...baseFood,
+          brand: "Happy Dog",
+          display_name: "Naturcroq Adult Chicken",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Practical alternative when budget matters."],
+          },
+          nutrition: { ...baseFood.nutrition, kcal_per_100g: 339, fat_percent: 10 },
+        },
+      ],
+      hold: [],
+    },
+    expected: ["budget-friendly options", "Budget-friendly first choices"],
+  },
+  {
+    label: "fussy eater with preferred protein",
+    response: {
+      goal: "general",
+      premium: [
+        {
+          ...baseFood,
+          brand: "Acana",
+          display_name: "Adult Pacifica",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Formula name visibly matches a preferred protein.", "Matches a preferred flavour."],
+          },
+          nutrition: { ...baseFood.nutrition, kcal_per_100g: 348, protein_percent: 35, fat_percent: 17 },
+        },
+      ],
+      value: [],
+      hold: [],
+    },
+    expected: ["general recommendation", "preferred flavour or protein"],
+  },
+  {
+    label: "pancreatitis-sensitive digestion dog",
+    response: {
+      goal: "sensitive_digestion",
+      premium: [
+        {
+          ...baseFood,
+          brand: "Royal Canin",
+          display_name: "Gastrointestinal Low Fat",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Positioned for sensitive digestion."],
+            cautions: ["Pancreatitis history needs veterinarian-directed diet selection."],
+          },
+          nutrition: { ...baseFood.nutrition, kcal_per_100g: 346, fat_percent: 7 },
+        },
+      ],
+      value: [],
+      hold: [],
+    },
+    expected: ["sensitive digestion", "pancreatitis history"],
+  },
+  {
+    label: "kitten growth",
+    response: {
+      goal: "growth",
+      premium: [
+        {
+          ...baseFood,
+          brand: "Monge",
+          display_name: "Kitten Rich In Chicken",
+          ranking: {
+            ...baseFood.ranking,
+            reasons: ["Growth positioning.", "Kitten life-stage fit."],
+          },
+          nutrition: { ...baseFood.nutrition, kcal_per_100g: 402, protein_percent: 36, fat_percent: 20 },
+        },
+      ],
+      value: [],
+      hold: [],
+    },
+    expected: ["growth", "growth needs"],
+  },
+  {
     label: "senior dog",
     response: {
       goal: "senior",
@@ -299,7 +395,7 @@ for (const scenario of scenarios) {
     }
   }
 
-  if (!full.includes("Next step: tap one food card to see the first daily portion in grams.")) {
+  if (!full.includes("Next step: choose one food card below to see the first daily portion in grams.")) {
     console.error(`Scenario ${scenario.label} missed the full recommendation next step.`);
     console.error(full);
     process.exit(1);
