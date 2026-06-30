@@ -1170,6 +1170,59 @@ function getRecommendationChoicePortionPreview(
   return portionEstimate?.gramsPerDay ?? null;
 }
 
+function getRecommendationShortlistHighlights(
+  choices: RecommendedFoodChoice[],
+  analysis: PetAnalysis | null,
+  weightGoal: WeightGoal | undefined,
+  language: ChatLanguage
+) {
+  const firstChoice = choices[0];
+  const premiumCount = choices.filter((choice) => choice.role !== "value").length;
+  const valueCount = choices.filter((choice) => choice.role === "value").length;
+  const firstPortion = firstChoice
+    ? getRecommendationChoicePortionPreview(firstChoice, analysis, weightGoal)
+    : null;
+
+  return [
+    {
+      label: language === "el" ? "Πρώτη επιλογή" : "First pick",
+      value:
+        firstChoice?.name ??
+        (language === "el" ? "Δεν υπάρχει ακόμη" : "Not ready yet"),
+      detail:
+        language === "el"
+          ? "Ξεκίνα από εδώ αν θέλεις την πιο δυνατή πρόταση για το προφίλ."
+          : "Start here if you want the strongest fit for this profile.",
+      tone: "border-emerald-200 bg-emerald-50 text-emerald-950",
+    },
+    {
+      label: language === "el" ? "Πρώτη μερίδα" : "First portion",
+      value: firstPortion
+        ? `${firstPortion}g/${language === "el" ? "ημέρα" : "day"}`
+        : language === "el"
+          ? "μετά την επιλογή"
+          : "after choosing",
+      detail:
+        language === "el"
+          ? "Πάτησε κάρτα τροφής για να κρατήσουμε ποσότητα και πλάνο."
+          : "Tap a food card to keep the portion and plan.",
+      tone: "border-lime-200 bg-lime-50 text-lime-950",
+    },
+    {
+      label: language === "el" ? "Εναλλακτικές" : "Alternatives",
+      value:
+        valueCount > 0
+          ? `${valueCount} ${language === "el" ? "πρακτικές" : "value"}`
+          : `${premiumCount} ${language === "el" ? "καλές" : "strong"}`,
+      detail:
+        language === "el"
+          ? "Χρήσιμες αν μετράει περισσότερο γεύση, διαθεσιμότητα ή budget."
+          : "Useful when flavour, availability, or budget matters more.",
+      tone: "border-sky-200 bg-sky-50 text-sky-950",
+    },
+  ];
+}
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -5785,6 +5838,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more."
               )}
             </p>
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              {getRecommendationShortlistHighlights(
+                recommendedFoodChoices,
+                latestAnalysis,
+                pet.weightGoal,
+                chatLanguage
+              ).map((item) => (
+                <div
+                  key={item.label}
+                  className={`rounded-xl border px-3 py-3 ${item.tone}`}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide opacity-75">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-sm font-bold leading-5">{item.value}</p>
+                  <p className="mt-1 text-xs leading-5 opacity-80">{item.detail}</p>
+                </div>
+              ))}
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {recommendedFoodChoices.map((choice, index) => (
                 <button
