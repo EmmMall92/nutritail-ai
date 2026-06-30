@@ -26,6 +26,12 @@ const checks = [
     requiredText: ["Δημιουργία λογαριασμού", "Email"],
   },
   {
+    path: "/how-it-works",
+    expected: [200],
+    label: "How it works page",
+    requiredText: ["Nutritail AI", "Πώς δουλεύει", "Food V2"],
+  },
+  {
     path: "/forgot-password",
     expected: [200],
     label: "Forgot password page",
@@ -75,7 +81,7 @@ const checks = [
     expected: [200],
     label: "Sitemap",
     contentTypeIncludes: ["xml"],
-    requiredText: ["<urlset", "https://nutritail.ai"],
+    requiredText: ["<urlset", "https://nutritail.ai", "https://nutritail.ai/how-it-works"],
     forbiddenText: [
       "https://nutritail.ai/chatbot",
       "https://nutritail.ai/dashboard",

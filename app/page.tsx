@@ -121,6 +121,13 @@ export default function HomePage() {
 
           <nav className="flex w-full gap-2 sm:w-auto">
             <Link
+              href="/how-it-works"
+              className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
+            >
+              Πώς δουλεύει
+            </Link>
+
+            <Link
               href="/login"
               className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
             >
