@@ -152,6 +152,20 @@ const fullChecks = [
       "Live cat recommendation behavior across sterilised, kitten/growth, urinary, renal, weight-control, allergy, hairball, senior, fussy-eater, rescue, and climate scenarios.",
   },
   {
+    name: "Live cat chatbot safety smoke",
+    command: "npm.cmd",
+    args: ["run", "qa:cat-chatbot-live-safety"],
+    covers:
+      "Fast live cat safety smoke for urinary blockage, urinary stones, renal disease, kitten growth, allergy, senior appetite, and sensitive digestion guardrails.",
+  },
+  {
+    name: "Live cat chatbot quality smoke",
+    command: "npm.cmd",
+    args: ["run", "qa:cat-chatbot-live-quality"],
+    covers:
+      "Fast live cat recommendation quality smoke for sterilised, weight loss, kitten, senior, renal, urinary, allergy, digestion, and preference fit.",
+  },
+  {
     name: "Dog chatbot quality audit",
     command: "npm.cmd",
     args: ["run", "audit:dog-chatbot-quality"],
@@ -186,6 +200,8 @@ const fastCheckNames = new Set([
   "Live dog chatbot smoke cases",
   "Live dog chatbot 201-600 smoke cases",
   "Live cat chatbot 100 cases",
+  "Live cat chatbot safety smoke",
+  "Live cat chatbot quality smoke",
   "Customer-facing recommendation copy",
 ]);
 
@@ -219,7 +235,7 @@ const fullObjectiveCoverage = [
   {
     objective: "3. Large dog/cat live chatbot case coverage",
     evidence:
-      "Dog edge fixture, dog golden coverage audit, dog 201-600 coverage audit, cat 001-500 coverage audit, live runners, and quality audits prove the large dog/cat scenario set is structurally sound and covers required safety/recommendation checks.",
+      "Dog edge fixture, dog golden coverage audit, dog 201-600 coverage audit, cat 001-500 coverage audit, live runners, focused cat safety/quality smoke checks, and quality audits prove the large dog/cat scenario set is structurally sound and covers required safety/recommendation checks.",
   },
   {
     objective: "4. Brand data cleanup",
@@ -243,7 +259,7 @@ const fastObjectiveCoverage = fullObjectiveCoverage.map((item) => {
     return {
       ...item,
       evidence:
-        "Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, and cat live 100-case checks prove the large case bank is structurally sound and has live regression feedback.",
+        "Dog edge fixture, dog 1-200 coverage, dog 201-600 coverage, cat 001-500 coverage, dog live smoke, dog 201-600 smoke, cat live 100-case checks, and focused cat safety/quality smoke checks prove the large case bank is structurally sound and has live regression feedback.",
     };
   }
 
