@@ -554,6 +554,57 @@ function getReportDecisionSummary(
   };
 }
 
+function getFoodReasoningSummary(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null
+) {
+  const hasFood = Boolean(analysis?.matched_food_name);
+  const hasPortion = Boolean(analysis?.feeding_grams_per_day);
+  const score = analysis?.food_score;
+  const fitLabel = getFoodScoreLabel(score);
+  const goalLabel = getGoalLabel(analysis?.weight_goal);
+
+  const fitDetail = hasFood
+    ? `Η επιλογή κρατήθηκε για το προφίλ του/της ${pet.name}, τον στόχο "${goalLabel}" και τα στοιχεία που δόθηκαν στην ανάλυση.`
+    : "Δεν έχει κλειδώσει ακόμη συγκεκριμένη τροφή, οπότε η αναφορά μένει ως οδηγός θερμίδων και επόμενου βήματος.";
+
+  const portionDetail =
+    hasFood && hasPortion
+      ? `Η ποσότητα ξεκινά από ${analysis?.feeding_grams_per_day}g/ημέρα και πρέπει να ελέγχεται με βάρος, όρεξη και κόπρανα.`
+      : "Τα γραμμάρια γίνονται ακριβή όταν ξέρουμε την τροφή και τις θερμίδες της φόρμουλας.";
+
+  const reviewDetail =
+    analysis?.weight_goal === "loss"
+      ? "Για απώλεια βάρους, γύρνα σε 2-4 εβδομάδες με νέο βάρος, πραγματικά γραμμάρια και λιχουδιές."
+      : "Γύρνα για νέα πρόταση αν αλλάξει γεύση, εταιρεία, όρεξη, βάρος, κόπρανα ή αποδοχή της τροφής.";
+
+  return {
+    title: hasFood
+      ? "Γιατί κρατάμε αυτή την πρόταση"
+      : "Τι λείπει για να γίνει η πρόταση πλήρης",
+    subtitle: hasFood
+      ? "Η αναφορά εξηγεί την επιλογή με απλά λόγια, ώστε να ξέρεις τι κρατάς και τι παρακολουθείς."
+      : "Χρειάζεται επιλογή συγκεκριμένης τροφής για να γίνει το πλάνο πλήρες σε γραμμάρια/ημέρα.",
+    cards: [
+      {
+        label: "Fit",
+        value: fitLabel,
+        detail: fitDetail,
+      },
+      {
+        label: "Ποσότητα",
+        value: hasPortion ? `${analysis?.feeding_grams_per_day}g/ημέρα` : "Θέλει τροφή",
+        detail: portionDetail,
+      },
+      {
+        label: "Επόμενος έλεγχος",
+        value: getRecheckWindow(analysis),
+        detail: reviewDetail,
+      },
+    ],
+  };
+}
+
 function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
   const basePlan = [
     {
@@ -719,6 +770,7 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const foodReasoningSummary = getFoodReasoningSummary(pet, latestAnalysis);
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -875,6 +927,42 @@ export default function PrintablePetReportPage() {
                 </span>
               ))}
             </div>
+          </div>
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-food-reasoning-summary"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                Γιατί προτάθηκε
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-blue-950">
+                {foodReasoningSummary.title}
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-blue-900">
+              {foodReasoningSummary.subtitle}
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {foodReasoningSummary.cards.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-blue-100 bg-white p-4 text-sm text-blue-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-blue-950">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-blue-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
