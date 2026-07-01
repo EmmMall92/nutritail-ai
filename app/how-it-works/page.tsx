@@ -156,6 +156,46 @@ export default function HowItWorksPage() {
 
       <section
         className="border-b border-black/10 bg-[#f7f7f4]"
+        data-testid="public-ai-boundaries"
+      >
+        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Όρια τεχνητής νοημοσύνης
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Το OpenAI βοηθά στη συζήτηση, όχι στην αυθαίρετη επιλογή τροφής.
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Το NutriTail κρατά τη βάση δεδομένων, τους κανόνες αποκλεισμού και
+              την τελική κατάταξη. Το AI βοηθά να καταλάβει καλύτερα το μήνυμα
+              του πελάτη και να γράψει την απάντηση πιο φυσικά.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <article className="rounded-xl border border-emerald-200 bg-white p-5">
+              <h3 className="font-black text-emerald-950">Τι επιτρέπεται</h3>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-gray-700">
+                <li>Να εξηγεί απλά γιατί μια τροφή ταιριάζει.</li>
+                <li>Να ρωτά μόνο τα στοιχεία που λείπουν.</li>
+                <li>Να μετατρέπει κανόνες και δεδομένα σε ανθρώπινη απάντηση.</li>
+              </ul>
+            </article>
+            <article className="rounded-xl border border-amber-200 bg-white p-5">
+              <h3 className="font-black text-amber-950">Τι δεν επιτρέπεται</h3>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-gray-700">
+                <li>Δεν επιτρέπεται να εφευρίσκει τροφές ή θρεπτικές τιμές.</li>
+                <li>Δεν επιτρέπεται να αγνοεί αλλεργίες, είδος ή ηλικία.</li>
+                <li>Δεν επιτρέπεται να κάνει διάγνωση ή θεραπευτικές υποσχέσεις.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="border-b border-black/10 bg-[#f7f7f4]"
         data-testid="public-source-quality-model"
       >
         <div className="mx-auto max-w-6xl px-6 py-12">
