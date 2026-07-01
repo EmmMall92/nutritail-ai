@@ -32,7 +32,8 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **88-89%**",
+  "Customer product progress is currently **89-90%**",
+  "The latest move from **88-89%** to **89-90%**",
   "Do not raise this score because a pull request merged",
   "Automated live readiness",
   "customer-visible risk is reduced",

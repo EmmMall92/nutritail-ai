@@ -130,7 +130,7 @@ Customer product progress moves when real user friction is removed:
   and safe.
 
 Use `docs/product-progress-score.md` when the user asks why the project is still
-around 88-89% even though automated live readiness is higher.
+around 89-90% even though automated live readiness is higher.
 
 ## Practical Progress Bands
 
