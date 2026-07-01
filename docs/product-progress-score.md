@@ -12,7 +12,7 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **92-93%**.
+Customer product progress is currently **93-94%**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
@@ -20,7 +20,23 @@ requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
 ## Latest Movement
 
-The latest move from **91-92%** to **92-93%** is justified by a live
+The latest move from **92-93%** to **93-94%** is justified by the authenticated
+OpenAI/chatbot intake-context fix that closed a real customer-facing QA gap:
+
+- The live chatbot now passes saved/selected pet species context into the intake
+  extractor, so follow-up messages such as food transition, portions, flavour
+  change, or progress questions do not lose whether the pet is a dog or cat.
+- The dog 001-200 live QA moved from the old perceived 78-80% plateau to an
+  effective **199/200**: the remaining review case is intentionally not guessed
+  because "puppy" alone does not prove an exact age.
+- The QA runner now uses the same shared OpenAI prompt contract, deterministic
+  fallback merge, and message guards as the production chatbot path, so the
+  score reflects the real product instead of a separate test-only interpretation.
+- New regression coverage protects Greek/English allergy, sensitivity, mixed
+  feeding, increased thirst, chewing/choking risk, activity, and ingredient
+  preference parsing.
+
+The previous move from **91-92%** to **92-93%** was justified by a live
 recommendation-accuracy review that found and fixed a real customer-visible
 ranking issue:
 
@@ -67,10 +83,9 @@ customer-visible work that reduced real user friction:
 - Saved-pet continuation supports progress checks, no-result follow-up,
   another-food guidance, flavour/company change, and timeline review.
 
-This is not a 95% launch claim yet. The next point should come from live
-dog/cat chatbot QA that finds and fixes real recommendation mistakes, from a
-clearer customer report/account flow, or from a fresh authenticated OpenAI
-chatbot proof after deploy.
+This is not a 95% launch claim yet. The next point should come from cat live QA
+and customer report/account polish, or from a fresh post-deploy proof that the
+OpenAI-assisted chatbot flow works cleanly on production after the latest merge.
 
 ## Ten Launch Categories
 
@@ -89,7 +104,7 @@ chatbot proof after deploy.
 
 ## Why It Feels Stuck
 
-At 92-93%, small polish work improves the product but may not move the score.
+At 93-94%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -100,13 +115,15 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 92-93 toward 93-94:
+These are the most likely moves from 93-94 toward 94-95:
 
-1. Run live dog/cat chatbot QA and convert the next real mistake into a ranking
-   guard.
+1. Run the full cat 001-500 live QA and convert the next real mistake into a
+   ranking guard.
 2. Polish the final report so it reads like a useful customer handout.
-3. Verify saved-pet continuation with progress/no-progress/food-change flows.
-4. Complete one authenticated live chatbot extract proof with a QA account cookie.
+3. Verify saved-pet continuation with progress/no-progress/food-change flows on
+   production after deploy.
+4. Complete one authenticated live chatbot extract proof with a QA account
+   cookie after the latest OpenAI intake-context merge.
 5. Add clearer beta limits or first subscription direction.
 
 ## Reporting Rule
@@ -119,5 +136,5 @@ When reporting progress, always say both numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 92-93%. The next point depends on live chatbot accuracy fixes, customer report
+> 93-94%. The next point depends on cat live QA fixes, customer report
 > polish, or live OpenAI proof, not another generic PR.

@@ -129,8 +129,11 @@ Customer product progress moves when real user friction is removed:
 - Live tests with dog/cat scenarios confirm the experience feels human, useful,
   and safe.
 
-Use `docs/product-progress-score.md` when the user asks why the project is still
-around 89-90% even though automated live readiness is higher.
+Use `docs/product-progress-score.md` when the user asks why the product progress
+number feels stuck even though automated live readiness is higher. The customer
+product score should move only after evidence-based UX or recommendation-risk
+reductions, such as the OpenAI intake-context QA fix that moved the product from
+92-93% to 93-94%.
 
 ## Practical Progress Bands
 
