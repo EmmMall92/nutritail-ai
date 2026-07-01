@@ -274,6 +274,53 @@ function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
   ];
 }
 
+function getReportCustomerTakeaway(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return {
+    title: analysis?.matched_food_name
+      ? "Τι κρατάμε από αυτή την αναφορά"
+      : "Τι χρειάζεται πριν γίνει πλήρες πλάνο",
+    subtitle: analysis?.matched_food_name
+      ? "Αν ο πελάτης θέλει μόνο την ουσία, αυτά είναι τα τρία σημεία που πρέπει να ακολουθήσει."
+      : "Η αναφορά δίνει θερμιδικό στόχο, αλλά χρειάζεται επιλεγμένη τροφή για να γίνει πρακτικό πλάνο σε γραμμάρια.",
+    cards: [
+      {
+        label: "1",
+        title: "Κύρια επιλογή",
+        value: analysis?.matched_food_name ?? "Επιβεβαίωσε την τροφή",
+        detail: analysis?.matched_food_name
+          ? "Αυτή είναι η τροφή που κρατάμε ως βάση για το τωρινό πλάνο."
+          : "Στείλε ακριβές όνομα σακούλας ή ετικέτα για να κλειδώσει η πρόταση.",
+      },
+      {
+        label: "2",
+        title: "Πρώτη ποσότητα",
+        value: analysis?.feeding_grams_per_day
+          ? `${analysis.feeding_grams_per_day}g/ημέρα`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/ημέρα`
+            : "Χρειάζεται ανάλυση",
+        detail:
+          analysis?.feeding_grams_per_day && mealSplit
+            ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+            : "Τα γραμμάρια γίνονται ακριβή όταν ξέρουμε τις θερμίδες της επιλεγμένης τροφής.",
+      },
+      {
+        label: "3",
+        title: "Επόμενος έλεγχος",
+        value: getRecheckWindow(analysis),
+        detail: treatAllowance
+          ? `Κράτα λιχουδιές έως ${treatAllowance.treats} kcal/ημέρα και γύρνα με βάρος, γραμμάρια, όρεξη και κόπρανα.`
+          : "Γύρνα με νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές, όρεξη και κόπρανα.",
+      },
+    ],
+  };
+}
+
 function getReportActionSummary(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -813,6 +860,10 @@ export default function PrintablePetReportPage() {
   const foodReasoningSummary = getFoodReasoningSummary(pet, latestAnalysis);
   const reportTreatAllowance = getTreatAllowance(latestAnalysis);
   const reportStartChecklist = getReportStartChecklist(latestAnalysis);
+  const reportCustomerTakeaway = getReportCustomerTakeaway(
+    latestAnalysis,
+    mealSplit
+  );
   const hasCompleteFoodPlan = Boolean(
     latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
   );
@@ -919,6 +970,43 @@ export default function PrintablePetReportPage() {
                 <p className="mt-1 text-xs leading-5 text-gray-700">
                   {item.detail}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-customer-takeaway"
+        >
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Η ουσία για τον πελάτη
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                {reportCustomerTakeaway.title}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-emerald-950">
+              {reportCustomerTakeaway.subtitle}
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {reportCustomerTakeaway.cards.map((item) => (
+              <div
+                key={`${item.label}-${item.title}`}
+                className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm text-emerald-950 print:border-gray-300"
+              >
+                <p className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
+                  {item.label}
+                </p>
+                <h3 className="mt-3 font-semibold text-black">{item.title}</h3>
+                <p className="mt-2 text-lg font-bold text-emerald-950">
+                  {item.value}
+                </p>
+                <p className="mt-2 leading-6 text-emerald-900">{item.detail}</p>
               </div>
             ))}
           </div>
@@ -1664,7 +1752,7 @@ export default function PrintablePetReportPage() {
             </h2>
             <p className="mt-2 text-sm text-blue-900">
               Χρησιμοποίησε αυτή την ενότητα ανάμεσα στις αναφορές ώστε το
-              επόμενος έλεγχος να έχει πραγματικά δεδομένα προόδου.
+              επόμενο progress check να έχει πραγματικά δεδομένα προόδου.
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
