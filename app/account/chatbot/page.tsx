@@ -5098,7 +5098,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "weight") {
       const weight = workingPet.weight ?? parseNumber(text) ?? null;
-      const maxWeight = getMaxWeightKg(workingPet.species ?? pet.species);
+      const effectiveSpecies = workingPet.species ?? pet.species;
+      const maxWeight = getMaxWeightKg(effectiveSpecies);
 
       if (!weight || weight <= 0 || weight > maxWeight) {
         addMessages(
@@ -5106,10 +5107,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             "bot",
             botText(
               `Γράψε ένα ρεαλιστικό βάρος σε kg, π.χ. 7. Μέγιστο για ${
-                pet.species === "cat" ? "γάτα" : "σκύλο"
+                effectiveSpecies === "cat" ? "γάτα" : "σκύλο"
               }: ${maxWeight} kg.`,
               `Please enter a realistic weight in kg, for example 7. Maximum for ${
-                pet.species === "cat" ? "a cat" : "a dog"
+                effectiveSpecies === "cat" ? "a cat" : "a dog"
               }: ${maxWeight} kg.`
             )
           )

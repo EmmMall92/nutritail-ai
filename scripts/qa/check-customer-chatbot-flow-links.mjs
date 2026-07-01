@@ -519,6 +519,26 @@ const checks = [
     expected: "You can start with only the current weight, for example 7 kg.",
   },
   {
+    label: "Customer chatbot defines a realistic dog weight ceiling",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const MAX_DOG_WEIGHT_KG = 90",
+  },
+  {
+    label: "Customer chatbot defines a realistic cat weight ceiling",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const MAX_CAT_WEIGHT_KG = 15",
+  },
+  {
+    label: "Customer chatbot validates weight against the effective pet species",
+    file: "app/account/chatbot/page.tsx",
+    expected: "const effectiveSpecies = workingPet.species ?? pet.species",
+  },
+  {
+    label: "Customer chatbot rejects unrealistic intake weights in plain language",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Γράψε ένα ρεαλιστικό βάρος σε kg",
+  },
+  {
     label: "Progress check sends appetite context to the progress API",
     file: "app/account/chatbot/page.tsx",
     expected: "appetiteNote: details.appetiteNote",
