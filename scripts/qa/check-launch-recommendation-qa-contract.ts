@@ -35,6 +35,10 @@ assert(
   "CI readiness must include the lightweight launch recommendation QA contract."
 );
 assert(
+  packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-guard-coverage"),
+  "CI readiness must run Food V2 preference/ranking QA before guard coverage."
+);
+assert(
   smokeRunner.includes("reports/chatbot_sensitive_recommendation_smoke.md"),
   "Sensitive recommendation smoke must write an auditable launch QA report."
 );
