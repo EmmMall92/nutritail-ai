@@ -1,0 +1,64 @@
+import { readFileSync } from "node:fs";
+
+function assert(condition: unknown, message: string) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+function read(path: string) {
+  return readFileSync(path, "utf8");
+}
+
+const appError = read("app/error.tsx");
+const globalError = read("app/global-error.tsx");
+const monitoringRoute = read("app/api/monitoring/client-error/route.ts");
+const packageJson = read("package.json");
+
+for (const source of [appError, globalError]) {
+  assert(
+    source.includes("/api/monitoring/client-error"),
+    "Error boundaries must report client runtime errors."
+  );
+  assert(
+    source.includes("Δοκίμασε ξανά"),
+    "Error boundaries must offer a retry action."
+  );
+  assert(
+    source.includes("Αρχική"),
+    "Error boundaries must offer a home fallback."
+  );
+}
+
+assert(
+  globalError.includes("<html lang=\"el\">"),
+  "Global error boundary must render the required html wrapper."
+);
+assert(
+  monitoringRoute.includes("client_runtime_error"),
+  "Monitoring route must store client runtime error actions."
+);
+assert(
+  monitoringRoute.includes("runtime_monitoring"),
+  "Monitoring route must use a runtime monitoring entity type."
+);
+assert(
+  monitoringRoute.includes("admin_activity_logs"),
+  "Monitoring route must store events in admin activity logs."
+);
+assert(
+  monitoringRoute.includes("MAX_TEXT_LENGTH"),
+  "Monitoring route must truncate incoming error text."
+);
+assert(
+  packageJson.includes("\"qa:runtime-error-monitoring-contract\""),
+  "package.json must expose the runtime error monitoring QA script."
+);
+assert(
+  packageJson.includes(
+    "qa:runtime-error-monitoring-contract && npm run qa:openai-chatbot-training-contract"
+  ),
+  "CI readiness must run runtime error monitoring before chatbot contracts."
+);
+
+console.log("Runtime error monitoring contract passed.");
