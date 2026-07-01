@@ -529,6 +529,13 @@ if (missingCompactComposerFlow.length > 0) {
   process.exit(1);
 }
 
+if (responseComposer.includes("value.slice(0, 2)")) {
+  console.error(
+    "OpenAI/fallback composer must preserve up to 3 premium and 3 value food choices."
+  );
+  process.exit(1);
+}
+
 const forbiddenCompactComposerFlow = [
   "Tap one card to see estimated grams/day, then save the plan.",
   "Tap one card to see the first daily portion in grams.",
