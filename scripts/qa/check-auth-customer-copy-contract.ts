@@ -108,10 +108,12 @@ assert(
 );
 
 assert(
-  packageJson.includes(
-    "qa:customer-ux-copy && npm run qa:auth-customer-copy && npm run qa:auth-customer-errors && npm run qa:chatbot-customer-recommendations"
-  ),
-  "CI readiness must include auth customer copy and error QA."
+  packageJson.includes("qa:ci-readiness") &&
+    packageJson.includes("npm run qa:customer-ux-copy") &&
+    packageJson.includes("npm run qa:auth-customer-copy") &&
+    packageJson.includes("npm run qa:auth-customer-errors") &&
+    packageJson.includes("npm run qa:chatbot-customer-recommendations"),
+  "CI readiness must include customer UX, auth customer copy, auth error, and chatbot customer recommendation QA."
 );
 
 console.log("Auth customer copy contract passed.");
