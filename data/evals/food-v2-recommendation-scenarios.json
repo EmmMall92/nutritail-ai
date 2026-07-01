@@ -16,6 +16,27 @@
       "expectations": ["premium_or_value", "no_small_dog_top_pick", "no_weight_control_top_pick"]
     },
     {
+      "label": "Husky summer low appetite",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Husky",
+        "age": 2,
+        "weight": 25,
+        "activityLevel": "normal",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": [],
+        "healthIssues": ["low appetite", "hot climate", "eats little in summer"]
+      },
+      "expectations": [
+        "premium_or_value",
+        "no_small_dog_top_pick",
+        "no_weight_control_top_pick",
+        "no_unrelated_therapeutic_top_picks"
+      ]
+    },
+    {
       "label": "Large sterilised dog weight control",
       "goal": "sterilised",
       "pet": {
