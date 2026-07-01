@@ -1,4 +1,7 @@
-import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
+import {
+  applyIntakeMessageGuards,
+  fallbackExtractIntake,
+} from "@/lib/ai/intakeFallback";
 import { getOpenAiClient, getOpenAiModel, isOpenAiConfigured } from "@/lib/ai/openaiServer";
 import {
   buildIntakeExtractionSystemPrompt,
@@ -21,12 +24,13 @@ function mergeUnique(...arrays: Array<string[] | undefined>) {
 }
 
 function mergeOpenAiWithFallback(
+  message: string,
   openAi: AiIntakeExtraction,
   fallback: ValidatedAiIntakeExtraction
 ): AiIntakeExtraction {
   const fallbackData = fallback.data;
 
-  return {
+  return applyIntakeMessageGuards(message, {
     ...openAi,
     species: openAi.species ?? fallbackData.species ?? null,
     petName: openAi.petName ?? fallbackData.petName ?? null,
@@ -51,7 +55,7 @@ function mergeOpenAiWithFallback(
     redFlags: mergeUnique(openAi.redFlags, fallbackData.redFlags),
     notes: mergeUnique(openAi.notes, fallbackData.notes, ["openai_with_rule_merge"]),
     confidence: openAi.confidence ?? fallbackData.confidence ?? "medium",
-  };
+  });
 }
 
 export async function extractPetIntakeFacts(
@@ -96,7 +100,7 @@ export async function extractPetIntakeFacts(
     if (!parsed) return { ...fallback, source: "fallback" };
 
     const validated = validateAiIntakeExtraction(
-      mergeOpenAiWithFallback(parsed, fallback)
+      mergeOpenAiWithFallback(message, parsed, fallback)
     );
     return {
       ...validated,

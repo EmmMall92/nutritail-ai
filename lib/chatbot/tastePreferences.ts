@@ -22,6 +22,13 @@ const PROTEIN_TERMS = [
   { keys: ["legume", "pea", "lentil", "ospr", "arakas", "faki", "οσπρ", "αρακα", "φακ"], value: "legumes" },
 ];
 
+const EXTRA_PROTEIN_TERMS = [
+  { keys: ["σιταρ"], value: "wheat" },
+  { keys: ["καλαμποκ"], value: "corn" },
+  { keys: ["γαλακτ", "γαλα", "τυρ"], value: "dairy" },
+  { keys: ["οσπρ", "αρακα", "φακ"], value: "legumes" },
+] as const;
+
 const NO_PREFERENCE_TERMS = [
   "no preference",
   "no preferences",
@@ -103,6 +110,16 @@ const PREFER_SIGNALS = [
   "λατρευ",
 ];
 
+const EXTRA_AVOID_SIGNALS = [
+  "δεν τρω",
+  "δεν του αρε",
+  "δεν της αρε",
+  "δεν αρε",
+  "δεν αντεχ",
+  "χωρις",
+  "πειραζ",
+] as const;
+
 export function normalizeTasteText(value: string) {
   return value
     .toLocaleLowerCase("el-GR")
@@ -163,13 +180,13 @@ export function parseTastePreferences(text: string): TastePreferences {
   const clauses = splitPreferenceClauses(normalized);
 
   for (const clause of clauses.length > 0 ? clauses : [normalized]) {
-    const matched = PROTEIN_TERMS.filter((term) =>
+    const matched = [...PROTEIN_TERMS, ...EXTRA_PROTEIN_TERMS].filter((term) =>
       term.keys.some((key) => clause.includes(normalizeTasteText(key)))
     ).map((term) => term.value);
 
     if (matched.length === 0) continue;
 
-    if (includesAny(clause, AVOID_SIGNALS)) {
+    if (includesAny(clause, [...AVOID_SIGNALS, ...EXTRA_AVOID_SIGNALS])) {
       excluded.push(...matched);
       continue;
     }

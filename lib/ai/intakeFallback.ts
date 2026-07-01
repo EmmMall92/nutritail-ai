@@ -210,6 +210,154 @@ function detectTerms(text: string, aliases: Array<[string[], string]>) {
   );
 }
 
+function mergeUniqueValues(...arrays: Array<string[] | undefined>) {
+  return [...new Set(arrays.flatMap((items) => items ?? []).filter(Boolean))];
+}
+
+function textHasAny(text: string, terms: string[]) {
+  return terms.some((term) => text.includes(normalizeText(term)));
+}
+
+function detectContextualActivity(text: string): ExtractedActivityLevel | null {
+  if (
+    textHasAny(text, [
+      "ζει αποκλειστικα εξω",
+      "ζει εξω",
+      "αγροκτημα",
+      "κτημα",
+      "δουλευει σε βουνο",
+      "κυνηγαει",
+      "agility",
+      "κολυμπαει καθημερινα",
+      "τρεχει μαζι μου",
+      "farm",
+      "outside",
+      "outdoor",
+      "working",
+    ])
+  ) {
+    return "high";
+  }
+
+  if (
+    textHasAny(text, [
+      "διαμερισμα",
+      "πολυκατοικια",
+      "χωρις αυλη",
+      "αποκλειστικα σε διαμερισμα",
+      "κοιμαται 20 ωρες",
+      "apartment",
+      "no yard",
+    ])
+  ) {
+    return "low";
+  }
+
+  return null;
+}
+
+function detectContextualWeightGoal(text: string): ExtractedWeightGoal | null {
+  if (
+    textHasAny(text, [
+      "χανει βαρος χωρις λογο",
+      "εχει χασει πολλα κιλα",
+      "χασει πολλα κιλα",
+      "χανει μυς",
+      "χανει μυικη μαζα",
+      "χαμηλη μυικη μαζα",
+      "χρειαζεται να παρει μυικη μαζα",
+      "πολυ αδυνατο",
+      "υποσιτισ",
+      "losing weight for no reason",
+      "lost a lot of weight",
+      "low muscle",
+    ])
+  ) {
+    return "gain";
+  }
+
+  return null;
+}
+
+function detectContextualHealthIssues(text: string) {
+  return detectTerms(text, [
+    [
+      [
+        "χανει βαρος χωρις λογο",
+        "εχει χασει πολλα κιλα",
+        "χασει πολλα κιλα",
+        "πολυ αδυνατο",
+        "υποσιτισ",
+        "losing weight",
+        "underweight",
+      ],
+      "unexplained_weight_loss",
+    ],
+    [["χανει μυς", "μυικη μαζα", "low muscle", "muscle mass"], "low_muscle_mass"],
+    [["εγκυο", "εγκυος", "pregnant"], "pregnancy"],
+    [["θηλαζει", "θηλασ", "lactating", "nursing"], "lactation"],
+    [["ορφανο", "orphan"], "orphan_puppy"],
+    [["τρωει χορτα", "eats grass"], "eats_grass"],
+    [["δαγκωνει την ουρα", "bites tail"], "tail_biting"],
+    [["rescue", "αγνωστο ιστορικο"], "unknown_history"],
+    [["πολλα συστατικα", "multiple ingredients"], "multiple_food_triggers"],
+    [["δεν μυριζει καλα το φαγητο", "poor smell"], "low_food_smell_interest"],
+    [["κοιμαται 20 ωρες", "sleeps 20 hours"], "lethargy_or_low_activity"],
+  ]);
+}
+
+function detectContextualExcludedIngredients(text: string) {
+  if (
+    !textHasAny(text, [
+      "δεν αντεχ",
+      "δεν τρω",
+      "χωρις",
+      "πειραζ",
+      "αλλεργ",
+      "avoid",
+      "without",
+      "allerg",
+    ])
+  ) {
+    return [];
+  }
+
+  return detectTerms(text, [
+    [["σιταρ", "wheat"], "wheat"],
+    [["καλαμποκ", "corn", "maize"], "corn"],
+    [["γαλακτοκομ", "γαλακτ", "γαλα", "τυρ", "dairy", "milk", "cheese"], "dairy"],
+    [["οσπρ", "αρακα", "φακ", "legume", "pea", "lentil"], "legumes"],
+  ]);
+}
+
+function applyMessageDerivedGuards(
+  message: string,
+  extraction: AiIntakeExtraction
+): AiIntakeExtraction {
+  const text = normalizeText(message);
+  const guardedPreferences = parseTastePreferences(text);
+  const contextualActivity = detectContextualActivity(text);
+  const contextualWeightGoal = detectContextualWeightGoal(text);
+  const contextualHealthIssues = detectContextualHealthIssues(text);
+  const contextualExcludedIngredients = detectContextualExcludedIngredients(text);
+
+  return {
+    ...extraction,
+    activityLevel: contextualActivity ?? extraction.activityLevel ?? null,
+    weightGoal: contextualWeightGoal ?? extraction.weightGoal ?? null,
+    healthIssues: mergeUniqueValues(extraction.healthIssues, contextualHealthIssues),
+    preferredProteins: mergeUniqueValues(
+      extraction.preferredProteins,
+      guardedPreferences.preferredProteins
+    ),
+    excludedIngredients: mergeUniqueValues(
+      extraction.excludedIngredients,
+      guardedPreferences.excludedIngredients,
+      contextualExcludedIngredients
+    ),
+  };
+}
+
 function detectCurrentFood(message: string) {
   const normalized = normalizeText(message);
   if (includesAny(normalized, ["δεν ξερω", "δεν ξέρω", "dont know", "don't know", "not sure"])) {
@@ -328,5 +476,12 @@ export function fallbackExtractIntake(
     notes: ["fallback_extractor"],
   };
 
-  return validateAiIntakeExtraction(extraction);
+  return validateAiIntakeExtraction(applyMessageDerivedGuards(message, extraction));
+}
+
+export function applyIntakeMessageGuards(
+  message: string,
+  extraction: AiIntakeExtraction
+) {
+  return applyMessageDerivedGuards(message, extraction);
 }
