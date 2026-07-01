@@ -5395,7 +5395,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   function chooseRecommendedFood(choice: RecommendedFoodChoice) {
     addMessages(createMessage("user", choice.name));
-    setRecommendedFoodChoices([]);
 
     const adjustedCalories = latestAnalysis
       ? adjustCaloriesForWeightGoal({
@@ -5890,8 +5889,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα και να κρατήσουμε το πλάνο στο προφίλ.",
-                "Choose the food you prefer to see grams per day and keep the plan on the profile."
+                "Πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα. Αν αλλάξεις γνώμη πριν την αποθήκευση, μπορείς να πατήσεις άλλη κάρτα.",
+                "Choose the food you prefer to see grams per day. If you change your mind before saving, you can tap another card."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">

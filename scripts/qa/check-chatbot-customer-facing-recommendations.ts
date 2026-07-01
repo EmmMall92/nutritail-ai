@@ -674,7 +674,8 @@ const requiredCardFlowCopy = [
   "Your recommendations are ready",
   "Next: estimate the daily portion.",
   "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives.",
-  "Choose the food you prefer to see grams per day and keep the plan on the profile.",
+  "Choose the food you prefer to see grams per day.",
+  "If you change your mind before saving, you can tap another card.",
   "1. Compare",
   "2. Choose",
   "3. Get",
@@ -916,6 +917,7 @@ const groupedChoiceMarkers = [
   "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
   "group.choices.length}/3",
+  "If you change your mind before saving, you can tap another card.",
 ];
 const missingGroupedChoiceMarkers = groupedChoiceMarkers.filter(
   (marker) => !chatbotPage.includes(marker)
@@ -924,6 +926,23 @@ const missingGroupedChoiceMarkers = groupedChoiceMarkers.filter(
 if (missingGroupedChoiceMarkers.length > 0) {
   console.error("Recommendation cards must stay grouped into best and value choices:");
   console.error(missingGroupedChoiceMarkers.join(", "));
+  process.exit(1);
+}
+
+const chooseRecommendedFoodStart = chatbotPage.indexOf("function chooseRecommendedFood");
+const saveToMyAccountStart = chatbotPage.indexOf("async function saveToMyAccount");
+const chooseRecommendedFoodSource =
+  chooseRecommendedFoodStart === -1 || saveToMyAccountStart === -1
+    ? ""
+    : chatbotPage.slice(chooseRecommendedFoodStart, saveToMyAccountStart);
+
+if (
+  chooseRecommendedFoodSource === "" ||
+  chooseRecommendedFoodSource.includes("setRecommendedFoodChoices([]);")
+) {
+  console.error(
+    "Recommendation cards should stay visible after a food is chosen so the customer can change choice before saving."
+  );
   process.exit(1);
 }
 
