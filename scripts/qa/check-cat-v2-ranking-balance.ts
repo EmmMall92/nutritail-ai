@@ -398,4 +398,79 @@ if (
   process.exit(1);
 }
 
+const sensitiveDigestionCatPet = {
+  ...adultNonNeuteredCat,
+  age: 4,
+  weight: 4.5,
+  healthIssues: ["sensitive digestion", "soft stool"],
+};
+const digestiveCatFood = catFood({
+  id: "digestive-cat",
+  formula_key: "qa-cat|digestive|cat|dry",
+  display_name: "Sensitive Digestion Chicken",
+  commercial_tags: ["sensitive_digestion", "digestive"],
+  fiber_sources: ["beet pulp", "psyllium"],
+  kcal_per_100g: 365,
+});
+const renalCatWithoutRenalContext = catFood({
+  id: "renal-cat-without-renal-context",
+  formula_key: "qa-cat|renal-without-context|cat|dry",
+  display_name: "Vet Diet Cat Renal",
+  medical_tags: ["renal"],
+  commercial_tags: ["veterinary", "renal"],
+  kcal_per_100g: 390,
+});
+const urinaryCatWithoutUrinaryContext = catFood({
+  id: "urinary-cat-without-urinary-context",
+  formula_key: "qa-cat|urinary-without-context|cat|dry",
+  display_name: "Vet Diet Cat Urinary S/O",
+  medical_tags: ["urinary"],
+  commercial_tags: ["veterinary", "urinary"],
+  kcal_per_100g: 370,
+});
+const sensitiveDigestionRankings = [
+  digestiveCatFood,
+  renalCatWithoutRenalContext,
+  urinaryCatWithoutUrinaryContext,
+].map((food) =>
+  rankFoodV2ForPet({
+    food,
+    nutrients: nutrients(
+      food === digestiveCatFood
+        ? { protein_percent: 32, fat_percent: 13, fiber_percent: 4 }
+        : { protein_percent: 28, fat_percent: 16, fiber_percent: 3 }
+    ),
+    pet: sensitiveDigestionCatPet,
+    goal: "sensitive_digestion",
+  })
+);
+const sensitiveDigestionSplit = splitFoodV2Recommendations(
+  sensitiveDigestionRankings,
+  2,
+  "sensitive_digestion"
+);
+const renalSensitiveMismatch = sensitiveDigestionRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|renal-without-context|cat|dry"
+);
+const urinarySensitiveMismatch = sensitiveDigestionRankings.find(
+  (ranking) => ranking.formula_key === "qa-cat|urinary-without-context|cat|dry"
+);
+
+if (sensitiveDigestionSplit.premium[0]?.formula_key !== "qa-cat|digestive|cat|dry") {
+  console.error("Sensitive-digestion cat should start from digestive-positioned food.");
+  console.error({ sensitiveDigestionRankings, sensitiveDigestionSplit });
+  process.exit(1);
+}
+
+for (const ranking of [renalSensitiveMismatch, urinarySensitiveMismatch]) {
+  if (
+    ranking?.bucket !== "hold" ||
+    !ranking.signals.some((signal) => signal.code === "medical_diet_not_digestive_fit")
+  ) {
+    console.error("Renal/urinary vet diets should not be visible for digestive-only cat cases.");
+    console.error(ranking);
+    process.exit(1);
+  }
+}
+
 console.log("Cat Food V2 ranking balance checks passed.");
