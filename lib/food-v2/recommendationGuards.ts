@@ -150,6 +150,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Light/sterilised energy positioning is a poor first choice for a high-activity pet.",
   },
+  cat_weight_positioning_without_context: {
+    code: "cat_weight_positioning_without_context",
+    severity: "block",
+    fallbackMessage:
+      "Sterilised, neutered or light cat food does not fit a non-neutered general cat context.",
+  },
   low_fat_formula_for_active_gain_pet: {
     code: "low_fat_formula_for_active_gain_pet",
     severity: "block",

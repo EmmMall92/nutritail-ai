@@ -94,11 +94,53 @@ if (sterilisedRanking.total_score >= regularRanking.total_score) {
 
 if (
   !sterilisedRanking.signals.some(
-    (signal) => signal.code === "cat_weight_positioning_without_context"
+    (signal) =>
+      signal.code === "cat_weight_positioning_without_context" && signal.type === "exclude"
   )
 ) {
-  console.error("Expected cat_weight_positioning_without_context signal.");
+  console.error("Expected cat_weight_positioning_without_context exclude signal.");
   console.error(sterilisedRanking.signals);
+  process.exit(1);
+}
+
+if (sterilisedRanking.bucket !== "hold") {
+  console.error("Expected sterilised/light cat food to be held for non-neutered general cat context.");
+  console.error(sterilisedRanking);
+  process.exit(1);
+}
+
+const indoorSterilisedAdult = catFood({
+  id: "indoor-sterilised-adult",
+  formula_key: "qa-cat|indoor-sterilised-adult|cat|dry",
+  display_name: "Indoor Grain Free Sterilised",
+  ingredients: ["chicken", "rice", "minerals"],
+  commercial_tags: ["indoor", "sterilised"],
+  kcal_per_100g: 335,
+});
+const nonNeuteredGeneralSplit = splitFoodV2Recommendations(
+  [regularAdult, sterilisedAdult, indoorSterilisedAdult].map((food) =>
+    rankFoodV2ForPet({
+      food,
+      nutrients: nutrients(),
+      pet: adultNonNeuteredCat,
+      goal: "general",
+    })
+  ),
+  3,
+  "general"
+);
+const visibleNonNeuteredCatFoods = [
+  ...nonNeuteredGeneralSplit.premium,
+  ...nonNeuteredGeneralSplit.value,
+];
+
+if (
+  visibleNonNeuteredCatFoods.some((food) =>
+    /sterilised|neutered|light/i.test([food.display_name, food.formula_key].join(" "))
+  )
+) {
+  console.error("Non-neutered general cat shortlist should not expose sterilised/light foods.");
+  console.error(visibleNonNeuteredCatFoods.map((food) => food.display_name));
   process.exit(1);
 }
 

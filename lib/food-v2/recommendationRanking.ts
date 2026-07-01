@@ -1158,14 +1158,14 @@ function scoreFit(input: FoodV2RankingInput) {
     !["sterilised", "weight_control", "urinary", "renal"].includes(goal) &&
     hasWeightControlPositioning(haystack)
   ) {
-    const points = goal === "growth" || stage === "kitten" ? -35 : -22;
+    const points = -100;
     score += points;
     addSignal(
       signals,
-      "caution",
+      "exclude",
       "cat_weight_positioning_without_context",
       points,
-      "Sterilised, neutered or light cat food should not be the default first pick without sterilised or weight-control context."
+      "Sterilised, neutered or light cat food should not be a first shortlist pick without sterilised or weight-control context."
     );
   }
 
