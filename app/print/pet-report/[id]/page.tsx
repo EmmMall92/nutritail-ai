@@ -771,6 +771,12 @@ export default function PrintablePetReportPage() {
     mealSplit
   );
   const foodReasoningSummary = getFoodReasoningSummary(pet, latestAnalysis);
+  const reportTreatAllowance = getTreatAllowance(latestAnalysis);
+  const reportPortionLabel = latestAnalysis?.feeding_grams_per_day
+    ? `${latestAnalysis.feeding_grams_per_day}g/ημέρα`
+    : latestAnalysis?.mer
+      ? `${latestAnalysis.mer} kcal/ημέρα μέχρι να κλειδώσει τροφή`
+      : "Χρειάζεται νέα ανάλυση";
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -807,6 +813,90 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-black/10 bg-[#fbfaf7] p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-at-a-glance-summary"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Με μια ματιά
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                Το πρακτικό πλάνο για τον/την {pet.name}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-gray-700">
+              Αυτή είναι η σύντομη εκδοχή που πρέπει να κρατήσει ο πελάτης:
+              τροφή, ποσότητα, θερμίδες, λιχουδιές, αλλαγή τροφής και πότε
+              επιστρέφει για έλεγχο.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Τροφή
+              </p>
+              <p className="mt-2 font-bold text-black">
+                {latestAnalysis?.matched_food_name ?? "Χρειάζεται επιλογή τροφής"}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-600">
+                Η τροφή που κρατήθηκε από την τελευταία ανάλυση ή το επόμενο
+                στοιχείο που πρέπει να επιβεβαιωθεί.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Ποσότητα
+              </p>
+              <p className="mt-2 font-bold text-black">{reportPortionLabel}</p>
+              <p className="mt-1 text-xs leading-5 text-gray-600">
+                {mealSplit
+                  ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+                  : "Τα γραμμάρια βγαίνουν όταν ξέρουμε συγκεκριμένη τροφή με kcal/100g."}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Θερμίδες & λιχουδιές
+              </p>
+              <p className="mt-2 font-bold text-black">
+                {latestAnalysis ? `${latestAnalysis.mer} kcal/ημέρα` : "-"}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-600">
+                {reportTreatAllowance
+                  ? `Κράτα τις λιχουδιές έως ${reportTreatAllowance.treats} kcal και περίπου ${reportTreatAllowance.mainFood} kcal για την κύρια τροφή.`
+                  : "Οι λιχουδιές καλό είναι να μένουν περίπου στο 10% της ημέρας."}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Επανέλεγχος
+              </p>
+              <p className="mt-2 font-bold text-black">
+                {getRecheckWindow(latestAnalysis)}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-600">
+                Γύρνα με βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές,
+                όρεξη και κόπρανα.
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950"
+            data-testid="report-at-a-glance-transition"
+          >
+            <p className="font-semibold">Αν αλλάζει τροφή, κάνε μετάβαση σταδιακά.</p>
+            <p className="mt-1 leading-6">
+              Ημέρες 1-2: 75% παλιά + 25% νέα. Ημέρες 3-4: 50% / 50%.
+              Ημέρες 5-6: 25% παλιά + 75% νέα. Ημέρα 7+: 100% νέα, αν
+              όρεξη και κόπρανα είναι σταθερά.
+            </p>
           </div>
         </div>
 
