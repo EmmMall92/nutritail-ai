@@ -6340,6 +6340,45 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     )}
                   </p>
                 </div>
+
+                <div
+                  data-testid="selected-food-next-steps"
+                  className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3"
+                >
+                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                    <p className="font-semibold">
+                      {botText("1. Αποθήκευση", "1. Save")}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-lime-900">
+                      {botText(
+                        "Πάτησε αποθήκευση για να κρατηθούν τροφή, ποσότητα και στόχος στο προφίλ.",
+                        "Save to keep the food, portion, and goal on the profile."
+                      )}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                    <p className="font-semibold">
+                      {botText("2. Μετάβαση", "2. Transition")}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-lime-900">
+                      {botText(
+                        "Άλλαξε τροφή σταδιακά και μην αλλάξεις ξανά πριν δεις σταθερή εικόνα.",
+                        "Switch gradually and avoid changing again before the response is stable."
+                      )}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                    <p className="font-semibold">
+                      {botText("3. Επανέλεγχος", "3. Check-in")}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-lime-900">
+                      {botText(
+                        "Σε 2-4 εβδομάδες γύρνα με βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.",
+                        "In 2-4 weeks, come back with weight, grams, treats, and results."
+                      )}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 

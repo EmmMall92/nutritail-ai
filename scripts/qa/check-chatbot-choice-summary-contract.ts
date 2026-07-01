@@ -74,6 +74,18 @@ assert(
   "Selected-food card must tell the customer what to monitor before the progress check."
 );
 assert(
+  chatbotPage.includes('data-testid="selected-food-next-steps"'),
+  "Selected-food card must show a visible next-steps panel after choosing a food."
+);
+assert(
+  chatbotPage.includes("1. Αποθήκευση") &&
+    chatbotPage.includes("2. Μετάβαση") &&
+    chatbotPage.includes("3. Επανέλεγχος") &&
+    chatbotPage.includes("Save to keep the food, portion, and goal on the profile.") &&
+    chatbotPage.includes("In 2-4 weeks, come back with weight, grams, treats, and results."),
+  "Selected-food next steps must guide save, transition, and progress check in customer language."
+);
+assert(
   packageJson.includes("\"qa:chatbot-choice-summary-contract\""),
   "package.json must expose the chatbot choice summary QA script."
 );
