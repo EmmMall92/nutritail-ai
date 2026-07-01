@@ -76,6 +76,9 @@ function parseAgeYears(message: string) {
 }
 
 function detectSpecies(text: string): ExtractedSpecies | null {
+  if (includesAny(text, ["σκυλ", "κουταβ"])) return "dog";
+  if (includesAny(text, ["γατ", "γατακ"])) return "cat";
+
   if (
     includesAny(text, [
       "dog",
@@ -299,10 +302,15 @@ function detectContextualHealthIssues(text: string) {
     [["ορφανο", "orphan"], "orphan_puppy"],
     [["τρωει χορτα", "eats grass"], "eats_grass"],
     [["δαγκωνει την ουρα", "bites tail"], "tail_biting"],
+    [["αλλεργ", "allerg"], "allergy"],
+    [["πειραζ", "bothers", "does not tolerate"], "food_sensitivity"],
+    [["μαγειρευτο", "μαγειρευτη", "cooked food", "home cooked"], "mixed_home_cooked_food"],
+    [["πινει πολυ νερο", "πολυ νερο", "πολυ διψ", "drinks a lot", "excessive thirst"], "increased_thirst"],
     [["rescue", "αγνωστο ιστορικο"], "unknown_history"],
     [["πολλα συστατικα", "multiple ingredients"], "multiple_food_triggers"],
     [["δεν μυριζει καλα το φαγητο", "poor smell"], "low_food_smell_interest"],
     [["κοιμαται 20 ωρες", "sleeps 20 hours"], "lethargy_or_low_activity"],
+    [["πνιγεται", "μεγαλες κροκετες", "choking", "large kibble"], "chewing_or_choking_risk"],
   ]);
 }
 

@@ -170,5 +170,36 @@
       "species": "dog",
       "healthIssues": ["lactation"]
     }
+  },
+  {
+    "id": "greek_wanted_lamb_avoid_chicken_bothers_pet",
+    "message": "Θέλω τροφή με αρνί γιατί το κοτόπουλο τον πειράζει.",
+    "expect": {
+      "preferredProteins": ["lamb"],
+      "excludedIngredients": ["chicken"],
+      "healthIssues": ["food_sensitivity"]
+    }
+  },
+  {
+    "id": "greek_mixed_home_cooked_food_caution",
+    "message": "Τρώει και μαγειρευτό μαζί με ξηρά. Πώς το υπολογίζω;",
+    "expect": {
+      "healthIssues": ["mixed_home_cooked_food"]
+    }
+  },
+  {
+    "id": "greek_increased_thirst_caution",
+    "message": "Πίνει πολύ νερό τελευταία. Μπορεί να φταίει η τροφή;",
+    "expect": {
+      "healthIssues": ["increased_thirst"]
+    }
+  },
+  {
+    "id": "greek_large_kibble_choking_caution",
+    "message": "Έχω σκύλο που πνίγεται με μεγάλες κροκέτες.",
+    "expect": {
+      "species": "dog",
+      "healthIssues": ["chewing_or_choking_risk"]
+    }
   }
 ]

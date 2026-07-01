@@ -17,6 +17,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const message = String(body.message ?? "").trim();
     const locale = body.locale === "en" ? "en" : "el";
+    const contextSpecies =
+      body.contextSpecies === "dog" || body.contextSpecies === "cat"
+        ? body.contextSpecies
+        : null;
 
     if (!message) {
       return NextResponse.json(
@@ -35,6 +39,7 @@ export async function POST(request: Request) {
     const result = await extractPetIntakeFacts(message, {
       locale,
       timeoutMs: 8000,
+      contextSpecies,
     });
 
     return NextResponse.json(result);

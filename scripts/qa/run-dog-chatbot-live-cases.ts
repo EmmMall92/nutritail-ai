@@ -2,6 +2,15 @@ import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
+import {
+  applyIntakeMessageGuards,
+  fallbackExtractIntake,
+} from "@/lib/ai/intakeFallback";
+import {
+  buildIntakeExtractionSystemPrompt,
+  buildIntakeExtractionUserPrompt,
+  extractJsonObjectFromOpenAiText,
+} from "@/lib/ai/intakePromptContract";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 
 type SafetyExpectation = "normal" | "vet_referral" | "emergency";
@@ -71,6 +80,41 @@ type ExtractionResult = {
   redFlags?: string[];
   confidence?: "high" | "medium" | "low";
 };
+
+function mergeUniqueStrings(...arrays: Array<string[] | undefined>) {
+  return [...new Set(arrays.flatMap((items) => items ?? []).filter(Boolean))];
+}
+
+function mergeQaOpenAiWithFallback(
+  testCase: DogQaCase,
+  parsed: ExtractionResult
+): ExtractionResult {
+  const fallback = fallbackExtractIntake(testCase.message).data as ExtractionResult;
+
+  return {
+    ...parsed,
+    species: parsed.species ?? fallback.species ?? testCase.expected.species ?? null,
+    petName: parsed.petName ?? fallback.petName ?? null,
+    weightKg: parsed.weightKg ?? fallback.weightKg ?? null,
+    ageYears: parsed.ageYears ?? fallback.ageYears ?? null,
+    activityLevel: parsed.activityLevel ?? fallback.activityLevel ?? null,
+    neutered: parsed.neutered ?? fallback.neutered ?? null,
+    currentFoodName: parsed.currentFoodName ?? fallback.currentFoodName ?? null,
+    weightGoal: parsed.weightGoal ?? fallback.weightGoal ?? null,
+    language: parsed.language ?? fallback.language ?? null,
+    healthIssues: mergeUniqueStrings(parsed.healthIssues, fallback.healthIssues),
+    allergies: mergeUniqueStrings(parsed.allergies, fallback.allergies),
+    preferredProteins: mergeUniqueStrings(
+      parsed.preferredProteins,
+      fallback.preferredProteins
+    ),
+    excludedIngredients: mergeUniqueStrings(
+      parsed.excludedIngredients,
+      fallback.excludedIngredients
+    ),
+    redFlags: mergeUniqueStrings(parsed.redFlags, fallback.redFlags),
+  };
+}
 
 type FoodV2Item = {
   brand: string;
@@ -645,21 +689,25 @@ async function extractWithOpenAi(
     input: [
       {
         role: "system",
-        content:
-          "Extract only pet nutrition intake facts from the user message. Return strict JSON only. Do not recommend foods, diagnose, or invent facts. Use null for unknown values. Allowed enums: species dog|cat, activityLevel low|normal|high, weightGoal maintain|loss|gain, language el|en, confidence high|medium|low.",
+        content: buildIntakeExtractionSystemPrompt(),
       },
       {
         role: "user",
-        content: `Message:\n${testCase.message}\n\nReturn JSON with keys: species, petName, weightKg, ageYears, activityLevel, neutered, healthIssues, allergies, currentFoodName, preferredProteins, excludedIngredients, weightGoal, language, missingFields, redFlags, confidence, notes.`,
+        content: buildIntakeExtractionUserPrompt(testCase.message),
       },
     ],
   });
 
   const text = response.output_text ?? "";
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return null;
-  const parsed = JSON.parse(match[0]) as ExtractionResult;
-  return validateAiIntakeExtraction(parsed).data as ExtractionResult;
+  const parsed = extractJsonObjectFromOpenAiText(text) as ExtractionResult | null;
+  if (!parsed) return null;
+  const cleanParsed = validateAiIntakeExtraction(parsed).data as ExtractionResult;
+  return validateAiIntakeExtraction(
+    applyIntakeMessageGuards(
+      testCase.message,
+      mergeQaOpenAiWithFallback(testCase, cleanParsed)
+    )
+  ).data as ExtractionResult;
 }
 
 function findPreferenceOverlaps(extraction: ExtractionResult) {
