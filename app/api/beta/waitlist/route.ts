@@ -3,6 +3,12 @@ import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 
 const MAX_TEXT_LENGTH = 500;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const BETA_PLAN = {
+  accessPlan: "limited_beta_v1",
+  accountLimit: 1,
+  petLimit: 3,
+  monthlyAnalysisLimit: 20,
+};
 
 function cleanText(value: unknown, maxLength = MAX_TEXT_LENGTH) {
   return String(value ?? "")
@@ -55,7 +61,7 @@ export async function POST(request: Request) {
       message: "New beta waitlist signup.",
       metadata: {
         source: "public_beta_page",
-        accessPlan: "limited_beta",
+        ...BETA_PLAN,
         email,
         name,
         role,
