@@ -72,5 +72,25 @@ assert(
     adminFeedbackPage.includes("helpfulRate"),
   "Launch triage must include food selection, save, and helpfulness rates."
 );
+assert(
+  adminFeedbackPage.includes("function getDropoffPriorityItems"),
+  "Admin feedback page must compute customer drop-off priorities."
+);
+assert(
+  adminFeedbackPage.includes('data-testid="chat-feedback-dropoff-priority"'),
+  "Admin feedback page must expose the drop-off priority panel."
+);
+assert(
+  adminFeedbackPage.includes("analysisWithoutFoodChoiceCount") &&
+    adminFeedbackPage.includes("foodChoiceWithoutSaveCount"),
+  "Drop-off priority must track analysis-without-choice and choice-without-save counts."
+);
+assert(
+  adminFeedbackPage.includes("Analysis without food choice") &&
+    adminFeedbackPage.includes("Food choice without save") &&
+    adminFeedbackPage.includes("Failed food match") &&
+    adminFeedbackPage.includes("Not helpful feedback"),
+  "Drop-off priority must include the four core launch-risk groups."
+);
 
 console.log("Chat feedback analytics contract passed.");

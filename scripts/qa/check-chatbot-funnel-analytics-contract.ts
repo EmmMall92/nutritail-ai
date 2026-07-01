@@ -56,6 +56,18 @@ assert(
   "Admin feedback page must provide a shortcut to saved plans."
 );
 assert(
+  adminFeedbackPage.includes("Customer Drop-Off Priority"),
+  "Admin feedback page must show the customer drop-off priority panel."
+);
+assert(
+  adminFeedbackPage.includes("analysisWithoutFoodChoiceCount"),
+  "Admin feedback page must track analyses that did not lead to a food choice."
+);
+assert(
+  adminFeedbackPage.includes("foodChoiceWithoutSaveCount"),
+  "Admin feedback page must track selected foods that did not lead to saved plans."
+);
+assert(
   packageJson.includes("\"qa:chatbot-funnel-analytics-contract\""),
   "package.json must expose the chatbot funnel analytics QA script."
 );

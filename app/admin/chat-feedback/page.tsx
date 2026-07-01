@@ -125,6 +125,61 @@ function getLaunchSignalStatus({
   };
 }
 
+function getDropoffPriorityItems({
+  analysisWithoutFoodChoiceCount,
+  foodChoiceWithoutSaveCount,
+  failedMatchCount,
+  notHelpfulCount,
+}: {
+  analysisWithoutFoodChoiceCount: number;
+  foodChoiceWithoutSaveCount: number;
+  failedMatchCount: number;
+  notHelpfulCount: number;
+}) {
+  return [
+    {
+      label: "Analysis without food choice",
+      value: analysisWithoutFoodChoiceCount,
+      helper:
+        "Customers finished an analysis but did not tap a recommended food.",
+      action: "Review whether the shortlist is clear, relevant, and easy to act on.",
+      typeFilter: "analysis_completed",
+      ratingFilter: "all",
+      tone: "amber" as const,
+    },
+    {
+      label: "Food choice without save",
+      value: foodChoiceWithoutSaveCount,
+      helper:
+        "Customers selected a food but did not save the plan to their account.",
+      action: "Check the save CTA, final summary, and grams/day confidence.",
+      typeFilter: "food_choice_selected",
+      ratingFilter: "all",
+      tone: "blue" as const,
+    },
+    {
+      label: "Failed food match",
+      value: failedMatchCount,
+      helper:
+        "Food names or current diets that NutriTail could not resolve confidently.",
+      action: "Add aliases, fix canonical names, or backfill missing Food V2 rows.",
+      typeFilter: "failed_food_match",
+      ratingFilter: "all",
+      tone: "red" as const,
+    },
+    {
+      label: "Not helpful feedback",
+      value: notHelpfulCount,
+      helper:
+        "Customers explicitly said the answer was not useful enough.",
+      action: "Inspect the exact query, goal, foods, and wording before changing rules.",
+      typeFilter: "all",
+      ratingFilter: "not_helpful",
+      tone: "slate" as const,
+    },
+  ].sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));
+}
+
 function TriageButton({
   label,
   value,
@@ -271,6 +326,14 @@ export default function AdminChatFeedbackPage() {
     analysisCompleted.length > 0
       ? Math.round((savedPlans.length / analysisCompleted.length) * 100)
       : 0;
+  const analysisWithoutFoodChoiceCount = Math.max(
+    0,
+    analysisCompleted.length - selectedFoodChoices.length
+  );
+  const foodChoiceWithoutSaveCount = Math.max(
+    0,
+    selectedFoodChoices.length - savedPlans.length
+  );
   const selectedFoodGroups = selectedFoodChoices.reduce<
     Record<string, { count: number; latestLog: AdminActivityLog }>
   >((acc, log) => {
@@ -361,6 +424,12 @@ export default function AdminChatFeedbackPage() {
     planSaveRate,
     helpfulRate,
     highPriorityCleanupCount,
+  });
+  const dropoffPriorityItems = getDropoffPriorityItems({
+    analysisWithoutFoodChoiceCount,
+    foodChoiceWithoutSaveCount,
+    failedMatchCount: failedMatches.length,
+    notHelpfulCount: notHelpful.length,
   });
 
   return (
@@ -598,6 +667,73 @@ export default function AdminChatFeedbackPage() {
               High-priority repeated failed matches to fix first.
             </p>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+        data-testid="chat-feedback-dropoff-priority"
+      >
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-black">
+              Customer Drop-Off Priority
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              The next fixes that can move customer-product progress toward
+              95%: choice clarity, save confidence, food matching, and answer
+              usefulness.
+            </p>
+          </div>
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+            Sorted by impact
+          </span>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {dropoffPriorityItems.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => {
+                setTypeFilter(item.typeFilter);
+                setRatingFilter(item.ratingFilter);
+                setSearch("");
+              }}
+              className={`rounded-xl border p-4 text-left transition hover:border-black hover:bg-white ${
+                item.tone === "amber"
+                  ? "border-amber-200 bg-amber-50"
+                  : item.tone === "blue"
+                    ? "border-blue-200 bg-blue-50"
+                    : item.tone === "red"
+                      ? "border-red-200 bg-red-50"
+                      : "border-gray-200 bg-gray-50"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-black">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-3xl font-bold text-black">
+                    {item.value}
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-gray-700">
+                  open
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                {item.helper}
+              </p>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Next action
+              </p>
+              <p className="mt-1 text-sm leading-6 text-gray-700">
+                {item.action}
+              </p>
+            </button>
+          ))}
         </div>
       </div>
 
