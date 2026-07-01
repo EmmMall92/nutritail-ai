@@ -214,6 +214,49 @@
       "expectations": ["premium_or_value", "active_energy_fit", "no_weight_control_top_pick"]
     },
     {
+      "label": "Mountain working Husky",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Husky",
+        "age": 2,
+        "weight": 25,
+        "activityLevel": "high",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": [],
+        "healthIssues": ["works in mountains", "cold climate", "high energy need"]
+      },
+      "expectations": [
+        "premium_or_value",
+        "active_energy_fit",
+        "no_weight_control_top_pick",
+        "no_small_dog_top_pick",
+        "no_unrelated_therapeutic_top_picks"
+      ]
+    },
+    {
+      "label": "Apartment dog low activity",
+      "goal": "general",
+      "pet": {
+        "species": "dog",
+        "breed": "Mixed breed",
+        "age": 4,
+        "weight": 20,
+        "activityLevel": "low",
+        "neutered": false,
+        "allergies": [],
+        "preferredProteins": [],
+        "healthIssues": ["apartment only", "low activity"]
+      },
+      "expectations": [
+        "premium_or_value",
+        "no_active_performance_top_pick",
+        "no_small_dog_top_pick",
+        "no_unrelated_therapeutic_top_picks"
+      ]
+    },
+    {
       "label": "High activity dog needs weight gain",
       "goal": "general",
       "pet": {

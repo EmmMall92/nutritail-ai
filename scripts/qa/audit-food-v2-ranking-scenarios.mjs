@@ -63,9 +63,7 @@ function customerVisibleFoodText(food) {
   return [
     food?.brand,
     food?.display_name,
-    food?.formula_key,
     food?.life_stage,
-    food?.dog_size,
   ]
     .filter(Boolean)
     .join(" ")
@@ -153,7 +151,7 @@ function checkExpectations(scenario, data) {
     }
 
     if (expectation === "no_small_dog_top_pick") {
-      if (hasAnyTerm(firstText, ["small", "mini"])) {
+      if (hasAnyTerm(customerVisibleFoodText(first), ["small", "mini"])) {
         warnings.push("Top pick appears to target small/mini dogs.");
       }
     }

@@ -387,11 +387,10 @@ function isHardDogSizeMismatch(
   if (
     pet.species === "dog" &&
     hasNumber(pet.weight) &&
-    pet.weight >= 8 &&
     expectedSize === "small" &&
     declaredSize === "mini"
   ) {
-    return true;
+    return false;
   }
 
   if (
@@ -892,6 +891,36 @@ function visibleDogSizeFromTitle(food: FoodProductV2) {
   return null;
 }
 
+function visibleDogSizeFromFood(food: FoodProductV2) {
+  const text = normalizeText(
+    [
+      food.brand,
+      food.formula_name,
+      food.display_name,
+      food.breed_target,
+      ...(food.commercial_tags ?? []),
+    ].join(" ")
+  );
+
+  if (hasAny(text, ["giant breed", "giant dog", "giant adult"])) return "giant";
+  if (hasAny(text, ["large breed", "large dog", "maxi", "large adult"]) || hasWord(text, "large")) {
+    return "large";
+  }
+  if (hasAny(text, ["medium breed", "medium dog", "medium adult"]) || hasWord(text, "medium")) {
+    return "medium";
+  }
+  if (hasAny(text, ["xsmall", "x-small", "extra small", "x small", "mini breed", "mini dog", "mini adult"]) || hasWord(text, "mini")) {
+    return "mini";
+  }
+  if (hasAny(text, ["small breed", "small dog", "small adult"]) || hasWord(text, "small")) return "small";
+
+  const breedSize = breedSizeFromText(text);
+  if (breedSize) return breedSize;
+  if (hasAny(text, ALL_BREED_TERMS)) return "all";
+
+  return null;
+}
+
 function isCustomerVisibleHardDogSizeMismatch(
   pet: FoodV2RankingInput["pet"],
   expectedSize: string | null,
@@ -1215,10 +1244,13 @@ function scoreFit(input: FoodV2RankingInput) {
 
   if (pet.species === "dog") {
     const expectedSize = expectedDogSize(pet);
-    const declaredSize =
+    const metadataSize =
       food.dog_size && food.dog_size !== "unknown" && food.dog_size !== "all"
         ? food.dog_size
-        : inferDogSizeFromFoodText(food);
+        : null;
+    const visibleFoodSize = visibleDogSizeFromFood(food);
+    const declaredSize = metadataSize ?? visibleFoodSize ?? inferDogSizeFromFoodText(food);
+    const lowConfidenceMetadataSize = Boolean(metadataSize && !visibleFoodSize);
     const visibleTitleSize = visibleDogSizeFromTitle(food);
     const sizeTerms =
       DOG_SIZE_TERMS[declaredSize as keyof typeof DOG_SIZE_TERMS] ?? [];
@@ -1236,7 +1268,10 @@ function scoreFit(input: FoodV2RankingInput) {
         score += 7;
         addSignal(signals, "boost", "size_match", 7, "Matches size or breed-size positioning.");
       }
-    } else if (isHardDogSizeMismatch(pet, expectedSize, declaredSize)) {
+    } else if (
+      !lowConfidenceMetadataSize &&
+      isHardDogSizeMismatch(pet, expectedSize, declaredSize)
+    ) {
       score -= 35;
       addSignal(
         signals,
@@ -1245,7 +1280,7 @@ function scoreFit(input: FoodV2RankingInput) {
         -100,
         `Excluded because ${declaredSize} food does not fit a ${expectedSize} dog.`
       );
-    } else if (expectedSize && sizeDistance === 1) {
+    } else if (expectedSize && sizeDistance === 1 && !lowConfidenceMetadataSize) {
       score -= 12;
       addSignal(
         signals,
