@@ -886,7 +886,7 @@ if (missingTransitionGuideSourceCopy.length > 0) {
   process.exit(1);
 }
 
-const recommendedChoicesIndex = chatbotPage.indexOf("recommendedFoodChoices.map");
+const recommendedChoicesIndex = chatbotPage.lastIndexOf("getRecommendationChoiceGroups");
 const recommendationBlockIndex = chatbotPage.lastIndexOf(
   "showSave && recommendedFoodChoices.length > 0",
   recommendedChoicesIndex
@@ -907,6 +907,22 @@ if (
   console.error(
     "Customer-facing Pick/Calculate/Save flow must appear inside the recommended food card area."
   );
+  process.exit(1);
+}
+
+const groupedChoiceMarkers = [
+  "Top 3 best choices",
+  "3 value / practical options",
+  "group.choices.map",
+  "group.choices.length}/3",
+];
+const missingGroupedChoiceMarkers = groupedChoiceMarkers.filter(
+  (marker) => !chatbotPage.includes(marker)
+);
+
+if (missingGroupedChoiceMarkers.length > 0) {
+  console.error("Recommendation cards must stay grouped into best and value choices:");
+  console.error(missingGroupedChoiceMarkers.join(", "));
   process.exit(1);
 }
 
