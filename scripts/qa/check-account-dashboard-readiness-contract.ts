@@ -77,6 +77,16 @@ assert(
   "Account dashboard must expose the weekly monitoring rhythm section."
 );
 assert(
+  accountPage.includes('data-testid="account-progress-return-kit"') &&
+    accountPage.includes("Τι να κρατάς μέχρι τον επόμενο έλεγχο") &&
+    accountPage.includes("Βάρος") &&
+    accountPage.includes("Γραμμάρια") &&
+    accountPage.includes("Λιχουδιές") &&
+    accountPage.includes("Όρεξη / ούρηση") &&
+    accountPage.includes("Όρεξη / κόπρανα"),
+  "Account dashboard must show a customer-facing progress return kit."
+);
+assert(
   accountPage.includes('data-testid="account-beta-plan"'),
   "Account dashboard must expose the beta access plan section."
 );
