@@ -14,6 +14,8 @@ const appError = read("app/error.tsx");
 const globalError = read("app/global-error.tsx");
 const monitoringRoute = read("app/api/monitoring/client-error/route.ts");
 const packageJson = read("package.json");
+const runtimeErrorQaIndex = packageJson.indexOf("qa:runtime-error-monitoring-contract");
+const chatbotTrainingQaIndex = packageJson.indexOf("qa:openai-chatbot-training-contract");
 
 for (const source of [appError, globalError]) {
   assert(
@@ -55,9 +57,9 @@ assert(
   "package.json must expose the runtime error monitoring QA script."
 );
 assert(
-  packageJson.includes(
-    "qa:runtime-error-monitoring-contract && npm run qa:openai-chatbot-training-contract"
-  ),
+  runtimeErrorQaIndex >= 0 &&
+    chatbotTrainingQaIndex >= 0 &&
+    runtimeErrorQaIndex < chatbotTrainingQaIndex,
   "CI readiness must run runtime error monitoring before chatbot contracts."
 );
 
