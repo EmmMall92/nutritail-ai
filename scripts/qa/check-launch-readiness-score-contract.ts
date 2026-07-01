@@ -21,6 +21,8 @@ const docMarkers = [
   "Two Different Percentages",
   "Automated live readiness",
   "Customer product progress",
+  "Overall SaaS launch progress",
+  "business limits, beta access, payments",
   "docs/product-progress-score.md",
   "Customer Product Progress Score",
   "What Moves Customer Product Progress",

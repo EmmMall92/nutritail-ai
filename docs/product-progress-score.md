@@ -18,6 +18,16 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
+Overall SaaS launch progress is currently **80-82%**.
+
+This is lower on purpose. It includes everything needed for a real public SaaS,
+not just the customer nutrition flow: business limits, beta access, subscription
+or payment direction, production monitoring, legal/trust readiness, live
+post-deploy proof, and operational support. Use this number when the question is
+"is the whole company/product ready to launch?", and use customer product
+progress when the question is "does the customer-facing nutrition experience
+feel close to ready?"
+
 ## Latest Movement
 
 The latest move from **92-93%** to **93-94%** is justified by the authenticated
@@ -128,13 +138,16 @@ These are the most likely moves from 93-94 toward 94-95:
 
 ## Reporting Rule
 
-When reporting progress, always say both numbers if available:
+When reporting progress, always say all relevant numbers if available:
 
 - `Automated live readiness`: from `reports/live_readiness_dashboard.md`.
 - `Customer product progress`: from this rubric and the latest customer-flow QA.
+- `Overall SaaS launch progress`: from this rubric's launch-wide estimate.
 
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 93-94%. The next point depends on cat live QA fixes, customer report
-> polish, or live OpenAI proof, not another generic PR.
+> 93-94% and overall SaaS launch progress is about 80-82%. The next product
+> point depends on cat live QA fixes, customer report polish, or live OpenAI
+> proof, while the launch-wide score depends on beta limits, monitoring,
+> payments/subscription direction, and production operating proof.
