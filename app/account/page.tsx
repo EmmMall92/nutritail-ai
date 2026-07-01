@@ -308,10 +308,10 @@ function getAccountReadinessSteps({
       detail:
         readyReports > 0
           ? `${readyReports} αναφορές με τροφή και ποσότητα`
-          : "Διάλεξε τροφή για να κρατηθούν γραμμάρια/ημέρα και report.",
+          : "Διάλεξε τροφή για να κρατηθούν γραμμάρια/ημέρα και αναφορά.",
       isComplete: readyReports > 0,
       href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
-      actionLabel: readyReports > 0 ? "Άνοιξε report" : "Διάλεξε τροφή",
+      actionLabel: readyReports > 0 ? "Άνοιξε αναφορά" : "Διάλεξε τροφή",
     },
     {
       title: "Έλεγχος προόδου",
@@ -350,9 +350,9 @@ function getAccountActivityStrip({
         ? latestAnalysis.matched_food_name
           ? `${formatDate(latestAnalysis.createdAt)} - ${latestAnalysis.matched_food_name}`
           : `${formatDate(latestAnalysis.createdAt)} - χρειάζεται επιλογή τροφής`
-        : "Ξεκίνα ανάλυση για να αποθηκευτούν θερμίδες, προτάσεις και report.",
+        : "Ξεκίνα ανάλυση για να αποθηκευτούν θερμίδες, προτάσεις και αναφορά.",
       href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
-      actionLabel: latestPet ? "Άνοιγμα report" : "Ξεκίνα ανάλυση",
+      actionLabel: latestPet ? "Άνοιγμα αναφοράς" : "Ξεκίνα ανάλυση",
     },
     {
       label: "Τελευταίο progress",
@@ -430,7 +430,7 @@ function getAccountTodayTasks({
       ? {
           title: `Ολοκλήρωσε ανάλυση για ${nextPetToAnalyze.name ?? "κατοικίδιο"}`,
           detail:
-            "Αυτό το κατοικίδιο δεν έχει ακόμη report. Ξεκίνα από εδώ για θερμίδες, τροφές και ποσότητα.",
+            "Αυτό το κατοικίδιο δεν έχει ακόμη αναφορά. Ξεκίνα από εδώ για θερμίδες, τροφές και ποσότητα.",
           href: `/account/chatbot?petId=${nextPetToAnalyze.id}`,
           actionLabel: "Κάνε ανάλυση",
           tone: "primary",
@@ -451,7 +451,7 @@ function getAccountTodayTasks({
         ? "Δες θερμίδες, γραμμάρια/ημέρα, τροφή, λιχουδιές και πλάνο μετάβασης."
         : "Δες την τελευταία σύνοψη και συμπλήρωσε τροφή για πιο ακριβή γραμμάρια.",
       href: reportTarget ? `/print/pet-report/${reportTarget.id}` : "/account/chatbot",
-      actionLabel: "Άνοιγμα report",
+      actionLabel: "Άνοιγμα αναφοράς",
       tone: "calm",
     },
     {
@@ -700,7 +700,7 @@ export default function AccountPage() {
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-emerald-900">
-            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, report, progress check ή
+            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, αναφορά, progress check ή
             αλλαγή τροφής χωρίς να ψάχνεις σε όλες τις σελίδες.
           </p>
         </div>
@@ -974,7 +974,7 @@ export default function AccountPage() {
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
               Στην beta περίοδο κρατάμε το πλάνο απλό: αρκετές αναλύσεις για να
-              δοκιμάσεις προτάσεις, reports και progress checks, χωρίς να σε
+              δοκιμάσεις προτάσεις, αναφορές και progress checks, χωρίς να σε
               μπερδεύουμε με συνδρομή πριν ολοκληρωθεί το launch.
             </p>
           </div>
