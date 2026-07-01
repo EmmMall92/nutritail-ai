@@ -79,6 +79,52 @@ function getQualityGroupKey(log: AdminActivityLog) {
   return `${type} | ${food} | ${goal}`;
 }
 
+function getLaunchSignalStatus({
+  foodSelectionRate,
+  planSaveRate,
+  helpfulRate,
+  highPriorityCleanupCount,
+}: {
+  foodSelectionRate: number;
+  planSaveRate: number;
+  helpfulRate: number;
+  highPriorityCleanupCount: number;
+}) {
+  if (highPriorityCleanupCount > 0) {
+    return {
+      label: "Data cleanup first",
+      detail:
+        "Repeated failed food matches should be fixed before trusting broader launch traffic.",
+      tone: "warning" as const,
+    };
+  }
+
+  if (helpfulRate >= 80 && foodSelectionRate >= 35 && planSaveRate >= 25) {
+    return {
+      label: "Launch signal looks healthy",
+      detail:
+        "Customers are choosing foods, saving plans, and rating answers positively.",
+      tone: "good" as const,
+    };
+  }
+
+  if (helpfulRate > 0 || foodSelectionRate > 0 || planSaveRate > 0) {
+    return {
+      label: "Keep testing before scale",
+      detail:
+        "There is useful signal, but recommendation copy, food choices, or save flow still need observation.",
+      tone: "watch" as const,
+    };
+  }
+
+  return {
+    label: "Need more live feedback",
+    detail:
+      "Run more real customer/chatbot cases before treating the numbers as launch evidence.",
+    tone: "neutral" as const,
+  };
+}
+
 function TriageButton({
   label,
   value,
@@ -310,6 +356,12 @@ export default function AdminChatFeedbackPage() {
     .map(([key, data]) => ({ key, ...data }))
     .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key))
     .slice(0, 8);
+  const launchSignalStatus = getLaunchSignalStatus({
+    foodSelectionRate,
+    planSaveRate,
+    helpfulRate,
+    highPriorityCleanupCount,
+  });
 
   return (
     <section className="space-y-6">
@@ -475,6 +527,77 @@ export default function AdminChatFeedbackPage() {
               setSearch("");
             }}
           />
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm"
+        data-testid="chat-feedback-launch-triage"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-indigo-700">
+              Launch signal
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-indigo-950">
+              {launchSignalStatus.label}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-indigo-900">
+              {launchSignalStatus.detail}
+            </p>
+          </div>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              launchSignalStatus.tone === "good"
+                ? "bg-green-100 text-green-800"
+                : launchSignalStatus.tone === "warning"
+                  ? "bg-amber-100 text-amber-800"
+                  : launchSignalStatus.tone === "watch"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-white text-indigo-900"
+            }`}
+          >
+            {launchSignalStatus.tone}
+          </span>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div className="rounded-xl border border-indigo-100 bg-white p-4">
+            <p className="text-sm text-indigo-700">Food selection</p>
+            <p className="mt-2 text-2xl font-bold text-indigo-950">
+              {analysisCompleted.length > 0 ? `${foodSelectionRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-indigo-800">
+              Users who tapped a recommended food after analysis.
+            </p>
+          </div>
+          <div className="rounded-xl border border-indigo-100 bg-white p-4">
+            <p className="text-sm text-indigo-700">Plan save</p>
+            <p className="mt-2 text-2xl font-bold text-indigo-950">
+              {analysisCompleted.length > 0 ? `${planSaveRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-indigo-800">
+              Users who saved the result after completing an analysis.
+            </p>
+          </div>
+          <div className="rounded-xl border border-indigo-100 bg-white p-4">
+            <p className="text-sm text-indigo-700">Helpful rate</p>
+            <p className="mt-2 text-2xl font-bold text-indigo-950">
+              {helpfulnessTotal > 0 ? `${helpfulRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-indigo-800">
+              Lightweight customer signal for answer quality.
+            </p>
+          </div>
+          <div className="rounded-xl border border-indigo-100 bg-white p-4">
+            <p className="text-sm text-indigo-700">Cleanup risk</p>
+            <p className="mt-2 text-2xl font-bold text-indigo-950">
+              {highPriorityCleanupCount}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-indigo-800">
+              High-priority repeated failed matches to fix first.
+            </p>
+          </div>
         </div>
       </div>
 
