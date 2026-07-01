@@ -48,6 +48,8 @@ const requiredReportMarkers = [
   "Απλό πλάνο για αύριο",
   "Γιατί προτάθηκε",
   "Γιατί κρατάμε αυτή την πρόταση",
+  "Καταλληλότητα",
+  "Έτοιμο για εκτύπωση ή αποστολή στον πελάτη",
   "Τι λείπει για να γίνει η πρόταση πλήρης",
   "Η αναφορά εξηγεί την επιλογή με απλά λόγια",
   "Γύρνα για νέα πρόταση αν αλλάξει γεύση",
@@ -109,6 +111,11 @@ for (const marker of requiredReportMarkers) {
     `Printable pet report must include customer action summary marker: ${marker}`
   );
 }
+
+assert(
+  !reportPage.includes('label: "Fit"'),
+  "Printable pet report must use customer-facing suitability wording instead of Fit."
+);
 
 for (const marker of requiredDigitalActionMarkers) {
   assert(
