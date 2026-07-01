@@ -639,6 +639,53 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        <div
+          className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5 print:hidden"
+          data-testid="report-digital-next-actions"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                Συνέχεια online
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-blue-950">
+                Κράτα το πλάνο ζωντανό μετά την αναφορά
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-blue-900">
+                Αν αλλάξει βάρος, όρεξη, κόπρανα ή αν βαρεθεί την τροφή, γύρνα εδώ
+                για έλεγχο προόδου ή νέα πρόταση χωρίς να ξεκινήσεις από την αρχή.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:min-w-[430px]">
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=progress`}
+                className="rounded-xl bg-blue-700 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-800"
+              >
+                Έλεγχος προόδου
+              </Link>
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=recommendation`}
+                className="rounded-xl border border-blue-300 bg-white px-4 py-3 text-center text-sm font-semibold text-blue-950 transition hover:bg-blue-100"
+              >
+                Νέα πρόταση τροφής
+              </Link>
+              <Link
+                href={`/print/pet-timeline/${pet.id}`}
+                className="rounded-xl border border-blue-300 bg-white px-4 py-3 text-center text-sm font-semibold text-blue-950 transition hover:bg-blue-100"
+              >
+                Timeline
+              </Link>
+              <Link
+                href={`/account/pets/${pet.id}`}
+                className="rounded-xl border border-blue-300 bg-white px-4 py-3 text-center text-sm font-semibold text-blue-950 transition hover:bg-blue-100"
+              >
+                Προφίλ κατοικιδίου
+              </Link>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <ReportCard label="Κατοικίδιο" value={pet.name} detail={pet.species} />
           <ReportCard label="Βάρος" value={`${pet.weight} kg`} />

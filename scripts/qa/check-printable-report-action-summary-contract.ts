@@ -51,6 +51,19 @@ const requiredReportMarkers = [
   "getTreatAllowance(analysis)",
 ];
 
+const requiredDigitalActionMarkers = [
+  'data-testid="report-digital-next-actions"',
+  "Συνέχεια online",
+  "Κράτα το πλάνο ζωντανό μετά την αναφορά",
+  "Έλεγχος προόδου",
+  "Νέα πρόταση τροφής",
+  "Timeline",
+  "Προφίλ κατοικιδίου",
+  "mode=progress",
+  "mode=recommendation",
+  "/print/pet-timeline/",
+];
+
 for (const marker of suspiciousMojibakeMarkers) {
   assert(
     !reportPage.includes(marker),
@@ -62,6 +75,13 @@ for (const marker of requiredReportMarkers) {
   assert(
     reportPage.includes(marker),
     `Printable pet report must include customer action summary marker: ${marker}`
+  );
+}
+
+for (const marker of requiredDigitalActionMarkers) {
+  assert(
+    reportPage.includes(marker),
+    `Printable pet report must include digital next-action marker: ${marker}`
   );
 }
 
