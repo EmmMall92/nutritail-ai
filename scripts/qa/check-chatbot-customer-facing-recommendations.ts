@@ -318,7 +318,7 @@ if (missingCleanGreekAdapterCopy.length > 0) {
 for (const scenario of coreScenarioSamples) {
   if (
     !scenario.text.includes(
-      `Based on what you told me, I am looking first for ${scenario.expectedGoalLabel}.`
+      `Based on what you told me, I built a shortlist for ${scenario.expectedGoalLabel}.`
     )
   ) {
     console.error(`Scenario ${scenario.label} did not show the expected customer priority.`);
@@ -326,7 +326,7 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose one food card below to see the first daily portion in grams")) {
+  if (!scenario.text.includes("Next step: choose the food you prefer to see the first daily portion in grams")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
@@ -445,8 +445,8 @@ if (!valueGoalSample.includes("Budget-friendly first choices:")) {
 }
 
 if (
-  !sample.includes("Best first choices:") ||
-  (!sample.includes("Practical alternatives:") && sampleResponse.value.length > 0)
+  !sample.includes("Top 3 first choices:") ||
+  (!sample.includes("3 simpler / budget-friendly options:") && sampleResponse.value.length > 0)
 ) {
   console.error("Customer-facing recommendation should use polished section labels.");
   console.error(sample);
@@ -593,6 +593,11 @@ const forbiddenChatbotPageCopy = [
   "There is no analysis to save yet. Run an analysis first.",
   "There was a problem saving the analysis. Please try again.",
   "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
+  "The first card is the strongest start for this pet profile.",
+  "stronger starting choices",
+  "Simple / budget options",
+  "Simple options are not bad foods.",
+  "List shape",
 ];
 const leakedChatbotPageCopy = forbiddenChatbotPageCopy.filter((term) =>
   chatbotPage.includes(term)
@@ -665,10 +670,11 @@ const requiredCardFlowCopy = [
   "Practical option",
   "Good alternative",
   "Estimate portion",
-  "Choose the food to start with",
+  "customer-recommendation-choice-panel",
+  "Your recommendations are ready",
   "Next: estimate the daily portion.",
-  "The first card is the strongest start for this pet profile. The others are useful options if flavour, brand, or budget fits you better.",
-  "Pick the food you like to get the first daily portion in grams.",
+  "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives.",
+  "Choose the food you prefer to see grams per day and keep the plan on the profile.",
   "1. Compare",
   "2. Choose",
   "3. Get",
@@ -693,10 +699,10 @@ const requiredCardFlowCopy = [
   "missing some label details",
   "compare the main nutrition points",
   "Next step: tell me which one you prefer",
-  "Best first choices",
-  "stronger starting choices",
-  "Simple / budget options",
-  "good alternatives when flavour, availability, or cost matters",
+  "Top 3 first choices",
+  "starting choices",
+  "3 simpler / budget-friendly options",
+  "alternatives when flavour, availability, or price matters",
   "Your plan is ready",
   "First daily portion",
   "Total: about",
@@ -770,7 +776,7 @@ const requiredCardFlowCopy = [
   "protein",
   "fat",
   "fiber",
-  "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more.",
+  "You do not have to choose the first card immediately. Pick the one that fits flavour, budget, and daily routine best.",
 ];
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
@@ -804,17 +810,17 @@ const requiredGreekCardFlowCopy = [
   "Πρακτική επιλογή",
   "Καλή εναλλακτική",
   "Υπολόγισε ποσότητα",
-  "Διάλεξε την τροφή που σου ταιριάζει",
+  "Οι προτάσεις σου είναι έτοιμες",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-  "Η πρώτη κάρτα είναι η πιο δυνατή αρχή για το προφίλ του κατοικιδίου.",
-  "Πάτησε την τροφή που σου αρέσει",
+  "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές",
+  "Πάτησε την τροφή που προτιμάς",
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",
   "Πώς να το διαβάσεις:",
-  "Καλύτερες πρώτες επιλογές",
-  "Πιο απλές / οικονομικές επιλογές",
-  "Οι πιο απλές επιλογές δεν είναι «λάθος» τροφές.",
-  "καλές εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή κόστος",
+  "Οι 3 καλύτερες πρώτες επιλογές",
+  "3 πιο απλές / οικονομικές επιλογές",
+  "Δεν χρειάζεται να διαλέξεις αμέσως την πρώτη.",
+  "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Οδηγός ημερήσιων θερμίδων",
   "Θερμίδες ηρεμίας:",

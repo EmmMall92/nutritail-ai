@@ -247,8 +247,8 @@ function scoreLabel() {
 
 function recommendationFocusLine(locale: "el" | "en", goalLabel: string) {
   return locale === "el"
-    ? `Με βάση αυτά που μου είπες, κοιτάω πρώτα επιλογές για ${goalLabel}.`
-    : `Based on what you told me, I am looking first for ${goalLabel}.`;
+    ? `Με βάση αυτά που μου είπες, έφτιαξα λίστα για ${goalLabel}.`
+    : `Based on what you told me, I built a shortlist for ${goalLabel}.`;
 }
 
 function cleanPreferenceTerms(values: string[] | undefined) {
@@ -499,8 +499,8 @@ function sectionTitle(
   if (goal === "value") {
     if (locale === "el") {
       return role === "premium"
-        ? "Πρώτες επιλογές που αξίζει να δεις:"
-        : "Πρακτικές εναλλακτικές:";
+        ? "Πρώτες οικονομικές επιλογές:"
+        : "Άλλες πρακτικές εναλλακτικές:";
     }
 
     return role === "premium"
@@ -509,16 +509,16 @@ function sectionTitle(
   }
 
   if (locale === "el") {
-    return role === "premium" ? "Καλύτερες πρώτες επιλογές:" : "Πιο οικονομικές / πρακτικές επιλογές:";
+    return role === "premium" ? "Οι 3 καλύτερες πρώτες επιλογές:" : "3 πιο απλές / οικονομικές επιλογές:";
   }
 
-  return role === "premium" ? "Best first choices:" : "Simple alternatives:";
+  return role === "premium" ? "Top 3 first choices:" : "3 simpler / budget-friendly options:";
 }
 
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
-    ? "Επόμενο βήμα: πάτησε μία κάρτα τροφής για να δεις την πρώτη ποσότητα σε γραμμάρια/ημέρα."
-    : "Next step: choose one food card below to see the first daily portion in grams.";
+    ? "Επόμενο βήμα: πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα και πώς να ξεκινήσεις."
+    : "Next step: choose the food you prefer to see the first daily portion in grams and how to start.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
@@ -725,8 +725,8 @@ export function formatFoodV2ChatbotRecommendationSummary(
     customerMedicalContextLine(locale, goal),
     top
       ? locale === "el"
-        ? `Ξεκίνα από: ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
-        : `Start with: ${foodName(top)}, because it ${customerReason(top, goal, locale)}.`
+        ? `Αν θέλεις μία άμεση αρχή, ξεκίνα από ${foodName(top)}, γιατί ${customerReason(top, goal, locale)}.`
+        : `If you want one clear starting point, start with ${foodName(top)} because it ${customerReason(top, goal, locale)}.`
       : "",
     excludedBrands.length > 0
       ? locale === "el"
