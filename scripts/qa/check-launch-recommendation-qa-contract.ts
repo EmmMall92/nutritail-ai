@@ -40,8 +40,12 @@ assert(
   "CI readiness must run chatbot intake cleanup before customer-facing recommendation QA."
 );
 assert(
-  packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:food-v2-guard-coverage"),
-  "CI readiness must run Food V2 preference/ranking QA and launch edge accuracy before guard coverage."
+  packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:customer-recommendation-smoke && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:food-v2-guard-coverage"),
+  "CI readiness must run customer recommendation smoke before Food V2 preference/ranking QA and launch edge accuracy."
+);
+assert(
+  packageJson.includes("\"qa:customer-recommendation-smoke\""),
+  "package.json must expose the customer recommendation smoke command."
 );
 assert(
   packageJson.includes("qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:food-v2-guard-coverage"),

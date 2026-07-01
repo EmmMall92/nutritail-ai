@@ -326,7 +326,7 @@ for (const scenario of coreScenarioSamples) {
     process.exit(1);
   }
 
-  if (!scenario.text.includes("Next step: choose the food you prefer to see the first daily portion in grams")) {
+  if (!scenario.text.includes("Next step: choose one food card below to see the first daily portion in grams")) {
     console.error(`Scenario ${scenario.label} did not include the customer card CTA.`);
     console.error(scenario.text);
     process.exit(1);
