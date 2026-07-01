@@ -137,5 +137,38 @@
       "weightKg": 10,
       "activityLevel": "normal"
     }
+  },
+  {
+    "id": "greek_avoid_wheat_corn_dairy_legumes",
+    "message": "Έχω σκύλο που δεν αντέχει το σιτάρι, το καλαμπόκι, τα γαλακτοκομικά και τα όσπρια.",
+    "expect": {
+      "species": "dog",
+      "excludedIngredients": ["wheat", "corn", "dairy", "legumes"]
+    }
+  },
+  {
+    "id": "greek_unexplained_weight_loss_is_caution_gain",
+    "message": "Έχω σκύλο που χάνει βάρος χωρίς λόγο.",
+    "expect": {
+      "species": "dog",
+      "weightGoal": "gain",
+      "healthIssues": ["unexplained_weight_loss"]
+    }
+  },
+  {
+    "id": "greek_environment_activity_context",
+    "message": "Έχω σκύλο που ζει σε πολυκατοικία χωρίς αυλή.",
+    "expect": {
+      "species": "dog",
+      "activityLevel": "low"
+    }
+  },
+  {
+    "id": "greek_lactating_dog_caution_context",
+    "message": "Έχω σκύλα που θηλάζει 6 κουτάβια.",
+    "expect": {
+      "species": "dog",
+      "healthIssues": ["lactation"]
+    }
   }
 ]
