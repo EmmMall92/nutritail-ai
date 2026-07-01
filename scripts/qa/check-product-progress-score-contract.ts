@@ -13,6 +13,7 @@ function assert(condition: unknown, message: string) {
 const doc = read("docs/product-progress-score.md");
 const launchDoc = read("docs/launch-readiness-score.md");
 const packageJson = read("package.json");
+const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
 
 const categoryMarkers = [
   "Final chatbot experience",
@@ -76,6 +77,25 @@ assert(
     "qa:launch-readiness-score-contract && npm run qa:product-progress-score-contract && npm run qa:pr-quality-policy"
   ),
   "CI readiness must run product progress score contract after launch readiness score contract."
+);
+
+assert(
+  liveQaPage.includes("function readCustomerProductProgressSummary") &&
+    liveQaPage.includes("docs/product-progress-score.md"),
+  "Admin live QA page must read the customer product progress rubric."
+);
+
+assert(
+  liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
+    liveQaPage.includes("Customer product progress") &&
+    liveQaPage.includes("separate from automated"),
+  "Admin live QA page must expose the customer product progress summary."
+);
+
+assert(
+  liveQaPage.includes("Why it may not move every PR") &&
+    liveQaPage.includes("Next moves toward 92-93%"),
+  "Admin live QA page must explain why the score feels stuck and what moves it next."
 );
 
 console.log("Product progress score contract passed.");
