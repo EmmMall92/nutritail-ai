@@ -518,7 +518,7 @@ function sectionTitle(
 function nextStepLine(locale: "el" | "en") {
   return locale === "el"
     ? "Επόμενο βήμα: πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα και πώς να ξεκινήσεις."
-    : "Next step: choose the food you prefer to see the first daily portion in grams and how to start.";
+    : "Next step: choose one food card below to see the first daily portion in grams.";
 }
 
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
