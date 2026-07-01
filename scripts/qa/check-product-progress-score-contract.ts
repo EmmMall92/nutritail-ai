@@ -33,8 +33,12 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **91-92%**",
-  "The latest move from **90-91%** to **91-92%**",
+  "Customer product progress is currently **92-93%**",
+  "The latest move from **91-92%** to **92-93%**",
+  "metadata-only",
+  "working Husky",
+  "Food V2 ranking audit passes 38/38",
+  "The previous move from **90-91%** to **91-92%**",
   "Weight goal is now preserved",
   "active weight-gain dog guard",
   "Food V2 launch-edge accuracy",
@@ -49,7 +53,7 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
-  "91-92%",
+  "92-93%",
   "Beta access, plan limits, subscription/payment direction",
 ];
 

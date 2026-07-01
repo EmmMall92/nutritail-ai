@@ -12,7 +12,7 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **91-92%**.
+Customer product progress is currently **92-93%**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
@@ -20,7 +20,20 @@ requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
 ## Latest Movement
 
-The latest move from **90-91%** to **91-92%** is justified by a real
+The latest move from **91-92%** to **92-93%** is justified by a live
+recommendation-accuracy review that found and fixed a real customer-visible
+ranking issue:
+
+- A working Husky/high-activity dog case no longer treats metadata-only
+  `dog_size` as proof that a food is small/mini when the product name and
+  visible positioning do not say that.
+- The ranking logic still protects true visible mini/small mismatches, so a
+  visibly Mini food can be held for a 10kg sterilised dog while metadata-only
+  noise does not bury a suitable active formula.
+- Activity-context guard scenarios now cover mountain working dogs and
+  low-activity apartment dogs, and the Food V2 ranking audit passes 38/38.
+
+The previous move from **90-91%** to **91-92%** was justified by a real
 recommendation-accuracy fix that is now protected by QA:
 
 - Weight goal is now preserved when the chatbot asks Food V2 for candidates, so
@@ -76,7 +89,7 @@ chatbot proof after deploy.
 
 ## Why It Feels Stuck
 
-At 91-92%, small polish work improves the product but may not move the score.
+At 92-93%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -87,7 +100,7 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 91-92 toward 93-94:
+These are the most likely moves from 92-93 toward 93-94:
 
 1. Run live dog/cat chatbot QA and convert the next real mistake into a ranking
    guard.
@@ -106,5 +119,5 @@ When reporting progress, always say both numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 91-92%. The next point depends on live chatbot accuracy fixes, customer report
+> 92-93%. The next point depends on live chatbot accuracy fixes, customer report
 > polish, or live OpenAI proof, not another generic PR.
