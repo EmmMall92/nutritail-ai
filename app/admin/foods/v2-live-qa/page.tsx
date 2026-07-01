@@ -23,6 +23,7 @@ type ReadinessSummary = {
 
 type CustomerProductProgressSummary = {
   estimate: string;
+  overallSaasEstimate: string;
   latestMovement: string;
   whyItFeelsStuck: string[];
   nextScoreMoves: string[];
@@ -107,6 +108,7 @@ function readLiveReadinessSummary(): ReadinessSummary {
 function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
   const fallback = {
     estimate: "unknown",
+    overallSaasEstimate: "unknown",
     latestMovement: "No product progress rubric found.",
     whyItFeelsStuck: [
       "Customer progress moves only when a real customer-visible risk is reduced.",
@@ -125,6 +127,9 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     const estimate =
       doc.match(/Customer product progress is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
       fallback.estimate;
+    const overallSaasEstimate =
+      doc.match(/Overall SaaS launch progress is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
+      fallback.overallSaasEstimate;
     const latestMovement =
       doc.match(/## Latest Movement\s+([\s\S]*?)\n## /i)?.[1]?.trim().split("\n")[0] ??
       fallback.latestMovement;
@@ -151,6 +156,7 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
 
     return {
       estimate,
+      overallSaasEstimate,
       latestMovement,
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
       nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
@@ -318,17 +324,39 @@ export default function FoodV2LiveQaPage() {
         data-testid="customer-product-progress-summary"
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
+          <div className="max-w-4xl">
             <p className="text-sm font-semibold uppercase tracking-wide">
               Customer product progress
             </p>
-            <h3 className="mt-1 text-2xl font-bold">
-              {productProgress.estimate}
-            </h3>
+            <div className="mt-2 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                  Customer nutrition app
+                </p>
+                <p className="mt-1 text-2xl font-bold">{productProgress.estimate}</p>
+                <p className="mt-1 text-sm text-blue-900">
+                  Chatbot, saved pets, reports, account UX, Food V2, and customer
+                  nutrition flow.
+                </p>
+              </div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Overall SaaS launch
+                </p>
+                <p className="mt-1 text-2xl font-bold">
+                  {productProgress.overallSaasEstimate}
+                </p>
+                <p className="mt-1 text-sm">
+                  Includes business layer, beta limits, payments direction,
+                  monitoring, legal/trust readiness, and production operations.
+                </p>
+              </div>
+            </div>
             <p className="mt-2 max-w-3xl text-sm">
-              This is the customer-experience estimate, separate from automated
-              live readiness. It moves only when a real pet owner flow becomes
-              clearer, safer, or more accurate.
+              These are separate from automated live readiness. Customer progress
+              moves when a real pet owner flow becomes clearer, safer, or more
+              accurate. Overall SaaS launch progress moves only when the wider
+              business and production readiness gaps close too.
             </p>
           </div>
           <Link

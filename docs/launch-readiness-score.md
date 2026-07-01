@@ -7,7 +7,7 @@ post-deploy reports.
 
 ## Two Different Percentages
 
-Use two labels so progress does not look stuck:
+Use separate labels so progress does not look stuck:
 
 - **Automated live readiness**: the measurable QA score from
   `reports/live_readiness_dashboard.md`. This can reach 95-100 when live routes,
@@ -19,6 +19,10 @@ Use two labels so progress does not look stuck:
   return for progress, and feel the result is polished enough to trust.
   The detailed Customer Product Progress Score rubric lives in
   `docs/product-progress-score.md`.
+- **Overall SaaS launch progress**: the broader public-launch estimate. This is
+  intentionally lower while business limits, beta access, payments or
+  subscription direction, production monitoring, legal/trust readiness, and
+  operating support are not fully closed.
 
 The automated score can be 100/100 while customer product progress still needs a
 few targeted UX passes. Do not keep saying 78-80% after the automated readiness
@@ -133,7 +137,8 @@ Use `docs/product-progress-score.md` when the user asks why the product progress
 number feels stuck even though automated live readiness is higher. The customer
 product score should move only after evidence-based UX or recommendation-risk
 reductions, such as the OpenAI intake-context QA fix that moved the product from
-92-93% to 93-94%.
+92-93% to 93-94%. If the user asks about the whole project or launch company
+readiness, also report the overall SaaS launch progress from the same rubric.
 
 ## Practical Progress Bands
 
@@ -154,8 +159,10 @@ When the user asks "what percentage are we at?", answer from current evidence:
 2. Say "automated live readiness" when quoting the dashboard score.
 3. Separately estimate "customer product progress" from the latest live UX
    findings.
-4. Explain the biggest blocker to the next point.
-5. Avoid raising the percentage just because a PR merged; raise the automated
+4. Separately report "overall SaaS launch progress" when the question is about
+   the whole project, business launch, or public SaaS readiness.
+5. Explain the biggest blocker to the next point.
+6. Avoid raising the percentage just because a PR merged; raise the automated
    score from fresh evidence and the customer product estimate from real UX
    improvements.
 

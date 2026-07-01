@@ -34,6 +34,10 @@ for (const marker of categoryMarkers) {
 
 const requiredMarkers = [
   "Customer product progress is currently **93-94%**",
+  "Overall SaaS launch progress is currently **80-82%**",
+  "business limits, beta access, subscription",
+  "legal/trust readiness",
+  "is the whole company/product ready to launch?",
   "The latest move from **92-93%** to **93-94%**",
   "authenticated",
   "OpenAI/chatbot intake-context fix",
@@ -106,6 +110,8 @@ assert(
 assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
     liveQaPage.includes("Customer product progress") &&
+    liveQaPage.includes("Overall SaaS launch") &&
+    liveQaPage.includes("productProgress.overallSaasEstimate") &&
     liveQaPage.includes("separate from automated"),
   "Admin live QA page must expose the customer product progress summary."
 );
