@@ -32,8 +32,11 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **89-90%**",
-  "The latest move from **88-89%** to **89-90%**",
+  "Customer product progress is currently **90-91%**",
+  "The latest move from **89-90%** to **90-91%**",
+  "drop-off priorities for analyses without",
+  "choice clarity, save confidence, food matching, and",
+  "answer usefulness",
   "Do not raise this score because a pull request merged",
   "Automated live readiness",
   "customer-visible risk is reduced",
