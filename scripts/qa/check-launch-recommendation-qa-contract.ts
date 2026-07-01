@@ -17,6 +17,7 @@ const requiredSuites = [
   "Cat ranking balance",
   "Senior visible ranking",
   "Food preference and puppy ranking",
+  "Food V2 launch edge accuracy",
   "Food V2 ranking scenarios",
   "Dog live smoke",
   "Cat live safety",
@@ -39,8 +40,16 @@ assert(
   "CI readiness must run chatbot intake cleanup before customer-facing recommendation QA."
 );
 assert(
-  packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-guard-coverage"),
-  "CI readiness must run Food V2 preference/ranking QA before guard coverage."
+  packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:food-v2-guard-coverage"),
+  "CI readiness must run Food V2 preference/ranking QA and launch edge accuracy before guard coverage."
+);
+assert(
+  packageJson.includes("qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:food-v2-guard-coverage"),
+  "CI readiness must run launch edge accuracy between preference ranking and guard coverage."
+);
+assert(
+  packageJson.includes("\"qa:food-v2-launch-edge-accuracy\""),
+  "package.json must expose the Food V2 launch edge accuracy command."
 );
 assert(
   smokeRunner.includes("reports/chatbot_sensitive_recommendation_smoke.md"),
@@ -69,6 +78,10 @@ assert(
 assert(
   smokeRunner.includes("urinary/renal mismatch guards"),
   "Sensitive recommendation smoke must cover urinary and renal mismatch guards."
+);
+assert(
+  smokeRunner.includes("Food V2 launch edge accuracy"),
+  "Sensitive recommendation smoke must include the Food V2 launch edge accuracy suite."
 );
 
 console.log("Launch recommendation QA contract passed.");
