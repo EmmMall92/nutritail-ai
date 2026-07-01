@@ -1407,6 +1407,8 @@ function scoreFit(input: FoodV2RankingInput) {
   if (goal === "sensitive_digestion" || hasGiSymptomContext(pet)) {
     const hasDigestiveFit = hasSensitiveDigestivePositioning(positioningText);
     const hasGasContext = hasGasFlatulenceContext(pet);
+    const hasRenalMismatch = hasRenalPositioning(positioningText) && !hasRenalContext(pet);
+    const hasUrinaryMismatch = hasUrinaryPositioning(positioningText) && !hasUrinaryContext(pet);
     const hasMonoproteinOnlyPositioning =
       hasAny(haystack, ["monoprotein", "mono protein", "single protein"]) &&
       !hasDigestiveFit;
@@ -1448,6 +1450,15 @@ function scoreFit(input: FoodV2RankingInput) {
         "weight_positioning_not_digestive_fit",
         -18,
         "Weight-control positioning does not replace digestive support."
+      );
+    }
+    if (hasRenalMismatch || hasUrinaryMismatch) {
+      addSignal(
+        signals,
+        "exclude",
+        "medical_diet_not_digestive_fit",
+        -100,
+        "Excluded because renal or urinary veterinary positioning does not replace digestive support."
       );
     }
     if (hasMonoproteinOnlyPositioning) {

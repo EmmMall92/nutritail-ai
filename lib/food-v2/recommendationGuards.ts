@@ -174,6 +174,12 @@ const SIGNAL_GUARDS: Record<
     fallbackMessage:
       "Chronic gas contexts need visible digestive, sensitive, or GI support rather than monoprotein positioning alone.",
   },
+  medical_diet_not_digestive_fit: {
+    code: "medical_diet_not_digestive_fit",
+    severity: "block",
+    fallbackMessage:
+      "Renal or urinary veterinary positioning does not replace digestive support.",
+  },
   adjacent_dog_size_mismatch: {
     code: "adjacent_dog_size_mismatch",
     severity: "warning",

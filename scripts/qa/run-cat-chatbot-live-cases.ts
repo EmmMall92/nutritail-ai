@@ -393,6 +393,25 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
     warnings.push("Senior case did not surface senior/mature candidates.");
   }
 
+  if (signals.has("sensitive_digestion")) {
+    const prompt = normalizeText(testCase.prompt);
+    const hasRenalOrUrinaryPromptContext =
+      /renal|kidney|urinary|struvite|oxalate|\u03bd\u03b5\u03c6\u03c1|\u03bf\u03c5\u03c1\u03bf\u03bb|\u03bf\u03be\u03b1\u03bb/.test(
+        prompt
+      );
+    const medicalMismatch = foods.slice(0, 3).find((food) =>
+      /renal|kidney|urinary|struvite|oxalate|\u03bd\u03b5\u03c6\u03c1|\u03bf\u03c5\u03c1\u03bf\u03bb|\u03bf\u03be\u03b1\u03bb/.test(
+        normalizeText(visibleFoodText(food))
+      )
+    );
+
+    if (medicalMismatch && !hasRenalOrUrinaryPromptContext) {
+      warnings.push(
+        `Sensitive-digestion case surfaced renal/urinary food in the top shortlist: ${foodLabel(medicalMismatch)}.`
+      );
+    }
+  }
+
   if (goal === "allergy") {
     const prompt = normalizeText(testCase.prompt);
     const riskyProteins = [
