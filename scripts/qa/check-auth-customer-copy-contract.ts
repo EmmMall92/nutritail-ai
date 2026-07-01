@@ -37,6 +37,7 @@ const pages = [
       "reports",
       "progress checks",
       'data-testid="auth-next-step-card"',
+      "Πίσω στη σύνδεση",
     ],
   },
   {
@@ -47,6 +48,7 @@ const pages = [
       "reports",
       "νέα ανάλυση",
       'data-testid="auth-next-step-card"',
+      "Σύνδεση στον λογαριασμό",
     ],
   },
 ];
