@@ -9,6 +9,19 @@ function assert(condition: unknown, message: string) {
 const reportPage = readFileSync("app/print/pet-report/[id]/page.tsx", "utf8");
 const packageJson = readFileSync("package.json", "utf8");
 
+const suspiciousMojibakeMarkers = [
+  "Ο€",
+  "Οƒ",
+  "Ο„",
+  "Ο‡",
+  "Ο‰",
+  "Ξ±",
+  "Ξµ",
+  "Ξ·",
+  "ΞΌ",
+  "Ξ½",
+];
+
 const requiredReportMarkers = [
   "getReportActionSummary",
   "getReportPlanSnapshot",
@@ -37,6 +50,13 @@ const requiredReportMarkers = [
   "reportPlanSnapshot.map",
   "getTreatAllowance(analysis)",
 ];
+
+for (const marker of suspiciousMojibakeMarkers) {
+  assert(
+    !reportPage.includes(marker),
+    `Printable pet report must not include mojibake marker: ${marker}`
+  );
+}
 
 for (const marker of requiredReportMarkers) {
   assert(
