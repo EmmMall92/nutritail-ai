@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
+import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
 function getSafeRedirectPath() {
@@ -107,7 +108,7 @@ export default function RegisterPage() {
     } catch (err) {
       console.error(err);
 
-      setError(err instanceof Error ? err.message : "Δεν ολοκληρώθηκε η εγγραφή.");
+      setError(getCustomerAuthErrorMessage(err, "register"));
     } finally {
       setIsLoading(false);
     }

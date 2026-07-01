@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
+import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ResetPasswordPage() {
@@ -70,9 +71,7 @@ export default function ResetPasswordPage() {
       }, 1200);
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error ? err.message : "Δεν μπόρεσε να ενημερωθεί ο κωδικός."
-      );
+      setError(getCustomerAuthErrorMessage(err, "reset"));
     } finally {
       setIsLoading(false);
     }

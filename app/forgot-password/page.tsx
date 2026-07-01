@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { AuthShell } from "@/components/AuthShell";
+import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
@@ -41,9 +42,7 @@ export default function ForgotPasswordPage() {
       );
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error ? err.message : "Δεν μπόρεσε να σταλεί email επαναφοράς."
-      );
+      setError(getCustomerAuthErrorMessage(err, "forgot"));
     } finally {
       setIsLoading(false);
     }
