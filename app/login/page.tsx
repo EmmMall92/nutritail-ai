@@ -61,6 +61,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -163,14 +164,24 @@ export default function LoginPage() {
 
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Κωδικός</span>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Κωδικός"
-            type="password"
-            autoComplete="current-password"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
-          />
+          <div className="mt-2 flex rounded-xl border border-gray-300 bg-white transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-100">
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Κωδικός"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              className="min-w-0 flex-1 rounded-l-xl p-3 text-black outline-none"
+            />
+            <button
+              type="button"
+              aria-label={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
+              onClick={() => setShowPassword((value) => !value)}
+              className="shrink-0 rounded-r-xl border-l border-gray-200 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            >
+              {showPassword ? "Απόκρυψη" : "Εμφάνιση"}
+            </button>
+          </div>
         </label>
 
         <div className="text-right">
