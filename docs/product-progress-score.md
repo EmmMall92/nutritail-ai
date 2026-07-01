@@ -12,7 +12,7 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **89-90%**.
+Customer product progress is currently **90-91%**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
@@ -20,8 +20,20 @@ requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
 ## Latest Movement
 
-The latest move from **88-89%** to **89-90%** is justified by customer-visible
-work that reduced real user friction:
+The latest move from **89-90%** to **90-91%** is justified by a stronger
+analytics/feedback loop that makes the remaining customer-flow risks visible:
+
+- Admin feedback now shows customer drop-off priorities for analyses without
+  food choices, food choices without saved plans, failed food matches, and
+  not-helpful answers.
+- The drop-off panel turns vague "the chatbot needs polish" concerns into
+  specific next actions: choice clarity, save confidence, food matching, and
+  answer usefulness.
+- Chat feedback and funnel QA contracts now protect the drop-off metrics so the
+  launch learning loop survives future refactors.
+
+The previous move from **88-89%** to **89-90%** was justified by
+customer-visible work that reduced real user friction:
 
 - Auth copy and auth error states now use safer customer language.
 - Saved analysis handoff gives clearer profile, report, timeline, and progress
@@ -30,9 +42,10 @@ work that reduced real user friction:
 - Saved-pet continuation supports progress checks, no-result follow-up,
   another-food guidance, flavour/company change, and timeline review.
 
-This is not a 90%+ launch claim yet. The next point should come from live
-dog/cat chatbot QA that finds and fixes real recommendation mistakes, or from a
-fresh authenticated OpenAI chatbot proof after deploy.
+This is not a 95% launch claim yet. The next point should come from live
+dog/cat chatbot QA that finds and fixes real recommendation mistakes, from a
+clearer customer report/account flow, or from a fresh authenticated OpenAI
+chatbot proof after deploy.
 
 ## Ten Launch Categories
 
@@ -45,13 +58,13 @@ fresh authenticated OpenAI chatbot proof after deploy.
 | User account polish | 8 | Solid dashboard foundation | Account page makes pets, latest analysis, progress, reports, and actions obvious on mobile and desktop. |
 | Email/auth polish | 7 | Stronger after customer-safe auth errors | Login, register, forgot password, reset password, and email-confirmation states use plain customer language. |
 | Public trust pages | 7 | Good foundation | About, how-it-works, methodology, privacy, terms, and AI-boundaries explain trust without overclaiming. |
-| Analytics/feedback loop | 8 | Present, needs real usage review | Admin can see not-helpful feedback, selected foods, funnel drop-off, and recurring recommendation issues. |
+| Analytics/feedback loop | 8 | Stronger: drop-off priorities are visible | Admin can see not-helpful feedback, selected foods, funnel drop-off, and recurring recommendation issues, then act on the highest-impact customer drop-off group first. |
 | Launch QA | 10 | Strong automated evidence | Mobile, live routes, SEO, GSC assets, speed, error monitoring, and post-deploy checks stay fresh after deploys. |
 | Business layer | 7 | Beta/waitlist exists; paid plans later | Beta access, plan limits, subscription/payment direction, and launch gating are clear enough for first users. |
 
 ## Why It Feels Stuck
 
-At 89-90%, small polish work improves the product but may not move the score.
+At 90-91%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -62,7 +75,7 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 89-90 toward 91-92:
+These are the most likely moves from 90-91 toward 92-93:
 
 1. Run live dog/cat chatbot QA and convert any real mistake into a ranking guard.
 2. Polish the final report so it reads like a useful customer handout.
@@ -80,5 +93,5 @@ When reporting progress, always say both numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 89-90%. The next point depends on live chatbot accuracy fixes or live OpenAI
-> proof, not another generic PR.
+> 90-91%. The next point depends on live chatbot accuracy fixes, customer report
+> polish, or live OpenAI proof, not another generic PR.
