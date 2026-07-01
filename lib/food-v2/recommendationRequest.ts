@@ -1,6 +1,8 @@
 import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
 import type { PetActivityLevel, PetSpecies } from "@/types/pet";
 
+type WeightGoalContext = "maintain" | "loss" | "gain";
+
 const VALID_GOALS = new Set<FoodV2RecommendationGoal>([
   "general",
   "premium",
@@ -49,12 +51,30 @@ function coalesceUnknown(...values: unknown[]) {
   return values.find((value) => value !== null && value !== undefined && value !== "");
 }
 
+function weightGoalFromRecommendationValue(value: unknown): WeightGoalContext | null {
+  if (value === "maintain" || value === "loss" || value === "gain") return value;
+  return null;
+}
+
+function weightGoalHealthContext(value: WeightGoalContext | null) {
+  if (value === "loss") return "weight loss goal";
+  if (value === "gain") return "weight gain goal";
+  return null;
+}
+
 export function normalizeFoodV2RecommendationPetContext(input: {
   pet: Record<string, unknown>;
   body?: Record<string, unknown>;
   species: PetSpecies;
 }) {
   const { pet, body = {}, species } = input;
+  const weightGoal = weightGoalFromRecommendationValue(
+    coalesceUnknown(pet.weightGoal, pet.weight_goal, body.weightGoal, body.weight_goal)
+  );
+  const healthIssues = stringArrayFromRecommendationValue(
+    coalesceUnknown(pet.healthIssues, pet.health_issues, body.healthIssues, body.health_issues)
+  );
+  const weightGoalContext = weightGoalHealthContext(weightGoal);
 
   return {
     species,
@@ -76,12 +96,13 @@ export function normalizeFoodV2RecommendationPetContext(input: {
       )
     ),
     neutered: Boolean(coalesceUnknown(pet.neutered, body.neutered, false)),
+    weightGoal,
     allergies: stringArrayFromRecommendationValue(
       coalesceUnknown(pet.allergies, body.allergies)
     ),
-    healthIssues: stringArrayFromRecommendationValue(
-      coalesceUnknown(pet.healthIssues, pet.health_issues, body.healthIssues, body.health_issues)
-    ),
+    healthIssues: weightGoalContext
+      ? [...healthIssues, weightGoalContext]
+      : healthIssues,
     excludedIngredients: stringArrayFromRecommendationValue(
       coalesceUnknown(
         pet.excludedIngredients,

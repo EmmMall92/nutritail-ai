@@ -2445,6 +2445,7 @@ async function getFoodV2RecommendationMessage(
         weight: pet.weight,
         activityLevel: pet.activityLevel,
         neutered: pet.neutered,
+        weightGoal: pet.weightGoal,
         allergies: pet.allergies,
         healthIssues: pet.healthIssues,
         excludedIngredients: pet.excludedIngredients ?? [],

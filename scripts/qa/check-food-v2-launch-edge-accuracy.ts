@@ -3,6 +3,7 @@ import {
   splitFoodV2Recommendations,
   type FoodV2RecommendationGoal,
 } from "@/lib/food-v2/recommendationRanking";
+import { normalizeFoodV2RecommendationPetContext } from "@/lib/food-v2/recommendationRequest";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 
 type TestPet = Parameters<typeof rankFoodV2ForPet>[0]["pet"];
@@ -97,6 +98,69 @@ const giantAdultDog: TestPet = {
   excludedIngredients: [],
   preferredProteins: [],
 };
+
+{
+  const activeGainPet = normalizeFoodV2RecommendationPetContext({
+    species: "dog",
+    pet: {
+      species: "dog",
+      breed: "Belgian Malinois",
+      weight: 30,
+      age: 3,
+      activityLevel: "high",
+      weightGoal: "gain",
+      healthIssues: [],
+    },
+  });
+  const lowFatLight = food({
+    id: "low-fat-light",
+    formula_key: "qa|low-fat-light|dog|dry",
+    display_name: "Light Low Fat Adult",
+    formula_name: "Light Low Fat Adult",
+    commercial_tags: ["light", "low fat", "weight control"],
+    kcal_per_100g: 325,
+  });
+  const activeEnergy = food({
+    id: "active-energy",
+    formula_key: "qa|active-energy|dog|dry",
+    display_name: "Active Energy Adult",
+    formula_name: "Active Energy Adult",
+    commercial_tags: ["active", "energy", "working"],
+    kcal_per_100g: 402,
+  });
+  const rankings = rankFoods({
+    foods: [lowFatLight, activeEnergy],
+    pet: activeGainPet,
+    goal: "general",
+    nutrientOverrides: {
+      [lowFatLight.formula_key]: { protein_percent: 24, fat_percent: 7 },
+      [activeEnergy.formula_key]: { protein_percent: 30, fat_percent: 18 },
+    },
+  });
+  const { visible } = visibleTop(rankings, "general");
+  const lowFatRanking = rankings.find((item) => item.formula_key === lowFatLight.formula_key);
+
+  assert(
+    activeGainPet.healthIssues.includes("weight gain goal"),
+    "Food V2 recommendation normalization must preserve weight-gain context for ranking.",
+    activeGainPet
+  );
+  assert(
+    visible[0]?.formula_key === activeEnergy.formula_key,
+    "Active weight-gain dogs should start from active/energy food, not low-fat light food.",
+    { rankings, visible }
+  );
+  assert(
+    lowFatRanking?.bucket === "hold" &&
+      lowFatRanking.signals.some((signal) =>
+        ["low_fat_formula_for_active_gain_pet", "light_formula_for_high_activity_pet"].includes(
+          signal.code
+        )
+      ),
+    "Low-fat light food should be held for active weight-gain cases.",
+    lowFatRanking
+  );
+}
 
 {
   const smallAdult = food({
