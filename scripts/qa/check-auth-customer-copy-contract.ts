@@ -65,6 +65,24 @@ for (const page of pages) {
     );
   }
 
+  assert(
+    source.includes("getCustomerAuthErrorMessage"),
+    `${page.path} must use customer-safe auth error messages.`
+  );
+}
+
+const authMessages = read("lib/auth/customerAuthMessages.ts");
+
+for (const marker of [
+  "Έλεγξε email και κωδικό",
+  "Υπάρχει ήδη λογαριασμός",
+  "Έγιναν πολλές προσπάθειες",
+  "Το link δεν είναι πλέον ενεργό",
+]) {
+  assert(
+    authMessages.includes(marker),
+    `customer auth error helper must include marker: ${marker}`
+  );
 }
 
 const packageJson = read("package.json");
@@ -75,10 +93,15 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:auth-customer-errors"'),
+  "package.json must expose qa:auth-customer-errors."
+);
+
+assert(
   packageJson.includes(
-    "qa:customer-ux-copy && npm run qa:auth-customer-copy && npm run qa:chatbot-customer-recommendations"
+    "qa:customer-ux-copy && npm run qa:auth-customer-copy && npm run qa:auth-customer-errors && npm run qa:chatbot-customer-recommendations"
   ),
-  "CI readiness must include qa:auth-customer-copy."
+  "CI readiness must include auth customer copy and error QA."
 );
 
 console.log("Auth customer copy contract passed.");
