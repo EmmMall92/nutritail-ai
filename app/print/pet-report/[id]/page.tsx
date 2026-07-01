@@ -772,6 +772,9 @@ export default function PrintablePetReportPage() {
   );
   const foodReasoningSummary = getFoodReasoningSummary(pet, latestAnalysis);
   const reportTreatAllowance = getTreatAllowance(latestAnalysis);
+  const hasCompleteFoodPlan = Boolean(
+    latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
+  );
   const reportPortionLabel = latestAnalysis?.feeding_grams_per_day
     ? `${latestAnalysis.feeding_grams_per_day}g/ημέρα`
     : latestAnalysis?.mer
@@ -794,8 +797,17 @@ export default function PrintablePetReportPage() {
               Προσωπική διατροφική περίληψη για {pet.name}
             </p>
 
-            <p className="mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900">
-              Έτοιμο για εκτύπωση ή αποστολή στον πελάτη
+            <p
+              data-testid="report-completion-status"
+              className={`mt-3 inline-flex rounded-full border px-4 py-2 text-sm font-semibold ${
+                hasCompleteFoodPlan
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                  : "border-amber-200 bg-amber-50 text-amber-950"
+              }`}
+            >
+              {hasCompleteFoodPlan
+                ? "Πλήρες πλάνο με τροφή και ποσότητα"
+                : "Χρειάζεται επιλογή τροφής για πλήρες πλάνο"}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
