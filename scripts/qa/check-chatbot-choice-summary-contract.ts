@@ -18,11 +18,11 @@ assert(
   "Chatbot must build a compact customer-facing food shortlist summary."
 );
 assert(
-  chatbotPage.includes("Πρώτη επιλογή"),
+  chatbotPage.includes("Πρώτη πρόταση"),
   "Food shortlist summary must highlight the first recommendation in Greek."
 );
 assert(
-  chatbotPage.includes("First pick"),
+  chatbotPage.includes("First recommendation"),
   "Food shortlist summary must highlight the first recommendation in English."
 );
 assert(
@@ -30,12 +30,12 @@ assert(
   "Food shortlist summary must surface the first portion preview."
 );
 assert(
-  chatbotPage.includes("Πάτησε κάρτα τροφής"),
-  "Food shortlist summary must explain that tapping a card keeps the portion and plan."
+  chatbotPage.includes("Πάτησε τροφή"),
+  "Food shortlist summary must explain that choosing a food shows grams per day."
 );
 assert(
-  chatbotPage.includes("Δομή λίστας") && chatbotPage.includes("visiblePremiumCount"),
-  "Food shortlist summary must show how many strong and value choices are visible."
+  chatbotPage.includes("Τι θα δεις") && chatbotPage.includes("visiblePremiumCount"),
+  "Food shortlist summary must show how many first and practical choices are visible."
 );
 assert(
   chatbotPage.includes("πιο απλές ή οικονομικές εναλλακτικές"),
@@ -46,7 +46,7 @@ assert(
   "Greek customer-facing shortlist copy must not expose the English value label."
 );
 assert(
-  chatbotPage.includes("Simple / budget options"),
+  chatbotPage.includes("3 simpler / budget-friendly options"),
   "English food shortlist section should use customer-friendly budget wording."
 );
 assert(

@@ -1202,14 +1202,14 @@ function getRecommendationShortlistHighlights(
 
   return [
     {
-      label: language === "el" ? "Πρώτη επιλογή" : "First pick",
+      label: language === "el" ? "Πρώτη πρόταση" : "First recommendation",
       value:
         firstChoice?.name ??
         (language === "el" ? "Δεν υπάρχει ακόμη" : "Not ready yet"),
       detail:
         language === "el"
-          ? "Ξεκίνα από εδώ αν θέλεις την πιο δυνατή πρόταση για το προφίλ."
-          : "Start here if you want the strongest fit for this profile.",
+          ? "Η πιο καθαρή αρχή με βάση όσα δήλωσες."
+          : "The clearest starting point based on what you shared.",
       tone: "border-emerald-200 bg-emerald-50 text-emerald-950",
     },
     {
@@ -1221,32 +1221,32 @@ function getRecommendationShortlistHighlights(
           : "after choosing",
       detail:
         language === "el"
-          ? "Πάτησε κάρτα τροφής για να κρατήσουμε ποσότητα και πλάνο."
-          : "Tap a food card to keep the portion and plan.",
+          ? "Πάτησε τροφή για να δεις γραμμάρια/ημέρα."
+          : "Choose a food to see grams per day.",
       tone: "border-lime-200 bg-lime-50 text-lime-950",
     },
     {
-      label: language === "el" ? "Δομή λίστας" : "List shape",
+      label: language === "el" ? "Τι θα δεις" : "What you get",
       value:
         language === "el"
-          ? `${visiblePremiumCount} δυνατές + ${visibleValueCount} πρακτικές`
-          : `${visiblePremiumCount} strong + ${visibleValueCount} value`,
+          ? `${visiblePremiumCount} πρώτες + ${visibleValueCount} πρακτικές`
+          : `${visiblePremiumCount} first picks + ${visibleValueCount} practical`,
       detail:
         language === "el"
-          ? "Πρώτα βλέπεις τις πιο δυνατές επιλογές και μετά πιο απλές ή οικονομικές εναλλακτικές."
-          : "Strongest choices appear first, followed by simpler budget-friendly alternatives.",
+          ? "Πρώτα οι καλύτερες αρχικές επιλογές, μετά οι πιο απλές/οικονομικές."
+          : "Best starting choices first, then simpler budget-friendly options.",
       tone: "border-violet-200 bg-violet-50 text-violet-950",
     },
     {
       label: language === "el" ? "Εναλλακτικές" : "Alternatives",
       value:
         valueCount > 0
-          ? `${valueCount} ${language === "el" ? "πρακτικές" : "value"}`
+          ? `${valueCount} ${language === "el" ? "πρακτικές" : "practical"}`
           : `${premiumCount} ${language === "el" ? "καλές" : "strong"}`,
       detail:
         language === "el"
-          ? "Χρήσιμες αν μετράει περισσότερο γεύση, διαθεσιμότητα ή budget."
-          : "Useful when flavour, availability, or budget matters more.",
+          ? "Χρήσιμες αν μετράει γεύση, διαθεσιμότητα ή τιμή."
+          : "Useful when flavour, availability, or price matters.",
       tone: "border-sky-200 bg-sky-50 text-sky-950",
     },
   ];
@@ -5808,20 +5808,23 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         ))}
 
         {showSave && recommendedFoodChoices.length > 0 && (
-          <div className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
+          <div
+            data-testid="customer-recommendation-choice-panel"
+            className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm"
+          >
             <p className="font-semibold text-emerald-950">
-              {botText("Διάλεξε την τροφή που σου ταιριάζει", "Choose the food to start with")}
+              {botText("Οι προτάσεις σου είναι έτοιμες", "Your recommendations are ready")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Η πρώτη κάρτα είναι η πιο δυνατή αρχή για το προφίλ του κατοικιδίου. Οι υπόλοιπες είναι αξιόλογες επιλογές αν σε βολεύουν καλύτερα σε γεύση, εταιρεία ή τιμή.",
-                "The first card is the strongest start for this pet profile. The others are useful options if flavour, brand, or budget fits you better."
+                "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου και μετά πιο απλές ή οικονομικές εναλλακτικές.",
+                "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
               {botText(
-                "Πάτησε την τροφή που σου αρέσει για να πάρεις την πρώτη ποσότητα σε γραμμάρια/ημέρα.",
-                "Pick the food you like to get the first daily portion in grams."
+                "Πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα και να κρατήσουμε το πλάνο στο προφίλ.",
+                "Choose the food you prefer to see grams per day and keep the plan on the profile."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
@@ -5830,7 +5833,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("1. Σύγκρινε", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("τι ταιριάζει καλύτερα", "the best first choice")}
+                  {botText("τι σου ταιριάζει", "what matters most")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
@@ -5846,34 +5849,34 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("3. Πάρε", "3. Get")}
                 </span>
                 <span className="font-normal text-amber-950">
-                  {botText("γραμμάρια/ημέρα", "grams/day")}
+                  {botText("ποσότητα/ημέρα", "grams/day")}
                 </span>
               </div>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("Καλύτερες πρώτες επιλογές", "Best first choices")}
+                  {botText("Οι 3 καλύτερες πρώτες επιλογές", "Top 3 first choices")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("πιο δυνατές προτάσεις για να ξεκινήσεις", "stronger starting choices")}
+                  {botText("προτάσεις για να ξεκινήσεις", "starting choices")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("Πιο απλές / οικονομικές επιλογές", "Simple / budget options")}
+                  {botText("3 πιο απλές / οικονομικές επιλογές", "3 simpler / budget-friendly options")}
                 </span>
                 <span className="text-xs text-sky-800">
                   {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("καλές εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή κόστος", "good alternatives when flavour, availability, or cost matters")}
+                  {botText("εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή", "alternatives when flavour, availability, or price matters")}
                 </span>
               </div>
             </div>
             <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm leading-5 text-gray-700 ring-1 ring-gray-100">
               {botText(
-                "Οι πιο απλές επιλογές δεν είναι «λάθος» τροφές. Απλώς τις κρατάμε ως εναλλακτικές όταν η τιμή, η διαθεσιμότητα ή η γεύση μετράνε περισσότερο.",
-                "Simple options are not bad foods. We keep them as alternatives when price, availability, or flavour matters more."
+                "Δεν χρειάζεται να διαλέξεις αμέσως την πρώτη. Διάλεξε αυτή που ταιριάζει καλύτερα σε γεύση, budget και καθημερινότητα.",
+                "You do not have to choose the first card immediately. Pick the one that fits flavour, budget, and daily routine best."
               )}
             </p>
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
