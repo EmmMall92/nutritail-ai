@@ -5,6 +5,23 @@ pull requests. The project readiness score is evidence-based and comes from the
 current QA gates, live route checks, chatbot recommendation audits, and
 post-deploy reports.
 
+## Two Different Percentages
+
+Use two labels so progress does not look stuck:
+
+- **Automated live readiness**: the measurable QA score from
+  `reports/live_readiness_dashboard.md`. This can reach 95-100 when live routes,
+  Food V2, OpenAI checks, customer copy guards, reports, and chatbot QA evidence
+  are fresh and passing.
+- **Customer product progress**: the practical user-experience estimate. This
+  covers whether a real customer can sign up, describe a pet naturally, receive
+  clear recommendations, choose a food, understand portions, save the analysis,
+  return for progress, and feel the result is polished enough to trust.
+
+The automated score can be 100/100 while customer product progress still needs a
+few targeted UX passes. Do not keep saying 78-80% after the automated readiness
+dashboard is fresh and passing; instead say which percentage you mean.
+
 ## Current Target
 
 - 95/100 is the beta-launch target.
@@ -75,6 +92,9 @@ The score should only move when a launch risk is measurably reduced. Examples:
   future regressions are harder.
 - A post-deploy live check is stale: score can stay flat or drop until the
   report is refreshed.
+- A customer-flow improvement makes the product feel better, but the automated
+  score was already passing: product progress improves, automated readiness may
+  stay the same.
 
 ## What Moves 94 Toward 95
 
@@ -89,6 +109,23 @@ The last launch points should come from stronger proof, not more polish:
   renal, senior, puppy/kitten, weight, and preference cases.
 - Verify post-deploy freshness after every production deploy touching chatbot,
   Food V2, account, report, or public launch pages.
+
+## What Moves Customer Product Progress
+
+Customer product progress moves when real user friction is removed:
+
+- The chatbot accepts natural Greek and English phrasing without loops.
+- Food recommendations are simple, ranked clearly, and free of back-office
+  language.
+- Recommendations respect size, age, life stage, allergies, preferences, and
+  medical caution rules.
+- The customer can click a recommended food and immediately see grams per day.
+- Saved pets can continue with progress checks, flavour/company changes, and new
+  recommendations without starting from zero.
+- The printable report and account dashboard show what to do today and when to
+  return.
+- Live tests with dog/cat scenarios confirm the experience feels human, useful,
+  and safe.
 
 ## Practical Progress Bands
 
@@ -106,7 +143,11 @@ Use these bands when explaining project status:
 When the user asks "what percentage are we at?", answer from current evidence:
 
 1. Check `reports/live_readiness_dashboard.md` if it is fresh.
-2. Mention whether the score is current or stale.
-3. Explain the biggest blocker to the next point.
-4. Avoid raising the percentage just because a PR merged.
+2. Say "automated live readiness" when quoting the dashboard score.
+3. Separately estimate "customer product progress" from the latest live UX
+   findings.
+4. Explain the biggest blocker to the next point.
+5. Avoid raising the percentage just because a PR merged; raise the automated
+   score from fresh evidence and the customer product estimate from real UX
+   improvements.
 
