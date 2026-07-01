@@ -1177,6 +1177,57 @@ export default function AccountPage() {
             </p>
           </div>
         </div>
+
+        <div
+          className="mt-5 rounded-2xl border border-violet-100 bg-white p-4"
+          data-testid="account-progress-return-kit"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+                Progress kit
+              </p>
+              <h3 className="mt-1 text-lg font-bold text-violet-950">
+                Τι να κρατάς μέχρι τον επόμενο έλεγχο
+              </h3>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-violet-900">
+              Όταν γυρίσεις στο chatbot, αυτά τα στοιχεία βοηθούν να δούμε αν
+              συνεχίζουμε, αλλάζουμε ποσότητα ή ζητάμε άλλη τροφή.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
+              <p className="font-semibold">Βάρος</p>
+              <p className="mt-1 text-xs leading-5 text-violet-900">
+                Ζύγισμα στην ίδια ζυγαριά, ιδανικά παρόμοια ώρα.
+              </p>
+            </div>
+            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
+              <p className="font-semibold">Γραμμάρια</p>
+              <p className="mt-1 text-xs leading-5 text-violet-900">
+                Πόσα έτρωγε πραγματικά ανά ημέρα, όχι μόνο η αρχική οδηγία.
+              </p>
+            </div>
+            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
+              <p className="font-semibold">Λιχουδιές</p>
+              <p className="mt-1 text-xs leading-5 text-violet-900">
+                Πόσες, τι είδους και αν δίνονταν καθημερινά.
+              </p>
+            </div>
+            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
+              <p className="font-semibold">
+                {latestPet?.species === "cat" ? "Όρεξη / ούρηση" : "Όρεξη / κόπρανα"}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-violet-900">
+                {latestPet?.species === "cat"
+                  ? "Σημείωσε αν τρώει κάθε μέρα, τουαλέτα και τυχόν αλλαγές."
+                  : "Σημείωσε κόπρανα, ενέργεια και αν δέχεται καλά την τροφή."}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div
