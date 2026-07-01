@@ -25,6 +25,12 @@ const checks = [
       "taste avoidances, preferred proteins, weight control, large-dog size fit, and large-breed puppy guards",
   },
   {
+    name: "Food V2 launch edge accuracy",
+    args: ["run", "qa:food-v2-launch-edge-accuracy"],
+    covers:
+      "giant dog size rejection, large-breed puppy priority, allergy exclusions, renal-vs-urinary cat logic, and urinary subtype mismatch guards",
+  },
+  {
     name: "Food V2 ranking scenarios",
     args: ["run", "audit:food-v2-ranking-scenarios"],
     covers: "condition-specific live Food V2 recommendation scenarios",
