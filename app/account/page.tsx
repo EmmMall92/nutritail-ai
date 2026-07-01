@@ -73,6 +73,14 @@ type AccountActivityStripItem = {
   actionLabel: string;
 };
 
+type AccountTodayTask = {
+  title: string;
+  detail: string;
+  href: string;
+  actionLabel: string;
+  tone: "primary" | "calm";
+};
+
 const betaPlanHighlights = [
   {
     label: "3 κατοικίδια",
@@ -379,6 +387,98 @@ function getAccountActivityStrip({
   ];
 }
 
+function getAccountTodayTasks({
+  pets,
+  latestPet,
+  latestAnalysis,
+  latestProgressPet,
+  nextPetToAnalyze,
+}: {
+  pets: AccountPet[];
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+  latestProgressPet?: AccountPet;
+  nextPetToAnalyze?: AccountPet;
+}): AccountTodayTask[] {
+  if (pets.length === 0) {
+    return [
+      {
+        title: "Ξεκίνα με το πρώτο κατοικίδιο",
+        detail:
+          "Ο σύμβουλος θα σε ρωτήσει τα βασικά και θα φτιάξει την πρώτη διατροφική εικόνα.",
+        href: "/account/chatbot",
+        actionLabel: "Νέα ανάλυση",
+        tone: "primary",
+      },
+      {
+        title: "Μάθε πώς δουλεύει",
+        detail:
+          "Δες τι δεδομένα χρησιμοποιεί το NutriTail και γιατί οι προτάσεις βασίζονται σε κανόνες.",
+        href: "/how-it-works",
+        actionLabel: "Πώς λειτουργεί",
+        tone: "calm",
+      },
+    ];
+  }
+
+  const reportTarget = latestPet;
+  const progressTarget = latestProgressPet ?? latestPet;
+  const recommendationTarget = latestPet ?? nextPetToAnalyze;
+
+  const tasks: AccountTodayTask[] = [
+    nextPetToAnalyze
+      ? {
+          title: `Ολοκλήρωσε ανάλυση για ${nextPetToAnalyze.name ?? "κατοικίδιο"}`,
+          detail:
+            "Αυτό το κατοικίδιο δεν έχει ακόμη report. Ξεκίνα από εδώ για θερμίδες, τροφές και ποσότητα.",
+          href: `/account/chatbot?petId=${nextPetToAnalyze.id}`,
+          actionLabel: "Κάνε ανάλυση",
+          tone: "primary",
+        }
+      : {
+          title: "Κάνε νέο έλεγχο ή νέα πρόταση",
+          detail:
+            "Χρήσιμο αν άλλαξε βάρος, γεύση, μάρκα, όρεξη, κόπρανα ή αποδοχή της τροφής.",
+          href: recommendationTarget
+            ? `/account/chatbot?petId=${recommendationTarget.id}`
+            : "/account/chatbot",
+          actionLabel: "Νέα πρόταση",
+          tone: "primary",
+        },
+    {
+      title: "Άνοιξε την τελευταία αναφορά",
+      detail: latestAnalysis?.feeding_grams_per_day
+        ? "Δες θερμίδες, γραμμάρια/ημέρα, τροφή, λιχουδιές και πλάνο μετάβασης."
+        : "Δες την τελευταία σύνοψη και συμπλήρωσε τροφή για πιο ακριβή γραμμάρια.",
+      href: reportTarget ? `/print/pet-report/${reportTarget.id}` : "/account/chatbot",
+      actionLabel: "Άνοιγμα report",
+      tone: "calm",
+    },
+    {
+      title: "Έλεγχος προόδου",
+      detail:
+        "Γύρνα με νέο βάρος, γραμμάρια, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
+      href: progressTarget
+        ? `/account/chatbot?petId=${progressTarget.id}&mode=progress`
+        : "/account/chatbot",
+      actionLabel: "Progress check",
+      tone: "calm",
+    },
+    {
+      title: "Αλλαγή γεύσης ή εταιρείας",
+      detail:
+        "Αν βαρέθηκε την τροφή ή δεν του ταιριάζει, ζήτησε εναλλακτική χωρίς να ξεκινήσεις από την αρχή.",
+      href: recommendationTarget
+        ? `/account/chatbot?petId=${recommendationTarget.id}&mode=recommendation&reason=flavour`
+        : "/account/chatbot",
+      actionLabel: "Βρες εναλλακτική",
+      tone: "calm",
+    },
+  ];
+
+  return tasks;
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -517,6 +617,13 @@ export default function AccountPage() {
     latestProgressPet,
     nextPetToAnalyze,
   });
+  const accountTodayTasks = getAccountTodayTasks({
+    pets,
+    latestPet,
+    latestAnalysis,
+    latestProgressPet,
+    nextPetToAnalyze,
+  });
   const accountActivityStrip = getAccountActivityStrip({
     latestPet,
     latestAnalysis,
@@ -576,6 +683,56 @@ export default function AccountPage() {
               Δες τα κατοικίδια
             </Link>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm"
+        data-testid="account-today-command-center"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+              Σήμερα στο NutriTail
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-emerald-950">
+              Οι πιο χρήσιμες κινήσεις για τον λογαριασμό σου
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-emerald-900">
+            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, report, progress check ή
+            αλλαγή τροφής χωρίς να ψάχνεις σε όλες τις σελίδες.
+          </p>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {accountTodayTasks.map((task) => (
+            <Link
+              key={task.title}
+              href={task.href}
+              className={`rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
+                task.tone === "primary"
+                  ? "border-emerald-950 bg-emerald-950 text-white"
+                  : "border-emerald-100 bg-white text-emerald-950 hover:border-emerald-400"
+              }`}
+            >
+              <p className="font-semibold">{task.title}</p>
+              <p
+                className={`mt-2 text-sm leading-6 ${
+                  task.tone === "primary" ? "text-emerald-50" : "text-emerald-900"
+                }`}
+              >
+                {task.detail}
+              </p>
+              <p
+                className={`mt-4 text-sm font-semibold ${
+                  task.tone === "primary" ? "text-white" : "text-emerald-950"
+                }`}
+              >
+                {task.actionLabel}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
 
