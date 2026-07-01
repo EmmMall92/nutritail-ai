@@ -48,6 +48,25 @@ const betaAccessPlan = [
   },
 ];
 
+const betaPlanLimits = [
+  {
+    metric: "1 λογαριασμός",
+    detail: "Προσωπικό account για κατοικίδια, αναλύσεις και reports.",
+  },
+  {
+    metric: "Έως 3 κατοικίδια",
+    detail: "Αρκετό για πραγματική δοκιμή χωρίς άσχετα ή διπλά δεδομένα.",
+  },
+  {
+    metric: "20 αναλύσεις / μήνα",
+    detail: "Για νέα ανάλυση, progress check, αλλαγή γεύσης ή εναλλακτική πρόταση.",
+  },
+  {
+    metric: "Feedback πρώτης προτεραιότητας",
+    detail: "Τα not helpful, failed matches και food choices μπαίνουν στο admin review loop.",
+  },
+];
+
 export default function BetaPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -133,6 +152,50 @@ export default function BetaPage() {
             Στόχος beta: λίγοι χρήστες, καθαρό feedback, καλύτερη εμπειρία πριν
             ανοίξουμε πιο επίσημο πλάνο πρόσβασης.
           </p>
+        </div>
+      </section>
+
+      <section className="border-t border-black/10 bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-green-700">
+              Beta plan limits
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Πρώτα περιορισμένη πρόσβαση. Μετά κανονικά πλάνα.
+            </h2>
+            <p className="mt-4 leading-7 text-gray-700">
+              Δεν ανοίγουμε αμέσως απεριόριστη χρήση. Θέλουμε οι πρώτοι χρήστες
+              να έχουν καθαρή εμπειρία, να μπορούμε να βλέπουμε πού κολλάει το
+              chatbot και να διορθώνουμε τις προτάσεις πριν μπουν πληρωμές ή
+              συνδρομές.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-4">
+            {betaPlanLimits.map((item) => (
+              <article
+                key={item.metric}
+                className="rounded-2xl border border-black/10 bg-[#f7f7f4] p-5"
+              >
+                <h3 className="font-black">{item.metric}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-700">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-5">
+            <h3 className="font-black text-green-950">
+              Τι θα γίνει μετά τη beta
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-green-900">
+              Όταν η εμπειρία φτάσει στο επίπεδο που θέλουμε, τα όρια αυτά θα
+              γίνουν κανονικά πλάνα πρόσβασης. Μέχρι τότε, η beta λειτουργεί σαν
+              ελεγχόμενη δοκιμή ποιότητας και όχι σαν τελικό εμπορικό προϊόν.
+            </p>
+          </div>
         </div>
       </section>
     </main>
