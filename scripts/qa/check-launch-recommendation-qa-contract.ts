@@ -35,6 +35,10 @@ assert(
   "CI readiness must include the lightweight launch recommendation QA contract."
 );
 assert(
+  packageJson.includes("qa:openai-chatbot-training-contract && npm run qa:chatbot-intake-cleanup && npm run qa:openai-food-brand-guard"),
+  "CI readiness must run chatbot intake cleanup before customer-facing recommendation QA."
+);
+assert(
   packageJson.includes("qa:chatbot-customer-recommendations && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-guard-coverage"),
   "CI readiness must run Food V2 preference/ranking QA before guard coverage."
 );
