@@ -12,7 +12,7 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **90-91%**.
+Customer product progress is currently **91-92%**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
@@ -20,7 +20,19 @@ requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
 ## Latest Movement
 
-The latest move from **89-90%** to **90-91%** is justified by a stronger
+The latest move from **90-91%** to **91-92%** is justified by a real
+recommendation-accuracy fix that is now protected by QA:
+
+- Weight goal is now preserved when the chatbot asks Food V2 for candidates, so
+  weight-loss, weight-maintenance, and weight-gain cases are not flattened into
+  the same generic recommendation request.
+- The active weight-gain dog guard prevents light/low-fat formulas from
+  outranking better energy-support options when the pet profile asks for gain.
+- The Food V2 launch-edge accuracy, customer recommendation, AI intake,
+  preference-ranking, copy-encoding, typecheck, lint, and build checks passed
+  after the change.
+
+The previous move from **89-90%** to **90-91%** was justified by a stronger
 analytics/feedback loop that makes the remaining customer-flow risks visible:
 
 - Admin feedback now shows customer drop-off priorities for analyses without
@@ -32,7 +44,7 @@ analytics/feedback loop that makes the remaining customer-flow risks visible:
 - Chat feedback and funnel QA contracts now protect the drop-off metrics so the
   launch learning loop survives future refactors.
 
-The previous move from **88-89%** to **89-90%** was justified by
+The earlier move from **88-89%** to **89-90%** was justified by
 customer-visible work that reduced real user friction:
 
 - Auth copy and auth error states now use safer customer language.
@@ -64,7 +76,7 @@ chatbot proof after deploy.
 
 ## Why It Feels Stuck
 
-At 90-91%, small polish work improves the product but may not move the score.
+At 91-92%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -75,9 +87,10 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 90-91 toward 92-93:
+These are the most likely moves from 91-92 toward 93-94:
 
-1. Run live dog/cat chatbot QA and convert any real mistake into a ranking guard.
+1. Run live dog/cat chatbot QA and convert the next real mistake into a ranking
+   guard.
 2. Polish the final report so it reads like a useful customer handout.
 3. Verify saved-pet continuation with progress/no-progress/food-change flows.
 4. Complete one authenticated live chatbot extract proof with a QA account cookie.
@@ -93,5 +106,5 @@ When reporting progress, always say both numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 90-91%. The next point depends on live chatbot accuracy fixes, customer report
+> 91-92%. The next point depends on live chatbot accuracy fixes, customer report
 > polish, or live OpenAI proof, not another generic PR.
