@@ -193,4 +193,12 @@ assert(
   "package.json must expose the account dashboard readiness QA script."
 );
 
+assert(
+  accountPage.includes("alternativeHref") &&
+    accountPage.includes("mode=recommendation&reason=flavour") &&
+    accountPage.includes("4. Άλλαξε γεύση ή εταιρεία") &&
+    accountPage.includes("κράτα το ίδιο προφίλ"),
+  "Current plan snapshot must let returning customers request a flavour or brand alternative without restarting."
+);
+
 console.log("Account dashboard readiness contract passed.");

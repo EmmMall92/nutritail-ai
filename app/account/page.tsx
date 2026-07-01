@@ -98,6 +98,7 @@ type AccountPlanSnapshot = {
   progressHref: string;
   reportHref: string;
   timelineHref: string;
+  alternativeHref: string;
 };
 
 const betaPlanHighlights = [
@@ -242,6 +243,7 @@ function getAccountPlanSnapshot({
     progressHref: `/account/chatbot?petId=${latestPet.id}&mode=progress`,
     reportHref: `/print/pet-report/${latestPet.id}`,
     timelineHref: `/print/pet-timeline/${latestPet.id}`,
+    alternativeHref: `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`,
   };
 }
 
@@ -937,7 +939,7 @@ export default function AccountPage() {
 
           <div
             data-testid="account-plan-next-steps"
-            className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-3"
+            className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2 xl:grid-cols-4"
           >
             <Link
               href={accountPlanSnapshot.reportHref}
@@ -964,6 +966,15 @@ export default function AccountPage() {
               <p className="font-semibold">3. Κάνε progress check</p>
               <p className="mt-1 leading-5 text-amber-800">
                 Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.
+              </p>
+            </Link>
+            <Link
+              href={accountPlanSnapshot.alternativeHref}
+              className="rounded-xl border border-violet-100 bg-violet-50 p-4 text-violet-950 transition hover:border-violet-300 hover:bg-violet-100"
+            >
+              <p className="font-semibold">4. Άλλαξε γεύση ή εταιρεία</p>
+              <p className="mt-1 leading-5 text-violet-800">
+                Αν βαρέθηκε την τροφή ή δεν του ταιριάζει, κράτα το ίδιο προφίλ και ζήτησε νέα πρόταση.
               </p>
             </Link>
           </div>
