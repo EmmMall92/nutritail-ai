@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 import { brand } from "@/lib/brand";
+import { WebVitalsReporter } from "./WebVitalsReporter";
 
 export const metadata: Metadata = {
   title: brand.name,
@@ -60,7 +61,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="el">
-      <body>{children}</body>
+      <body>
+        <WebVitalsReporter />
+        {children}
+      </body>
     </html>
   );
 }
