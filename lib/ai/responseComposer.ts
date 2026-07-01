@@ -346,7 +346,7 @@ function cleanGreekFoodBullet(
 function buildCleanGreekCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
-  const foods = [...premium.slice(0, 3), ...value.slice(0, 2)].filter((food) =>
+  const foods = [...premium.slice(0, 3), ...value.slice(0, 3)].filter((food) =>
     String(food.display_name ?? "").trim()
   );
 
@@ -390,7 +390,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
 
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
-  const foods = [...premium.slice(0, 3), ...value.slice(0, 2)].filter((food) =>
+  const foods = [...premium.slice(0, 3), ...value.slice(0, 3)].filter((food) =>
     String(food.display_name ?? "").trim()
   );
 
