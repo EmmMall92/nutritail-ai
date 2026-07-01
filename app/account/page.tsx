@@ -935,6 +935,39 @@ export default function AccountPage() {
             </div>
           </div>
 
+          <div
+            data-testid="account-plan-next-steps"
+            className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-3"
+          >
+            <Link
+              href={accountPlanSnapshot.reportHref}
+              className="rounded-xl border border-teal-100 bg-teal-50 p-4 text-teal-950 transition hover:border-teal-300 hover:bg-teal-100"
+            >
+              <p className="font-semibold">1. Δες το report</p>
+              <p className="mt-1 leading-5 text-teal-800">
+                Κράτα σε ένα σημείο θερμίδες, τροφή, ποσότητα και οδηγίες μετάβασης.
+              </p>
+            </Link>
+            <Link
+              href={accountPlanSnapshot.timelineHref}
+              className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-blue-950 transition hover:border-blue-300 hover:bg-blue-100"
+            >
+              <p className="font-semibold">2. Παρακολούθησε την πορεία</p>
+              <p className="mt-1 leading-5 text-blue-800">
+                Το timeline δείχνει αναλύσεις, αλλαγές τροφής και ελέγχους προόδου.
+              </p>
+            </Link>
+            <Link
+              href={accountPlanSnapshot.progressHref}
+              className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-amber-950 transition hover:border-amber-300 hover:bg-amber-100"
+            >
+              <p className="font-semibold">3. Κάνε progress check</p>
+              <p className="mt-1 leading-5 text-amber-800">
+                Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.
+              </p>
+            </Link>
+          </div>
+
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             <Link
               href={accountPlanSnapshot.timelineHref}

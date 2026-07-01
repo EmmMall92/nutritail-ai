@@ -145,6 +145,14 @@ assert(
   "Account dashboard must expose the customer-facing current plan snapshot."
 );
 assert(
+  accountPage.includes('data-testid="account-plan-next-steps"') &&
+    accountPage.includes("1. Δες το report") &&
+    accountPage.includes("2. Παρακολούθησε την πορεία") &&
+    accountPage.includes("3. Κάνε progress check") &&
+    accountPage.includes("Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές"),
+  "Current plan snapshot must guide customers through report, timeline, and progress-check next steps."
+);
+assert(
   accountPage.includes("Σημερινό πλάνο") &&
     accountPage.includes("Θερμίδες") &&
     accountPage.includes("Γραμμάρια/ημέρα") &&
