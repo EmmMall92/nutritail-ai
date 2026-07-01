@@ -113,6 +113,18 @@ assert(
   "Account dashboard must keep structured next best actions for customers."
 );
 assert(
+  accountPage.includes("function getAccountTodayTasks"),
+  "Account dashboard must generate a customer-facing command center from account data."
+);
+assert(
+  accountPage.includes('data-testid="account-today-command-center"'),
+  "Account dashboard must expose the today command center."
+);
+assert(
+  accountPage.includes("accountTodayTasks.map"),
+  "Account dashboard must render today command center actions from structured data."
+);
+assert(
   accountPage.includes("type AccountActivityStripItem"),
   "Account dashboard must define structured latest activity strip items."
 );
