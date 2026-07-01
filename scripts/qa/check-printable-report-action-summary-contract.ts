@@ -7,6 +7,7 @@ function assert(condition: unknown, message: string) {
 }
 
 const reportPage = readFileSync("app/print/pet-report/[id]/page.tsx", "utf8");
+const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 const packageJson = readFileSync("package.json", "utf8");
 
 const suspiciousMojibakeMarkers = [
@@ -57,10 +58,12 @@ const requiredDigitalActionMarkers = [
   "Κράτα το πλάνο ζωντανό μετά την αναφορά",
   "Έλεγχος προόδου",
   "Νέα πρόταση τροφής",
+  "Αλλαγή γεύσης / εταιρείας",
   "Timeline",
   "Προφίλ κατοικιδίου",
   "mode=progress",
   "mode=recommendation",
+  "reason=flavour",
   "/print/pet-timeline/",
 ];
 
@@ -82,6 +85,23 @@ for (const marker of requiredDigitalActionMarkers) {
   assert(
     reportPage.includes(marker),
     `Printable pet report must include digital next-action marker: ${marker}`
+  );
+}
+
+const requiredRecommendationDeepLinkMarkers = [
+  'const reason = query.get("reason")',
+  'reason ?? "none"',
+  'mode === "recommendation"',
+  'setRecommendationMode("alternative")',
+  'setStep("currentFood")',
+  'Αλλαγή γεύσης / εταιρείας',
+  'reason === "flavour"',
+];
+
+for (const marker of requiredRecommendationDeepLinkMarkers) {
+  assert(
+    chatbotPage.includes(marker),
+    `Account chatbot must honor report recommendation deep-link marker: ${marker}`
   );
 }
 
