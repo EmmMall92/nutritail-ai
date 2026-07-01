@@ -21,6 +21,13 @@ type ReadinessSummary = {
   nextStaleReport: string;
 };
 
+type CustomerProductProgressSummary = {
+  estimate: string;
+  latestMovement: string;
+  whyItFeelsStuck: string[];
+  nextScoreMoves: string[];
+};
+
 function readLiveReadinessSummary(): ReadinessSummary {
   const fallback = {
     result: "Not generated",
@@ -91,6 +98,62 @@ function readLiveReadinessSummary(): ReadinessSummary {
       nextStaleReport:
         report.match(/- Next stale report:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.nextStaleReport,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
+  const fallback = {
+    estimate: "unknown",
+    latestMovement: "No product progress rubric found.",
+    whyItFeelsStuck: [
+      "Customer progress moves only when a real customer-visible risk is reduced.",
+    ],
+    nextScoreMoves: [
+      "Run live chatbot QA, fix real recommendation mistakes, and lock fixes with tests.",
+    ],
+  };
+
+  try {
+    const doc = readFileSync(
+      path.join(process.cwd(), "docs/product-progress-score.md"),
+      "utf8",
+    );
+
+    const estimate =
+      doc.match(/Customer product progress is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
+      fallback.estimate;
+    const latestMovement =
+      doc.match(/## Latest Movement\s+([\s\S]*?)\n## /i)?.[1]?.trim().split("\n")[0] ??
+      fallback.latestMovement;
+    const whySection =
+      doc.match(/## Why It Feels Stuck\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const nextSection =
+      doc.match(/## Next Score Moves\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+
+    const whyItFeelsStuck =
+      whySection
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("- "))
+        .map((line) => line.replace(/^- /, ""))
+        .slice(0, 5) || fallback.whyItFeelsStuck;
+
+    const nextScoreMoves =
+      nextSection
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => /^\d+\./.test(line))
+        .map((line) => line.replace(/^\d+\.\s*/, ""))
+        .slice(0, 5) || fallback.nextScoreMoves;
+
+    return {
+      estimate,
+      latestMovement,
+      whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
+      nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
     };
   } catch {
     return fallback;
@@ -196,6 +259,7 @@ const liveUrls = [
 
 export default function FoodV2LiveQaPage() {
   const readiness = readLiveReadinessSummary();
+  const productProgress = readCustomerProductProgressSummary();
   const isPassing = readiness.result === "PASS";
 
   return (
@@ -247,6 +311,58 @@ export default function FoodV2LiveQaPage() {
             Readiness Report
           </a>
         </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-blue-950 shadow-sm"
+        data-testid="customer-product-progress-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Customer product progress
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {productProgress.estimate}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm">
+              This is the customer-experience estimate, separate from automated
+              live readiness. It moves only when a real pet owner flow becomes
+              clearer, safer, or more accurate.
+            </p>
+          </div>
+          <Link
+            href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/product-progress-score.md"
+            className="rounded-lg border border-blue-900 px-4 py-2 text-sm font-semibold text-blue-950 transition hover:bg-blue-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open rubric
+          </Link>
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
+            <p className="text-sm font-semibold">Why it may not move every PR</p>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
+              {productProgress.whyItFeelsStuck.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
+            <p className="text-sm font-semibold">Next moves toward 92-93%</p>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
+              {productProgress.nextScoreMoves.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <p className="mt-4 rounded-xl border border-blue-200 bg-white/70 p-4 text-sm">
+          Latest movement: {productProgress.latestMovement}
+        </p>
       </div>
 
       <div
