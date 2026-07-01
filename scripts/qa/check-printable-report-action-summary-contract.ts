@@ -29,8 +29,10 @@ const requiredReportMarkers = [
   "getReportPlanSnapshot",
   "getCustomerHandoffSteps",
   "getCustomerPocketSummary",
+  "getReportStartChecklist",
   "getReportDecisionSummary",
   "getFoodReasoningSummary",
+  'data-testid="report-start-checklist"',
   'data-testid="report-decision-summary"',
   'data-testid="report-food-reasoning-summary"',
   'data-testid="report-tomorrow-feeding-plan"',
@@ -84,6 +86,14 @@ const requiredReportMarkers = [
   "reportDecisionSummary.cards.map",
   "reportDecisionSummary.watchList.map",
   "getTreatAllowance(analysis)",
+  "Before you start",
+  "Check these 4 points before using the plan",
+  "Food selected",
+  "Daily amount",
+  "Calorie target",
+  "Follow-up date",
+  "Ready to use",
+  "Confirm before use",
 ];
 
 const requiredDigitalActionMarkers = [

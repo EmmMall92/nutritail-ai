@@ -234,6 +234,46 @@ function getTreatAllowance(analysis?: AnalysisHistoryItem | null) {
   };
 }
 
+function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
+  const hasFood = Boolean(analysis?.matched_food_name);
+  const hasPortion = Boolean(analysis?.feeding_grams_per_day);
+  const hasCalories = Boolean(analysis?.mer && Number.isFinite(analysis.mer));
+
+  return [
+    {
+      label: "Food selected",
+      value: hasFood ? "Ready" : "Needs confirmation",
+      detail: hasFood
+        ? "Use the food saved in this report as the current plan."
+        : "Choose a recommended food or send the exact bag label before relying on food-specific advice.",
+      complete: hasFood,
+    },
+    {
+      label: "Daily amount",
+      value: hasPortion ? "Ready" : "Needs food calories",
+      detail: hasPortion
+        ? "Start with this amount, split into meals, then review weight and stool quality."
+        : "Grams per day become precise after NutriTail knows the selected food calories.",
+      complete: hasPortion,
+    },
+    {
+      label: "Calorie target",
+      value: hasCalories ? `${analysis?.mer} kcal/day` : "Needs analysis",
+      detail: hasCalories
+        ? "Keep treats inside the daily target so the main plan stays meaningful."
+        : "Run a fresh analysis before changing portions.",
+      complete: hasCalories,
+    },
+    {
+      label: "Follow-up date",
+      value: getRecheckWindow(analysis),
+      detail:
+        "Come back with current weight, grams per day, treats, appetite, stool, and energy.",
+      complete: Boolean(analysis),
+    },
+  ];
+}
+
 function getReportActionSummary(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -772,6 +812,7 @@ export default function PrintablePetReportPage() {
   );
   const foodReasoningSummary = getFoodReasoningSummary(pet, latestAnalysis);
   const reportTreatAllowance = getTreatAllowance(latestAnalysis);
+  const reportStartChecklist = getReportStartChecklist(latestAnalysis);
   const hasCompleteFoodPlan = Boolean(
     latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
   );
@@ -829,6 +870,57 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm print:border-gray-300 print:shadow-none"
+          data-testid="report-start-checklist"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Before you start
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-emerald-950">
+                Check these 4 points before using the plan
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900">
+                This keeps the report practical: food, amount, calories, and the
+                next review point should all be clear before the plan becomes a
+                daily routine.
+              </p>
+            </div>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                hasCompleteFoodPlan
+                  ? "bg-emerald-100 text-emerald-900"
+                  : "bg-amber-100 text-amber-900"
+              }`}
+            >
+              {hasCompleteFoodPlan ? "Ready to use" : "Confirm before use"}
+            </span>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportStartChecklist.map((item) => (
+              <div
+                key={item.label}
+                className={`rounded-2xl border p-4 ${
+                  item.complete
+                    ? "border-emerald-100 bg-emerald-50"
+                    : "border-amber-100 bg-amber-50"
+                }`}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-black">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-gray-700">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
