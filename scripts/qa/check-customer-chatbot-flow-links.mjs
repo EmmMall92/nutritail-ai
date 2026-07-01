@@ -272,6 +272,22 @@ const checks = [
     expected: "Weight, grams, treats, and results.",
   },
   {
+    label: "Pre-save panel previews what saving unlocks",
+    file: "app/account/chatbot/page.tsx",
+    expected:
+      "You will have a clear plan for today and an easy way to continue if weight, appetite, stool, or food preference changes.",
+  },
+  {
+    label: "Pre-save panel previews report contents",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Calories, food, portion, and transition notes.",
+  },
+  {
+    label: "Pre-save panel previews change-food continuation",
+    file: "app/account/chatbot/page.tsx",
+    expected: "A new suggestion if flavour, brand, or tolerance changes.",
+  },
+  {
     label: "Saved chatbot analysis uses Greek report chip wording",
     file: "app/account/chatbot/page.tsx",
     expected: "Διατροφική αναφορά",

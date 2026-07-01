@@ -6250,8 +6250,49 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </div>
                 </div>
 
-              </div>
+            </div>
             )}
+
+            <div className="rounded-xl border border-emerald-200 bg-white p-4">
+              <p className="font-semibold text-black">
+                {botText("Μετά την αποθήκευση", "After you save")}
+              </p>
+              <p className="mt-1 text-sm text-gray-700">
+                {botText(
+                  "Θα έχεις ένα καθαρό πλάνο για σήμερα και εύκολη συνέχεια αν αλλάξει βάρος, όρεξη, κόπρανα ή προτίμηση τροφής.",
+                  "You will have a clear plan for today and an easy way to continue if weight, appetite, stool, or food preference changes."
+                )}
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
+                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
+                  <p className="font-semibold">{botText("Αναφορά", "Report")}</p>
+                  <p className="mt-1 text-xs text-emerald-900">
+                    {botText(
+                      "Θερμίδες, τροφή, ποσότητα και οδηγίες αλλαγής.",
+                      "Calories, food, portion, and transition notes."
+                    )}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
+                  <p className="font-semibold">{botText("Progress check", "Progress check")}</p>
+                  <p className="mt-1 text-xs text-emerald-900">
+                    {botText(
+                      "Νέο βάρος, γραμμάρια/ημέρα, λιχουδιές και αποτέλεσμα.",
+                      "New weight, grams/day, treats, and results."
+                    )}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
+                  <p className="font-semibold">{botText("Αλλαγή τροφής", "Change food")}</p>
+                  <p className="mt-1 text-xs text-emerald-900">
+                    {botText(
+                      "Νέα πρόταση αν αλλάξει γεύση, brand ή ανοχή.",
+                      "A new suggestion if flavour, brand, or tolerance changes."
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <div className="rounded-xl border border-green-200 bg-green-50 p-4">
               <p className="font-semibold text-black">
