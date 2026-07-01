@@ -3664,6 +3664,10 @@ export default function AccountChatbotPage() {
   }, [chatLanguage]);
 
   const quickReplies = getQuickReplies(step, chatLanguage);
+  const hasSelectableFoodRecommendations = recommendedFoodChoices.length > 0;
+  const hasSelectedRecommendedFood = Boolean(analysisMetadata?.matchedFoodName);
+  const requiresFoodChoiceBeforeSave =
+    showSave && hasSelectableFoodRecommendations && !hasSelectedRecommendedFood;
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
       ? botText(
@@ -3680,6 +3684,11 @@ export default function AccountChatbotPage() {
               "Στείλε τωρινό βάρος, γραμμάρια/ημέρα, λιχουδιές και τωρινή τροφή.",
               "Send current weight, grams per day, treats, and current food."
             )
+          : requiresFoodChoiceBeforeSave
+            ? botText(
+                "Διάλεξε πρώτα μία τροφή από τις κάρτες για να υπολογίσουμε γραμμάρια/ημέρα.",
+                "Choose one food card first so I can calculate grams/day."
+              )
           : showSave
             ? botText(
                 "Αποθήκευσε όταν τα στοιχεία είναι σωστά ή γράψε τι θέλει αλλαγή.",
@@ -5459,6 +5468,19 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   async function saveToMyAccount() {
     try {
+      if (requiresFoodChoiceBeforeSave) {
+        addMessages(
+          createMessage(
+            "bot",
+            botText(
+              "Διάλεξε πρώτα μία τροφή από τις κάρτες. Μετά θα σου βγάλω γραμμάρια/ημέρα και θα αποθηκεύσουμε ολοκληρωμένο πλάνο.",
+              "Choose one food card first. Then I will calculate grams/day and save a complete plan."
+            )
+          )
+        );
+        return;
+      }
+
       setIsSaving(true);
 
       if (!latestAnalysis) {
@@ -6164,6 +6186,22 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
         {showSave && (
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            {requiresFoodChoiceBeforeSave && (
+              <div
+                data-testid="choose-food-before-save-notice"
+                className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-5 text-amber-950"
+              >
+                <p className="font-semibold">
+                  {botText("Πρώτα διάλεξε τροφή", "Choose a food first")}
+                </p>
+                <p className="mt-1">
+                  {botText(
+                    "Πάτησε μία από τις κάρτες τροφών για να υπολογίσουμε γραμμάρια/ημέρα. Μετά η αποθήκευση θα κρατήσει πλήρες πλάνο με τροφή, θερμίδες και ποσότητα.",
+                    "Tap one food card to calculate grams/day. Then saving will keep a complete plan with food, calories, and portion."
+                  )}
+                </p>
+              </div>
+            )}
             <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
               <p className="font-semibold text-blue-950">
                 {botText("Το πλάνο σου είναι έτοιμο", "Your plan is ready")}
@@ -6515,7 +6553,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <button
               type="button"
               onClick={saveToMyAccount}
-              disabled={isSaving}
+              disabled={isSaving || requiresFoodChoiceBeforeSave}
               className="w-full rounded-xl bg-green-600 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
             >
               {isSaving
