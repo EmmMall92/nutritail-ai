@@ -321,6 +321,48 @@ function percent(value, total) {
   return `${((value / total) * 100).toFixed(1)}%`;
 }
 
+const MAX_FRESH_AGE_HOURS = 72;
+
+function parseRunDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date;
+}
+
+function evidenceAge(runDate, generatedAt = new Date()) {
+  const parsedDate = parseRunDate(runDate);
+
+  if (!parsedDate) {
+    return {
+      hours: null,
+      label: "unknown",
+      status: "unknown",
+    };
+  }
+
+  const ageHours = Math.max(
+    0,
+    Math.round((generatedAt.getTime() - parsedDate.getTime()) / 36_000) / 100,
+  );
+
+  return {
+    hours: ageHours,
+    label:
+      ageHours < 48
+        ? `${Math.round(ageHours)}h`
+        : `${Math.round(ageHours / 24)}d`,
+    status: ageHours <= MAX_FRESH_AGE_HOURS ? "fresh" : "refresh recommended",
+  };
+}
+
+function decorateFreshness(suite, generatedAt) {
+  return {
+    ...suite,
+    evidenceAge: evidenceAge(suite.runDate, generatedAt),
+  };
+}
+
+const generatedAt = new Date();
 const parsed = suites.map(parseReport);
 const missingOptionalSuites = parsed.filter((suite) => suite.missing);
 const parsedIntake = intakeSuites.map(parseIntakeReport);
@@ -328,6 +370,23 @@ const parsedResponseContract = parseResponseContractReport(responseContractSuite
 const parsedCustomerUx = customerUxSuites.map(parsePassFailReport);
 const parsedGoldenSuite = parseGoldenSuiteReport(goldenSuite);
 const parsedFixtureCoverage = fixtureCoverageSuites.map(parseFixtureIntegrityReport);
+const freshnessSuites = [
+  ...parsed,
+  ...parsedIntake,
+  parsedResponseContract,
+  ...parsedCustomerUx,
+  parsedGoldenSuite,
+  ...parsedFixtureCoverage,
+].map((suite) => decorateFreshness(suite, generatedAt));
+const staleFreshnessSuites = freshnessSuites.filter(
+  (suite) => suite.evidenceAge.status === "refresh recommended",
+);
+const unknownFreshnessSuites = freshnessSuites.filter(
+  (suite) => suite.evidenceAge.status === "unknown",
+);
+const freshFreshnessSuites = freshnessSuites.filter(
+  (suite) => suite.evidenceAge.status === "fresh",
+);
 const totals = parsed.reduce(
   (acc, suite) => {
     acc.checked += suite.checked;
@@ -362,7 +421,7 @@ const bySpecies = parsed.reduce((acc, suite) => {
 const lines = [
   "# Chatbot Live QA Dashboard",
   "",
-  `Generated: ${new Date().toISOString()}`,
+  `Generated: ${generatedAt.toISOString()}`,
   "",
   "This dashboard summarizes the current live recommendation QA evidence for NutriTail.",
   "It points to the authoritative per-suite reports instead of duplicating every test case.",
@@ -386,6 +445,9 @@ const lines = [
   `- Customer UX suites passing: ${parsedCustomerUx.filter((suite) => suite.result === "PASS").length}/${parsedCustomerUx.length}`,
   `- Golden suite: ${parsedGoldenSuite.result} (${parsedGoldenSuite.run}/${parsedGoldenSuite.checked} checks run)`,
   `- Fixture/coverage evidence suites passing: ${parsedFixtureCoverage.filter((suite) => suite.result === "PASS").length}/${parsedFixtureCoverage.length}`,
+  `- Fresh QA evidence suites: ${freshFreshnessSuites.length}/${freshnessSuites.length}`,
+  `- QA evidence needing refresh: ${staleFreshnessSuites.length}`,
+  `- QA evidence with unknown age: ${unknownFreshnessSuites.length}`,
   "",
   "## Species Coverage",
   "",
@@ -401,51 +463,72 @@ const lines = [
   "",
   "## Suite Evidence",
   "",
-  "| Suite | Source report | Fixture | Checked | Passed | Needs review | Encoding repairs | Encoding issues | Runner | OpenAI extraction | Last run |",
-  "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |",
+  "| Suite | Source report | Fixture | Checked | Passed | Needs review | Encoding repairs | Encoding issues | Runner | OpenAI extraction | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- | ---: | --- |",
   ...parsed.map(
-    (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | \`${suite.fixture}\` | ${suite.checked} | ${suite.passed} | ${suite.review} | ${suite.promptEncodingRepairs} | ${suite.promptEncodingIssues} | \`${suite.runner}\` | ${suite.openAiExtraction} | ${suite.runDate} |`,
+    (suite) => {
+      const age = evidenceAge(suite.runDate, generatedAt);
+      return `| ${suite.name} | \`${suite.source}\` | \`${suite.fixture}\` | ${suite.checked} | ${suite.passed} | ${suite.review} | ${suite.promptEncodingRepairs} | ${suite.promptEncodingIssues} | \`${suite.runner}\` | ${suite.openAiExtraction} | ${suite.runDate} | ${age.label} | ${age.status} |`;
+    },
   ),
   "",
   "## Intake Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |",
+  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Skipped | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | ---: | --- |",
   ...parsedIntake.map(
-    (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} |`,
+    (suite) => {
+      const age = evidenceAge(suite.runDate, generatedAt);
+      return `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.status} | ${suite.checked} | ${suite.passed} | ${suite.failed} | ${suite.skipped} | ${suite.runDate} | ${age.label} | ${age.status} |`;
+    },
   ),
   "",
   "## Response Contract Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Contracts covered | Missing contracts | Last run |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |",
-  `| ${parsedResponseContract.name} | \`${parsedResponseContract.source}\` | ${parsedResponseContract.layer} | \`${parsedResponseContract.command}\` | ${parsedResponseContract.status} | ${parsedResponseContract.checked} | ${parsedResponseContract.passed} | ${parsedResponseContract.failed} | ${parsedResponseContract.contractsCovered} | ${parsedResponseContract.missingContracts} | ${parsedResponseContract.runDate} |`,
+  "| Suite | Source report | Layer | Command | Status | Checked | Passed | Failed | Contracts covered | Missing contracts | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- | ---: | --- |",
+  `| ${parsedResponseContract.name} | \`${parsedResponseContract.source}\` | ${parsedResponseContract.layer} | \`${parsedResponseContract.command}\` | ${parsedResponseContract.status} | ${parsedResponseContract.checked} | ${parsedResponseContract.passed} | ${parsedResponseContract.failed} | ${parsedResponseContract.contractsCovered} | ${parsedResponseContract.missingContracts} | ${parsedResponseContract.runDate} | ${evidenceAge(parsedResponseContract.runDate, generatedAt).label} | ${evidenceAge(parsedResponseContract.runDate, generatedAt).status} |`,
   "",
   "## Customer UX Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Result | Last run |",
-  "| --- | --- | --- | --- | --- | --- |",
+  "| Suite | Source report | Layer | Command | Result | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | --- | --- | --- | ---: | --- |",
   ...parsedCustomerUx.map(
-    (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} |`,
+    (suite) => {
+      const age = evidenceAge(suite.runDate, generatedAt);
+      return `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.runDate} | ${age.label} | ${age.status} |`;
+    },
   ),
   "",
   "## Golden Suite Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Mode | Result | Checks run | Passed | Failed | Last run |",
-  "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
-  `| ${parsedGoldenSuite.name} | \`${parsedGoldenSuite.source}\` | ${parsedGoldenSuite.layer} | \`${parsedGoldenSuite.command}\` | ${parsedGoldenSuite.mode} | ${parsedGoldenSuite.result} | ${parsedGoldenSuite.run}/${parsedGoldenSuite.checked} | ${parsedGoldenSuite.passed} | ${parsedGoldenSuite.failed} | ${parsedGoldenSuite.runDate} |`,
+  "| Suite | Source report | Layer | Command | Mode | Result | Checks run | Passed | Failed | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
+  `| ${parsedGoldenSuite.name} | \`${parsedGoldenSuite.source}\` | ${parsedGoldenSuite.layer} | \`${parsedGoldenSuite.command}\` | ${parsedGoldenSuite.mode} | ${parsedGoldenSuite.result} | ${parsedGoldenSuite.run}/${parsedGoldenSuite.checked} | ${parsedGoldenSuite.passed} | ${parsedGoldenSuite.failed} | ${parsedGoldenSuite.runDate} | ${evidenceAge(parsedGoldenSuite.runDate, generatedAt).label} | ${evidenceAge(parsedGoldenSuite.runDate, generatedAt).status} |`,
   "",
   "## Fixture And Coverage Evidence",
   "",
-  "| Suite | Source report | Layer | Command | Result | Checked | Issues | Last run |",
-  "| --- | --- | --- | --- | --- | ---: | ---: | --- |",
+  "| Suite | Source report | Layer | Command | Result | Checked | Issues | Last run | Evidence age | Freshness |",
+  "| --- | --- | --- | --- | --- | ---: | ---: | --- | ---: | --- |",
   ...parsedFixtureCoverage.map(
-    (suite) =>
-      `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.checked} | ${suite.issues} | ${suite.runDate} |`,
+    (suite) => {
+      const age = evidenceAge(suite.runDate, generatedAt);
+      return `| ${suite.name} | \`${suite.source}\` | ${suite.layer} | \`${suite.command}\` | ${suite.result} | ${suite.checked} | ${suite.issues} | ${suite.runDate} | ${age.label} | ${age.status} |`;
+    },
   ),
+  "",
+  "## Evidence Freshness",
+  "",
+  `- Freshness window: ${MAX_FRESH_AGE_HOURS} hours.`,
+  `- Fresh suites: ${freshFreshnessSuites.length}/${freshnessSuites.length}.`,
+  `- Refresh recommended: ${staleFreshnessSuites.length}.`,
+  `- Unknown age: ${unknownFreshnessSuites.length}.`,
+  ...(staleFreshnessSuites.length > 0
+    ? staleFreshnessSuites.map(
+        (suite) =>
+          `- Refresh recommended: ${suite.name} (${suite.evidenceAge.label}; ${suite.source}).`,
+      )
+    : ["- All tracked evidence is inside the freshness window."]),
   "",
   "## Current Interpretation",
   "",
@@ -458,6 +541,7 @@ const lines = [
   "- Customer-facing UX checks protect against backend labels, raw scores, confusing recommendation flows, and high-risk recommendation regressions leaking into the customer experience.",
   "- The fast golden suite shows the current PR-level regression gate, including the latest live dog/cat smoke checks and focused cat safety/quality checks.",
   "- Fixture integrity, coverage audits, and live encoding checks protect the large Greek dog/cat QA batches from encoding drift and scenario imbalance before live tests run.",
+  "- Evidence freshness is tracked separately from pass/fail so stale green reports do not look as strong as freshly verified live QA.",
   "",
   "## Next QA Gaps",
   "",

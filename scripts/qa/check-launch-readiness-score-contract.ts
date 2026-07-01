@@ -14,6 +14,7 @@ const doc = read("docs/launch-readiness-score.md");
 const readme = read("README.md");
 const packageJson = read("package.json");
 const dashboard = read("scripts/qa/build-live-readiness-dashboard.mjs");
+const chatbotDashboard = read("scripts/qa/build-live-qa-dashboard.mjs");
 const postDeploy = read("scripts/qa/run-post-deploy-readiness.mjs");
 
 const docMarkers = [
@@ -36,6 +37,24 @@ assert(
     dashboard.includes("coreReadinessRatio * 0.9 + advisoryReadinessRatio * 0.1"),
   "Live readiness dashboard must keep the documented 95 target and 90/10 scoring model."
 );
+
+const chatbotFreshnessMarkers = [
+  "MAX_FRESH_AGE_HOURS",
+  "Fresh QA evidence suites",
+  "QA evidence needing refresh",
+  "Evidence age",
+  "Freshness",
+  "## Evidence Freshness",
+  "refresh recommended",
+  "Evidence freshness is tracked separately from pass/fail",
+];
+
+for (const marker of chatbotFreshnessMarkers) {
+  assert(
+    chatbotDashboard.includes(marker),
+    `Chatbot live QA dashboard is missing freshness marker: ${marker}`
+  );
+}
 
 assert(
   postDeploy.includes("Live readiness score:") &&
