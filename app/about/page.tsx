@@ -112,6 +112,50 @@ export default function AboutPage() {
       </section>
 
       <section className="border-y border-black/10 bg-white">
+        <div
+          className="mx-auto grid max-w-6xl gap-6 border-b border-black/10 px-6 py-12 md:grid-cols-[0.9fr_1.1fr] md:items-start"
+          data-testid="public-feedback-loop"
+        >
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Feedback loop
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Πώς χρησιμοποιούμε το feedback
+            </h2>
+            <p className="mt-4 leading-7 text-gray-700">
+              Τα helpful/not helpful, οι επιλογές τροφών και τα failed matches γίνονται
+              σήματα για review. Δεν αλλάζουν μόνα τους τις προτάσεις. Μας δείχνουν τι
+              πρέπει να ελέγξουμε στη βάση τροφών, στους κανόνες και στον τρόπο που
+              εξηγούμε την απάντηση.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Τροφές που λείπουν</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Μας δείχνουν ποια προϊόντα, ετικέτες ή θρεπτικά στοιχεία θέλουν
+                συμπλήρωση πριν μιλήσουμε με μεγαλύτερη σιγουριά.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Απαντήσεις που δεν βοήθησαν</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Μπαίνουν σε review για πιο καθαρή, λιγότερο τεχνική και πιο χρήσιμη
+                εξήγηση στον επόμενο χρήστη.
+              </p>
+            </article>
+            <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
+              <h3 className="font-black">Επιλογές που πατά ο χρήστης</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Βοηθούν να δούμε τι προτιμούν πραγματικά οι πελάτες και πού χρειάζεται
+                καλύτερη σύγκριση ή πιο πρακτική πρόταση.
+              </p>
+            </article>
+          </div>
+        </div>
+
         <div className="mx-auto grid max-w-6xl gap-5 px-6 py-12 md:grid-cols-4">
           {values.map((item) => (
             <article key={item.title} className="rounded-xl border border-black/10 p-5">

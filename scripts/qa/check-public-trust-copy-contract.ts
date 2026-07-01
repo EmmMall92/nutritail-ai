@@ -34,10 +34,26 @@ const methodologyMarkers = [
   "χωρίς να εφευρίσκει τροφές ή θρεπτικές τιμές",
 ];
 
+const feedbackLoopMarkers = [
+  'data-testid="public-feedback-loop"',
+  "Πώς χρησιμοποιούμε το feedback",
+  "Δεν αλλάζουν μόνα τους τις προτάσεις",
+  "Τροφές που λείπουν",
+  "Απαντήσεις που δεν βοήθησαν",
+  "Επιλογές που πατά ο χρήστης",
+];
+
 for (const marker of aboutMarkers) {
   assert(
     aboutPage.includes(marker),
     `About page must include public trust marker: ${marker}`
+  );
+}
+
+for (const marker of feedbackLoopMarkers) {
+  assert(
+    aboutPage.includes(marker),
+    `About page must include public feedback loop marker: ${marker}`
   );
 }
 
