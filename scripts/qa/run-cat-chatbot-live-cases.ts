@@ -185,6 +185,28 @@ function inferGoal(testCase: CatFixtureCase): RecommendationGoal {
   return "general";
 }
 
+function inferNeutered(prompt: string, signals: Set<string>) {
+  if (
+    prompt.includes("\u03b1\u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03c4\u03b7") ||
+    prompt.includes("\u03b1\u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03c4\u03bf\u03c2") ||
+    prompt.includes("\u03b1\u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03c4\u03bf") ||
+    prompt.includes("unsterilised") ||
+    prompt.includes("unsterilized") ||
+    prompt.includes("not neutered") ||
+    prompt.includes("intact")
+  ) {
+    return false;
+  }
+
+  return (
+    signals.has("sterilised") ||
+    prompt.includes("\u03c3\u03c4\u03b5\u03b9\u03c1") ||
+    prompt.includes("sterilised") ||
+    prompt.includes("sterilized") ||
+    prompt.includes("neutered")
+  );
+}
+
 function inferPet(testCase: CatFixtureCase) {
   const prompt = normalizeText(testCase.prompt);
   const signals = new Set(testCase.expectedSignals);
@@ -220,7 +242,7 @@ function inferPet(testCase: CatFixtureCase) {
     weight,
     age,
     activityLevel: prompt.includes("outdoor") || prompt.includes("\u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1") || signals.has("active") ? "high" : "low",
-    neutered: signals.has("sterilised") || prompt.includes("\u03c3\u03c4\u03b5\u03b9\u03c1"),
+    neutered: inferNeutered(prompt, signals),
     healthIssues,
     allergies,
     excludedIngredients,
@@ -378,6 +400,24 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
 
   if (signals.has("sterilised") && !hasFoodMatch(foods, [/sterili[sz]ed/, /neutered/, /\u03c3\u03c4\u03b5\u03b9\u03c1/, /indoor/, /light/])) {
     warnings.push("Sterilised case did not surface sterilised/neutered/indoor/light candidates.");
+  }
+
+  const prompt = normalizeText(testCase.prompt);
+  const explicitlyUnneutered =
+    prompt.includes("\u03b1\u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03c4") ||
+    prompt.includes("unsterilised") ||
+    prompt.includes("unsterilized") ||
+    prompt.includes("not neutered") ||
+    prompt.includes("intact");
+  if (explicitlyUnneutered && goal === "general") {
+    const mismatch = foods.slice(0, 5).find((food) =>
+      /sterili[sz]ed|neutered|light|weight/.test(normalizeText(visibleFoodText(food)))
+    );
+    if (mismatch) {
+      warnings.push(
+        `Non-neutered general cat case surfaced sterilised/light food: ${foodLabel(mismatch)}.`
+      );
+    }
   }
 
   if (signals.has("weight_control") && !hasFoodMatch(foods, [/light/, /obesity/, /weight/, /sterili[sz]ed/, /neutered/])) {
