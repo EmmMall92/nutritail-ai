@@ -669,10 +669,10 @@ const requiredCardFlowCopy = [
   "Best choice",
   "Practical option",
   "Good alternative",
-  "Estimate portion",
+  "Calculate grams/day",
   "customer-recommendation-choice-panel",
   "Your recommendations are ready",
-  "Next: estimate the daily portion.",
+  "Next: calculate grams/day.",
   "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives.",
   "Choose the food you prefer to see grams per day.",
   "If you change your mind before saving, you can tap another card.",
@@ -810,7 +810,7 @@ const requiredGreekCardFlowCopy = [
   "Καλύτερη επιλογή",
   "Πρακτική επιλογή",
   "Καλή εναλλακτική",
-  "Υπολόγισε ποσότητα",
+  "Υπολόγισε γραμμάρια/ημέρα",
   "Οι προτάσεις σου είναι έτοιμες",
   "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
   "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές",
@@ -897,7 +897,7 @@ const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
 );
-const cardCtaIndex = chatbotPage.indexOf("Estimate portion", recommendedChoicesIndex);
+const cardCtaIndex = chatbotPage.indexOf("Calculate grams/day", recommendedChoicesIndex);
 
 if (
   recommendedChoicesIndex === -1 ||
@@ -912,8 +912,10 @@ if (
 }
 
 const groupedChoiceMarkers = [
-  "Top 3 best choices",
-  "3 value / practical options",
+  "Best starting choices",
+  "Budget-friendly alternatives",
+  "recommendation-final-choice-guide",
+  "Tap one food to calculate grams/day. Then save the plan or try another option.",
   "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
   "group.choices.length}/3",

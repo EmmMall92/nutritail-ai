@@ -1269,11 +1269,11 @@ function getRecommendationChoiceGroups(
   return [
     {
       key: "premium",
-      title: language === "el" ? "Οι 3 καλύτερες επιλογές" : "Top 3 best choices",
+      title: language === "el" ? "Οι 3 πρώτες επιλογές" : "Best starting choices",
       description:
         language === "el"
           ? "Ξεκίνα από εδώ αν θέλεις την πιο δυνατή διατροφική επιλογή για το προφίλ."
-          : "Start here if you want the strongest nutrition fits for this profile.",
+          : "Start here for the strongest nutrition fits for this pet.",
       choices: premiumChoices,
       className: "border-emerald-200 bg-emerald-50/60",
       titleClassName: "text-emerald-950",
@@ -1284,7 +1284,7 @@ function getRecommendationChoiceGroups(
       title:
         language === "el"
           ? "3 πιο οικονομικές / πρακτικές επιλογές"
-          : "3 value / practical options",
+          : "Budget-friendly alternatives",
       description:
         language === "el"
           ? "Καλές εναλλακτικές όταν μετράει τιμή, γεύση ή διαθεσιμότητα."
@@ -5956,6 +5956,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "You do not have to choose the first card immediately. Pick the one that fits flavour, budget, and daily routine best."
               )}
             </p>
+            <div
+              data-testid="recommendation-final-choice-guide"
+              className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm leading-5 text-emerald-950"
+            >
+              <p className="font-semibold">
+                {botText("Πώς συνεχίζουμε", "How to continue")}
+              </p>
+              <p className="mt-1">
+                {botText(
+                  "Πάτησε μία τροφή για να δεις περίπου γραμμάρια/ημέρα. Μετά μπορείς να αποθηκεύσεις το πλάνο ή να δοκιμάσεις άλλη επιλογή.",
+                  "Tap one food to calculate grams/day. Then save the plan or try another option."
+                )}
+              </p>
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
               {getRecommendationShortlistHighlights(
                 recommendedFoodChoices,
@@ -6131,11 +6145,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <span className="mt-1 text-xs font-semibold text-emerald-800">
                     {botText(
                       "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-                      "Next: estimate the daily portion."
+                      "Next: calculate grams/day."
                     )}
                   </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
-                    {botText("Υπολόγισε ποσότητα", "Estimate portion")}
+                    {botText("Υπολόγισε γραμμάρια/ημέρα", "Calculate grams/day")}
                   </span>
                         </button>
                       ))}
