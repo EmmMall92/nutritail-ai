@@ -566,6 +566,33 @@ const customerFoodNameCases = [
     expectedName: "Schesir - Mature Medium Με Κοτόπουλο",
   },
   {
+    label: "Customer visible Schesir cat sterilized chicken token is real Greek",
+    input: {
+      brand: "Schesir",
+      display_name: "Cat Sterilized & Light ΞΞµ ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ",
+    },
+    expectedDisplay: "Cat Sterilized & Light Με Κοτόπουλο",
+    expectedName: "Schesir - Cat Sterilized & Light Με Κοτόπουλο",
+  },
+  {
+    label: "Customer visible Purina turkey token is real Greek",
+    input: {
+      brand: "Purina Pro Plan",
+      display_name: "LIGHT Cat Ξ“Ξ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±",
+    },
+    expectedDisplay: "LIGHT Cat Γαλοπούλα",
+    expectedName: "Purina Pro Plan - LIGHT Cat Γαλοπούλα",
+  },
+  {
+    label: "Customer visible Purina veterinary turkey token is real Greek",
+    input: {
+      brand: "Purina Pro Plan Veterinary Diets",
+      display_name: "DELICATE Digestion Ξ“Ξ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±",
+    },
+    expectedDisplay: "Delicate Digestion Γαλοπούλα",
+    expectedName: "Purina Pro Plan Veterinary Diets - Delicate Digestion Γαλοπούλα",
+  },
+  {
     label: "Purina veterinary customer label removes repeated Pro Plan prefix",
     input: {
       brand: "Purina Pro Plan Veterinary Diets",

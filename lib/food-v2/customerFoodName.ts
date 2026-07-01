@@ -52,6 +52,8 @@ function repairKnownGreekFoodTokens(value: string) {
 
 function normalizeCustomerGreekTokens(value: string) {
   return value
+    .replace(/\u039e\u201c\u039e\u00b1\u039e\u00bb\u039e\u038f\u039f\u20ac\u039e\u038f\u039f\u008d\u039e\u00bb\u039e\u00b1/gu, "Γαλοπούλα")
+    .replace(/\u039e"\u03be\u00b1\u03be\u00bb\u03be\u03ce\u03bf\u20ac\u03bf\u03cd\u03bb\u03b1/gu, "Γαλοπούλα")
     .replace(/Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚/g, "Σολομός")
     .replace(/Ξ£ΞΏΞ»ΞΏΞΌΞΏΟ‚/g, "Σολομός")
     .replace(/ΞΞΏΟ„ΟΟ€ΞΏΟ…Ξ»ΞΏ/g, "Κοτόπουλο")
@@ -89,6 +91,15 @@ function repairCustomerGreekMojibake(value: string) {
 }
 
 function normalizeVisibleMojibakeFlavorTokens(value: string) {
+  value = value.replace(
+    /\u039e\u201c\u039e\u00b1\u039e\u00bb\u039e\u038f\u039f\u20ac\u039e\u038f\u039f\u008d\u039e\u00bb\u039e\u00b1/gu,
+    "Γαλοπούλα"
+  );
+  value = value.replace(
+    /\u039e"\u03be\u00b1\u03be\u00bb\u03be\u03ce\u03bf\u20ac\u03bf\u03cd\u03bb\u03b1/gu,
+    "Γαλοπούλα"
+  );
+
   const replacements: Array<[string, string]> = [
     ["Ξ£ΞΏΞ»ΞΏΞΌΟΟ‚", "Σολομός"],
     ["Ξ£ΞΏΞ»ΞΏΞΌΞΏΟ‚", "Σολομός"],
@@ -105,6 +116,7 @@ function normalizeVisibleMojibakeFlavorTokens(value: string) {
     ["Ξ΅ΟΞ¶ΞΉ", "Ρύζι"],
     ["Ξ¡ΟΞ¶ΞΉ", "Ρύζι"],
     ["ΞΞΏΟ…Ξ½Ξ­Ξ»ΞΉ", "Κουνέλι"],
+    ["Ξ“Ξ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±", "Γαλοπούλα"],
     ["ΞΞ±Ξ»ΞΏΟ€ΞΏΟΞ»Ξ±", "Γαλοπούλα"],
     ["ΞΞµ ", "Με "],
     ["ΞΒ£ΞΞΞΒ»ΞΞΞΞΞΒΞβ€", "Σολομός"],
@@ -402,6 +414,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
     displayName = displayName
       .replace(/^pro\s*plan(?:\s*[\u00ae\u0392\u03b2]\s*)?\s*/i, "")
       .replace(/^veterinary\s+diets?\s+/i, "")
+      .replace(/\bDELICATE\b/g, "Delicate")
       .trim();
   }
 
@@ -441,6 +454,7 @@ export function customerFoodDisplayName(food: FoodNameInput) {
       .replace(/\s+/g, " ")
       .trim()
   );
+  cleanedDisplayName = repairCustomerGreekMojibake(cleanedDisplayName);
   cleanedDisplayName = titleCaseAllCapsCustomerName(cleanedDisplayName);
 
   if (
