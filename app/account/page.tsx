@@ -65,6 +65,14 @@ type AccountReadinessStep = {
   actionLabel: string;
 };
 
+type AccountActivityStripItem = {
+  label: string;
+  value: string;
+  detail: string;
+  href: string;
+  actionLabel: string;
+};
+
 const betaPlanHighlights = [
   {
     label: "3 κατοικίδια",
@@ -311,6 +319,66 @@ function getAccountReadinessSteps({
   ];
 }
 
+function getAccountActivityStrip({
+  latestPet,
+  latestAnalysis,
+  latestProgressPet,
+  latestProgress,
+  nextPetToAnalyze,
+}: {
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+  latestProgressPet?: AccountPet;
+  latestProgress?: AccountPet["latestProgressLog"];
+  nextPetToAnalyze?: AccountPet;
+}): AccountActivityStripItem[] {
+  const latestProgressMetadata = latestProgress?.metadata;
+
+  return [
+    {
+      label: "Τελευταία ανάλυση",
+      value: latestPet?.name ?? "Δεν υπάρχει ακόμη",
+      detail: latestAnalysis
+        ? latestAnalysis.matched_food_name
+          ? `${formatDate(latestAnalysis.createdAt)} - ${latestAnalysis.matched_food_name}`
+          : `${formatDate(latestAnalysis.createdAt)} - χρειάζεται επιλογή τροφής`
+        : "Ξεκίνα ανάλυση για να αποθηκευτούν θερμίδες, προτάσεις και report.",
+      href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
+      actionLabel: latestPet ? "Άνοιγμα report" : "Ξεκίνα ανάλυση",
+    },
+    {
+      label: "Τελευταίο progress",
+      value: latestProgressPet?.name ?? "Δεν υπάρχει ακόμη",
+      detail: latestProgress
+        ? latestProgressMetadata?.progressDecisionHeadlineEl ??
+          latestProgressMetadata?.progressDecisionHeadlineEn ??
+          getProgressDecisionLabel(latestProgressMetadata?.progressDecisionStatus)
+        : "Μετά από 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια και λιχουδιές.",
+      href: latestProgressPet
+        ? `/account/chatbot?petId=${latestProgressPet.id}&mode=progress`
+        : latestPet
+          ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
+          : "/account/chatbot",
+      actionLabel: "Progress check",
+    },
+    {
+      label: "Επόμενο καλύτερο βήμα",
+      value: nextPetToAnalyze?.name ?? latestPet?.name ?? "Πρώτο κατοικίδιο",
+      detail: nextPetToAnalyze
+        ? "Αυτό το κατοικίδιο δεν έχει ακόμη διατροφική ανάλυση."
+        : latestPet
+          ? "Αν άλλαξε βάρος, γεύση, μάρκα ή αποδοχή τροφής, ξεκίνα νέα ροή από εδώ."
+          : "Δημιούργησε το πρώτο προφίλ για να ξεκινήσει η προσωποποιημένη εμπειρία.",
+      href: nextPetToAnalyze
+        ? `/account/chatbot?petId=${nextPetToAnalyze.id}`
+        : latestPet
+          ? `/account/chatbot?petId=${latestPet.id}`
+          : "/account/chatbot",
+      actionLabel: nextPetToAnalyze ? "Κάνε ανάλυση" : "Νέα πρόταση",
+    },
+  ];
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -449,6 +517,13 @@ export default function AccountPage() {
     latestProgressPet,
     nextPetToAnalyze,
   });
+  const accountActivityStrip = getAccountActivityStrip({
+    latestPet,
+    latestAnalysis,
+    latestProgressPet,
+    latestProgress,
+    nextPetToAnalyze,
+  });
   const readinessSteps = getAccountReadinessSteps({
     pets,
     totalAnalyses,
@@ -501,6 +576,47 @@ export default function AccountPage() {
               Δες τα κατοικίδια
             </Link>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm"
+        data-testid="account-latest-activity-strip"
+      >
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              Συνέχισε από εκεί που έμεινες
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-blue-950">
+              Η τελευταία εικόνα του λογαριασμού σου
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-blue-900">
+            Εδώ βλέπεις γρήγορα την τελευταία ανάλυση, το τελευταίο progress
+            check και το πιο χρήσιμο επόμενο βήμα.
+          </p>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {accountActivityStrip.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="rounded-xl border border-blue-100 bg-white p-4 text-blue-950 transition hover:border-blue-400 hover:bg-blue-100"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                {item.label}
+              </p>
+              <p className="mt-2 font-bold">{item.value}</p>
+              <p className="mt-1 text-sm leading-5 text-blue-900">
+                {item.detail}
+              </p>
+              <p className="mt-3 text-sm font-semibold text-blue-950">
+                {item.actionLabel}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
 

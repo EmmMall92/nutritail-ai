@@ -113,6 +113,30 @@ assert(
   "Account dashboard must keep structured next best actions for customers."
 );
 assert(
+  accountPage.includes("type AccountActivityStripItem"),
+  "Account dashboard must define structured latest activity strip items."
+);
+assert(
+  accountPage.includes("function getAccountActivityStrip"),
+  "Account dashboard must generate latest activity from account data."
+);
+assert(
+  accountPage.includes('data-testid="account-latest-activity-strip"'),
+  "Account dashboard must expose the latest activity strip."
+);
+assert(
+  accountPage.includes("Συνέχισε από εκεί που έμεινες") &&
+    accountPage.includes("Η τελευταία εικόνα του λογαριασμού σου") &&
+    accountPage.includes("Τελευταία ανάλυση") &&
+    accountPage.includes("Τελευταίο progress") &&
+    accountPage.includes("Επόμενο καλύτερο βήμα"),
+  "Latest activity strip must show customer-facing continuation copy."
+);
+assert(
+  accountPage.includes("accountActivityStrip.map"),
+  "Account dashboard must render latest activity cards from structured data."
+);
+assert(
   petsPage.includes("/account/chatbot?petId=") && petsPage.includes("mode=progress"),
   "Pets dashboard must link each saved pet to progress-check chatbot mode."
 );
