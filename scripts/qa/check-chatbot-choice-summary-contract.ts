@@ -58,6 +58,22 @@ assert(
   "Chatbot UI must render the shortlist summary before detailed food cards."
 );
 assert(
+  chatbotPage.includes('data-testid="selected-food-plan-card"'),
+  "Chatbot must show a dedicated selected-food plan card after the customer chooses a food."
+);
+assert(
+  chatbotPage.includes("Η επιλογή σου") && chatbotPage.includes("Your selected food"),
+  "Selected-food card must clearly confirm the chosen food in Greek and English."
+);
+assert(
+  chatbotPage.includes("Πρώτη ποσότητα") && chatbotPage.includes("Starting portion"),
+  "Selected-food card must surface the starting portion in customer-friendly copy."
+);
+assert(
+  chatbotPage.includes("Review weight, appetite, and stool in 2-4 weeks."),
+  "Selected-food card must tell the customer what to monitor before the progress check."
+);
+assert(
   packageJson.includes("\"qa:chatbot-choice-summary-contract\""),
   "package.json must expose the chatbot choice summary QA script."
 );

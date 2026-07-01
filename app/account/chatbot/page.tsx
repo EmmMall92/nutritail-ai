@@ -6253,6 +6253,96 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </div>
             )}
 
+            {analysisMetadata?.matchedFoodName && (
+              <div
+                data-testid="selected-food-plan-card"
+                className="rounded-2xl border border-lime-200 bg-lime-50 p-4"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-lime-800">
+                      {botText("Η επιλογή σου", "Your selected food")}
+                    </p>
+                    <p className="mt-1 text-lg font-bold leading-6 text-lime-950">
+                      {analysisMetadata.matchedFoodName}
+                    </p>
+                    <p className="mt-1 text-sm leading-5 text-lime-900">
+                      {botText(
+                        "Αν αυτή είναι η τροφή που θέλεις να δοκιμάσεις, αποθήκευσε το πλάνο για να κρατηθούν ποσότητα, θερμίδες και επόμενα βήματα.",
+                        "If this is the food you want to try, save the plan so portion, calories, and next steps stay on the profile."
+                      )}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white px-4 py-3 text-center shadow-sm ring-1 ring-lime-100">
+                    <p className="text-xs font-semibold uppercase text-lime-700">
+                      {botText("Πρώτη ποσότητα", "Starting portion")}
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-lime-950">
+                      {analysisMetadata.feedingGramsPerDay
+                        ? `${analysisMetadata.feedingGramsPerDay}g`
+                        : botText("χωρίς kcal", "no kcal")}
+                    </p>
+                    <p className="text-xs text-lime-800">
+                      {analysisMetadata.feedingGramsPerDay
+                        ? botText("ανά ημέρα", "per day")
+                        : botText("θέλει ετικέτα για ποσότητα", "label kcal needed")}
+                    </p>
+                  </div>
+                </div>
+
+                {analysisMetadata.feedingGramsPerDay ? (
+                  <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                      <p className="font-semibold">{botText("2 γεύματα", "2 meals")}</p>
+                      <p className="mt-1 text-lg font-bold">
+                        {Math.round(analysisMetadata.feedingGramsPerDay / 2)}g
+                      </p>
+                      <p className="text-xs text-lime-800">
+                        {botText("ανά γεύμα", "per meal")}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                      <p className="font-semibold">{botText("3 γεύματα", "3 meals")}</p>
+                      <p className="mt-1 text-lg font-bold">
+                        {Math.round(analysisMetadata.feedingGramsPerDay / 3)}g
+                      </p>
+                      <p className="text-xs text-lime-800">
+                        {botText("ανά γεύμα", "per meal")}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                      <p className="font-semibold">{botText("Έλεγχος", "Check-in")}</p>
+                      <p className="mt-1 text-sm leading-5">
+                        {botText(
+                          "Ξαναδές βάρος, όρεξη και κόπρανα σε 2-4 εβδομάδες.",
+                          "Review weight, appetite, and stool in 2-4 weeks."
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
+                    {botText(
+                      "Κράτα την τροφή ως επιλογή, αλλά για ακριβή γραμμάρια χρειαζόμαστε kcal/100g ή kcal/kg από την ετικέτα.",
+                      "Keep this food as the selected option, but exact grams need kcal/100g or kcal/kg from the label."
+                    )}
+                  </p>
+                )}
+
+                <div className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
+                  <p className="font-semibold">
+                    {botText("Πώς ξεκινάς", "How to start")}
+                  </p>
+                  <p className="mt-1">
+                    {botText(
+                      "Κάνε σταδιακή αλλαγή 7 ημερών, κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και μην αλλάξεις ξανά τροφή πριν δεις σταθερά πώς πάει.",
+                      "Transition gradually over 7 days, keep treats inside the daily allowance, and avoid switching again before you see a stable response."
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="rounded-xl border border-emerald-200 bg-white p-4">
               <p className="font-semibold text-black">
                 {botText("Μετά την αποθήκευση", "After you save")}
