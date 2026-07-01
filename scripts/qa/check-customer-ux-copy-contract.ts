@@ -72,7 +72,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "Estimate portion",
+    text: "Calculate grams/day",
   },
   {
     file: "app/account/chatbot/page.tsx",
@@ -80,15 +80,23 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "Top 3 best choices",
+    text: "Best starting choices",
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "3 value / practical options",
+    text: "Budget-friendly alternatives",
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "strongest nutrition fits for this profile",
+    text: "strongest nutrition fits for this pet",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "recommendation-final-choice-guide",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Tap one food to calculate grams/day",
   },
   {
     file: "app/account/chatbot/page.tsx",
