@@ -4349,7 +4349,8 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
     if (!targetPetId) return;
 
     const mode = query.get("mode");
-    const deepLinkKey = `${targetPetId}:${mode ?? "default"}`;
+    const reason = query.get("reason");
+    const deepLinkKey = `${targetPetId}:${mode ?? "default"}:${reason ?? "none"}`;
 
     if (handledDeepLinkRef.current === deepLinkKey) return;
 
@@ -4368,6 +4369,28 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
       addMessages(
         createMessage("user", chatLanguage === "el" ? "Έλεγχος προόδου" : "Progress check"),
         createMessage("bot", formatSavedPetProgressPrompt(targetPetName, chatLanguage))
+      );
+      return;
+    }
+
+    if (mode === "recommendation" && (targetPet.analysisHistory?.length ?? 0) > 0) {
+      setSelectedPetId(targetPet.id);
+      setFollowUpPet(null);
+      setFollowUpMode(null);
+      setRecommendationMode("alternative");
+      setPet(createIntakeFromSavedPet(targetPet));
+      setStep("currentFood");
+      addMessages(
+        ...(reason === "flavour"
+          ? [createMessage("user", botText("Αλλαγή γεύσης / εταιρείας", "Change flavor or brand"))]
+          : []),
+        createMessage(
+          "bot",
+          botText(
+            `Κανένα πρόβλημα. Αν ο/η ${targetPetName} βαρέθηκε γεύση, εταιρεία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.\n\nΠοια τροφή τρώει τώρα; Γράψε ακριβή εταιρεία και προϊόν αν τα ξέρεις, αλλιώς γράψε "δεν ξέρω".`,
+            `No problem. If ${targetPetName} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.\n\nWhat food is ${targetPetName} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
+          )
+        )
       );
       return;
     }
@@ -4394,7 +4417,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
         formatSavedPetCurrentFoodPrompt(targetPetName, chatLanguage)
       )
     );
-  }, [chatLanguage, isLoadingPets, savedPets]);
+  }, [botText, chatLanguage, isLoadingPets, savedPets]);
 
   function startNewPetAnalysis() {
     setSelectedPetId(null);
