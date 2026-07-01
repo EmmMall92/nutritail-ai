@@ -77,6 +77,17 @@ assert(
   "Account dashboard must expose the weekly monitoring rhythm section."
 );
 assert(
+  accountPage.includes('data-testid="account-beta-plan"'),
+  "Account dashboard must expose the beta access plan section."
+);
+assert(
+  accountPage.includes("Beta πρόσβαση") &&
+    accountPage.includes("3 κατοικίδια") &&
+    accountPage.includes("20 αναλύσεις / μήνα") &&
+    accountPage.includes('href="/beta"'),
+  "Account dashboard must show beta plan limits and link to the beta page."
+);
+assert(
   accountPage.includes("Ρυθμός παρακολούθησης"),
   "Account dashboard must explain the customer monitoring rhythm."
 );
