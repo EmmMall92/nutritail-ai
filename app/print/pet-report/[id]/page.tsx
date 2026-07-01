@@ -581,6 +581,44 @@ function getCustomerPocketSummary(
   ];
 }
 
+function getProgressReturnKit(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null
+) {
+  const recheckWindow = getRecheckWindow(analysis);
+
+  return [
+    {
+      label: "1. Ζύγισμα",
+      value: recheckWindow,
+      detail:
+        "Ζύγισε στην ίδια ζυγαριά, ιδανικά παρόμοια ώρα και πριν αλλάξεις ξανά ποσότητα.",
+    },
+    {
+      label: "2. Πραγματική ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα ως αρχικό πλάνο`
+        : "Φέρε τα πραγματικά γραμμάρια/ημέρα",
+      detail:
+        "Σημείωσε πόσα γραμμάρια έτρωγε τελικά, όχι μόνο πόσα γράφει το report.",
+    },
+    {
+      label: "3. Λιχουδιές",
+      value: "Πόσες και τι είδους",
+      detail:
+        "Οι λιχουδιές αλλάζουν πολύ το αποτέλεσμα, ειδικά σε απώλεια ή συντήρηση βάρους.",
+    },
+    {
+      label: pet.species === "cat" ? "4. Όρεξη / ούρηση" : "4. Όρεξη / κόπρανα",
+      value: pet.species === "cat" ? "Όρεξη, τουαλέτα, βάρος" : "Όρεξη, κόπρανα, ενέργεια",
+      detail:
+        pet.species === "cat"
+          ? "Για γάτες κράτα ιδιαίτερα όρεξη, ούρηση, κόπρανα και αν τρώει κάθε μέρα."
+          : "Για σκύλους κράτα όρεξη, κόπρανα, ενέργεια και αν δέχεται καλά την τροφή.",
+    },
+  ];
+}
+
 function getReportDecisionSummary(
   pet: PetDetail,
   analysis?: AnalysisHistoryItem | null,
@@ -852,6 +890,7 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const progressReturnKit = getProgressReturnKit(pet, latestAnalysis);
   const reportDecisionSummary = getReportDecisionSummary(
     pet,
     latestAnalysis,
@@ -1423,6 +1462,44 @@ export default function PrintablePetReportPage() {
                 </p>
                 <p className="mt-2 font-bold">{item.value}</p>
                 <p className="mt-1 text-xs leading-5 text-violet-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-progress-return-kit"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-indigo-700">
+                Τι φέρνεις στον επόμενο έλεγχο
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-indigo-950">
+                Progress kit για να μη μαντεύουμε την επόμενη φορά
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-indigo-900">
+              Αυτά τα 4 στοιχεία κάνουν το επόμενο progress check πιο ακριβές:
+              βλέπουμε αν το πλάνο δουλεύει ή αν χρειάζεται άλλη τροφή, γεύση,
+              ποσότητα ή ρυθμός μετάβασης.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {progressReturnKit.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-indigo-100 bg-white p-4 text-sm text-indigo-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-indigo-900">
                   {item.detail}
                 </p>
               </div>
