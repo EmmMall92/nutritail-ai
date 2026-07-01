@@ -54,5 +54,23 @@ assert(
   adminFeedbackPage.includes("setTypeFilter(\"food_choice_selected\")"),
   "Admin feedback page must provide a shortcut to food-choice events."
 );
+assert(
+  adminFeedbackPage.includes("function getLaunchSignalStatus"),
+  "Admin feedback page must compute a launch signal from feedback analytics."
+);
+assert(
+  adminFeedbackPage.includes('data-testid="chat-feedback-launch-triage"'),
+  "Admin feedback page must expose the launch triage panel."
+);
+assert(
+  adminFeedbackPage.includes("highPriorityCleanupCount"),
+  "Launch triage must include cleanup risk from repeated failed matches."
+);
+assert(
+  adminFeedbackPage.includes("foodSelectionRate") &&
+    adminFeedbackPage.includes("planSaveRate") &&
+    adminFeedbackPage.includes("helpfulRate"),
+  "Launch triage must include food selection, save, and helpfulness rates."
+);
 
 console.log("Chat feedback analytics contract passed.");
