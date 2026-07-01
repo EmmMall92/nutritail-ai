@@ -158,6 +158,11 @@ The readiness percentage is documented in
 the project percentage just because a PR merged; use fresh QA evidence, the live
 readiness dashboard, and the next proof gap.
 
+When discussing progress, use the launch score carefully: automated live readiness
+and customer product progress are separate. The dashboard can be 95-100/100 while
+the final customer experience still needs targeted chatbot, report, and
+progress-flow polish.
+
 ## Data Notes
 
 Food data quality is tracked with `data_quality_status`, `data_source_url`,

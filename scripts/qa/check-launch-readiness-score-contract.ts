@@ -18,6 +18,10 @@ const chatbotDashboard = read("scripts/qa/build-live-qa-dashboard.mjs");
 const postDeploy = read("scripts/qa/run-post-deploy-readiness.mjs");
 
 const docMarkers = [
+  "Two Different Percentages",
+  "Automated live readiness",
+  "Customer product progress",
+  "What Moves Customer Product Progress",
   "95/100 is the beta-launch target",
   "90% core evidence",
   "10% advisory evidence",
@@ -76,7 +80,9 @@ assert(
 assert(
   readme.includes("docs/launch-readiness-score.md") &&
     readme.includes("Do not raise") &&
-    readme.includes("fresh QA evidence"),
+    readme.includes("fresh QA evidence") &&
+    readme.includes("automated live readiness") &&
+    readme.includes("customer product progress"),
   "README must point readers to the launch readiness score playbook."
 );
 
