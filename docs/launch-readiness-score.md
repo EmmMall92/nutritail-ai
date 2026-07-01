@@ -17,6 +17,8 @@ Use two labels so progress does not look stuck:
   covers whether a real customer can sign up, describe a pet naturally, receive
   clear recommendations, choose a food, understand portions, save the analysis,
   return for progress, and feel the result is polished enough to trust.
+  The detailed Customer Product Progress Score rubric lives in
+  `docs/product-progress-score.md`.
 
 The automated score can be 100/100 while customer product progress still needs a
 few targeted UX passes. Do not keep saying 78-80% after the automated readiness
@@ -126,6 +128,9 @@ Customer product progress moves when real user friction is removed:
   return.
 - Live tests with dog/cat scenarios confirm the experience feels human, useful,
   and safe.
+
+Use `docs/product-progress-score.md` when the user asks why the project is still
+around 88-89% even though automated live readiness is higher.
 
 ## Practical Progress Bands
 

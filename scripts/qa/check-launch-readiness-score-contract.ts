@@ -21,6 +21,8 @@ const docMarkers = [
   "Two Different Percentages",
   "Automated live readiness",
   "Customer product progress",
+  "docs/product-progress-score.md",
+  "Customer Product Progress Score",
   "What Moves Customer Product Progress",
   "95/100 is the beta-launch target",
   "90% core evidence",
@@ -73,8 +75,10 @@ assert(
 );
 
 assert(
-  packageJson.includes("qa:launch-readiness-score-contract && npm run qa:pr-quality-policy"),
-  "CI readiness must run launch readiness score contract before PR quality policy."
+  packageJson.includes(
+    "qa:launch-readiness-score-contract && npm run qa:product-progress-score-contract && npm run qa:pr-quality-policy"
+  ),
+  "CI readiness must run launch readiness and product progress score contracts before PR quality policy."
 );
 
 assert(
