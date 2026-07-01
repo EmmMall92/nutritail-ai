@@ -23,6 +23,39 @@ assert(page.includes("betaAccessPlan"), "Beta page should render beta access pla
 assert(page.includes("Beta plan limits"), "Beta page should explain beta plan limits.");
 assert(page.includes("betaPlanLimits"), "Beta page should render beta plan limit items.");
 assert(page.includes("20 αναλύσεις / μήνα"), "Beta page should disclose the monthly analysis soft limit.");
+assert(page.includes("betaPlainTerms"), "Beta page should render plain-language beta terms.");
+assert(page.includes("betaLaunchSignals"), "Beta page should render launch quality signals.");
+assert(
+  page.includes('data-testid="beta-commercial-clarity"'),
+  "Beta page should expose the commercial clarity section."
+);
+assert(
+  page.includes('data-testid="beta-launch-signals"'),
+  "Beta page should expose the launch signals section."
+);
+assert(
+  page.includes("Χωρίς πληρωμή στην beta") &&
+    page.includes("δεν ζητά στοιχεία κάρτας") &&
+    page.includes("δεν ενεργοποιεί συνδρομή"),
+  "Beta page should clearly say beta has no payment, card, or subscription activation."
+);
+assert(
+  page.includes("Τι παίρνεις τώρα") &&
+    page.includes("report") &&
+    page.includes("timeline") &&
+    page.includes("progress check"),
+  "Beta page should explain what customers get during beta."
+);
+assert(
+  page.includes("Τι δεν είναι ακόμη τελικό") &&
+    page.includes("βελτιώνονται συνεχώς"),
+  "Beta page should explain that data and recommendations are still improving."
+);
+assert(
+  page.includes("Πότε ανοίγει περισσότερο") &&
+    page.includes("σταθερή ποιότητα"),
+  "Beta page should explain what signals will allow broader launch."
+);
 assert(form.includes("/api/beta/waitlist"), "Beta form should submit to the beta waitlist API.");
 assert(form.includes("Θέλω beta πρόσβαση"), "Beta form should expose a clear customer CTA.");
 assert(route.includes("beta_waitlist_signup"), "Beta API should log a beta waitlist signup action.");

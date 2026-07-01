@@ -67,6 +67,27 @@ const betaPlanLimits = [
   },
 ];
 
+const betaPlainTerms = [
+  {
+    title: "Χωρίς πληρωμή στην beta",
+    text: "Η beta λίστα δεν ενεργοποιεί συνδρομή και δεν ζητά στοιχεία κάρτας. Αν αργότερα ανοίξουν paid plans, θα εμφανιστούν καθαρά πριν αποφασίσεις.",
+  },
+  {
+    title: "Τι παίρνεις τώρα",
+    text: "Πρόσβαση στον σύμβουλο, αποθήκευση κατοικιδίων, προτάσεις τροφών, report, timeline και progress check μέσα στα beta όρια.",
+  },
+  {
+    title: "Τι δεν είναι ακόμη τελικό",
+    text: "Η βάση τροφών, οι προτάσεις και οι αναφορές βελτιώνονται συνεχώς με νέα δεδομένα, feedback και ελέγχους ποιότητας.",
+  },
+];
+
+const betaLaunchSignals = [
+  "Οι χρήστες ολοκληρώνουν ανάλυση χωρίς να μπερδεύονται.",
+  "Οι προτάσεις τροφών ταιριάζουν καλύτερα σε ηλικία, βάρος, προτιμήσεις και ευαισθησίες.",
+  "Τα reports και τα progress checks βοηθούν στην πράξη, όχι μόνο σαν τεχνική δοκιμή.",
+];
+
 export default function BetaPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -196,6 +217,63 @@ export default function BetaPage() {
               ελεγχόμενη δοκιμή ποιότητας και όχι σαν τελικό εμπορικό προϊόν.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="border-t border-black/10 bg-[#f7f7f4]">
+        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-12 lg:grid-cols-[1fr_0.9fr]">
+          <div
+            className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm md:p-8"
+            data-testid="beta-commercial-clarity"
+          >
+            <p className="text-sm font-bold uppercase tracking-wide text-green-700">
+              Καθαροί όροι beta
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Πρώτα δοκιμή ποιότητας, μετά κανονική εμπορική διάθεση.
+            </h2>
+            <p className="mt-4 leading-7 text-gray-700">
+              Θέλουμε ο χρήστης να ξέρει ακριβώς τι δοκιμάζει. Η beta είναι
+              ελεγχόμενη πρόσβαση στο προϊόν, όχι κρυφή συνδρομή και όχι
+              υπόσχεση ότι όλα τα δεδομένα τροφών είναι ήδη τέλεια.
+            </p>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {betaPlainTerms.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-2xl border border-black/10 bg-[#f7f7f4] p-5"
+                >
+                  <h3 className="font-black">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-gray-700">
+                    {item.text}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside
+            className="rounded-3xl border border-amber-200 bg-amber-50 p-6 md:p-8"
+            data-testid="beta-launch-signals"
+          >
+            <p className="text-sm font-bold uppercase tracking-wide text-amber-800">
+              Πότε ανοίγει περισσότερο
+            </p>
+            <h2 className="mt-3 text-2xl font-black text-amber-950">
+              Το beta θα μεγαλώνει όταν το feedback δείχνει σταθερή ποιότητα.
+            </h2>
+            <div className="mt-5 space-y-3">
+              {betaLaunchSignals.map((item, index) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-amber-200 bg-white p-4 text-sm leading-6 text-amber-950"
+                >
+                  <span className="font-black">{index + 1}.</span> {item}
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
       </section>
     </main>
