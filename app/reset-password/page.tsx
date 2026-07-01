@@ -12,6 +12,8 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -123,28 +125,54 @@ export default function ResetPasswordPage() {
       <form onSubmit={handlePasswordUpdate} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Νέος κωδικός</span>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Νέος κωδικός"
-            type="password"
-            autoComplete="new-password"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
-          />
+          <div className="mt-2 flex rounded-xl border border-gray-300 bg-white transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-100">
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Νέος κωδικός"
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              className="min-w-0 flex-1 rounded-l-xl p-3 text-black outline-none"
+            />
+            <button
+              type="button"
+              aria-label={
+                showPassword ? "Απόκρυψη νέου κωδικού" : "Εμφάνιση νέου κωδικού"
+              }
+              onClick={() => setShowPassword((value) => !value)}
+              className="shrink-0 rounded-r-xl border-l border-gray-200 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            >
+              {showPassword ? "Απόκρυψη" : "Εμφάνιση"}
+            </button>
+          </div>
         </label>
 
         <label className="block">
           <span className="text-sm font-medium text-gray-800">
             Επιβεβαίωση νέου κωδικού
           </span>
-          <input
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Επιβεβαίωση νέου κωδικού"
-            type="password"
-            autoComplete="new-password"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
-          />
+          <div className="mt-2 flex rounded-xl border border-gray-300 bg-white transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-100">
+            <input
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Επιβεβαίωση νέου κωδικού"
+              type={showConfirmPassword ? "text" : "password"}
+              autoComplete="new-password"
+              className="min-w-0 flex-1 rounded-l-xl p-3 text-black outline-none"
+            />
+            <button
+              type="button"
+              aria-label={
+                showConfirmPassword
+                  ? "Απόκρυψη επιβεβαίωσης κωδικού"
+                  : "Εμφάνιση επιβεβαίωσης κωδικού"
+              }
+              onClick={() => setShowConfirmPassword((value) => !value)}
+              className="shrink-0 rounded-r-xl border-l border-gray-200 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            >
+              {showConfirmPassword ? "Απόκρυψη" : "Εμφάνιση"}
+            </button>
+          </div>
         </label>
 
         <p className="text-xs leading-5 text-gray-500">

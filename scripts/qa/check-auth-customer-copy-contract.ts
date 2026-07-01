@@ -18,6 +18,9 @@ const pages = [
       "στη σωστή σελίδα μετά τη σύνδεση",
       'data-testid="auth-next-step-card"',
       "Έλεγξε email και κωδικό",
+      "showPassword",
+      "Εμφάνιση κωδικού",
+      "Απόκρυψη κωδικού",
     ],
   },
   {
@@ -27,6 +30,9 @@ const pages = [
       "να κρατήσεις",
       "report για μελλοντικό progress check",
       'data-testid="auth-next-step-card"',
+      "showPassword",
+      "Εμφάνιση κωδικού",
+      "Απόκρυψη κωδικού",
     ],
   },
   {
@@ -51,6 +57,10 @@ const pages = [
       'data-testid="auth-next-step-card"',
       'data-testid="auth-reset-help-card"',
       "Σύνδεση στον λογαριασμό",
+      "showPassword",
+      "showConfirmPassword",
+      "Εμφάνιση νέου κωδικού",
+      "Εμφάνιση επιβεβαίωσης κωδικού",
     ],
   },
 ];
