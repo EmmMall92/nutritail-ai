@@ -22,6 +22,17 @@ export const NUTRITAIL_FACT_EXTRACTION_INSTRUCTIONS = [
   "Keep liked proteins and avoided/allergy proteins separate.",
   "If a phrase means the pet does not eat or dislikes an ingredient, put it in excludedIngredients, not currentFoodName.",
   "If the message contains an urgent red flag, include it in redFlags even when other facts are present.",
+  "If a sentence says the user wants one protein because another protein bothers the pet, keep the wanted protein in preferredProteins and the problematic protein in excludedIngredients or allergies.",
+  "If the message mentions allergy, allergic, suspected allergy, or monoprotein food for allergy, add an allergy healthIssues caution even when the allergen is also extracted.",
+  "If the message mentions mixed dry food with cooked/home-cooked food, add a healthIssues caution for mixed feeding calculations.",
+  "If the pet is drinking much more water lately or has increased thirst, add a healthIssues caution.",
+  "If the pet chokes on large kibble or struggles to chew, add a chewing or choking healthIssues caution.",
+  "If a pet gained weight, got fat, begs constantly, or gained weight after neutering, set weightGoal to loss.",
+  "If a pet is losing weight unexpectedly, lost many kilos quickly, is very thin, malnourished, or has low muscle mass, set weightGoal to gain and add a healthIssues caution.",
+  "If the message mentions pregnancy, lactation, nursing puppies/kittens, weaning, orphan puppies/kittens, or very underweight young animals, add a healthIssues caution.",
+  "If the pet lives outside, on a farm, works, hunts, runs, swims daily, or trains daily, set activityLevel to high unless the message says otherwise.",
+  "If the pet lives in an apartment, has no yard, is couch/lazy, sleeps most of the day, or has little activity due to age, set activityLevel to low unless the message says otherwise.",
+  "For Greek ingredient exclusions, map σιτάρι to wheat, καλαμπόκι to corn, γαλακτοκομικά to dairy, and όσπρια to legumes.",
 ] as const;
 
 export const NUTRITAIL_ANSWER_WRITER_INSTRUCTIONS = [

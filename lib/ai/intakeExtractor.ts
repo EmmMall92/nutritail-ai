@@ -10,6 +10,7 @@ import {
 } from "@/lib/ai/intakePromptContract";
 import type {
   AiIntakeExtraction,
+  ExtractedSpecies,
   ValidatedAiIntakeExtraction,
 } from "@/lib/ai/intakeTypes";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
@@ -17,6 +18,7 @@ import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 type ExtractIntakeOptions = {
   locale?: "el" | "en";
   timeoutMs?: number;
+  contextSpecies?: ExtractedSpecies | null;
 };
 
 function mergeUnique(...arrays: Array<string[] | undefined>) {
@@ -26,13 +28,14 @@ function mergeUnique(...arrays: Array<string[] | undefined>) {
 function mergeOpenAiWithFallback(
   message: string,
   openAi: AiIntakeExtraction,
-  fallback: ValidatedAiIntakeExtraction
+  fallback: ValidatedAiIntakeExtraction,
+  options: ExtractIntakeOptions
 ): AiIntakeExtraction {
   const fallbackData = fallback.data;
 
   return applyIntakeMessageGuards(message, {
     ...openAi,
-    species: openAi.species ?? fallbackData.species ?? null,
+    species: openAi.species ?? fallbackData.species ?? options.contextSpecies ?? null,
     petName: openAi.petName ?? fallbackData.petName ?? null,
     weightKg: openAi.weightKg ?? fallbackData.weightKg ?? null,
     ageYears: openAi.ageYears ?? fallbackData.ageYears ?? null,
@@ -62,7 +65,15 @@ export async function extractPetIntakeFacts(
   message: string,
   options: ExtractIntakeOptions = {}
 ): Promise<ValidatedAiIntakeExtraction & { source: "openai" | "fallback" }> {
-  const fallback = fallbackExtractIntake(message);
+  const rawFallback = fallbackExtractIntake(message);
+  const fallback =
+    options.contextSpecies && !rawFallback.data.species
+      ? validateAiIntakeExtraction({
+          ...rawFallback.data,
+          species: options.contextSpecies,
+          notes: mergeUnique(rawFallback.data.notes, ["context_species"]),
+        })
+      : rawFallback;
 
   if (!isOpenAiConfigured()) {
     return { ...fallback, source: "fallback" };
@@ -100,7 +111,7 @@ export async function extractPetIntakeFacts(
     if (!parsed) return { ...fallback, source: "fallback" };
 
     const validated = validateAiIntakeExtraction(
-      mergeOpenAiWithFallback(message, parsed, fallback)
+      mergeOpenAiWithFallback(message, parsed, fallback, options)
     );
     return {
       ...validated,

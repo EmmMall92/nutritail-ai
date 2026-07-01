@@ -177,7 +177,11 @@ export function parseTastePreferences(text: string): TastePreferences {
 
   const excluded: string[] = [];
   const preferred: string[] = [];
-  const clauses = splitPreferenceClauses(normalized);
+  const normalizedForClauses = normalized
+    .replace(/\s+γιατι\s+/g, ". ")
+    .replace(/\s+giati\s+/g, ". ")
+    .replace(/\s+because\s+/g, ". ");
+  const clauses = splitPreferenceClauses(normalizedForClauses);
 
   for (const clause of clauses.length > 0 ? clauses : [normalized]) {
     const matched = [...PROTEIN_TERMS, ...EXTRA_PROTEIN_TERMS].filter((term) =>

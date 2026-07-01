@@ -3875,6 +3875,7 @@ export default function AccountChatbotPage() {
         body: JSON.stringify({
           message: text,
           locale: chatLanguage,
+          contextSpecies: pet.species ?? null,
         }),
       });
 
