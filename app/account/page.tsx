@@ -21,9 +21,16 @@ type Customer = {
 type AnalysisHistoryItem = {
   id: string;
   createdAt: string;
+  rer?: number | null;
+  mer?: number | null;
+  matchedFoodName?: string | null;
+  feedingGramsPerDay?: number | null;
+  foodScore?: number | null;
+  weightGoal?: string | null;
   matched_food_name?: string | null;
   feeding_grams_per_day?: number | null;
   food_score?: number | null;
+  weight_goal?: string | null;
 };
 
 type AccountPet = {
@@ -81,6 +88,18 @@ type AccountTodayTask = {
   tone: "primary" | "calm";
 };
 
+type AccountPlanSnapshot = {
+  petName: string;
+  weightGoal: string;
+  foodName: string;
+  dailyCalories: string;
+  gramsPerDay: string;
+  foodFit: string;
+  progressHref: string;
+  reportHref: string;
+  timelineHref: string;
+};
+
 const betaPlanHighlights = [
   {
     label: "3 κατοικίδια",
@@ -111,7 +130,41 @@ function formatDate(value?: string) {
 
 function hasReadyReport(pet: AccountPet) {
   const latest = pet.analysisHistory?.[0];
-  return Boolean(latest?.matched_food_name && latest?.feeding_grams_per_day);
+  return Boolean(getAnalysisFoodName(latest) && getAnalysisFeedingGrams(latest));
+}
+
+function getAnalysisFoodName(analysis?: AnalysisHistoryItem) {
+  return analysis?.matchedFoodName ?? analysis?.matched_food_name ?? null;
+}
+
+function getAnalysisFeedingGrams(analysis?: AnalysisHistoryItem) {
+  return analysis?.feedingGramsPerDay ?? analysis?.feeding_grams_per_day ?? null;
+}
+
+function getAnalysisFoodScore(analysis?: AnalysisHistoryItem) {
+  return analysis?.foodScore ?? analysis?.food_score ?? null;
+}
+
+function getAnalysisWeightGoal(analysis?: AnalysisHistoryItem) {
+  return analysis?.weightGoal ?? analysis?.weight_goal ?? null;
+}
+
+function formatDailyCalories(value?: number | null) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    return "Θα εμφανιστούν μετά την επόμενη ανάλυση";
+  }
+
+  return `${Math.round(value)} kcal/ημέρα`;
+}
+
+function getWeightGoalCopy(value?: string | null) {
+  const normalized = String(value ?? "").toLowerCase();
+
+  if (normalized.includes("loss")) return "Απώλεια βάρους";
+  if (normalized.includes("gain")) return "Αύξηση βάρους";
+  if (normalized.includes("maintenance")) return "Διατήρηση βάρους";
+
+  return "Τρέχον πλάνο";
 }
 
 function getPetLabel(pet: AccountPet) {
@@ -162,6 +215,34 @@ function getFoodFitLabel(score?: number | null) {
   if (score >= 60) return "Χρήσιμη επιλογή";
   if (score >= 40) return "Θέλει επανέλεγχο";
   return "Προτείνεται νέα ανάλυση";
+}
+
+function getAccountPlanSnapshot({
+  latestPet,
+  latestAnalysis,
+}: {
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+}): AccountPlanSnapshot | null {
+  if (!latestPet || !latestAnalysis) return null;
+
+  const foodName = getAnalysisFoodName(latestAnalysis);
+  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
+  const foodScore = getAnalysisFoodScore(latestAnalysis);
+
+  return {
+    petName: latestPet.name ?? "Κατοικίδιο",
+    weightGoal: getWeightGoalCopy(getAnalysisWeightGoal(latestAnalysis)),
+    foodName: foodName ?? "Δεν έχει επιλεγεί ακόμη τροφή",
+    dailyCalories: formatDailyCalories(latestAnalysis.mer),
+    gramsPerDay: feedingGrams
+      ? `${feedingGrams} γρ./ημέρα`
+      : "Υπολογίζεται όταν επιλεγεί τροφή",
+    foodFit: getFoodFitLabel(foodScore),
+    progressHref: `/account/chatbot?petId=${latestPet.id}&mode=progress`,
+    reportHref: `/print/pet-report/${latestPet.id}`,
+    timelineHref: `/print/pet-timeline/${latestPet.id}`,
+  };
 }
 
 function getProgressDecisionLabel(value?: string | null) {
@@ -238,7 +319,7 @@ function getDashboardNextActions({
     latestPet && latestAnalysis
       ? {
           title: "Άνοιξε την τελευταία αναφορά",
-          detail: latestAnalysis.feeding_grams_per_day
+          detail: getAnalysisFeedingGrams(latestAnalysis)
             ? "Δες θερμίδες, τροφή, γραμμάρια/ημέρα και πλάνο μετάβασης."
             : "Δες τη σύνοψη και συμπλήρωσε τροφή για πιο ακριβή ποσότητα.",
           href: `/print/pet-report/${latestPet.id}`,
@@ -347,8 +428,8 @@ function getAccountActivityStrip({
       label: "Τελευταία ανάλυση",
       value: latestPet?.name ?? "Δεν υπάρχει ακόμη",
       detail: latestAnalysis
-        ? latestAnalysis.matched_food_name
-          ? `${formatDate(latestAnalysis.createdAt)} - ${latestAnalysis.matched_food_name}`
+        ? getAnalysisFoodName(latestAnalysis)
+          ? `${formatDate(latestAnalysis.createdAt)} - ${getAnalysisFoodName(latestAnalysis)}`
           : `${formatDate(latestAnalysis.createdAt)} - χρειάζεται επιλογή τροφής`
         : "Ξεκίνα ανάλυση για να αποθηκευτούν θερμίδες, προτάσεις και αναφορά.",
       href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
@@ -447,7 +528,7 @@ function getAccountTodayTasks({
         },
     {
       title: "Άνοιξε την τελευταία αναφορά",
-      detail: latestAnalysis?.feeding_grams_per_day
+      detail: getAnalysisFeedingGrams(latestAnalysis)
         ? "Δες θερμίδες, γραμμάρια/ημέρα, τροφή, λιχουδιές και πλάνο μετάβασης."
         : "Δες την τελευταία σύνοψη και συμπλήρωσε τροφή για πιο ακριβή γραμμάρια.",
       href: reportTarget ? `/print/pet-report/${reportTarget.id}` : "/account/chatbot",
@@ -608,8 +689,12 @@ export default function AccountPage() {
   const latestProgressMetadata = latestProgress?.metadata;
   const nextPetToAnalyze = petsNeedingAnalysis[0];
   const planStatusCopy = getNutritionPlanStatusCopy(
-    latestAnalysis?.food_score
+    getAnalysisFoodScore(latestAnalysis)
   );
+  const accountPlanSnapshot = getAccountPlanSnapshot({
+    latestPet,
+    latestAnalysis,
+  });
   const dashboardNextActions = getDashboardNextActions({
     pets,
     latestPet,
@@ -776,6 +861,96 @@ export default function AccountPage() {
           ))}
         </div>
       </div>
+
+      {accountPlanSnapshot && (
+        <div
+          className="rounded-2xl border border-teal-200 bg-white p-6 shadow-sm"
+          data-testid="account-plan-snapshot"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
+                Σημερινό πλάνο
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-black">
+                {accountPlanSnapshot.petName}
+              </h2>
+              <p className="mt-1 text-sm font-medium text-teal-800">
+                {accountPlanSnapshot.weightGoal}
+              </p>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-700">
+                Η πιο πρόσφατη αποθηκευμένη οδηγία σου συγκεντρωμένη σε ένα
+                σημείο, για να ξέρεις τι ταΐζεις και πότε χρειάζεται έλεγχος.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+              <Link
+                href={accountPlanSnapshot.progressHref}
+                className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+              >
+                Progress check
+              </Link>
+              <Link
+                href={accountPlanSnapshot.reportHref}
+                className="rounded-xl border border-teal-300 px-4 py-2 text-center text-sm font-medium text-teal-900 transition hover:bg-teal-50"
+              >
+                Άνοιγμα αναφοράς
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-xl border border-teal-100 bg-teal-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">
+                Τροφή
+              </p>
+              <p className="mt-2 font-semibold text-teal-950">
+                {accountPlanSnapshot.foodName}
+              </p>
+            </div>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Θερμίδες
+              </p>
+              <p className="mt-2 font-semibold text-gray-950">
+                {accountPlanSnapshot.dailyCalories}
+              </p>
+            </div>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Γραμμάρια/ημέρα
+              </p>
+              <p className="mt-2 font-semibold text-gray-950">
+                {accountPlanSnapshot.gramsPerDay}
+              </p>
+            </div>
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Κατάσταση
+              </p>
+              <p className="mt-2 font-semibold text-gray-950">
+                {accountPlanSnapshot.foodFit}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2 text-sm">
+            <Link
+              href={accountPlanSnapshot.timelineHref}
+              className="rounded-full bg-teal-50 px-4 py-2 font-medium text-teal-900 transition hover:bg-teal-100"
+            >
+              Δες timeline
+            </Link>
+            <Link
+              href={accountPlanSnapshot.progressHref}
+              className="rounded-full bg-gray-100 px-4 py-2 font-medium text-gray-900 transition hover:bg-gray-200"
+            >
+              Σε 2-4 εβδομάδες έλεγξε βάρος, όρεξη και κόπρανα
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -1075,8 +1250,8 @@ export default function AccountPage() {
             <p className="mt-1 text-sm text-gray-600">
               {latestAnalysis
                 ? `${formatDate(latestAnalysis.createdAt)}${
-                    latestAnalysis.matched_food_name
-                      ? ` - ${latestAnalysis.matched_food_name}`
+                    getAnalysisFoodName(latestAnalysis)
+                      ? ` - ${getAnalysisFoodName(latestAnalysis)}`
                       : ""
                   }`
                 : "Κάνε ανάλυση για να δημιουργηθεί η πρώτη αναφορά."}
@@ -1121,15 +1296,16 @@ export default function AccountPage() {
 
         {latestAnalysis && (
           <div className="mt-4 flex flex-wrap gap-2 text-xs text-gray-700">
-            {latestAnalysis.food_score !== null &&
-              latestAnalysis.food_score !== undefined && (
+            {getAnalysisFoodScore(latestAnalysis) !== null &&
+              getAnalysisFoodScore(latestAnalysis) !== undefined && (
                 <span className="rounded-full bg-gray-100 px-3 py-1">
-                  Καταλληλότητα τροφής: {getFoodFitLabel(latestAnalysis.food_score)}
+                  Καταλληλότητα τροφής:{" "}
+                  {getFoodFitLabel(getAnalysisFoodScore(latestAnalysis))}
                 </span>
               )}
-            {latestAnalysis.feeding_grams_per_day && (
+            {getAnalysisFeedingGrams(latestAnalysis) && (
               <span className="rounded-full bg-gray-100 px-3 py-1">
-                {latestAnalysis.feeding_grams_per_day} γρ./ημέρα
+                {getAnalysisFeedingGrams(latestAnalysis)} γρ./ημέρα
               </span>
             )}
           </div>

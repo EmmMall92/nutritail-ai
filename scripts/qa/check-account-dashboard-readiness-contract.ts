@@ -133,8 +133,31 @@ assert(
   "Account dashboard must generate latest activity from account data."
 );
 assert(
+  accountPage.includes("function getAccountPlanSnapshot"),
+  "Account dashboard must generate a current plan snapshot from the latest saved analysis."
+);
+assert(
   accountPage.includes('data-testid="account-latest-activity-strip"'),
   "Account dashboard must expose the latest activity strip."
+);
+assert(
+  accountPage.includes('data-testid="account-plan-snapshot"'),
+  "Account dashboard must expose the customer-facing current plan snapshot."
+);
+assert(
+  accountPage.includes("Σημερινό πλάνο") &&
+    accountPage.includes("Θερμίδες") &&
+    accountPage.includes("Γραμμάρια/ημέρα") &&
+    accountPage.includes("Progress check") &&
+    accountPage.includes("Άνοιγμα αναφοράς") &&
+    accountPage.includes("Σε 2-4 εβδομάδες έλεγξε βάρος, όρεξη και κόπρανα"),
+  "Current plan snapshot must show food-plan, portion, report, and progress-check copy."
+);
+assert(
+  accountPage.includes("getAnalysisFoodName") &&
+    accountPage.includes("getAnalysisFeedingGrams") &&
+    accountPage.includes("getAnalysisFoodScore"),
+  "Account dashboard must read saved analysis fields defensively across old and new payload names."
 );
 assert(
   accountPage.includes("Συνέχισε από εκεί που έμεινες") &&
