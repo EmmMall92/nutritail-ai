@@ -65,6 +65,21 @@ type AccountReadinessStep = {
   actionLabel: string;
 };
 
+const betaPlanHighlights = [
+  {
+    label: "3 κατοικίδια",
+    detail: "Κράτα τα βασικά προφίλ που χρειάζεσαι για δοκιμή.",
+  },
+  {
+    label: "20 αναλύσεις / μήνα",
+    detail: "Αρκετές για νέα πρόταση, progress check και αλλαγή τροφής.",
+  },
+  {
+    label: "Reports και timeline",
+    detail: "Οι αναφορές και οι έλεγχοι προόδου μένουν στον λογαριασμό.",
+  },
+];
+
 const ACCOUNT_LOAD_ERROR_MESSAGE =
   "Δεν ήταν δυνατή η φόρτωση λογαριασμού. Δοκίμασε ξανά σε λίγο.";
 
@@ -669,6 +684,50 @@ export default function AccountPage() {
               συνεχίζουμε ή αλλάζουμε πλάνο.
             </p>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm"
+        data-testid="account-beta-plan"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+              Beta πρόσβαση
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-amber-950">
+              Το NutriTail είναι ενεργό για δοκιμή με καθαρά όρια χρήσης
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
+              Στην beta περίοδο κρατάμε το πλάνο απλό: αρκετές αναλύσεις για να
+              δοκιμάσεις προτάσεις, reports και progress checks, χωρίς να σε
+              μπερδεύουμε με συνδρομή πριν ολοκληρωθεί το launch.
+            </p>
+          </div>
+
+          <Link
+            href="/beta"
+            className="rounded-xl bg-amber-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-amber-800"
+          >
+            Δες το beta πλάνο
+          </Link>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {betaPlanHighlights.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl border border-amber-100 bg-white p-4"
+            >
+              <p className="text-base font-semibold text-amber-950">
+                {item.label}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-amber-900">
+                {item.detail}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
