@@ -75,6 +75,20 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
+      <div
+        className="mb-5 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm leading-6 text-amber-900"
+        data-testid="auth-recovery-help-card"
+      >
+        <p className="font-semibold text-amber-950">
+          Αν δεν δεις το email σε λίγα λεπτά
+        </p>
+        <ul className="mt-2 space-y-1">
+          <li>- Έλεγξε spam, promotions και αν έγραψες σωστά το email.</li>
+          <li>- Ζήτησε νέο link μόνο αφού περάσουν λίγα λεπτά.</li>
+          <li>- Άνοιξε το link από την ίδια συσκευή και browser όπου θα συνεχίσεις.</li>
+        </ul>
+      </div>
+
       <form onSubmit={handleResetRequest} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
