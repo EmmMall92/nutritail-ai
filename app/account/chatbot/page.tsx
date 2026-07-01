@@ -1252,6 +1252,50 @@ function getRecommendationShortlistHighlights(
   ];
 }
 
+function getRecommendationChoiceGroups(
+  choices: RecommendedFoodChoice[],
+  language: ChatLanguage
+) {
+  const premiumChoices = choices
+    .map((choice, index) => ({ choice, index }))
+    .filter(({ choice }) => choice.role !== "value")
+    .slice(0, 3);
+  const valueChoices = choices
+    .map((choice, index) => ({ choice, index }))
+    .filter(({ choice }) => choice.role === "value")
+    .slice(0, 3);
+
+  return [
+    {
+      key: "premium",
+      title: language === "el" ? "Οι 3 καλύτερες επιλογές" : "Top 3 best choices",
+      description:
+        language === "el"
+          ? "Ξεκίνα από εδώ αν θέλεις την πιο δυνατή διατροφική επιλογή για το προφίλ."
+          : "Start here if you want the strongest nutrition fits for this profile.",
+      choices: premiumChoices,
+      className: "border-emerald-200 bg-emerald-50/60",
+      titleClassName: "text-emerald-950",
+      descriptionClassName: "text-emerald-800",
+    },
+    {
+      key: "value",
+      title:
+        language === "el"
+          ? "3 πιο οικονομικές / πρακτικές επιλογές"
+          : "3 value / practical options",
+      description:
+        language === "el"
+          ? "Καλές εναλλακτικές όταν μετράει τιμή, γεύση ή διαθεσιμότητα."
+          : "Good alternatives when price, flavour, or availability matters.",
+      choices: valueChoices,
+      className: "border-sky-200 bg-sky-50/60",
+      titleClassName: "text-sky-950",
+      descriptionClassName: "text-sky-800",
+    },
+  ].filter((group) => group.choices.length > 0);
+}
+
 function createMessage(role: "bot" | "user", text: string): ChatMessage {
   return {
     id: crypto.randomUUID(),
@@ -5921,9 +5965,29 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </div>
               ))}
             </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {recommendedFoodChoices.map((choice, index) => (
-                <button
+            <div className="mt-4 space-y-4">
+              {getRecommendationChoiceGroups(recommendedFoodChoices, chatLanguage).map(
+                (group) => (
+                  <section
+                    key={group.key}
+                    className={`rounded-2xl border p-3 ${group.className}`}
+                  >
+                    <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className={`text-sm font-bold ${group.titleClassName}`}>
+                          {group.title}
+                        </p>
+                        <p className={`text-xs leading-5 ${group.descriptionClassName}`}>
+                          {group.description}
+                        </p>
+                      </div>
+                      <p className="text-xs font-semibold text-gray-600">
+                        {group.choices.length}/3
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {group.choices.map(({ choice, index }) => (
+                        <button
                   key={choice.name}
                   type="button"
                   onClick={() => chooseRecommendedFood(choice)}
@@ -6063,8 +6127,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Υπολόγισε ποσότητα", "Estimate portion")}
                   </span>
-                </button>
-              ))}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                )
+              )}
             </div>
           </div>
         )}

@@ -76,6 +76,22 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "getRecommendationChoiceGroups",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Top 3 best choices",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "3 value / practical options",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "strongest nutrition fits for this profile",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "Πρακτικές σημειώσεις:",
   },
   {
