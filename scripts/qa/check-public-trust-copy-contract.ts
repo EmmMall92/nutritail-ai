@@ -43,6 +43,16 @@ const feedbackLoopMarkers = [
   "Επιλογές που πατά ο χρήστης",
 ];
 
+const sourceQualityMarkers = [
+  'data-testid="public-source-quality-model"',
+  "Ποιότητα πηγών",
+  "Δεν έχουν όλα τα δεδομένα την ίδια βαρύτητα",
+  "Επίσημη πηγή",
+  "Retailer ή ελληνικό e-shop",
+  "Ετικέτα ή φωτογραφία συσκευασίας",
+  "Ελλιπή δεδομένα",
+];
+
 for (const marker of aboutMarkers) {
   assert(
     aboutPage.includes(marker),
@@ -61,6 +71,13 @@ for (const marker of methodologyMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include methodology trust marker: ${marker}`
+  );
+}
+
+for (const marker of sourceQualityMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include source quality trust marker: ${marker}`
   );
 }
 

@@ -49,6 +49,25 @@ const dataSignals = [
   "συστατικά, health tags και διατροφικά use cases",
 ];
 
+const sourceQualitySteps = [
+  {
+    title: "1. Επίσημη πηγή",
+    text: "Προτιμάμε επίσημη σελίδα εταιρείας, τεχνικό φυλλάδιο ή επίσημο PDF όταν υπάρχουν, γιατί αυτά είναι η πιο καθαρή βάση για θρεπτικά στοιχεία και συστατικά.",
+  },
+  {
+    title: "2. Retailer ή ελληνικό e-shop",
+    text: "Χρησιμοποιείται για να συμπληρώσει κενά ή να επιβεβαιώσει προϊόντα που κυκλοφορούν στην ελληνική αγορά. Αν συγκρούεται με επίσημη πηγή, χρειάζεται review.",
+  },
+  {
+    title: "3. Ετικέτα ή φωτογραφία συσκευασίας",
+    text: "Είναι πολύ χρήσιμη για πραγματικά προϊόντα ραφιού, ειδικά όταν λείπουν θερμίδες, τέφρα, μέταλλα ή αναλυτικά συστατικά από online πηγές.",
+  },
+  {
+    title: "4. Ελλιπή δεδομένα",
+    text: "Όταν λείπουν κρίσιμα στοιχεία, το NutriTail δεν προσποιείται βεβαιότητα. Η πρόταση γίνεται πιο προσεκτική και ζητά περισσότερα στοιχεία όταν χρειάζεται.",
+  },
+];
+
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -131,6 +150,42 @@ export default function HowItWorksPage() {
                 τροφής” και προτείνει επικοινωνία με κτηνίατρο.
               </p>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="border-b border-black/10 bg-[#f7f7f4]"
+        data-testid="public-source-quality-model"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Ποιότητα πηγών
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Δεν έχουν όλα τα δεδομένα την ίδια βαρύτητα
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Η βάση τροφών μεγαλώνει από επίσημες σελίδες, PDFs, ελληνικά
+              e-shops και φωτογραφίες ετικετών. Κρατάμε την προέλευση κάθε
+              πληροφορίας, ώστε το NutriTail να ξέρει πότε μπορεί να μιλήσει
+              με σιγουριά και πότε πρέπει να είναι πιο προσεκτικό.
+            </p>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-4">
+            {sourceQualitySteps.map((step) => (
+              <article
+                key={step.title}
+                className="rounded-xl border border-black/10 bg-white p-5"
+              >
+                <h3 className="font-black">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {step.text}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
