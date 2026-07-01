@@ -169,17 +169,17 @@ const checks = [
   {
     label: "Chosen recommendation points user to save the plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "Press save to keep this plan on the profile.",
+    expected: "Next step: press save to keep the food, portion, and report on the profile.",
   },
   {
-    label: "Chosen recommendation explains the first daily portion",
+    label: "Chosen recommendation explains the first daily plan",
     file: "app/account/chatbot/page.tsx",
-    expected: "First daily portion:",
+    expected: "First daily plan:",
   },
   {
     label: "Chosen recommendation splits the daily portion into meals",
     file: "app/account/chatbot/page.tsx",
-    expected: "Split into 2 meals: about",
+    expected: "2 meals: about",
   },
   {
     label: "Chosen recommendation gives practical monitoring guidance",
@@ -187,9 +187,9 @@ const checks = [
     expected: "watch weight, appetite, stool, and energy.",
   },
   {
-    label: "Chosen recommendation has Greek first-portion copy",
+    label: "Chosen recommendation has Greek first-plan copy",
     file: "app/account/chatbot/page.tsx",
-    expected: "Πρώτη ποσότητα ημέρας",
+    expected: "Πρώτο πλάνο ημέρας",
   },
   {
     label: "Recommendation cards use customer role badges",
