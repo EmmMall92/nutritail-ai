@@ -336,39 +336,40 @@ const followUpActions: {
     id: "progress",
     title: "Progress check",
     titleEl: "Έλεγχος προόδου",
-    helper: "Talk through weight, appetite, stool, treats, and visible changes.",
+    helper: "Update weight, grams, treats, and results to see if the plan is working.",
     helperEl:
-      "Μιλάμε για βάρος, όρεξη, κόπρανα, λιχουδιές και ορατές αλλαγές.",
+      "Βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα για να δούμε αν δουλεύει το πλάνο.",
   },
   {
-    id: "no_result",
-    title: "No visible result",
-    titleEl: "Δεν είδα αποτέλεσμα",
-    helper: "Review calories, treats, grams per day, activity, and food suitability.",
+    id: "new_analysis",
+    title: "New recommendation",
+    titleEl: "Νέα πρόταση τροφής",
+    helper: "Run a fresh recommendation for the same pet when needs or goals changed.",
     helperEl:
-      "Ελέγχουμε θερμίδες, λιχουδιές, γραμμάρια/ημέρα, δραστηριότητα και καταλληλότητα τροφής.",
+      "Νέα πρόταση για το ίδιο κατοικίδιο όταν άλλαξαν ανάγκες ή στόχος.",
   },
   {
     id: "change_food",
-    title: "Try another food",
-    titleEl: "Άλλη τροφή",
-    helper: "Get a new shortlist if taste, brand, or formula is not working.",
+    title: "Change flavor or brand",
+    titleEl: "Αλλαγή γεύσης ή εταιρείας",
+    helper: "Get alternatives if taste, brand, or tolerance is the issue.",
     helperEl:
-      "Νέα λίστα αν η γεύση, η εταιρία ή η φόρμουλα δεν λειτούργησε.",
+      "Άλλες επιλογές αν το θέμα είναι γεύση, εταιρεία ή ανοχή.",
   },
   {
     id: "timeline",
-    title: "Open timeline",
-    titleEl: "Άνοιγμα ιστορικού",
+    title: "Timeline",
+    titleEl: "Ιστορικό",
     helper: "Review previous analyses and progress history.",
     helperEl: "Δες προηγούμενες αναλύσεις και πρόοδο.",
   },
   {
-    id: "new_analysis",
-    title: "Fresh analysis",
-    titleEl: "Νέα ανάλυση",
-    helper: "Run the full guided flow again for this pet.",
-    helperEl: "Ξεκίνα ξανά την πλήρη ροή για αυτό το κατοικίδιο.",
+    id: "no_result",
+    title: "Plan not working",
+    titleEl: "Δεν δουλεύει το πλάνο",
+    helper: "Review calories, treats, consistency, activity, and food suitability.",
+    helperEl:
+      "Έλεγχος θερμίδων, λιχουδιών, συνέπειας, δραστηριότητας και καταλληλότητας τροφής.",
   },
 ];
 
@@ -376,9 +377,9 @@ type FollowUpActionConfig = (typeof followUpActions)[number];
 
 const mobileFollowUpActionIds: FollowUpAction[] = [
   "progress",
+  "new_analysis",
   "change_food",
   "timeline",
-  "new_analysis",
 ];
 
 const mobileFollowUpActions = mobileFollowUpActionIds
@@ -2956,10 +2957,10 @@ ${formatSavedPetProfileSummary(savedPet, language)}
 Τελευταία ανάλυση:
 ${formatLatestAnalysisSummary(savedPet, language)}
 
-Τι θέλεις να κάνουμε τώρα;
-- Έλεγχος προόδου: γράψε τωρινό βάρος, γραμμάρια/ημέρα, λιχουδιές και τι αλλαγές βλέπεις.
-- Δεν είδα αποτέλεσμα: ελέγχουμε θερμίδες, λιχουδιές, συνέπεια και αν ταιριάζει η τροφή.
-- Άλλη τροφή: κρατάω το ίδιο κατοικίδιο και ψάχνω διαφορετικές επιλογές.
+Διάλεξε τι θέλεις να κάνουμε τώρα από τα κουμπιά:
+- Έλεγχος προόδου: βλέπουμε βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.
+- Νέα πρόταση τροφής: κρατάμε το ίδιο κατοικίδιο και ξαναβγάζουμε shortlist.
+- Αλλαγή γεύσης ή εταιρείας: αν βαρέθηκε, δεν του αρέσει ή δεν το ανέχεται.
 - Ιστορικό: βλέπεις προηγούμενες αναλύσεις και πρόοδο.`;
   }
 
@@ -2971,11 +2972,11 @@ ${formatSavedPetProfileSummary(savedPet, language)}
 Latest saved analysis:
 ${formatLatestAnalysisSummary(savedPet, language)}
 
-What would you like to do next?
-- Progress check: tell me current weight, grams/day, treats, and visible changes.
-- No visible result: we review calories, treats, consistency, and whether the current food still suits the pet.
-- Try another food: I keep this pet context and suggest different options.
-- Open timeline: review previous reports and progress.`;
+Choose what you want to do next from the buttons:
+- Progress check: review weight, grams, treats, and results.
+- New recommendation: keep the same pet and generate a fresh shortlist.
+- Change flavor or brand: if taste, brand, or tolerance is the issue.
+- Timeline: review previous reports and progress.`;
 }
 
 function buildFollowUpProgressReply({
@@ -5743,7 +5744,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )}
 
         {followUpPet && (
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+          <div
+            data-testid="saved-pet-continuation-panel"
+            className="rounded-2xl border border-blue-200 bg-blue-50 p-4"
+          >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="font-semibold text-blue-950">
@@ -5754,6 +5758,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </p>
                 <p className="mt-1 whitespace-pre-line text-sm text-blue-900">
                   {formatLatestAnalysisSummary(followUpPet, chatLanguage)}
+                </p>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-blue-900">
+                  {botText(
+                    "Δεν ξεκινάμε από την αρχή. Διάλεξε αν θέλεις έλεγχο προόδου, νέα πρόταση, αλλαγή γεύσης/εταιρείας ή να δεις το ιστορικό.",
+                    "You do not need to start from zero. Choose a progress check, a new recommendation, a flavor or brand change, or the timeline."
+                  )}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
@@ -5813,6 +5823,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               {followUpActions.map((action) => (
                 <button
                   key={action.id}
+                  data-testid={`saved-pet-continuation-action-${action.id}`}
                   type="button"
                   onClick={() => handleFollowUpAction(action.id)}
                   className="rounded-xl border border-blue-200 bg-white p-4 text-left transition hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -6599,6 +6610,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               {mobileFollowUpActions.map((action) => (
                 <button
                   key={action.id}
+                  data-testid={`saved-pet-mobile-action-${action.id}`}
                   type="button"
                   onClick={() => handleFollowUpAction(action.id)}
                   className="min-h-12 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-left text-sm font-medium text-blue-900"

@@ -383,6 +383,36 @@ const checks = [
     expected: 'botText("Συνέχεια πλάνου", "Continue plan")',
   },
   {
+    label: "Saved pet continuation exposes a dedicated customer panel",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'data-testid="saved-pet-continuation-panel"',
+  },
+  {
+    label: "Saved pet continuation says the customer does not start from zero",
+    file: "app/account/chatbot/page.tsx",
+    expected: "You do not need to start from zero.",
+  },
+  {
+    label: "Saved pet continuation offers a fresh recommendation path",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'data-testid={`saved-pet-continuation-action-${action.id}`}',
+  },
+  {
+    label: "Saved pet continuation includes new recommendation wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "New recommendation",
+  },
+  {
+    label: "Saved pet continuation includes flavor or brand change wording",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Change flavor or brand",
+  },
+  {
+    label: "Saved pet mobile continuation keeps fresh recommendation action",
+    file: "app/account/chatbot/page.tsx",
+    expected: '"new_analysis",',
+  },
+  {
     label: "Chatbot account header action is localized",
     file: "app/account/chatbot/page.tsx",
     expected: 'botText("Λογαριασμός", "Account")',
