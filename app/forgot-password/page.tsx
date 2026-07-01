@@ -99,11 +99,17 @@ export default function ForgotPasswordPage() {
 
         {success && (
           <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
-            {success}
+            <p>{success}</p>
             <p className="mt-1 text-xs text-green-700">
               Άνοιξε το link από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
               ζητήσεις νέο.
             </p>
+            <Link
+              href="/login"
+              className="mt-3 inline-flex rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-800"
+            >
+              Πίσω στη σύνδεση
+            </Link>
           </div>
         )}
 

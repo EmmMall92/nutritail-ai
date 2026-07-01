@@ -147,7 +147,13 @@ export default function ResetPasswordPage() {
 
         {success && (
           <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
-            {success}
+            <p>{success}</p>
+            <Link
+              href="/login"
+              className="mt-3 inline-flex rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-800"
+            >
+              Σύνδεση στον λογαριασμό
+            </Link>
           </div>
         )}
 
