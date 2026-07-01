@@ -274,6 +274,59 @@ function getReportActionSummary(
   ];
 }
 
+function getTomorrowFeedingPlan(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+  const hasFoodAndPortion = Boolean(
+    analysis?.matched_food_name && analysis?.feeding_grams_per_day
+  );
+
+  return {
+    title: hasFoodAndPortion
+      ? "Το πλάνο για αύριο είναι έτοιμο"
+      : "Το πλάνο θέλει ακόμη επιλογή τροφής",
+    subtitle: hasFoodAndPortion
+      ? "Κράτα αυτά τα 4 σημεία και ξεκίνα απλά, χωρίς πολλές αλλαγές μαζί."
+      : "Χρησιμοποίησε τις θερμίδες ως οδηγό και γύρνα στο chatbot για να κλειδώσουμε τροφή και γραμμάρια.",
+    cards: [
+      {
+        label: "1. Κύρια τροφή",
+        value: analysis?.matched_food_name ?? "Επίλεξε τροφή στο chatbot",
+        detail: analysis?.matched_food_name
+          ? "Αυτή είναι η επιλογή που κρατήθηκε στην τελευταία ανάλυση."
+          : "Διάλεξε μία από τις προτάσεις ή στείλε φωτογραφία ετικέτας για πιο ακριβές πλάνο.",
+      },
+      {
+        label: "2. Ποσότητα",
+        value: analysis?.feeding_grams_per_day
+          ? `${analysis.feeding_grams_per_day}g/ημέρα`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/ημέρα`
+            : "Θέλει ανάλυση",
+        detail:
+          analysis?.feeding_grams_per_day && mealSplit
+            ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+            : "Τα γραμμάρια βγαίνουν σωστά όταν ξέρουμε τις θερμίδες της συγκεκριμένης τροφής.",
+      },
+      {
+        label: "3. Λιχουδιές",
+        value: treatAllowance ? `έως ${treatAllowance.treats} kcal` : "λίγες και μετρημένες",
+        detail: treatAllowance
+          ? `Άφησε περίπου ${treatAllowance.mainFood} kcal για την κύρια τροφή μέσα στην ημέρα.`
+          : "Οι λιχουδιές καλό είναι να μένουν μικρό μέρος του ημερήσιου πλάνου.",
+      },
+      {
+        label: "4. Επανέλεγχος",
+        value: getRecheckWindow(analysis),
+        detail:
+          "Γύρνα με νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
+      },
+    ],
+  };
+}
+
 function getDailyPlanCards(
   pet: PetDetail,
   analysis?: AnalysisHistoryItem | null
@@ -567,6 +620,7 @@ export default function PrintablePetReportPage() {
   const calorieExplanation = getCalorieExplanation(latestAnalysis);
   const mealSplit = getMealSplit(latestAnalysis?.feeding_grams_per_day);
   const reportActionSummary = getReportActionSummary(latestAnalysis, mealSplit);
+  const tomorrowFeedingPlan = getTomorrowFeedingPlan(latestAnalysis, mealSplit);
 
   if (isLoading) {
     return (
@@ -705,6 +759,42 @@ export default function PrintablePetReportPage() {
             value={getFoodScoreLabel(latestAnalysis?.food_score)}
             detail="Βασισμένο στο προφίλ και την επιλεγμένη τροφή."
           />
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-tomorrow-feeding-plan"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                Απλό πλάνο για αύριο
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-amber-950">
+                {tomorrowFeedingPlan.title}
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-amber-900">
+              {tomorrowFeedingPlan.subtitle}
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {tomorrowFeedingPlan.cards.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-amber-100 bg-white p-4 text-sm text-amber-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-amber-950">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-amber-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div
