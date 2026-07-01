@@ -11,7 +11,38 @@ function read(path: string) {
 }
 
 const accountPage = read("app/account/page.tsx");
+const petsPage = read("app/account/pets/page.tsx");
 const packageJson = read("package.json");
+
+const customerFacingSources = [
+  ["account dashboard", accountPage],
+  ["pets dashboard", petsPage],
+] as const;
+
+const mojibakeMarkers = [
+  "Ξ±",
+  "Ξµ",
+  "Ξ·",
+  "ΞΌ",
+  "Ξ½",
+  "Ο€",
+  "Οƒ",
+  "Ο„",
+  "Ο‡",
+  "Ο‰",
+  "β€”",
+  "β€",
+];
+
+for (const [label, source] of customerFacingSources) {
+  const hits = mojibakeMarkers.filter((marker) => source.includes(marker));
+  assert(
+    hits.length === 0,
+    `${label} must not contain mojibake markers in customer-facing copy: ${hits.join(
+      ", "
+    )}.`
+  );
+}
 
 assert(
   accountPage.includes("type AccountReadinessStep"),
@@ -54,7 +85,33 @@ assert(
   "Account dashboard must guide customers back to a progress check window."
 );
 assert(
-  packageJson.includes("\"qa:account-dashboard-readiness-contract\""),
+  accountPage.includes("/account/chatbot?petId=") &&
+    accountPage.includes("mode=progress"),
+  "Account dashboard must link saved pets back into progress-check chatbot mode."
+);
+assert(
+  accountPage.includes("/print/pet-report/"),
+  "Account dashboard must link customers to printable pet reports."
+);
+assert(
+  accountPage.includes("/print/pet-timeline/"),
+  "Account dashboard must link customers to pet progress timelines."
+);
+assert(
+  accountPage.includes("function getDashboardNextActions"),
+  "Account dashboard must keep structured next best actions for customers."
+);
+assert(
+  petsPage.includes("/account/chatbot?petId=") && petsPage.includes("mode=progress"),
+  "Pets dashboard must link each saved pet to progress-check chatbot mode."
+);
+assert(
+  petsPage.includes("/print/pet-report/") &&
+    petsPage.includes("/print/pet-timeline/"),
+  "Pets dashboard must expose report and timeline actions for saved pets."
+);
+assert(
+  packageJson.includes('"qa:account-dashboard-readiness-contract"'),
   "package.json must expose the account dashboard readiness QA script."
 );
 
