@@ -587,7 +587,7 @@ function getFoodReasoningSummary(
       : "Χρειάζεται επιλογή συγκεκριμένης τροφής για να γίνει το πλάνο πλήρες σε γραμμάρια/ημέρα.",
     cards: [
       {
-        label: "Fit",
+        label: "Καταλληλότητα",
         value: fitLabel,
         detail: fitDetail,
       },
@@ -792,6 +792,10 @@ export default function PrintablePetReportPage() {
 
             <p className="mt-2 text-gray-600">
               Προσωπική διατροφική περίληψη για {pet.name}
+            </p>
+
+            <p className="mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900">
+              Έτοιμο για εκτύπωση ή αποστολή στον πελάτη
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
