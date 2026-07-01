@@ -913,6 +913,7 @@ if (
 const groupedChoiceMarkers = [
   "Top 3 best choices",
   "3 value / practical options",
+  "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
   "group.choices.length}/3",
 ];

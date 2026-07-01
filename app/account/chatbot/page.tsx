@@ -5985,7 +5985,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         {group.choices.length}/3
                       </p>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                       {group.choices.map(({ choice, index }) => (
                         <button
                   key={choice.name}
