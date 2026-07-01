@@ -107,6 +107,20 @@ export default function ResetPasswordPage() {
         </p>
       </div>
 
+      <div
+        className="mb-5 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm leading-6 text-amber-900"
+        data-testid="auth-reset-help-card"
+      >
+        <p className="font-semibold text-amber-950">
+          Αν το link δεν λειτουργεί
+        </p>
+        <ul className="mt-2 space-y-1">
+          <li>- Μπορεί να έχει λήξει ή να άνοιξε χωρίς ενεργό recovery session.</li>
+          <li>- Ζήτησε νέο link επαναφοράς και άνοιξέ το από την ίδια συσκευή.</li>
+          <li>- Μετά την αλλαγή θα επιστρέψεις στη σύνδεση για να μπεις καθαρά.</li>
+        </ul>
+      </div>
+
       <form onSubmit={handlePasswordUpdate} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Νέος κωδικός</span>
