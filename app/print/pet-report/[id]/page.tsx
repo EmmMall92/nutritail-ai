@@ -494,6 +494,66 @@ function getCustomerPocketSummary(
   ];
 }
 
+function getReportDecisionSummary(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+  const hasFoodAndPortion = Boolean(
+    analysis?.matched_food_name && analysis?.feeding_grams_per_day
+  );
+
+  return {
+    title: hasFoodAndPortion
+      ? "Η απόφαση της ημέρας είναι ξεκάθαρη"
+      : "Η απόφαση θέλει ακόμη επιλογή τροφής",
+    subtitle: hasFoodAndPortion
+      ? "Αυτή είναι η σύντομη εκδοχή της αναφοράς: τι τρώει, πόσο τρώει, τι μετράμε και πότε γυρνάμε για έλεγχο."
+      : "Οι θερμίδες υπάρχουν ως οδηγός. Για ακριβή γραμμάρια/ημέρα χρειάζεται να επιλεγεί συγκεκριμένη τροφή με καθαρές θερμίδες.",
+    cards: [
+      {
+        label: "Σήμερα ταΐζουμε",
+        value: analysis?.matched_food_name ?? "Επιβεβαίωσε τροφή",
+        detail: analysis?.matched_food_name
+          ? "Η τροφή που κρατήθηκε από την τελευταία ανάλυση."
+          : "Γύρνα στο chatbot και διάλεξε τροφή από τις κάρτες προτάσεων.",
+      },
+      {
+        label: "Πρώτη ποσότητα",
+        value: analysis?.feeding_grams_per_day
+          ? `${analysis.feeding_grams_per_day}g/ημέρα`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/ημέρα`
+            : "Χρειάζεται ανάλυση",
+        detail:
+          analysis?.feeding_grams_per_day && mealSplit
+            ? `${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+            : "Τα γραμμάρια βγαίνουν όταν υπάρχει επιλεγμένη τροφή με kcal/100g.",
+      },
+      {
+        label: "Λιχουδιές",
+        value: treatAllowance ? `έως ${treatAllowance.treats} kcal/ημέρα` : "λίγες και μετρημένες",
+        detail: treatAllowance
+          ? `Κράτα περίπου ${treatAllowance.mainFood} kcal για την κύρια τροφή.`
+          : "Μην αφήνεις τις λιχουδιές να χαλάνε τον ημερήσιο στόχο.",
+      },
+      {
+        label: "Επανέλεγχος",
+        value: getRecheckWindow(analysis),
+        detail:
+          pet.species === "cat"
+            ? "Γύρνα με βάρος, όρεξη, ούρηση, κόπρανα και ποσότητα που έτρωγε."
+            : "Γύρνα με βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
+      },
+    ],
+    watchList:
+      pet.species === "cat"
+        ? ["όρεξη", "ούρηση", "βάρος", "κόπρανα"]
+        : ["βάρος", "όρεξη", "κόπρανα", "ενέργεια"],
+  };
+}
+
 function getTransitionPlan(analysis?: AnalysisHistoryItem | null) {
   const basePlan = [
     {
@@ -654,6 +714,11 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const reportDecisionSummary = getReportDecisionSummary(
+    pet,
+    latestAnalysis,
+    mealSplit
+  );
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -759,6 +824,58 @@ export default function PrintablePetReportPage() {
             value={getFoodScoreLabel(latestAnalysis?.food_score)}
             detail="Βασισμένο στο προφίλ και την επιλεγμένη τροφή."
           />
+        </div>
+
+        <div
+          className="mt-8 break-inside-avoid rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-lime-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-decision-summary"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Απόφαση ημέρας
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-emerald-950">
+                {reportDecisionSummary.title}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-emerald-900">
+              {reportDecisionSummary.subtitle}
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportDecisionSummary.cards.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm text-emerald-950 shadow-sm print:border-gray-300 print:shadow-none"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-black">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-emerald-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-emerald-100 bg-white/80 p-4 print:border-gray-300">
+            <p className="text-sm font-semibold text-emerald-950">
+              Παρακολούθησε μέχρι τον επανέλεγχο
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {reportDecisionSummary.watchList.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-900"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div
