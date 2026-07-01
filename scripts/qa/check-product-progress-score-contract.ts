@@ -33,8 +33,12 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **90-91%**",
-  "The latest move from **89-90%** to **90-91%**",
+  "Customer product progress is currently **91-92%**",
+  "The latest move from **90-91%** to **91-92%**",
+  "Weight goal is now preserved",
+  "active weight-gain dog guard",
+  "Food V2 launch-edge accuracy",
+  "The previous move from **89-90%** to **90-91%**",
   "drop-off priorities for analyses without",
   "choice clarity, save confidence, food matching, and",
   "answer usefulness",
@@ -45,6 +49,7 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
+  "91-92%",
   "Beta access, plan limits, subscription/payment direction",
 ];
 
@@ -94,7 +99,8 @@ assert(
 
 assert(
   liveQaPage.includes("Why it may not move every PR") &&
-    liveQaPage.includes("Next moves toward 92-93%"),
+    liveQaPage.includes("Next moves toward") &&
+    liveQaPage.includes("93-94%"),
   "Admin live QA page must explain why the score feels stuck and what moves it next."
 );
 
