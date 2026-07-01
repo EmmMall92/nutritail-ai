@@ -153,6 +153,11 @@ Command rows can be `PASS`, `SKIP`, or `REVIEW`. `SKIP` is non-blocking and
 usually means local-only credentials such as `OPENAI_API_KEY` or an authenticated
 account cookie were intentionally unavailable in the terminal session.
 
+The readiness percentage is documented in
+[`docs/launch-readiness-score.md`](docs/launch-readiness-score.md). Do not raise
+the project percentage just because a PR merged; use fresh QA evidence, the live
+readiness dashboard, and the next proof gap.
+
 ## Data Notes
 
 Food data quality is tracked with `data_quality_status`, `data_source_url`,
