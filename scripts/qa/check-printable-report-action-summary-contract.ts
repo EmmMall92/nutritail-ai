@@ -29,6 +29,8 @@ const requiredReportMarkers = [
   "getReportPlanSnapshot",
   "getCustomerHandoffSteps",
   "getCustomerPocketSummary",
+  "getReportDecisionSummary",
+  'data-testid="report-decision-summary"',
   'data-testid="report-tomorrow-feeding-plan"',
   'data-testid="report-next-action-summary"',
   'data-testid="report-plan-snapshot"',
@@ -60,6 +62,8 @@ const requiredReportMarkers = [
   "mealSplit.twoMeals",
   "mealSplit.threeMeals",
   "reportPlanSnapshot.map",
+  "reportDecisionSummary.cards.map",
+  "reportDecisionSummary.watchList.map",
   "getTreatAllowance(analysis)",
 ];
 
