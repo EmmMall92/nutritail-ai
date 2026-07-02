@@ -138,6 +138,17 @@ const checks: ContractCheck[] = [
     ],
   },
   {
+    area: "Launch QA",
+    file: "scripts/qa/check-mobile-customer-readiness-contract.ts",
+    markers: [
+      "Mobile customer readiness",
+      "Account chatbot mobile frame",
+      "Account chatbot mobile food cards",
+      "Printable report mobile sections",
+      "qa:mobile-customer-readiness-contract",
+    ],
+  },
+  {
     area: "Business layer",
     file: "app/account/page.tsx",
     markers: [
@@ -207,6 +218,11 @@ assert(
 assert(
   packageJson.includes("qa:customer-journey-readiness-contract"),
   "CI readiness must include qa:customer-journey-readiness-contract."
+);
+
+assert(
+  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:customer-journey-readiness-contract"),
+  "CI readiness must run the mobile customer contract before the customer journey contract."
 );
 
 console.log(
