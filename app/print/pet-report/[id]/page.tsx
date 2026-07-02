@@ -20,6 +20,13 @@ type AnalysisHistoryItem = {
   weight_goal?: string | null;
 };
 
+type ProgressLog = {
+  id: string;
+  created_at?: string;
+  createdAt?: string;
+  metadata?: Record<string, unknown> | null;
+};
+
 type PetDetail = {
   id: string;
   name: string;
@@ -31,7 +38,31 @@ type PetDetail = {
   activity_level?: string | null;
 
   analyses?: AnalysisHistoryItem[];
+  progressLogs?: ProgressLog[];
 };
+
+function getMetadataText(
+  metadata: Record<string, unknown> | null | undefined,
+  key: string,
+  fallback = "-"
+) {
+  const value = metadata?.[key];
+
+  if (typeof value === "string" && value.trim()) return value.trim();
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
+
+  return fallback;
+}
+
+function getMetadataNumber(
+  metadata: Record<string, unknown> | null | undefined,
+  key: string
+) {
+  const value = metadata?.[key];
+  const numberValue = Number(value);
+
+  return Number.isFinite(numberValue) ? numberValue : null;
+}
 
 function formatDate(value?: string) {
   if (!value) return "-";
@@ -232,6 +263,72 @@ function getTreatAllowance(analysis?: AnalysisHistoryItem | null) {
     treats: treatCalories,
     mainFood: Math.max(0, analysis.mer - treatCalories),
   };
+}
+
+function getLatestProgressLog(pet?: PetDetail | null) {
+  if (!pet?.progressLogs || pet.progressLogs.length === 0) return null;
+
+  return [...pet.progressLogs].sort((a, b) => {
+    const aDate = new Date(a.created_at ?? a.createdAt ?? "").getTime();
+    const bDate = new Date(b.created_at ?? b.createdAt ?? "").getTime();
+
+    return bDate - aDate;
+  })[0];
+}
+
+function getProgressDeltaKg(progressLog?: ProgressLog | null) {
+  const metadata = progressLog?.metadata ?? {};
+  const previousWeight = getMetadataNumber(metadata, "previousWeightKg");
+  const currentWeight = getMetadataNumber(metadata, "currentWeightKg");
+
+  if (previousWeight === null || currentWeight === null) return null;
+
+  return Number((currentWeight - previousWeight).toFixed(1));
+}
+
+function getProgressReportCards(progressLog?: ProgressLog | null) {
+  if (!progressLog) return [];
+
+  const metadata = progressLog.metadata ?? {};
+  const deltaKg = getProgressDeltaKg(progressLog);
+  const currentWeight = getMetadataNumber(metadata, "currentWeightKg");
+  const feedingGrams = getMetadataNumber(metadata, "feedingGramsPerDay");
+
+  return [
+    {
+      label: "Τωρινό βάρος",
+      value: currentWeight !== null ? `${currentWeight} kg` : "Δεν δόθηκε",
+      detail:
+        deltaKg !== null
+          ? `Μεταβολή από το αποθηκευμένο βάρος: ${deltaKg > 0 ? "+" : ""}${deltaKg} kg.`
+          : "Στον επόμενο έλεγχο βάλε τωρινό βάρος για πιο καθαρή εικόνα.",
+    },
+    {
+      label: "Πραγματική ποσότητα",
+      value: feedingGrams !== null ? `${feedingGrams}g/ημέρα` : "Δεν δόθηκε",
+      detail:
+        "Αυτό βοηθά να δούμε αν η πρόοδος ταιριάζει με την ποσότητα που όντως τρώει.",
+    },
+    {
+      label: "Λιχουδιές",
+      value:
+        getMetadataText(metadata, "treatsPerDay", "") ||
+        getMetadataText(metadata, "treatsNote"),
+      detail: "Οι λιχουδιές μπορούν εύκολα να αλλάξουν το αποτέλεσμα του πλάνου.",
+    },
+    {
+      label: "Όρεξη / κόπρανα / ενέργεια",
+      value: [
+        getMetadataText(metadata, "appetiteNote", ""),
+        getMetadataText(metadata, "stoolNote", ""),
+        getMetadataText(metadata, "energyNote", ""),
+      ]
+        .filter(Boolean)
+        .join(" · ") || "Δεν δόθηκαν",
+      detail:
+        "Αν κάτι χειροτερεύει, καλύτερα κάνε νέο έλεγχο πριν αλλάξεις τυχαία τροφή.",
+    },
+  ];
 }
 
 function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
@@ -891,6 +988,8 @@ export default function PrintablePetReportPage() {
     mealSplit
   );
   const progressReturnKit = getProgressReturnKit(pet, latestAnalysis);
+  const latestProgressLog = getLatestProgressLog(pet);
+  const latestProgressCards = getProgressReportCards(latestProgressLog);
   const reportDecisionSummary = getReportDecisionSummary(
     pet,
     latestAnalysis,
@@ -1050,6 +1149,47 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+
+        {latestProgressLog && (
+          <div
+            className="mt-6 break-inside-avoid rounded-3xl border border-blue-100 bg-blue-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+            data-testid="report-latest-progress"
+          >
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                  Τελευταίος έλεγχος προόδου
+                </p>
+                <h2 className="mt-1 text-2xl font-bold text-blue-950">
+                  Τι άλλαξε μετά το πλάνο
+                </h2>
+              </div>
+              <p className="max-w-2xl text-sm leading-6 text-blue-950">
+                Καταγράφηκε στις{" "}
+                {formatDate(latestProgressLog.created_at ?? latestProgressLog.createdAt)}.
+                Χρησιμοποίησέ το για να αποφασίσεις αν συνεχίζουμε, αν θέλει
+                μικρή προσαρμογή ή αν χρειάζεται νέα πρόταση τροφής.
+              </p>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+              {latestProgressCards.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-blue-100 bg-white p-4 text-sm text-blue-950 print:border-gray-300"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-lg font-bold text-black">
+                    {item.value}
+                  </p>
+                  <p className="mt-2 leading-6 text-blue-900">{item.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-black/10 bg-[#fbfaf7] p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
