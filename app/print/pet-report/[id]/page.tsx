@@ -553,6 +553,42 @@ function getTomorrowFeedingPlan(
   };
 }
 
+function getReportHandoffStrip(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Σήμερα",
+      value: analysis?.matched_food_name ?? "Επιβεβαίωσε τροφή",
+      detail: analysis?.matched_food_name
+        ? "Αυτή είναι η τροφή που κρατάμε για το τωρινό πλάνο."
+        : "Χρειάζεται ακριβές όνομα τροφής ή ετικέτα πριν γίνει πλήρες πλάνο.",
+    },
+    {
+      label: "Ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : analysis?.mer
+          ? `${analysis.mer} kcal/ημέρα`
+          : "Νέα ανάλυση",
+      detail:
+        analysis?.feeding_grams_per_day && mealSplit
+          ? `Μοίρασέ το περίπου σε ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+          : "Τα γραμμάρια κλειδώνουν όταν ξέρουμε την ακριβή τροφή και τις θερμίδες της.",
+    },
+    {
+      label: "Έλεγχος",
+      value: getRecheckWindow(analysis),
+      detail: treatAllowance
+        ? `Κράτα λιχουδιές έως ${treatAllowance.treats} kcal/ημέρα και γύρνα με βάρος, γραμμάρια και κόπρανα.`
+        : "Γύρνα με νέο βάρος, πραγματικά γραμμάρια/ημέρα, όρεξη, κόπρανα και ενέργεια.",
+    },
+  ];
+}
+
 function getDailyPlanCards(
   pet: PetDetail,
   analysis?: AnalysisHistoryItem | null
@@ -996,6 +1032,7 @@ export default function PrintablePetReportPage() {
   const mealSplit = getMealSplit(latestAnalysis?.feeding_grams_per_day);
   const reportActionSummary = getReportActionSummary(latestAnalysis, mealSplit);
   const tomorrowFeedingPlan = getTomorrowFeedingPlan(latestAnalysis, mealSplit);
+  const reportHandoffStrip = getReportHandoffStrip(latestAnalysis, mealSplit);
 
   if (isLoading) {
     return (
@@ -1106,6 +1143,43 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-handoff-strip"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+                Άμεσο πλάνο
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-blue-950">
+                Τι κάνουμε από σήμερα
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-blue-900">
+              Η γρήγορη περίληψη για τάισμα, ποσότητα και επόμενο έλεγχο πριν
+              διαβάσεις τις λεπτομέρειες της αναφοράς.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {reportHandoffStrip.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-blue-100 bg-white p-4 text-sm text-blue-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-blue-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -27,6 +27,7 @@ const requiredReportMarkers = [
   "getReportActionSummary",
   "getReportCustomerTakeaway",
   "getReportExecutiveSummary",
+  "getReportHandoffStrip",
   "getTomorrowFeedingPlan",
   "getReportPlanSnapshot",
   "getCustomerHandoffSteps",
@@ -36,6 +37,7 @@ const requiredReportMarkers = [
   "getFoodReasoningSummary",
   'data-testid="report-start-checklist"',
   'data-testid="report-safe-use-note"',
+  'data-testid="report-handoff-strip"',
   'data-testid="report-executive-summary"',
   'data-testid="report-customer-takeaway"',
   'data-testid="report-decision-summary"',
@@ -55,6 +57,7 @@ const requiredReportMarkers = [
   "Πλήρες πλάνο με τροφή και ποσότητα",
   "Χρειάζεται επιλογή τροφής για πλήρες πλάνο",
   "reportPortionLabel",
+  "reportHandoffStrip.map",
   "reportTreatAllowance",
   "mealSplit.twoMeals",
   "mealSplit.threeMeals",
@@ -161,6 +164,15 @@ const requiredDigitalActionMarkers = [
   "/print/pet-timeline/",
 ];
 
+const requiredReportHandoffMarkers = [
+  "Άμεσο πλάνο",
+  "Τι κάνουμε από σήμερα",
+  "Η γρήγορη περίληψη για τάισμα, ποσότητα και επόμενο έλεγχο",
+  "Σήμερα",
+  "Ποσότητα",
+  "Έλεγχος",
+];
+
 for (const marker of suspiciousMojibakeMarkers) {
   assert(
     !reportPage.includes(marker),
@@ -192,6 +204,13 @@ for (const marker of requiredReportMarkers) {
   assert(
     reportPage.includes(marker),
     `Printable pet report must include customer action summary marker: ${marker}`
+  );
+}
+
+for (const marker of requiredReportHandoffMarkers) {
+  assert(
+    reportPage.includes(marker),
+    `Printable pet report must include handoff strip marker: ${marker}`
   );
 }
 
