@@ -492,6 +492,14 @@ function numberedListLineCount(text: string) {
   return text.split(/\r?\n/).filter((line) => /^\s*\d+[\).]\s+/.test(line)).length;
 }
 
+function sentenceCount(text: string) {
+  return text
+    .replace(/\b(?:e\.g|i\.e)\./gi, "")
+    .split(/[.!?;]+|\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean).length;
+}
+
 function isCompactCardIntro(text: string) {
   const normalized = text.toLowerCase();
   const listLikeTerms = [
@@ -505,7 +513,8 @@ function isCompactCardIntro(text: string) {
     "food shortlist:",
   ];
 
-  if (wordCount(text) > 120) return false;
+  if (wordCount(text) > 90) return false;
+  if (sentenceCount(text) > 4) return false;
   if (numberedListLineCount(text) > 1) return false;
   if (/\bsave\b/i.test(text)) return false;
 

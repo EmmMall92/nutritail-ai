@@ -565,32 +565,27 @@ function customerMedicalContextLine(locale: "el" | "en", goal: FoodV2Recommendat
 
 function compactCardsIntro({
   goal,
-  goalLabel,
   top,
   locale,
   preferenceLine,
 }: {
   goal: FoodV2RecommendationGoal;
-  goalLabel: string;
   top: FoodV2ChatbotRecommendationItem;
   locale: "el" | "en";
   preferenceLine?: string;
 }) {
   const name = foodName(top);
   const reason = customerReason(top, goal, locale);
-  const snapshot = nutritionSnapshot(top, locale);
   const safetyLine = goal === "urinary" || goal === "renal" ? vetSafetyLine(locale, goal) : "";
 
   if (locale === "el") {
     return cleanOutput(
       [
-        "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
-        recommendationFocusLine(locale, goalLabel),
+        "Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         customerCardSplitLine(locale),
         preferenceLine,
         customerMedicalContextLine(locale, goal),
         `Ξεκίνα από: ${name}, γιατί ${reason}.`,
-        snapshot,
         "Πάτησε μία κάρτα για να δεις περίπου ποσότητα/ημέρα.",
         safetyLine,
       ]
@@ -601,13 +596,11 @@ function compactCardsIntro({
 
   return cleanOutput(
     [
-      "Done. I placed the best options below as cards.",
-      recommendationFocusLine(locale, goalLabel),
+      "I found the best first choices and placed them below as cards.",
       customerCardSplitLine(locale),
       preferenceLine,
       customerMedicalContextLine(locale, goal),
       `Start with: ${name}, because it ${reason}.`,
-      snapshot,
       "Choose one food card below to see the first daily portion in grams.",
       safetyLine,
     ]
@@ -641,7 +634,7 @@ function polishEnglishCustomerText(text: string) {
     )
     .replace(
       "Done. I placed the best options below as cards.",
-      "Done. I found the best first choices and placed them below as cards."
+      "I found the best first choices and placed them below as cards."
     );
 }
 
@@ -692,7 +685,6 @@ export function formatFoodV2ChatbotRecommendationSummary(
   if (options.compactForCards && topForCards) {
     return compactCardsIntro({
       goal,
-      goalLabel: goalLabel ?? goal,
       top: topForCards,
       locale,
       preferenceLine,

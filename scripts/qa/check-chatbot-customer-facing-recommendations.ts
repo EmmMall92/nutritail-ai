@@ -72,6 +72,18 @@ function summary(
   });
 }
 
+function wordCount(text: string) {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function sentenceCount(text: string) {
+  return text
+    .replace(/\b(?:e\.g|i\.e)\./gi, "")
+    .split(/[.!?;]+|\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean).length;
+}
+
 const sample = summary(sampleResponse);
 const greekSample = summary(sampleResponse, "el");
 const compactCardsSample = summary(sampleResponse, "en", true);
@@ -456,6 +468,18 @@ if (compactCardsSample.includes("Best options for this pet:") || /\n1\./.test(co
   process.exit(1);
 }
 
+if (wordCount(compactCardsSample) > 90 || sentenceCount(compactCardsSample) > 4) {
+  console.error("Compact card-facing recommendation must stay short enough to let the cards do the work.");
+  console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (wordCount(compactGreekCardsSample) > 90 || sentenceCount(compactGreekCardsSample) > 4) {
+  console.error("Compact Greek card-facing recommendation must stay short enough to let the cards do the work.");
+  console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
 if (!valueGoalSample.includes("Budget-friendly first choices:")) {
   console.error("Value goal should label the first section as value picks.");
   console.error(valueGoalSample);
@@ -531,6 +555,8 @@ const requiredCompactComposerFlow = [
   "When selectable food cards follow, write only a short intro and next action",
   "If cards_follow is true, keep the answer under 90 words",
   "If cards_follow is true, use at most 4 short sentences",
+  "wordCount(text) > 90",
+  "sentenceCount(text) > 4",
   "If cards_follow is true, mention only the single best starting food, not every card",
   "If cards_follow is true, do not tell the user to save the plan in this intro",
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
