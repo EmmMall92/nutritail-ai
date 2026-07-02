@@ -1198,6 +1198,53 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-rose-100 bg-rose-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-safe-use-note"
+        >
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-rose-700">
+                Ασφαλής χρήση της αναφοράς
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-rose-950">
+                Χρησιμοποίησέ τη σαν πλάνο σίτισης, όχι σαν διάγνωση.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-rose-900">
+              Η αναφορά βοηθά να κρατήσεις τροφή, θερμίδες, ποσότητα και επόμενο
+              έλεγχο σε ένα σημείο. Αν υπάρχουν ουρολογικό, νεφρικό, διαβήτης,
+              παγκρεατίτιδα, αίμα, έντονος εμετός, διάρροια ή ανορεξία, μίλα
+              πρώτα με κτηνίατρο.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-rose-100 bg-white p-4 text-sm text-rose-950 print:border-gray-300">
+              <p className="font-semibold">Καθημερινή χρήση</p>
+              <p className="mt-2 leading-6 text-rose-900">
+                Ακολούθησε την ποσότητα, κράτα σταθερές λιχουδιές και μην αλλάζεις
+                πολλά πράγματα μαζί την πρώτη εβδομάδα.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-rose-100 bg-white p-4 text-sm text-rose-950 print:border-gray-300">
+              <p className="font-semibold">Πότε ξαναγυρνάς</p>
+              <p className="mt-2 leading-6 text-rose-900">
+                Σε 2-4 εβδομάδες φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα,
+                λιχουδιές, όρεξη, κόπρανα και αποδοχή της τροφής.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-rose-100 bg-white p-4 text-sm text-rose-950 print:border-gray-300">
+              <p className="font-semibold">Πότε σταματάμε και ρωτάμε γιατρό</p>
+              <p className="mt-2 leading-6 text-rose-900">
+                Αν εμφανιστεί πόνος, αίμα, επίμονος εμετός, έντονη διάρροια,
+                άρνηση φαγητού ή δυσκολία στην ούρηση, το φαγητό δεν είναι το
+                πρώτο βήμα.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
           className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-customer-takeaway"
         >
