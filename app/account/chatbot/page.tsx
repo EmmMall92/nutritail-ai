@@ -6934,10 +6934,24 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("Βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.", "Weight, grams, treats, and results.")}
                 </span>
               </a>
+              <a
+                href={`/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour`}
+                className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-medium text-violet-950 transition hover:bg-violet-100"
+              >
+                <span className="block">
+                  {botText("Άλλη γεύση / εταιρεία", "Change flavour or brand")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-violet-900">
+                  {botText(
+                    "Νέα πρόταση αν δεν του άρεσε η γεύση, η εταιρεία ή η ανοχή.",
+                    "New suggestion if taste, brand, or tolerance is the issue."
+                  )}
+                </span>
+              </a>
               <button
                 type="button"
                 onClick={restartChat}
-                className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-gray-100 sm:col-span-2"
+                className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-gray-100"
               >
                 <span className="block">
                   {botText("Νέα ανάλυση", "New analysis")}

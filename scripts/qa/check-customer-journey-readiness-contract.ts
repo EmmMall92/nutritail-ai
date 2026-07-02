@@ -48,6 +48,7 @@ const checks: ContractCheck[] = [
       'data-testid="saved-pet-continuation-decision-guide"',
       "/print/pet-timeline/${savedPetId}",
       "/account/chatbot?petId=${savedPetId}&mode=progress",
+      "/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour",
     ],
   },
   {

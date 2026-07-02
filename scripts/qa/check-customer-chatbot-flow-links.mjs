@@ -127,6 +127,11 @@ const checks = [
     expected: "/account/chatbot?petId=${savedPetId}&mode=progress",
   },
   {
+    label: "Saved chatbot analysis links to flavour or brand alternative",
+    file: "app/account/chatbot/page.tsx",
+    expected: "/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour",
+  },
+  {
     label: "Account chatbot uses the authenticated save endpoint",
     file: "app/account/chatbot/page.tsx",
     expected: 'fetch("/api/account/chatbot/save"',
@@ -270,6 +275,11 @@ const checks = [
     label: "Saved chatbot analysis exposes progress check action",
     file: "app/account/chatbot/page.tsx",
     expected: "Weight, grams, treats, and results.",
+  },
+  {
+    label: "Saved chatbot analysis exposes flavour or brand action",
+    file: "app/account/chatbot/page.tsx",
+    expected: "New suggestion if taste, brand, or tolerance is the issue.",
   },
   {
     label: "Pre-save panel previews what saving unlocks",
