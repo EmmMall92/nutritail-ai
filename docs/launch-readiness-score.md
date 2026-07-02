@@ -136,10 +136,10 @@ Customer product progress moves when real user friction is removed:
 Use `docs/product-progress-score.md` when the user asks why the product progress
 number feels stuck even though automated live readiness is higher. The customer
 product score should move only after evidence-based UX or recommendation-risk
-reductions, such as the auth/report/beta trust polish that moved the customer
-product from 93-94% to 94-95%. If the user asks about the whole project or
-launch company readiness, also report the overall SaaS launch progress from the
-same rubric.
+reductions, such as the saved-pet/account progress loop that moved the customer
+product from 94-95% to 95% beta-candidate. If the user asks about the whole
+project or launch company readiness, also report the overall SaaS launch
+progress from the same rubric.
 
 ## Practical Progress Bands
 

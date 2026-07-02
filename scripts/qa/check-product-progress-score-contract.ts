@@ -33,12 +33,18 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **94-95%**",
-  "Overall SaaS launch progress is currently **84-85%**",
+  "Customer product progress is currently **95% beta-candidate**",
+  "Overall SaaS launch progress is currently **85%**",
   "business limits, beta access, subscription",
   "legal/trust readiness",
   "is the whole company/product ready to launch?",
-  "The latest move from **93-94%** to **94-95%**",
+  "The latest move from **94-95%** to **95% beta-candidate**",
+  "returning-customer nutrition loop",
+  "2-4 week progress-check reminder",
+  "new",
+  "real grams/day",
+  "treats, appetite, stool, energy",
+  "The previous move from **93-94%** to **94-95%**",
   "Auth success states",
   "printable pet report now surfaces the latest progress check",
   "beta waitlist visibility",
@@ -70,7 +76,11 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
-  "94-95%",
+  "95% beta-candidate",
+  "Overall SaaS Blockers",
+  "authenticated live chatbot extraction route",
+  "Production monitoring and post-deploy freshness",
+  "first real beta-user feedback cycle",
   "Beta access, plan limits, subscription/payment direction",
 ];
 
@@ -90,7 +100,7 @@ assert(totalWeight === 100, `Product progress category weights must total 100, g
 assert(
   launchDoc.includes("docs/product-progress-score.md") &&
     launchDoc.includes("Customer Product Progress Score") &&
-    launchDoc.includes("93-94% to 94-95%"),
+    launchDoc.includes("94-95% to 95% beta-candidate"),
   "Launch readiness score doc must point to the product progress score rubric."
 );
 
@@ -117,6 +127,7 @@ assert(
     liveQaPage.includes("Customer product progress") &&
     liveQaPage.includes("Overall SaaS launch") &&
     liveQaPage.includes("productProgress.overallSaasEstimate") &&
+    liveQaPage.includes("productProgress.overallLaunchBlockers") &&
     liveQaPage.includes("separate from automated"),
   "Admin live QA page must expose the customer product progress summary."
 );
@@ -124,7 +135,9 @@ assert(
 assert(
   liveQaPage.includes("Why it may not move every PR") &&
     liveQaPage.includes("Next moves toward") &&
-    liveQaPage.includes("95%+"),
+    liveQaPage.includes("95%+") &&
+    liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
+    liveQaPage.includes("What still keeps overall SaaS launch lower"),
   "Admin live QA page must explain why the score feels stuck and what moves it next."
 );
 

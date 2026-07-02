@@ -27,6 +27,7 @@ type CustomerProductProgressSummary = {
   latestMovement: string;
   whyItFeelsStuck: string[];
   nextScoreMoves: string[];
+  overallLaunchBlockers: string[];
 };
 
 function readLiveReadinessSummary(): ReadinessSummary {
@@ -116,6 +117,9 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     nextScoreMoves: [
       "Run live chatbot QA, fix real recommendation mistakes, and lock fixes with tests.",
     ],
+    overallLaunchBlockers: [
+      "Overall SaaS launch progress still depends on live OpenAI proof, monitoring, legal review, and business readiness.",
+    ],
   };
 
   try {
@@ -137,6 +141,8 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       doc.match(/## Why It Feels Stuck\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const nextSection =
       doc.match(/## Next Score Moves\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const blockersSection =
+      doc.match(/## Overall SaaS Blockers\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
 
     const whyItFeelsStuck =
       whySection
@@ -153,6 +159,13 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         .filter((line) => /^\d+\./.test(line))
         .map((line) => line.replace(/^\d+\.\s*/, ""))
         .slice(0, 5) || fallback.nextScoreMoves;
+    const overallLaunchBlockers =
+      blockersSection
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("- "))
+        .map((line) => line.replace(/^- /, ""))
+        .slice(0, 5) || fallback.overallLaunchBlockers;
 
     return {
       estimate,
@@ -160,6 +173,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       latestMovement,
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
       nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
+      overallLaunchBlockers:
+        overallLaunchBlockers.length > 0
+          ? overallLaunchBlockers
+          : fallback.overallLaunchBlockers,
     };
   } catch {
     return fallback;
@@ -386,6 +403,18 @@ export default function FoodV2LiveQaPage() {
               ))}
             </ol>
           </div>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950"
+          data-testid="overall-saas-launch-blockers"
+        >
+          <p className="text-sm font-semibold">What still keeps overall SaaS launch lower</p>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
+            {productProgress.overallLaunchBlockers.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
         </div>
 
         <p className="mt-4 rounded-xl border border-blue-200 bg-white/70 p-4 text-sm">

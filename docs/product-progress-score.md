@@ -12,13 +12,13 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **94-95%**.
+Customer product progress is currently **95% beta-candidate**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **84-85%**.
+Overall SaaS launch progress is currently **85%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -30,7 +30,20 @@ feel close to ready?"
 
 ## Latest Movement
 
-The latest move from **93-94%** to **94-95%** is justified by customer-facing
+The latest move from **94-95%** to **95% beta-candidate** is justified by the
+returning-customer nutrition loop becoming visible in the account dashboard:
+
+- Saved plans now surface a clear 2-4 week progress-check reminder instead of
+  leaving the customer to remember what to do after the first recommendation.
+- The account dashboard tells the customer exactly what to bring back: new
+  weight, real grams/day, treats, appetite, stool, energy, and whether the pet
+  still accepts the flavour.
+- The progress reminder links directly into the saved-pet progress-check flow,
+  so customers can continue from the same pet instead of restarting the chatbot.
+- This does not close the broader SaaS launch gap, but it removes a real
+  customer-retention weakness in the nutrition journey.
+
+The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
 
 - Auth success states now give clear next steps after register, forgot password,
@@ -118,8 +131,8 @@ flow works cleanly on production after the latest merge.
 
 | Category | Weight | Current Status | Evidence To Raise |
 | --- | ---: | --- | --- |
-| Final chatbot experience | 16 | Strong, but still needs more real-flow polish | Live conversations show clean answers, 3 premium + 3 value choices, food buttons, grams/day, and next steps without back-office wording. |
-| Saved pet continuation | 10 | Working, needs repeated live progress checks | Returning to a saved pet supports progress check, no-progress advice, new food, flavour change, brand change, and timeline review. |
+| Final chatbot experience | 16 | Strong, needs fresh real-flow proof after each deploy | Live conversations show clean answers, 3 premium + 3 value choices, food buttons, grams/day, and next steps without back-office wording. |
+| Saved pet continuation | 10 | Strong account and chatbot loop, needs production repeat proof | Returning to a saved pet supports progress check, no-progress advice, new food, flavour change, brand change, and timeline review. |
 | Pet report page | 9 | Useful, still needs visual/customer polish | Report clearly shows calories, goal, selected food, why it fits, grams/day, transition plan, and next action. |
 | Food recommendation accuracy | 18 | Good automated coverage, still needs stricter live review | Dog and cat batches continue to pass, and real mistakes from manual review become ranking guards. |
 | User account polish | 8 | Solid dashboard foundation | Account page makes pets, latest analysis, progress, reports, and actions obvious on mobile and desktop. |
@@ -131,7 +144,7 @@ flow works cleanly on production after the latest merge.
 
 ## Why It Feels Stuck
 
-At 94-95%, small polish work improves the product but may not move the score.
+At 95%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -142,17 +155,35 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 94-95 toward a firmer 95%+ beta launch:
+These are the most likely moves from 95% beta-candidate toward a firmer 95%+
+public beta launch:
 
-1. Run the full cat 001-500 live QA and convert the next real mistake into a
-   ranking guard.
-2. Verify saved-pet continuation with progress/no-progress/food-change flows on
+1. Verify saved-pet continuation with progress/no-progress/food-change flows on
    production after deploy.
-3. Complete one authenticated live chatbot extract proof with a QA account
+2. Complete one authenticated live chatbot extract proof with a QA account
    cookie after the latest OpenAI intake-context merge.
-4. Run real customer chatbot journeys end-to-end and remove any remaining
+3. Run real customer chatbot journeys end-to-end and remove any remaining
    confusing copy, loops, or wrong food-choice explanations.
+4. Keep dog/cat live QA fresh after each recommendation-ranking change and
+   convert any real mistake into a ranking guard.
 5. Add first subscription/payment direction when beta limits are ready.
+
+## Overall SaaS Blockers
+
+These are the main reasons the whole project remains around 85% even though the
+customer nutrition experience is now a beta candidate:
+
+- Full OpenAI proof still needs the authenticated live chatbot extraction route
+  to run with a QA account cookie, not just local or unauthenticated checks.
+- Subscription/payment direction is not complete enough for a paid public
+  launch, even though beta access and limits are present.
+- Production monitoring and post-deploy freshness need to remain current after
+  every chatbot, Food V2, account, report, auth, or public-route deploy.
+- Legal/trust pages exist, but they still need final operating review before
+  broader public launch.
+- The first real beta-user feedback cycle is not complete yet: users need to
+  run analyses, choose foods, save plans, return for progress, and generate
+  actionable feedback.
 
 ## Reporting Rule
 
@@ -165,7 +196,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 94-95% and overall SaaS launch progress is about 84-85%. The next product
-> point depends on cat live QA fixes, real customer chatbot journey proof, or
+> 95% beta-candidate and overall SaaS launch progress is about 85%. The next
+> product confidence point depends on real customer chatbot journey proof or
 > live OpenAI proof, while the launch-wide score depends on monitoring,
 > payments/subscription direction, and production operating proof.
