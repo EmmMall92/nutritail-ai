@@ -23,6 +23,14 @@ export function getCustomerAuthErrorMessage(
   }
 
   if (
+    normalized.includes("not an admin") ||
+    normalized.includes("forbidden") ||
+    normalized.includes("admin access")
+  ) {
+    return "Η σύνδεση πέτυχε, αλλά αυτός ο λογαριασμός δεν έχει πρόσβαση διαχείρισης. Συνδέσου με admin λογαριασμό ή γύρνα στον λογαριασμό πελάτη.";
+  }
+
+  if (
     normalized.includes("already registered") ||
     normalized.includes("already been registered") ||
     normalized.includes("user already")
