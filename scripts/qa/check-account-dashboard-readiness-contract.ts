@@ -99,7 +99,7 @@ assert(
     betaAccessPlan.includes("monthlyAnalysisLimit: 20") &&
     accountPage.includes('href="/beta"') &&
     accountPage.includes('href="/plans"') &&
-    accountPage.includes("Όρια και μελλοντικά plans"),
+    accountPage.includes("Όρια και μελλοντικά πλάνα"),
   "Account dashboard must show beta plan limits and link to beta and plans pages."
 );
 assert(
@@ -173,9 +173,9 @@ assert(
 );
 assert(
   accountPage.includes('data-testid="account-plan-next-steps"') &&
-    accountPage.includes("1. Δες το report") &&
+    accountPage.includes("1. Δες την αναφορά") &&
     accountPage.includes("2. Παρακολούθησε την πορεία") &&
-    accountPage.includes("3. Κάνε progress check") &&
+    accountPage.includes("3. Κάνε έλεγχο προόδου") &&
     accountPage.includes("Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές"),
   "Current plan snapshot must guide customers through report, timeline, and progress-check next steps."
 );
@@ -183,7 +183,7 @@ assert(
   accountPage.includes("Σημερινό πλάνο") &&
     accountPage.includes("Θερμίδες") &&
     accountPage.includes("Γραμμάρια/ημέρα") &&
-    accountPage.includes("Progress check") &&
+    accountPage.includes("Έλεγχος προόδου") &&
     accountPage.includes("Άνοιγμα αναφοράς") &&
     accountPage.includes("Σε 2-4 εβδομάδες έλεγξε βάρος, όρεξη και κόπρανα"),
   "Current plan snapshot must show food-plan, portion, report, and progress-check copy."
@@ -215,6 +215,24 @@ assert(
     petsPage.includes("/print/pet-timeline/"),
   "Pets dashboard must expose report and timeline actions for saved pets."
 );
+
+const customerVisibleEnglishActionCopy = [
+  "Progress check",
+  "Progress kit",
+  "progress check",
+  "progress checks",
+  "1. Δες το report",
+  "Δες timeline",
+  "Το timeline δείχνει",
+  "μελλοντικά plans",
+];
+
+for (const marker of customerVisibleEnglishActionCopy) {
+  assert(
+    !accountPage.includes(marker),
+    `Account dashboard must keep customer action copy in Greek. Found: ${marker}`
+  );
+}
 assert(
   packageJson.includes('"qa:account-dashboard-readiness-contract"'),
   "package.json must expose the account dashboard readiness QA script."
@@ -244,9 +262,9 @@ assert(
 
 assert(
   accountPage.includes('data-testid="account-progress-check-reminder"') &&
-    accountPage.includes("Σε 2-4 εβδομάδες κάνε progress check") &&
+    accountPage.includes("Σε 2-4 εβδομάδες κάνε έλεγχο προόδου") &&
     accountPage.includes("Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα") &&
-    accountPage.includes("Άνοιγμα progress check"),
+    accountPage.includes("Άνοιγμα ελέγχου προόδου"),
   "Current plan snapshot must show a visible 2-4 week progress-check reminder with required return data."
 );
 
