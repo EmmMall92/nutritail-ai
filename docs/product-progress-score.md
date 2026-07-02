@@ -12,13 +12,13 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **93-94%**.
+Customer product progress is currently **94-95%**.
 
 This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **80-82%**.
+Overall SaaS launch progress is currently **84-85%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -29,6 +29,22 @@ progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
 
 ## Latest Movement
+
+The latest move from **93-94%** to **94-95%** is justified by customer-facing
+launch polish that reduced real signup, trust, and saved-report friction:
+
+- Auth success states now give clear next steps after register, forgot password,
+  and reset password, including direct continuation actions instead of leaving
+  the customer wondering what to do next.
+- The printable pet report now surfaces the latest progress check, including
+  current weight, weight change, grams/day, treats, appetite, stool, and energy
+  context when those details exist.
+- Admin activity now exposes beta waitlist visibility, and public beta/terms
+  copy clarifies beta access, no card requirement, and subscription/payment
+  boundaries for early users.
+- These changes do not make the nutrition engine perfect, but they close
+  launch-facing gaps around trust, account recovery, saved progress, and beta
+  expectations.
 
 The latest move from **92-93%** to **93-94%** is justified by the authenticated
 OpenAI/chatbot intake-context fix that closed a real customer-facing QA gap:
@@ -93,9 +109,10 @@ customer-visible work that reduced real user friction:
 - Saved-pet continuation supports progress checks, no-result follow-up,
   another-food guidance, flavour/company change, and timeline review.
 
-This is not a 95% launch claim yet. The next point should come from cat live QA
-and customer report/account polish, or from a fresh post-deploy proof that the
-OpenAI-assisted chatbot flow works cleanly on production after the latest merge.
+This is now just under the 95% beta-launch line for the customer experience.
+The next point should come from live chatbot proof with real customer journeys,
+cat live QA fixes, or a fresh post-deploy proof that the OpenAI-assisted chatbot
+flow works cleanly on production after the latest merge.
 
 ## Ten Launch Categories
 
@@ -114,7 +131,7 @@ OpenAI-assisted chatbot flow works cleanly on production after the latest merge.
 
 ## Why It Feels Stuck
 
-At 93-94%, small polish work improves the product but may not move the score.
+At 94-95%, small polish work improves the product but may not move the score.
 The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
@@ -125,16 +142,17 @@ The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from 93-94 toward 94-95:
+These are the most likely moves from 94-95 toward a firmer 95%+ beta launch:
 
 1. Run the full cat 001-500 live QA and convert the next real mistake into a
    ranking guard.
-2. Polish the final report so it reads like a useful customer handout.
-3. Verify saved-pet continuation with progress/no-progress/food-change flows on
+2. Verify saved-pet continuation with progress/no-progress/food-change flows on
    production after deploy.
-4. Complete one authenticated live chatbot extract proof with a QA account
+3. Complete one authenticated live chatbot extract proof with a QA account
    cookie after the latest OpenAI intake-context merge.
-5. Add clearer beta limits or first subscription direction.
+4. Run real customer chatbot journeys end-to-end and remove any remaining
+   confusing copy, loops, or wrong food-choice explanations.
+5. Add first subscription/payment direction when beta limits are ready.
 
 ## Reporting Rule
 
@@ -147,7 +165,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 93-94% and overall SaaS launch progress is about 80-82%. The next product
-> point depends on cat live QA fixes, customer report polish, or live OpenAI
-> proof, while the launch-wide score depends on beta limits, monitoring,
+> 94-95% and overall SaaS launch progress is about 84-85%. The next product
+> point depends on cat live QA fixes, real customer chatbot journey proof, or
+> live OpenAI proof, while the launch-wide score depends on monitoring,
 > payments/subscription direction, and production operating proof.
