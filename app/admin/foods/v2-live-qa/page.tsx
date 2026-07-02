@@ -559,6 +559,55 @@ export default function FoodV2LiveQaPage() {
         </div>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <div
+            className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950 lg:col-span-2"
+            data-testid="customer-product-next-unlock"
+          >
+            <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p className="text-sm font-semibold">Next customer score unlock</p>
+                <p className="mt-2 text-2xl font-black">
+                  {productProgress.customerUxUnlockGates[0]?.unlocks ??
+                    "83-85% Customer UX readiness"}
+                </p>
+                <p className="mt-2 text-sm leading-6">
+                  The next visible movement is not another merge by itself. It is
+                  proof that a normal customer can finish the full flow without
+                  help: recommendation, food choice, grams/day, save, report, and
+                  return progress.
+                </p>
+              </div>
+              <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  Evidence needed next
+                </p>
+                <p className="mt-2 text-sm font-semibold">
+                  {productProgress.customerUxUnlockGates[0]?.gate ??
+                    "Full recommendation journey proof"}
+                </p>
+                <p className="mt-2 text-sm leading-6">
+                  {productProgress.customerUxUnlockGates[0]?.evidenceNeeded ??
+                    "Run live journeys from login/signup through chatbot, selected food, grams/day, save, report, and return progress."}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border border-slate-200 bg-white/80 p-4 lg:col-span-2"
+            data-testid="customer-product-score-rule"
+          >
+            <p className="text-sm font-semibold">Score movement rule</p>
+            <p className="mt-2 text-sm leading-6">
+              Automated readiness can stay high while Customer UX readiness stays
+              flat. Customer UX rises only when fresh production evidence shows
+              that the customer journey is clearer, safer, or easier to complete.
+              Recommendation engine confidence rises from Food V2/ranking/OpenAI
+              QA. Overall SaaS launch progress rises from business, monitoring,
+              legal, beta-user, and operating proof.
+            </p>
+          </div>
+
           <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
             <p className="text-sm font-semibold">Why it may not move every PR</p>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
