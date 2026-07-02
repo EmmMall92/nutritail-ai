@@ -163,6 +163,64 @@ const giantAdultDog: TestPet = {
 }
 
 {
+  const greekFarmActivityPet = normalizeFoodV2RecommendationPetContext({
+    species: "dog",
+    pet: {
+      species: "dog",
+      breed: "Mixed",
+      weight: 24,
+      age: 4,
+      activityLevel: "normal",
+      healthIssues: ["ζει σε αγρόκτημα με πολλή δραστηριότητα"],
+    },
+  });
+  const standardMaintenance = food({
+    id: "standard-maintenance",
+    formula_key: "qa|standard-maintenance|dog|dry",
+    display_name: "Adult Maintenance Chicken",
+    formula_name: "Adult Maintenance Chicken",
+    commercial_tags: ["maintenance"],
+    kcal_per_100g: 350,
+  });
+  const activeWorking = food({
+    id: "active-working",
+    formula_key: "qa|active-working|dog|dry",
+    display_name: "Active Working Adult",
+    formula_name: "Active Working Adult",
+    commercial_tags: ["active", "working"],
+    kcal_per_100g: 398,
+  });
+  const rankings = rankFoods({
+    foods: [standardMaintenance, activeWorking],
+    pet: greekFarmActivityPet,
+    goal: "general",
+    nutrientOverrides: {
+      [standardMaintenance.formula_key]: { protein_percent: 24, fat_percent: 12 },
+      [activeWorking.formula_key]: { protein_percent: 30, fat_percent: 18 },
+    },
+  });
+  const { visible } = visibleTop(rankings, "general");
+  const standardRanking = rankings.find(
+    (item) => item.formula_key === standardMaintenance.formula_key
+  );
+
+  assert(
+    visible[0]?.formula_key === activeWorking.formula_key,
+    "Greek high-activity context should prefer active/working food over standard maintenance food.",
+    { rankings, visible }
+  );
+  assert(
+    standardRanking?.signals.some((signal) =>
+      ["high_activity_without_active_positioning", "modest_energy_formula_for_high_activity_pet"].includes(
+        signal.code
+      )
+    ),
+    "Standard maintenance food should receive high-activity caution signals for Greek farm/activity context.",
+    standardRanking
+  );
+}
+
+{
   const smallAdult = food({
     id: "small-adult",
     formula_key: "qa|small-adult|dog|dry",

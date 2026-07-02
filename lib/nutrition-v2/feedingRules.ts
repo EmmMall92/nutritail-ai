@@ -122,19 +122,25 @@ function isWeightGainContext(healthText: string) {
 }
 
 function isHotWeatherContext(healthText: string) {
-  return /summer|hot weather|hot climate|heat|heatwave|very warm|καλοκαιρ|ζεστ|καυσωνα|καύσωνα/.test(
+  return /summer|hot weather|hot climate|heat|heatwave|very warm|καλοκαιρ|ζεστ|καυσων/.test(
     healthText
   );
 }
 
 function isReducedAppetiteContext(healthText: string) {
-  return /low appetite|reduced appetite|poor appetite|eats little|eating little|picky in summer|τρωει λιγο|τρώει λίγο|τρωει ελαχιστα|τρώει ελάχιστα|μειωμενη ορεξη|μειωμένη όρεξη/.test(
+  return /low appetite|reduced appetite|poor appetite|eats little|eating little|picky in summer|τρωει λιγο|τρωει ελαχιστα|μειωμενη ορεξη|χαμηλη ορεξη|δεν τρωει πολυ/.test(
     healthText
   );
 }
 
 function isColdClimateContext(healthText: string) {
-  return /cold climate|very cold|cold weather|winter|snow|mountain cold|ψυχρ|κρυο|κρύο|χιον|χειμων/.test(
+  return /cold climate|very cold|cold weather|winter|snow|mountain cold|ψυχρ|κρυο|χιον|χειμων/.test(
+    healthText
+  );
+}
+
+function isGreekHighActivityContext(healthText: string) {
+  return /κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|δουλευ|εργασια|εργαζ|αγροκτημα|πολλη δραστηριοτητα|πολυ δραστηρι/.test(
     healthText
   );
 }
@@ -185,13 +191,12 @@ export function evaluateFeedingFitRules(input: FeedingFitInput) {
     !strictWeightContext &&
     !weightGainContext;
   const coldClimate = isColdClimateContext(activityText) && !strictWeightContext;
-  const cleanGreekHighActivity =
-    /κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|δουλευ|εργασια|εργαζ/.test(activityText);
+  const cleanGreekHighActivity = isGreekHighActivityContext(activityText);
   const highActivity =
     cleanGreekHighActivity ||
     coldClimate ||
     pet.activityLevel === "high" ||
-    /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross|κυνηγ|εκπαιδευ|τρεχ|κολυμπ|βουνο|βουνό|δουλευ/.test(
+    /working|sport|agility|hunting|hunt|training|running|runs|swim|swimming|mountain|canicross/.test(
       activityText
     );
 
