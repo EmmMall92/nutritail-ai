@@ -423,7 +423,7 @@ const savedPetDecisionGuide: {
     titleEl: "Πρώτα δες ιστορικό",
     helper: "Open previous analyses and reports before deciding the next step.",
     helperEl:
-      "Βλέπεις προηγούμενες αναλύσεις και reports πριν αποφασίσεις το επόμενο βήμα.",
+      "Βλέπεις προηγούμενες αναλύσεις και αναφορές πριν αποφασίσεις το επόμενο βήμα.",
   },
 ];
 
@@ -3001,7 +3001,7 @@ ${formatLatestAnalysisSummary(savedPet, language)}
 
 Διάλεξε τι θέλεις να κάνουμε τώρα από τα κουμπιά:
 - Έλεγχος προόδου: βλέπουμε βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.
-- Νέα πρόταση τροφής: κρατάμε το ίδιο κατοικίδιο και ξαναβγάζουμε shortlist.
+- Νέα πρόταση τροφής: κρατάμε το ίδιο κατοικίδιο και βγάζουμε νέα λίστα προτάσεων.
 - Αλλαγή γεύσης ή εταιρείας: αν βαρέθηκε, δεν του αρέσει ή δεν το ανέχεται.
 - Ιστορικό: βλέπεις προηγούμενες αναλύσεις και πρόοδο.`;
   }
@@ -3130,7 +3130,7 @@ Send the exact daily grams and treats per day and I can help decide whether to a
 - Τροφή: ${foodName ?? "δεν έχει επιβεβαιωθεί"}
 - Προηγούμενη ποσότητα: ${grams ? `${grams}g/ημέρα` : "δεν έχει επιβεβαιωθεί"}
 
-Αν το θέμα είναι ότι βαρέθηκε γεύση ή εταιρία, πάτησε "Άλλη τροφή" και θα κρατήσω το ίδιο προφίλ.`;
+Αν το θέμα είναι ότι βαρέθηκε γεύση ή εταιρεία, πάτησε "Άλλη τροφή" και θα κρατήσω το ίδιο προφίλ.`;
   }
 
   return `${weightLine}
@@ -4410,9 +4410,9 @@ Send me the current weight, daily grams, food name, and treats per day. I can th
         createMessage(
           "bot",
           botText(
-            `Κανένα πρόβλημα. Αν ο/η ${targetPetName} βαρέθηκε γεύση, εταιρία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.
+            `Κανένα πρόβλημα. Αν ο/η ${targetPetName} βαρέθηκε γεύση, εταιρεία ή φόρμουλα, μπορώ να ψάξω άλλη επιλογή κρατώντας τον ίδιο στόχο.
 
-Ποια τροφή τρώει τώρα; Γράψε ακριβή εταιρία και προϊόν αν τα ξέρεις, αλλιώς γράψε "δεν ξέρω".`,
+Ποια τροφή τρώει τώρα; Γράψε ακριβή εταιρεία και προϊόν αν τα ξέρεις, αλλιώς γράψε "δεν ξέρω".`,
             `No problem. If ${targetPetName} got bored of the taste, brand, or formula, I can look for another option while keeping the same goal.
 
 What food is ${targetPetName} eating now? Write the exact brand and formula if you know it, or type "I don't know".`
@@ -6572,7 +6572,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </p>
                 </div>
                 <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
-                  <p className="font-semibold">{botText("Progress check", "Progress check")}</p>
+                  <p className="font-semibold">{botText("Έλεγχος προόδου", "Progress check")}</p>
                   <p className="mt-1 text-xs text-emerald-900">
                     {botText(
                       "Νέο βάρος, γραμμάρια/ημέρα, λιχουδιές και αποτέλεσμα.",
@@ -6584,7 +6584,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <p className="font-semibold">{botText("Αλλαγή τροφής", "Change food")}</p>
                   <p className="mt-1 text-xs text-emerald-900">
                     {botText(
-                      "Νέα πρόταση αν αλλάξει γεύση, brand ή ανοχή.",
+                      "Νέα πρόταση αν αλλάξει γεύση, εταιρεία ή ανοχή.",
                       "A new suggestion if flavour, brand, or tolerance changes."
                     )}
                   </p>
