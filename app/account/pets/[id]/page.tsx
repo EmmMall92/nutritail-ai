@@ -971,6 +971,12 @@ export default function AccountPetDetailPage() {
               >
                 Άνοιγμα ιστορικού
               </Link>
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour`}
+                className="rounded-xl border border-violet-300 bg-violet-50 px-4 py-2 text-center text-sm font-medium text-violet-950 transition hover:bg-violet-100"
+              >
+                Άλλη γεύση / εταιρεία
+              </Link>
             </div>
           </div>
         )}
