@@ -34,8 +34,14 @@ for (const marker of categoryMarkers) {
 
 const requiredMarkers = [
   "Customer product progress is currently **95% beta-candidate**",
-  "Overall SaaS launch progress is currently **89%**",
-  "The latest launch-wide move from **88%** to **89%**",
+  "Overall SaaS launch progress is currently **90%**",
+  "The latest launch-wide move from **89%** to **90%**",
+  "Dog live QA cases **201-600**",
+  "**400/400** checked and",
+  "The previously reviewed dog case **534**",
+  "large-breed puppy allergy/growth path",
+  "authenticated OpenAI proof",
+  "The previous launch-wide move from **88%** to **89%**",
   "Cat live QA cases **201-500**",
   "**300/300** checked and",
   "renal/urinary therapeutic",
