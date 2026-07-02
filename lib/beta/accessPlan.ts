@@ -39,6 +39,27 @@ export const betaPlanLimits = [
   },
 ] as const;
 
+export const futurePaidPlanDirection = [
+  {
+    name: "Beta",
+    audience: "Για τους πρώτους χρήστες που βοηθούν με feedback.",
+    includes: "Βασικός σύμβουλος, αποθηκευμένα pets, reports, timeline και progress checks μέσα στα beta όρια.",
+    status: "Διαθέσιμο χωρίς πληρωμή στην beta.",
+  },
+  {
+    name: "Personal",
+    audience: "Για κηδεμόνες που θέλουν σταθερή παρακολούθηση ενός μικρού αριθμού κατοικιδίων.",
+    includes: "Περισσότερες αναλύσεις, ιστορικό προόδου, αλλαγές τροφής και πιο καθαρά saved reports.",
+    status: "Μελλοντικό πλάνο. Δεν ενεργοποιείται ακόμη.",
+  },
+  {
+    name: "Pro",
+    audience: "Για πιο απαιτητική χρήση, πολλά κατοικίδια ή συνεργαζόμενα pet professionals.",
+    includes: "Περισσότερα profiles, πιο συχνά checks, εξαγωγές και πιο οργανωμένη παρακολούθηση feedback.",
+    status: "Μελλοντικό πλάνο. Θα παρουσιαστεί πριν ζητηθεί οποιαδήποτε πληρωμή.",
+  },
+] as const;
+
 export function betaAccessPlanMetadata() {
   return {
     accessPlan: betaAccessPlanConfig.accessPlan,

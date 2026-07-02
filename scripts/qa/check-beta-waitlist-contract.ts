@@ -28,8 +28,12 @@ assert(page.includes("betaPlanLimits"), "Beta page should render beta plan limit
 assert(page.includes("betaPlainTerms"), "Beta page should render plain-language beta terms.");
 assert(page.includes("betaLaunchSignals"), "Beta page should render launch quality signals.");
 assert(
-  page.includes('import { betaPlanLimits } from "@/lib/beta/accessPlan";'),
-  "Beta page should render plan limits from the shared beta access plan config."
+  page.includes("futurePaidPlanDirection"),
+  "Beta page should render future paid plan direction from the shared beta access plan config."
+);
+assert(
+  page.includes('from "@/lib/beta/accessPlan";'),
+  "Beta page should render beta business plan content from the shared beta access plan config."
 );
 assert(
   accountPage.includes("betaPlanHighlights") &&
@@ -54,8 +58,26 @@ assert(
   "Beta page should expose the commercial clarity section."
 );
 assert(
+  accessPlan.includes("futurePaidPlanDirection") &&
+    accessPlan.includes('name: "Beta"') &&
+    accessPlan.includes('name: "Personal"') &&
+    accessPlan.includes('name: "Pro"') &&
+    accessPlan.includes("Μελλοντικό πλάνο") &&
+    accessPlan.includes("πριν ζητηθεί οποιαδήποτε πληρωμή"),
+  "Shared beta access plan config should define future paid-plan direction without activating payment."
+);
+assert(
   page.includes('data-testid="beta-launch-signals"'),
   "Beta page should expose the launch signals section."
+);
+assert(
+  page.includes('data-testid="beta-future-paid-plan-direction"') &&
+    page.includes("Μελλοντική εμπορική κατεύθυνση") &&
+    page.includes("Δεν ενεργοποιούμε συνδρομή στην beta") &&
+    page.includes("δεν ζητάμε κάρτα") &&
+    page.includes("futurePaidPlanDirection.map") &&
+    page.includes("plan.status"),
+  "Beta page should show a customer-facing future paid-plan direction without requesting payment."
 );
 assert(
   page.includes("Χωρίς πληρωμή στην beta") &&
