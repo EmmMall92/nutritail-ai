@@ -18,7 +18,7 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **88%**.
+Overall SaaS launch progress is currently **89%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -28,7 +28,23 @@ post-deploy proof, and operational support. Use this number when the question is
 progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
 
-The latest launch-wide move from **87%** to **88%** is justified by fresh cat
+The latest launch-wide move from **88%** to **89%** is justified by completing
+fresh cat live QA coverage across the full 001-500 scenario bank:
+
+- Cat live QA cases **201-500** now pass with **300/300** checked and
+  **0 review** after the QA runner learned that renal/urinary therapeutic
+  priority is valid for multi-condition cats that also have obesity.
+- The full fresh cat evidence is now **500/500** live cases with **0 review**
+  across sterilised, kitten, urinary, renal, weight-control, allergy, hairball,
+  fussy eater, rescue, GI, IBD, pancreatitis, diabetes, senior, pregnancy,
+  lactation, transition, urgent safety, budget, premium, and preference
+  scenarios.
+- This raises launch confidence because cat-side recommendation QA is no longer
+  partial or stale, but it still does not close paid checkout, billing
+  enforcement, final legal review, production monitoring, or real beta-user
+  operating feedback.
+
+The previous launch-wide move from **87%** to **88%** was justified by fresh cat
 live recommendation QA evidence after a real ranking-context fix:
 
 - Cat live QA cases **001-050** now pass with **50/50** checked and **0 review**

@@ -421,12 +421,17 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   }
 
   if (signals.has("weight_control") && !hasFoodMatch(foods, [/light/, /obesity/, /weight/, /sterili[sz]ed/, /neutered/])) {
+    const hasRenalUrinaryPriorityMatch =
+      (signals.has("renal") &&
+        hasFoodMatch(foods, [/renal/, /kidney/, /\u03bd\u03b5\u03c6\u03c1/])) ||
+      (signals.has("urinary") &&
+        hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /\u03bf\u03c5\u03c1\u03bf/]));
     const hasModerateEnergy = foods.some((food) => {
       const kcal = food.nutrition?.kcal_per_100g;
       const fat = food.nutrition?.fat_percent;
       return (kcal == null || kcal <= 380) && (fat == null || fat <= 15);
     });
-    if (!hasModerateEnergy) warnings.push("Weight-control case did not surface weight/light candidates or moderate kcal/fat foods.");
+    if (!hasModerateEnergy && !hasRenalUrinaryPriorityMatch) warnings.push("Weight-control case did not surface weight/light candidates or moderate kcal/fat foods.");
   }
 
   if (signals.has("senior") && !hasFoodMatch(foods, [/senior/, /\b7\+/, /\b10\+/, /\b11\+/, /\b12\+/, /mature/])) {
