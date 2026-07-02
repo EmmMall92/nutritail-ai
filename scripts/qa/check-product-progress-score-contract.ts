@@ -102,6 +102,11 @@ const requiredMarkers = [
   "hairball, picky-eater, rescue, climate",
   "hybrid OpenAI/NutriTail",
   "does not raise the score above 95%",
+  "Fresh Food V2 format coverage",
+  "`qa:food-v2-format-coverage` confirms that dry dog and dry cat scenarios",
+  "wet/canned dog and wet/canned cat",
+  "recommendation gaps",
+  "data-coverage blocker",
   "The previous move from **93-94%** to **94-95%**",
   "Auth success states",
   "printable pet report now surfaces the latest progress check",
@@ -131,11 +136,13 @@ const requiredMarkers = [
   "Automated live readiness",
   "customer-visible risk is reduced",
   "real mistake and the fix is locked by a test",
+  "wet/canned dog or cat recommendations",
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
   "95% beta-candidate",
   "Overall SaaS Blockers",
+  "Food V2 dry-food recommendations are usable",
   "authenticated live chatbot extraction route",
   "Production monitoring and post-deploy freshness",
   "first real beta-user feedback cycle",
@@ -171,6 +178,11 @@ assert(
 assert(
   packageJson.includes('"qa:product-progress-score-contract"'),
   "package.json must expose qa:product-progress-score-contract."
+);
+
+assert(
+  packageJson.includes('"qa:food-v2-format-coverage"'),
+  "package.json must expose qa:food-v2-format-coverage so wet/dry data coverage can be checked."
 );
 
 assert(
