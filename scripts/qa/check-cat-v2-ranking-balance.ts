@@ -72,6 +72,19 @@ const sterilisedAdult = catFood({
   commercial_tags: ["sterilised"],
   kcal_per_100g: 340,
 });
+const wetSterilisedMisbrandedAsVet = catFood({
+  id: "wet-sterilised-misbranded-vet",
+  brand: "Purina Pro Plan Veterinary Diets",
+  formula_key: "qa-cat|wet-sterilised-misbranded-vet|cat|wet",
+  format: "wet",
+  display_name: "Nutrisavour Sterilised Chicken in Gravy",
+  formula_name: "Nutrisavour Sterilised Chicken in Gravy",
+  primary_animal_proteins: ["chicken"],
+  ingredients: ["chicken", "minerals", "inulin"],
+  commercial_tags: ["sterilised"],
+  medical_tags: [],
+  kcal_per_100g: 85,
+});
 
 const regularRanking = rankFoodV2ForPet({
   food: regularAdult,
@@ -85,6 +98,32 @@ const sterilisedRanking = rankFoodV2ForPet({
   pet: adultNonNeuteredCat,
   goal: "general",
 });
+const wetSterilisedMisbrandedVetRanking = rankFoodV2ForPet({
+  food: wetSterilisedMisbrandedAsVet,
+  nutrients: nutrients({ protein_percent: 13, fat_percent: 3.3, fiber_percent: 0.4 }),
+  pet: { ...adultNonNeuteredCat, neutered: true },
+  goal: "sterilised",
+});
+
+if (wetSterilisedMisbrandedVetRanking.bucket === "hold") {
+  console.error(
+    "Plain sterilised wet cat food should not be blocked only because the canonical brand includes Veterinary Diets."
+  );
+  console.error(wetSterilisedMisbrandedVetRanking);
+  process.exit(1);
+}
+
+if (
+  wetSterilisedMisbrandedVetRanking.signals.some(
+    (signal) => signal.code === "therapeutic_food_without_matching_condition"
+  )
+) {
+  console.error(
+    "Brand-only veterinary wording should not trigger the therapeutic mismatch guard without medical title/tags."
+  );
+  console.error(wetSterilisedMisbrandedVetRanking.signals);
+  process.exit(1);
+}
 const lowActivityNonNeuteredCat = {
   ...adultNonNeuteredCat,
   age: 2,
