@@ -180,6 +180,31 @@ function getDropoffPriorityItems({
   ].sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));
 }
 
+function getNextFeedbackFix(
+  dropoffPriorityItems: ReturnType<typeof getDropoffPriorityItems>
+) {
+  const topIssue = dropoffPriorityItems.find((item) => item.value > 0);
+
+  if (!topIssue) {
+    return {
+      title: "Collect more live feedback",
+      detail:
+        "No clear customer drop-off is visible yet. Run more live chatbot journeys before changing rules.",
+      action: "Test real pet profiles and ask users to choose a food, save the plan, and rate the answer.",
+      typeFilter: "all",
+      ratingFilter: "all",
+    };
+  }
+
+  return {
+    title: topIssue.label,
+    detail: topIssue.helper,
+    action: topIssue.action,
+    typeFilter: topIssue.typeFilter,
+    ratingFilter: topIssue.ratingFilter,
+  };
+}
+
 function TriageButton({
   label,
   value,
@@ -431,6 +456,7 @@ export default function AdminChatFeedbackPage() {
     failedMatchCount: failedMatches.length,
     notHelpfulCount: notHelpful.length,
   });
+  const nextFeedbackFix = getNextFeedbackFix(dropoffPriorityItems);
 
   return (
     <section className="space-y-6">
@@ -513,6 +539,39 @@ export default function AdminChatFeedbackPage() {
           >
             Clear filters
           </button>
+        </div>
+
+        <div
+          className="mt-4 rounded-2xl border border-black bg-white p-5 shadow-sm"
+          data-testid="chat-feedback-next-best-fix"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                Next best fix
+              </p>
+              <h3 className="mt-2 text-xl font-bold text-black">
+                {nextFeedbackFix.title}
+              </h3>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600">
+                {nextFeedbackFix.detail}
+              </p>
+              <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-black">
+                {nextFeedbackFix.action}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setTypeFilter(nextFeedbackFix.typeFilter);
+                setRatingFilter(nextFeedbackFix.ratingFilter);
+                setSearch("");
+              }}
+              className="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+            >
+              Open this queue
+            </button>
+          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">

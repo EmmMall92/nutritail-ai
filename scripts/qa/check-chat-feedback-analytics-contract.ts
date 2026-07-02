@@ -77,6 +77,21 @@ assert(
   "Admin feedback page must compute customer drop-off priorities."
 );
 assert(
+  adminFeedbackPage.includes("function getNextFeedbackFix"),
+  "Admin feedback page must compute the next best feedback fix."
+);
+assert(
+  adminFeedbackPage.includes('data-testid="chat-feedback-next-best-fix"'),
+  "Admin feedback page must expose the next best feedback fix panel."
+);
+assert(
+  adminFeedbackPage.includes("Open this queue") &&
+    adminFeedbackPage.includes("nextFeedbackFix.action") &&
+    adminFeedbackPage.includes("setTypeFilter(nextFeedbackFix.typeFilter)") &&
+    adminFeedbackPage.includes("setRatingFilter(nextFeedbackFix.ratingFilter)"),
+  "Next best feedback fix panel must link to the relevant feedback queue."
+);
+assert(
   adminFeedbackPage.includes('data-testid="chat-feedback-dropoff-priority"'),
   "Admin feedback page must expose the drop-off priority panel."
 );
