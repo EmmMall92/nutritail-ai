@@ -151,6 +151,16 @@ function checkUiHelpers() {
       expected: "wet",
       label: "English wet-only canned food",
     },
+    {
+      message: "Γάτα που αρνείται υγρή τροφή.",
+      expected: "dry",
+      label: "Greek wet refusal",
+    },
+    {
+      message: "My cat refuses canned food.",
+      expected: "dry",
+      label: "English canned refusal",
+    },
   ] as const;
 
   for (const testCase of formatCases) {

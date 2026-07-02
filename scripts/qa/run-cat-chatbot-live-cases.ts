@@ -1,6 +1,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
+import {
+  detectFoodFormatPreference,
+  recommendationFormatFromPreference,
+} from "@/lib/chatbot/foodFormatPreference";
 import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
 
 type SafetyExpectation = "normal" | "caution" | "urgent";
@@ -37,6 +41,7 @@ type FoodV2Item = {
   brand?: string | null;
   display_name?: string | null;
   formula_key?: string | null;
+  format?: string | null;
   life_stage?: string | null;
   source_priority?: string | null;
   ranking?: {
@@ -366,6 +371,7 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   const foods = allVisibleFoods(response);
   const signals = new Set(testCase.expectedSignals);
   const safetyHardStop = response.safety?.hard_stop === true;
+  const formatPreference = detectFoodFormatPreference(testCase.prompt);
 
   if (response.error) warnings.push(`Recommendation endpoint returned error: ${response.error}`);
   if (!response.total_candidates && !safetyHardStop) warnings.push("Food V2 returned zero cat candidates.");
@@ -385,6 +391,13 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   }
 
   if (safetyHardStop) return warnings;
+
+  if (
+    formatPreference === "wet" &&
+    foods.slice(0, 5).some((food) => String(food.format ?? "").toLowerCase() !== "wet")
+  ) {
+    warnings.push("Wet-only cat case surfaced dry/non-wet candidates in the visible shortlist.");
+  }
 
   if (hasFoodMatch(foods, [/\bdog\b/, /\bcanine\b/, /\u03c3\u03ba\u03c5\u03bb/, /puppy/])) {
     warnings.push("Visible shortlist appears to contain dog food terms.");
@@ -513,6 +526,7 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
 async function runCase(testCase: CatFixtureCase): Promise<CatQaResult> {
   const goal = inferGoal(testCase);
   const pet = inferPet(testCase);
+  const formatPreference = detectFoodFormatPreference(testCase.prompt);
   const response = await fetch(`${SITE_URL}/api/account/foods/v2-recommendations`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -521,7 +535,7 @@ async function runCase(testCase: CatFixtureCase): Promise<CatQaResult> {
       message: testCase.prompt,
       prompt: testCase.prompt,
       pet,
-      format: "dry",
+      format: recommendationFormatFromPreference(formatPreference),
       limit_per_bucket: 3,
     }),
   });
