@@ -161,6 +161,17 @@ after the latest customer-copy and saved-pet polish:
   production journey proof, real beta-user feedback, monitoring freshness, and
   business-launch proof are still separate gates.
 
+Fresh Food V2 format coverage also explains why the number should not be
+inflated just because dry-food recommendations are strong:
+
+- `qa:food-v2-format-coverage` confirms that dry dog and dry cat scenarios have
+  visible premium/value recommendations from Food V2.
+- The same check currently reports wet/canned dog and wet/canned cat
+  recommendation gaps: there are too few visible wet-food candidates to treat
+  wet-only customer journeys as launch-complete.
+- This does not invalidate the dry-food chatbot experience, but it is a real
+  data-coverage blocker for claiming broader pet-food recommendation readiness.
+
 The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
 
@@ -269,6 +280,8 @@ The next points require one of these:
 - A customer flow becomes clearly simpler, not just slightly prettier.
 - A report/account/auth page removes a launch blocker.
 - A post-deploy proof changes from skipped or stale to fresh and passing.
+- A Food V2 format gap closes, especially wet/canned dog or cat recommendations
+  moving from "no visible choices" to usable customer cards.
 - A business-launch gap is closed enough for beta users.
 
 ## Next Score Moves
@@ -284,7 +297,9 @@ public beta launch:
    confusing copy, loops, or wrong food-choice explanations.
 4. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
-5. Add first subscription/payment direction when beta limits are ready.
+5. Backfill enough wet/canned dog and cat foods that
+   `qa:food-v2-format-coverage` no longer reports wet-food data coverage gaps.
+6. Add first subscription/payment direction when beta limits are ready.
 
 ## Overall SaaS Blockers
 
@@ -298,6 +313,8 @@ customer nutrition experience is now a beta candidate:
   active yet.
 - Production monitoring and post-deploy freshness need to remain current after
   every chatbot, Food V2, account, report, auth, or public-route deploy.
+- Food V2 dry-food recommendations are usable, but wet/canned dog and cat
+  coverage is still not visible enough for wet-only customer journeys.
 - Legal/trust pages exist, but they still need final operating review before
   broader public launch.
 - The first real beta-user feedback cycle is not complete yet: users need to

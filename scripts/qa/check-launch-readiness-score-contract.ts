@@ -31,6 +31,9 @@ const docMarkers = [
   "10% advisory evidence",
   "Why The Percentage May Not Move",
   "What Moves 94 Toward 95",
+  "wet/canned Food V2 coverage",
+  "qa:food-v2-format-coverage",
+  "dry + wet recommendation readiness",
   "Avoid raising the percentage just because a PR merged",
   "reports/live_readiness_dashboard.md",
 ];

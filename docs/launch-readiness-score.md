@@ -101,6 +101,9 @@ The score should only move when a launch risk is measurably reduced. Examples:
 - A customer-flow improvement makes the product feel better, but the automated
   score was already passing: product progress improves, automated readiness may
   stay the same.
+- A dry-food recommendation path is strong, but wet/canned Food V2 coverage
+  still returns no visible customer choices: the product is better, yet broad
+  recommendation confidence should not move until that data gap closes.
 
 ## What Moves 94 Toward 95
 
@@ -113,6 +116,8 @@ The last launch points should come from stronger proof, not more polish:
   review status, and missing-field internals.
 - Keep Food V2 ranking guards passing for allergy, size, life stage, urinary,
   renal, senior, puppy/kitten, weight, and preference cases.
+- Run `npm.cmd run qa:food-v2-format-coverage` and close wet/canned dog and cat
+  data gaps before claiming broad dry + wet recommendation readiness.
 - Verify post-deploy freshness after every production deploy touching chatbot,
   Food V2, account, report, or public launch pages.
 
