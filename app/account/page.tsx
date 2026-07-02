@@ -1085,6 +1085,33 @@ export default function AccountPage() {
           )}
 
           <div
+            data-testid="account-progress-check-reminder"
+            className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4"
+          >
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Επόμενος έλεγχος
+                </p>
+                <h3 className="mt-1 text-lg font-bold text-amber-950">
+                  Σε 2-4 εβδομάδες κάνε progress check
+                </h3>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
+                  Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές,
+                  όρεξη, κόπρανα ή ούρηση, ενέργεια και αν του αρέσει ακόμη η
+                  τροφή. Έτσι η επόμενη πρόταση δεν ξεκινά από το μηδέν.
+                </p>
+              </div>
+              <Link
+                href={accountPlanSnapshot.progressHref}
+                className="rounded-xl bg-amber-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-amber-800"
+              >
+                Άνοιγμα progress check
+              </Link>
+            </div>
+          </div>
+
+          <div
             data-testid="account-plan-next-steps"
             className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2 xl:grid-cols-4"
           >

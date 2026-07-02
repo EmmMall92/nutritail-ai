@@ -240,4 +240,12 @@ assert(
   "Current plan snapshot must show a customer-facing watchlist for weight, portions, treats, stool/urine, and food acceptance."
 );
 
+assert(
+  accountPage.includes('data-testid="account-progress-check-reminder"') &&
+    accountPage.includes("Σε 2-4 εβδομάδες κάνε progress check") &&
+    accountPage.includes("Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα") &&
+    accountPage.includes("Άνοιγμα progress check"),
+  "Current plan snapshot must show a visible 2-4 week progress-check reminder with required return data."
+);
+
 console.log("Account dashboard readiness contract passed.");
