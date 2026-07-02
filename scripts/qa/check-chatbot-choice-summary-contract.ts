@@ -86,6 +86,16 @@ assert(
   "Selected-food next steps must guide save, transition, and progress check in customer language."
 );
 assert(
+  chatbotPage.includes('data-testid="selected-food-first-week-checklist"') &&
+    chatbotPage.includes("Πρώτη εβδομάδα εφαρμογής") &&
+    chatbotPage.includes("First week checklist") &&
+    chatbotPage.includes("Μέτρα την ποσότητα") &&
+    chatbotPage.includes("Keep treats steady") &&
+    chatbotPage.includes("Watch appetite, stool, energy") &&
+    chatbotPage.includes("In 2-4 weeks, bring weight, grams/day, and the result."),
+  "Selected-food card must give a first-week customer checklist before save/progress."
+);
+assert(
   packageJson.includes("\"qa:chatbot-choice-summary-contract\""),
   "package.json must expose the chatbot choice summary QA script."
 );

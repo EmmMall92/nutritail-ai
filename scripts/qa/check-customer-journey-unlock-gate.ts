@@ -47,6 +47,7 @@ const journeys: JourneyProof[] = [
         "Calculate grams/day",
         "First daily plan:",
         "selected-food-plan-card",
+        "selected-food-first-week-checklist",
       ],
       account: ["account-today-command-center"],
       report: ["report-tomorrow-feeding-plan"],
@@ -123,6 +124,7 @@ const journeys: JourneyProof[] = [
       chatbot: [
         "sticky bottom-0",
         "scroll-pb-72",
+        "selected-food-first-week-checklist",
         "selected-food-next-steps",
         "After you save",
       ],

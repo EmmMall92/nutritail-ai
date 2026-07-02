@@ -53,6 +53,7 @@ const checks: MobileCheck[] = [
       "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
       "Calculate grams/day",
       'data-testid="selected-food-plan-card"',
+      'data-testid="selected-food-first-week-checklist"',
       'data-testid="selected-food-next-steps"',
       "w-full rounded-xl bg-green-600",
       "max-w-[96%]",
