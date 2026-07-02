@@ -19,14 +19,18 @@ Use separate labels so progress does not look stuck:
   return for progress, and feel the result is polished enough to trust.
   The detailed Customer Product Progress Score rubric lives in
   `docs/product-progress-score.md`.
+- **Recommendation engine beta confidence**: the technical confidence in the
+  Food V2 retrieval, deterministic ranking, safety guards, OpenAI fact
+  extraction, and dog/cat QA banks. This can be much higher than the practical
+  customer UX score.
 - **Overall SaaS launch progress**: the broader public-launch estimate. This is
   intentionally lower while business limits, beta access, payments or
   subscription direction, production monitoring, legal/trust readiness, and
   operating support are not fully closed.
 
-The automated score can be 100/100 while customer product progress still needs a
-few targeted UX passes. Do not keep saying 78-80% after the automated readiness
-dashboard is fresh and passing; instead say which percentage you mean.
+The automated score can be 100/100 while customer UX readiness still needs
+targeted journey work. Do not call the whole product 95% just because the engine
+or automated dashboard is high; instead say which percentage you mean.
 
 ## Current Target
 
@@ -140,11 +144,12 @@ Customer product progress moves when real user friction is removed:
 
 Use `docs/product-progress-score.md` when the user asks why the product progress
 number feels stuck even though automated live readiness is higher. The customer
-product score should move only after evidence-based UX or recommendation-risk
-reductions, such as the saved-pet/account progress loop that moved the customer
-product from 94-95% to 95% beta-candidate. If the user asks about the whole
-project or launch company readiness, also report the overall SaaS launch
-progress from the same rubric.
+UX readiness score should move only after evidence-based UX or
+recommendation-risk reductions that are visible to a normal pet owner. If the
+user asks about the whole project or launch company readiness, also report the
+overall SaaS launch progress from the same rubric. If the user asks about the
+nutrition engine specifically, report recommendation engine beta confidence
+separately.
 
 ## Practical Progress Bands
 
@@ -164,12 +169,14 @@ When the user asks "what percentage are we at?", answer from current evidence:
 
 1. Check `reports/live_readiness_dashboard.md` if it is fresh.
 2. Say "automated live readiness" when quoting the dashboard score.
-3. Separately estimate "customer product progress" from the latest live UX
+3. Separately estimate "customer UX readiness" from the latest live UX
    findings.
-4. Separately report "overall SaaS launch progress" when the question is about
+4. Separately report "recommendation engine beta confidence" when the question
+   is specifically about Food V2/ranking/OpenAI QA strength.
+5. Separately report "overall SaaS launch progress" when the question is about
    the whole project, business launch, or public SaaS readiness.
-5. Explain the biggest blocker to the next point.
-6. Avoid raising the percentage just because a PR merged; raise the automated
+6. Explain the biggest blocker to the next point.
+7. Avoid raising the percentage just because a PR merged; raise the automated
    score from fresh evidence and the customer product estimate from real UX
    improvements.
 

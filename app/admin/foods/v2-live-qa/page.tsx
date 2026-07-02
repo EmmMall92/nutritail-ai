@@ -22,7 +22,8 @@ type ReadinessSummary = {
 };
 
 type CustomerProductProgressSummary = {
-  estimate: string;
+  customerUxEstimate: string;
+  recommendationEngineEstimate: string;
   overallSaasEstimate: string;
   latestMovement: string;
   scoreReadout: string[];
@@ -129,12 +130,13 @@ function readLiveReadinessSummary(): ReadinessSummary {
 
 function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
   const fallback = {
-    estimate: "unknown",
+    customerUxEstimate: "unknown",
+    recommendationEngineEstimate: "unknown",
     overallSaasEstimate: "unknown",
     latestMovement: "No product progress rubric found.",
     scoreReadout: [
-      "78-80% was the old foundation stage, not the current customer progress score.",
-      "Customer product progress and overall SaaS launch progress are tracked separately.",
+      "Customer UX readiness, recommendation engine confidence, and overall SaaS launch progress are tracked separately.",
+      "A high automated score does not mean the customer-facing journey is already polished.",
       "The next visible movement needs fresh customer journey proof, not just another merge.",
     ],
     whyItFeelsStuck: [
@@ -154,9 +156,13 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       "utf8",
     );
 
-    const estimate =
-      doc.match(/Customer product progress is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
-      fallback.estimate;
+    const customerUxEstimate =
+      doc.match(/Customer UX readiness is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
+      fallback.customerUxEstimate;
+    const recommendationEngineEstimate =
+      doc
+        .match(/Recommendation engine beta confidence is currently \*\*([^*]+)\*\*/i)?.[1]
+        ?.trim() ?? fallback.recommendationEngineEstimate;
     const overallSaasEstimate =
       doc.match(/Overall SaaS launch progress is currently \*\*([^*]+)\*\*/i)?.[1]?.trim() ??
       fallback.overallSaasEstimate;
@@ -194,12 +200,13 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         .slice(0, 5) || fallback.overallLaunchBlockers;
 
     return {
-      estimate,
+      customerUxEstimate,
+      recommendationEngineEstimate,
       overallSaasEstimate,
       latestMovement,
       scoreReadout: [
-        "78-80% was the old foundation stage, not the current customer progress score.",
-        `Customer nutrition experience: ${estimate}.`,
+        `Customer UX readiness: ${customerUxEstimate}.`,
+        `Recommendation engine beta confidence: ${recommendationEngineEstimate}.`,
         `Overall SaaS launch progress: ${overallSaasEstimate}.`,
       ],
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
@@ -444,15 +451,29 @@ export default function FoodV2LiveQaPage() {
             <p className="text-sm font-semibold uppercase tracking-wide">
               Customer product progress
             </p>
-            <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div className="mt-2 grid gap-3 lg:grid-cols-3">
               <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
-                  Customer nutrition app
+                  Customer UX readiness
                 </p>
-                <p className="mt-1 text-2xl font-bold">{productProgress.estimate}</p>
+                <p className="mt-1 text-2xl font-bold">
+                  {productProgress.customerUxEstimate}
+                </p>
                 <p className="mt-1 text-sm text-blue-900">
-                  Chatbot, saved pets, reports, account UX, Food V2, and customer
-                  nutrition flow.
+                  How complete the live customer journey feels: chatbot, food
+                  choice, grams/day, save, report, and return progress.
+                </p>
+              </div>
+              <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-950">
+                <p className="text-xs font-semibold uppercase tracking-wide text-green-700">
+                  Recommendation engine
+                </p>
+                <p className="mt-1 text-2xl font-bold">
+                  {productProgress.recommendationEngineEstimate}
+                </p>
+                <p className="mt-1 text-sm">
+                  Food V2 retrieval, deterministic ranking, OpenAI fact
+                  extraction, rules, and dog/cat QA confidence.
                 </p>
               </div>
               <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
@@ -469,10 +490,12 @@ export default function FoodV2LiveQaPage() {
               </div>
             </div>
             <p className="mt-2 max-w-3xl text-sm">
-              These are separate from automated live readiness. Customer progress
-              moves when a real pet owner flow becomes clearer, safer, or more
-              accurate. Overall SaaS launch progress moves only when the wider
-              business and production readiness gaps close too.
+              These are separate from automated live readiness. Customer UX moves
+              when a real pet owner flow becomes clearer, safer, or more
+              beautiful. Recommendation engine confidence moves when Food V2,
+              ranking, OpenAI extraction, and QA evidence improve. Overall SaaS
+              launch progress moves only when the wider business and production
+              readiness gaps close too.
             </p>
 
             <div
