@@ -12,6 +12,7 @@ function read(path: string) {
 
 const aboutPage = read("app/about/page.tsx");
 const howItWorksPage = read("app/how-it-works/page.tsx");
+const privacyPage = read("app/privacy/page.tsx");
 const termsPage = read("app/terms/page.tsx");
 const packageJson = read("package.json");
 
@@ -74,6 +75,17 @@ const betaTermsMarkers = [
   "πληρωμένα πλάνα",
 ];
 
+const privacyTrustMarkers = [
+  "AI και πάροχοι υπηρεσιών",
+  "Το AI χρησιμοποιείται για να καταλαβαίνει φυσικά μηνύματα",
+  "όχι για να εφευρίσκει τροφές, θερμίδες ή ιατρικές οδηγίες",
+  "Οι προτάσεις τροφών, οι αποκλεισμοί αλλεργιών και τα όρια ασφάλειας παραμένουν στον κώδικα και στη βάση NutriTail.",
+  "Διατήρηση, διόρθωση και διαγραφή",
+  "Κρατάμε στοιχεία λογαριασμού, κατοικιδίων και αναλύσεων όσο χρειάζονται",
+  "διόρθωση, εξαγωγή ή διαγραφή",
+  "τι μπορεί να διαγραφεί άμεσα",
+];
+
 for (const marker of aboutMarkers) {
   assert(
     aboutPage.includes(marker),
@@ -106,6 +118,13 @@ for (const marker of betaTermsMarkers) {
   assert(
     termsPage.includes(marker),
     `Terms page must include beta access trust marker: ${marker}`
+  );
+}
+
+for (const marker of privacyTrustMarkers) {
+  assert(
+    privacyPage.includes(marker),
+    `Privacy page must include public trust privacy marker: ${marker}`
   );
 }
 
