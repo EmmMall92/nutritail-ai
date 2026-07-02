@@ -137,6 +137,17 @@ the old 78-80% foundation stage:
   proof and real beta-user feedback. It does strengthen confidence that the
   recommendation engine is no longer sitting at the 78-80% foundation level.
 
+Fresh OpenAI-enabled recommendation evidence also now exists for the first part
+of that dog bank:
+
+- Dog live QA cases **101-110** pass with **10/10** checked and **0 review** with
+  `NUTRITAIL_QA_OPENAI=1`.
+- This proves the hybrid path for working, high-activity, sensitive, and
+  large/giant puppy dog cases: OpenAI extracts the pet facts, then NutriTail
+  keeps Food V2 retrieval and ranking deterministic.
+- This still does not close the full OpenAI proof blocker, because the
+  authenticated live chatbot extract route still needs a QA account cookie run.
+
 The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
 
