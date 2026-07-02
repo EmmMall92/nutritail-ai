@@ -151,7 +151,7 @@ function normalizeText(value: string) {
 }
 
 function selectedCaseIds() {
-  const raw = process.env.NUTRITAIL_QA_CASE_IDS?.trim();
+  const raw = cliOption("ids") ?? cliOption("cases") ?? process.env.NUTRITAIL_QA_CASE_IDS?.trim();
   if (!raw) return null;
 
   return new Set(
@@ -160,6 +160,34 @@ function selectedCaseIds() {
       .map((item) => item.trim())
       .filter(Boolean)
       .map((item) => (item.startsWith("cat-") ? item : `cat-${item.padStart(3, "0")}`))
+  );
+}
+
+function cliOption(name: string) {
+  const prefix = `--${name}=`;
+  const direct = process.argv.find((arg) => arg.startsWith(prefix));
+  if (direct) return direct.slice(prefix.length).trim();
+
+  const index = process.argv.indexOf(`--${name}`);
+  if (index >= 0) return process.argv[index + 1]?.trim();
+
+  return undefined;
+}
+
+function selectedCaseIdsFromRange() {
+  const from = Number(cliOption("from"));
+  const to = Number(cliOption("to"));
+  if (!Number.isInteger(from) || !Number.isInteger(to) || from <= 0 || to <= 0) {
+    return null;
+  }
+
+  const min = Math.min(from, to);
+  const max = Math.max(from, to);
+  return new Set(
+    Array.from({ length: max - min + 1 }, (_, index) => {
+      const id = String(min + index).padStart(3, "0");
+      return `cat-${id}`;
+    })
   );
 }
 
@@ -648,8 +676,11 @@ async function main() {
   const fixturePath = process.env.NUTRITAIL_QA_CAT_FIXTURE_PATH || DEFAULT_FIXTURE_PATH;
   const absoluteFixturePath = path.join(process.cwd(), fixturePath);
   const fixture = JSON.parse(await readFile(absoluteFixturePath, "utf8")) as { cases: CatFixtureCase[] };
-  const selected = selectedCaseIds();
-  const limit = Number.parseInt(process.env.NUTRITAIL_QA_CASE_LIMIT ?? "", 10);
+  const selected = selectedCaseIdsFromRange() ?? selectedCaseIds();
+  const limit = Number.parseInt(
+    cliOption("limit") ?? process.env.NUTRITAIL_QA_CASE_LIMIT ?? "",
+    10
+  );
   const cases = fixture.cases
     .map(repairCaseEncoding)
     .filter((testCase) => !selected || selected.has(testCase.id))
@@ -668,7 +699,7 @@ async function main() {
     for (const warning of result.warnings) console.log(`  - ${warning}`);
   }
 
-  const reportPath = process.env.NUTRITAIL_QA_REPORT_PATH || DEFAULT_REPORT_PATH;
+  const reportPath = cliOption("report") || process.env.NUTRITAIL_QA_REPORT_PATH || DEFAULT_REPORT_PATH;
   await mkdir(path.dirname(reportPath), { recursive: true });
   await writeFile(reportPath, reportMarkdown(results, fixturePath, cases), "utf8");
 
