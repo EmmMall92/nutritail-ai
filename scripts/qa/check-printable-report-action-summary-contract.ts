@@ -52,6 +52,7 @@ const requiredReportMarkers = [
   'data-testid="report-first-week-followup-plan"',
   'data-testid="report-at-a-glance-summary"',
   'data-testid="report-at-a-glance-transition"',
+  'data-testid="report-plan-decision-guide"',
   'data-testid="report-completion-status"',
   "hasCompleteFoodPlan",
   "Πλήρες πλάνο με τροφή και ποσότητα",
@@ -147,6 +148,13 @@ const requiredReportMarkers = [
   "Πρώτη εβδομάδα εφαρμογής",
   "Κράτα το πλάνο σταθερό πριν κρίνουμε αν πέτυχε",
   "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν ακόμη του αρέσει η τροφή.",
+  "Αν κάτι αλλάξει",
+  "Τι κάνουμε μετά την αναφορά",
+  "Κράτα το ίδιο κατοικίδιο και το ίδιο ιστορικό",
+  "Πάει καλά",
+  "Δεν βλέπω αλλαγή",
+  "Δεν του ταιριάζει η τροφή",
+  "Ζήτησε άλλη γεύση ή εταιρεία χωρίς να ξεκινήσεις από την αρχή",
 ];
 
 const requiredDigitalActionMarkers = [

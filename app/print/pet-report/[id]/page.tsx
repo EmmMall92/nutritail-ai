@@ -1533,6 +1533,57 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        <div
+          className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm print:border-gray-300 print:shadow-none"
+          data-testid="report-plan-decision-guide"
+        >
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-600">
+                Αν κάτι αλλάξει
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-slate-950">
+                Τι κάνουμε μετά την αναφορά
+              </h2>
+            </div>
+            <p className="max-w-3xl text-sm leading-6 text-slate-700">
+              Κράτα το ίδιο κατοικίδιο και το ίδιο ιστορικό. Αν το πλάνο πάει καλά,
+              συνεχίζεις. Αν δεν βλέπεις αλλαγή ή δεν του ταιριάζει η τροφή, γυρνάς
+              για στοχευμένο επανέλεγχο.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <Link
+              href={`/print/pet-timeline/${pet.id}`}
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-950 transition hover:bg-emerald-100 print:border-gray-300 print:bg-white"
+            >
+              <span className="font-bold">Πάει καλά</span>
+              <span className="mt-1 block leading-5">
+                Κράτα την ποσότητα σταθερή και δες το timeline στον επόμενο έλεγχο.
+              </span>
+            </Link>
+            <Link
+              href={`/account/chatbot?petId=${pet.id}&mode=progress`}
+              className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950 transition hover:bg-blue-100 print:border-gray-300 print:bg-white"
+            >
+              <span className="font-bold">Δεν βλέπω αλλαγή</span>
+              <span className="mt-1 block leading-5">
+                Φέρε νέο βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη και κόπρανα.
+              </span>
+            </Link>
+            <Link
+              href={`/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour`}
+              className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 transition hover:bg-amber-100 print:border-gray-300 print:bg-white"
+            >
+              <span className="font-bold">Δεν του ταιριάζει η τροφή</span>
+              <span className="mt-1 block leading-5">
+                Ζήτησε άλλη γεύση ή εταιρεία χωρίς να ξεκινήσεις από την αρχή.
+              </span>
+            </Link>
+          </div>
+        </div>
+
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <ReportCard label="Κατοικίδιο" value={pet.name} detail={pet.species} />
           <ReportCard label="Βάρος" value={`${pet.weight} kg`} />
