@@ -198,7 +198,7 @@ assert(
   accountPage.includes("Συνέχισε από εκεί που έμεινες") &&
     accountPage.includes("Η τελευταία εικόνα του λογαριασμού σου") &&
     accountPage.includes("Τελευταία ανάλυση") &&
-    accountPage.includes("Τελευταίο progress") &&
+    accountPage.includes("Τελευταίος έλεγχος") &&
     accountPage.includes("Επόμενο καλύτερο βήμα"),
   "Latest activity strip must show customer-facing continuation copy."
 );
@@ -221,6 +221,9 @@ const customerVisibleEnglishActionCopy = [
   "Progress kit",
   "progress check",
   "progress checks",
+  "Τελευταίο progress",
+  "επόμενο check",
+  "Μέχρι το επόμενο check",
   "1. Δες το report",
   "Δες timeline",
   "Το timeline δείχνει",
@@ -251,7 +254,7 @@ assert(
     accountPage.includes("function getAccountPlanWatchlist") &&
     accountPage.includes("accountPlanWatchlist.map") &&
     accountPage.includes('data-testid="account-plan-watchlist"') &&
-    accountPage.includes("Μέχρι το επόμενο check") &&
+    accountPage.includes("Μέχρι τον επόμενο έλεγχο") &&
     accountPage.includes("Τι αξίζει να παρακολουθείς") &&
     accountPage.includes("Βάρος") &&
     accountPage.includes("Ποσότητα") &&
