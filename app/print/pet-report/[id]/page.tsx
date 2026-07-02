@@ -418,6 +418,48 @@ function getReportCustomerTakeaway(
   };
 }
 
+function getReportExecutiveSummary(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Στόχος",
+      value: analysis ? getGoalLabel(analysis.weight_goal) : "Χρειάζεται ανάλυση",
+      detail: `${pet.name}: ${pet.weight} kg, ${pet.age} ετών${
+        pet.neutered ? ", στειρωμένο" : ""
+      }.`,
+    },
+    {
+      label: "Θερμίδες",
+      value: analysis ? `${analysis.mer} kcal/ημέρα` : "Δεν υπολογίστηκαν",
+      detail: treatAllowance
+        ? `Κράτα περίπου ${treatAllowance.mainFood} kcal για κύρια τροφή και έως ${treatAllowance.treats} kcal για λιχουδιές.`
+        : "Ο ημερήσιος στόχος θα φανεί μετά την ανάλυση.",
+    },
+    {
+      label: "Τροφή",
+      value: analysis?.matched_food_name ?? "Δεν έχει επιλεγεί τροφή",
+      detail: analysis?.matched_food_name
+        ? "Αυτή είναι η τροφή που κρατήθηκε ως βάση του πλάνου."
+        : "Διάλεξε τροφή από το chatbot για πλήρες report με ποσότητα.",
+    },
+    {
+      label: "Ποσότητα",
+      value: analysis?.feeding_grams_per_day
+        ? `${analysis.feeding_grams_per_day}g/ημέρα`
+        : "Θέλει kcal τροφής",
+      detail:
+        analysis?.feeding_grams_per_day && mealSplit
+          ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+          : "Η ποσότητα σε γραμμάρια βγαίνει όταν ξέρουμε τις θερμίδες της τροφής.",
+    },
+  ];
+}
+
 function getReportActionSummary(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -1002,6 +1044,11 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const reportExecutiveSummary = getReportExecutiveSummary(
+    pet,
+    latestAnalysis,
+    mealSplit
+  );
   const hasCompleteFoodPlan = Boolean(
     latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
   );
@@ -1059,6 +1106,43 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-gray-900 bg-gray-950 p-6 text-white shadow-sm print:border-gray-300 print:bg-white print:text-black print:shadow-none"
+          data-testid="report-executive-summary"
+        >
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-300 print:text-gray-600">
+                Σύνοψη πλάνου
+              </p>
+              <h2 className="mt-1 text-2xl font-bold">
+                Τι κρατάμε για τον/την {pet.name}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-gray-200 print:text-gray-700">
+              Η γρήγορη εικόνα για χρήση στο σπίτι: στόχος, θερμίδες,
+              τροφή, ποσότητα και επόμενο σημείο ελέγχου.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportExecutiveSummary.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-white/10 bg-white/10 p-4 print:border-gray-200 print:bg-white"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-200 print:text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-gray-200 print:text-gray-600">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
