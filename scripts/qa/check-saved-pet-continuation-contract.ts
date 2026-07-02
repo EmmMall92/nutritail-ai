@@ -44,6 +44,7 @@ const checks: SourceCheck[] = [
       'mode === "recommendation"',
       'reason === "flavour"',
       "/print/pet-timeline/",
+      "/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour",
       "parseProgressUpdate(text)",
       "buildProgressDecision",
     ],
