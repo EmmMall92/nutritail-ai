@@ -28,7 +28,7 @@ const pages = [
     markers: [
       "Μετά την εγγραφή ξεκινάς αμέσως πρακτικά.",
       "να κρατήσεις",
-      "report για μελλοντικό έλεγχο προόδου",
+      "αναφορά για μελλοντικό έλεγχο προόδου",
       'data-testid="auth-next-step-card"',
       'data-testid="auth-register-confirmation-next-steps"',
       "Συνέχεια στη σύνδεση",
@@ -41,9 +41,9 @@ const pages = [
     path: "app/forgot-password/page.tsx",
     markers: [
       "Δεν χάνεις τα αποθηκευμένα στοιχεία σου.",
-      "pets",
-      "reports",
-      "progress checks",
+      "κατοικίδια",
+      "τις αναφορές",
+      "τους ελέγχους προόδου",
       'data-testid="auth-next-step-card"',
       'data-testid="auth-recovery-help-card"',
       'data-testid="auth-forgot-email-sent-next-steps"',
@@ -55,13 +55,13 @@ const pages = [
     markers: [
       "Μετά την αλλαγή θα συνδεθείς ξανά με ασφάλεια.",
       "αποθηκευμένα",
-      "reports",
+      "τις αναφορές",
       "νέα ανάλυση",
       'data-testid="auth-next-step-card"',
       'data-testid="auth-reset-help-card"',
       'data-testid="auth-reset-session-warning"',
       'data-testid="auth-reset-success-next-steps"',
-      "Ζήτησε νέο link",
+      "Ζήτησε νέο σύνδεσμο",
       "Σύνδεση στον λογαριασμό",
       "showPassword",
       "showConfirmPassword",
@@ -93,7 +93,7 @@ for (const marker of [
   "Έλεγξε email και κωδικό",
   "Υπάρχει ήδη λογαριασμός",
   "Έγιναν πολλές προσπάθειες",
-  "Το link δεν είναι πλέον ενεργό",
+  "Ο σύνδεσμος δεν είναι πλέον ενεργός",
 ]) {
   assert(
     authMessages.includes(marker),

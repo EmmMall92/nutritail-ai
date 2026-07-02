@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
       }
 
       setSuccess(
-        "Αν υπάρχει λογαριασμός με αυτό το email, έχει σταλεί link επαναφοράς κωδικού."
+        "Αν υπάρχει λογαριασμός με αυτό το email, έχει σταλεί σύνδεσμος επαναφοράς κωδικού."
       );
     } catch (err) {
       console.error(err);
@@ -52,13 +52,13 @@ export default function ForgotPasswordPage() {
     <AuthShell
       eyebrow="Βοήθεια σύνδεσης"
       title="Επαναφορά κωδικού"
-      description="Γράψε το email του λογαριασμού σου και θα στείλουμε ασφαλές link για να ορίσεις νέο κωδικό."
+      description="Γράψε το email του λογαριασμού σου και θα στείλουμε ασφαλή σύνδεσμο για να ορίσεις νέο κωδικό."
     >
       <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900">
         <p className="font-semibold text-blue-950">Τι να περιμένεις</p>
         <ul className="mt-2 space-y-1">
-          <li>- Αν υπάρχει λογαριασμός, θα λάβεις link επαναφοράς στο email.</li>
-          <li>- Το link ανοίγει τη σελίδα νέου κωδικού στο NutriTail.</li>
+          <li>- Αν υπάρχει λογαριασμός, θα λάβεις σύνδεσμο επαναφοράς στο email.</li>
+          <li>- Ο σύνδεσμος ανοίγει τη σελίδα νέου κωδικού στο NutriTail.</li>
           <li>- Αν δεν το δεις, έλεγξε και spam/promotions.</li>
         </ul>
       </div>
@@ -69,8 +69,8 @@ export default function ForgotPasswordPage() {
       >
         <p className="font-semibold text-gray-950">Δεν χάνεις τα αποθηκευμένα στοιχεία σου.</p>
         <p className="mt-1">
-          Μετά την αλλαγή κωδικού θα συνδεθείς ξανά και θα βρεις τα pets,
-          reports και progress checks στον λογαριασμό σου.
+          Μετά την αλλαγή κωδικού θα συνδεθείς ξανά και θα βρεις τα κατοικίδια,
+          τις αναφορές και τους ελέγχους προόδου στον λογαριασμό σου.
         </p>
       </div>
 
@@ -83,8 +83,8 @@ export default function ForgotPasswordPage() {
         </p>
         <ul className="mt-2 space-y-1">
           <li>- Έλεγξε spam, promotions και αν έγραψες σωστά το email.</li>
-          <li>- Ζήτησε νέο link μόνο αφού περάσουν λίγα λεπτά.</li>
-          <li>- Άνοιξε το link από την ίδια συσκευή και browser όπου θα συνεχίσεις.</li>
+          <li>- Ζήτησε νέο σύνδεσμο μόνο αφού περάσουν λίγα λεπτά.</li>
+          <li>- Άνοιξε τον σύνδεσμο από την ίδια συσκευή και browser όπου θα συνεχίσεις.</li>
         </ul>
       </div>
 
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
           >
             <p>{success}</p>
             <p className="mt-1 text-xs text-green-700">
-              Άνοιξε το link από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
+              Άνοιξε τον σύνδεσμο από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
               ζητήσεις νέο.
             </p>
             <Link
@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
           disabled={isLoading}
           className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isLoading ? "Στέλνουμε το link..." : "Στείλε link επαναφοράς"}
+          {isLoading ? "Στέλνουμε τον σύνδεσμο..." : "Στείλε σύνδεσμο επαναφοράς"}
         </button>
 
         <p className="text-center text-sm text-gray-600">

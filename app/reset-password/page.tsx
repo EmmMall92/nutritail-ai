@@ -94,14 +94,14 @@ export default function ResetPasswordPage() {
             Άνοιξε αυτή τη σελίδα από το email επαναφοράς.
           </p>
           <p className="mt-1">
-            Αν το link έχει λήξει ή άνοιξε χωρίς session, ζήτησε νέο link
-            επαναφοράς και άνοιξέ το από την ίδια συσκευή.
+            Αν ο σύνδεσμος έχει λήξει ή άνοιξε χωρίς ενεργή συνεδρία, ζήτησε νέο
+            σύνδεσμο επαναφοράς και άνοιξέ τον από την ίδια συσκευή.
           </p>
           <Link
             href="/forgot-password"
             className="mt-3 inline-flex rounded-lg bg-yellow-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-yellow-950"
           >
-            Ζήτησε νέο link
+            Ζήτησε νέο σύνδεσμο
           </Link>
         </div>
       )}
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
         <p className="font-semibold text-blue-950">Μετά την αλλαγή θα συνδεθείς ξανά με ασφάλεια.</p>
         <p className="mt-1">
           Θα σε μεταφέρουμε στη σύνδεση, ώστε να συνεχίσεις με τα αποθηκευμένα
-          κατοικίδια, reports και νέα ανάλυση αν χρειάζεται.
+          κατοικίδια, τις αναφορές και νέα ανάλυση αν χρειάζεται.
         </p>
       </div>
 
@@ -122,11 +122,11 @@ export default function ResetPasswordPage() {
         data-testid="auth-reset-help-card"
       >
         <p className="font-semibold text-amber-950">
-          Αν το link δεν λειτουργεί
+          Αν ο σύνδεσμος δεν λειτουργεί
         </p>
         <ul className="mt-2 space-y-1">
-          <li>- Μπορεί να έχει λήξει ή να άνοιξε χωρίς ενεργό recovery session.</li>
-          <li>- Ζήτησε νέο link επαναφοράς και άνοιξέ το από την ίδια συσκευή.</li>
+          <li>- Μπορεί να έχει λήξει ή να άνοιξε χωρίς ενεργή συνεδρία επαναφοράς.</li>
+          <li>- Ζήτησε νέο σύνδεσμο επαναφοράς και άνοιξέ τον από την ίδια συσκευή.</li>
           <li>- Μετά την αλλαγή θα επιστρέψεις στη σύνδεση για να μπεις καθαρά.</li>
         </ul>
       </div>
@@ -219,12 +219,12 @@ export default function ResetPasswordPage() {
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          Δεν λειτουργεί το link;{" "}
+          Δεν λειτουργεί ο σύνδεσμος;{" "}
           <Link
             href="/forgot-password"
             className="font-semibold text-black underline decoration-gray-300 underline-offset-4"
           >
-            Ζήτησε νέο link επαναφοράς
+            Ζήτησε νέο σύνδεσμο επαναφοράς
           </Link>
         </p>
       </form>

@@ -25,7 +25,7 @@ const cases = [
   {
     flow: "reset",
     error: new Error("invalid token"),
-    expected: "Το link δεν είναι πλέον ενεργό",
+    expected: "Ο σύνδεσμος δεν είναι πλέον ενεργός",
   },
   {
     flow: "login",

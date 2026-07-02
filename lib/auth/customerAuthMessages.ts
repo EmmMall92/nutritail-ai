@@ -43,7 +43,7 @@ export function getCustomerAuthErrorMessage(
     normalized.includes("invalid token") ||
     normalized.includes("session")
   ) {
-    return "Το link δεν είναι πλέον ενεργό. Ζήτησε νέο link επαναφοράς και άνοιξέ το από την ίδια συσκευή.";
+    return "Ο σύνδεσμος δεν είναι πλέον ενεργός. Ζήτησε νέο σύνδεσμο επαναφοράς και άνοιξέ τον από την ίδια συσκευή.";
   }
 
   if (
