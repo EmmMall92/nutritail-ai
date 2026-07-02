@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -12,6 +13,15 @@ export const metadata: Metadata = {
 };
 
 const sections = [
+  {
+    title: "Beta πρόσβαση και πλάνα",
+    items: [
+      "Η beta πρόσβαση δεν ενεργοποιεί πληρωμή, δεν ζητά στοιχεία κάρτας και δεν ξεκινά συνδρομή.",
+      `Στην τρέχουσα beta περίοδο το πλάνο είναι ${betaAccessPlanConfig.accessPlan}, με ${betaAccessPlanConfig.accountLimit} λογαριασμό, έως ${betaAccessPlanConfig.petLimit} κατοικίδια και έως ${betaAccessPlanConfig.monthlyAnalysisLimit} αναλύσεις τον μήνα.`,
+      "Τα beta όρια είναι soft limits για δοκιμή προϊόντος, ποιότητα υποστήριξης και σταδιακό άνοιγμα σε περισσότερους χρήστες.",
+      "Αν αργότερα ανοίξουν paid plans ή συνδρομές, θα παρουσιαστούν ξεκάθαρα πριν ζητηθεί πληρωμή ή ενεργοποιηθεί οποιοδήποτε εμπορικό πλάνο.",
+    ],
+  },
   {
     title: "Μόνο ενημερωτική καθοδήγηση",
     items: [

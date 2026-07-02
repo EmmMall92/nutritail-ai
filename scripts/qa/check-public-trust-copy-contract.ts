@@ -12,6 +12,7 @@ function read(path: string) {
 
 const aboutPage = read("app/about/page.tsx");
 const howItWorksPage = read("app/how-it-works/page.tsx");
+const termsPage = read("app/terms/page.tsx");
 const packageJson = read("package.json");
 
 const aboutMarkers = [
@@ -60,6 +61,18 @@ const sourceQualityMarkers = [
   "Ελλιπή δεδομένα",
 ];
 
+const betaTermsMarkers = [
+  'import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";',
+  "Beta πρόσβαση και πλάνα",
+  "δεν ενεργοποιεί πληρωμή",
+  "δεν ζητά στοιχεία κάρτας",
+  "δεν ξεκινά συνδρομή",
+  "betaAccessPlanConfig.accessPlan",
+  "betaAccessPlanConfig.petLimit",
+  "betaAccessPlanConfig.monthlyAnalysisLimit",
+  "paid plans",
+];
+
 for (const marker of aboutMarkers) {
   assert(
     aboutPage.includes(marker),
@@ -85,6 +98,13 @@ for (const marker of sourceQualityMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include source quality trust marker: ${marker}`
+  );
+}
+
+for (const marker of betaTermsMarkers) {
+  assert(
+    termsPage.includes(marker),
+    `Terms page must include beta access trust marker: ${marker}`
   );
 }
 
