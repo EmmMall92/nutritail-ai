@@ -18,7 +18,7 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **89%**.
+Overall SaaS launch progress is currently **90%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -28,7 +28,23 @@ post-deploy proof, and operational support. Use this number when the question is
 progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
 
-The latest launch-wide move from **88%** to **89%** is justified by completing
+The latest launch-wide move from **89%** to **90%** is justified by completing
+fresh dog live QA coverage across the full 201-600 scenario bank:
+
+- Dog live QA cases **201-600** now pass with **400/400** checked and
+  **0 review** after the recommendation engine handled sterilised, active,
+  allergy, senior, puppy, large-breed puppy, rescue, budget, premium,
+  preference, sensitive digestion, and growth scenarios in live Food V2
+  recommendation checks.
+- The previously reviewed dog case **534** now passes in the chunk that
+  contains it, so the large-breed puppy allergy/growth path is protected by the
+  live runner instead of relying on manual confidence.
+- This raises launch confidence because dog-side recommendation QA now has
+  broad fresh evidence beyond the earlier 93-200 range, but it still does not
+  close paid checkout, billing enforcement, final legal review, production
+  monitoring, authenticated OpenAI proof, or real beta-user operating feedback.
+
+The previous launch-wide move from **88%** to **89%** was justified by completing
 fresh cat live QA coverage across the full 001-500 scenario bank:
 
 - Cat live QA cases **201-500** now pass with **300/300** checked and
