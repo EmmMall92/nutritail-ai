@@ -7,6 +7,7 @@ import {
   betaAccessPlanConfig,
   betaPlanHighlights,
 } from "@/lib/beta/accessPlan";
+import { getBetaLimitStatus } from "@/lib/beta/limitPolicy";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
@@ -113,12 +114,16 @@ type AccountPlanWatchItem = {
 type BetaUsageSnapshot = {
   petsUsed: number;
   petsLimit: number;
+  petsRemaining: number;
   monthlyAnalysesUsed: number;
   monthlyAnalysesLimit: number;
+  monthlyAnalysesRemaining: number;
   petsPercent: number;
   analysesPercent: number;
   statusLabel: string;
   statusDetail: string;
+  customerNextStep: string;
+  enforcementMode: "soft_warn_only";
 };
 
 const ACCOUNT_LOAD_ERROR_MESSAGE =
@@ -339,27 +344,24 @@ function getBetaUsageSnapshot(pets: AccountPet[]): BetaUsageSnapshot {
       ).length,
     0
   );
-  const petsLimit = betaAccessPlanConfig.petLimit;
-  const monthlyAnalysesLimit = betaAccessPlanConfig.monthlyAnalysisLimit;
-  const petsPercent = Math.min(100, Math.round((pets.length / petsLimit) * 100));
-  const analysesPercent = Math.min(
-    100,
-    Math.round((monthlyAnalysesUsed / monthlyAnalysesLimit) * 100)
-  );
-  const isNearLimit =
-    petsPercent >= 80 || analysesPercent >= 80 || pets.length >= petsLimit;
+  const limitStatus = getBetaLimitStatus({
+    petsUsed: pets.length,
+    monthlyAnalysesUsed,
+  });
 
   return {
-    petsUsed: pets.length,
-    petsLimit,
-    monthlyAnalysesUsed,
-    monthlyAnalysesLimit,
-    petsPercent,
-    analysesPercent,
-    statusLabel: isNearLimit ? "Κοντά στο beta όριο" : "Άνετη beta χρήση",
-    statusDetail: isNearLimit
-      ? "Αν χρειαστείς περισσότερα κατοικίδια ή αναλύσεις, στείλε μας feedback για να ανοίξουμε σταδιακά τα όρια."
-      : "Έχεις χώρο για νέα ανάλυση, progress check ή αλλαγή τροφής μέσα στον μήνα.",
+    petsUsed: limitStatus.pets.used,
+    petsLimit: limitStatus.pets.limit,
+    petsRemaining: limitStatus.pets.remaining,
+    monthlyAnalysesUsed: limitStatus.monthlyAnalyses.used,
+    monthlyAnalysesLimit: limitStatus.monthlyAnalyses.limit,
+    monthlyAnalysesRemaining: limitStatus.monthlyAnalyses.remaining,
+    petsPercent: limitStatus.pets.percent,
+    analysesPercent: limitStatus.monthlyAnalyses.percent,
+    statusLabel: limitStatus.statusLabel,
+    statusDetail: limitStatus.statusDetail,
+    customerNextStep: limitStatus.customerNextStep,
+    enforcementMode: limitStatus.enforcementMode,
   };
 }
 
@@ -1484,6 +1486,9 @@ export default function AccountPage() {
                   style={{ width: `${betaUsage.petsPercent}%` }}
                 />
               </div>
+              <p className="mt-2 text-xs leading-5 text-amber-900">
+                Απομένουν {betaUsage.petsRemaining} κατοικίδια στο beta πλάνο.
+              </p>
             </div>
 
             <div className="rounded-xl bg-amber-50 p-4">
@@ -1502,8 +1507,17 @@ export default function AccountPage() {
                   style={{ width: `${betaUsage.analysesPercent}%` }}
                 />
               </div>
+              <p className="mt-2 text-xs leading-5 text-amber-900">
+                Απομένουν {betaUsage.monthlyAnalysesRemaining} αναλύσεις για αυτόν τον μήνα.
+              </p>
             </div>
           </div>
+
+          <p className="mt-4 rounded-xl border border-amber-100 bg-amber-50 p-3 text-xs leading-5 text-amber-950">
+            Τα beta όρια είναι προσωρινά soft limits: σήμερα βοηθούν να κρατάμε
+            καθαρή ποιότητα και αύριο μπορούν να γίνουν κανονικό πλάνο πρόσβασης.
+            {` ${betaUsage.customerNextStep}`}
+          </p>
         </div>
       </div>
 
