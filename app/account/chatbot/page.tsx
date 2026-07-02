@@ -4517,6 +4517,9 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
   }, [botText, chatLanguage, isLoadingPets, savedPets]);
 
   function startNewPetAnalysis() {
+    const pendingCompareLabel =
+      pendingCompareQueries.length >= 2 ? pendingCompareQueries.join(" vs ") : null;
+
     setSelectedPetId(null);
     setFollowUpPet(null);
     setFollowUpMode(null);
@@ -4528,8 +4531,26 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
 
     addMessages(
       createMessage("user", botText("Νέο κατοικίδιο", "Start with a new pet")),
-      createMessage("bot", botText("Τέλεια. Έχεις σκύλο ή γάτα;", "Great. Do you have a dog or a cat?"))
+      createMessage(
+        "bot",
+        botText(
+          "\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1. \u0388\u03c7\u03b5\u03b9\u03c2 \u03c3\u03ba\u03cd\u03bb\u03bf \u03ae \u03b3\u03ac\u03c4\u03b1;",
+          "Great. Do you have a dog or a cat?"
+        )
+      )
     );
+
+    if (pendingCompareLabel) {
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            `\u03a4\u03ad\u03bb\u03b5\u03b9\u03b1. \u039a\u03c1\u03b1\u03c4\u03ac\u03c9 \u03c4\u03b7 \u03c3\u03cd\u03b3\u03ba\u03c1\u03b9\u03c3\u03b7 ${pendingCompareLabel} \u03ba\u03b1\u03b9 \u03b8\u03b1 \u03c4\u03b7\u03bd \u03c4\u03c1\u03ad\u03be\u03c9 \u03bc\u03cc\u03bb\u03b9\u03c2 \u03bc\u03b1\u03b6\u03ad\u03c8\u03c9 \u03c4\u03b1 \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1 \u03c4\u03bf\u03c5 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03b9\u03b4\u03af\u03bf\u03c5.`,
+            `I will keep the ${pendingCompareLabel} comparison ready and run it after I collect the pet details.`
+          )
+        )
+      );
+    }
   }
 
   async function runAnalysis(nextPet: PetIntake) {

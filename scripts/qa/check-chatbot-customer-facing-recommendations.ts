@@ -956,6 +956,24 @@ if (missingGroupedChoiceMarkers.length > 0) {
   process.exit(1);
 }
 
+const pendingCompareNewPetMarkers = [
+  "pendingCompareLabel",
+  "pendingCompareQueries.length >= 2",
+  "I will keep the ${pendingCompareLabel} comparison ready",
+  "run it after I collect the pet details",
+];
+const missingPendingCompareNewPetMarkers = pendingCompareNewPetMarkers.filter(
+  (marker) => !chatbotPage.includes(marker)
+);
+
+if (missingPendingCompareNewPetMarkers.length > 0) {
+  console.error(
+    "Chatbot must preserve a pending compare request when the customer starts a new pet intake:"
+  );
+  console.error(missingPendingCompareNewPetMarkers.join(", "));
+  process.exit(1);
+}
+
 const chooseRecommendedFoodStart = chatbotPage.indexOf("function chooseRecommendedFood");
 const saveToMyAccountStart = chatbotPage.indexOf("async function saveToMyAccount");
 const chooseRecommendedFoodSource =
