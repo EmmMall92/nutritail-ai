@@ -1773,6 +1773,68 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-first-week-followup-plan"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
+                Πρώτη εβδομάδα εφαρμογής
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-violet-950">
+                Κράτα το πλάνο σταθερό πριν κρίνουμε αν πέτυχε
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-violet-900">
+              Για να έχει νόημα το επόμενο progress check, μην αλλάζεις πολλά πράγματα μαζί.
+              Κράτα ίδια τροφή, ίδια ποσότητα και όσο γίνεται ίδιες λιχουδιές.
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {[
+              {
+                label: "1η εβδομάδα",
+                value: "Σταθερό πρόγραμμα",
+                detail:
+                  "Δώσε την προτεινόμενη ποσότητα στα ίδια γεύματα κάθε μέρα.",
+              },
+              {
+                label: "Λιχουδιές",
+                value: "Μην τις αλλάζεις συνέχεια",
+                detail:
+                  "Κράτα τις μέσα στο ημερήσιο όριο για να μη χαλάει ο στόχος θερμίδων.",
+              },
+              {
+                label: "Παρατήρηση",
+                value: "Βάρος, όρεξη, κόπρανα",
+                detail:
+                  "Σημείωσε αν άλλαξε ενέργεια, πέψη ή αποδοχή της γεύσης.",
+              },
+              {
+                label: "2-4 εβδομάδες",
+                value: "Γύρνα για progress check",
+                detail:
+                  "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν ακόμη του αρέσει η τροφή.",
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-violet-100 bg-white p-4 text-sm text-violet-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-violet-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-8 break-inside-avoid rounded-xl border border-emerald-200 bg-emerald-50 p-6 print:border-gray-300">
           <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
             Περίληψη πελάτη
