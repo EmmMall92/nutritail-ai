@@ -1731,6 +1731,48 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        <div
+          className="mt-8 break-inside-avoid rounded-2xl border border-slate-200 bg-white p-6 shadow-sm print:border-gray-300 print:shadow-none"
+          data-testid="report-home-tracking-sheet"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                7ήμερο tracking στο σπίτι
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                Συμπλήρωσέ το πριν το επόμενο progress check
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-slate-600">
+              Δεν χρειάζεται τέλειο ημερολόγιο. Αρκούν λίγες σημειώσεις για
+              γραμμάρια, λιχουδιές, όρεξη και κόπρανα/ούρηση.
+            </p>
+          </div>
+
+          <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
+            <div className="grid grid-cols-5 bg-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-600">
+              <div className="p-3">Ημέρα</div>
+              <div className="p-3">Βάρος</div>
+              <div className="p-3">Γραμμάρια</div>
+              <div className="p-3">Λιχουδιές</div>
+              <div className="p-3">Σημειώσεις</div>
+            </div>
+            {Array.from({ length: 7 }, (_, index) => (
+              <div
+                key={index}
+                className="grid min-h-12 grid-cols-5 border-t border-slate-200 text-sm text-slate-700"
+              >
+                <div className="p-3 font-medium">Ημέρα {index + 1}</div>
+                <div className="p-3"> </div>
+                <div className="p-3"> </div>
+                <div className="p-3"> </div>
+                <div className="p-3"> </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-8 break-inside-avoid rounded-xl border border-emerald-200 bg-emerald-50 p-6 print:border-gray-300">
           <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
             Περίληψη πελάτη
