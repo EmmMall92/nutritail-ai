@@ -57,6 +57,23 @@ type FoodV2FormatCoverageSummary = {
   scenarios: FormatCoverageScenario[];
 };
 
+type CustomerJourneyUnlockProofSummary = {
+  result: string;
+  generated: string;
+  journeysChecked: string;
+  evidenceMarkersChecked: string;
+  unlockGatesCovered: string;
+  nextManualProof: string;
+  journeys: {
+    id: string;
+    unlockGate: string;
+    evidenceMarkers: string;
+    filesChecked: string;
+    customerGoal: string;
+  }[];
+  manualFollowUp: string[];
+};
+
 function readLiveReadinessSummary(): ReadinessSummary {
   const fallback = {
     result: "Not generated",
@@ -324,6 +341,85 @@ function readFoodV2FormatCoverageSummary(): FoodV2FormatCoverageSummary {
   }
 }
 
+function readCustomerJourneyUnlockProofSummary(): CustomerJourneyUnlockProofSummary {
+  const fallback = {
+    result: "Not generated",
+    generated: "unknown",
+    journeysChecked: "unknown",
+    evidenceMarkersChecked: "unknown",
+    unlockGatesCovered: "unknown",
+    nextManualProof: "Run the customer journey unlock gate QA.",
+    journeys: [],
+    manualFollowUp: [
+      "Run qa:customer-journey-unlock-gate to generate the proof report.",
+      "Then repeat the five journeys on production with a logged-in customer account.",
+    ],
+  };
+
+  try {
+    const report = readFileSync(
+      path.join(process.cwd(), "reports/customer_journey_unlock_gate_qa.md"),
+      "utf8",
+    );
+    const journeyRows = report
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          line.startsWith("| ") &&
+          !line.includes("---") &&
+          !line.includes("Journey |")
+      )
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          id: cells[0] ?? "unknown",
+          unlockGate: cells[1] ?? "unknown",
+          evidenceMarkers: cells[2] ?? "unknown",
+          filesChecked: cells[3] ?? "unknown",
+          customerGoal: cells[4] ?? "Customer goal not listed.",
+        };
+      });
+    const manualSection =
+      report.match(/## Manual Live Follow-Up\s+([\s\S]*?)\n## /i)?.[1]?.trim() ??
+      report.match(/## Manual Live Follow-Up\s+([\s\S]*)/i)?.[1]?.trim() ??
+      "";
+    const manualFollowUp = manualSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => /^\d+\./.test(line))
+      .map((line) => line.replace(/^\d+\.\s*/, ""));
+
+    return {
+      result: report.match(/- Result:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.result,
+      generated:
+        report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ??
+        fallback.generated,
+      journeysChecked:
+        report.match(/- Journeys checked:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.journeysChecked,
+      evidenceMarkersChecked:
+        report.match(/- Evidence markers checked:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.evidenceMarkersChecked,
+      unlockGatesCovered:
+        report.match(/- Unlock gates covered:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.unlockGatesCovered,
+      nextManualProof:
+        report.match(/- Next manual proof:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.nextManualProof,
+      journeys: journeyRows,
+      manualFollowUp:
+        manualFollowUp.length > 0 ? manualFollowUp : fallback.manualFollowUp,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 const liveChecks = [
   {
     title: "Deploy sanity",
@@ -425,6 +521,7 @@ export default function FoodV2LiveQaPage() {
   const readiness = readLiveReadinessSummary();
   const productProgress = readCustomerProductProgressSummary();
   const formatCoverage = readFoodV2FormatCoverageSummary();
+  const customerJourneyProof = readCustomerJourneyUnlockProofSummary();
   const isPassing = readiness.result === "PASS";
 
   return (
@@ -664,6 +761,107 @@ export default function FoodV2LiveQaPage() {
         <p className="mt-4 rounded-xl border border-blue-200 bg-white/70 p-4 text-sm">
           Latest movement: {productProgress.latestMovement}
         </p>
+      </div>
+
+      <div
+        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm"
+        data-testid="customer-journey-unlock-proof-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Customer journey unlock proof
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {customerJourneyProof.result === "PASS"
+                ? "Five customer journeys are protected"
+                : "Customer journey proof needs refresh"}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6">
+              This reads the customer journey unlock report. It proves the code
+              paths for recommendation cards, grams/day, save, report, timeline,
+              progress check, no-result advice, and flavour/brand change before
+              we run the same journeys manually on production.
+            </p>
+          </div>
+          <code className="rounded-lg border border-emerald-300 bg-white/80 px-3 py-2 text-xs font-semibold text-emerald-950">
+            npm.cmd run qa:customer-journey-unlock-gate
+          </code>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-4">
+          <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              Result
+            </p>
+            <p className="mt-1 text-2xl font-bold">{customerJourneyProof.result}</p>
+          </div>
+          <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              Journeys
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {customerJourneyProof.journeysChecked}
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              Evidence markers
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {customerJourneyProof.evidenceMarkersChecked}
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              Generated
+            </p>
+            <p className="mt-1 text-sm font-semibold">
+              {customerJourneyProof.generated}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-emerald-200 bg-white/80 p-4">
+          <p className="text-sm font-semibold">Unlock gates covered</p>
+          <p className="mt-2 text-sm leading-6">
+            {customerJourneyProof.unlockGatesCovered}
+          </p>
+          <p className="mt-3 text-sm font-semibold">Next manual proof</p>
+          <p className="mt-2 text-sm leading-6">
+            {customerJourneyProof.nextManualProof}
+          </p>
+        </div>
+
+        <div className="mt-4 grid gap-3 lg:grid-cols-5">
+          {customerJourneyProof.journeys.map((journey) => (
+            <article
+              key={journey.id}
+              className="rounded-xl border border-emerald-200 bg-white/80 p-3 text-sm"
+            >
+              <p className="font-semibold">{journey.id}</p>
+              <p className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-bold">
+                {journey.unlockGate}
+              </p>
+              <p className="mt-2 text-xs leading-5">{journey.customerGoal}</p>
+              <p className="mt-2 text-xs font-semibold">
+                {journey.evidenceMarkers} markers across {journey.filesChecked}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-emerald-200 bg-white/80 p-4"
+          data-testid="customer-journey-manual-follow-up"
+        >
+          <p className="text-sm font-semibold">Manual live follow-up</p>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
+            {customerJourneyProof.manualFollowUp.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </div>
       </div>
 
       <div
