@@ -34,8 +34,46 @@ for (const marker of [
   "Πριν τις πληρωμές",
   "πρώτα ποιότητα",
   "μετά πληρωμές",
+  "Τα όρια είναι καθαρά και προσωρινά",
+  "Πριν ενεργοποιηθούν πληρωμές",
+  "πραγματικά σχόλια από χρήστες",
+  "Πιο οργανωμένος κύκλος βελτίωσης",
+  "έλεγχοι κυκλοφορίας",
 ]) {
   assert(plansPage.includes(marker), `Plans page is missing marker: ${marker}`);
+}
+
+const mojibakeMarkers = [
+  "\u039f\u008d",
+  "\u03b2\u20ac",
+  "\u03bf\u038f\u00bd",
+  "\ufffd",
+];
+
+for (const marker of mojibakeMarkers) {
+  assert(
+    !plansPage.includes(marker),
+    `Plans page must not contain customer-visible mojibake marker: ${marker}`
+  );
+}
+
+assert(
+  !/[ΞΟ][\u0080-\u009f€ƒ„†‡‰‘’“”•–—™]/u.test(plansPage),
+  "Plans page must not contain Greek mojibake control-character sequences."
+);
+
+for (const marker of [
+  "saved reports",
+  "Progress checks",
+  "feedback loop",
+  "admin-style",
+  "πραγματικό testing",
+  "launch checks",
+]) {
+  assert(
+    !plansPage.includes(marker),
+    `Plans page must keep business copy customer-friendly. Found: ${marker}`
+  );
 }
 
 assert(sitemap.includes('path: "/plans"'), "Sitemap must include /plans.");
