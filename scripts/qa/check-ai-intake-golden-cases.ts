@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
+import { detectFoodFormatPreference } from "@/lib/chatbot/foodFormatPreference";
 import { parseTastePreferences } from "@/lib/chatbot/tastePreferences";
 import { formatPetDisplayName } from "@/lib/petName";
 
@@ -127,6 +128,36 @@ function checkUiHelpers() {
 
   if (englishAvoidance.preferredProteins.includes("chicken")) {
     failures.push("English avoidance: chicken must not appear in preferredProteins");
+  }
+
+  const formatCases = [
+    {
+      message: "Έχω σκύλο που τρώει μόνο κονσέρβα.",
+      expected: "wet",
+      label: "Greek wet-only canned food",
+    },
+    {
+      message: "Έχω σκύλο που αρνείται όλες τις ξηρές τροφές.",
+      expected: "wet",
+      label: "Greek dry refusal",
+    },
+    {
+      message: "Τρώει ξηρά μόνο όταν βάλω υγρή.",
+      expected: "mixed",
+      label: "Greek dry with wet topper",
+    },
+    {
+      message: "He only eats canned food.",
+      expected: "wet",
+      label: "English wet-only canned food",
+    },
+  ] as const;
+
+  for (const testCase of formatCases) {
+    const actual = detectFoodFormatPreference(testCase.message);
+    if (actual !== testCase.expected) {
+      failures.push(`${testCase.label}: expected ${testCase.expected}, got ${actual ?? "none"}`);
+    }
   }
 
   return {
