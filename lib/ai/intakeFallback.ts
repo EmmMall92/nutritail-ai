@@ -72,6 +72,17 @@ function parseAgeYears(message: string) {
     return months > 0 ? Number((months / 12).toFixed(2)) : null;
   }
 
+  if (
+    includesAny(normalized, [
+      "puppy",
+      "kitten",
+      "\u03ba\u03bf\u03c5\u03c4\u03b1\u03b2",
+      "\u03b3\u03b1\u03c4\u03b1\u03ba",
+    ])
+  ) {
+    return 0.4;
+  }
+
   return null;
 }
 

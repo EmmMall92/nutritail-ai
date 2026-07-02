@@ -57,6 +57,9 @@ function runChecks(): Check[] {
   const fallbackGreeklishDigestive = fallbackExtractIntake(
     "to skylaki mou kanei malaka kaka kai aera"
   );
+  const fallbackPuppyBloodDiarrhea = fallbackExtractIntake(
+    "\u039f \u03c3\u03ba\u03cd\u03bb\u03bf\u03c2 \u03bc\u03bf\u03c5 \u03ad\u03c7\u03b5\u03b9 \u03b4\u03b9\u03ac\u03c1\u03c1\u03bf\u03b9\u03b1 \u03bc\u03b5 \u03b1\u03af\u03bc\u03b1 \u03ba\u03b1\u03b9 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03bf\u03c5\u03c4\u03ac\u03b2\u03b9."
+  );
 
   return [
     {
@@ -150,6 +153,14 @@ function runChecks(): Check[] {
         fallbackGreeklishDigestive.data.language === "el" &&
         hasAll(fallbackGreeklishDigestive.data.healthIssues, ["sensitive_digestion"]),
       details: JSON.stringify(fallbackGreeklishDigestive.data),
+    },
+    {
+      name: "Fallback keeps puppy context for red-flag diarrhea message",
+      pass:
+        fallbackPuppyBloodDiarrhea.data.species === "dog" &&
+        fallbackPuppyBloodDiarrhea.data.ageYears === 0.4 &&
+        hasAll(fallbackPuppyBloodDiarrhea.data.redFlags, ["blood"]),
+      details: JSON.stringify(fallbackPuppyBloodDiarrhea.data),
     },
     {
       name: "Validation removes OpenAI preference conflicts",
