@@ -455,9 +455,37 @@ function parseCaseIds(value: string | undefined) {
   return ids.size > 0 ? ids : null;
 }
 
+function cliOption(name: string) {
+  const prefix = `--${name}=`;
+  const direct = process.argv.find((arg) => arg.startsWith(prefix));
+  if (direct) return direct.slice(prefix.length).trim();
+
+  const index = process.argv.indexOf(`--${name}`);
+  if (index >= 0) return process.argv[index + 1]?.trim();
+
+  return undefined;
+}
+
+function selectedCaseIdsFromCli() {
+  const explicitIds = parseCaseIds(cliOption("ids") ?? cliOption("cases"));
+  const from = Number(cliOption("from"));
+  const to = Number(cliOption("to"));
+
+  if (Number.isInteger(from) && Number.isInteger(to) && from > 0 && to > 0) {
+    const ids = new Set<number>(explicitIds ?? []);
+    const min = Math.min(from, to);
+    const max = Math.max(from, to);
+    for (let id = min; id <= max; id += 1) ids.add(id);
+    return ids;
+  }
+
+  return explicitIds;
+}
+
 function selectedCases(allCases: DogQaCase[]) {
-  const selectedIds = parseCaseIds(process.env.NUTRITAIL_QA_CASE_IDS);
-  const limit = Number(process.env.NUTRITAIL_QA_CASE_LIMIT ?? 0);
+  const selectedIds =
+    selectedCaseIdsFromCli() ?? parseCaseIds(process.env.NUTRITAIL_QA_CASE_IDS);
+  const limit = Number(cliOption("limit") ?? process.env.NUTRITAIL_QA_CASE_LIMIT ?? 0);
   const cases = selectedIds
     ? allCases.filter((testCase) => selectedIds.has(testCase.id))
     : allCases;
@@ -467,6 +495,9 @@ function selectedCases(allCases: DogQaCase[]) {
 }
 
 function resolveReportPath(casesToRun: DogQaCase[], allCases: DogQaCase[]) {
+  const cliReportPath = cliOption("report");
+  if (cliReportPath) return cliReportPath;
+
   if (process.env.NUTRITAIL_QA_REPORT_PATH?.trim()) {
     return process.env.NUTRITAIL_QA_REPORT_PATH.trim();
   }
