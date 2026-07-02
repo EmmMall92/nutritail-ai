@@ -18,7 +18,7 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **85%**.
+Overall SaaS launch progress is currently **86%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -27,6 +27,19 @@ post-deploy proof, and operational support. Use this number when the question is
 "is the whole company/product ready to launch?", and use customer product
 progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
+
+The latest launch-wide move from **85%** to **86%** is justified by clearer
+commercial and recovery readiness:
+
+- The beta page now explains that beta users can start without a card, while the
+  future Personal and Pro paid-plan direction is visible enough to avoid a vague
+  business model.
+- Auth recovery flows now have customer-facing copy, password visibility,
+  recovery-email guidance, expired-link guidance, and QA contracts for login,
+  register, forgot password, and reset password.
+- This raises launch confidence, but it does not close paid checkout, billing
+  enforcement, final legal review, production monitoring, or real beta-user
+  operating feedback.
 
 ## Latest Movement
 
@@ -170,7 +183,7 @@ public beta launch:
 
 ## Overall SaaS Blockers
 
-These are the main reasons the whole project remains around 85% even though the
+These are the main reasons the whole project remains around 86% even though the
 customer nutrition experience is now a beta candidate:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
@@ -197,7 +210,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 95% beta-candidate and overall SaaS launch progress is about 85%. The next
+> 95% beta-candidate and overall SaaS launch progress is about 86%. The next
 > product confidence point depends on real customer chatbot journey proof or
 > live OpenAI proof, while the launch-wide score depends on monitoring,
 > payments/subscription direction, and production operating proof.

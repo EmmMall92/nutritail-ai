@@ -34,7 +34,12 @@ for (const marker of categoryMarkers) {
 
 const requiredMarkers = [
   "Customer product progress is currently **95% beta-candidate**",
-  "Overall SaaS launch progress is currently **85%**",
+  "Overall SaaS launch progress is currently **86%**",
+  "The latest launch-wide move from **85%** to **86%**",
+  "future Personal and Pro paid-plan direction",
+  "Auth recovery flows now have customer-facing copy",
+  "paid checkout, billing",
+  "final legal review",
   "business limits, beta access, subscription",
   "legal/trust readiness",
   "is the whole company/product ready to launch?",
