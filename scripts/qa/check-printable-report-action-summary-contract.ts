@@ -46,6 +46,7 @@ const requiredReportMarkers = [
   'data-testid="report-pocket-summary"',
   'data-testid="report-progress-return-kit"',
   'data-testid="report-home-tracking-sheet"',
+  'data-testid="report-first-week-followup-plan"',
   'data-testid="report-at-a-glance-summary"',
   'data-testid="report-at-a-glance-transition"',
   'data-testid="report-completion-status"',
@@ -133,6 +134,9 @@ const requiredReportMarkers = [
   "Follow-up date",
   "Ready to use",
   "Confirm before use",
+  "Πρώτη εβδομάδα εφαρμογής",
+  "Κράτα το πλάνο σταθερό πριν κρίνουμε αν πέτυχε",
+  "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν ακόμη του αρέσει η τροφή.",
 ];
 
 const requiredDigitalActionMarkers = [
