@@ -521,6 +521,12 @@ function nextStepLine(locale: "el" | "en") {
     : "Next step: choose one food card below to see the first daily portion in grams.";
 }
 
+function customerCardSplitLine(locale: "el" | "en") {
+  return locale === "el"
+    ? "Οι κάρτες χωρίζονται σε πρώτες επιλογές και πιο πρακτικές/οικονομικές εναλλακτικές, ώστε να διαλέξεις με βάση ποιότητα, γεύση και budget."
+    : "The cards are split into best starting choices and budget-friendly alternatives, so you can choose by nutrition fit, flavour, and budget.";
+}
+
 function vetSafetyLine(locale: "el" | "en", goal: FoodV2RecommendationGoal) {
   const medicalGoal = goal === "urinary" || goal === "renal";
   if (locale === "el") {
@@ -579,6 +585,7 @@ function compactCardsIntro({
       [
         "Έτοιμο. Έβαλα τις καλύτερες επιλογές σε κάρτες από κάτω.",
         recommendationFocusLine(locale, goalLabel),
+        customerCardSplitLine(locale),
         preferenceLine,
         customerMedicalContextLine(locale, goal),
         `Ξεκίνα από: ${name}, γιατί ${reason}.`,
@@ -595,6 +602,7 @@ function compactCardsIntro({
     [
       "Done. I placed the best options below as cards.",
       recommendationFocusLine(locale, goalLabel),
+      customerCardSplitLine(locale),
       preferenceLine,
       customerMedicalContextLine(locale, goal),
       `Start with: ${name}, because it ${reason}.`,
@@ -695,6 +703,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
       intro,
       "",
       recommendationFocusLine(locale, goalLabel ?? goal),
+      customerCardSplitLine(locale),
       preferenceLine,
       excludedBrands.length > 0
         ? locale === "el"
@@ -721,6 +730,7 @@ export function formatFoodV2ChatbotRecommendationSummary(
     intro,
     "",
     recommendationFocusLine(locale, goalLabel ?? goal),
+    customerCardSplitLine(locale),
     preferenceLine,
     customerMedicalContextLine(locale, goal),
     top
