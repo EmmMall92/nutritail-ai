@@ -33,8 +33,11 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **95% beta-candidate**",
+  "Customer UX readiness is currently **82%**",
+  "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
+  "Do not collapse them into one",
+  "customer-facing",
   "The latest launch-wide move from **89%** to **90%**",
   "Dog live QA cases **201-600**",
   "**400/400** checked and",
@@ -73,10 +76,11 @@ const requiredMarkers = [
   "Auth recovery flows now have customer-facing copy",
   "paid checkout, billing",
   "final legal review",
-  "business limits, beta access, subscription",
-  "legal/trust readiness",
-  "is the whole company/product ready to launch?",
-  "The latest move from **94-95%** to **95% beta-candidate**",
+  "subscription or payment direction",
+  "legal/trust",
+  "real public SaaS",
+  "The latest customer-facing work did **not** move Customer UX readiness above",
+  "The latest engine-confidence move from **94-95%** to **95% beta-candidate**",
   "returning-customer nutrition loop",
   "2-4 week progress-check reminder",
   "new",
@@ -87,7 +91,7 @@ const requiredMarkers = [
   "high-activity and working dogs",
   "GI and allergy/intolerance",
   "pregnancy/lactation",
-  "not raise the customer product score above 95 by itself",
+  "not raise the customer UX readiness score by itself",
   "no longer sitting at the 78-80% foundation level",
   "Dog live QA cases **101-110**",
   "**10/10** checked and **0 review**",
@@ -140,6 +144,8 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
+  "Customer UX readiness",
+  "Recommendation engine beta confidence",
   "95% beta-candidate",
   "Overall SaaS Blockers",
   "Food V2 dry-food recommendations are usable",
@@ -171,7 +177,8 @@ assert(totalWeight === 100, `Product progress category weights must total 100, g
 assert(
   launchDoc.includes("docs/product-progress-score.md") &&
     launchDoc.includes("Customer Product Progress Score") &&
-    launchDoc.includes("94-95% to 95% beta-candidate"),
+    launchDoc.includes("Recommendation engine beta confidence") &&
+    launchDoc.includes("customer UX readiness"),
   "Launch readiness score doc must point to the product progress score rubric."
 );
 
@@ -215,11 +222,15 @@ assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
     liveQaPage.includes('data-testid="customer-product-progress-readout"') &&
     liveQaPage.includes("Customer product progress") &&
+    liveQaPage.includes("Customer UX readiness") &&
+    liveQaPage.includes("Recommendation engine") &&
     liveQaPage.includes("Overall SaaS launch") &&
     liveQaPage.includes("scoreReadout") &&
-    liveQaPage.includes("78-80% was the old foundation stage") &&
-    liveQaPage.includes("Customer nutrition experience:") &&
+    liveQaPage.includes("Customer UX readiness:") &&
+    liveQaPage.includes("Recommendation engine beta confidence:") &&
     liveQaPage.includes("Overall SaaS launch progress:") &&
+    liveQaPage.includes("productProgress.customerUxEstimate") &&
+    liveQaPage.includes("productProgress.recommendationEngineEstimate") &&
     liveQaPage.includes("productProgress.overallSaasEstimate") &&
     liveQaPage.includes("productProgress.overallLaunchBlockers") &&
     liveQaPage.includes("separate from automated"),

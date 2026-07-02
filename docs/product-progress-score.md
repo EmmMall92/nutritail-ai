@@ -12,21 +12,28 @@ customer-visible risk is reduced and the evidence below is current.
 
 ## Current Estimate
 
-Customer product progress is currently **95% beta-candidate**.
+There are now three separate progress numbers. Do not collapse them into one
+headline, because that is what made progress feel stuck or misleading.
 
-This means the product is beyond the old 78-80% foundation stage and is now in
-the beta-readiness band. The remaining work is harder because each point now
-requires live UX proof, recommendation accuracy proof, or business/launch proof.
+- Customer UX readiness is currently **82%**.
+- Recommendation engine beta confidence is currently **95% beta-candidate**.
+- Overall SaaS launch progress is currently **90%**.
 
-Overall SaaS launch progress is currently **90%**.
+Customer UX readiness is the number to use when the question is "does a normal
+pet owner experience the site as simple, beautiful, and complete?". It stays
+near the 80-82% band because recent live conversations still exposed customer
+friction: verbose result copy, confusing food-choice presentation, language
+rough edges, and follow-up flows that need more live proof.
 
-This is lower on purpose. It includes everything needed for a real public SaaS,
-not just the customer nutrition flow: business limits, beta access, subscription
-or payment direction, production monitoring, legal/trust readiness, live
-post-deploy proof, and operational support. Use this number when the question is
-"is the whole company/product ready to launch?", and use customer product
-progress when the question is "does the customer-facing nutrition experience
-feel close to ready?"
+Recommendation engine beta confidence is higher because Food V2, ranking rules,
+dog/cat QA banks, OpenAI fact extraction, safety guards, and deterministic food
+selection have broad automated evidence. That does not mean the customer-facing
+experience is already 95%.
+
+Overall SaaS launch progress is lower on purpose. It includes everything needed
+for a real public SaaS, not just the nutrition engine: business limits, beta
+access, subscription or payment direction, production monitoring, legal/trust
+readiness, live post-deploy proof, and operational support.
 
 The latest launch-wide move from **89%** to **90%** is justified by completing
 fresh dog live QA coverage across the full 201-600 scenario bank:
@@ -110,8 +117,14 @@ commercial and recovery readiness:
 
 ## Latest Movement
 
-The latest move from **94-95%** to **95% beta-candidate** is justified by the
-returning-customer nutrition loop becoming visible in the account dashboard:
+The latest customer-facing work did **not** move Customer UX readiness above
+**82%**. It improved confidence, but the score should stay flat until fresh live
+journeys show that normal users can complete the flow without confusing copy,
+wrong recommendation framing, or unclear next actions.
+
+The latest engine-confidence move from **94-95%** to **95% beta-candidate** is
+still justified by the returning-customer nutrition loop becoming visible in the
+account dashboard:
 
 - Saved plans now surface a clear 2-4 week progress-check reminder instead of
   leaving the customer to remember what to do after the first recommendation.
@@ -123,8 +136,8 @@ returning-customer nutrition loop becoming visible in the account dashboard:
 - This does not close the broader SaaS launch gap, but it removes a real
   customer-retention weakness in the nutrition journey.
 
-Fresh recommendation evidence after that move confirms that the score is not
-the old 78-80% foundation stage:
+Fresh recommendation evidence after that move confirms that the recommendation
+engine is not the old 78-80% foundation stage:
 
 - Dog live QA cases **101-200** now pass with **100/100** checked and
   **0 review** in deterministic Food V2 mode.
@@ -132,7 +145,7 @@ the old 78-80% foundation stage:
   sterilised and weight-prone cases, GI and allergy/intolerance cases, urinary,
   renal, hepatic, cardiac, joint, recovery, pregnancy/lactation, puppy, senior,
   climate/environment, and rescue scenarios.
-- This does not raise the customer product score above 95 by itself, because
+- This does not raise the customer UX readiness score by itself, because
   moving beyond the beta-candidate line needs authenticated OpenAI/live journey
   proof and real beta-user feedback. It does strengthen confidence that the
   recommendation engine is no longer sitting at the 78-80% foundation level.
@@ -253,10 +266,11 @@ customer-visible work that reduced real user friction:
 - Saved-pet continuation supports progress checks, no-result follow-up,
   another-food guidance, flavour/company change, and timeline review.
 
-This is now just under the 95% beta-launch line for the customer experience.
-The next point should come from live chatbot proof with real customer journeys,
-cat live QA fixes, or a fresh post-deploy proof that the OpenAI-assisted chatbot
-flow works cleanly on production after the latest merge.
+This is now strong technically, but still around the 82% customer UX readiness
+line. The next customer-facing points should come from live chatbot proof with
+real customer journeys, clearer recommendation cards, progress-return proof, or
+a fresh post-deploy proof that the OpenAI-assisted chatbot flow works cleanly on
+production after the latest merge.
 
 ## Ten Launch Categories
 
@@ -275,8 +289,8 @@ flow works cleanly on production after the latest merge.
 
 ## Why It Feels Stuck
 
-At 95%, small polish work improves the product but may not move the score.
-The next points require one of these:
+At 82% Customer UX readiness, small internal polish improves the product but may
+not move the customer score. The next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
 - A customer flow becomes clearly simpler, not just slightly prettier.
@@ -285,28 +299,34 @@ The next points require one of these:
 - A Food V2 format gap closes, especially wet/canned dog or cat recommendations
   moving from "no visible choices" to usable customer cards.
 - A business-launch gap is closed enough for beta users.
+- A real end-to-end customer journey proves that signup, pet intake,
+  recommendation, food choice, grams/day, save, report, and return-progress flow
+  work without manual explanation.
 
 ## Next Score Moves
 
-These are the most likely moves from 95% beta-candidate toward a firmer 95%+
-public beta launch:
+These are the most likely moves from **82% Customer UX readiness** toward a real
+90% customer-ready product:
 
-1. Verify saved-pet continuation with progress/no-progress/food-change flows on
+1. Run five full live customer journeys from signup/login through chatbot,
+   recommendation, food button, grams/day, save, report, and return progress.
+2. Remove remaining customer-facing technical/back-office language from chatbot
+   recommendations and reports.
+3. Verify saved-pet continuation with progress/no-progress/food-change flows on
    production after deploy.
-2. Complete one authenticated live chatbot extract proof with a QA account
+4. Complete one authenticated live chatbot extract proof with a QA account
    cookie after the latest OpenAI intake-context merge.
-3. Run real customer chatbot journeys end-to-end and remove any remaining
-   confusing copy, loops, or wrong food-choice explanations.
-4. Keep dog/cat live QA fresh after each recommendation-ranking change and
+5. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
-5. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
+6. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
    longer reports dog wet-only journeys as safe holds/data gaps.
-6. Add first subscription/payment direction when beta limits are ready.
+7. Add first subscription/payment direction when beta limits are ready.
 
 ## Overall SaaS Blockers
 
 These are the main reasons the whole project remains around 90% even though the
-customer nutrition experience is now a beta candidate:
+recommendation engine is now a beta candidate and Customer UX readiness is still
+around 82%:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
   to run with a QA account cookie, not just local or unauthenticated checks.
@@ -329,13 +349,15 @@ customer nutrition experience is now a beta candidate:
 When reporting progress, always say all relevant numbers if available:
 
 - `Automated live readiness`: from `reports/live_readiness_dashboard.md`.
-- `Customer product progress`: from this rubric and the latest customer-flow QA.
+- `Customer UX readiness`: from this rubric and the latest customer-flow QA.
+- `Recommendation engine beta confidence`: from Food V2/ranking/OpenAI QA.
 - `Overall SaaS launch progress`: from this rubric's launch-wide estimate.
 
 Example:
 
-> Automated live readiness is 98/100, but customer product progress is about
-> 95% beta-candidate and overall SaaS launch progress is about 90%. The next
-> product confidence point depends on real customer chatbot journey proof or
-> live OpenAI proof, while the launch-wide score depends on monitoring,
+> Automated live readiness is 98/100. Recommendation engine beta confidence is
+> about 95% beta-candidate, but Customer UX readiness is about 82% and overall
+> SaaS launch progress is about 90%. The next customer score movement depends on
+> real customer chatbot journey proof, clearer result presentation, and live
+> OpenAI proof, while the launch-wide score also depends on monitoring,
 > payments/subscription direction, and production operating proof.
