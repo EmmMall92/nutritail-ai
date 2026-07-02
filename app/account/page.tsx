@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { betaPlanHighlights } from "@/lib/beta/accessPlan";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
@@ -100,21 +101,6 @@ type AccountPlanSnapshot = {
   timelineHref: string;
   alternativeHref: string;
 };
-
-const betaPlanHighlights = [
-  {
-    label: "3 κατοικίδια",
-    detail: "Κράτα τα βασικά προφίλ που χρειάζεσαι για δοκιμή.",
-  },
-  {
-    label: "20 αναλύσεις / μήνα",
-    detail: "Αρκετές για νέα πρόταση, progress check και αλλαγή τροφής.",
-  },
-  {
-    label: "Reports και timeline",
-    detail: "Οι αναφορές και οι έλεγχοι προόδου μένουν στον λογαριασμό.",
-  },
-];
 
 const ACCOUNT_LOAD_ERROR_MESSAGE =
   "Δεν ήταν δυνατή η φόρτωση λογαριασμού. Δοκίμασε ξανά σε λίγο.";

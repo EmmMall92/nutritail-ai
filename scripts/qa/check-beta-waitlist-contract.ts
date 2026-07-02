@@ -13,8 +13,10 @@ function read(path: string) {
 const page = read("app/beta/page.tsx");
 const form = read("app/beta/BetaSignupForm.tsx");
 const route = read("app/api/beta/waitlist/route.ts");
+const accessPlan = read("lib/beta/accessPlan.ts");
 const sitemap = read("app/sitemap.ts");
 const publicQa = read("scripts/qa/check-public-launch-live-routes.mjs");
+const accountPage = read("app/account/page.tsx");
 
 assert(page.includes("BetaSignupForm"), "Beta page should render the signup form.");
 assert(page.includes("canonical: \"/beta\""), "Beta page should define a canonical URL.");
@@ -22,9 +24,28 @@ assert(page.includes("Beta access plan"), "Beta page should explain the beta acc
 assert(page.includes("betaAccessPlan"), "Beta page should render beta access plan items.");
 assert(page.includes("Beta plan limits"), "Beta page should explain beta plan limits.");
 assert(page.includes("betaPlanLimits"), "Beta page should render beta plan limit items.");
-assert(page.includes("20 αναλύσεις / μήνα"), "Beta page should disclose the monthly analysis soft limit.");
 assert(page.includes("betaPlainTerms"), "Beta page should render plain-language beta terms.");
 assert(page.includes("betaLaunchSignals"), "Beta page should render launch quality signals.");
+assert(
+  page.includes('import { betaPlanLimits } from "@/lib/beta/accessPlan";'),
+  "Beta page should render plan limits from the shared beta access plan config."
+);
+assert(
+  accountPage.includes('import { betaPlanHighlights } from "@/lib/beta/accessPlan";') &&
+    accountPage.includes('data-testid="account-beta-plan"'),
+  "Account dashboard should render beta highlights from the shared beta access plan config."
+);
+assert(
+  accessPlan.includes('accessPlan: "limited_beta_v1"') &&
+    accessPlan.includes("accountLimit: 1") &&
+    accessPlan.includes("petLimit: 3") &&
+    accessPlan.includes("monthlyAnalysisLimit: 20"),
+  "Shared beta access plan config should define the beta plan id and soft limits."
+);
+assert(
+  accessPlan.includes("${betaAccessPlanConfig.monthlyAnalysisLimit} αναλύσεις / μήνα"),
+  "Shared beta access plan config should disclose the monthly analysis soft limit."
+);
 assert(
   page.includes('data-testid="beta-commercial-clarity"'),
   "Beta page should expose the commercial clarity section."
@@ -63,9 +84,11 @@ assert(route.includes("admin_activity_logs"), "Beta API should store signups in 
 assert(route.includes("EMAIL_PATTERN"), "Beta API should validate email before logging.");
 assert(form.includes("website"), "Beta form should include a honeypot field.");
 assert(route.includes("website"), "Beta API should read the honeypot field.");
-assert(route.includes("accessPlan: \"limited_beta_v1\""), "Beta API should tag beta access plan signups.");
-assert(route.includes("petLimit: 3"), "Beta API should log the beta pet limit.");
-assert(route.includes("monthlyAnalysisLimit: 20"), "Beta API should log the monthly analysis limit.");
+assert(
+  route.includes('import { betaAccessPlanMetadata } from "@/lib/beta/accessPlan";') &&
+    route.includes("...betaAccessPlanMetadata()"),
+  "Beta API should tag waitlist signups with the shared beta access plan metadata."
+);
 assert(sitemap.includes("path: \"/beta\""), "Sitemap should include the beta page.");
 assert(publicQa.includes("path: \"/beta\""), "Public launch QA should check the beta page.");
 

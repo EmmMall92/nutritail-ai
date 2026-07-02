@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { betaPlanLimits } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
 import { BetaSignupForm } from "./BetaSignupForm";
 
@@ -45,25 +46,6 @@ const betaAccessPlan = [
   {
     title: "Feedback που μετράει",
     text: "Οι απαντήσεις που δεν βοήθησαν και οι τροφές που επιλέγονται θα δείχνουν τι πρέπει να βελτιωθεί.",
-  },
-];
-
-const betaPlanLimits = [
-  {
-    metric: "1 λογαριασμός",
-    detail: "Προσωπικό account για κατοικίδια, αναλύσεις και reports.",
-  },
-  {
-    metric: "Έως 3 κατοικίδια",
-    detail: "Αρκετό για πραγματική δοκιμή χωρίς άσχετα ή διπλά δεδομένα.",
-  },
-  {
-    metric: "20 αναλύσεις / μήνα",
-    detail: "Για νέα ανάλυση, progress check, αλλαγή γεύσης ή εναλλακτική πρόταση.",
-  },
-  {
-    metric: "Feedback πρώτης προτεραιότητας",
-    detail: "Τα not helpful, failed matches και food choices μπαίνουν στο admin review loop.",
   },
 ];
 

@@ -11,6 +11,7 @@ function read(path: string) {
 }
 
 const accountPage = read("app/account/page.tsx");
+const betaAccessPlan = read("lib/beta/accessPlan.ts");
 const petsPage = read("app/account/pets/page.tsx");
 const packageJson = read("package.json");
 
@@ -92,8 +93,9 @@ assert(
 );
 assert(
   accountPage.includes("Beta πρόσβαση") &&
-    accountPage.includes("3 κατοικίδια") &&
-    accountPage.includes("20 αναλύσεις / μήνα") &&
+    accountPage.includes('import { betaPlanHighlights } from "@/lib/beta/accessPlan";') &&
+    betaAccessPlan.includes("petLimit: 3") &&
+    betaAccessPlan.includes("monthlyAnalysisLimit: 20") &&
     accountPage.includes('href="/beta"'),
   "Account dashboard must show beta plan limits and link to the beta page."
 );
