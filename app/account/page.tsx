@@ -1114,6 +1114,59 @@ export default function AccountPage() {
           </div>
 
           <div
+            data-testid="account-plan-decision-guide"
+            className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4"
+          >
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Αν κάτι αλλάξει
+                </p>
+                <h3 className="mt-1 text-lg font-bold text-slate-950">
+                  Διάλεξε την επόμενη κίνηση χωρίς να ξεκινήσεις από την αρχή
+                </h3>
+              </div>
+              <p className="max-w-2xl text-sm leading-6 text-slate-700">
+                Το ίδιο κατοικίδιο μπορεί να συνεχίσει με έλεγχο προόδου, νέα
+                πρόταση ή αλλαγή γεύσης/εταιρείας, κρατώντας το ιστορικό του.
+              </p>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+              <Link
+                href={accountPlanSnapshot.reportHref}
+                className="rounded-xl border border-emerald-100 bg-white p-4 text-emerald-950 transition hover:border-emerald-300 hover:bg-emerald-50"
+              >
+                <p className="font-semibold">Πάει καλά</p>
+                <p className="mt-1 text-sm leading-5 text-emerald-800">
+                  Κράτα την ίδια ποσότητα, δες την αναφορά και έλεγξε ξανά σε
+                  2-4 εβδομάδες.
+                </p>
+              </Link>
+              <Link
+                href={accountPlanSnapshot.progressHref}
+                className="rounded-xl border border-amber-100 bg-white p-4 text-amber-950 transition hover:border-amber-300 hover:bg-amber-50"
+              >
+                <p className="font-semibold">Δεν βλέπω αλλαγή</p>
+                <p className="mt-1 text-sm leading-5 text-amber-800">
+                  Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και λιχουδιές για
+                  να ελέγξουμε αν θέλει προσαρμογή.
+                </p>
+              </Link>
+              <Link
+                href={accountPlanSnapshot.alternativeHref}
+                className="rounded-xl border border-violet-100 bg-white p-4 text-violet-950 transition hover:border-violet-300 hover:bg-violet-50"
+              >
+                <p className="font-semibold">Δεν του ταιριάζει η τροφή</p>
+                <p className="mt-1 text-sm leading-5 text-violet-800">
+                  Ζήτησε άλλη γεύση ή εταιρεία χωρίς να χαθούν βάρος, στόχος και
+                  προηγούμενη ανάλυση.
+                </p>
+              </Link>
+            </div>
+          </div>
+
+          <div
             data-testid="account-plan-next-steps"
             className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2 xl:grid-cols-4"
           >
