@@ -15,6 +15,7 @@ const launchDoc = read("docs/launch-readiness-score.md");
 const packageJson = read("package.json");
 const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
 const customerJourneyUnlockGate = read("scripts/qa/check-customer-journey-unlock-gate.ts");
+const customerLiveJourneyProof = read("scripts/qa/check-customer-live-journey-proof.mjs");
 
 const categoryMarkers = [
   "Final chatbot experience",
@@ -43,6 +44,8 @@ const requiredMarkers = [
   "What blocks the next move",
   "Protected code paths exist for intake, 3 premium + 3 value cards",
   "Needs fresh logged-in production journey proof",
+  "npm.cmd run qa:customer-live-journey-proof",
+  "non-destructive logged-in route/extraction/recommendation part",
   "Do not collapse them into one",
   "customer-facing",
   "The latest launch-wide move from **89%** to **90%**",
@@ -211,11 +214,28 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:customer-live-journey-proof"'),
+  "package.json must expose qa:customer-live-journey-proof for the non-destructive logged-in live journey proof."
+);
+
+assert(
   customerJourneyUnlockGate.includes("reports/customer_journey_unlock_gate_qa.md") &&
     customerJourneyUnlockGate.includes("This report is customer-product evidence") &&
     customerJourneyUnlockGate.includes("Manual Live Follow-Up") &&
     customerJourneyUnlockGate.includes("Wrote ${reportPath}."),
   "Customer journey unlock gate must write an auditable report with manual live follow-up steps."
+);
+
+assert(
+  customerLiveJourneyProof.includes("reports/customer_live_journey_proof_qa.md") &&
+    customerLiveJourneyProof.includes("This is a non-destructive live proof") &&
+    customerLiveJourneyProof.includes("It does not save pets") &&
+    customerLiveJourneyProof.includes("/api/account/chatbot/extract-intake") &&
+    customerLiveJourneyProof.includes("/api/account/foods/v2-recommendations") &&
+    customerLiveJourneyProof.includes("NUTRITAIL_QA_AUTH_COOKIE_FILE") &&
+    customerLiveJourneyProof.includes("SKIP_AUTH") &&
+    !customerLiveJourneyProof.includes("/api/account/chatbot/save"),
+  "Customer live journey proof must be non-destructive, authenticated-cookie aware, and report SKIP_AUTH until live proof can run."
 );
 
 assert(
@@ -313,6 +333,19 @@ assert(
     liveQaPage.includes('data-testid="customer-journey-manual-follow-up"') &&
     liveQaPage.includes("npm.cmd run qa:customer-journey-unlock-gate"),
   "Admin live QA page must expose the customer journey unlock proof report and manual follow-up."
+);
+
+assert(
+  liveQaPage.includes("function readCustomerLiveJourneyProofSummary") &&
+    liveQaPage.includes("reports/customer_live_journey_proof_qa.md") &&
+    liveQaPage.includes('data-testid="customer-live-journey-proof-summary"') &&
+    liveQaPage.includes("Customer live journey proof") &&
+    liveQaPage.includes("Logged-in live journey proof is still pending") &&
+    liveQaPage.includes("customerLiveJourneyProof.unlockImpact") &&
+    liveQaPage.includes("customerLiveJourneyProof.authCookieSource") &&
+    liveQaPage.includes("To complete the 83-85% gate") &&
+    liveQaPage.includes("npm.cmd run qa:customer-live-journey-proof"),
+  "Admin live QA page must expose the non-destructive customer live journey proof status and next steps."
 );
 
 assert(

@@ -324,6 +324,9 @@ These are the most likely moves from **82% Customer UX readiness** toward a real
 
 1. Run five full live customer journeys from signup/login through chatbot,
    recommendation, food button, grams/day, save, report, and return progress.
+   Start with `npm.cmd run qa:customer-live-journey-proof` to prove the
+   non-destructive logged-in route/extraction/recommendation part, then finish
+   the save/report/timeline/progress steps manually in the browser.
 2. Remove remaining customer-facing technical/back-office language from chatbot
    recommendations and reports.
 3. Verify saved-pet continuation with progress/no-progress/food-change flows on

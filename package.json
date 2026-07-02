@@ -28,6 +28,7 @@
     "qa:saved-pet-continuation-contract": "tsx scripts/qa/check-saved-pet-continuation-contract.ts",
     "qa:customer-journey-readiness-contract": "tsx scripts/qa/check-customer-journey-readiness-contract.ts",
     "qa:customer-journey-unlock-gate": "tsx scripts/qa/check-customer-journey-unlock-gate.ts",
+    "qa:customer-live-journey-proof": "node scripts/qa/check-customer-live-journey-proof.mjs",
     "qa:launch-readiness-score-contract": "tsx scripts/qa/check-launch-readiness-score-contract.ts",
     "qa:product-progress-score-contract": "tsx scripts/qa/check-product-progress-score-contract.ts",
     "qa:auth-customer-copy": "tsx scripts/qa/check-auth-customer-copy-contract.ts",
