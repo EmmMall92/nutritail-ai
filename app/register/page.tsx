@@ -139,7 +139,7 @@ export default function RegisterPage() {
         <p className="font-semibold text-blue-950">Μετά την εγγραφή ξεκινάς αμέσως πρακτικά.</p>
         <p className="mt-1">
           Μπορείς να δημιουργήσεις pet profile, να τρέξεις ανάλυση και να κρατήσεις
-          report για μελλοντικό progress check.
+          report για μελλοντικό έλεγχο προόδου.
         </p>
       </div>
 

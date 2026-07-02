@@ -670,7 +670,7 @@ function getCustomerHandoffSteps(
       label: "3. Επανέλεγχος",
       title: getRecheckWindow(analysis),
       detail:
-        "Γύρνα στο NutriTail με νέο βάρος και τα πραγματικά γραμμάρια/ημέρα για progress check ή νέα πρόταση τροφής.",
+        "Γύρνα στο NutriTail με νέο βάρος και τα πραγματικά γραμμάρια/ημέρα για έλεγχο προόδου ή νέα πρόταση τροφής.",
     },
   ];
 }
@@ -1718,7 +1718,7 @@ export default function PrintablePetReportPage() {
             </div>
             <p className="max-w-xl text-sm leading-6 text-violet-900">
               Αν δεν θέλεις να διαβάζεις όλη την αναφορά κάθε φορά, κράτα αυτά
-              τα στοιχεία για τάισμα, λιχουδιές και επόμενο progress check.
+              τα στοιχεία για τάισμα, λιχουδιές και επόμενο έλεγχο προόδου.
             </p>
           </div>
 
@@ -1754,7 +1754,7 @@ export default function PrintablePetReportPage() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-indigo-900">
-              Αυτά τα 4 στοιχεία κάνουν το επόμενο progress check πιο ακριβές:
+              Αυτά τα 4 στοιχεία κάνουν τον επόμενο έλεγχο προόδου πιο ακριβή:
               βλέπουμε αν το πλάνο δουλεύει ή αν χρειάζεται άλλη τροφή, γεύση,
               ποσότητα ή ρυθμός μετάβασης.
             </p>
@@ -1788,7 +1788,7 @@ export default function PrintablePetReportPage() {
                 7ήμερο tracking στο σπίτι
               </p>
               <h2 className="mt-1 text-2xl font-bold text-black">
-                Συμπλήρωσέ το πριν το επόμενο progress check
+                Συμπλήρωσέ το πριν τον επόμενο έλεγχο προόδου
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-slate-600">
@@ -1834,7 +1834,7 @@ export default function PrintablePetReportPage() {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-violet-900">
-              Για να έχει νόημα το επόμενο progress check, μην αλλάζεις πολλά πράγματα μαζί.
+              Για να έχει νόημα ο επόμενος έλεγχος προόδου, μην αλλάζεις πολλά πράγματα μαζί.
               Κράτα ίδια τροφή, ίδια ποσότητα και όσο γίνεται ίδιες λιχουδιές.
             </p>
           </div>
@@ -1861,7 +1861,7 @@ export default function PrintablePetReportPage() {
               },
               {
                 label: "2-4 εβδομάδες",
-                value: "Γύρνα για progress check",
+                value: "Γύρνα για έλεγχο προόδου",
                 detail:
                   "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν ακόμη του αρέσει η τροφή.",
               },
@@ -2204,7 +2204,7 @@ export default function PrintablePetReportPage() {
             </h2>
             <p className="mt-2 text-sm text-blue-900">
               Χρησιμοποίησε αυτή την ενότητα ανάμεσα στις αναφορές ώστε το
-              επόμενο progress check να έχει πραγματικά δεδομένα προόδου.
+              ο επόμενος έλεγχος προόδου να έχει πραγματικά δεδομένα προόδου.
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
