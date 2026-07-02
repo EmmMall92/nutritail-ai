@@ -80,6 +80,19 @@ type CustomerJourneyUnlockProofSummary = {
   manualFollowUp: string[];
 };
 
+type CustomerLiveJourneyProofSummary = {
+  status: string;
+  generated: string;
+  site: string;
+  stepsChecked: string;
+  passed: string;
+  skipped: string;
+  failed: string;
+  authCookieSource: string;
+  unlockImpact: string;
+  nextSteps: string[];
+};
+
 function readLiveReadinessSummary(): ReadinessSummary {
   const fallback = {
     result: "Not generated",
@@ -462,6 +475,66 @@ function readCustomerJourneyUnlockProofSummary(): CustomerJourneyUnlockProofSumm
   }
 }
 
+function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary {
+  const fallback = {
+    status: "Not generated",
+    generated: "unknown",
+    site: "https://nutritail.ai",
+    stepsChecked: "unknown",
+    passed: "unknown",
+    skipped: "unknown",
+    failed: "unknown",
+    authCookieSource: "missing",
+    unlockImpact:
+      "Run qa:customer-live-journey-proof with an authenticated QA cookie to produce non-destructive live journey evidence.",
+    nextSteps: [
+      "Put a QA account Cookie header in .qa-secrets/nutritail-auth-cookie.txt.",
+      "Run npm.cmd run qa:customer-live-journey-proof.",
+      "Finish the manual browser steps: choose food, grams/day, save, report, timeline, and progress.",
+    ],
+  };
+
+  try {
+    const report = readFileSync(
+      path.join(process.cwd(), "reports/customer_live_journey_proof_qa.md"),
+      "utf8",
+    );
+    const completeSection =
+      report.match(/## To Complete The 83-85% Customer UX Gate\s+([\s\S]*)/i)?.[1]?.trim() ??
+      "";
+    const nextSteps = completeSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => /^\d+\./.test(line))
+      .map((line) => line.replace(/^\d+\.\s*/, ""));
+
+    return {
+      status: report.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.status,
+      generated:
+        report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ??
+        fallback.generated,
+      site: report.match(/^Site:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.site,
+      stepsChecked:
+        report.match(/- Steps checked:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.stepsChecked,
+      passed: report.match(/- Passed:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.passed,
+      skipped:
+        report.match(/- Skipped:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.skipped,
+      failed: report.match(/- Failed:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.failed,
+      authCookieSource:
+        report.match(/- Auth cookie source:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.authCookieSource,
+      unlockImpact:
+        report.match(/- Unlock impact:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.unlockImpact,
+      nextSteps: nextSteps.length > 0 ? nextSteps : fallback.nextSteps,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 const liveChecks = [
   {
     title: "Deploy sanity",
@@ -564,6 +637,7 @@ export default function FoodV2LiveQaPage() {
   const productProgress = readCustomerProductProgressSummary();
   const formatCoverage = readFoodV2FormatCoverageSummary();
   const customerJourneyProof = readCustomerJourneyUnlockProofSummary();
+  const customerLiveJourneyProof = readCustomerLiveJourneyProofSummary();
   const isPassing = readiness.result === "PASS";
 
   return (
@@ -939,6 +1013,97 @@ export default function FoodV2LiveQaPage() {
           <p className="text-sm font-semibold">Manual live follow-up</p>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
             {customerJourneyProof.manualFollowUp.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm"
+        data-testid="customer-live-journey-proof-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Customer live journey proof
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {customerLiveJourneyProof.status === "PASS"
+                ? "Logged-in live journey proof is passing"
+                : "Logged-in live journey proof is still pending"}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6">
+              This reads the non-destructive live journey report. It proves the
+              authenticated chatbot page, OpenAI fact extraction, and Food V2
+              recommendation-card path when a QA account cookie is available.
+              Save, report, timeline, and progress remain manual browser proof.
+            </p>
+          </div>
+          <code className="rounded-lg border border-cyan-300 bg-white/80 px-3 py-2 text-xs font-semibold text-cyan-950">
+            npm.cmd run qa:customer-live-journey-proof
+          </code>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-5">
+          <div className="rounded-xl border border-cyan-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-cyan-700">
+              Status
+            </p>
+            <p className="mt-1 text-2xl font-bold">{customerLiveJourneyProof.status}</p>
+          </div>
+          <div className="rounded-xl border border-cyan-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-cyan-700">
+              Steps
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {customerLiveJourneyProof.stepsChecked}
+            </p>
+          </div>
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-green-700">
+              Passed
+            </p>
+            <p className="mt-1 text-2xl font-bold">{customerLiveJourneyProof.passed}</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+              Skipped
+            </p>
+            <p className="mt-1 text-2xl font-bold">{customerLiveJourneyProof.skipped}</p>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-700">
+              Failed
+            </p>
+            <p className="mt-1 text-2xl font-bold">{customerLiveJourneyProof.failed}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4">
+          <p className="text-sm font-semibold">Unlock impact</p>
+          <p className="mt-2 text-sm leading-6">
+            {customerLiveJourneyProof.unlockImpact}
+          </p>
+          <p className="mt-3 text-sm">
+            Site: <span className="font-semibold">{customerLiveJourneyProof.site}</span>
+          </p>
+          <p className="mt-1 text-sm">
+            Auth cookie source:{" "}
+            <span className="font-semibold">
+              {customerLiveJourneyProof.authCookieSource}
+            </span>
+          </p>
+          <p className="mt-1 text-sm">
+            Generated:{" "}
+            <span className="font-semibold">{customerLiveJourneyProof.generated}</span>
+          </p>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4">
+          <p className="text-sm font-semibold">To complete the 83-85% gate</p>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
+            {customerLiveJourneyProof.nextSteps.map((step) => (
               <li key={step}>{step}</li>
             ))}
           </ol>
