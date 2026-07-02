@@ -18,7 +18,7 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **86%**.
+Overall SaaS launch progress is currently **87%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -28,7 +28,24 @@ post-deploy proof, and operational support. Use this number when the question is
 progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
 
-The latest launch-wide move from **85%** to **86%** is justified by clearer
+The latest launch-wide move from **86%** to **87%** is justified by fresh live
+recommendation QA evidence and a real safety-sensitive intake fix:
+
+- Dog live QA cases **93-120**, **121-150**, **151-175**, and **176-200** now
+  pass with **108/108** checked and **0 review** after the latest recommendation
+  and intake changes.
+- The live dog case "διάρροια με αίμα και είναι κουτάβι" now preserves puppy
+  context while keeping the blood red flag, so growth/safety logic does not lose
+  a vulnerable life-stage signal in an urgent scenario.
+- The fix is locked by `qa:chatbot-intake-cleanup`, the focused
+  `NUTRITAIL_QA_CASE_IDS=86 qa:dog-chatbot-live-cases` proof, and the broader
+  customer recommendation smoke suite.
+- This raises launch confidence because it converts a real live QA review into
+  a protected intake guard, but it does not close paid checkout, billing
+  enforcement, final legal review, production monitoring, or real beta-user
+  operating feedback.
+
+The previous launch-wide move from **85%** to **86%** was justified by clearer
 commercial and recovery readiness:
 
 - The beta page now explains that beta users can start without a card, while the
@@ -183,7 +200,7 @@ public beta launch:
 
 ## Overall SaaS Blockers
 
-These are the main reasons the whole project remains around 86% even though the
+These are the main reasons the whole project remains around 87% even though the
 customer nutrition experience is now a beta candidate:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
@@ -210,7 +227,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 95% beta-candidate and overall SaaS launch progress is about 86%. The next
+> 95% beta-candidate and overall SaaS launch progress is about 87%. The next
 > product confidence point depends on real customer chatbot journey proof or
 > live OpenAI proof, while the launch-wide score depends on monitoring,
 > payments/subscription direction, and production operating proof.
