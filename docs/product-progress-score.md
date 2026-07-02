@@ -18,7 +18,7 @@ This means the product is beyond the old 78-80% foundation stage and is now in
 the beta-readiness band. The remaining work is harder because each point now
 requires live UX proof, recommendation accuracy proof, or business/launch proof.
 
-Overall SaaS launch progress is currently **87%**.
+Overall SaaS launch progress is currently **88%**.
 
 This is lower on purpose. It includes everything needed for a real public SaaS,
 not just the customer nutrition flow: business limits, beta access, subscription
@@ -28,7 +28,25 @@ post-deploy proof, and operational support. Use this number when the question is
 progress when the question is "does the customer-facing nutrition experience
 feel close to ready?"
 
-The latest launch-wide move from **86%** to **87%** is justified by fresh live
+The latest launch-wide move from **87%** to **88%** is justified by fresh cat
+live recommendation QA evidence after a real ranking-context fix:
+
+- Cat live QA cases **001-050** now pass with **50/50** checked and **0 review**
+  after the latest cat weight-context guard, including the previously reviewed
+  non-neutered general cat cases.
+- Cat live QA cases **051-200** now pass with **150/150** checked and
+  **0 review**, covering overweight, allergy, elimination diet, hairball, fussy
+  eater, rescue, GI, IBD, pancreatitis, diabetes, renal/urinary combinations,
+  recovery, kitten, indoor/outdoor energy, multi-cat, and preference scenarios.
+- The ranking fix prevents low activity alone from producing
+  sterilised/weight-prone reasoning for a general non-neutered cat, so customer
+  explanations are less likely to imply the wrong nutrition context.
+- This raises launch confidence because it adds fresh cat-side live proof to the
+  dog-side evidence, but it does not close paid checkout, billing enforcement,
+  final legal review, production monitoring, or real beta-user operating
+  feedback.
+
+The previous launch-wide move from **86%** to **87%** was justified by fresh live
 recommendation QA evidence and a real safety-sensitive intake fix:
 
 - Dog live QA cases **93-120**, **121-150**, **151-175**, and **176-200** now
