@@ -35,7 +35,10 @@ type FormatCoverageScenario = {
   id: string;
   species: string;
   format: string;
+  coverageStatus: string;
   visibleFoods: string;
+  holdFoods: string;
+  heldExamples: string[];
   warning: string;
 };
 
@@ -44,6 +47,7 @@ type FoodV2FormatCoverageSummary = {
   checked: string;
   passedWithoutWarnings: string;
   wetCannedDataGaps: string;
+  safeHolds: string;
   scenarios: FormatCoverageScenario[];
 };
 
@@ -216,6 +220,7 @@ function readFoodV2FormatCoverageSummary(): FoodV2FormatCoverageSummary {
     checked: "unknown",
     passedWithoutWarnings: "unknown",
     wetCannedDataGaps: "unknown",
+    safeHolds: "unknown",
     scenarios: [],
   };
 
@@ -235,15 +240,31 @@ function readFoodV2FormatCoverageSummary(): FoodV2FormatCoverageSummary {
           species: block.match(/- Species:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
           format:
             block.match(/- Requested format:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+          coverageStatus:
+            block.match(/- Coverage status:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+            "unknown",
           visibleFoods:
             block.match(/- Visible premium\/value foods:\s*([^\n\r]+)/i)?.[1]?.trim() ??
             "unknown",
+          holdFoods:
+            block.match(/- Hold foods:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+          heldExamples:
+            block
+              .split("Held examples:")[1]
+              ?.split("\nWarnings:")[0]
+              ?.split("\n")
+              .map((line) => line.trim())
+              .filter((line) => line.startsWith("- ") && line !== "- None")
+              .map((line) => line.replace(/^- /, ""))
+              .slice(0, 2) ?? [],
           warning: warningLines[0] ?? "None",
         };
       },
     );
     const wetGapCount =
       report.match(/Wet\/canned data gaps:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown";
+    const safeHoldCount =
+      report.match(/Safe holds:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown";
 
     return {
       status: wetGapCount === "0" ? "PASS" : "DATA GAP",
@@ -252,6 +273,7 @@ function readFoodV2FormatCoverageSummary(): FoodV2FormatCoverageSummary {
         report.match(/Passed without warnings:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.passedWithoutWarnings,
       wetCannedDataGaps: wetGapCount,
+      safeHolds: safeHoldCount,
       scenarios,
     };
   } catch {
@@ -539,7 +561,7 @@ export default function FoodV2LiveQaPage() {
           </code>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-4">
           <div className="rounded-xl border border-purple-200 bg-white/80 p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-purple-700">
               Checked
@@ -560,6 +582,12 @@ export default function FoodV2LiveQaPage() {
             </p>
             <p className="mt-1 text-2xl font-bold">{formatCoverage.wetCannedDataGaps}</p>
           </div>
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+              Safe holds
+            </p>
+            <p className="mt-1 text-2xl font-bold">{formatCoverage.safeHolds}</p>
+          </div>
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -572,9 +600,22 @@ export default function FoodV2LiveQaPage() {
               <p className="mt-1 text-purple-800">
                 {scenario.species} / {scenario.format}
               </p>
+              <p className="mt-2 rounded-lg border border-purple-200 bg-purple-50 px-2 py-1 text-xs font-semibold text-purple-950">
+                {scenario.coverageStatus}
+              </p>
               <p className="mt-2">
                 Visible choices: <strong>{scenario.visibleFoods}</strong>
               </p>
+              <p className="mt-1">
+                Held choices: <strong>{scenario.holdFoods}</strong>
+              </p>
+              {scenario.heldExamples.length > 0 && (
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-purple-800">
+                  {scenario.heldExamples.map((example) => (
+                    <li key={example}>{example}</li>
+                  ))}
+                </ul>
+              )}
               <p className="mt-2 text-xs text-purple-800">{scenario.warning}</p>
             </div>
           ))}

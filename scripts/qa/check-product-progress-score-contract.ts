@@ -104,8 +104,8 @@ const requiredMarkers = [
   "does not raise the score above 95%",
   "Fresh Food V2 format coverage",
   "`qa:food-v2-format-coverage` confirms that dry dog and dry cat scenarios",
-  "wet/canned dog and wet/canned cat",
-  "recommendation gaps",
+  "Cat wet has visible options",
+  "dog wet still has no safe",
   "data-coverage blocker",
   "The previous move from **93-94%** to **94-95%**",
   "Auth success states",
@@ -205,8 +205,10 @@ assert(
     liveQaPage.includes("Food V2 format coverage") &&
     liveQaPage.includes("Wet/canned data gap is still visible") &&
     liveQaPage.includes("npm.cmd run qa:food-v2-format-coverage") &&
-    liveQaPage.includes("formatCoverage.wetCannedDataGaps"),
-  "Admin live QA page must expose Food V2 dry/wet format coverage and wet/canned data gaps."
+    liveQaPage.includes("formatCoverage.wetCannedDataGaps") &&
+    liveQaPage.includes("formatCoverage.safeHolds") &&
+    liveQaPage.includes("scenario.coverageStatus"),
+  "Admin live QA page must expose Food V2 dry/wet format coverage, safe holds, and wet/canned data gaps."
 );
 
 assert(

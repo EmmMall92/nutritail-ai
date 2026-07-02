@@ -166,11 +166,13 @@ inflated just because dry-food recommendations are strong:
 
 - `qa:food-v2-format-coverage` confirms that dry dog and dry cat scenarios have
   visible premium/value recommendations from Food V2.
-- The same check currently reports wet/canned dog and wet/canned cat
-  recommendation gaps: there are too few visible wet-food candidates to treat
-  wet-only customer journeys as launch-complete.
+- The same check now separates visible wet coverage from safe holds and true
+  data gaps. Cat wet has visible options, while dog wet still has no safe
+  adult visible option because the current wet dog candidate is puppy-positioned
+  and correctly held out.
 - This does not invalidate the dry-food chatbot experience, but it is a real
-  data-coverage blocker for claiming broader pet-food recommendation readiness.
+  data-coverage blocker for claiming complete dog wet/canned recommendation
+  readiness.
 
 The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
@@ -297,8 +299,8 @@ public beta launch:
    confusing copy, loops, or wrong food-choice explanations.
 4. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
-5. Backfill enough wet/canned dog and cat foods that
-   `qa:food-v2-format-coverage` no longer reports wet-food data coverage gaps.
+5. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
+   longer reports dog wet-only journeys as safe holds/data gaps.
 6. Add first subscription/payment direction when beta limits are ready.
 
 ## Overall SaaS Blockers
@@ -313,8 +315,9 @@ customer nutrition experience is now a beta candidate:
   active yet.
 - Production monitoring and post-deploy freshness need to remain current after
   every chatbot, Food V2, account, report, auth, or public-route deploy.
-- Food V2 dry-food recommendations are usable, but wet/canned dog and cat
-  coverage is still not visible enough for wet-only customer journeys.
+- Food V2 dry-food recommendations are usable and cat wet now has visible
+  options, but dog wet/canned coverage is still not visible enough for dog
+  wet-only customer journeys.
 - Legal/trust pages exist, but they still need final operating review before
   broader public launch.
 - The first real beta-user feedback cycle is not complete yet: users need to
