@@ -3,6 +3,17 @@
 import { useEffect, useState } from "react";
 import type { AdminActivityLog } from "@/types/admin-activity-log";
 
+function getMetadataText(
+  metadata: Record<string, unknown> | null | undefined,
+  key: string,
+  fallback = "Not provided"
+) {
+  const value = metadata?.[key];
+  if (typeof value === "string" && value.trim()) return value.trim();
+  if (typeof value === "number") return String(value);
+  return fallback;
+}
+
 function formatDateTime(value?: string | null) {
   if (!value) return "Unknown date";
 
@@ -12,10 +23,61 @@ function formatDateTime(value?: string | null) {
   return date.toLocaleString();
 }
 
+function isBetaWaitlistLog(log: AdminActivityLog) {
+  return log.action === "beta_waitlist_signup";
+}
+
+function BetaSignupDetails({ log }: { log: AdminActivityLog }) {
+  const metadata = log.metadata ?? {};
+
+  return (
+    <div
+      className="mt-3 grid gap-3 rounded-lg border border-blue-100 bg-white p-3 text-sm text-gray-700 md:grid-cols-2"
+      data-testid="admin-beta-waitlist-activity"
+    >
+      <div>
+        <p className="text-xs font-semibold uppercase text-blue-700">Contact</p>
+        <p className="mt-1 font-medium text-gray-950">
+          {getMetadataText(metadata, "name")}
+        </p>
+        <p>{getMetadataText(metadata, "email")}</p>
+      </div>
+      <div>
+        <p className="text-xs font-semibold uppercase text-blue-700">
+          Beta plan
+        </p>
+        <p className="mt-1">
+          {getMetadataText(metadata, "accessPlan", "unknown plan")}
+        </p>
+        <p>
+          {getMetadataText(metadata, "petLimit", "?")} pets /{" "}
+          {getMetadataText(metadata, "monthlyAnalysisLimit", "?")} analyses per
+          month
+        </p>
+      </div>
+      <div>
+        <p className="text-xs font-semibold uppercase text-blue-700">Role</p>
+        <p className="mt-1">{getMetadataText(metadata, "role")}</p>
+      </div>
+      <div>
+        <p className="text-xs font-semibold uppercase text-blue-700">Pets</p>
+        <p className="mt-1">{getMetadataText(metadata, "pets")}</p>
+      </div>
+      <div className="md:col-span-2">
+        <p className="text-xs font-semibold uppercase text-blue-700">Goal</p>
+        <p className="mt-1">{getMetadataText(metadata, "goal")}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const betaSignupLogs = logs.filter(isBetaWaitlistLog);
+  const latestBetaSignup = betaSignupLogs[0];
+  const latestBetaMetadata = latestBetaSignup?.metadata ?? {};
 
   useEffect(() => {
     async function loadLogs() {
@@ -53,8 +115,81 @@ export default function AdminActivityPage() {
       <div>
         <h2 className="text-2xl font-bold text-black">Activity Log</h2>
         <p className="mt-2 text-gray-600">
-          View recent admin actions across pets, foods, and imports.
+          View recent admin actions across pets, foods, imports, and beta
+          access requests.
         </p>
+      </div>
+
+      <div
+        className="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm"
+        data-testid="admin-beta-waitlist-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              Beta waitlist
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-gray-950">
+              {betaSignupLogs.length} signup
+              {betaSignupLogs.length === 1 ? "" : "s"} captured
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm text-blue-950">
+              Use this as the quick launch-control view for beta interest,
+              customer role, pet context, and the access limits attached to each
+              signup.
+            </p>
+          </div>
+
+          <div className="grid gap-2 text-sm text-blue-950 md:min-w-72">
+            <div className="rounded-xl bg-white p-3">
+              <span className="block text-xs font-semibold uppercase text-blue-700">
+                Current plan
+              </span>
+              {getMetadataText(latestBetaMetadata, "accessPlan", "No signup yet")}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-xl bg-white p-3">
+                <span className="block text-xs font-semibold uppercase text-blue-700">
+                  Pets
+                </span>
+                {getMetadataText(latestBetaMetadata, "petLimit", "-")}
+              </div>
+              <div className="rounded-xl bg-white p-3">
+                <span className="block text-xs font-semibold uppercase text-blue-700">
+                  Analyses
+                </span>
+                {getMetadataText(latestBetaMetadata, "monthlyAnalysisLimit", "-")}
+                /month
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {betaSignupLogs.length > 0 && (
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {betaSignupLogs.slice(0, 3).map((log) => (
+              <div
+                key={log.id}
+                className="rounded-xl border border-blue-100 bg-white p-4 text-sm"
+                data-testid="admin-beta-waitlist-card"
+              >
+                <p className="font-semibold text-gray-950">
+                  {getMetadataText(log.metadata, "name")}
+                </p>
+                <p className="mt-1 text-gray-600">
+                  {getMetadataText(log.metadata, "email")}
+                </p>
+                <p className="mt-3 text-gray-700">
+                  {getMetadataText(log.metadata, "role")} ·{" "}
+                  {getMetadataText(log.metadata, "pets")}
+                </p>
+                <p className="mt-3 text-xs text-gray-500">
+                  {formatDateTime(log.createdAt)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -84,11 +219,13 @@ export default function AdminActivityPage() {
                       {log.action} / {log.entityType} / {log.entityId}
                     </p>
 
-                    {Object.keys(log.metadata ?? {}).length > 0 && (
+                    {isBetaWaitlistLog(log) ? (
+                      <BetaSignupDetails log={log} />
+                    ) : Object.keys(log.metadata ?? {}).length > 0 ? (
                       <pre className="mt-3 overflow-x-auto rounded-lg bg-white p-3 text-xs text-gray-700 border border-gray-200">
                         {JSON.stringify(log.metadata, null, 2)}
                       </pre>
-                    )}
+                    ) : null}
                   </div>
 
                   <div className="text-sm text-gray-600">

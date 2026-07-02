@@ -17,6 +17,7 @@ const accessPlan = read("lib/beta/accessPlan.ts");
 const sitemap = read("app/sitemap.ts");
 const publicQa = read("scripts/qa/check-public-launch-live-routes.mjs");
 const accountPage = read("app/account/page.tsx");
+const adminActivityPage = read("app/admin/activity/page.tsx");
 
 assert(page.includes("BetaSignupForm"), "Beta page should render the signup form.");
 assert(page.includes("canonical: \"/beta\""), "Beta page should define a canonical URL.");
@@ -88,6 +89,18 @@ assert(
   route.includes('import { betaAccessPlanMetadata } from "@/lib/beta/accessPlan";') &&
     route.includes("...betaAccessPlanMetadata()"),
   "Beta API should tag waitlist signups with the shared beta access plan metadata."
+);
+assert(
+  adminActivityPage.includes('data-testid="admin-beta-waitlist-summary"') &&
+    adminActivityPage.includes("beta_waitlist_signup") &&
+    adminActivityPage.includes('data-testid="admin-beta-waitlist-activity"'),
+  "Admin activity should expose a dedicated beta waitlist summary and readable signup details."
+);
+assert(
+  adminActivityPage.includes('"accessPlan"') &&
+    adminActivityPage.includes('"petLimit"') &&
+    adminActivityPage.includes('"monthlyAnalysisLimit"'),
+  "Admin activity should surface beta access plan metadata for waitlist signups."
 );
 assert(sitemap.includes("path: \"/beta\""), "Sitemap should include the beta page.");
 assert(publicQa.includes("path: \"/beta\""), "Public launch QA should check the beta page.");
