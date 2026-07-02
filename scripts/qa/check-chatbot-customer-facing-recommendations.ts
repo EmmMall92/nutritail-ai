@@ -732,6 +732,8 @@ const requiredCardFlowCopy = [
   "watch weight, appetite, stool, and energy.",
   "Next step: press save to keep the food, portion, and report on the profile.",
   "Then come back for a progress check with the new weight and the grams actually fed.",
+  "For the first week, keep meals consistent and avoid adding many new treats or toppers.",
+  "After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour.",
   "If you decide to change food, do it gradually:",
   "analysisMetadata.feedingGramsPerDay / 2",
   "getRecommendationChoiceFacts(choice, chatLanguage)",
