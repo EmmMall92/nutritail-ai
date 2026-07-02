@@ -148,6 +148,19 @@ of that dog bank:
 - This still does not close the full OpenAI proof blocker, because the
   authenticated live chatbot extract route still needs a QA account cookie run.
 
+Fresh current QA evidence on **July 2, 2026** confirms that this is still true
+after the latest customer-copy and saved-pet polish:
+
+- Dog live QA cases **101-200** pass again with **100/100** checked and
+  **0 review** with OpenAI extraction enabled.
+- Cat live QA cases **001-100** pass with **100/100** checked and **0 review**,
+  covering sterilised, kitten, urinary, renal, weight-control, allergy,
+  hairball, picky-eater, rescue, climate, and premium/value-style scenarios.
+- This is evidence for recommendation accuracy and hybrid OpenAI/NutriTail
+  stability, but it does not raise the score above 95% because authenticated
+  production journey proof, real beta-user feedback, monitoring freshness, and
+  business-launch proof are still separate gates.
+
 The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
 
