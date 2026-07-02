@@ -1119,12 +1119,15 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
     return [`Food V2 endpoint returned ${response.status}`];
   }
 
-  if (testCase.checks?.foodV2Candidates && top.length === 0) {
-    warnings.push("Food V2 returned no visible premium/value candidates.");
-  }
-
   const expectedFormat =
     testCase.checks?.formatPreference ?? detectFoodFormatPreference(testCase.message);
+  if (testCase.checks?.foodV2Candidates && top.length === 0) {
+    warnings.push(
+      expectedFormat === "wet"
+        ? "Food V2 returned no visible wet/canned candidates; this is a wet-food data coverage gap."
+        : "Food V2 returned no visible premium/value candidates."
+    );
+  }
   if (testCase.checks?.formatPreference && response.formatPreference !== testCase.checks.formatPreference) {
     warnings.push(
       `Format preference expected ${testCase.checks.formatPreference}, detected ${response.formatPreference ?? "none"}.`

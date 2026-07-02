@@ -382,7 +382,11 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
     warnings.push("Urgent safety case did not return a safety hard stop.");
   }
   if (foods.length === 0 && testCase.expectedSafetyLevel !== "urgent") {
-    warnings.push("No visible cat recommendations returned.");
+    warnings.push(
+      formatPreference === "wet"
+        ? "No visible wet/canned cat recommendations returned; this is a wet-food data coverage gap."
+        : "No visible cat recommendations returned."
+    );
   }
 
   const damagedTopFoodName = foods.slice(0, 5).map(foodLabel).find(hasCustomerVisibleMojibake);
