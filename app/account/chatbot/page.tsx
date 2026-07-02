@@ -35,6 +35,7 @@ import {
   recommendationFormatFromPreference,
   type FoodFormatPreference,
 } from "@/lib/chatbot/foodFormatPreference";
+import { formatMissingFormatRecommendationMessage as formatMissingFoodFormatRecommendationMessage } from "@/lib/food-v2/missingFormatRecommendationMessage";
 import {
   detectSafetyWarnings,
   formatSafetyInterruptMessage,
@@ -2468,8 +2469,16 @@ Choose one food card below to estimate daily portions.`;
 function formatMissingFormatRecommendationMessage(
   pet: PetIntake,
   language: ChatLanguage,
-  mode: RecommendationMode
+  mode: RecommendationMode,
+  coverage?: { totalCandidates?: number | null; heldCandidates?: number | null }
 ) {
+  return formatMissingFoodFormatRecommendationMessage({
+    pet,
+    language,
+    mode,
+    coverage,
+  });
+
   const alternativePrefix =
     mode === "alternative"
       ? language === "el"
@@ -2598,7 +2607,11 @@ async function getFoodV2RecommendationMessage(
     return formatMissingFormatRecommendationMessage(
       pet,
       options.language ?? "el",
-      options.mode ?? "default"
+      options.mode ?? "default",
+      {
+        totalCandidates: result.total_candidates ?? 0,
+        heldCandidates: result.hold?.length ?? 0,
+      }
     );
   }
 
