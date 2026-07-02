@@ -41,6 +41,11 @@ const checks: ContractCheck[] = [
       'query.get("petId")',
       'query.get("mode")',
       'mode === "progress"',
+      'action === "no_result"',
+      'action === "change_food"',
+      'action === "timeline"',
+      'data-testid="saved-pet-continuation-panel"',
+      'data-testid="saved-pet-continuation-decision-guide"',
       "/print/pet-timeline/${savedPetId}",
       "/account/chatbot?petId=${savedPetId}&mode=progress",
     ],
@@ -221,8 +226,13 @@ assert(
 );
 
 assert(
-  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:customer-journey-readiness-contract"),
-  "CI readiness must run the mobile customer contract before the customer journey contract."
+  packageJson.includes('"qa:saved-pet-continuation-contract"'),
+  "package.json must expose qa:saved-pet-continuation-contract."
+);
+
+assert(
+  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:saved-pet-continuation-contract && npm run qa:customer-journey-readiness-contract"),
+  "CI readiness must run mobile, saved-pet, and customer journey contracts in order."
 );
 
 console.log(

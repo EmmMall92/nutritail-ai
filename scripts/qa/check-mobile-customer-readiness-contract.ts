@@ -137,8 +137,10 @@ for (const check of checks) {
 const packageJson = read("package.json");
 
 assert(
-  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:customer-journey-readiness-contract"),
-  "CI readiness must run mobile customer readiness before the full customer journey contract."
+  packageJson.includes(
+    "qa:mobile-customer-readiness-contract && npm run qa:saved-pet-continuation-contract && npm run qa:customer-journey-readiness-contract"
+  ),
+  "CI readiness must run mobile, saved-pet, and full customer journey contracts in order."
 );
 
 console.log(`Mobile customer readiness contract passed (${checks.length} areas covered).`);
