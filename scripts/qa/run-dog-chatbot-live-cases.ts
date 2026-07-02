@@ -1,6 +1,10 @@
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
+import {
+  detectFoodFormatPreference,
+  recommendationFormatFromPreference,
+} from "@/lib/chatbot/foodFormatPreference";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import {
   applyIntakeMessageGuards,
@@ -55,6 +59,7 @@ type DogQaCase = {
     medicalNoTreatment?: boolean;
     foodV2Candidates?: boolean;
     preferredProteinTop?: string[];
+    formatPreference?: "dry" | "wet" | "mixed";
   };
 };
 
@@ -120,6 +125,7 @@ type FoodV2Item = {
   brand: string;
   display_name: string;
   formula_key: string;
+  format?: string | null;
   life_stage?: string | null;
   dog_size?: string | null;
   source_priority?: string | null;
@@ -312,9 +318,9 @@ const EXTRA_CASES_101_200: DogQaCase[] = [
   { id: 145, message: "Έχω σκύλο αλλεργικό στο καλαμπόκι.", goal: "allergy", safety: "vet_referral", expected: { species: "dog", excludedIngredients: ["corn"] }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 146, message: "Έχω σκύλο αλλεργικό σε πολλά συστατικά.", goal: "allergy", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 147, message: "Έχω σκύλο που τρώει μόνο ψάρι.", goal: "allergy", safety: "normal", expected: { species: "dog", preferredProteins: ["fish"] }, checks: { foodV2Candidates: true } },
-  { id: 148, message: "Έχω σκύλο που τρώει μόνο κονσέρβα.", goal: "general", safety: "normal", expected: { species: "dog" } },
-  { id: 149, message: "Έχω σκύλο που αρνείται όλες τις ξηρές τροφές.", goal: "general", safety: "normal", expected: { species: "dog" } },
-  { id: 150, message: "Έχω σκύλο που τρώει μόνο όταν βάλω υγρή.", goal: "general", safety: "normal", expected: { species: "dog" }, checks: { foodV2Candidates: true } },
+  { id: 148, message: "Έχω σκύλο που τρώει μόνο κονσέρβα.", goal: "general", safety: "normal", expected: { species: "dog" }, checks: { foodV2Candidates: true, formatPreference: "wet" } },
+  { id: 149, message: "Έχω σκύλο που αρνείται όλες τις ξηρές τροφές.", goal: "general", safety: "normal", expected: { species: "dog" }, checks: { foodV2Candidates: true, formatPreference: "wet" } },
+  { id: 150, message: "Έχω σκύλο που τρώει μόνο όταν βάλω υγρή.", goal: "general", safety: "normal", expected: { species: "dog" }, checks: { foodV2Candidates: true, formatPreference: "mixed" } },
   { id: 151, message: "Έχω σκύλο με ουρικό πρόβλημα.", goal: "urinary", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 152, message: "Έχω σκύλο με ιστορικό στρουβίτη.", goal: "urinary", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
   { id: 153, message: "Έχω σκύλο με ιστορικό οξαλικών λίθων.", goal: "urinary", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true, foodV2Candidates: true } },
@@ -994,6 +1000,9 @@ function validateSafety(testCase: DogQaCase, extraction: ExtractionResult | null
 }
 
 async function getRecommendations(testCase: DogQaCase, extraction: ExtractionResult | null) {
+  const formatPreference =
+    testCase.checks?.formatPreference ?? detectFoodFormatPreference(testCase.message);
+  const format = recommendationFormatFromPreference(formatPreference);
   const response = await fetch(new URL("/api/account/foods/v2-recommendations", SITE_URL), {
     method: "POST",
     headers: {
@@ -1005,7 +1014,7 @@ async function getRecommendations(testCase: DogQaCase, extraction: ExtractionRes
       prompt: testCase.message,
       pet: inferPetFromCase(testCase, extraction),
       goal: testCase.goal,
-      format: "dry",
+      format,
       limit_per_bucket: 3,
     }),
   });
@@ -1019,6 +1028,8 @@ async function getRecommendations(testCase: DogQaCase, extraction: ExtractionRes
       value?: FoodV2Item[];
       hold?: FoodV2Item[];
     },
+    requestedFormat: format,
+    formatPreference,
   };
 }
 
@@ -1110,6 +1121,17 @@ function validateFood(testCase: DogQaCase, response: Awaited<ReturnType<typeof g
 
   if (testCase.checks?.foodV2Candidates && top.length === 0) {
     warnings.push("Food V2 returned no visible premium/value candidates.");
+  }
+
+  const expectedFormat =
+    testCase.checks?.formatPreference ?? detectFoodFormatPreference(testCase.message);
+  if (testCase.checks?.formatPreference && response.formatPreference !== testCase.checks.formatPreference) {
+    warnings.push(
+      `Format preference expected ${testCase.checks.formatPreference}, detected ${response.formatPreference ?? "none"}.`
+    );
+  }
+  if (expectedFormat === "wet" && top.some((item) => String(item.format ?? "").toLowerCase() !== "wet")) {
+    warnings.push("Wet-only case surfaced dry/non-wet candidates in the visible shortlist.");
   }
 
   const visibleTopFoodNames = top.slice(0, 3).map((item) => customerFoodName(item, " "));

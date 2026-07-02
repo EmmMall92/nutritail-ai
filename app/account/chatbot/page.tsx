@@ -31,6 +31,11 @@ import {
   removeExcludedFromPreferred as removeSharedExcludedFromPreferred,
 } from "@/lib/chatbot/tastePreferences";
 import {
+  detectFoodFormatPreference,
+  recommendationFormatFromPreference,
+  type FoodFormatPreference,
+} from "@/lib/chatbot/foodFormatPreference";
+import {
   detectSafetyWarnings,
   formatSafetyInterruptMessage,
   hasHardStop,
@@ -169,6 +174,7 @@ type PetIntake = {
   excludedIngredients?: string[];
   preferredProteins?: string[];
   preferencesAnswered?: boolean;
+  preferredFoodFormat?: FoodFormatPreference;
   currentFoodName?: string;
   currentFoodAnswered?: boolean;
   weightGoal?: WeightGoal;
@@ -1665,10 +1671,12 @@ function parseTastePreferences(text: string): {
 
 function mergeTastePreferencesFromText(current: PetIntake, text: string): PetIntake {
   const preferences = parseTastePreferences(text);
+  const preferredFoodFormat = detectFoodFormatPreference(text) ?? current.preferredFoodFormat;
 
   if (
     preferences.excludedIngredients.length === 0 &&
-    preferences.preferredProteins.length === 0
+    preferences.preferredProteins.length === 0 &&
+    !preferredFoodFormat
   ) {
     return current;
   }
@@ -1689,6 +1697,7 @@ function mergeTastePreferencesFromText(current: PetIntake, text: string): PetInt
     ...current,
     excludedIngredients,
     preferredProteins,
+    preferredFoodFormat,
     preferencesAnswered: true,
   });
 }
@@ -2493,7 +2502,7 @@ async function getFoodV2RecommendationMessage(
         preferredProteins: pet.preferredProteins ?? [],
       },
       goal,
-      format: "dry",
+      format: recommendationFormatFromPreference(pet.preferredFoodFormat),
       limit_per_bucket: 3,
       excluded_brands:
         options.mode === "alternative"
@@ -2667,6 +2676,22 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
         ? `Προτιμά: ${(pet.preferredProteins ?? []).join(", ")}`
         : `Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`
     );
+  }
+
+  if (pet.preferredFoodFormat) {
+    const formatLabel =
+      pet.preferredFoodFormat === "wet"
+        ? greek
+          ? "υγρή τροφή"
+          : "wet food"
+        : pet.preferredFoodFormat === "mixed"
+          ? greek
+            ? "ξηρά με υγρή/ανάμειξη"
+            : "dry with wet/mixed feeding"
+          : greek
+            ? "ξηρά τροφή"
+            : "dry food";
+    details.push(greek ? `Μορφή τροφής: ${formatLabel}` : `Food format: ${formatLabel}`);
   }
 
   return details.join("\n");
@@ -5298,10 +5323,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "currentFood") {
       const currentFoodName = text.trim();
+      const preferredFoodFormat =
+        detectFoodFormatPreference(currentFoodName) ?? workingPet.preferredFoodFormat;
 
       const nextPet: PetIntake = {
         ...workingPet,
         currentFoodAnswered: true,
+        preferredFoodFormat,
         currentFoodName:
           isUnknownFoodAnswer(currentFoodName)
             ? undefined
@@ -5316,6 +5344,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     if (step === "preferences") {
       const preferences = parseTastePreferences(text);
+      const preferredFoodFormat =
+        detectFoodFormatPreference(text) ?? workingPet.preferredFoodFormat;
       const excludedIngredients = uniqueTerms([
         ...(workingPet.excludedIngredients ?? []),
         ...preferences.excludedIngredients,
@@ -5332,6 +5362,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         ...workingPet,
         excludedIngredients,
         preferredProteins,
+        preferredFoodFormat,
         preferencesAnswered: true,
       };
 
