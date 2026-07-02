@@ -262,6 +262,13 @@ assert(
 
 assert(
   liveQaPage.includes("Why it may not move every PR") &&
+    liveQaPage.includes('data-testid="customer-product-next-unlock"') &&
+    liveQaPage.includes("Next customer score unlock") &&
+    liveQaPage.includes("Evidence needed next") &&
+    liveQaPage.includes("normal customer can finish the full flow") &&
+    liveQaPage.includes('data-testid="customer-product-score-rule"') &&
+    liveQaPage.includes("Score movement rule") &&
+    liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
     liveQaPage.includes("Next moves toward") &&
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
     liveQaPage.includes("customerUxUnlockGates") &&
