@@ -123,6 +123,20 @@ returning-customer nutrition loop becoming visible in the account dashboard:
 - This does not close the broader SaaS launch gap, but it removes a real
   customer-retention weakness in the nutrition journey.
 
+Fresh recommendation evidence after that move confirms that the score is not
+the old 78-80% foundation stage:
+
+- Dog live QA cases **101-200** now pass with **100/100** checked and
+  **0 review** in deterministic Food V2 mode.
+- This covers high-activity and working dogs, apartment/low-activity dogs,
+  sterilised and weight-prone cases, GI and allergy/intolerance cases, urinary,
+  renal, hepatic, cardiac, joint, recovery, pregnancy/lactation, puppy, senior,
+  climate/environment, and rescue scenarios.
+- This does not raise the customer product score above 95 by itself, because
+  moving beyond the beta-candidate line needs authenticated OpenAI/live journey
+  proof and real beta-user feedback. It does strengthen confidence that the
+  recommendation engine is no longer sitting at the 78-80% foundation level.
+
 The previous move from **93-94%** to **94-95%** is justified by customer-facing
 launch polish that reduced real signup, trust, and saved-report friction:
 
