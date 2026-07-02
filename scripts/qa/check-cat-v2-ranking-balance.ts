@@ -85,6 +85,42 @@ const sterilisedRanking = rankFoodV2ForPet({
   pet: adultNonNeuteredCat,
   goal: "general",
 });
+const lowActivityNonNeuteredCat = {
+  ...adultNonNeuteredCat,
+  age: 2,
+  activityLevel: "low" as const,
+};
+const culinesseAdult = catFood({
+  id: "culinesse-adult",
+  brand: "Josera",
+  formula_key: "josera|culinesse-adult|cat|dry",
+  display_name: "Culinesse Adult",
+  commercial_tags: ["adult"],
+  kcal_per_100g: 347.5,
+});
+const culinesseGeneralRanking = rankFoodV2ForPet({
+  food: culinesseAdult,
+  nutrients: nutrients({ fat_percent: 13.5 }),
+  pet: lowActivityNonNeuteredCat,
+  goal: "general",
+});
+
+if (
+  culinesseGeneralRanking.signals.some((signal) =>
+    [
+      "lower_calorie_weight_sensitive",
+      "acceptable_energy_neutered",
+      "fat_dense_neutered",
+      "sterilised_fit",
+    ].includes(signal.code)
+  )
+) {
+  console.error(
+    "Low activity alone should not turn a non-neutered general cat into a sterilised/weight-sensitive recommendation."
+  );
+  console.error(culinesseGeneralRanking.signals);
+  process.exit(1);
+}
 
 if (sterilisedRanking.total_score >= regularRanking.total_score) {
   console.error("Non-neutered general cat should not default to a sterilised/light formula.");

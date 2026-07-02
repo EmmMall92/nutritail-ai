@@ -156,7 +156,6 @@ export function isWeightSensitiveFeedingContext(input: {
     input.goal === "sterilised" ||
     input.goal === "weight_control" ||
     input.pet.neutered ||
-    input.pet.activityLevel === "low" ||
     /weight control|weight loss|loss|lose weight|obesity|overweight|sterilis|neuter/.test(
       healthText
     )
