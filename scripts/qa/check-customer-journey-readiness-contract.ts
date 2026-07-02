@@ -221,6 +221,11 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:customer-journey-unlock-gate"'),
+  "package.json must expose qa:customer-journey-unlock-gate."
+);
+
+assert(
   packageJson.includes("qa:customer-journey-readiness-contract"),
   "CI readiness must include qa:customer-journey-readiness-contract."
 );
@@ -231,8 +236,8 @@ assert(
 );
 
 assert(
-  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:saved-pet-continuation-contract && npm run qa:customer-journey-readiness-contract"),
-  "CI readiness must run mobile, saved-pet, and customer journey contracts in order."
+  packageJson.includes("qa:mobile-customer-readiness-contract && npm run qa:saved-pet-continuation-contract && npm run qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate"),
+  "CI readiness must run mobile, saved-pet, customer journey, and customer journey unlock gate contracts in order."
 );
 
 console.log(

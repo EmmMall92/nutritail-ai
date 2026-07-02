@@ -199,8 +199,20 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:customer-journey-unlock-gate"'),
+  "package.json must expose qa:customer-journey-unlock-gate so the first customer UX unlock gate has a protected evidence check."
+);
+
+assert(
   packageJson.includes('"qa:food-v2-format-coverage"'),
   "package.json must expose qa:food-v2-format-coverage so wet/dry data coverage can be checked."
+);
+
+assert(
+  packageJson.includes(
+    "qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate && npm run qa:launch-readiness-score-contract"
+  ),
+  "CI readiness must run the customer journey unlock gate before launch and product progress score contracts."
 );
 
 assert(
