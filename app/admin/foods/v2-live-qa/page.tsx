@@ -27,6 +27,12 @@ type CustomerProductProgressSummary = {
   overallSaasEstimate: string;
   latestMovement: string;
   scoreReadout: string[];
+  scorecard: {
+    track: string;
+    current: string;
+    provenNow: string;
+    blocksNextMove: string;
+  }[];
   whyItFeelsStuck: string[];
   nextScoreMoves: string[];
   customerUxUnlockGates: {
@@ -161,6 +167,16 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       "A high automated score does not mean the customer-facing journey is already polished.",
       "The next visible movement needs fresh customer journey proof, not just another merge.",
     ],
+    scorecard: [
+      {
+        track: "Customer-facing journey",
+        current: "unknown",
+        provenNow:
+          "Protected code paths exist for recommendations, selected food, grams/day, save, report, timeline, and progress return.",
+        blocksNextMove:
+          "Needs fresh logged-in production journey proof with a normal customer flow.",
+      },
+    ],
     whyItFeelsStuck: [
       "Customer progress moves only when a real customer-visible risk is reduced.",
     ],
@@ -201,6 +217,8 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       fallback.latestMovement;
     const whySection =
       doc.match(/## Why It Feels Stuck\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const scorecardSection =
+      doc.match(/## Customer UX Scorecard\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const nextSection =
       doc.match(/## Next Score Moves\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const unlockGateSection =
@@ -230,6 +248,29 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         .filter((line) => line.startsWith("- "))
         .map((line) => line.replace(/^- /, ""))
         .slice(0, 5) || fallback.overallLaunchBlockers;
+    const scorecard = scorecardSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          line.startsWith("| ") &&
+          !line.includes("---") &&
+          !line.includes("Track |")
+      )
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          track: cells[0] ?? "Unknown track",
+          current: cells[1] ?? "unknown",
+          provenNow: cells[2] ?? "Evidence not listed.",
+          blocksNextMove: cells[3] ?? "Next blocker not listed.",
+        };
+      })
+      .slice(0, 5);
     const customerUxUnlockGates = unlockGateSection
       .split("\n")
       .map((line) => line.trim())
@@ -258,6 +299,7 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         `Recommendation engine beta confidence: ${recommendationEngineEstimate}.`,
         `Overall SaaS launch progress: ${overallSaasEstimate}.`,
       ],
+      scorecard: scorecard.length > 0 ? scorecard : fallback.scorecard,
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
       nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
       customerUxUnlockGates:
@@ -643,6 +685,45 @@ export default function FoodV2LiveQaPage() {
                   {item}
                 </div>
               ))}
+            </div>
+
+            <div
+              className="mt-4 rounded-xl border border-blue-200 bg-white/80 p-4"
+              data-testid="customer-ux-scorecard"
+            >
+              <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Customer UX scorecard</p>
+                  <p className="mt-1 text-sm text-blue-900">
+                    This separates what is already proven from what still blocks
+                    the next score movement.
+                  </p>
+                </div>
+                <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-900">
+                  Current customer UX: {productProgress.customerUxEstimate}
+                </span>
+              </div>
+              <div className="mt-4 grid gap-3 lg:grid-cols-5">
+                {productProgress.scorecard.map((item) => (
+                  <article
+                    key={`${item.track}-${item.current}`}
+                    className="rounded-xl border border-blue-100 bg-blue-50/70 p-3 text-sm text-blue-950"
+                  >
+                    <p className="font-semibold">{item.track}</p>
+                    <p className="mt-2 inline-flex rounded-lg border border-blue-200 bg-white/80 px-2 py-1 text-xs font-bold">
+                      {item.current}
+                    </p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-blue-700">
+                      Proven now
+                    </p>
+                    <p className="mt-1 text-xs leading-5">{item.provenNow}</p>
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-amber-700">
+                      Blocks next move
+                    </p>
+                    <p className="mt-1 text-xs leading-5">{item.blocksNextMove}</p>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
           <Link

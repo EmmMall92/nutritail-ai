@@ -37,6 +37,12 @@ const requiredMarkers = [
   "Customer UX readiness is currently **82%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
+  "## Customer UX Scorecard",
+  "Customer-facing journey",
+  "What is proven now",
+  "What blocks the next move",
+  "Protected code paths exist for intake, 3 premium + 3 value cards",
+  "Needs fresh logged-in production journey proof",
   "Do not collapse them into one",
   "customer-facing",
   "The latest launch-wide move from **89%** to **90%**",
@@ -253,7 +259,12 @@ assert(
 assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
     liveQaPage.includes('data-testid="customer-product-progress-readout"') &&
+    liveQaPage.includes('data-testid="customer-ux-scorecard"') &&
     liveQaPage.includes("Customer product progress") &&
+    liveQaPage.includes("Customer UX scorecard") &&
+    liveQaPage.includes("productProgress.scorecard") &&
+    liveQaPage.includes("Proven now") &&
+    liveQaPage.includes("Blocks next move") &&
     liveQaPage.includes("Customer UX readiness") &&
     liveQaPage.includes("Recommendation engine") &&
     liveQaPage.includes("Overall SaaS launch") &&

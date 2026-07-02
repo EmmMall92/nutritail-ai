@@ -25,6 +25,20 @@ near the 80-82% band because recent live conversations still exposed customer
 friction: verbose result copy, confusing food-choice presentation, language
 rough edges, and follow-up flows that need more live proof.
 
+## Customer UX Scorecard
+
+This scorecard explains why progress can feel flat even while the system is
+getting stronger. It separates customer-facing polish from engine confidence and
+from overall SaaS launch readiness.
+
+| Track | Current | What is proven now | What blocks the next move |
+| --- | --- | --- | --- |
+| Customer-facing journey | 82% | Protected code paths exist for intake, 3 premium + 3 value cards, food choice, grams/day, save, report, timeline, and progress return. | Needs fresh logged-in production journey proof that a normal customer can finish without manual explanation. |
+| Recommendation engine | 95% beta-candidate | Food V2 retrieval, deterministic ranking, OpenAI fact extraction, safety guards, dog 201-600, and cat 001-500 QA are passing. | Keep converting every real manual/live mistake into a ranking or intake guard. |
+| Saved-pet retention loop | strong but not fully live-proven | Account, pet profile, report, timeline, progress check, no-result advice, and flavour/brand change paths are protected. | Needs production repeat proof with the same saved pet after an earlier analysis. |
+| Report/account clarity | good foundation | Report/account surfaces calories, selected food, progress context, timeline, and return actions. | Needs final mobile/customer visual proof that the next action is obvious without reading admin notes. |
+| SaaS launch readiness | 90% | Public trust pages, beta plan direction, auth recovery, monitoring contracts, and post-deploy QA exist. | Paid checkout/billing enforcement, final legal review, monitoring freshness, and first beta-user feedback are still open. |
+
 Recommendation engine beta confidence is higher because Food V2, ranking rules,
 dog/cat QA banks, OpenAI fact extraction, safety guards, and deterministic food
 selection have broad automated evidence. That does not mean the customer-facing
