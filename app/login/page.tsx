@@ -194,11 +194,28 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+          <div
+            className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700"
+            data-testid="auth-login-error-next-actions"
+          >
             {error}
             <p className="mt-1 text-xs text-red-600">
               Έλεγξε email και κωδικό ή κάνε επαναφορά αν δεν είσαι σίγουρος/η.
             </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <Link
+                href="/forgot-password"
+                className="rounded-lg bg-red-700 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-red-800"
+              >
+                Επαναφορά κωδικού
+              </Link>
+              <Link
+                href={registerHref}
+                className="rounded-lg border border-red-200 bg-white px-3 py-2 text-center text-xs font-semibold text-red-800 transition hover:bg-red-100"
+              >
+                Δημιουργία λογαριασμού
+              </Link>
+            </div>
           </div>
         )}
 
