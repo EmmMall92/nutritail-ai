@@ -111,7 +111,7 @@ const requiredReportMarkers = [
   "Βάρος",
   "Γραμμάρια",
   "getTreatAllowance(analysis)",
-  "Before you start",
+  "Πριν ξεκινήσεις",
   "Σύνοψη πλάνου",
   "Τι κρατάμε για τον/την",
   "Η γρήγορη εικόνα για χρήση στο σπίτι",
@@ -121,7 +121,7 @@ const requiredReportMarkers = [
   "Ποσότητα",
   "Κράτα περίπου",
   "Πρακτικά:",
-  "Check these 4 points before using the plan",
+  "Έλεγξε αυτά τα 4 σημεία πριν χρησιμοποιήσεις το πλάνο",
   "Ασφαλής χρήση της αναφοράς",
   "Χρησιμοποίησέ τη σαν πλάνο σίτισης, όχι σαν διάγνωση.",
   "Καθημερινή χρήση",
@@ -135,12 +135,12 @@ const requiredReportMarkers = [
   "Επόμενος έλεγχος",
   "reportCustomerTakeaway.cards.map",
   "επόμενο progress check",
-  "Food selected",
-  "Daily amount",
-  "Calorie target",
-  "Follow-up date",
-  "Ready to use",
-  "Confirm before use",
+  "Τροφή",
+  "Ημερήσια ποσότητα",
+  "Θερμιδικός στόχος",
+  "Επανέλεγχος",
+  "Έτοιμο για χρήση",
+  "Επιβεβαίωσε πριν τη χρήση",
   "Πρώτη εβδομάδα εφαρμογής",
   "Κράτα το πλάνο σταθερό πριν κρίνουμε αν πέτυχε",
   "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν ακόμη του αρέσει η τροφή.",
@@ -165,6 +165,26 @@ for (const marker of suspiciousMojibakeMarkers) {
   assert(
     !reportPage.includes(marker),
     `Printable pet report must not include mojibake marker: ${marker}`
+  );
+}
+
+const reportEnglishMicrocopyThatShouldStayOut = [
+  "Before you start",
+  "Check these 4 points before using the plan",
+  "Food selected",
+  "Daily amount",
+  "Calorie target",
+  "Follow-up date",
+  "Ready to use",
+  "Confirm before use",
+  "Needs confirmation",
+  "Needs food calories",
+];
+
+for (const marker of reportEnglishMicrocopyThatShouldStayOut) {
+  assert(
+    !reportPage.includes(marker),
+    `Printable pet report must not leak English microcopy into the Greek customer report: ${marker}`
   );
 }
 
