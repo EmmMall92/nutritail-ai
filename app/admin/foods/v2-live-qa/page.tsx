@@ -31,6 +31,22 @@ type CustomerProductProgressSummary = {
   overallLaunchBlockers: string[];
 };
 
+type FormatCoverageScenario = {
+  id: string;
+  species: string;
+  format: string;
+  visibleFoods: string;
+  warning: string;
+};
+
+type FoodV2FormatCoverageSummary = {
+  status: string;
+  checked: string;
+  passedWithoutWarnings: string;
+  wetCannedDataGaps: string;
+  scenarios: FormatCoverageScenario[];
+};
+
 function readLiveReadinessSummary(): ReadinessSummary {
   const fallback = {
     result: "Not generated",
@@ -194,6 +210,55 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
   }
 }
 
+function readFoodV2FormatCoverageSummary(): FoodV2FormatCoverageSummary {
+  const fallback = {
+    status: "Not generated",
+    checked: "unknown",
+    passedWithoutWarnings: "unknown",
+    wetCannedDataGaps: "unknown",
+    scenarios: [],
+  };
+
+  try {
+    const report = readFileSync(
+      path.join(process.cwd(), "reports/food_v2_format_coverage_qa.md"),
+      "utf8",
+    );
+    const scenarios = [...report.matchAll(/### ([^\n\r]+)([\s\S]*?)(?=\n### |\n*$)/g)].map(
+      ([, id, block]) => {
+        const warningLines = [...block.matchAll(/^- (.+)$/gm)]
+          .map((match) => match[1]?.trim() ?? "")
+          .filter((line) => line && line !== "None");
+
+        return {
+          id: id.trim(),
+          species: block.match(/- Species:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+          format:
+            block.match(/- Requested format:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown",
+          visibleFoods:
+            block.match(/- Visible premium\/value foods:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+            "unknown",
+          warning: warningLines[0] ?? "None",
+        };
+      },
+    );
+    const wetGapCount =
+      report.match(/Wet\/canned data gaps:\s*([^\n\r]+)/i)?.[1]?.trim() ?? "unknown";
+
+    return {
+      status: wetGapCount === "0" ? "PASS" : "DATA GAP",
+      checked: report.match(/Checked:\s*([^\n\r]+)/i)?.[1]?.trim() ?? fallback.checked,
+      passedWithoutWarnings:
+        report.match(/Passed without warnings:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.passedWithoutWarnings,
+      wetCannedDataGaps: wetGapCount,
+      scenarios,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 const liveChecks = [
   {
     title: "Deploy sanity",
@@ -294,6 +359,7 @@ const liveUrls = [
 export default function FoodV2LiveQaPage() {
   const readiness = readLiveReadinessSummary();
   const productProgress = readCustomerProductProgressSummary();
+  const formatCoverage = readFoodV2FormatCoverageSummary();
   const isPassing = readiness.result === "PASS";
 
   return (
@@ -445,6 +511,79 @@ export default function FoodV2LiveQaPage() {
         <p className="mt-4 rounded-xl border border-blue-200 bg-white/70 p-4 text-sm">
           Latest movement: {productProgress.latestMovement}
         </p>
+      </div>
+
+      <div
+        className="rounded-2xl border border-purple-200 bg-purple-50 p-5 text-purple-950 shadow-sm"
+        data-testid="food-v2-format-coverage-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Food V2 format coverage
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {formatCoverage.status === "PASS"
+                ? "Dry and wet coverage look ready"
+                : "Wet/canned data gap is still visible"}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm">
+              This reads the live format-coverage QA report. It explains why dry
+              dog/cat recommendations can be strong while wet-only customer
+              journeys still need more Food V2 data before we call the broad
+              recommendation experience complete.
+            </p>
+          </div>
+          <code className="rounded-lg border border-purple-300 bg-white/70 px-3 py-2 text-xs font-semibold text-purple-950">
+            npm.cmd run qa:food-v2-format-coverage
+          </code>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-purple-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-purple-700">
+              Checked
+            </p>
+            <p className="mt-1 text-2xl font-bold">{formatCoverage.checked}</p>
+          </div>
+          <div className="rounded-xl border border-purple-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-purple-700">
+              Passed cleanly
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {formatCoverage.passedWithoutWarnings}
+            </p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+              Wet/canned gaps
+            </p>
+            <p className="mt-1 text-2xl font-bold">{formatCoverage.wetCannedDataGaps}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {formatCoverage.scenarios.map((scenario) => (
+            <div
+              key={scenario.id}
+              className="rounded-xl border border-purple-200 bg-white/80 p-4 text-sm"
+            >
+              <p className="font-semibold">{scenario.id}</p>
+              <p className="mt-1 text-purple-800">
+                {scenario.species} / {scenario.format}
+              </p>
+              <p className="mt-2">
+                Visible choices: <strong>{scenario.visibleFoods}</strong>
+              </p>
+              <p className="mt-2 text-xs text-purple-800">{scenario.warning}</p>
+            </div>
+          ))}
+          {formatCoverage.scenarios.length === 0 && (
+            <div className="rounded-xl border border-purple-200 bg-white/80 p-4 text-sm">
+              Run the format coverage QA command to generate the report.
+            </div>
+          )}
+        </div>
       </div>
 
       <div

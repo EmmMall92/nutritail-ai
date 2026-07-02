@@ -199,6 +199,17 @@ assert(
 );
 
 assert(
+  liveQaPage.includes("function readFoodV2FormatCoverageSummary") &&
+    liveQaPage.includes("reports/food_v2_format_coverage_qa.md") &&
+    liveQaPage.includes('data-testid="food-v2-format-coverage-summary"') &&
+    liveQaPage.includes("Food V2 format coverage") &&
+    liveQaPage.includes("Wet/canned data gap is still visible") &&
+    liveQaPage.includes("npm.cmd run qa:food-v2-format-coverage") &&
+    liveQaPage.includes("formatCoverage.wetCannedDataGaps"),
+  "Admin live QA page must expose Food V2 dry/wet format coverage and wet/canned data gaps."
+);
+
+assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
     liveQaPage.includes('data-testid="customer-product-progress-readout"') &&
     liveQaPage.includes("Customer product progress") &&
