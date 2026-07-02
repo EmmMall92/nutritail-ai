@@ -393,6 +393,21 @@ const checks = [
     expected: "You do not need to start from zero.",
   },
   {
+    label: "Saved pet continuation includes a decision guide",
+    file: "app/account/chatbot/page.tsx",
+    expected: 'data-testid="saved-pet-continuation-decision-guide"',
+  },
+  {
+    label: "Saved pet decision guide handles no-progress cases",
+    file: "app/account/chatbot/page.tsx",
+    expected: "No visible progress",
+  },
+  {
+    label: "Saved pet decision guide handles taste or brand changes",
+    file: "app/account/chatbot/page.tsx",
+    expected: "Taste or brand issue",
+  },
+  {
     label: "Saved pet continuation offers a fresh recommendation path",
     file: "app/account/chatbot/page.tsx",
     expected: 'data-testid={`saved-pet-continuation-action-${action.id}`}',

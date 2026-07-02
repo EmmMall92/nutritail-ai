@@ -386,6 +386,47 @@ const mobileFollowUpActions = mobileFollowUpActionIds
   .map((id) => followUpActions.find((action) => action.id === id))
   .filter((action): action is FollowUpActionConfig => Boolean(action));
 
+const savedPetDecisionGuide: {
+  action: FollowUpAction;
+  title: string;
+  titleEl: string;
+  helper: string;
+  helperEl: string;
+}[] = [
+  {
+    action: "progress",
+    title: "Weight or results changed",
+    titleEl: "Άλλαξε βάρος ή αποτέλεσμα",
+    helper: "Check weight, daily grams, treats, appetite, stool, and energy before changing the plan.",
+    helperEl:
+      "Ελέγχουμε βάρος, γραμμάρια, λιχουδιές, όρεξη, κόπρανα και ενέργεια πριν αλλάξουμε πλάνο.",
+  },
+  {
+    action: "no_result",
+    title: "No visible progress",
+    titleEl: "Δεν φαίνεται πρόοδος",
+    helper: "Review consistency, calories, snacks, activity, and whether the selected food still fits.",
+    helperEl:
+      "Βλέπουμε συνέπεια, θερμίδες, λιχουδιές, δραστηριότητα και αν η τροφή ταιριάζει ακόμη.",
+  },
+  {
+    action: "change_food",
+    title: "Taste or brand issue",
+    titleEl: "Θέμα γεύσης ή εταιρείας",
+    helper: "Keep the same goal but ask for different flavors, proteins, or brands.",
+    helperEl:
+      "Κρατάμε τον ίδιο στόχο αλλά ζητάμε άλλες γεύσεις, πρωτεΐνες ή εταιρείες.",
+  },
+  {
+    action: "timeline",
+    title: "See history first",
+    titleEl: "Πρώτα δες ιστορικό",
+    helper: "Open previous analyses and reports before deciding the next step.",
+    helperEl:
+      "Βλέπεις προηγούμενες αναλύσεις και reports πριν αποφασίσεις το επόμενο βήμα.",
+  },
+];
+
 const KNOWN_FOOD_BRANDS = [
   "royal canin",
   "ambrosia",
@@ -5804,6 +5845,35 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 >
                   {botText("Ιστορικό", "Timeline")}
                 </a>
+              </div>
+            </div>
+
+            <div
+              data-testid="saved-pet-continuation-decision-guide"
+              className="mt-4 rounded-2xl border border-blue-200 bg-white p-4"
+            >
+              <p className="text-sm font-semibold text-blue-950">
+                {botText(
+                  "Τι άλλαξε από την τελευταία φορά;",
+                  "What changed since the last visit?"
+                )}
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {savedPetDecisionGuide.map((item) => (
+                  <button
+                    key={`${item.action}-${item.title}`}
+                    type="button"
+                    onClick={() => handleFollowUpAction(item.action)}
+                    className="rounded-xl border border-blue-100 bg-blue-50 p-3 text-left transition hover:border-blue-500 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <span className="block text-sm font-semibold text-blue-950">
+                      {botText(item.titleEl, item.title)}
+                    </span>
+                    <span className="mt-1 block text-sm leading-5 text-blue-900">
+                      {botText(item.helperEl, item.helper)}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
 
