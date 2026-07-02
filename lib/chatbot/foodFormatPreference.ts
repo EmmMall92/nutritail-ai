@@ -18,6 +18,8 @@ export function detectFoodFormatPreference(text: string): FoodFormatPreference |
   const drySignals = /\b(dry|kibble|croquette|croquettes)\b|ξηρ|κροκετ/u;
   const dryRefusal =
     /(αρνειται|δεν τρωει|δεν θελει|δεν δεχεται|refuse|refuses|refusing|rejects|does not eat|doesnt eat).{0,50}(ξηρ|κροκετ|dry|kibble|croquette)/u;
+  const wetRefusal =
+    /(αρνειται|δεν τρωει|δεν θελει|δεν δεχεται|refuse|refuses|refusing|rejects|does not eat|doesnt eat).{0,50}(υγρ|κονσερβ|φακελακ|wet|canned|pouch)/u;
   const wetOnly =
     /(μονο|αποκλειστικα|only).{0,40}(υγρ|κονσερβ|φακελακ|wet|canned|pouch)/u;
   const dryOnly =
@@ -27,6 +29,7 @@ export function detectFoodFormatPreference(text: string): FoodFormatPreference |
 
   const hasMixedSignal = mixedSignals.test(value);
   const hasDryRefusal = dryRefusal.test(value);
+  const hasWetRefusal = wetRefusal.test(value);
   const hasWetOnly = wetOnly.test(value);
   const hasDryOnly = dryOnly.test(value);
   const hasWetSignal = wetSignals.test(value);
@@ -34,6 +37,7 @@ export function detectFoodFormatPreference(text: string): FoodFormatPreference |
 
   if (hasMixedSignal) return "mixed";
   if (hasDryRefusal || hasWetOnly) return "wet";
+  if (hasWetRefusal) return "dry";
   if (hasDryOnly) return "dry";
   if (hasWetSignal && hasDrySignal) return "mixed";
   if (hasWetSignal) return "wet";
