@@ -250,7 +250,7 @@ public beta launch:
 
 ## Overall SaaS Blockers
 
-These are the main reasons the whole project remains around 87% even though the
+These are the main reasons the whole project remains around 90% even though the
 customer nutrition experience is now a beta candidate:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
@@ -277,7 +277,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100, but customer product progress is about
-> 95% beta-candidate and overall SaaS launch progress is about 87%. The next
+> 95% beta-candidate and overall SaaS launch progress is about 90%. The next
 > product confidence point depends on real customer chatbot journey proof or
 > live OpenAI proof, while the launch-wide score depends on monitoring,
 > payments/subscription direction, and production operating proof.

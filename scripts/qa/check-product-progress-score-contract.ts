@@ -126,6 +126,12 @@ for (const marker of requiredMarkers) {
   assert(doc.includes(marker), `Product progress rubric is missing marker: ${marker}`);
 }
 
+assert(
+  !doc.includes("overall SaaS launch progress is about 87%") &&
+    !doc.includes("whole project remains around 87%"),
+  "Product progress rubric must not keep stale 87% overall SaaS launch wording after the 90% update."
+);
+
 const weights = [...doc.matchAll(/\| [^|\n]+ \| (\d+) \|/g)]
   .map((match) => Number(match[1]))
   .filter((value) => Number.isFinite(value));
