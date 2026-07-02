@@ -168,8 +168,13 @@ assert(
 
 assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
+    liveQaPage.includes('data-testid="customer-product-progress-readout"') &&
     liveQaPage.includes("Customer product progress") &&
     liveQaPage.includes("Overall SaaS launch") &&
+    liveQaPage.includes("scoreReadout") &&
+    liveQaPage.includes("78-80% was the old foundation stage") &&
+    liveQaPage.includes("Customer nutrition experience:") &&
+    liveQaPage.includes("Overall SaaS launch progress:") &&
     liveQaPage.includes("productProgress.overallSaasEstimate") &&
     liveQaPage.includes("productProgress.overallLaunchBlockers") &&
     liveQaPage.includes("separate from automated"),

@@ -25,6 +25,7 @@ type CustomerProductProgressSummary = {
   estimate: string;
   overallSaasEstimate: string;
   latestMovement: string;
+  scoreReadout: string[];
   whyItFeelsStuck: string[];
   nextScoreMoves: string[];
   overallLaunchBlockers: string[];
@@ -111,6 +112,11 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     estimate: "unknown",
     overallSaasEstimate: "unknown",
     latestMovement: "No product progress rubric found.",
+    scoreReadout: [
+      "78-80% was the old foundation stage, not the current customer progress score.",
+      "Customer product progress and overall SaaS launch progress are tracked separately.",
+      "The next visible movement needs fresh customer journey proof, not just another merge.",
+    ],
     whyItFeelsStuck: [
       "Customer progress moves only when a real customer-visible risk is reduced.",
     ],
@@ -171,6 +177,11 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       estimate,
       overallSaasEstimate,
       latestMovement,
+      scoreReadout: [
+        "78-80% was the old foundation stage, not the current customer progress score.",
+        `Customer nutrition experience: ${estimate}.`,
+        `Overall SaaS launch progress: ${overallSaasEstimate}.`,
+      ],
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
       nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
       overallLaunchBlockers:
@@ -375,6 +386,20 @@ export default function FoodV2LiveQaPage() {
               accurate. Overall SaaS launch progress moves only when the wider
               business and production readiness gaps close too.
             </p>
+
+            <div
+              className="mt-4 grid gap-3 sm:grid-cols-3"
+              data-testid="customer-product-progress-readout"
+            >
+              {productProgress.scoreReadout.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-xl border border-blue-200 bg-white/80 p-3 text-sm font-medium text-blue-950"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
           <Link
             href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/product-progress-score.md"
