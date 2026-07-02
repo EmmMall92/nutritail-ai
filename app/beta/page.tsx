@@ -88,6 +88,9 @@ export default function BetaPage() {
             <Link href="/how-it-works" className="rounded-full border border-black/15 px-4 py-2">
               Πώς δουλεύει
             </Link>
+            <Link href="/plans" className="rounded-full border border-black/15 px-4 py-2">
+              Plans
+            </Link>
           </nav>
         </div>
       </header>
