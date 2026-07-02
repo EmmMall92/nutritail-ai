@@ -5507,6 +5507,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         );
 
     addMessages(createMessage("bot", selectedFoodReply));
+
+    if (gramsPerDay) {
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Για την πρώτη εβδομάδα κράτα τα γεύματα σταθερά, χωρίς πολλές νέες λιχουδιές ή πρόσθετα. Μετά από 2-4 εβδομάδες γύρνα για progress check με νέο βάρος, πραγματικά γραμμάρια/ημέρα, όρεξη, κόπρανα, ενέργεια και αν εξακολουθεί να του αρέσει η γεύση.",
+            "For the first week, keep meals consistent and avoid adding many new treats or toppers. After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour."
+          )
+        )
+      );
+    }
   }
 
   async function saveToMyAccount() {
