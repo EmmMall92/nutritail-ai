@@ -105,6 +105,11 @@ type AccountPlanSnapshot = {
   alternativeHref: string;
 };
 
+type AccountPlanWatchItem = {
+  label: string;
+  detail: string;
+};
+
 type BetaUsageSnapshot = {
   petsUsed: number;
   petsLimit: number;
@@ -245,6 +250,59 @@ function getAccountPlanSnapshot({
     timelineHref: `/print/pet-timeline/${latestPet.id}`,
     alternativeHref: `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`,
   };
+}
+
+function getAccountPlanWatchlist({
+  latestPet,
+  latestAnalysis,
+}: {
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+}): AccountPlanWatchItem[] {
+  if (!latestPet || !latestAnalysis) return [];
+
+  const weightGoal = String(getAnalysisWeightGoal(latestAnalysis) ?? "").toLowerCase();
+  const species = latestPet.species;
+  const foodName = getAnalysisFoodName(latestAnalysis);
+  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
+  const items: AccountPlanWatchItem[] = [
+    {
+      label: "Βάρος",
+      detail: weightGoal.includes("loss")
+        ? "Ζύγισε κάθε 2-4 εβδομάδες. Θέλουμε σταδιακή πρόοδο, όχι απότομη πτώση."
+        : weightGoal.includes("gain")
+          ? "Παρακολούθησε αν ανεβαίνει σταδιακά χωρίς να χαλάει η όρεξη ή τα κόπρανα."
+          : "Κράτα σταθερό ρυθμό ζυγίσματος για να δεις γρήγορα αν ξεφεύγει η τάση.",
+    },
+    {
+      label: "Ποσότητα",
+      detail: feedingGrams
+        ? `Ξεκίνα από περίπου ${feedingGrams}g/ημέρα και σημείωσε αν έφαγε όλη την ποσότητα.`
+        : "Μόλις επιλέξεις τροφή με θερμίδες, το NutriTail θα κρατήσει και γραμμάρια/ημέρα.",
+    },
+    {
+      label: "Λιχουδιές",
+      detail:
+        "Σημείωσε πόσες δίνεις μέσα στη μέρα. Μικρές λιχουδιές μπορούν να αλλάξουν το αποτέλεσμα.",
+    },
+    {
+      label: species === "cat" ? "Όρεξη / ούρηση" : "Όρεξη / κόπρανα",
+      detail:
+        species === "cat"
+          ? "Για γάτα, κράτα σημείωση για όρεξη, νερό, τουαλέτα και αλλαγές στην ούρηση."
+          : "Για σκύλο, κράτα σημείωση για όρεξη, ενέργεια, κόπρανα και αποδοχή της τροφής.",
+    },
+  ];
+
+  if (foodName) {
+    items.push({
+      label: "Αποδοχή τροφής",
+      detail:
+        "Αν βαρεθεί γεύση ή εταιρεία, γύρνα στο chatbot για εναλλακτική χωρίς να ξεκινήσεις από την αρχή.",
+    });
+  }
+
+  return items.slice(0, 5);
 }
 
 function getProgressDecisionLabel(value?: string | null) {
@@ -743,6 +801,10 @@ export default function AccountPage() {
     latestPet,
     latestAnalysis,
   });
+  const accountPlanWatchlist = getAccountPlanWatchlist({
+    latestPet,
+    latestAnalysis,
+  });
   const dashboardNextActions = getDashboardNextActions({
     pets,
     latestPet,
@@ -983,6 +1045,44 @@ export default function AccountPage() {
               </p>
             </div>
           </div>
+
+          {accountPlanWatchlist.length > 0 && (
+            <div
+              data-testid="account-plan-watchlist"
+              className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
+            >
+              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                    Μέχρι το επόμενο check
+                  </p>
+                  <h3 className="mt-1 text-lg font-bold text-emerald-950">
+                    Τι αξίζει να παρακολουθείς
+                  </h3>
+                </div>
+                <p className="max-w-2xl text-sm leading-6 text-emerald-900">
+                  Κράτα αυτές τις μικρές σημειώσεις. Θα βοηθήσουν το επόμενο
+                  progress check να δώσει πιο σωστή απόφαση.
+                </p>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+                {accountPlanWatchlist.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-xl border border-emerald-100 bg-white p-3"
+                  >
+                    <p className="text-sm font-semibold text-emerald-950">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-emerald-900">
+                      {item.detail}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div
             data-testid="account-plan-next-steps"

@@ -226,4 +226,18 @@ assert(
   "Current plan snapshot must let returning customers request a flavour or brand alternative without restarting."
 );
 
+assert(
+  accountPage.includes("type AccountPlanWatchItem") &&
+    accountPage.includes("function getAccountPlanWatchlist") &&
+    accountPage.includes("accountPlanWatchlist.map") &&
+    accountPage.includes('data-testid="account-plan-watchlist"') &&
+    accountPage.includes("Μέχρι το επόμενο check") &&
+    accountPage.includes("Τι αξίζει να παρακολουθείς") &&
+    accountPage.includes("Βάρος") &&
+    accountPage.includes("Ποσότητα") &&
+    accountPage.includes("Λιχουδιές") &&
+    accountPage.includes("Αποδοχή τροφής"),
+  "Current plan snapshot must show a customer-facing watchlist for weight, portions, treats, stool/urine, and food acceptance."
+);
+
 console.log("Account dashboard readiness contract passed.");
