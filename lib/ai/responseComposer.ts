@@ -416,7 +416,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     return [
       "Done. The best first choices are in the cards below.",
       "",
-      `Main goal: ${goalLabel}.`,
+      `What matters most here: ${goalLabel}.`,
       `Best first choice: ${topFood} - it ${topReason}.`,
       "",
       "Choose one food card below to see the first daily portion in grams.",
@@ -443,7 +443,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   return [
     petName ? `For ${petName}, I would start with these options:` : "I would start with these options:",
     "",
-    `Goal: ${goalLabel}.`,
+    `What matters most here: ${goalLabel}.`,
     "",
     foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
     "",

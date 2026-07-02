@@ -130,6 +130,10 @@ const requiredCustomerCopy = [
     file: "app/account/layout.tsx",
     text: "Σύμβουλος",
   },
+  {
+    file: "lib/ai/responseComposer.ts",
+    text: "What matters most here",
+  },
 ];
 
 const bannedExactCustomerStrings = [
@@ -510,11 +514,6 @@ const bannedExactCustomerStrings = [
     reason: "Food V2 customer summaries should use plain customer wording for the main need.",
   },
   {
-    file: "lib/ai/responseComposer.ts",
-    text: "optimizing for",
-    reason: "OpenAI fallback copy should use plain customer wording for the main goal.",
-  },
-  {
     file: "lib/food-v2/chatbotRecommendationSummary.ts",
     text: "Why it fits",
     reason: "Food V2 customer summaries should use choice wording instead of fit wording.",
@@ -528,6 +527,16 @@ const bannedExactCustomerStrings = [
     file: "lib/ai/responseComposer.ts",
     text: "strongest matches",
     reason: "OpenAI customer-facing guidance should call recommendations choices, not matches.",
+  },
+  {
+    file: "lib/ai/responseComposer.ts",
+    text: "`Goal: ${goalLabel}.`",
+    reason: "OpenAI fallback customer copy should not print raw field-style Goal labels.",
+  },
+  {
+    file: "lib/ai/responseComposer.ts",
+    text: "`Main goal: ${goalLabel}.`",
+    reason: "OpenAI fallback card intro should use natural customer wording instead of raw field-style Goal labels.",
   },
   {
     file: "app/account/chatbot/page.tsx",
