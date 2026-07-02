@@ -78,7 +78,7 @@ const wetSterilisedMisbrandedAsVet = catFood({
   formula_key: "qa-cat|wet-sterilised-misbranded-vet|cat|wet",
   format: "wet",
   display_name: "Nutrisavour Sterilised Chicken in Gravy",
-  formula_name: "Nutrisavour Sterilised Chicken in Gravy",
+  formula_name: "Purina Pro Plan Veterinary Diets Nutrisavour Sterilised Chicken in Gravy",
   primary_animal_proteins: ["chicken"],
   ingredients: ["chicken", "minerals", "inulin"],
   commercial_tags: ["sterilised"],
@@ -122,6 +122,24 @@ if (
     "Brand-only veterinary wording should not trigger the therapeutic mismatch guard without medical title/tags."
   );
   console.error(wetSterilisedMisbrandedVetRanking.signals);
+  process.exit(1);
+}
+
+const wetSterilisedMisbrandedVetSplit = splitFoodV2Recommendations(
+  [wetSterilisedMisbrandedVetRanking],
+  2,
+  "sterilised"
+);
+if (
+  ![
+    ...wetSterilisedMisbrandedVetSplit.premium,
+    ...wetSterilisedMisbrandedVetSplit.value,
+  ].some((ranking) => ranking.formula_key === wetSterilisedMisbrandedAsVet.formula_key)
+) {
+  console.error(
+    "Plain sterilised wet cat food should remain customer-visible after splitting recommendations."
+  );
+  console.error(wetSterilisedMisbrandedVetSplit);
   process.exit(1);
 }
 const lowActivityNonNeuteredCat = {

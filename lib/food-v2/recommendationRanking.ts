@@ -301,10 +301,19 @@ function positioningTextFor(food: FoodProductV2) {
 }
 
 function therapeuticTextFor(food: FoodProductV2) {
+  const brandText = normalizeText(food.brand);
+
+  function titleWithoutBrand(value: unknown) {
+    const titleText = normalizeText(value);
+    if (!brandText || !titleText.startsWith(brandText)) return titleText;
+
+    return titleText.slice(brandText.length).trim();
+  }
+
   return normalizeText(
     [
-      food.formula_name,
-      food.display_name,
+      titleWithoutBrand(food.formula_name),
+      titleWithoutBrand(food.display_name),
       food.life_stage,
       food.dog_size,
       food.breed_target,
