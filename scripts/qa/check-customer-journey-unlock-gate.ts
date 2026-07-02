@@ -133,6 +133,7 @@ const journeys: JourneyProof[] = [
         "report-start-checklist",
         "report-customer-takeaway",
         "report-tomorrow-feeding-plan",
+        "report-plan-decision-guide",
         "report-progress-return-kit",
       ],
       timeline: ["sm:p-8", "md:grid-cols-2"],
