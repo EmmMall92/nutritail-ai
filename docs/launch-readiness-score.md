@@ -136,9 +136,10 @@ Customer product progress moves when real user friction is removed:
 Use `docs/product-progress-score.md` when the user asks why the product progress
 number feels stuck even though automated live readiness is higher. The customer
 product score should move only after evidence-based UX or recommendation-risk
-reductions, such as the OpenAI intake-context QA fix that moved the product from
-92-93% to 93-94%. If the user asks about the whole project or launch company
-readiness, also report the overall SaaS launch progress from the same rubric.
+reductions, such as the auth/report/beta trust polish that moved the customer
+product from 93-94% to 94-95%. If the user asks about the whole project or
+launch company readiness, also report the overall SaaS launch progress from the
+same rubric.
 
 ## Practical Progress Bands
 
@@ -149,6 +150,7 @@ Use these bands when explaining project status:
 | 70-80% | Foundations are present, but UX/data/QA are still uneven. | Build missing flows and data architecture. |
 | 80-90% | Product works, but launch confidence is not proven enough. | Fix recommendation errors, reports, account flow, and admin QA. |
 | 90-94% | Beta-ready shape, with remaining proof gaps. | Live QA, OpenAI proof, customer polish, post-deploy evidence. |
+| 94-95% | Near beta-launch line; the product feels usable, but proof must be fresh. | Real customer journey QA, cat/dog scenario fixes, post-deploy OpenAI proof. |
 | 95%+ | Beta launch candidate. | Monitor, collect feedback, fix real user issues quickly. |
 
 ## Human Summary

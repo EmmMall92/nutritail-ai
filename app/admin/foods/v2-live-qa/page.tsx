@@ -379,7 +379,7 @@ export default function FoodV2LiveQaPage() {
             </ul>
           </div>
           <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
-            <p className="text-sm font-semibold">Next moves toward 94-95%</p>
+            <p className="text-sm font-semibold">Next moves toward 95%+ beta launch</p>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
               {productProgress.nextScoreMoves.map((item) => (
                 <li key={item}>{item}</li>

@@ -33,11 +33,16 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer product progress is currently **93-94%**",
-  "Overall SaaS launch progress is currently **80-82%**",
+  "Customer product progress is currently **94-95%**",
+  "Overall SaaS launch progress is currently **84-85%**",
   "business limits, beta access, subscription",
   "legal/trust readiness",
   "is the whole company/product ready to launch?",
+  "The latest move from **93-94%** to **94-95%**",
+  "Auth success states",
+  "printable pet report now surfaces the latest progress check",
+  "beta waitlist visibility",
+  "subscription/payment",
   "The latest move from **92-93%** to **93-94%**",
   "authenticated",
   "OpenAI/chatbot intake-context fix",
@@ -65,7 +70,7 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
-  "93-94%",
+  "94-95%",
   "Beta access, plan limits, subscription/payment direction",
 ];
 
@@ -85,7 +90,7 @@ assert(totalWeight === 100, `Product progress category weights must total 100, g
 assert(
   launchDoc.includes("docs/product-progress-score.md") &&
     launchDoc.includes("Customer Product Progress Score") &&
-    launchDoc.includes("92-93% to 93-94%"),
+    launchDoc.includes("93-94% to 94-95%"),
   "Launch readiness score doc must point to the product progress score rubric."
 );
 
@@ -119,7 +124,7 @@ assert(
 assert(
   liveQaPage.includes("Why it may not move every PR") &&
     liveQaPage.includes("Next moves toward") &&
-    liveQaPage.includes("94-95%"),
+    liveQaPage.includes("95%+"),
   "Admin live QA page must explain why the score feels stuck and what moves it next."
 );
 
