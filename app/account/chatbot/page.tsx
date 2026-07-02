@@ -1245,6 +1245,7 @@ function getRecommendationShortlistHighlights(
   const valueCount = choices.filter((choice) => choice.role === "value").length;
   const visiblePremiumCount = Math.min(premiumCount, 3);
   const visibleValueCount = Math.min(valueCount, 3);
+  const hasValueChoices = visibleValueCount > 0;
   const firstPortion = firstChoice
     ? getRecommendationChoicePortionPreview(firstChoice, analysis, weightGoal)
     : null;
@@ -1278,12 +1279,20 @@ function getRecommendationShortlistHighlights(
       label: language === "el" ? "Τι θα δεις" : "What you get",
       value:
         language === "el"
-          ? `${visiblePremiumCount} πρώτες + ${visibleValueCount} πρακτικές`
-          : `${visiblePremiumCount} first picks + ${visibleValueCount} practical`,
+          ? hasValueChoices
+            ? `${visiblePremiumCount} πρώτες + ${visibleValueCount} πρακτικές`
+            : `${visiblePremiumCount} πρώτες επιλογές`
+          : hasValueChoices
+            ? `${visiblePremiumCount} first picks + ${visibleValueCount} practical`
+            : `${visiblePremiumCount} first picks`,
       detail:
         language === "el"
-          ? "Πρώτα οι καλύτερες αρχικές επιλογές, μετά οι πιο απλές/οικονομικές."
-          : "Best starting choices first, then simpler budget-friendly options.",
+          ? hasValueChoices
+            ? "Πρώτα οι καλύτερες αρχικές επιλογές, μετά οι πιο απλές/οικονομικές."
+            : "Οι εμφανείς κάρτες είναι οι πιο κατάλληλες πρώτες επιλογές για αυτό το προφίλ."
+          : hasValueChoices
+            ? "Best starting choices first, then simpler budget-friendly options."
+            : "The visible cards are the strongest first choices for this profile.",
       tone: "border-violet-200 bg-violet-50 text-violet-950",
     },
     {
@@ -1291,11 +1300,17 @@ function getRecommendationShortlistHighlights(
       value:
         valueCount > 0
           ? `${valueCount} ${language === "el" ? "πρακτικές" : "practical"}`
-          : `${premiumCount} ${language === "el" ? "καλές" : "strong"}`,
+          : language === "el"
+            ? "μόνο αν ταιριάζουν"
+            : "when they fit",
       detail:
         language === "el"
-          ? "Χρήσιμες αν μετράει γεύση, διαθεσιμότητα ή τιμή."
-          : "Useful when flavour, availability, or price matters.",
+          ? valueCount > 0
+            ? "Χρήσιμες αν μετράει γεύση, διαθεσιμότητα ή τιμή."
+            : "Δεν δείχνουμε ξεχωριστές value επιλογές όταν δεν περνούν αρκετά καλά τα ίδια κριτήρια."
+          : valueCount > 0
+            ? "Useful when flavour, availability, or price matters."
+            : "We do not show separate value picks unless they pass the same fit checks.",
       tone: "border-sky-200 bg-sky-50 text-sky-950",
     },
   ];
@@ -6134,8 +6149,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
-                "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου και μετά πιο απλές ή οικονομικές εναλλακτικές.",
-                "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives."
+                recommendedFoodChoices.some((choice) => choice.role === "value")
+                  ? "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου και μετά πιο απλές ή οικονομικές εναλλακτικές."
+                  : "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου. Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
+                recommendedFoodChoices.some((choice) => choice.role === "value")
+                  ? "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives."
+                  : "First you see the best starting choices for this pet profile. Simpler or budget-friendly alternatives appear only when they fit well enough."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
@@ -6182,11 +6201,27 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block font-semibold text-sky-950">
-                  {botText("3 πιο απλές / οικονομικές επιλογές", "3 simpler / budget-friendly options")}
+                  {botText(
+                    recommendedFoodChoices.some((choice) => choice.role === "value")
+                      ? "3 πιο απλές / οικονομικές επιλογές"
+                      : "Πιο απλές / οικονομικές επιλογές",
+                    recommendedFoodChoices.some((choice) => choice.role === "value")
+                      ? "3 simpler / budget-friendly options"
+                      : "Simpler / budget-friendly options"
+                  )}
                 </span>
                 <span className="text-xs text-sky-800">
-                  {recommendedFoodChoices.filter((choice) => choice.role === "value").length}{" "}
-                  {botText("εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή", "alternatives when flavour, availability, or price matters")}
+                  {recommendedFoodChoices.some((choice) => choice.role === "value")
+                    ? `${recommendedFoodChoices.filter((choice) => choice.role === "value").length} `
+                    : ""}
+                  {botText(
+                    recommendedFoodChoices.some((choice) => choice.role === "value")
+                      ? "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή"
+                      : "εμφανίζονται μόνο όταν περνούν αρκετά καλά τα ίδια κριτήρια",
+                    recommendedFoodChoices.some((choice) => choice.role === "value")
+                      ? "alternatives when flavour, availability, or price matters"
+                      : "appear only when they pass the same fit checks"
+                  )}
                 </span>
               </div>
             </div>
