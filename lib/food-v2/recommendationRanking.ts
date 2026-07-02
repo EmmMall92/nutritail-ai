@@ -300,6 +300,20 @@ function positioningTextFor(food: FoodProductV2) {
   );
 }
 
+function therapeuticTextFor(food: FoodProductV2) {
+  return normalizeText(
+    [
+      food.formula_name,
+      food.display_name,
+      food.life_stage,
+      food.dog_size,
+      food.breed_target,
+      ...(food.medical_tags ?? []),
+      ...(food.commercial_tags ?? []),
+    ].join(" ")
+  );
+}
+
 function petLifeStage(pet: FoodV2RankingInput["pet"]) {
   if (pet.species === "cat") {
     if (pet.age < 1) return "kitten";
@@ -1347,9 +1361,10 @@ function scoreFit(input: FoodV2RankingInput) {
     }
   }
 
+  const therapeuticText = therapeuticTextFor(food);
   if (
-    hasTherapeuticPositioning(positioningText) &&
-    !therapeuticPositioningFitsGoal(positioningText, goal, pet.healthIssues ?? []) &&
+    hasTherapeuticPositioning(therapeuticText) &&
+    !therapeuticPositioningFitsGoal(therapeuticText, goal, pet.healthIssues ?? []) &&
     !(hasRenalContext(pet) && hasRenalPositioning(positioningText)) &&
     !(hasUrinaryContext(pet) && hasUrinaryPositioning(positioningText)) &&
     !specialCareContexts.some((context) =>
