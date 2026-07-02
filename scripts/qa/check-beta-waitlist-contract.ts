@@ -32,9 +32,11 @@ assert(
   "Beta page should render plan limits from the shared beta access plan config."
 );
 assert(
-  accountPage.includes('import { betaPlanHighlights } from "@/lib/beta/accessPlan";') &&
-    accountPage.includes('data-testid="account-beta-plan"'),
-  "Account dashboard should render beta highlights from the shared beta access plan config."
+  accountPage.includes("betaPlanHighlights") &&
+    accountPage.includes("betaAccessPlanConfig") &&
+    accountPage.includes('data-testid="account-beta-plan"') &&
+    accountPage.includes('data-testid="account-beta-usage"'),
+  "Account dashboard should render beta highlights and usage from the shared beta access plan config."
 );
 assert(
   accessPlan.includes('accessPlan: "limited_beta_v1"') &&

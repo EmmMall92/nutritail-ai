@@ -93,11 +93,24 @@ assert(
 );
 assert(
   accountPage.includes("Beta πρόσβαση") &&
-    accountPage.includes('import { betaPlanHighlights } from "@/lib/beta/accessPlan";') &&
+    accountPage.includes("betaAccessPlanConfig") &&
+    accountPage.includes("betaPlanHighlights") &&
     betaAccessPlan.includes("petLimit: 3") &&
     betaAccessPlan.includes("monthlyAnalysisLimit: 20") &&
     accountPage.includes('href="/beta"'),
   "Account dashboard must show beta plan limits and link to the beta page."
+);
+assert(
+  accountPage.includes("type BetaUsageSnapshot") &&
+    accountPage.includes("function getBetaUsageSnapshot") &&
+    accountPage.includes("isCurrentMonthDate") &&
+    accountPage.includes('data-testid="account-beta-usage"') &&
+    accountPage.includes("betaUsage.petsUsed") &&
+    accountPage.includes("betaUsage.monthlyAnalysesUsed") &&
+    accountPage.includes("betaUsage.petsPercent") &&
+    accountPage.includes("betaUsage.analysesPercent") &&
+    accountPage.includes("Αναλύσεις αυτόν τον μήνα"),
+  "Account dashboard must show customer-facing beta usage against current beta limits."
 );
 assert(
   accountPage.includes("Ρυθμός παρακολούθησης"),
