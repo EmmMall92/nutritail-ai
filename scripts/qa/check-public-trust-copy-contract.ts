@@ -44,7 +44,8 @@ const methodologyMarkers = [
 
 const feedbackLoopMarkers = [
   'data-testid="public-feedback-loop"',
-  "Πώς χρησιμοποιούμε το feedback",
+  "Κύκλος βελτίωσης",
+  "Πώς χρησιμοποιούμε τα σχόλια",
   "Δεν αλλάζουν μόνα τους τις προτάσεις",
   "Τροφές που λείπουν",
   "Απαντήσεις που δεν βοήθησαν",
@@ -70,7 +71,7 @@ const betaTermsMarkers = [
   "betaAccessPlanConfig.accessPlan",
   "betaAccessPlanConfig.petLimit",
   "betaAccessPlanConfig.monthlyAnalysisLimit",
-  "paid plans",
+  "πληρωμένα πλάνα",
 ];
 
 for (const marker of aboutMarkers) {

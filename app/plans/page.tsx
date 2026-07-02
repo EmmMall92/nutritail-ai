@@ -6,7 +6,7 @@ import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";
 export const metadata: Metadata = {
   title: `Plans | ${brand.name}`,
   description:
-    "NutriTail beta access, current soft limits, and future Personal and Pro plan direction.",
+    "NutriTail beta access, current temporary limits, and future Personal and Pro plan direction.",
   alternates: {
     canonical: "/plans",
   },
@@ -39,12 +39,12 @@ const planCards = [
     status: "Διαθέσιμο σταδιακά",
     price: "Χωρίς πληρωμή",
     audience:
-      "Για πρώτους χρήστες που θέλουν να δοκιμάσουν το NutriTail και να δώσουν feedback.",
+      "Για πρώτους χρήστες που θέλουν να δοκιμάσουν το NutriTail και να δώσουν σχόλια.",
     features: [
       "Προσωπικό account",
       "Αποθηκευμένα κατοικίδια",
       "Διατροφική ανάλυση με chatbot",
-      "Printable report και ιστορικό",
+      "Εκτυπώσιμη αναφορά και ιστορικό",
       "Έλεγχοι προόδου",
     ],
     cta: "Μπες στη beta",
@@ -89,7 +89,7 @@ const planCards = [
 
 const launchSignals = [
   "Το NutriTail δεν πουλά συνδρομή πριν σταθεροποιηθούν τα beta όρια.",
-  "Τα beta όρια είναι soft limits: μας βοηθούν να καταλάβουμε πραγματική χρήση χωρίς να μπλοκάρουμε απότομα τον χρήστη.",
+  "Τα beta όρια είναι προσωρινά και ήπια: μας βοηθούν να καταλάβουμε πραγματική χρήση χωρίς να μπλοκάρουμε απότομα τον χρήστη.",
   "Πριν ενεργοποιηθούν πληρωμές, θα υπάρχουν καθαροί όροι, τιμές, limits και τρόπος ακύρωσης.",
 ];
 

@@ -26,7 +26,7 @@ const values = [
   },
   {
     title: "Συνεχής βελτίωση",
-    text: "Κάθε νέα τροφή, κάθε review και κάθε feedback βοηθά το Nutritail να γίνεται πιο ακριβές και πιο χρήσιμο.",
+    text: "Κάθε νέα τροφή, κάθε έλεγχος και κάθε σχόλιο βοηθά το Nutritail να γίνεται πιο ακριβές και πιο χρήσιμο.",
   },
 ];
 
@@ -118,14 +118,14 @@ export default function AboutPage() {
         >
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
-              Feedback loop
+              Κύκλος βελτίωσης
             </p>
             <h2 className="mt-3 text-3xl font-black">
-              Πώς χρησιμοποιούμε το feedback
+              Πώς χρησιμοποιούμε τα σχόλια
             </h2>
             <p className="mt-4 leading-7 text-gray-700">
-              Τα helpful/not helpful, οι επιλογές τροφών και τα failed matches γίνονται
-              σήματα για review. Δεν αλλάζουν μόνα τους τις προτάσεις. Μας δείχνουν τι
+              Τα σχόλια χρησιμότητας, οι επιλογές τροφών και οι περιπτώσεις όπου δεν βρέθηκε σωστή τροφή γίνονται
+              σήματα για έλεγχο. Δεν αλλάζουν μόνα τους τις προτάσεις. Μας δείχνουν τι
               πρέπει να ελέγξουμε στη βάση τροφών, στους κανόνες και στον τρόπο που
               εξηγούμε την απάντηση.
             </p>
@@ -142,7 +142,7 @@ export default function AboutPage() {
             <article className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5">
               <h3 className="font-black">Απαντήσεις που δεν βοήθησαν</h3>
               <p className="mt-3 text-sm leading-6 text-gray-700">
-                Μπαίνουν σε review για πιο καθαρή, λιγότερο τεχνική και πιο χρήσιμη
+                Μπαίνουν σε έλεγχο για πιο καθαρή, λιγότερο τεχνική και πιο χρήσιμη
                 εξήγηση στον επόμενο χρήστη.
               </p>
             </article>
