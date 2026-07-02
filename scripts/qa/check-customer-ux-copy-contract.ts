@@ -425,6 +425,26 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: 'botText("Progress check", "Progress check")',
+    reason: "Greek chatbot UI labels must not render the English progress-check label.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "ξαναβγάζουμε shortlist",
+    reason: "Greek saved-pet continuation copy should use Greek recommendation-list wording.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "αναλύσεις και reports",
+    reason: "Greek saved-pet continuation copy should say αναφορές instead of reports.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "brand ή ανοχή",
+    reason: "Greek saved-pet continuation copy should say εταιρεία instead of brand.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "Nutritail AI Chatbot",
     reason: "Chatbot page heading should use customer advisor wording.",
   },
