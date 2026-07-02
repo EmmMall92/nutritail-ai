@@ -263,10 +263,33 @@ includesAll(
     "Full OpenAI proof",
     "NUTRITAIL_QA_OPENAI_API_KEY_FILE",
     "NUTRITAIL_QA_AUTH_COOKIE_FILE",
+    "docs/openai-full-proof-runbook.md",
     "Do not commit, print, paste, or screenshot the key or cookie.",
     "Food ranking, exclusions, medical safety and nutrient truth stay in NutriTail deterministic code.",
   ],
   "OpenAI full proof source"
+);
+
+const openAiFullProofRunbook = readFileSync("docs/openai-full-proof-runbook.md", "utf8");
+includesAll(
+  openAiFullProofRunbook,
+  [
+    "OpenAI Full Proof Runbook",
+    "OpenAI is used only for",
+    "NutriTail remains responsible for",
+    "qa:openai-intake-smoke",
+    "qa:account-chatbot-extract-live-route",
+    "qa:openai-full-proof",
+    ".qa-secrets/openai-api-key.txt",
+    ".qa-secrets/nutritail-auth-cookie.txt",
+    "reports/openai_full_proof_qa.md",
+    "Full OpenAI proof status: PASS",
+    "must not contain",
+    "raw OpenAI API keys",
+    "browser cookies",
+    "deterministic NutriTail recommendation logic",
+  ],
+  "OpenAI full proof runbook"
 );
 
 const adminAiStatusRouteSource = readFileSync("app/api/admin/ai-status/route.ts", "utf8");

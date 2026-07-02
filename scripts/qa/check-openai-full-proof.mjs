@@ -6,6 +6,7 @@ const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH || "reports/openai_full_proof_qa.md";
 const shouldRunChecks = process.argv.includes("--run");
 const requirePass = process.env.NUTRITAIL_QA_REQUIRE_OPENAI_FULL_PROOF === "1";
+const runbookPath = "docs/openai-full-proof-runbook.md";
 
 const checks = [
   {
@@ -138,6 +139,8 @@ const lines = [
   ),
   "",
   "## How To Make This PASS",
+  "",
+  `Runbook: \`${runbookPath}\``,
   "",
   "1. Put the OpenAI key in a local ignored secret source, for example `NUTRITAIL_QA_OPENAI_API_KEY_FILE`, or export `OPENAI_API_KEY` only for the shell session.",
   "2. Put an authenticated NutriTail account Cookie header in a local ignored file and set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
