@@ -1425,12 +1425,20 @@ export default function AccountPage() {
             </p>
           </div>
 
-          <Link
-            href="/beta"
-            className="rounded-xl bg-amber-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-amber-800"
-          >
-            Δες το beta πλάνο
-          </Link>
+          <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+            <Link
+              href="/beta"
+              className="rounded-xl bg-amber-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-amber-800"
+            >
+              Δες το beta πλάνο
+            </Link>
+            <Link
+              href="/plans"
+              className="rounded-xl border border-amber-300 bg-white px-5 py-3 text-center text-sm font-medium text-amber-950 transition hover:bg-amber-100"
+            >
+              Όρια και μελλοντικά plans
+            </Link>
+          </div>
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">

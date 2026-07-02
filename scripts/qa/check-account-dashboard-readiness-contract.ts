@@ -97,8 +97,10 @@ assert(
     accountPage.includes("betaPlanHighlights") &&
     betaAccessPlan.includes("petLimit: 3") &&
     betaAccessPlan.includes("monthlyAnalysisLimit: 20") &&
-    accountPage.includes('href="/beta"'),
-  "Account dashboard must show beta plan limits and link to the beta page."
+    accountPage.includes('href="/beta"') &&
+    accountPage.includes('href="/plans"') &&
+    accountPage.includes("Όρια και μελλοντικά plans"),
+  "Account dashboard must show beta plan limits and link to beta and plans pages."
 );
 assert(
   accountPage.includes("type BetaUsageSnapshot") &&
