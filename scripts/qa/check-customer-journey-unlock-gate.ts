@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
 type SourceFile = "chatbot" | "account" | "report" | "timeline" | "packageJson";
 
@@ -8,6 +9,18 @@ type JourneyProof = {
   unlockGate: string;
   requiredEvidence: Record<SourceFile, string[]>;
 };
+
+type JourneyResult = {
+  id: string;
+  customerGoal: string;
+  unlockGate: string;
+  evidenceCount: number;
+  checkedFiles: SourceFile[];
+};
+
+const reportPath =
+  process.env.NUTRITAIL_QA_REPORT_PATH ||
+  "reports/customer_journey_unlock_gate_qa.md";
 
 function read(path: string) {
   if (!existsSync(path)) {
@@ -144,23 +157,38 @@ const journeys: JourneyProof[] = [
 
 assert(journeys.length === 5, "Customer journey unlock gate QA must cover exactly five journeys.");
 
+const results: JourneyResult[] = [];
+
 for (const journey of journeys) {
   assert(journey.customerGoal.length > 20, `Journey ${journey.id} needs a clear customer goal.`);
   assert(journey.unlockGate.length > 0, `Journey ${journey.id} needs an unlock gate.`);
+
+  let evidenceCount = 0;
+  const checkedFiles: SourceFile[] = [];
 
   for (const [sourceName, markers] of Object.entries(journey.requiredEvidence) as [
     SourceFile,
     string[],
   ][]) {
     const source = sources[sourceName];
+    checkedFiles.push(sourceName);
 
     for (const marker of markers) {
       assert(
         source.includes(marker),
         `Journey ${journey.id} is missing evidence "${marker}" in ${sourceName}.`
       );
+      evidenceCount += 1;
     }
   }
+
+  results.push({
+    id: journey.id,
+    customerGoal: journey.customerGoal,
+    unlockGate: journey.unlockGate,
+    evidenceCount,
+    checkedFiles,
+  });
 }
 
 const productProgress = read("docs/product-progress-score.md");
@@ -183,4 +211,44 @@ assert(
   "CI readiness must run the customer journey unlock gate immediately after the broader journey contract."
 );
 
+mkdirSync(path.dirname(reportPath), { recursive: true });
+writeFileSync(
+  reportPath,
+  [
+    "# Customer Journey Unlock Gate QA",
+    "",
+    `Generated: ${new Date().toISOString()}`,
+    "",
+    "This report is customer-product evidence, not a substitute for a logged-in browser smoke test.",
+    "It proves that the five Customer UX unlock journeys have protected code paths across chatbot, account, report, timeline, and CI scripts.",
+    "",
+    "## Summary",
+    "",
+    `- Result: PASS`,
+    `- Journeys checked: ${results.length}`,
+    `- Evidence markers checked: ${results.reduce((sum, result) => sum + result.evidenceCount, 0)}`,
+    "- Unlock gates covered: Full recommendation journey proof, Returning pet proof, Report/account proof",
+    "- Next manual proof: run these same journeys on production with a logged-in customer account.",
+    "",
+    "## Journey Evidence",
+    "",
+    "| Journey | Unlock gate | Evidence markers | Files checked | Customer goal |",
+    "| --- | --- | ---: | --- | --- |",
+    ...results.map(
+      (result) =>
+        `| ${result.id} | ${result.unlockGate} | ${result.evidenceCount} | ${result.checkedFiles.join(", ")} | ${result.customerGoal} |`
+    ),
+    "",
+    "## Manual Live Follow-Up",
+    "",
+    "1. Create or log in to a QA customer account.",
+    "2. Run a new-pet recommendation until 3 premium/value food cards are visible.",
+    "3. Choose one food and confirm grams/day appears.",
+    "4. Save the analysis and open profile, printable report, and timeline.",
+    "5. Return to the same pet for progress check, no-result advice, and flavour/brand change.",
+  ].join("\n") + "\n",
+  "utf8"
+);
+
 console.log(`Customer journey unlock gate QA passed (${journeys.length} journeys covered).`);
+console.log(`Wrote ${reportPath}.`);

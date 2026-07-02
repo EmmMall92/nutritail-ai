@@ -14,6 +14,7 @@ const doc = read("docs/product-progress-score.md");
 const launchDoc = read("docs/launch-readiness-score.md");
 const packageJson = read("package.json");
 const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
+const customerJourneyUnlockGate = read("scripts/qa/check-customer-journey-unlock-gate.ts");
 
 const categoryMarkers = [
   "Final chatbot experience",
@@ -201,6 +202,14 @@ assert(
 assert(
   packageJson.includes('"qa:customer-journey-unlock-gate"'),
   "package.json must expose qa:customer-journey-unlock-gate so the first customer UX unlock gate has a protected evidence check."
+);
+
+assert(
+  customerJourneyUnlockGate.includes("reports/customer_journey_unlock_gate_qa.md") &&
+    customerJourneyUnlockGate.includes("This report is customer-product evidence") &&
+    customerJourneyUnlockGate.includes("Manual Live Follow-Up") &&
+    customerJourneyUnlockGate.includes("Wrote ${reportPath}."),
+  "Customer journey unlock gate must write an auditable report with manual live follow-up steps."
 );
 
 assert(
