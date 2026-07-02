@@ -112,6 +112,11 @@ const checks = [
     expected: "/account/chatbot?petId=${pet.id}",
   },
   {
+    label: "Pet detail flavour or brand action deep-links to saved pet",
+    file: "app/account/pets/[id]/page.tsx",
+    expected: "/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour",
+  },
+  {
     label: "Saved chatbot analysis links to printable report",
     file: "app/account/chatbot/page.tsx",
     expected: "/print/pet-report/${savedPetId}",
