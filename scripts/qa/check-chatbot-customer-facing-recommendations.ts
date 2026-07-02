@@ -394,6 +394,15 @@ if (!compactCardsSample.includes("Choose one food card below to see the first da
 }
 
 if (
+  !compactCardsSample.includes("best starting choices and budget-friendly alternatives") ||
+  !compactCardsSample.includes("nutrition fit, flavour, and budget")
+) {
+  console.error("Compact card-facing recommendation should explain the premium/value card split.");
+  console.error(compactCardsSample);
+  process.exit(1);
+}
+
+if (
   !preferenceSample.includes("I also respected the pet's preferences") ||
   !preferenceSample.includes("preferred flavours/proteins such as chicken") ||
   !preferenceSample.includes("avoided lamb, beef")
@@ -405,6 +414,15 @@ if (
 
 if (!compactGreekCardsSample.includes("κάρτες από κάτω")) {
   console.error("Compact Greek card-facing recommendation should point to the cards.");
+  console.error(compactGreekCardsSample);
+  process.exit(1);
+}
+
+if (
+  !compactGreekCardsSample.includes("πρώτες επιλογές") ||
+  !compactGreekCardsSample.includes("πρακτικές/οικονομικές εναλλακτικές")
+) {
+  console.error("Compact Greek card-facing recommendation should explain the first/value card split.");
   console.error(compactGreekCardsSample);
   process.exit(1);
 }
