@@ -526,6 +526,41 @@ export default function FoodV2LiveQaPage() {
             <p className="mt-1 break-words">{readiness.nextStaleReport}</p>
           </div>
         </div>
+
+        <div
+          className="mt-4 rounded-xl border border-current/20 bg-white/70 p-4 text-sm"
+          data-testid="openai-full-proof-runbook"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="font-semibold">Full OpenAI proof action</p>
+              <p className="mt-1 max-w-4xl">
+                Current status: {readiness.fullOpenAiProofStatus}. If this is
+                PENDING, the remaining step is usually the authenticated QA
+                account cookie run, not a failed OpenAI integration.
+              </p>
+              <p className="mt-2 text-xs">
+                Keep secrets local: store the Cookie header in{" "}
+                <code>.qa-secrets/nutritail-auth-cookie.txt</code>, then run the
+                proof command without printing the cookie or API key.
+              </p>
+            </div>
+            <a
+              href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/openai-full-proof-runbook.md"
+              className="inline-flex rounded-lg border border-current/30 px-3 py-2 text-xs font-semibold hover:bg-white"
+            >
+              Open runbook
+            </a>
+          </div>
+          <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+            <code className="rounded-lg border border-current/10 bg-white/80 p-3 text-xs">
+              npm.cmd run qa:openai-full-proof
+            </code>
+            <code className="rounded-lg border border-current/10 bg-white/80 p-3 text-xs">
+              npm.cmd run qa:live-readiness-dashboard
+            </code>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
