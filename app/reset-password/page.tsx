@@ -86,7 +86,10 @@ export default function ResetPasswordPage() {
       description="Όρισε νέο κωδικό για τον λογαριασμό NutriTail AI και μετά συνδέσου ξανά."
     >
       {!isReady && (
-        <div className="mb-5 rounded-xl border border-yellow-100 bg-yellow-50 p-4 text-sm leading-6 text-yellow-900">
+        <div
+          className="mb-5 rounded-xl border border-yellow-100 bg-yellow-50 p-4 text-sm leading-6 text-yellow-900"
+          data-testid="auth-reset-session-warning"
+        >
           <p className="font-semibold text-yellow-950">
             Άνοιξε αυτή τη σελίδα από το email επαναφοράς.
           </p>
@@ -94,6 +97,12 @@ export default function ResetPasswordPage() {
             Αν το link έχει λήξει ή άνοιξε χωρίς session, ζήτησε νέο link
             επαναφοράς και άνοιξέ το από την ίδια συσκευή.
           </p>
+          <Link
+            href="/forgot-password"
+            className="mt-3 inline-flex rounded-lg bg-yellow-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-yellow-950"
+          >
+            Ζήτησε νέο link
+          </Link>
         </div>
       )}
 
@@ -187,7 +196,10 @@ export default function ResetPasswordPage() {
         )}
 
         {success && (
-          <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
+          <div
+            className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700"
+            data-testid="auth-reset-success-next-steps"
+          >
             <p>{success}</p>
             <Link
               href="/login"

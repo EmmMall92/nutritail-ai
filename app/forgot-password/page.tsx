@@ -111,7 +111,10 @@ export default function ForgotPasswordPage() {
         )}
 
         {success && (
-          <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
+          <div
+            className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700"
+            data-testid="auth-forgot-email-sent-next-steps"
+          >
             <p>{success}</p>
             <p className="mt-1 text-xs text-green-700">
               Άνοιξε το link από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
