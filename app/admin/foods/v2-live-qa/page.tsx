@@ -29,6 +29,11 @@ type CustomerProductProgressSummary = {
   scoreReadout: string[];
   whyItFeelsStuck: string[];
   nextScoreMoves: string[];
+  customerUxUnlockGates: {
+    gate: string;
+    unlocks: string;
+    evidenceNeeded: string;
+  }[];
   overallLaunchBlockers: string[];
 };
 
@@ -145,6 +150,14 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     nextScoreMoves: [
       "Run live chatbot QA, fix real recommendation mistakes, and lock fixes with tests.",
     ],
+    customerUxUnlockGates: [
+      {
+        gate: "Full recommendation journey proof",
+        unlocks: "83-85% Customer UX readiness",
+        evidenceNeeded:
+          "Run live journeys from login/signup through chatbot, selected food, grams/day, save, report, and return progress.",
+      },
+    ],
     overallLaunchBlockers: [
       "Overall SaaS launch progress still depends on live OpenAI proof, monitoring, legal review, and business readiness.",
     ],
@@ -173,6 +186,8 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       doc.match(/## Why It Feels Stuck\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const nextSection =
       doc.match(/## Next Score Moves\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const unlockGateSection =
+      doc.match(/## Customer UX Unlock Gates\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const blockersSection =
       doc.match(/## Overall SaaS Blockers\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
 
@@ -198,6 +213,23 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         .filter((line) => line.startsWith("- "))
         .map((line) => line.replace(/^- /, ""))
         .slice(0, 5) || fallback.overallLaunchBlockers;
+    const customerUxUnlockGates = unlockGateSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("| ") && !line.includes("---") && !line.includes("Gate |"))
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          gate: cells[0] ?? "Unknown gate",
+          unlocks: cells[1] ?? "unknown",
+          evidenceNeeded: cells[2] ?? "Evidence needed is not listed.",
+        };
+      })
+      .slice(0, 5);
 
     return {
       customerUxEstimate,
@@ -211,6 +243,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       ],
       whyItFeelsStuck: whyItFeelsStuck.length > 0 ? whyItFeelsStuck : fallback.whyItFeelsStuck,
       nextScoreMoves: nextScoreMoves.length > 0 ? nextScoreMoves : fallback.nextScoreMoves,
+      customerUxUnlockGates:
+        customerUxUnlockGates.length > 0
+          ? customerUxUnlockGates
+          : fallback.customerUxUnlockGates,
       overallLaunchBlockers:
         overallLaunchBlockers.length > 0
           ? overallLaunchBlockers
@@ -538,6 +574,29 @@ export default function FoodV2LiveQaPage() {
                 <li key={item}>{item}</li>
               ))}
             </ol>
+          </div>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-blue-200 bg-white/80 p-4"
+          data-testid="customer-ux-unlock-gates"
+        >
+          <p className="text-sm font-semibold">
+            What actually moves Customer UX readiness above {productProgress.customerUxEstimate}
+          </p>
+          <div className="mt-3 grid gap-3 lg:grid-cols-5">
+            {productProgress.customerUxUnlockGates.map((gate) => (
+              <article
+                key={`${gate.gate}-${gate.unlocks}`}
+                className="rounded-xl border border-blue-200 bg-blue-50/70 p-3 text-sm text-blue-950"
+              >
+                <p className="font-semibold">{gate.gate}</p>
+                <p className="mt-2 rounded-lg border border-blue-200 bg-white/80 px-2 py-1 text-xs font-bold">
+                  {gate.unlocks}
+                </p>
+                <p className="mt-2 text-xs leading-5">{gate.evidenceNeeded}</p>
+              </article>
+            ))}
           </div>
         </div>
 

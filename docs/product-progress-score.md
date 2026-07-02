@@ -322,6 +322,20 @@ These are the most likely moves from **82% Customer UX readiness** toward a real
    longer reports dog wet-only journeys as safe holds/data gaps.
 7. Add first subscription/payment direction when beta limits are ready.
 
+## Customer UX Unlock Gates
+
+Use these gates to decide whether Customer UX readiness can move above the
+82% band. A merged PR is not enough. Each gate needs current evidence that a
+normal customer can complete the flow without manual explanation.
+
+| Gate | Unlocks | Evidence Needed |
+| --- | --- | --- |
+| Full recommendation journey proof | 83-85% Customer UX readiness | Five live journeys from login/signup to chatbot, 3 premium + 3 value food cards, selected food, grams/day, saved analysis, printable report, and return progress. |
+| Clean customer wording proof | 85-86% Customer UX readiness | Live chatbot and report output contain no source-tier, needs-review, missing-field, score-debug, or back-office wording visible to customers. |
+| Returning pet proof | 86-87% Customer UX readiness | A saved pet can run progress check, no-progress follow-up, flavour/brand change, new food recommendation, and timeline review without restarting intake. |
+| Report/account proof | 87-88% Customer UX readiness | Account dashboard and printable report make calories, chosen food, grams/day, why it fits, transition plan, and next check-in obvious on mobile and desktop. |
+| Real beta-user proof | 88-90% Customer UX readiness | At least a small beta group completes analyses, chooses foods, saves plans, returns for progress, and leaves usable feedback with no critical launch blockers. |
+
 ## Overall SaaS Blockers
 
 These are the main reasons the whole project remains around 90% even though the
