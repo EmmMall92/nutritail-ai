@@ -23,6 +23,10 @@ const publicRoutes = [
     priority: 0.6,
   },
   {
+    path: "/plans",
+    priority: 0.6,
+  },
+  {
     path: "/terms",
     priority: 0.3,
   },
