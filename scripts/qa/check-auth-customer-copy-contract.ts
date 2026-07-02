@@ -91,6 +91,7 @@ const authMessages = read("lib/auth/customerAuthMessages.ts");
 
 for (const marker of [
   "Έλεγξε email και κωδικό",
+  "δεν έχει πρόσβαση διαχείρισης",
   "Υπάρχει ήδη λογαριασμός",
   "Έγιναν πολλές προσπάθειες",
   "Ο σύνδεσμος δεν είναι πλέον ενεργός",

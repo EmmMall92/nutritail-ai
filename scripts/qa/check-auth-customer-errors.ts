@@ -32,6 +32,11 @@ const cases = [
     error: new Error("Γράψε email και κωδικό για να συνεχίσεις."),
     expected: "Γράψε email",
   },
+  {
+    flow: "login",
+    error: new Error("Login succeeded, but this account is not an admin."),
+    expected: "δεν έχει πρόσβαση διαχείρισης",
+  },
 ] as const;
 
 for (const testCase of cases) {
