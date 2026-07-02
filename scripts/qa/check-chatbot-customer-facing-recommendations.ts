@@ -709,7 +709,7 @@ const requiredCardFlowCopy = [
   "Preparing reply...",
   "Treats: up to about",
   "What matters for this pet:",
-  "The food cards below are the next step. Choose one option to estimate the daily portion.",
+  "The food cards below are the next step. Choose one option to calculate grams/day.",
   "preferredProteins: pet.preferredProteins ?? []",
   "excludedIngredients: pet.excludedIngredients ?? []",
   "formatCompareCustomerTakeaway",

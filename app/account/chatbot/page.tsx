@@ -1163,7 +1163,7 @@ function getRecommendationChoiceActionHint(
   if (hasPortionData) {
     return language === "el"
       ? "Επόμενο: υπολόγισε γραμμάρια/ημέρα."
-      : "Next: estimate the daily portion.";
+      : "Next: calculate grams/day.";
   }
 
   return language === "el"
@@ -3568,7 +3568,7 @@ ${
     : "- No special notes for this analysis."
 }
 
-The food cards below are the next step. Choose one option to estimate the daily portion.
+The food cards below are the next step. Choose one option to calculate grams/day.
 
 Note: This guidance is educational and does not replace veterinary advice.`;
 }
