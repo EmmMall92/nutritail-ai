@@ -290,6 +290,21 @@ assert(
 );
 
 assert(
+  liveQaPage.includes("function readCustomerJourneyUnlockProofSummary") &&
+    liveQaPage.includes("reports/customer_journey_unlock_gate_qa.md") &&
+    liveQaPage.includes('data-testid="customer-journey-unlock-proof-summary"') &&
+    liveQaPage.includes("Customer journey unlock proof") &&
+    liveQaPage.includes("Five customer journeys are protected") &&
+    liveQaPage.includes("customerJourneyProof.journeysChecked") &&
+    liveQaPage.includes("customerJourneyProof.evidenceMarkersChecked") &&
+    liveQaPage.includes("customerJourneyProof.unlockGatesCovered") &&
+    liveQaPage.includes("customerJourneyProof.nextManualProof") &&
+    liveQaPage.includes('data-testid="customer-journey-manual-follow-up"') &&
+    liveQaPage.includes("npm.cmd run qa:customer-journey-unlock-gate"),
+  "Admin live QA page must expose the customer journey unlock proof report and manual follow-up."
+);
+
+assert(
   liveQaPage.includes('data-testid="openai-full-proof-runbook"') &&
     liveQaPage.includes("Full OpenAI proof action") &&
     liveQaPage.includes("authenticated QA") &&
