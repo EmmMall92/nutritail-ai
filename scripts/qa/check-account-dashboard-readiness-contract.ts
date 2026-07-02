@@ -271,4 +271,16 @@ assert(
   "Current plan snapshot must show a visible 2-4 week progress-check reminder with required return data."
 );
 
+assert(
+  accountPage.includes('data-testid="account-plan-decision-guide"') &&
+    accountPage.includes("Αν κάτι αλλάξει") &&
+    accountPage.includes("Διάλεξε την επόμενη κίνηση χωρίς να ξεκινήσεις από την αρχή") &&
+    accountPage.includes("Πάει καλά") &&
+    accountPage.includes("Δεν βλέπω αλλαγή") &&
+    accountPage.includes("Δεν του ταιριάζει η τροφή") &&
+    accountPage.includes("άλλη γεύση ή εταιρεία") &&
+    accountPage.includes("κρατώντας το ιστορικό του"),
+  "Current plan snapshot must show a simple returning-customer decision guide for good progress, no progress, or food/flavour change."
+);
+
 console.log("Account dashboard readiness contract passed.");
