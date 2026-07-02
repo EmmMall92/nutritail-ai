@@ -210,4 +210,12 @@ assert(
   "Admin live QA page must explain why the score feels stuck and what moves it next."
 );
 
+assert(
+  liveQaPage.includes('data-testid="openai-full-proof-runbook"') &&
+    liveQaPage.includes("Full OpenAI proof action") &&
+    liveQaPage.includes("authenticated QA") &&
+    liveQaPage.includes("npm.cmd run qa:openai-full-proof"),
+  "Admin live QA page must show the concrete OpenAI proof action that can move readiness confidence."
+);
+
 console.log("Product progress score contract passed.");

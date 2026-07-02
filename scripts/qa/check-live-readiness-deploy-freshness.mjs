@@ -212,6 +212,26 @@ const checks = [
     expected: "OpenAI proof:",
   },
   {
+    label: "admin live QA exposes OpenAI full proof runbook action",
+    source: adminLiveQaSource,
+    expected: 'data-testid="openai-full-proof-runbook"',
+  },
+  {
+    label: "admin live QA links OpenAI full proof runbook",
+    source: adminLiveQaSource,
+    expected: "docs/openai-full-proof-runbook.md",
+  },
+  {
+    label: "admin live QA shows authenticated cookie proof path",
+    source: adminLiveQaSource,
+    expected: ".qa-secrets/nutritail-auth-cookie.txt",
+  },
+  {
+    label: "admin live QA shows full OpenAI proof command",
+    source: adminLiveQaSource,
+    expected: "npm.cmd run qa:openai-full-proof",
+  },
+  {
     label: "admin live QA summary shows oldest source report",
     source: adminLiveQaSource,
     expected: "oldestSourceReport",
