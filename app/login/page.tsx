@@ -144,7 +144,7 @@ export default function LoginPage() {
       >
         <p className="font-semibold text-blue-950">Θα συνεχίσεις από εκεί που έμεινες.</p>
         <p className="mt-1">
-          Αν ήρθες από report, admin link ή progress check, θα σε γυρίσουμε αυτόματα
+          Αν ήρθες από report, admin link ή έλεγχο προόδου, θα σε γυρίσουμε αυτόματα
           στη σωστή σελίδα μετά τη σύνδεση.
         </p>
       </div>

@@ -28,7 +28,7 @@ const pages = [
     markers: [
       "Μετά την εγγραφή ξεκινάς αμέσως πρακτικά.",
       "να κρατήσεις",
-      "report για μελλοντικό progress check",
+      "report για μελλοντικό έλεγχο προόδου",
       'data-testid="auth-next-step-card"',
       'data-testid="auth-register-confirmation-next-steps"',
       "Συνέχεια στη σύνδεση",
