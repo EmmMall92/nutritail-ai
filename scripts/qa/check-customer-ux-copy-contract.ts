@@ -100,6 +100,14 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "I do not want to recommend dry food when you told me this pet needs wet or canned food.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "For dry plus wet feeding, we need to know which food is the base and which one is the topper.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "Πρακτικές σημειώσεις:",
   },
   {

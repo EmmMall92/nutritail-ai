@@ -55,6 +55,7 @@ type RecommendationSummaryOptions = {
   excludedBrands?: string[];
   preferredProteins?: string[];
   excludedIngredients?: string[];
+  foodFormatPreference?: "dry" | "wet" | "mixed" | null;
   locale?: "el" | "en";
   maxItemsPerSection?: number;
   compactForCards?: boolean;
