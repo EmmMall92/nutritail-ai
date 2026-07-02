@@ -153,6 +153,12 @@ export default function HomePage() {
             >
               Beta
             </Link>
+            <Link
+              href="/plans"
+              className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
+            >
+              Plans
+            </Link>
           </nav>
         </div>
       </header>

@@ -11,6 +11,8 @@ function assert(condition: unknown, message: string) {
 }
 
 const plansPage = read("app/plans/page.tsx");
+const homepage = read("app/page.tsx");
+const betaPage = read("app/beta/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const publicLiveRoutes = read("scripts/qa/check-public-launch-live-routes.mjs");
 const packageJson = read("package.json");
@@ -37,6 +39,16 @@ for (const marker of [
 }
 
 assert(sitemap.includes('path: "/plans"'), "Sitemap must include /plans.");
+
+assert(
+  homepage.includes('href="/plans"') && homepage.includes("Plans"),
+  "Homepage navigation must link to /plans."
+);
+
+assert(
+  betaPage.includes('href="/plans"') && betaPage.includes("Plans"),
+  "Beta page navigation must link to /plans."
+);
 
 assert(
   publicLiveRoutes.includes('path: "/plans"') &&
