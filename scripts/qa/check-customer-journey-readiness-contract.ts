@@ -172,7 +172,7 @@ const checks: ContractCheck[] = [
       "Beta plan limits",
       'data-testid="beta-commercial-clarity"',
       'data-testid="beta-launch-signals"',
-      "paid plans",
+      "πληρωμένα πλάνα",
     ],
   },
   {

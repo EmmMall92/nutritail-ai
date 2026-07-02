@@ -87,9 +87,9 @@ assert(
 );
 assert(
   page.includes("Τι παίρνεις τώρα") &&
-    page.includes("report") &&
-    page.includes("timeline") &&
-    page.includes("progress check"),
+    page.includes("αναφορά") &&
+    page.includes("ιστορικό") &&
+    page.includes("έλεγχο προόδου"),
   "Beta page should explain what customers get during beta."
 );
 assert(

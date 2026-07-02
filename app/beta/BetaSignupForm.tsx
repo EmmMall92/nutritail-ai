@@ -65,7 +65,7 @@ export function BetaSignupForm() {
         </p>
         <h2 className="mt-2 text-2xl font-black">Μπες στη λίστα</h2>
         <p className="mt-2 text-sm leading-6 text-gray-600">
-          Θα χρησιμοποιήσουμε τα στοιχεία μόνο για beta πρόσβαση και feedback προϊόντος.
+          Θα χρησιμοποιήσουμε τα στοιχεία μόνο για beta πρόσβαση και σχόλια προϊόντος.
         </p>
       </div>
 

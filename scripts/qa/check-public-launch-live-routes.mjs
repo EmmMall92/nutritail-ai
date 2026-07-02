@@ -53,13 +53,13 @@ const checks = [
     path: "/forgot-password",
     expected: [200],
     label: "Forgot password page",
-    requiredText: ["Επαναφορά κωδικού", "Στείλε link επαναφοράς"],
+    requiredText: ["Επαναφορά κωδικού", "Στείλε σύνδεσμο επαναφοράς"],
   },
   {
     path: "/reset-password",
     expected: [200],
     label: "Reset password page",
-    requiredText: ["Νέος κωδικός", "Ζήτησε νέο link επαναφοράς"],
+    requiredText: ["Νέος κωδικός", "Ζήτησε νέο σύνδεσμο επαναφοράς"],
   },
   {
     path: "/privacy",

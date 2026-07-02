@@ -67,6 +67,9 @@ for (const marker of [
   "Progress checks",
   "feedback loop",
   "admin-style",
+  "Printable report",
+  "soft limits",
+  "paid plans",
   "πραγματικό testing",
   "launch checks",
 ]) {
