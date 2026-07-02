@@ -544,7 +544,7 @@ function getAccountActivityStrip({
       actionLabel: latestPet ? "Άνοιγμα αναφοράς" : "Ξεκίνα ανάλυση",
     },
     {
-      label: "Τελευταίο progress",
+      label: "Τελευταίος έλεγχος",
       value: latestProgressPet?.name ?? "Δεν υπάρχει ακόμη",
       detail: latestProgress
         ? latestProgressMetadata?.progressDecisionHeadlineEl ??
@@ -948,8 +948,8 @@ export default function AccountPage() {
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-blue-900">
-            Εδώ βλέπεις γρήγορα την τελευταία ανάλυση, το τελευταίο progress
-            check και το πιο χρήσιμο επόμενο βήμα.
+            Εδώ βλέπεις γρήγορα την τελευταία ανάλυση, τον τελευταίο έλεγχο
+            προόδου και το πιο χρήσιμο επόμενο βήμα.
           </p>
         </div>
 
@@ -1056,7 +1056,7 @@ export default function AccountPage() {
               <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                    Μέχρι το επόμενο check
+                    Μέχρι τον επόμενο έλεγχο
                   </p>
                   <h3 className="mt-1 text-lg font-bold text-emerald-950">
                     Τι αξίζει να παρακολουθείς
