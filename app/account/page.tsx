@@ -556,7 +556,7 @@ function getAccountActivityStrip({
         : latestPet
           ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
           : "/account/chatbot",
-      actionLabel: "Progress check",
+      actionLabel: "Έλεγχος προόδου",
     },
     {
       label: "Επόμενο καλύτερο βήμα",
@@ -650,7 +650,7 @@ function getAccountTodayTasks({
       href: progressTarget
         ? `/account/chatbot?petId=${progressTarget.id}&mode=progress`
         : "/account/chatbot",
-      actionLabel: "Progress check",
+      actionLabel: "Έλεγχος προόδου",
       tone: "calm",
     },
     {
@@ -898,7 +898,7 @@ export default function AccountPage() {
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-emerald-900">
-            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, αναφορά, progress check ή
+            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, αναφορά, έλεγχο προόδου ή
             αλλαγή τροφής χωρίς να ψάχνεις σε όλες τις σελίδες.
           </p>
         </div>
@@ -1002,7 +1002,7 @@ export default function AccountPage() {
                 href={accountPlanSnapshot.progressHref}
                 className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
               >
-                Progress check
+                Έλεγχος προόδου
               </Link>
               <Link
                 href={accountPlanSnapshot.reportHref}
@@ -1063,8 +1063,8 @@ export default function AccountPage() {
                   </h3>
                 </div>
                 <p className="max-w-2xl text-sm leading-6 text-emerald-900">
-                  Κράτα αυτές τις μικρές σημειώσεις. Θα βοηθήσουν το επόμενο
-                  progress check να δώσει πιο σωστή απόφαση.
+                  Κράτα αυτές τις μικρές σημειώσεις. Θα βοηθήσουν τον επόμενο
+                  έλεγχο προόδου να δώσει πιο σωστή απόφαση.
                 </p>
               </div>
 
@@ -1096,7 +1096,7 @@ export default function AccountPage() {
                   Επόμενος έλεγχος
                 </p>
                 <h3 className="mt-1 text-lg font-bold text-amber-950">
-                  Σε 2-4 εβδομάδες κάνε progress check
+                  Σε 2-4 εβδομάδες κάνε έλεγχο προόδου
                 </h3>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
                   Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές,
@@ -1108,7 +1108,7 @@ export default function AccountPage() {
                 href={accountPlanSnapshot.progressHref}
                 className="rounded-xl bg-amber-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-amber-800"
               >
-                Άνοιγμα progress check
+                Άνοιγμα ελέγχου προόδου
               </Link>
             </div>
           </div>
@@ -1121,7 +1121,7 @@ export default function AccountPage() {
               href={accountPlanSnapshot.reportHref}
               className="rounded-xl border border-teal-100 bg-teal-50 p-4 text-teal-950 transition hover:border-teal-300 hover:bg-teal-100"
             >
-              <p className="font-semibold">1. Δες το report</p>
+              <p className="font-semibold">1. Δες την αναφορά</p>
               <p className="mt-1 leading-5 text-teal-800">
                 Κράτα σε ένα σημείο θερμίδες, τροφή, ποσότητα και οδηγίες μετάβασης.
               </p>
@@ -1132,14 +1132,14 @@ export default function AccountPage() {
             >
               <p className="font-semibold">2. Παρακολούθησε την πορεία</p>
               <p className="mt-1 leading-5 text-blue-800">
-                Το timeline δείχνει αναλύσεις, αλλαγές τροφής και ελέγχους προόδου.
+                Το ιστορικό δείχνει αναλύσεις, αλλαγές τροφής και ελέγχους προόδου.
               </p>
             </Link>
             <Link
               href={accountPlanSnapshot.progressHref}
               className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-amber-950 transition hover:border-amber-300 hover:bg-amber-100"
             >
-              <p className="font-semibold">3. Κάνε progress check</p>
+              <p className="font-semibold">3. Κάνε έλεγχο προόδου</p>
               <p className="mt-1 leading-5 text-amber-800">
                 Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.
               </p>
@@ -1160,7 +1160,7 @@ export default function AccountPage() {
               href={accountPlanSnapshot.timelineHref}
               className="rounded-full bg-teal-50 px-4 py-2 font-medium text-teal-900 transition hover:bg-teal-100"
             >
-              Δες timeline
+              Δες ιστορικό
             </Link>
             <Link
               href={accountPlanSnapshot.progressHref}
@@ -1309,7 +1309,7 @@ export default function AccountPage() {
             }
             className="rounded-xl bg-violet-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-violet-800"
           >
-            {latestPet ? "Κάνε progress check" : "Ξεκίνα ανάλυση"}
+            {latestPet ? "Κάνε έλεγχο προόδου" : "Ξεκίνα ανάλυση"}
           </Link>
         </div>
 
@@ -1345,7 +1345,7 @@ export default function AccountPage() {
               Σε 2-4 εβδομάδες
             </p>
             <h3 className="mt-2 font-semibold text-violet-950">
-              Κάνε νέο progress check
+              Κάνε νέο έλεγχο προόδου
             </h3>
             <p className="mt-2 text-sm leading-6 text-violet-900">
               Δώσε νέο βάρος, ποσότητα, λιχουδιές και αλλαγές για να δούμε αν
@@ -1361,7 +1361,7 @@ export default function AccountPage() {
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
-                Progress kit
+                Στοιχεία προόδου
               </p>
               <h3 className="mt-1 text-lg font-bold text-violet-950">
                 Τι να κρατάς μέχρι τον επόμενο έλεγχο
@@ -1420,7 +1420,7 @@ export default function AccountPage() {
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
               Στην beta περίοδο κρατάμε το πλάνο απλό: αρκετές αναλύσεις για να
-              δοκιμάσεις προτάσεις, αναφορές και progress checks, χωρίς να σε
+              δοκιμάσεις προτάσεις, αναφορές και ελέγχους προόδου, χωρίς να σε
               μπερδεύουμε με συνδρομή πριν ολοκληρωθεί το launch.
             </p>
           </div>
@@ -1436,7 +1436,7 @@ export default function AccountPage() {
               href="/plans"
               className="rounded-xl border border-amber-300 bg-white px-5 py-3 text-center text-sm font-medium text-amber-950 transition hover:bg-amber-100"
             >
-              Όρια και μελλοντικά plans
+              Όρια και μελλοντικά πλάνα
             </Link>
           </div>
         </div>
