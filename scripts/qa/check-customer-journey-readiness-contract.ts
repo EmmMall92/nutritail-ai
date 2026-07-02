@@ -139,6 +139,17 @@ const checks: ContractCheck[] = [
   },
   {
     area: "Business layer",
+    file: "app/account/page.tsx",
+    markers: [
+      'data-testid="account-beta-plan"',
+      'data-testid="account-beta-usage"',
+      "getBetaUsageSnapshot",
+      "betaUsage.petsUsed",
+      "betaUsage.monthlyAnalysesUsed",
+    ],
+  },
+  {
+    area: "Business layer",
     file: "app/beta/page.tsx",
     markers: [
       "Beta access plan",

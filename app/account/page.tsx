@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { betaPlanHighlights } from "@/lib/beta/accessPlan";
+import {
+  betaAccessPlanConfig,
+  betaPlanHighlights,
+} from "@/lib/beta/accessPlan";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
@@ -100,6 +103,17 @@ type AccountPlanSnapshot = {
   reportHref: string;
   timelineHref: string;
   alternativeHref: string;
+};
+
+type BetaUsageSnapshot = {
+  petsUsed: number;
+  petsLimit: number;
+  monthlyAnalysesUsed: number;
+  monthlyAnalysesLimit: number;
+  petsPercent: number;
+  analysesPercent: number;
+  statusLabel: string;
+  statusDetail: string;
 };
 
 const ACCOUNT_LOAD_ERROR_MESSAGE =
@@ -243,6 +257,52 @@ function getProgressDecisionLabel(value?: string | null) {
   };
 
   return value ? labels[value] ?? value : "Έλεγχος προόδου";
+}
+
+function isCurrentMonthDate(value?: string | null) {
+  if (!value) return false;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return false;
+
+  const now = new Date();
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth()
+  );
+}
+
+function getBetaUsageSnapshot(pets: AccountPet[]): BetaUsageSnapshot {
+  const monthlyAnalysesUsed = pets.reduce(
+    (count, pet) =>
+      count +
+      (pet.analysisHistory ?? []).filter((analysis) =>
+        isCurrentMonthDate(analysis.createdAt)
+      ).length,
+    0
+  );
+  const petsLimit = betaAccessPlanConfig.petLimit;
+  const monthlyAnalysesLimit = betaAccessPlanConfig.monthlyAnalysisLimit;
+  const petsPercent = Math.min(100, Math.round((pets.length / petsLimit) * 100));
+  const analysesPercent = Math.min(
+    100,
+    Math.round((monthlyAnalysesUsed / monthlyAnalysesLimit) * 100)
+  );
+  const isNearLimit =
+    petsPercent >= 80 || analysesPercent >= 80 || pets.length >= petsLimit;
+
+  return {
+    petsUsed: pets.length,
+    petsLimit,
+    monthlyAnalysesUsed,
+    monthlyAnalysesLimit,
+    petsPercent,
+    analysesPercent,
+    statusLabel: isNearLimit ? "Κοντά στο beta όριο" : "Άνετη beta χρήση",
+    statusDetail: isNearLimit
+      ? "Αν χρειαστείς περισσότερα κατοικίδια ή αναλύσεις, στείλε μας feedback για να ανοίξουμε σταδιακά τα όρια."
+      : "Έχεις χώρο για νέα ανάλυση, progress check ή αλλαγή τροφής μέσα στον μήνα.",
+  };
 }
 
 function getLatestProgressEntry(pets: AccountPet[]) {
@@ -704,6 +764,7 @@ export default function AccountPage() {
     latestProgress,
     nextPetToAnalyze,
   });
+  const betaUsage = getBetaUsageSnapshot(pets);
   const readinessSteps = getAccountReadinessSteps({
     pets,
     totalAnalyses,
@@ -1257,6 +1318,65 @@ export default function AccountPage() {
               </p>
             </div>
           ))}
+        </div>
+
+        <div
+          className="mt-5 rounded-2xl border border-amber-100 bg-white p-4"
+          data-testid="account-beta-usage"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                Beta usage
+              </p>
+              <h3 className="mt-1 text-lg font-bold text-amber-950">
+                {betaUsage.statusLabel}
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-amber-900">
+                {betaUsage.statusDetail}
+              </p>
+            </div>
+            <p className="text-sm font-semibold text-amber-950">
+              {betaAccessPlanConfig.accessPlan}
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div className="rounded-xl bg-amber-50 p-4">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="font-semibold text-amber-950">
+                  Κατοικίδια
+                </span>
+                <span className="font-bold text-amber-950">
+                  {betaUsage.petsUsed}/{betaUsage.petsLimit}
+                </span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-amber-100">
+                <div
+                  className="h-2 rounded-full bg-amber-700"
+                  style={{ width: `${betaUsage.petsPercent}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="rounded-xl bg-amber-50 p-4">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="font-semibold text-amber-950">
+                  Αναλύσεις αυτόν τον μήνα
+                </span>
+                <span className="font-bold text-amber-950">
+                  {betaUsage.monthlyAnalysesUsed}/
+                  {betaUsage.monthlyAnalysesLimit}
+                </span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-amber-100">
+                <div
+                  className="h-2 rounded-full bg-amber-700"
+                  style={{ width: `${betaUsage.analysesPercent}%` }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
