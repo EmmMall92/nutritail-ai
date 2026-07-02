@@ -175,8 +175,9 @@ customer nutrition experience is now a beta candidate:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
   to run with a QA account cookie, not just local or unauthenticated checks.
-- Subscription/payment direction is not complete enough for a paid public
-  launch, even though beta access and limits are present.
+- Subscription/payment direction is clearer after the beta plan direction work,
+  but paid checkout, billing operations, and subscription enforcement are not
+  active yet.
 - Production monitoring and post-deploy freshness need to remain current after
   every chatbot, Food V2, account, report, auth, or public-route deploy.
 - Legal/trust pages exist, but they still need final operating review before

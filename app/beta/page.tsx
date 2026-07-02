@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { betaPlanLimits } from "@/lib/beta/accessPlan";
+import {
+  betaPlanLimits,
+  futurePaidPlanDirection,
+} from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
 import { BetaSignupForm } from "./BetaSignupForm";
 
@@ -256,6 +259,48 @@ export default function BetaPage() {
               ))}
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="border-t border-black/10 bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div
+            className="rounded-3xl border border-black/10 bg-[#f7f7f4] p-6 md:p-8"
+            data-testid="beta-future-paid-plan-direction"
+          >
+            <p className="text-sm font-bold uppercase tracking-wide text-green-700">
+              Μελλοντική εμπορική κατεύθυνση
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Πρώτα beta ποιότητα. Μετά καθαρά πλάνα, πριν ζητηθεί οποιαδήποτε πληρωμή.
+            </h2>
+            <p className="mt-4 max-w-3xl leading-7 text-gray-700">
+              Δεν ενεργοποιούμε συνδρομή στην beta και δεν ζητάμε κάρτα. Η
+              κατεύθυνση για αργότερα είναι απλή: ένα δωρεάν/beta στάδιο για
+              δοκιμή, ένα προσωπικό πλάνο για κανονική χρήση και ένα πιο δυνατό
+              πλάνο για περισσότερα κατοικίδια ή επαγγελματική χρήση.
+            </p>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {futurePaidPlanDirection.map((plan) => (
+                <article
+                  key={plan.name}
+                  className="rounded-2xl border border-black/10 bg-white p-5"
+                >
+                  <h3 className="text-lg font-black">{plan.name}</h3>
+                  <p className="mt-3 text-sm font-semibold text-gray-900">
+                    {plan.audience}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-gray-700">
+                    {plan.includes}
+                  </p>
+                  <p className="mt-4 rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white">
+                    {plan.status}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </main>
