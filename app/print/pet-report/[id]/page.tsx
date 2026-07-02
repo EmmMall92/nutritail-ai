@@ -338,34 +338,34 @@ function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
 
   return [
     {
-      label: "Food selected",
-      value: hasFood ? "Ready" : "Needs confirmation",
+      label: "Τροφή",
+      value: hasFood ? "Έτοιμο" : "Θέλει επιβεβαίωση",
       detail: hasFood
-        ? "Use the food saved in this report as the current plan."
-        : "Choose a recommended food or send the exact bag label before relying on food-specific advice.",
+        ? "Χρησιμοποίησε την τροφή που αποθηκεύτηκε σε αυτή την αναφορά ως βάση του πλάνου."
+        : "Διάλεξε προτεινόμενη τροφή ή στείλε την ακριβή ετικέτα πριν βασιστείς σε οδηγίες για συγκεκριμένη φόρμουλα.",
       complete: hasFood,
     },
     {
-      label: "Daily amount",
-      value: hasPortion ? "Ready" : "Needs food calories",
+      label: "Ημερήσια ποσότητα",
+      value: hasPortion ? "Έτοιμο" : "Θέλει θερμίδες τροφής",
       detail: hasPortion
-        ? "Start with this amount, split into meals, then review weight and stool quality."
-        : "Grams per day become precise after NutriTail knows the selected food calories.",
+        ? "Ξεκίνα με αυτή την ποσότητα, μοίρασέ τη σε γεύματα και έλεγξε βάρος και κόπρανα."
+        : "Τα γραμμάρια/ημέρα γίνονται ακριβή όταν το NutriTail ξέρει τις θερμίδες της επιλεγμένης τροφής.",
       complete: hasPortion,
     },
     {
-      label: "Calorie target",
-      value: hasCalories ? `${analysis?.mer} kcal/day` : "Needs analysis",
+      label: "Θερμιδικός στόχος",
+      value: hasCalories ? `${analysis?.mer} kcal/ημέρα` : "Θέλει ανάλυση",
       detail: hasCalories
-        ? "Keep treats inside the daily target so the main plan stays meaningful."
-        : "Run a fresh analysis before changing portions.",
+        ? "Κράτα τις λιχουδιές μέσα στον ημερήσιο στόχο για να έχει νόημα το βασικό πλάνο."
+        : "Κάνε νέα ανάλυση πριν αλλάξεις ποσότητες.",
       complete: hasCalories,
     },
     {
-      label: "Follow-up date",
+      label: "Επανέλεγχος",
       value: getRecheckWindow(analysis),
       detail:
-        "Come back with current weight, grams per day, treats, appetite, stool, and energy.",
+        "Γύρνα με τωρινό βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
       complete: Boolean(analysis),
     },
   ];
@@ -1153,15 +1153,15 @@ export default function PrintablePetReportPage() {
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Before you start
+                Πριν ξεκινήσεις
               </p>
               <h2 className="mt-1 text-2xl font-bold text-emerald-950">
-                Check these 4 points before using the plan
+                Έλεγξε αυτά τα 4 σημεία πριν χρησιμοποιήσεις το πλάνο
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900">
-                This keeps the report practical: food, amount, calories, and the
-                next review point should all be clear before the plan becomes a
-                daily routine.
+                Έτσι η αναφορά μένει πρακτική: τροφή, ποσότητα, θερμίδες και
+                επόμενος έλεγχος πρέπει να είναι ξεκάθαρα πριν γίνει καθημερινή
+                ρουτίνα.
               </p>
             </div>
             <span
@@ -1171,7 +1171,7 @@ export default function PrintablePetReportPage() {
                   : "bg-amber-100 text-amber-900"
               }`}
             >
-              {hasCompleteFoodPlan ? "Ready to use" : "Confirm before use"}
+              {hasCompleteFoodPlan ? "Έτοιμο για χρήση" : "Επιβεβαίωσε πριν τη χρήση"}
             </span>
           </div>
 
