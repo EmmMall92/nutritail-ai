@@ -144,6 +144,17 @@ const requiredMarkers = [
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
   "authenticated live chatbot extract proof",
+  "Customer UX Unlock Gates",
+  "Full recommendation journey proof",
+  "83-85% Customer UX readiness",
+  "Clean customer wording proof",
+  "85-86% Customer UX readiness",
+  "Returning pet proof",
+  "86-87% Customer UX readiness",
+  "Report/account proof",
+  "87-88% Customer UX readiness",
+  "Real beta-user proof",
+  "88-90% Customer UX readiness",
   "Customer UX readiness",
   "Recommendation engine beta confidence",
   "95% beta-candidate",
@@ -240,10 +251,14 @@ assert(
 assert(
   liveQaPage.includes("Why it may not move every PR") &&
     liveQaPage.includes("Next moves toward") &&
+    liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
+    liveQaPage.includes("customerUxUnlockGates") &&
+    liveQaPage.includes("What actually moves Customer UX readiness above") &&
+    liveQaPage.includes("Full recommendation journey proof") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),
-  "Admin live QA page must explain why the score feels stuck and what moves it next."
+  "Admin live QA page must explain why the score feels stuck, what moves it next, and which customer UX gates unlock the next band."
 );
 
 assert(
