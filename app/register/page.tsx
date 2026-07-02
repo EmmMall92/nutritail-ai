@@ -196,11 +196,22 @@ export default function RegisterPage() {
         )}
 
         {success && (
-          <div className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700">
+          <div
+            className="rounded-xl border border-green-100 bg-green-50 p-3 text-sm text-green-700"
+            data-testid="auth-register-confirmation-next-steps"
+          >
             {success}
             <p className="mt-1 text-xs text-green-700">
               Αν ζητηθεί επιβεβαίωση, άνοιξε το email στην ίδια συσκευή και μετά γύρνα στο NutriTail.
             </p>
+            {!success.includes("μεταφέρουμε") && (
+              <Link
+                href={loginHref}
+                className="mt-3 inline-flex rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-800"
+              >
+                Συνέχεια στη σύνδεση
+              </Link>
+            )}
           </div>
         )}
 
