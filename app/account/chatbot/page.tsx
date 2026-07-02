@@ -6623,6 +6623,54 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </div>
 
                 <div
+                  data-testid="selected-food-first-week-checklist"
+                  className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100"
+                >
+                  <p className="font-semibold">
+                    {botText("Πρώτη εβδομάδα εφαρμογής", "First week checklist")}
+                  </p>
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-4">
+                    {[
+                      {
+                        titleEl: "Μέτρα την ποσότητα",
+                        titleEn: "Measure the portion",
+                        textEl: "Χρησιμοποίησε ζυγαριά ή ίδιο δοσομετρητή κάθε μέρα.",
+                        textEn: "Use a scale or the same measuring cup every day.",
+                      },
+                      {
+                        titleEl: "Κράτα σταθερές λιχουδιές",
+                        titleEn: "Keep treats steady",
+                        textEl: "Μην αλλάξεις πολλά πράγματα μαζί την πρώτη εβδομάδα.",
+                        textEn: "Do not change too many things at once in week one.",
+                      },
+                      {
+                        titleEl: "Παρακολούθησε αντίδραση",
+                        titleEn: "Watch the response",
+                        textEl: "Κοίτα όρεξη, κόπρανα, ενέργεια και αν του αρέσει η γεύση.",
+                        textEn:
+                          "Watch appetite, stool, energy, and whether the flavour still works.",
+                      },
+                      {
+                        titleEl: "Γύρνα για έλεγχο",
+                        titleEn: "Come back to check",
+                        textEl: "Σε 2-4 εβδομάδες φέρε βάρος, γραμμάρια/ημέρα και αποτέλεσμα.",
+                        textEn: "In 2-4 weeks, bring weight, grams/day, and the result.",
+                      },
+                    ].map((item) => (
+                      <div
+                        key={item.titleEn}
+                        className="rounded-xl bg-lime-50 px-3 py-2 ring-1 ring-lime-100"
+                      >
+                        <p className="font-semibold">{botText(item.titleEl, item.titleEn)}</p>
+                        <p className="mt-1 text-xs leading-5 text-lime-900">
+                          {botText(item.textEl, item.textEn)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
                   data-testid="selected-food-next-steps"
                   className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3"
                 >
