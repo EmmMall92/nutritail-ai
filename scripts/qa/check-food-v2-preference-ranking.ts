@@ -432,10 +432,34 @@ const bestOverallSplit = splitFoodV2Recommendations([
     bucket: "value",
     value_tier: "value_candidate",
   },
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|practical-alternative|dog|dry",
+    display_name: "Practical Alternative",
+    total_score: 65,
+    value_score: 80,
+    bucket: "value",
+    value_tier: "value_candidate",
+  },
+  {
+    ...clearSmallSterilisedRanking,
+    formula_key: "qa|second-practical-alternative|dog|dry",
+    display_name: "Second Practical Alternative",
+    total_score: 60,
+    value_score: 75,
+    bucket: "value",
+    value_tier: "value_candidate",
+  },
 ]);
 
 if (bestOverallSplit.premium[0]?.formula_key !== "qa|higher-value-bucket|dog|dry") {
   console.error("Best matches should be ordered by overall fit, not by internal premium/value bucket.");
+  console.error(bestOverallSplit);
+  process.exit(1);
+}
+
+if (bestOverallSplit.value[0]?.formula_key !== "qa|second-practical-alternative|dog|dry") {
+  console.error("Practical alternatives should stay visible beside the first-choice foods.");
   console.error(bestOverallSplit);
   process.exit(1);
 }
