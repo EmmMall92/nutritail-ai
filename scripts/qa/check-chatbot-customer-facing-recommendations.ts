@@ -286,7 +286,7 @@ const forbiddenTerms = [
   "kept foods out of the shortlist",
   "value ranking is a proxy",
   "data is usable",
-  "�",
+  "\uFFFD",
   "Ο",
 ];
 
@@ -525,7 +525,7 @@ const forbiddenComposerCopy = [
   "high confidence",
   "medium confidence",
   "low confidence",
-  "�",
+  "\uFFFD",
 ];
 const leakedComposerCopy = forbiddenComposerCopy.filter((term) =>
   `${responseComposer}\n${responseAdapter}`.includes(term)
@@ -726,10 +726,8 @@ const requiredCardFlowCopy = [
   "Choose the food you prefer to see grams per day.",
   "If you change your mind before saving, you can tap another card.",
   "customer-choice-decision-guide",
-  "Choose in this order",
-  "First we check age, size, neuter status, weight goal, and sensitivities.",
-  "Then we respect what the pet likes, refuses, or should avoid.",
-  "Finally you compare premium and practical alternatives without losing the fit.",
+  "fit and taste",
+  "one food card",
   "1. Compare",
   "2. Choose",
   "3. Get",
@@ -833,7 +831,6 @@ const requiredCardFlowCopy = [
   "protein",
   "fat",
   "fiber",
-  "You do not have to choose the first card immediately. Pick the one that fits flavour, budget, and daily routine best.",
 ];
 const missingCardFlowCopy = requiredCardFlowCopy.filter(
   (term) => !chatbotPage.includes(term)
@@ -876,7 +873,6 @@ const requiredGreekCardFlowCopy = [
   "Πώς να το διαβάσεις:",
   "Οι 3 βασικές προτάσεις",
   "Πιο πρακτικές / οικονομικές επιλογές",
-  "Δεν χρειάζεται να διαλέξεις αμέσως την πρώτη.",
   "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή",
   "Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
   "εμφανίζονται μόνο όταν περνούν αρκετά καλά τα ίδια κριτήρια",
@@ -972,13 +968,11 @@ if (
 const groupedChoiceMarkers = [
   "Best starting choices",
   "Budget-friendly alternatives",
-  "recommendation-final-choice-guide",
   "choose-food-before-save-notice",
   "requiresFoodChoiceBeforeSave",
   "disabled={isSaving || requiresFoodChoiceBeforeSave}",
   "Choose one food card first so I can calculate grams/day.",
   "Choose one food card first. Then I will calculate grams/day and save a complete plan.",
-  "Choose one food first. I will calculate grams/day, then you can save the plan or try another option.",
   "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
   "group.choices.length}/3",

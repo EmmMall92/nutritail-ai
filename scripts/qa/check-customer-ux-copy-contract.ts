@@ -92,11 +92,11 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "recommendation-final-choice-guide",
+    text: "customer-choice-decision-guide",
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "Choose one food first. I will calculate grams/day",
+    text: "fit and taste",
   },
   {
     file: "app/account/chatbot/page.tsx",

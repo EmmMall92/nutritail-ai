@@ -50,22 +50,16 @@ assert(
   "English food shortlist section should use customer-friendly budget wording."
 );
 assert(
-  chatbotPage.includes('data-testid="customer-food-choice-guide"') &&
-    chatbotPage.includes("For the strongest start") &&
-    chatbotPage.includes("If budget also matters") &&
-    chatbotPage.includes("Then tap one food") &&
-    chatbotPage.includes("Look at the green cards first") &&
-    chatbotPage.includes("Use the blue cards as practical or budget-friendly alternatives") &&
-    chatbotPage.includes("I will calculate the first grams/day estimate"),
-  "Food shortlist must include a customer-facing guide for strong picks, value picks, and grams/day action."
+  !chatbotPage.includes('data-testid="customer-food-choice-guide"') &&
+    !chatbotPage.includes('data-testid="recommendation-final-choice-guide"'),
+  "Food shortlist should not show duplicate customer guide panels before the food cards."
 );
 assert(
   chatbotPage.includes('data-testid="customer-choice-decision-guide"') &&
-    chatbotPage.includes("Choose in this order") &&
-    chatbotPage.includes("First we check age, size, neuter status, weight goal, and sensitivities.") &&
-    chatbotPage.includes("Then we respect what the pet likes, refuses, or should avoid.") &&
-    chatbotPage.includes("Finally you compare premium and practical alternatives without losing the fit."),
-  "Food shortlist must explain the customer decision order: fit, taste, then budget."
+    chatbotPage.includes("fit and taste") &&
+    chatbotPage.includes("one food card") &&
+    chatbotPage.includes("grams/day"),
+  "Food shortlist must keep one compact customer decision strip: compare, choose, grams/day."
 );
 assert(
   chatbotPage.includes("md:grid-cols-4"),
