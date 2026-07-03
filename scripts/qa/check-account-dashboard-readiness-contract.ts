@@ -169,7 +169,11 @@ assert(
     accountPage.includes('data-testid="account-home-brief"') &&
     accountPage.includes("accountHomeBrief.cards.map") &&
     accountPage.includes("accountHomeBrief.reportHref") &&
-    accountPage.includes("accountHomeBrief.progressHref"),
+    accountPage.includes("accountHomeBrief.progressHref") &&
+    accountPage.includes("mealSplit.twoMeals") &&
+    accountPage.includes("mealSplit.threeMeals") &&
+    accountPage.includes("Πρακτικά:") &&
+    accountPage.includes("Κράτα την ποσότητα σταθερή"),
   "Account dashboard must show a compact home-use brief with report and progress actions."
 );
 assert(
