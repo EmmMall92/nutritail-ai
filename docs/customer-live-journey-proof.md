@@ -19,7 +19,7 @@ The runner checks:
 - OpenAI intake extraction for a Greek customer message
 - Food V2 returns 3 first-choice cards and 3 value-style alternatives
 - composed chatbot recommendation wording hides back-office terms from customers
-- manual browser proof for save, report, timeline, and returning progress
+- manual browser proof for save, report, timeline, returning progress, and broader saved-pet continuation
 
 ## Auth Cookie
 
@@ -80,6 +80,10 @@ Then keep only evidence that really passed in the live browser. Use this shape:
   "return_for_progress": {
     "passed": true,
     "evidence": ["Same saved pet returned to progress mode without restarting intake."]
+  },
+  "returning_continuation": {
+    "passed": true,
+    "evidence": ["Same saved pet handled progress, no-result advice, flavour/brand change, new food recommendation, and timeline review without restarting intake."]
   }
 }
 ```
@@ -95,6 +99,7 @@ checks those terms so a vague note such as "looks good" cannot unlock
 | `open_report` | `report`, `calories`, `selected food`, `grams/day`, `transition` |
 | `open_timeline` | `timeline`, `same saved pet`, `plan`, `progress` |
 | `return_for_progress` | `same saved pet`, `progress`, `without restarting` |
+| `returning_continuation` | `same saved pet`, `progress`, `no-result`, `flavour`, `brand`, `new food`, `timeline`, `without restarting` |
 
 To avoid typing the keys by hand, you can ask the runner to create a local
 ignored draft:
@@ -134,15 +139,16 @@ Remove-Item Env:\NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF
 
 This mode uses the authenticated QA cookie, creates a clearly named QA pet in
 the live account, saves a test analysis with grams/day, checks clean printable
-report wording, opens the report and timeline routes, and writes one progress
-note. Use it only when you are ready to create live QA data. The runner never
-prints the cookie or the user id.
+report wording, opens the report and timeline routes, and writes controlled
+progress, no-result, flavour/brand, and new-food continuation notes. Use it only
+when you are ready to create live QA data. The runner never prints the cookie or
+the user id.
 
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.
-- `PASS_NON_DESTRUCTIVE`: logged-in chatbot, OpenAI extraction, Food V2 card proof, and clean composed chatbot wording passed, but save/report/timeline/progress browser proof is still missing.
-- `PASS_FULL`: authenticated extraction, recommendations, clean chatbot wording, clean printable report wording, save, report, timeline, and returning progress all have current proof.
+- `PASS_NON_DESTRUCTIVE`: logged-in chatbot, OpenAI extraction, Food V2 card proof, and clean composed chatbot wording passed, but save/report/timeline/progress/continuation browser proof is still missing.
+- `PASS_FULL`: authenticated extraction, recommendations, clean chatbot wording, clean printable report wording, save, report, timeline, returning progress, and saved-pet continuation all have current proof.
 - `REVIEW`: at least one checked route or shape failed.
 
 Only `PASS_FULL` should justify moving Customer UX at the current live customer journey gate.
@@ -159,6 +165,7 @@ reopens a real customer flow:
 3. open the saved pet report
 4. open the same pet timeline
 5. return to the same pet for progress without restarting intake
+6. prove no-result advice, flavour/brand change, and a fresh food recommendation route for that same pet
 
 That browser proof can then be written to the ignored
 `.qa-secrets/customer-live-journey-proof.json` file and rechecked by the runner.

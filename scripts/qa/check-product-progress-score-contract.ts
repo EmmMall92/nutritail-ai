@@ -35,7 +35,7 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer UX readiness is currently **86%**",
+  "Customer UX readiness is currently **87%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
   "## Customer UX Scorecard",
@@ -44,7 +44,7 @@ const requiredMarkers = [
   "What blocks the next move",
   "Logged-in production proof now covers ordered intake",
   "compact compare, choose, grams/day strip",
-  "Needs broader returning saved-pet continuation proof",
+  "Needs report/account proof",
   "`qa:customer-live-journey-proof`",
   "non-destructive checks passing",
   "Do not collapse them into one",
@@ -90,7 +90,14 @@ const requiredMarkers = [
   "subscription or payment direction",
   "legal/trust",
   "real public SaaS",
-  "The latest customer-facing work moves Customer UX readiness from **85%** to",
+  "The latest customer-facing work moves Customer UX readiness from **86%** to",
+  "6b524f8b-fb05-45c6-a91d-f63b68768d33",
+  "6/6",
+  "no-result follow-up",
+  "flavour/brand-change",
+  "fresh new-food recommendation route",
+  "Report/account proof",
+  "The previous customer-facing work moved Customer UX readiness from **85%** to",
   "`qa:clean-customer-wording-proof` protects generated recommendation output",
   "clean composed",
   "clean printable report wording",
@@ -187,7 +194,8 @@ const requiredMarkers = [
   "proof-status",
   "clean composed chatbot wording plus clean printable report wording",
   "Returning pet proof",
-  "86-87% Customer UX readiness",
+  "completed to 87% Customer UX readiness",
+  "progress check, no-result follow-up, flavour/brand change, new food recommendation route, and timeline review",
   "Report/account proof",
   "87-88% Customer UX readiness",
   "Real beta-user proof",
@@ -277,6 +285,10 @@ assert(
     customerLiveJourneyProof.includes("Manual journeys still required") &&
     customerLiveJourneyProof.includes("New pet recommendation") &&
     customerLiveJourneyProof.includes("Return for progress") &&
+    customerLiveJourneyProof.includes("Returning saved-pet continuation") &&
+    customerLiveJourneyProof.includes("returning_continuation") &&
+    customerLiveJourneyProof.includes("no-result") &&
+    customerLiveJourneyProof.includes("new food") &&
     customerLiveJourneyProof.includes("SKIP_AUTH") &&
     customerLiveJourneyProof.includes("PASS_NON_DESTRUCTIVE") &&
     customerLiveJourneyProof.includes("NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF") &&
@@ -351,7 +363,7 @@ assert(
     liveQaPage.includes('data-testid="customer-product-next-unlock"') &&
     liveQaPage.includes("Next customer score unlock") &&
     liveQaPage.includes("Evidence needed next") &&
-    liveQaPage.includes("returning customer can continue from a saved pet") &&
+    liveQaPage.includes("account and report pages make the next action obvious") &&
     liveQaPage.includes('data-testid="customer-product-score-rule"') &&
     liveQaPage.includes("Score movement rule") &&
     liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
@@ -359,7 +371,7 @@ assert(
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
     liveQaPage.includes("customerUxUnlockGates") &&
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
-    liveQaPage.includes("Returning saved-pet continuation proof") &&
+    liveQaPage.includes("Report/account clarity proof") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),
