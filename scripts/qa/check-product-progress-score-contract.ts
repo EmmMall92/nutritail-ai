@@ -225,6 +225,12 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:chatbot-calorie-copy"') &&
+    packageJson.includes("qa:customer-ux-copy && npm run qa:chatbot-calorie-copy"),
+  "CI readiness must protect customer-facing chatbot calorie wording after the customer UX copy contract."
+);
+
+assert(
   customerJourneyUnlockGate.includes("reports/customer_journey_unlock_gate_qa.md") &&
     customerJourneyUnlockGate.includes("This report is customer-product evidence") &&
     customerJourneyUnlockGate.includes("Manual Live Follow-Up") &&

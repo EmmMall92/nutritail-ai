@@ -3645,7 +3645,7 @@ ${
   return `Your nutrition plan is ready:
 
 Daily calorie guide
-- Resting need: ${nutrition.rer} kcal/day
+- Resting calories: ${nutrition.rer} kcal/day
   This is the basic energy the body needs at complete rest.
 
 ${englishDailyTargetBlock}
