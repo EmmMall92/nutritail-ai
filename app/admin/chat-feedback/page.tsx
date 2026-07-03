@@ -257,6 +257,80 @@ function getLaunchTrackFixQueue(
   }));
 }
 
+function getBetaProofSignals(feedbackLogs: AdminActivityLog[]) {
+  const hasDogJourney = feedbackLogs.some((log) => {
+    const context = getFeedbackContext(log);
+    return (
+      getFeedbackType(log) === "analysis_completed" &&
+      String(context.petSpecies ?? "").toLowerCase() === "dog"
+    );
+  });
+  const hasCatJourney = feedbackLogs.some((log) => {
+    const context = getFeedbackContext(log);
+    return (
+      getFeedbackType(log) === "analysis_completed" &&
+      String(context.petSpecies ?? "").toLowerCase() === "cat"
+    );
+  });
+  const hasReturningSavedPetJourney = feedbackLogs.some((log) => {
+    const context = getFeedbackContext(log);
+    const type = getFeedbackType(log);
+    const action = String(context.action ?? "").toLowerCase();
+    return (
+      type === "chat_followup_action" &&
+      Boolean(context.petId) &&
+      Boolean(context.hasAnalysisHistory) &&
+      ["progress", "no_result", "change_food", "timeline"].includes(action)
+    );
+  });
+  const hasFoodChoice = feedbackLogs.some(
+    (log) => getFeedbackType(log) === "food_choice_selected"
+  );
+  const hasSavedPlan = feedbackLogs.some(
+    (log) => getFeedbackType(log) === "plan_saved"
+  );
+
+  const items = [
+    {
+      label: "Dog owner journey",
+      met: hasDogJourney && hasFoodChoice && hasSavedPlan,
+      evidence: hasDogJourney
+        ? "Dog analysis signal exists; confirm it includes choice, save, report, and feedback."
+        : "Run one dog-owner flow from login to saved plan.",
+      typeFilter: "analysis_completed",
+      search: "dog",
+    },
+    {
+      label: "Cat owner journey",
+      met: hasCatJourney && hasFoodChoice && hasSavedPlan,
+      evidence: hasCatJourney
+        ? "Cat analysis signal exists; confirm it includes choice, save, report, and feedback."
+        : "Run one cat-owner flow from login to saved plan.",
+      typeFilter: "analysis_completed",
+      search: "cat",
+    },
+    {
+      label: "Returning saved pet journey",
+      met: hasReturningSavedPetJourney,
+      evidence: hasReturningSavedPetJourney
+        ? "Returning saved-pet follow-up signal exists."
+        : "Run a saved-pet return flow: progress, no-result, flavour/brand change, or timeline.",
+      typeFilter: "chat_followup_action",
+      search: "",
+    },
+  ];
+
+  const metCount = items.filter((item) => item.met).length;
+
+  return {
+    items,
+    metCount,
+    totalCount: items.length,
+    ready: metCount === items.length,
+    missingCount: items.length - metCount,
+  };
+}
+
 function TriageButton({
   label,
   value,
@@ -526,6 +600,7 @@ export default function AdminChatFeedbackPage() {
   const customerFrictionScorecards =
     getCustomerFrictionScorecards(dropoffPriorityItems);
   const launchTrackFixQueue = getLaunchTrackFixQueue(customerFrictionScorecards);
+  const betaProofSignals = getBetaProofSignals(feedbackLogs);
 
   return (
     <section className="space-y-6">
@@ -795,6 +870,73 @@ export default function AdminChatFeedbackPage() {
               High-priority repeated failed matches to fix first.
             </p>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-cyan-200 bg-cyan-50 p-6 shadow-sm"
+        data-testid="chat-feedback-beta-proof-signals"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
+              Beta-user proof signals
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-cyan-950">
+              {betaProofSignals.ready
+                ? "Minimum proof signals are visible"
+                : `${betaProofSignals.missingCount} proof journey${
+                    betaProofSignals.missingCount === 1 ? "" : "s"
+                  } still missing`}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-cyan-900">
+              Customer UX readiness moves only when real users complete dog,
+              cat, and returning saved-pet journeys. This panel uses feedback
+              events as directional evidence; final signoff still needs the
+              beta-user proof report.
+            </p>
+          </div>
+          <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-cyan-950">
+            {betaProofSignals.metCount}/{betaProofSignals.totalCount} signals
+          </span>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {betaProofSignals.items.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => {
+                setTypeFilter(item.typeFilter);
+                setRatingFilter("all");
+                setSearch(item.search);
+              }}
+              className={`rounded-xl border p-4 text-left transition hover:border-cyan-500 hover:bg-white ${
+                item.met
+                  ? "border-emerald-200 bg-white"
+                  : "border-cyan-200 bg-cyan-100/60"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <h4 className="font-bold text-cyan-950">{item.label}</h4>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${
+                    item.met
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-white text-cyan-900"
+                  }`}
+                >
+                  {item.met ? "signal found" : "missing"}
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-cyan-900">
+                {item.evidence}
+              </p>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-cyan-700">
+                Open related events
+              </p>
+            </button>
+          ))}
         </div>
       </div>
 
