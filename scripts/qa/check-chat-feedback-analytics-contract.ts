@@ -116,6 +116,20 @@ assert(
   "Admin feedback page must map customer feedback signals to the 10-task launch tracks."
 );
 assert(
+  adminFeedbackPage.includes("function getBetaProofSignals") &&
+    adminFeedbackPage.includes("betaProofSignals.items.map") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-beta-proof-signals"') &&
+    adminFeedbackPage.includes("Beta-user proof signals") &&
+    adminFeedbackPage.includes("Dog owner journey") &&
+    adminFeedbackPage.includes("Cat owner journey") &&
+    adminFeedbackPage.includes("Returning saved pet journey") &&
+    adminFeedbackPage.includes("final signoff still needs the") &&
+    adminFeedbackPage.includes("beta-user proof report") &&
+    adminFeedbackPage.includes("setTypeFilter(item.typeFilter)") &&
+    adminFeedbackPage.includes("setSearch(item.search)"),
+  "Admin feedback page must expose beta-user proof signals for dog, cat, and returning saved-pet journeys."
+);
+assert(
   adminFeedbackPage.includes('data-testid="chat-feedback-next-best-fix"'),
   "Admin feedback page must expose the next best feedback fix panel."
 );
