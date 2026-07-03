@@ -335,6 +335,37 @@ export default function AdminActivityPage() {
             run npm.cmd run qa:beta-user-proof-contract.
           </p>
         </div>
+
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
+          data-testid="admin-beta-session-playbook"
+        >
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="font-semibold text-gray-950">
+                Session playbook for real beta proof
+              </p>
+              <p className="mt-2">
+                Run the test like a real customer session: the moderator can ask
+                the tester to open NutriTail and think out loud, but must not
+                explain which button to press, which food to choose, or what the
+                recommendation means before the tester reacts.
+              </p>
+              <p className="mt-2 text-xs text-gray-500">
+                Outcome rule: pass, review, or fail. Review/fail sessions should
+                become follow-up work in chatbot experience, report/account
+                clarity, recommendation accuracy, feedback loop, launch QA, or
+                business layer.
+              </p>
+            </div>
+            <a
+              href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/beta-user-session-playbook.md"
+              className="inline-flex rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+            >
+              Open session playbook
+            </a>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
