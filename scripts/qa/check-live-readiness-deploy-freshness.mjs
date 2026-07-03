@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 
 const dashboardSource = readFileSync("scripts/qa/build-live-readiness-dashboard.mjs", "utf8");
+const chatbotDashboardSource = readFileSync("scripts/qa/build-live-qa-dashboard.mjs", "utf8");
 const postDeploySource = readFileSync("scripts/qa/run-post-deploy-readiness.mjs", "utf8");
 const adminLiveQaSource = readFileSync("app/admin/foods/v2-live-qa/page.tsx", "utf8");
 const packageSource = readFileSync("package.json", "utf8");
@@ -65,6 +66,26 @@ const checks = [
     label: "full OpenAI proof only passes after both advisory checks pass",
     source: dashboardSource,
     expected: "it becomes PASS only after the OpenAI intake smoke and authenticated chatbot extract route both run successfully",
+  },
+  {
+    label: "chatbot live dashboard separates recommendation logic review cases",
+    source: chatbotDashboardSource,
+    expected: "Recommendation logic review cases",
+  },
+  {
+    label: "chatbot live dashboard separates format data coverage gaps",
+    source: chatbotDashboardSource,
+    expected: "Format/data coverage gaps",
+  },
+  {
+    label: "readiness dashboard reads chatbot recommendation logic review cases",
+    source: dashboardSource,
+    expected: "Recommendation logic review cases",
+  },
+  {
+    label: "readiness dashboard reads chatbot format data coverage gaps",
+    source: dashboardSource,
+    expected: "Format/data coverage gaps",
   },
   {
     label: "post-deploy script can enable deploy freshness from CLI",
