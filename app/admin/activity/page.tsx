@@ -164,6 +164,24 @@ const betaRolloutReadinessItems = [
   },
 ] as const;
 
+const betaProofSessionPacket = [
+  {
+    step: "Pick the slot",
+    detail:
+      "Choose dog owner, cat owner, or returning saved-pet before the session starts.",
+  },
+  {
+    step: "Watch without guiding",
+    detail:
+      "The tester should complete signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, and feedback without manual help.",
+  },
+  {
+    step: "Record exact proof",
+    detail:
+      "Use the evidence note template, then run qa:beta-user-proof-contract before moving the Customer UX score.",
+  },
+] as const;
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -392,6 +410,53 @@ export default function AdminActivityPage() {
             Store final proof locally in .qa-secrets/beta-user-proof.json, then
             run npm.cmd run qa:beta-user-proof-contract.
           </p>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
+          data-testid="admin-beta-proof-session-packet"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="font-semibold text-gray-950">
+                Beta proof session packet
+              </p>
+              <p className="mt-2 max-w-3xl">
+                Use this as the 10-minute operating packet before each real
+                tester session. It keeps the proof slots, no-help rule, evidence
+                note, and score command in one place.
+              </p>
+            </div>
+            <a
+              href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/beta-user-proof-session-packet.md"
+              className="inline-flex rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+            >
+              Open session packet
+            </a>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {betaProofSessionPacket.map((item) => (
+              <div
+                key={item.step}
+                className="rounded-lg border border-amber-100 bg-amber-50 p-3"
+                data-testid="admin-beta-proof-session-packet-step"
+              >
+                <p className="font-semibold text-amber-950">{item.step}</p>
+                <p className="mt-2 leading-6 text-amber-950">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="mt-4 rounded-lg border border-amber-100 bg-amber-50 p-3 font-mono text-xs leading-6 text-amber-950"
+            data-testid="admin-beta-proof-evidence-note-template"
+          >
+            signup/login completed; pet intake completed in Greek or English;
+            food cards were visible; selected food was [food name]; grams/day
+            was shown; save completed; report opened; timeline or progress
+            opened; feedback submitted; no manual help.
+          </div>
         </div>
 
         <div
