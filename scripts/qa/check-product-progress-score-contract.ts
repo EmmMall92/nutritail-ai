@@ -35,7 +35,7 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer UX readiness is currently **87%**",
+  "Customer UX readiness is currently **88%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
   "## Customer UX Scorecard",
@@ -44,7 +44,7 @@ const requiredMarkers = [
   "What blocks the next move",
   "Logged-in production proof now covers ordered intake",
   "compact compare, choose, grams/day strip",
-  "Needs report/account proof",
+  "Needs broader beta-user proof",
   "`qa:customer-live-journey-proof`",
   "non-destructive checks passing",
   "Do not collapse them into one",
@@ -90,7 +90,14 @@ const requiredMarkers = [
   "subscription or payment direction",
   "legal/trust",
   "real public SaaS",
-  "The latest customer-facing work moves Customer UX readiness from **86%** to",
+  "The latest customer-facing work moves Customer UX readiness from **87%** to",
+  "46a04066-d1a7-40ff-857c-0e37f55c0234",
+  "7/7",
+  "report/account clarity",
+  "account, pet profile, report",
+  "why it fits",
+  "next check-in",
+  "The previous customer-facing work moved Customer UX readiness from **86%** to",
   "6b524f8b-fb05-45c6-a91d-f63b68768d33",
   "6/6",
   "no-result follow-up",
@@ -197,7 +204,7 @@ const requiredMarkers = [
   "completed to 87% Customer UX readiness",
   "progress check, no-result follow-up, flavour/brand change, new food recommendation route, and timeline review",
   "Report/account proof",
-  "87-88% Customer UX readiness",
+  "completed to 88% Customer UX readiness",
   "Real beta-user proof",
   "88-90% Customer UX readiness",
   "Customer UX readiness",
@@ -363,7 +370,7 @@ assert(
     liveQaPage.includes('data-testid="customer-product-next-unlock"') &&
     liveQaPage.includes("Next customer score unlock") &&
     liveQaPage.includes("Evidence needed next") &&
-    liveQaPage.includes("account and report pages make the next action obvious") &&
+    liveQaPage.includes("real beta users can finish the whole nutrition") &&
     liveQaPage.includes('data-testid="customer-product-score-rule"') &&
     liveQaPage.includes("Score movement rule") &&
     liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
@@ -371,7 +378,7 @@ assert(
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
     liveQaPage.includes("customerUxUnlockGates") &&
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
-    liveQaPage.includes("Report/account clarity proof") &&
+    liveQaPage.includes("Real beta-user proof") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),

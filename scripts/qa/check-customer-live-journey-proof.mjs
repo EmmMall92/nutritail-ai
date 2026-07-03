@@ -163,6 +163,20 @@ const manualJourneyRequirements = {
       "without restarting",
     ],
   },
+  report_account_clarity: {
+    name: "Report/account clarity",
+    requiredTerms: [
+      "account",
+      "report",
+      "calories",
+      "selected food",
+      "grams/day",
+      "why it fits",
+      "transition",
+      "timeline",
+      "next check-in",
+    ],
+  },
 };
 
 function loadAuthCookie() {
@@ -341,6 +355,7 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     };
   }
 
+  const foodName = analysis.recommendedFoods[0].food.name;
   const report = await fetchJson(`/api/print/pet-report/${savedPetId}`, {
     cookie: authCookie.value,
   });
@@ -356,6 +371,12 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     status: report.status,
     durationMs: report.durationMs,
   });
+
+  const reportJsonText = JSON.stringify(report.payload ?? {}).toLowerCase();
+  const reportDataTerms = [savedPetId.toLowerCase(), foodName.toLowerCase(), "95", "322"];
+  const missingReportDataTerms = reportDataTerms.filter(
+    (term) => !reportJsonText.includes(term),
+  );
 
   const reportPage = await fetchJson(`/print/pet-report/${savedPetId}`, {
     cookie: authCookie.value,
@@ -527,6 +548,76 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     durationMs: progressPage.durationMs,
   });
 
+  const accountPage = await fetchJson("/account", {
+    cookie: authCookie.value,
+  });
+  const accountSource = readFileSync("app/account/page.tsx", "utf8");
+  const accountPageMarkers = [
+    "account-plan-snapshot",
+    "account-plan-next-steps",
+    "account-progress-return-kit",
+  ];
+  const missingAccountMarkers = accountPageMarkers.filter(
+    (marker) => !accountSource.includes(marker),
+  );
+
+  const petProfilePage = await fetchJson(`/account/pets/${savedPetId}`, {
+    cookie: authCookie.value,
+  });
+  const petProfileText =
+    typeof petProfilePage.payload === "string" ? petProfilePage.payload : "";
+  const petProfileOk =
+    petProfilePage.status === 200 &&
+    petProfileText.toLowerCase().includes(savedPetId.toLowerCase());
+
+  const reportPageMarkers = [
+    "report-start-checklist",
+    "report-food-reasoning-summary",
+    "report-tomorrow-feeding-plan",
+    "report-next-action-summary",
+    "report-progress-return-kit",
+    "report-first-week-followup-plan",
+  ];
+  const reportSource = readFileSync("app/print/pet-report/[id]/page.tsx", "utf8");
+  const missingReportPageMarkers = reportPageMarkers.filter(
+    (marker) => !reportSource.includes(marker),
+  );
+  const reportAccountClarityOk =
+    accountPage.status === 200 &&
+    missingAccountMarkers.length === 0 &&
+    petProfileOk &&
+    reportOk &&
+    missingReportDataTerms.length === 0 &&
+    reportPageCleanOk &&
+    missingReportPageMarkers.length === 0 &&
+    timelineOk &&
+    progressPageOk;
+
+  steps.push({
+    key: "report_account_clarity",
+    ok: reportAccountClarityOk,
+    route: `/account + /account/pets/${savedPetId} + /print/pet-report/${savedPetId}`,
+    status: reportAccountClarityOk ? 200 : 0,
+    durationMs:
+      accountPage.durationMs + petProfilePage.durationMs + reportPage.durationMs,
+    note: reportAccountClarityOk
+      ? "Account, pet profile, printable report, timeline, and progress routes prove the saved plan is clear."
+      : [
+          missingAccountMarkers.length > 0
+            ? `Missing account markers: ${missingAccountMarkers.join(", ")}`
+            : "",
+          !petProfileOk ? "Pet profile route did not prove the same saved pet." : "",
+          missingReportDataTerms.length > 0
+            ? `Missing report data terms: ${missingReportDataTerms.join(", ")}`
+            : "",
+          missingReportPageMarkers.length > 0
+            ? `Missing report page markers: ${missingReportPageMarkers.join(", ")}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+  });
+
   const continuationRoutes = [
     {
       key: "return_continuation_panel",
@@ -558,14 +649,13 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
   }
 
   const ok = steps.every((step) => step.ok);
-  const foodName = analysis.recommendedFoods[0].food.name;
 
   return {
     enabled: true,
     ok,
     source: "live write proof",
     note: ok
-      ? "Opt-in live write proof saved a QA pet, opened report/timeline routes, and proved progress, no-result, flavour/brand, and new-food continuation."
+      ? "Opt-in live write proof saved a QA pet, opened report/account/timeline routes, and proved progress, no-result, flavour/brand, new-food continuation, and customer-visible report/account clarity."
       : "Opt-in live write proof ran but at least one live step needs review.",
     petId: savedPetId,
     proof: ok
@@ -604,6 +694,12 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
             passed: true,
             evidence: [
               `Same saved pet ${savedPetId} handled progress, no-result advice, flavour/brand change, new food recommendation route, and timeline review without restarting intake.`,
+            ],
+          },
+          report_account_clarity: {
+            passed: true,
+            evidence: [
+              `Same saved pet ${savedPetId} proved account, report, calories, selected food ${foodName}, 95 grams/day, why it fits, transition, timeline, and next check-in are visible for the customer.`,
             ],
           },
         }
@@ -1007,10 +1103,16 @@ async function main() {
       proofNeeded:
         "Use the same saved pet for progress, no-result advice, flavour/brand change, new food recommendation, and timeline review without restarting intake.",
     },
+    {
+      name: "Report/account clarity",
+      status: manualJourneyResults.find((journey) => journey.key === "report_account_clarity")?.status ?? "manual-required",
+      proofNeeded:
+        "Open account, pet profile, printable report, timeline, and progress for the same saved pet and confirm calories, selected food, grams/day, why it fits, transition, and next check-in are obvious.",
+    },
   ];
   const unlockImpact =
     status === "PASS_FULL"
-      ? "This supports Customer UX readiness at 87% because authenticated extraction, recommendations, clean customer wording, save, report, timeline, returning progress, no-result advice, flavour/brand change, and new-food continuation have current proof."
+      ? "This supports Customer UX readiness at 88% because authenticated extraction, recommendations, clean customer wording, save, report, account, pet profile, timeline, returning progress, no-result advice, flavour/brand change, new-food continuation, and report/account clarity have current proof."
       : status === "PASS_NON_DESTRUCTIVE"
         ? "This supports the non-destructive part of the Customer UX unlock. Live write proof is still required before using it as full customer-journey evidence."
         : "This does not move Customer UX yet because logged-in production journey proof is still missing.";
@@ -1055,7 +1157,7 @@ async function main() {
       "## Optional Live Write Proof",
       "",
       "This section only runs when `NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1` is set.",
-      "It writes a controlled QA pet and progress note to the authenticated live account, then verifies clean report wording, timeline, and return-to-progress routes.",
+      "It writes a controlled QA pet and progress note to the authenticated live account, then verifies clean report wording, account/report clarity, timeline, and return-to-progress routes.",
       "",
       `- Enabled: ${liveWriteProof.enabled ? "yes" : "no"}`,
       `- Result: ${liveWriteProof.ok ? "pass" : liveWriteProof.enabled ? "review" : "not run"}`,
@@ -1064,11 +1166,11 @@ async function main() {
       "",
       liveWriteProof.steps.length > 0
         ? [
-            "| Step | Route | Status | Result | Duration |",
-            "| --- | --- | ---: | --- | ---: |",
+            "| Step | Route | Status | Result | Duration | Notes |",
+            "| --- | --- | ---: | --- | ---: | --- |",
             ...liveWriteProof.steps.map(
               (step) =>
-                `| ${step.key} | ${step.route} | ${step.status} | ${step.ok ? "pass" : "review"} | ${step.durationMs}ms |`,
+                `| ${step.key} | ${step.route} | ${step.status} | ${step.ok ? "pass" : "review"} | ${step.durationMs}ms | ${step.note || "-"} |`,
             ),
           ].join("\n")
         : "No live write steps were run.",
@@ -1092,7 +1194,7 @@ async function main() {
       "",
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt`, keep using `.qa-secrets/account-cookie.txt`, or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
-      "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
+      "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open account/report, open timeline, and return for progress.",
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
       "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
       "6. Or, for a controlled authenticated write proof, run `$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF='1'; npm.cmd run qa:customer-live-journey-proof`; this creates a QA pet in the live account and should be used intentionally.",

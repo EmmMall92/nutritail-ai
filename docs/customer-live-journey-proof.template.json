@@ -34,5 +34,11 @@
     "evidence": [
       "Same saved pet handled progress, no-result advice, flavour/brand change, new food recommendation, and timeline review without restarting intake."
     ]
+  },
+  "report_account_clarity": {
+    "passed": true,
+    "evidence": [
+      "Same saved pet proved account, report, calories, selected food, grams/day, why it fits, transition, timeline, and next check-in are visible for the customer."
+    ]
   }
 }

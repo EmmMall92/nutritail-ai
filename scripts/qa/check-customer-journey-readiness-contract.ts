@@ -177,6 +177,7 @@ const checks: ContractCheck[] = [
       "open_timeline",
       "return_for_progress",
       "returning_continuation",
+      "report_account_clarity",
       "no-result",
       "flavour",
       "new food",
