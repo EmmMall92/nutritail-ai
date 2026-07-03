@@ -35,7 +35,7 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer UX readiness is currently **83%**",
+  "Customer UX readiness is currently **84%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
   "## Customer UX Scorecard",
@@ -43,6 +43,7 @@ const requiredMarkers = [
   "What is proven now",
   "What blocks the next move",
   "Logged-in production browser proof now covers ordered intake",
+  "cleaner single guidance strip",
   "Needs live save, printable report, timeline, and returning progress proof",
   "npm.cmd run qa:customer-live-journey-proof",
   "non-destructive logged-in route/extraction/recommendation part",
@@ -89,7 +90,12 @@ const requiredMarkers = [
   "subscription or payment direction",
   "legal/trust",
   "real public SaaS",
-  "The latest customer-facing work moves Customer UX readiness from **82%** to",
+  "The latest customer-facing work moves Customer UX readiness from **83%** to",
+  "duplicate guide panels",
+  "one compact decision strip",
+  "compare fit and taste, choose",
+  "selected-food grams/day flow",
+  "The previous customer-facing work moved Customer UX readiness from **82%** to",
   "scopes OpenAI/fallback extracted facts to the active",
   "A logged-in production browser smoke completed the non-save journey",
   "selected",
@@ -162,7 +168,7 @@ const requiredMarkers = [
   "Customer UX Unlock Gates",
   "Full recommendation journey proof",
   "The non-save journey is live-proven for one logged-in customer path",
-  "83-85% Customer UX readiness",
+  "84-85% Customer UX readiness",
   "Clean customer wording proof",
   "85-86% Customer UX readiness",
   "Returning pet proof",
@@ -365,7 +371,7 @@ assert(
     liveQaPage.includes("customerLiveJourneyProof.journeyChecklist") &&
     liveQaPage.includes('data-testid="customer-live-journey-checklist"') &&
     liveQaPage.includes("Customer journey checklist") &&
-    liveQaPage.includes("To complete the 83-85% gate") &&
+    liveQaPage.includes("To complete the 84-85% gate") &&
     liveQaPage.includes("npm.cmd run qa:customer-live-journey-proof"),
   "Admin live QA page must expose the non-destructive customer live journey proof status and next steps."
 );

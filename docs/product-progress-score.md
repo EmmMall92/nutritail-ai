@@ -15,7 +15,7 @@ customer-visible risk is reduced and the evidence below is current.
 There are now three separate progress numbers. Do not collapse them into one
 headline, because that is what made progress feel stuck or misleading.
 
-- Customer UX readiness is currently **83%**.
+- Customer UX readiness is currently **84%**.
 - Recommendation engine beta confidence is currently **95% beta-candidate**.
 - Overall SaaS launch progress is currently **90%**.
 
@@ -24,8 +24,11 @@ pet owner experience the site as simple, beautiful, and complete?". It has moved
 above the old 80-82% band because a logged-in live browser journey now proves
 the non-save recommendation path: intake stays in order, the chatbot shows 3
 first choices plus 3 practical/value choices, a food can be selected, and
-grams/day plus first-week next steps become visible. It should not move higher
-yet because save, report, timeline, and returning progress still need live proof.
+grams/day plus first-week next steps become visible. It moved one more point
+because the food-choice result no longer repeats multiple explanatory panels:
+the customer now sees one compact compare, choose, grams/day strip before the
+food cards. It should not move higher yet because save, report, timeline, and
+returning progress still need live proof.
 
 ## Customer UX Scorecard
 
@@ -35,7 +38,7 @@ from overall SaaS launch readiness.
 
 | Track | Current | What is proven now | What blocks the next move |
 | --- | --- | --- | --- |
-| Customer-facing journey | 83% | Logged-in production browser proof now covers ordered intake, 3 premium + 3 value cards, food choice, grams/day, selected-food plan, first-week checklist, and next steps. | Needs live save, printable report, timeline, and returning progress proof before moving further. |
+| Customer-facing journey | 84% | Logged-in production browser proof now covers ordered intake, 3 premium + 3 value cards, food choice, grams/day, selected-food plan, first-week checklist, next steps, and a cleaner single guidance strip before the cards. | Needs live save, printable report, timeline, and returning progress proof before moving further. |
 | Recommendation engine | 95% beta-candidate | Food V2 retrieval, deterministic ranking, OpenAI fact extraction, safety guards, dog 201-600, and cat 001-500 QA are passing. | Keep converting every real manual/live mistake into a ranking or intake guard. |
 | Saved-pet retention loop | strong but not fully live-proven | Account, pet profile, report, timeline, progress check, no-result advice, and flavour/brand change paths are protected. | Needs production repeat proof with the same saved pet after an earlier analysis. |
 | Report/account clarity | good foundation | Report/account surfaces calories, selected food, progress context, timeline, and return actions. | Needs final mobile/customer visual proof that the next action is obvious without reading admin notes. |
@@ -133,7 +136,20 @@ commercial and recovery readiness:
 
 ## Latest Movement
 
-The latest customer-facing work moves Customer UX readiness from **82%** to
+The latest customer-facing work moves Customer UX readiness from **83%** to
+**84%** because it removes a real source of visual noise in the live chatbot
+recommendation result:
+
+- The food-choice result no longer shows duplicate guide panels before and
+  after the recommendation cards.
+- The customer sees one compact decision strip: compare fit and taste, choose
+  one food card, then get grams/day.
+- The recommendation cards, selected-food grams/day flow, first-week checklist,
+  and save gate remain protected by QA. This is a customer-visible simplicity
+  improvement, but it still does not prove save, printable report, timeline, or
+  returning-progress completion.
+
+The previous customer-facing work moved Customer UX readiness from **82%** to
 **83%** because it fixed and proved a real live-chatbot flow issue:
 
 - The chatbot intake now scopes OpenAI/fallback extracted facts to the active
@@ -143,8 +159,8 @@ The latest customer-facing work moves Customer UX readiness from **82%** to
   new pet intake, activity, neuter status, health, current food, preferences,
   weight goal, 3 first-choice food cards, 3 practical/value food cards, selected
   food, grams/day, first-week checklist, and next steps.
-- This is a real customer-facing improvement, not only an internal contract.
-  The score should still stop at 83% because the same live proof did not save a
+- This was a real customer-facing improvement, not only an internal contract.
+  At that point the score still stopped at 83% because the same live proof did not save a
   plan or verify the printable report, timeline, and returning progress loop.
 
 The latest engine-confidence move from **94-95%** to **95% beta-candidate** is
@@ -291,8 +307,8 @@ customer-visible work that reduced real user friction:
 - Saved-pet continuation supports progress checks, no-result follow-up,
   another-food guidance, flavour/company change, and timeline review.
 
-This is now strong technically, and the live recommendation path has moved just
-above the 82% customer UX readiness line. The next customer-facing points should
+This is now strong technically, and the live recommendation path has moved above
+the 82% customer UX readiness line. The next customer-facing points should
 come from save/report/timeline/progress proof, cleaner report visuals, returning
 pet proof, or a real beta-user journey after the latest merge.
 
@@ -313,8 +329,9 @@ pet proof, or a real beta-user journey after the latest merge.
 
 ## Why It Feels Stuck
 
-At 83% Customer UX readiness, small internal polish improves the product but may
-not move the customer score. The next points require one of these:
+At 84% Customer UX readiness, small internal polish improves the product but may
+not move the customer score unless it removes real customer-facing friction. The
+next points require one of these:
 
 - A live chatbot QA run finds a real mistake and the fix is locked by a test.
 - A customer flow becomes clearly simpler, not just slightly prettier.
@@ -329,7 +346,7 @@ not move the customer score. The next points require one of these:
 
 ## Next Score Moves
 
-These are the most likely moves from **83% Customer UX readiness** toward a real
+These are the most likely moves from **84% Customer UX readiness** toward a real
 90% customer-ready product:
 
 1. Run five full live customer journeys from signup/login through chatbot,
@@ -352,12 +369,12 @@ These are the most likely moves from **83% Customer UX readiness** toward a real
 ## Customer UX Unlock Gates
 
 Use these gates to decide whether Customer UX readiness can move beyond the
-83% line. A merged PR is not enough. Each gate needs current evidence that a
+84% line. A merged PR is not enough. Each gate needs current evidence that a
 normal customer can complete the flow without manual explanation.
 
 | Gate | Unlocks | Evidence Needed |
 | --- | --- | --- |
-| Full recommendation journey proof | 83-85% Customer UX readiness | The non-save journey is live-proven for one logged-in customer path. To unlock the rest of this band, prove saved analysis, printable report, timeline, and return progress across multiple live journeys. |
+| Full recommendation journey proof | 84-85% Customer UX readiness | The non-save journey is live-proven for one logged-in customer path and now has cleaner customer wording. To unlock the rest of this band, prove saved analysis, printable report, timeline, and return progress across multiple live journeys. |
 | Clean customer wording proof | 85-86% Customer UX readiness | Live chatbot and report output contain no source-tier, needs-review, missing-field, score-debug, or back-office wording visible to customers. |
 | Returning pet proof | 86-87% Customer UX readiness | A saved pet can run progress check, no-progress follow-up, flavour/brand change, new food recommendation, and timeline review without restarting intake. |
 | Report/account proof | 87-88% Customer UX readiness | Account dashboard and printable report make calories, chosen food, grams/day, why it fits, transition plan, and next check-in obvious on mobile and desktop. |
@@ -367,7 +384,7 @@ normal customer can complete the flow without manual explanation.
 
 These are the main reasons the whole project remains around 90% even though the
 recommendation engine is now a beta candidate and Customer UX readiness is still
-around 83%:
+around 84%:
 
 - Full OpenAI proof still needs the authenticated live chatbot extraction route
   to run with a QA account cookie, not just local or unauthenticated checks.
@@ -397,7 +414,7 @@ When reporting progress, always say all relevant numbers if available:
 Example:
 
 > Automated live readiness is 98/100. Recommendation engine beta confidence is
-> about 95% beta-candidate, but Customer UX readiness is about 83% and overall
+> about 95% beta-candidate, but Customer UX readiness is about 84% and overall
 > SaaS launch progress is about 90%. The next customer score movement depends on
 > real customer chatbot journey proof, clearer result presentation, and live
 > OpenAI proof, while the launch-wide score also depends on monitoring,

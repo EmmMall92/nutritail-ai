@@ -416,10 +416,10 @@ async function main() {
   ];
   const unlockImpact =
     status === "PASS_FULL"
-      ? "This supports moving Customer UX beyond 83% because authenticated extraction, recommendations, save, report, timeline, and returning progress have current proof."
+      ? "This supports moving Customer UX beyond 84% because authenticated extraction, recommendations, save, report, timeline, and returning progress have current proof."
       : status === "PASS_NON_DESTRUCTIVE"
-        ? "This supports the non-destructive part of the Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score above 83%."
-        : "This does not move Customer UX above 83% yet because logged-in production journey proof is still missing.";
+        ? "This supports the non-destructive part of the Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score above 84%."
+        : "This does not move Customer UX above 84% yet because logged-in production journey proof is still missing.";
 
   mkdirSync(path.dirname(reportPath), { recursive: true });
   writeFileSync(
@@ -469,14 +469,14 @@ async function main() {
           `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"}${journey.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""}${journey.missingTerms.length > 0 ? ` Missing terms: ${journey.missingTerms.join(", ")}` : ""} |`,
       ),
       "",
-      "## To Complete The 83-85% Customer UX Gate",
+      "## To Complete The 84-85% Customer UX Gate",
       "",
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
       "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
-      "6. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 83%.",
+      "6. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 84%.",
     ].join("\n") + "\n",
     "utf8",
   );

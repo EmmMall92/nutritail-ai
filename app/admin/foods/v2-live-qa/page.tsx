@@ -206,7 +206,7 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     customerUxUnlockGates: [
       {
         gate: "Full recommendation journey proof",
-        unlocks: "83-85% Customer UX readiness",
+        unlocks: "84-85% Customer UX readiness",
         evidenceNeeded:
           "Run live journeys from login/signup through chatbot, selected food, grams/day, save, report, and return progress.",
       },
@@ -517,7 +517,7 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
       "utf8",
     );
     const completeSection =
-      report.match(/## To Complete The 83-85% Customer UX Gate\s+([\s\S]*)/i)?.[1]?.trim() ??
+      report.match(/## To Complete The (83|84)-85% Customer UX Gate\s+([\s\S]*)/i)?.[2]?.trim() ??
       "";
     const nextSteps = completeSection
       .split("\n")
@@ -869,7 +869,7 @@ export default function FoodV2LiveQaPage() {
                 <p className="text-sm font-semibold">Next customer score unlock</p>
                 <p className="mt-2 text-2xl font-black">
                   {productProgress.customerUxUnlockGates[0]?.unlocks ??
-                    "83-85% Customer UX readiness"}
+                    "84-85% Customer UX readiness"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   The next visible movement is not another merge by itself. It is
@@ -1190,7 +1190,7 @@ export default function FoodV2LiveQaPage() {
         </div>
 
         <div className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4">
-          <p className="text-sm font-semibold">To complete the 83-85% gate</p>
+          <p className="text-sm font-semibold">To complete the 84-85% gate</p>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
             {customerLiveJourneyProof.nextSteps.map((step) => (
               <li key={step}>{step}</li>
