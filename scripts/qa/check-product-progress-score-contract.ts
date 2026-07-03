@@ -350,9 +350,25 @@ assert(
 
 assert(
   packageJson.includes(
-    "qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate && npm run qa:customer-live-journey-proof && npm run qa:beta-user-proof-contract && npm run qa:launch-readiness-score-contract"
+    "qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate && npm run qa:customer-live-journey-proof && npm run qa:beta-user-proof-contract && npm run qa:customer-launch-10-track-audit && npm run qa:launch-readiness-score-contract"
   ),
-  "CI readiness must run customer journey, live journey, and beta-user proof gates before launch and product progress score contracts."
+  "CI readiness must run customer journey, live journey, beta-user proof, and 10-track audit gates before launch and product progress score contracts."
+);
+
+assert(
+  packageJson.includes('"qa:customer-launch-10-track-audit"'),
+  "package.json must expose qa:customer-launch-10-track-audit for the 10-track launch audit."
+);
+
+assert(
+  liveQaPage.includes("function readCustomerLaunchTrackAuditSummary") &&
+    liveQaPage.includes("docs/customer-launch-10-track-audit.md") &&
+    liveQaPage.includes('data-testid="customer-launch-10-track-audit"') &&
+    liveQaPage.includes("10-track launch audit") &&
+    liveQaPage.includes("Why the percentage should not move until the next proof is real") &&
+    liveQaPage.includes("Current proof") &&
+    liveQaPage.includes("Next proof needed"),
+  "Admin live QA page must expose the 10-track launch audit that explains the real score blockers."
 );
 
 assert(

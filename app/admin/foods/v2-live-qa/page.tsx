@@ -43,6 +43,21 @@ type CustomerProductProgressSummary = {
   overallLaunchBlockers: string[];
 };
 
+type CustomerLaunchTrackAuditSummary = {
+  customerUxReadiness: string;
+  recommendationEngineConfidence: string;
+  overallSaasLaunchProgress: string;
+  nextHonestUnlock: string;
+  tracks: {
+    track: string;
+    state: string;
+    currentProof: string;
+    nextProofNeeded: string;
+  }[];
+  whyFlat: string[];
+  nextActions: string[];
+};
+
 type FormatCoverageScenario = {
   id: string;
   species: string;
@@ -350,6 +365,105 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         overallLaunchBlockers.length > 0
           ? overallLaunchBlockers
           : fallback.overallLaunchBlockers,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function readCustomerLaunchTrackAuditSummary(): CustomerLaunchTrackAuditSummary {
+  const fallback = {
+    customerUxReadiness: "unknown",
+    recommendationEngineConfidence: "unknown",
+    overallSaasLaunchProgress: "unknown",
+    nextHonestUnlock:
+      "Run real beta-user proof across dog, cat, and returning saved-pet journeys.",
+    tracks: [
+      {
+        track: "Final chatbot experience",
+        state: "Partial",
+        currentProof:
+          "Controlled QA proves the main recommendation journey, but real-user proof is still needed.",
+        nextProofNeeded:
+          "A beta user completes intake, recommendations, food choice, grams/day, save, and next steps without help.",
+      },
+    ],
+    whyFlat: [
+      "Customer UX readiness moves only when customer-facing proof improves.",
+    ],
+    nextActions: [
+      "Run beta-user proof with one dog owner, one cat owner, and one returning saved-pet user.",
+    ],
+  };
+
+  try {
+    const doc = readFileSync(
+      path.join(process.cwd(), "docs/customer-launch-10-track-audit.md"),
+      "utf8",
+    );
+    const currentPosition =
+      doc.match(/## Current Position\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const trackAudit =
+      doc.match(/## Track Audit\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const whyFlat =
+      doc.match(/## Why The Percentage May Stay Flat\s+([\s\S]*?)\n## /i)?.[1]?.trim() ??
+      "";
+    const nextActions =
+      doc.match(/## Next Actions\s+([\s\S]*)/i)?.[1]?.trim() ?? "";
+    const tracks = trackAudit
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          line.startsWith("| ") &&
+          !line.includes("---") &&
+          !line.includes("Track |"),
+      )
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          track: cells[0] ?? "Unknown track",
+          state: cells[1] ?? "unknown",
+          currentProof: cells[2] ?? "Current proof is not listed.",
+          nextProofNeeded: cells[3] ?? "Next proof is not listed.",
+        };
+      });
+
+    return {
+      customerUxReadiness:
+        currentPosition.match(/Customer UX readiness:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.customerUxReadiness,
+      recommendationEngineConfidence:
+        currentPosition
+          .match(/Recommendation engine beta confidence:\s*([^\n\r]+)/i)?.[1]
+          ?.trim() ?? fallback.recommendationEngineConfidence,
+      overallSaasLaunchProgress:
+        currentPosition.match(/Overall SaaS launch progress:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.overallSaasLaunchProgress,
+      nextHonestUnlock:
+        currentPosition.match(/Next honest unlock:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.nextHonestUnlock,
+      tracks: tracks.length > 0 ? tracks : fallback.tracks,
+      whyFlat: (() => {
+        const items = whyFlat
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.startsWith("- "))
+          .map((line) => line.replace(/^- /, ""));
+        return items.length > 0 ? items : fallback.whyFlat;
+      })(),
+      nextActions: (() => {
+        const items = nextActions
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => /^\d+\./.test(line))
+          .map((line) => line.replace(/^\d+\.\s*/, ""));
+        return items.length > 0 ? items : fallback.nextActions;
+      })(),
     };
   } catch {
     return fallback;
@@ -816,6 +930,7 @@ const liveUrls = [
 export default function FoodV2LiveQaPage() {
   const readiness = readLiveReadinessSummary();
   const productProgress = readCustomerProductProgressSummary();
+  const launchTrackAudit = readCustomerLaunchTrackAuditSummary();
   const formatCoverage = readFoodV2FormatCoverageSummary();
   const customerJourneyProof = readCustomerJourneyUnlockProofSummary();
   const customerLiveJourneyProof = readCustomerLiveJourneyProofSummary();
@@ -1456,6 +1571,127 @@ export default function FoodV2LiveQaPage() {
               <li key={step}>{step}</li>
             ))}
           </ol>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-cyan-200 bg-cyan-50 p-5 text-cyan-950 shadow-sm"
+        data-testid="customer-launch-10-track-audit"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
+              10-track launch audit
+            </p>
+            <h3 className="mt-1 text-2xl font-black">
+              Why the percentage should not move until the next proof is real
+            </h3>
+            <p className="mt-2 max-w-4xl text-sm leading-6">
+              This is the practical map for the full goal: chatbot experience,
+              saved-pet continuation, report, recommendation accuracy, account,
+              auth, public trust, analytics, launch QA, and business layer. It
+              shows where NutriTail is strong, where it is partial, and what
+              evidence is needed before we honestly raise the Customer UX or
+              overall launch percentage.
+            </p>
+          </div>
+          <Link
+            href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/customer-launch-10-track-audit.md"
+            className="rounded-lg border border-cyan-900 px-4 py-2 text-sm font-semibold text-cyan-950 transition hover:bg-cyan-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open 10-track audit
+          </Link>
+        </div>
+
+        <div
+          className="mt-4 grid gap-3 md:grid-cols-4"
+          data-testid="customer-launch-current-position"
+        >
+          <div className="rounded-xl border border-cyan-200 bg-white/80 p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-cyan-700">
+              Customer UX
+            </p>
+            <p className="mt-1 text-2xl font-black">
+              {launchTrackAudit.customerUxReadiness}
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-950">
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Recommendation engine
+            </p>
+            <p className="mt-1 text-2xl font-black">
+              {launchTrackAudit.recommendationEngineConfidence}
+            </p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+            <p className="text-xs font-bold uppercase tracking-wide text-amber-700">
+              Overall SaaS
+            </p>
+            <p className="mt-1 text-2xl font-black">
+              {launchTrackAudit.overallSaasLaunchProgress}
+            </p>
+          </div>
+          <div className="rounded-xl border border-cyan-200 bg-white/80 p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-cyan-700">
+              Next honest unlock
+            </p>
+            <p className="mt-1 text-sm font-semibold leading-6">
+              {launchTrackAudit.nextHonestUnlock}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-5">
+          {launchTrackAudit.tracks.map((track) => (
+            <article
+              key={track.track}
+              className="rounded-xl border border-cyan-200 bg-white/80 p-4 text-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-bold">{track.track}</p>
+                <span className="rounded-full border border-cyan-200 bg-cyan-100 px-2 py-1 text-xs font-bold text-cyan-950">
+                  {track.state}
+                </span>
+              </div>
+              <p className="mt-3 text-xs font-bold uppercase tracking-wide text-cyan-700">
+                Current proof
+              </p>
+              <p className="mt-1 text-xs leading-5">{track.currentProof}</p>
+              <p className="mt-3 text-xs font-bold uppercase tracking-wide text-amber-700">
+                Next proof needed
+              </p>
+              <p className="mt-1 text-xs leading-5">{track.nextProofNeeded}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <div
+            className="rounded-xl border border-cyan-200 bg-white/80 p-4"
+            data-testid="customer-launch-flat-reasons"
+          >
+            <p className="text-sm font-semibold">
+              Why the percentage may stay flat
+            </p>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
+              {launchTrackAudit.whyFlat.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div
+            className="rounded-xl border border-cyan-200 bg-white/80 p-4"
+            data-testid="customer-launch-next-actions"
+          >
+            <p className="text-sm font-semibold">Next actions that can move it</p>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
+              {launchTrackAudit.nextActions.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ol>
+          </div>
         </div>
       </div>
 
