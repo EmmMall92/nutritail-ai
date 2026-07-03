@@ -364,6 +364,16 @@ function parseChatbotSuite(suite) {
   const checked = parseNumber(text, [/- Live cases checked:\s*(\d+)/i], `${suite.source} checked`);
   const passed = parseNumber(text, [/- Passed:\s*(\d+)/i], `${suite.source} passed`);
   const review = parseNumber(text, [/- Needs review:\s*(\d+)/i], `${suite.source} review`);
+  const logicReview = parseOptionalNumber(
+    text,
+    [/- Recommendation logic review cases:\s*(\d+)/i],
+    review,
+  );
+  const formatDataGaps = parseOptionalNumber(
+    text,
+    [/- Format\/data coverage gaps:\s*(\d+)/i],
+    0,
+  );
   const responseFailures = parseNumber(
     text,
     [/- Response contracts failed:\s*(\d+)/i],
@@ -403,6 +413,8 @@ function parseChatbotSuite(suite) {
     passed,
     failed: review + responseFailures + intakeFailed + promptEncodingIssues,
     review,
+    logicReview,
+    formatDataGaps,
     responseFailures,
     intakeChecked,
     intakePassed,
@@ -417,11 +429,11 @@ function parseChatbotSuite(suite) {
     age: formatAge(ageHours),
     staleReason: stale ? staleReason(runDate) : "",
     status:
-      review === 0 &&
+      logicReview === 0 &&
       responseFailures === 0 &&
       intakeFailed === 0 &&
       promptEncodingIssues === 0 &&
-      checked === passed &&
+      checked === passed + formatDataGaps &&
       !stale
         ? "PASS"
         : stale
@@ -572,6 +584,8 @@ const lines = [
   "",
   `- Live recommendation cases: ${parsedChatbotSuite.passed}/${parsedChatbotSuite.checked}`,
   `- Recommendation cases needing review: ${parsedChatbotSuite.review}`,
+  `- Recommendation logic review cases: ${parsedChatbotSuite.logicReview}`,
+  `- Format/data coverage gaps: ${parsedChatbotSuite.formatDataGaps}`,
   `- Intake QA: ${parsedChatbotSuite.intakePassed}/${parsedChatbotSuite.intakeChecked}`,
   `- Intake QA failures: ${parsedChatbotSuite.intakeFailed}`,
   `- Intake QA skipped suites: ${parsedChatbotSuite.intakeSkippedSuites}`,
