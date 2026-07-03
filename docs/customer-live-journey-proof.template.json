@@ -1,0 +1,32 @@
+{
+  "food_choice_grams": {
+    "passed": true,
+    "evidence": [
+      "Tapped a food card and the selected-food plan showed grams/day and first-week next steps."
+    ]
+  },
+  "save_analysis": {
+    "passed": true,
+    "evidence": [
+      "Save completed and the saved-state actions appeared for profile, report, timeline, and progress."
+    ]
+  },
+  "open_report": {
+    "passed": true,
+    "evidence": [
+      "Printable report opened for the saved pet and showed calories, selected food, grams/day, transition plan, and next actions."
+    ]
+  },
+  "open_timeline": {
+    "passed": true,
+    "evidence": [
+      "Timeline opened for the same saved pet and showed the current plan and progress context."
+    ]
+  },
+  "return_for_progress": {
+    "passed": true,
+    "evidence": [
+      "Same saved pet returned to progress mode without restarting intake."
+    ]
+  }
+}
