@@ -369,6 +369,21 @@ assert(
 );
 
 assert(
+  liveQaPage.includes('data-testid="progress-truth-panel"') &&
+    liveQaPage.includes("Progress truth panel") &&
+    liveQaPage.includes("past the old 78-80% foundation stage") &&
+    liveQaPage.includes("The next percentage jump needs real customer evidence") &&
+    liveQaPage.includes("What proves the next move") &&
+    liveQaPage.includes("What does not prove it") &&
+    liveQaPage.includes("Command to unlock the gate") &&
+    liveQaPage.includes("returning saved-pet user") &&
+    liveQaPage.includes("without") &&
+    liveQaPage.includes("manual help") &&
+    liveQaPage.includes("npm.cmd run qa:beta-user-proof-contract"),
+  "Admin live QA page must show a prominent progress truth panel with the real next proof gate."
+);
+
+assert(
   liveQaPage.includes('data-testid="customer-progress-proof-gate"') &&
     liveQaPage.includes("The project is no longer in the 78-80% foundation stage") &&
     liveQaPage.includes("real beta users must") &&

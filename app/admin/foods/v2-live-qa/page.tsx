@@ -874,6 +874,93 @@ export default function FoodV2LiveQaPage() {
       </div>
 
       <div
+        className="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white shadow-sm"
+        data-testid="progress-truth-panel"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+              Progress truth panel
+            </p>
+            <h3 className="mt-2 text-2xl font-black">
+              NutriTail is past the old 78-80% foundation stage.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-slate-200">
+              The next percentage jump needs real customer evidence, not just
+              another merge. Use this panel when progress feels stuck: the
+              engine, the customer journey, and the wider SaaS launch are scored
+              separately on purpose.
+            </p>
+          </div>
+          <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-xl">
+            <div className="rounded-xl border border-slate-700 bg-white/10 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-300">
+                Customer UX
+              </p>
+              <p className="mt-1 text-3xl font-black">
+                {productProgress.customerUxEstimate}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-300">
+                Needs broader beta-user proof before moving higher.
+              </p>
+            </div>
+            <div className="rounded-xl border border-emerald-500/50 bg-emerald-400/10 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-100">
+                Recommendation
+              </p>
+              <p className="mt-1 text-3xl font-black">
+                {productProgress.recommendationEngineEstimate}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-emerald-100">
+                Food V2, rules, OpenAI extraction, and dog/cat QA are strong.
+              </p>
+            </div>
+            <div className="rounded-xl border border-amber-500/50 bg-amber-400/10 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-amber-100">
+                SaaS launch
+              </p>
+              <p className="mt-1 text-3xl font-black">
+                {productProgress.overallSaasEstimate}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-amber-100">
+                Still depends on billing, legal, monitoring, and beta feedback.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          <div className="rounded-xl border border-slate-700 bg-white/10 p-4">
+            <p className="text-sm font-semibold">What proves the next move</p>
+            <p className="mt-2 text-sm leading-6 text-slate-200">
+              One dog owner, one cat owner, and one returning saved-pet user
+              must complete signup/login, chatbot intake, food choice, grams per
+              day, save, report, timeline or progress, and feedback without
+              manual help.
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-700 bg-white/10 p-4">
+            <p className="text-sm font-semibold">What does not prove it</p>
+            <p className="mt-2 text-sm leading-6 text-slate-200">
+              Small internal polish, refactors, or green checks alone. They keep
+              the product healthy, but the next customer score needs real beta
+              journey evidence.
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-700 bg-white/10 p-4">
+            <p className="text-sm font-semibold">Command to unlock the gate</p>
+            <p className="mt-2 rounded-lg border border-slate-700 bg-black/30 px-3 py-2 font-mono text-xs text-slate-100">
+              npm.cmd run qa:beta-user-proof-contract
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-200">
+              It should PASS only after the real beta proof file contains the
+              required journeys.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
         className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-blue-950 shadow-sm"
         data-testid="customer-product-progress-summary"
       >
