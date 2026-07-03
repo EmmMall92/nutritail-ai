@@ -368,6 +368,15 @@ assert(
 );
 
 assert(
+  liveQaPage.includes('data-testid="customer-progress-proof-gate"') &&
+    liveQaPage.includes("The project is no longer in the 78-80% foundation stage") &&
+    liveQaPage.includes("real beta users must") &&
+    liveQaPage.includes("One dog owner, one cat owner, and one returning saved-pet") &&
+    liveQaPage.includes("Small merges alone"),
+  "Admin live QA page must explain why the progress score feels stuck and what real customer proof unlocks the next move."
+);
+
+assert(
   liveQaPage.includes("function readFoodV2FormatCoverageSummary") &&
     liveQaPage.includes("reports/food_v2_format_coverage_qa.md") &&
     liveQaPage.includes('data-testid="food-v2-format-coverage-summary"') &&

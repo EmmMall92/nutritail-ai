@@ -930,6 +930,47 @@ export default function FoodV2LiveQaPage() {
             </p>
 
             <div
+              className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-indigo-950"
+              data-testid="customer-progress-proof-gate"
+            >
+              <p className="text-sm font-semibold">Why the score can feel stuck</p>
+              <p className="mt-2 text-sm leading-6">
+                The project is no longer in the 78-80% foundation stage. The
+                next visible movement is a proof gate: real beta users must
+                complete the customer journey without us explaining the flow.
+              </p>
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                <div className="rounded-lg border border-indigo-200 bg-white/80 p-3">
+                  <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                    Current proof level
+                  </p>
+                  <p className="mt-1 text-sm">
+                    Automated QA is strong, but live customer evidence is still
+                    the limiter.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-indigo-200 bg-white/80 p-3">
+                  <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                    What unlocks the next jump
+                  </p>
+                  <p className="mt-1 text-sm">
+                    One dog owner, one cat owner, and one returning saved-pet
+                    journey completed end to end.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-indigo-200 bg-white/80 p-3">
+                  <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                    What does not move it
+                  </p>
+                  <p className="mt-1 text-sm">
+                    Small merges alone. They help quality, but the next score
+                    jump needs real journey proof.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
               className="mt-4 grid gap-3 sm:grid-cols-3"
               data-testid="customer-product-progress-readout"
             >
