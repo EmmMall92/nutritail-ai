@@ -87,6 +87,21 @@ const customerOutputSteps = [
   },
 ];
 
+const launchTrustChecklist = [
+  {
+    title: "Τι είναι έτοιμο για beta",
+    text: "Η ροή login, chatbot, προτάσεις τροφών, επιλογή τροφής, γραμμάρια/ημέρα, αποθήκευση, report και timeline είναι διαθέσιμα για δοκιμή.",
+  },
+  {
+    title: "Τι παραμένει υπό έλεγχο",
+    text: "Η βάση τροφών, τα feedback από χρήστες και τα edge cases βελτιώνονται συνεχώς πριν από ευρύτερο λανσάρισμα.",
+  },
+  {
+    title: "Πότε θέλει κτηνίατρο",
+    text: "Σε ουρολογικό, νεφρικό, διαβήτη, παγκρεατίτιδα, αίμα, ανορεξία, έντονο εμετό ή διάρροια, η τροφή δεν αντικαθιστά κτηνιατρική οδηγία.",
+  },
+];
+
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -118,6 +133,66 @@ export default function HowItWorksPage() {
           στοιχεία κατοικιδίου, δομημένη βάση τροφών, κανόνες διατροφής και
           ανθρώπινη εξήγηση, ώστε η απάντηση να είναι χρήσιμη και κατανοητή.
         </p>
+      </section>
+
+      <section
+        className="border-y border-black/10 bg-[#eef7f1]"
+        data-testid="public-launch-trust-checklist"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-10">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
+              Beta launch trust checklist
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Τι μπορείς να εμπιστευτείς σήμερα και πού κρατάμε όρια
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Το NutriTail είναι σχεδιασμένο για καθαρή καθημερινή καθοδήγηση:
+              λίγες πρακτικές επιλογές τροφής, ποσότητα για αρχή και επόμενο
+              βήμα. Στη beta περίοδο κρατάμε ξεκάθαρα τι είναι έτοιμο, τι
+              βελτιώνεται και πότε χρειάζεται κτηνίατρος.
+            </p>
+          </div>
+
+          <div className="mt-7 grid gap-4 md:grid-cols-3">
+            {launchTrustChecklist.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-lg border border-emerald-200 bg-white p-5"
+                data-testid="public-launch-trust-checklist-item"
+              >
+                <h3 className="text-lg font-black text-emerald-950">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {item.text}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+            <Link
+              href="/register"
+              className="rounded-lg bg-black px-4 py-2 text-white transition hover:bg-gray-800"
+            >
+              Ξεκίνα ανάλυση
+            </Link>
+            <Link
+              href="/privacy"
+              className="rounded-lg border border-emerald-300 bg-white px-4 py-2 text-emerald-950 transition hover:bg-emerald-50"
+            >
+              Δες απόρρητο
+            </Link>
+            <Link
+              href="/terms"
+              className="rounded-lg border border-emerald-300 bg-white px-4 py-2 text-emerald-950 transition hover:bg-emerald-50"
+            >
+              Δες όρους beta
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section

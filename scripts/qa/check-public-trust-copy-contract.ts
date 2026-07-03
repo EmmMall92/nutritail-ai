@@ -78,6 +78,18 @@ const customerOutputMarkers = [
   "νέα πρόταση",
 ];
 
+const launchTrustChecklistMarkers = [
+  'data-testid="public-launch-trust-checklist"',
+  'data-testid="public-launch-trust-checklist-item"',
+  "Beta launch trust checklist",
+  "Τι είναι έτοιμο για beta",
+  "Τι παραμένει υπό έλεγχο",
+  "Πότε θέλει κτηνίατρο",
+  "Ξεκίνα ανάλυση",
+  "Δες απόρρητο",
+  "Δες όρους beta",
+];
+
 const betaTermsMarkers = [
   'import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";',
   "Beta πρόσβαση και πλάνα",
@@ -133,6 +145,13 @@ for (const marker of customerOutputMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include customer output trust marker: ${marker}`
+  );
+}
+
+for (const marker of launchTrustChecklistMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include launch trust checklist marker: ${marker}`
   );
 }
 
