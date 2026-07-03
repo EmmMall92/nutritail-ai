@@ -145,6 +145,8 @@ function getDropoffPriorityItems({
     {
       label: "Analysis without food choice",
       value: analysisWithoutFoodChoiceCount,
+      launchTrack: "Final chatbot experience",
+      launchImpact: "The customer saw recommendations but did not feel ready to choose.",
       helper:
         "Customers finished an analysis but did not tap a recommended food.",
       action: "Review whether the shortlist is clear, relevant, and easy to act on.",
@@ -155,6 +157,8 @@ function getDropoffPriorityItems({
     {
       label: "Food choice without save",
       value: foodChoiceWithoutSaveCount,
+      launchTrack: "Saved pet continuation",
+      launchImpact: "The customer chose a food but did not keep the plan for future progress.",
       helper:
         "Customers selected a food but did not save the plan to their account.",
       action: "Check the save CTA, final summary, and grams/day confidence.",
@@ -165,6 +169,8 @@ function getDropoffPriorityItems({
     {
       label: "Failed food match",
       value: failedMatchCount,
+      launchTrack: "Food recommendation accuracy",
+      launchImpact: "The customer mentioned a food that NutriTail could not resolve confidently.",
       helper:
         "Food names or current diets that NutriTail could not resolve confidently.",
       action: "Add aliases, fix canonical names, or backfill missing Food V2 rows.",
@@ -175,6 +181,8 @@ function getDropoffPriorityItems({
     {
       label: "Not helpful feedback",
       value: notHelpfulCount,
+      launchTrack: "Analytics/feedback loop",
+      launchImpact: "The customer explicitly told us the answer did not help enough.",
       helper:
         "Customers explicitly said the answer was not useful enough.",
       action: "Inspect the exact query, goal, foods, and wording before changing rules.",
@@ -232,6 +240,21 @@ function getCustomerFrictionScorecards(
       rank: index + 1,
     };
   });
+}
+
+function getLaunchTrackFixQueue(
+  customerFrictionScorecards: ReturnType<typeof getCustomerFrictionScorecards>
+) {
+  return customerFrictionScorecards.map((item) => ({
+    track: item.launchTrack,
+    signal: item.label,
+    signalCount: item.value,
+    priority: item.priority,
+    customerImpact: item.launchImpact,
+    nextAction: item.action,
+    typeFilter: item.typeFilter,
+    ratingFilter: item.ratingFilter,
+  }));
 }
 
 function TriageButton({
@@ -502,6 +525,7 @@ export default function AdminChatFeedbackPage() {
   const nextFeedbackFix = getNextFeedbackFix(dropoffPriorityItems);
   const customerFrictionScorecards =
     getCustomerFrictionScorecards(dropoffPriorityItems);
+  const launchTrackFixQueue = getLaunchTrackFixQueue(customerFrictionScorecards);
 
   return (
     <section className="space-y-6">
@@ -970,6 +994,80 @@ export default function AdminChatFeedbackPage() {
               </p>
               <p className="mt-2 text-sm font-semibold leading-6 text-rose-950">
                 {item.action}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-slate-200 bg-slate-950 p-6 text-white shadow-sm"
+        data-testid="chat-feedback-launch-track-fix-queue"
+      >
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+              Launch-track fix queue
+            </p>
+            <h3 className="mt-1 text-xl font-bold">
+              Which 10-task launch area does this feedback affect?
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+              This turns customer feedback into the next product task: chatbot
+              clarity, saved-pet continuation, food accuracy, or the analytics
+              feedback loop.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter(nextFeedbackFix.typeFilter);
+              setRatingFilter(nextFeedbackFix.ratingFilter);
+              setSearch("");
+            }}
+            className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+          >
+            Open highest-impact queue
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-4">
+          {launchTrackFixQueue.map((item) => (
+            <button
+              key={`${item.track}-${item.signal}`}
+              type="button"
+              onClick={() => {
+                setTypeFilter(item.typeFilter);
+                setRatingFilter(item.ratingFilter);
+                setSearch("");
+              }}
+              className="rounded-xl border border-slate-700 bg-white/10 p-4 text-left transition hover:border-white hover:bg-white/20"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-300">
+                    {item.track}
+                  </p>
+                  <h4 className="mt-2 font-bold text-white">{item.signal}</h4>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-slate-950">
+                  {item.signalCount}
+                </span>
+              </div>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Customer signal
+              </p>
+              <p className="mt-1 text-sm leading-6 text-slate-200">
+                {item.customerImpact}
+              </p>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                What to fix next
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-white">
+                {item.nextAction}
+              </p>
+              <p className="mt-3 inline-flex rounded-full border border-slate-600 px-3 py-1 text-xs font-bold text-slate-200">
+                {item.priority}
               </p>
             </button>
           ))}
