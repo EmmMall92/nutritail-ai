@@ -492,8 +492,8 @@ if (!valueGoalSample.includes("Budget-friendly first choices:")) {
 }
 
 if (
-  !sample.includes("Top 3 first choices:") ||
-  (!sample.includes("3 simpler / budget-friendly options:") && sampleResponse.value.length > 0)
+  !sample.includes("Best starting choices:") ||
+  (!sample.includes("Budget-friendly alternatives:") && sampleResponse.value.length > 0)
 ) {
   console.error("Customer-facing recommendation should use polished section labels.");
   console.error(sample);
@@ -720,9 +720,9 @@ const requiredCardFlowCopy = [
   "Good alternative",
   "Calculate grams/day",
   "customer-recommendation-choice-panel",
-  "Your recommendations are ready",
+  "Food choices are ready",
   "Next: calculate grams/day.",
-  "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives.",
+  "Start with the strongest choices. If budget also matters, check the practical alternatives too.",
   "Choose the food you prefer to see grams per day.",
   "If you change your mind before saving, you can tap another card.",
   "1. Compare",
@@ -749,9 +749,9 @@ const requiredCardFlowCopy = [
   "missing some label details",
   "compare the main nutrition points",
   "Next step: tell me which one you prefer",
-  "Top 3 first choices",
+  "Best starting choices",
   "starting choices",
-  "3 simpler / budget-friendly options",
+  "Budget-friendly alternatives",
   "alternatives when flavour, availability, or price matters",
   "Your plan is ready",
   "First daily plan",
@@ -869,8 +869,8 @@ const requiredGreekCardFlowCopy = [
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",
   "Πώς να το διαβάσεις:",
-  "Οι 3 καλύτερες πρώτες επιλογές",
-  "3 πιο απλές / οικονομικές επιλογές",
+  "Οι 3 βασικές προτάσεις",
+  "Πιο πρακτικές / οικονομικές επιλογές",
   "Δεν χρειάζεται να διαλέξεις αμέσως την πρώτη.",
   "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή",
   "Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
@@ -973,7 +973,7 @@ const groupedChoiceMarkers = [
   "disabled={isSaving || requiresFoodChoiceBeforeSave}",
   "Choose one food card first so I can calculate grams/day.",
   "Choose one food card first. Then I will calculate grams/day and save a complete plan.",
-  "Tap one food to calculate grams/day. Then save the plan or try another option.",
+  "Choose one food first. I will calculate grams/day, then you can save the plan or try another option.",
   "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
   "group.choices.length}/3",

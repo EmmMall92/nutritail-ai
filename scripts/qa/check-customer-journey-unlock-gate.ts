@@ -56,7 +56,7 @@ const journeys: JourneyProof[] = [
         "getRecommendationChoiceGroups",
         "premium",
         "value",
-        "Tap one food to calculate grams/day.",
+        "Choose one food first. I will calculate grams/day",
         "Calculate grams/day",
         "First daily plan:",
         "selected-food-plan-card",

@@ -510,10 +510,10 @@ function sectionTitle(
   }
 
   if (locale === "el") {
-    return role === "premium" ? "Οι 3 καλύτερες πρώτες επιλογές:" : "3 πιο απλές / οικονομικές επιλογές:";
+    return role === "premium" ? "Οι 3 βασικές προτάσεις:" : "Πιο πρακτικές / οικονομικές επιλογές:";
   }
 
-  return role === "premium" ? "Top 3 first choices:" : "3 simpler / budget-friendly options:";
+  return role === "premium" ? "Best starting choices:" : "Budget-friendly alternatives:";
 }
 
 function nextStepLine(locale: "el" | "en") {
