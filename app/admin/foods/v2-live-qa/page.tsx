@@ -205,10 +205,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     ],
     customerUxUnlockGates: [
       {
-        gate: "Report/account clarity proof",
-        unlocks: "87-88% Customer UX readiness",
+        gate: "Real beta-user proof",
+        unlocks: "88-90% Customer UX readiness",
         evidenceNeeded:
-          "Prove that account and printable report pages make calories, chosen food, grams/day, why it fits, transition plan, timeline, and next check-in obvious on mobile and desktop.",
+          "Prove that real beta users can complete signup/login, chatbot intake, food choice, grams/day, save, report, timeline, progress, and feedback without manual explanation.",
       },
     ],
     overallLaunchBlockers: [
@@ -870,12 +870,12 @@ export default function FoodV2LiveQaPage() {
                 <p className="text-sm font-semibold">Next customer score unlock</p>
                 <p className="mt-2 text-2xl font-black">
                   {productProgress.customerUxUnlockGates[0]?.unlocks ??
-                    "87-88% Customer UX readiness"}
+                    "88-90% Customer UX readiness"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   The next visible movement is not another merge by itself. It is
-                  proof that account and report pages make the next action obvious
-                  without reading admin notes.
+                  proof that real beta users can finish the whole nutrition
+                  journey without manual explanation.
                 </p>
               </div>
               <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
@@ -884,11 +884,11 @@ export default function FoodV2LiveQaPage() {
                 </p>
                 <p className="mt-2 text-sm font-semibold">
                   {productProgress.customerUxUnlockGates[0]?.gate ??
-                    "Report/account clarity proof"}
+                    "Real beta-user proof"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   {productProgress.customerUxUnlockGates[0]?.evidenceNeeded ??
-                    "Prove that account and printable report pages make calories, chosen food, grams/day, why it fits, transition plan, timeline, and next check-in obvious on mobile and desktop."}
+                    "Prove that real beta users can complete signup/login, chatbot intake, food choice, grams/day, save, report, timeline, progress, and feedback without manual explanation."}
                 </p>
               </div>
             </div>
