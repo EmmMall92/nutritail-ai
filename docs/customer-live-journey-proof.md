@@ -27,6 +27,12 @@ Store a QA account cookie in:
 .qa-secrets/nutritail-auth-cookie.txt
 ```
 
+The runner also accepts the existing local alias:
+
+```txt
+.qa-secrets/account-cookie.txt
+```
+
 or point to another ignored file:
 
 ```powershell
@@ -120,3 +126,18 @@ the live browser.
 - `REVIEW`: at least one checked route or shape failed.
 
 Only `PASS_FULL` should justify moving Customer UX above 84%.
+
+## Current Practical Gate
+
+If the runner returns `PASS_NON_DESTRUCTIVE`, the customer journey is no longer
+blocked by login, OpenAI extraction, or Food V2 card retrieval. The remaining
+work is the live browser part that writes and reopens a real customer flow:
+
+1. choose a food and confirm grams/day plus first-week next steps
+2. save the analysis
+3. open the saved pet report
+4. open the same pet timeline
+5. return to the same pet for progress without restarting intake
+
+That browser proof can then be written to the ignored
+`.qa-secrets/customer-live-journey-proof.json` file and rechecked by the runner.
