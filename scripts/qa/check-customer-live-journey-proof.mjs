@@ -135,6 +135,16 @@ function renderTable(rows) {
   ].join("\n");
 }
 
+function renderJourneyTable(journeys) {
+  return [
+    "| Journey | Status | Proof needed |",
+    "| --- | --- | --- |",
+    ...journeys.map(
+      (journey) => `| ${journey.name} | ${journey.status} | ${journey.proofNeeded} |`,
+    ),
+  ].join("\n");
+}
+
 async function main() {
   const authCookie = loadAuthCookie();
   const rows = [];
@@ -205,9 +215,41 @@ async function main() {
   );
   const authenticatedPassed = authenticatedSteps.every((row) => row.result === "pass");
   const status = failed > 0 ? "REVIEW" : authenticatedPassed ? "PASS" : "SKIP_AUTH";
+  const journeyProofs = [
+    {
+      name: "New pet recommendation",
+      status: recommendationShape.ok ? "partial-pass" : "review",
+      proofNeeded:
+        "Food V2 returns visible customer choices; browser proof still needs food selection and grams/day.",
+    },
+    {
+      name: "Save analysis",
+      status: "manual-required",
+      proofNeeded:
+        "Choose one food in the live chatbot, confirm grams/day, then save the analysis.",
+    },
+    {
+      name: "Open report",
+      status: "manual-required",
+      proofNeeded:
+        "Open the printable report and confirm calories, selected food, grams/day, transition plan, and next action are clear.",
+    },
+    {
+      name: "Open timeline",
+      status: "manual-required",
+      proofNeeded:
+        "Open the saved pet timeline and confirm the latest plan and progress context are visible.",
+    },
+    {
+      name: "Return for progress",
+      status: "manual-required",
+      proofNeeded:
+        "Return to the same saved pet and complete progress, no-result, or flavour/brand-change follow-up.",
+    },
+  ];
   const unlockImpact =
     status === "PASS"
-      ? "This can support the first Customer UX unlock after manual save/report/timeline confirmation."
+      ? "This supports the non-destructive part of the first Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score."
       : "This does not move Customer UX above 82% yet because logged-in production journey proof is still missing.";
 
   mkdirSync(path.dirname(reportPath), { recursive: true });
@@ -232,17 +274,26 @@ async function main() {
       `- Failed: ${failed}`,
       `- Auth cookie source: ${authCookie.source}`,
       `- Unlock impact: ${unlockImpact}`,
+      `- Customer journeys tracked: ${journeyProofs.length}`,
+      `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
       "",
       "## Results",
       "",
       renderTable(rows),
       "",
+      "## Customer Journey Proof Checklist",
+      "",
+      "These are the five customer-visible journeys that must pass before Customer UX can move above the 82% band.",
+      "",
+      renderJourneyTable(journeyProofs),
+      "",
       "## To Complete The 83-85% Customer UX Gate",
       "",
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
-      "3. In the browser, complete the destructive/manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
-      "4. Only then update the Customer UX score above 82%.",
+      "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
+      "4. Record whether each checklist journey passed without manual explanation.",
+      "5. Only then update the Customer UX score above 82%.",
     ].join("\n") + "\n",
     "utf8",
   );
@@ -255,6 +306,10 @@ async function main() {
         passed,
         skipped,
         failed,
+        customer_journeys_tracked: journeyProofs.length,
+        manual_journeys_still_required: journeyProofs.filter(
+          (journey) => journey.status === "manual-required",
+        ).length,
         auth_cookie_source: authCookie.source,
         report: reportPath,
       },

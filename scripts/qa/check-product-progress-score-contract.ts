@@ -233,6 +233,11 @@ assert(
     customerLiveJourneyProof.includes("/api/account/chatbot/extract-intake") &&
     customerLiveJourneyProof.includes("/api/account/foods/v2-recommendations") &&
     customerLiveJourneyProof.includes("NUTRITAIL_QA_AUTH_COOKIE_FILE") &&
+    customerLiveJourneyProof.includes("Customer Journey Proof Checklist") &&
+    customerLiveJourneyProof.includes("Customer journeys tracked") &&
+    customerLiveJourneyProof.includes("Manual journeys still required") &&
+    customerLiveJourneyProof.includes("New pet recommendation") &&
+    customerLiveJourneyProof.includes("Return for progress") &&
     customerLiveJourneyProof.includes("SKIP_AUTH") &&
     !customerLiveJourneyProof.includes("/api/account/chatbot/save"),
   "Customer live journey proof must be non-destructive, authenticated-cookie aware, and report SKIP_AUTH until live proof can run."
@@ -343,6 +348,11 @@ assert(
     liveQaPage.includes("Logged-in live journey proof is still pending") &&
     liveQaPage.includes("customerLiveJourneyProof.unlockImpact") &&
     liveQaPage.includes("customerLiveJourneyProof.authCookieSource") &&
+    liveQaPage.includes("customerLiveJourneyProof.customerJourneysTracked") &&
+    liveQaPage.includes("customerLiveJourneyProof.manualJourneysStillRequired") &&
+    liveQaPage.includes("customerLiveJourneyProof.journeyChecklist") &&
+    liveQaPage.includes('data-testid="customer-live-journey-checklist"') &&
+    liveQaPage.includes("Customer journey checklist") &&
     liveQaPage.includes("To complete the 83-85% gate") &&
     liveQaPage.includes("npm.cmd run qa:customer-live-journey-proof"),
   "Admin live QA page must expose the non-destructive customer live journey proof status and next steps."
