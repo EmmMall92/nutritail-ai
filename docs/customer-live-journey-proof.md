@@ -76,6 +76,18 @@ Then keep only evidence that really passed in the live browser. Use this shape:
 }
 ```
 
+Each evidence note must include the core proof terms for that journey. The runner
+checks those terms so a vague note such as "looks good" cannot unlock
+`PASS_FULL`.
+
+| Key | Required evidence terms |
+| --- | --- |
+| `food_choice_grams` | `food`, `grams/day`, `first-week` |
+| `save_analysis` | `save`, `profile`, `report`, `timeline`, `progress` |
+| `open_report` | `report`, `calories`, `selected food`, `grams/day`, `transition` |
+| `open_timeline` | `timeline`, `same saved pet`, `plan`, `progress` |
+| `return_for_progress` | `same saved pet`, `progress`, `without restarting` |
+
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.

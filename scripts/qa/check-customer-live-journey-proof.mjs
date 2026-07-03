@@ -28,6 +28,29 @@ const samplePet = {
   excludedIngredients: ["salmon"],
 };
 
+const manualJourneyRequirements = {
+  food_choice_grams: {
+    name: "Food choice and grams/day",
+    requiredTerms: ["food", "grams/day", "first-week"],
+  },
+  save_analysis: {
+    name: "Save analysis",
+    requiredTerms: ["save", "profile", "report", "timeline", "progress"],
+  },
+  open_report: {
+    name: "Open report",
+    requiredTerms: ["report", "calories", "selected food", "grams/day", "transition"],
+  },
+  open_timeline: {
+    name: "Open timeline",
+    requiredTerms: ["timeline", "same saved pet", "plan", "progress"],
+  },
+  return_for_progress: {
+    name: "Return for progress",
+    requiredTerms: ["same saved pet", "progress", "without restarting"],
+  },
+};
+
 function loadAuthCookie() {
   const fromEnv = process.env.NUTRITAIL_QA_AUTH_COOKIE?.trim() || "";
   if (fromEnv) {
@@ -85,17 +108,22 @@ function loadManualJourneyProof() {
   }
 }
 
-function getManualProofStatus(proof, key) {
+function getManualProofStatus(proof, key, requirement) {
   const entry = proof?.[key];
   const evidence = Array.isArray(entry?.evidence) ? entry.evidence.filter(Boolean) : [];
-  const ok = entry?.passed === true && evidence.length > 0;
+  const evidenceText = evidence.join(" ").toLowerCase();
+  const missingTerms = requirement.requiredTerms.filter(
+    (term) => !evidenceText.includes(term.toLowerCase()),
+  );
+  const ok = entry?.passed === true && evidence.length > 0 && missingTerms.length === 0;
 
   return {
     ok,
     evidenceCount: evidence.length,
+    missingTerms,
     note: ok
       ? evidence.slice(0, 2).join("; ")
-      : "Needs browser proof with passed=true and at least one evidence note.",
+      : `Needs browser proof with passed=true, at least one evidence note, and these terms: ${requirement.requiredTerms.join(", ")}.`,
   };
 }
 
@@ -253,21 +281,15 @@ async function main() {
     notes: `${recommendationShape.visibleCount} visible choices; premium ${recommendationShape.premiumCount}/3; value ${recommendationShape.valueCount}/3; first ${recommendationShape.firstFood || "-"}`,
   });
 
-  const manualJourneyKeys = {
-    food_choice_grams: "Food choice and grams/day",
-    save_analysis: "Save analysis",
-    open_report: "Open report",
-    open_timeline: "Open timeline",
-    return_for_progress: "Return for progress",
-  };
-  const manualJourneyResults = Object.entries(manualJourneyKeys).map(([key, name]) => {
-    const manualStatus = getManualProofStatus(manualProof.proof, key);
+  const manualJourneyResults = Object.entries(manualJourneyRequirements).map(([key, requirement]) => {
+    const manualStatus = getManualProofStatus(manualProof.proof, key, requirement);
 
     return {
       key,
-      name,
+      name: requirement.name,
       status: manualStatus.ok ? "manual-pass" : "manual-required",
       evidenceCount: manualStatus.evidenceCount,
+      missingTerms: manualStatus.missingTerms,
       note: manualStatus.note,
     };
   });
@@ -381,7 +403,7 @@ async function main() {
       "| --- | --- | --- |",
       ...manualJourneyResults.map(
         (journey) =>
-          `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"} |`,
+          `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"}${journey.missingTerms.length > 0 ? ` Missing terms: ${journey.missingTerms.join(", ")}` : ""} |`,
       ),
       "",
       "## To Complete The 83-85% Customer UX Gate",
