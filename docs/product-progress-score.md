@@ -452,7 +452,7 @@ normal customer can complete the flow without manual explanation.
 | Clean customer wording proof | completed to 86% Customer UX readiness | `qa:clean-customer-wording-proof` protects generated customer recommendation output, and `qa:customer-live-journey-proof` reached PASS_FULL with clean composed chatbot wording plus clean printable report wording in production. |
 | Returning pet proof | completed to 87% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with progress check, no-result follow-up, flavour/brand change, new food recommendation route, and timeline review for the same saved pet in production. |
 | Report/account proof | completed to 88% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with account, pet profile, printable report, timeline, and progress clarity for the same saved pet in production. |
-| Real beta-user proof | 88-90% Customer UX readiness | At least three beta users complete signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, and feedback without manual help. `qa:beta-user-proof-contract` must report PASS before this moves the score. |
+| Real beta-user proof | 88-90% Customer UX readiness | At least three beta users complete signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, and feedback without manual help. The set must include one `dog_owner`, one `cat_owner`, and one `returning_saved_pet` journey. `qa:beta-user-proof-contract` must report PASS before this moves the score. |
 
 ## Overall SaaS Blockers
 
