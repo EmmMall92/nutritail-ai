@@ -118,6 +118,23 @@ The runner rejects TODO, placeholder, draft, or example evidence text even if
 `passed` is set to `true`. Proof notes must describe what actually happened in
 the live browser.
 
+## Optional Controlled Live Write Proof
+
+By default, the runner is non-destructive. It does not save pets, reports, or
+progress notes. When you intentionally want the runner to prove the full live
+journey, you can enable a controlled write proof:
+
+```powershell
+$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF="1"
+npm.cmd run qa:customer-live-journey-proof
+Remove-Item Env:\NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF
+```
+
+This mode uses the authenticated QA cookie, creates a clearly named QA pet in
+the live account, saves a test analysis with grams/day, opens the report and
+timeline routes, and writes one progress note. Use it only when you are ready
+to create live QA data. The runner never prints the cookie or the user id.
+
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.
@@ -141,3 +158,5 @@ work is the live browser part that writes and reopens a real customer flow:
 
 That browser proof can then be written to the ignored
 `.qa-secrets/customer-live-journey-proof.json` file and rechecked by the runner.
+Alternatively, the controlled live write proof can produce the same proof
+directly when `NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1` is set intentionally.
