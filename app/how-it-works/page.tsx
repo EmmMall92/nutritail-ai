@@ -87,6 +87,21 @@ const customerOutputSteps = [
   },
 ];
 
+const commercialTrustRules = [
+  {
+    title: "Οι κανόνες προηγούνται",
+    text: "Αν μια τροφή δεν ταιριάζει σε είδος, ηλικία, αλλεργία, μέγεθος ή σοβαρό στόχο υγείας, δεν πρέπει να προτείνεται επειδή είναι διαθέσιμη ή εμπορικά σημαντική.",
+  },
+  {
+    title: "Οι συνεργασίες δεν κρύβουν τα όρια",
+    text: "Featured ή προωθημένες επιλογές μπορούν να εμφανιστούν μόνο μέσα στα ασφαλή αποτελέσματα. Δεν αντικαθιστούν τα διατροφικά φίλτρα και δεν σβήνουν τις προειδοποιήσεις.",
+  },
+  {
+    title: "Ο πελάτης χρειάζεται καθαρό λόγο",
+    text: "Κάθε πρόταση πρέπει να εξηγεί απλά γιατί ταιριάζει: θερμίδες, λιπαρά, ίνες, life stage, προτίμηση γεύσης ή ευαισθησία.",
+  },
+];
+
 const launchTrustChecklist = [
   {
     title: "Τι είναι έτοιμο για beta",
@@ -317,6 +332,43 @@ export default function HowItWorksPage() {
                 <h3 className="font-black">{step.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-gray-700">
                   {step.text}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="border-b border-black/10 bg-[#fff8ea]"
+        data-testid="public-commercial-trust-guard"
+      >
+        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-amber-700">
+              Εμπορική διαφάνεια
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Η πρόταση δεν πρέπει να αγοράζεται από το brand.
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Το NutriTail μπορεί στο μέλλον να έχει πλάνα, συνεργασίες ή
+              προβεβλημένες επιλογές. Αυτά δεν πρέπει να παρακάμπτουν τους
+              κανόνες καταλληλότητας: αλλεργίες, είδος, ηλικία, μέγεθος,
+              θερμίδες, στόχο βάρους και ιατρικά όρια μπαίνουν πρώτα.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {commercialTrustRules.map((rule) => (
+              <article
+                key={rule.title}
+                className="rounded-xl border border-amber-200 bg-white p-5"
+                data-testid="public-commercial-trust-rule"
+              >
+                <h3 className="font-black text-amber-950">{rule.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {rule.text}
                 </p>
               </article>
             ))}
