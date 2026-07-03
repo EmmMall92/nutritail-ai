@@ -102,6 +102,20 @@ assert(
   "Admin feedback page must translate drop-off analytics into a customer friction scorecard."
 );
 assert(
+  adminFeedbackPage.includes("function getLaunchTrackFixQueue") &&
+    adminFeedbackPage.includes("launchTrackFixQueue.map") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-launch-track-fix-queue"') &&
+    adminFeedbackPage.includes("Launch-track fix queue") &&
+    adminFeedbackPage.includes("Which 10-task launch area does this feedback affect?") &&
+    adminFeedbackPage.includes("Customer signal") &&
+    adminFeedbackPage.includes("What to fix next") &&
+    adminFeedbackPage.includes("Final chatbot experience") &&
+    adminFeedbackPage.includes("Saved pet continuation") &&
+    adminFeedbackPage.includes("Food recommendation accuracy") &&
+    adminFeedbackPage.includes("Analytics/feedback loop"),
+  "Admin feedback page must map customer feedback signals to the 10-task launch tracks."
+);
+assert(
   adminFeedbackPage.includes('data-testid="chat-feedback-next-best-fix"'),
   "Admin feedback page must expose the next best feedback fix panel."
 );
