@@ -993,6 +993,36 @@ export default function AccountPage() {
           </p>
         </div>
 
+        <div
+          data-testid="account-next-action-guide"
+          className="mt-5 grid grid-cols-1 gap-3 text-sm md:grid-cols-3"
+        >
+          <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-emerald-950">
+            <p className="font-semibold">
+              {"\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03bd\u03b1 \u03b4\u03b5\u03b9\u03c2 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf"}
+            </p>
+            <p className="mt-1 leading-5 text-emerald-800">
+              {"\u0386\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03b3\u03b9\u03b1 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2, \u03c4\u03c1\u03bf\u03c6\u03ae, \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03ba\u03b1\u03b9 transition plan."}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-amber-100 bg-white p-4 text-amber-950">
+            <p className="font-semibold">
+              {"\u0391\u03bd \u03c0\u03ad\u03c1\u03b1\u03c3\u03b1\u03bd 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2"}
+            </p>
+            <p className="mt-1 leading-5 text-amber-800">
+              {"\u039a\u03ac\u03bd\u03b5 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2."}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-violet-100 bg-white p-4 text-violet-950">
+            <p className="font-semibold">
+              {"\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ac\u03bb\u03bb\u03b7 \u03b3\u03b5\u03cd\u03c3\u03b7 \u03ae \u03b5\u03c4\u03b1\u03b9\u03c1\u03b5\u03af\u03b1"}
+            </p>
+            <p className="mt-1 leading-5 text-violet-800">
+              {"\u0396\u03ae\u03c4\u03b7\u03c3\u03b5 \u03bd\u03ad\u03b1 \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03ba\u03c1\u03b1\u03c4\u03ce\u03bd\u03c4\u03b1\u03c2 \u03c4\u03bf \u03af\u03b4\u03b9\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf, \u03c3\u03c4\u03cc\u03c7\u03bf \u03ba\u03b1\u03b9 \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc."}
+            </p>
+          </div>
+        </div>
+
         <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
           {accountTodayTasks.map((task) => (
             <Link
