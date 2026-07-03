@@ -63,6 +63,16 @@ assert(
   "Admin feedback page must expose the launch triage panel."
 );
 assert(
+  adminFeedbackPage.includes("function getFeedbackSource") &&
+    adminFeedbackPage.includes("printable_pet_report") &&
+    adminFeedbackPage.includes("reportHelpfulRate") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-report-quality"') &&
+    adminFeedbackPage.includes("Open report feedback") &&
+    adminFeedbackPage.includes("Printable report feedback") &&
+    adminFeedbackPage.includes('setSearch("printable_pet_report")'),
+  "Admin feedback page must expose printable report feedback quality separately."
+);
+assert(
   adminFeedbackPage.includes("highPriorityCleanupCount"),
   "Launch triage must include cleanup risk from repeated failed matches."
 );
