@@ -128,8 +128,13 @@ assert(
     adminActivityPage.includes("Returning saved-pet journey") &&
     adminActivityPage.includes('data-testid="admin-beta-proof-slot"') &&
     adminActivityPage.includes('data-testid="admin-beta-proof-evidence-checklist"') &&
+    adminActivityPage.includes('data-testid="admin-beta-session-playbook"') &&
+    adminActivityPage.includes("Session playbook for real beta proof") &&
+    adminActivityPage.includes("must not") &&
+    adminActivityPage.includes("pass, review, or fail") &&
+    adminActivityPage.includes("docs/beta-user-session-playbook.md") &&
     adminActivityPage.includes("qa:beta-user-proof-contract"),
-  "Admin activity should turn beta waitlist signups into a practical beta proof recruiting board."
+  "Admin activity should turn beta waitlist signups into a practical beta proof recruiting board with session playbook guidance."
 );
 assert(
   adminActivityPage.includes('"accessPlan"') &&
