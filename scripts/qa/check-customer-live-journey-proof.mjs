@@ -116,7 +116,7 @@ function hasVisibleRecommendationCards(payload) {
   const visible = [...premium, ...value];
 
   return {
-    ok: premium.length >= 1 && visible.length >= 3,
+    ok: premium.length >= 3 && value.length >= 3,
     premiumCount: premium.length,
     valueCount: value.length,
     visibleCount: visible.length,
@@ -204,7 +204,7 @@ async function main() {
     status: recommendations.status,
     result: recommendations.status === 200 && recommendationShape.ok ? "pass" : "fail",
     durationMs: recommendations.durationMs,
-    notes: `${recommendationShape.visibleCount} visible choices; premium ${recommendationShape.premiumCount}; value ${recommendationShape.valueCount}; first ${recommendationShape.firstFood || "-"}`,
+    notes: `${recommendationShape.visibleCount} visible choices; premium ${recommendationShape.premiumCount}/3; value ${recommendationShape.valueCount}/3; first ${recommendationShape.firstFood || "-"}`,
   });
 
   const passed = rows.filter((row) => row.result === "pass").length;
@@ -220,7 +220,7 @@ async function main() {
       name: "New pet recommendation",
       status: recommendationShape.ok ? "partial-pass" : "review",
       proofNeeded:
-        "Food V2 returns visible customer choices; browser proof still needs food selection and grams/day.",
+        "Food V2 must return 3 first-choice cards and 3 budget-friendly alternatives; browser proof still needs food selection and grams/day.",
     },
     {
       name: "Save analysis",

@@ -2363,12 +2363,13 @@ export function splitFoodV2Recommendations(
 
   const bestOverall = customerVisibleUsable.slice(0, limitPerBucket);
   const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
+  const practicalAlternatives = customerVisibleUsable
+    .filter((ranking) => !bestKeys.has(ranking.formula_key))
+    .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score);
 
   return {
     premium: bestOverall,
-    value: value
-      .filter((ranking) => !bestKeys.has(ranking.formula_key))
-      .slice(0, limitPerBucket),
+    value: practicalAlternatives.slice(0, limitPerBucket),
     hold: dedupeByCustomerName(
       rankings
         .filter((ranking) => ranking.bucket === "hold")
