@@ -1617,65 +1617,117 @@ function shouldExtractIntakeFacts(step: IntakeStep, text: string) {
 
 function mergeExtractedPetFacts(
   current: PetIntake,
-  extracted?: AiIntakeExtraction | null
+  extracted?: AiIntakeExtraction | null,
+  allowedFields?: Partial<Record<keyof PetIntake, boolean>>
 ): PetIntake {
   if (!extracted) return current;
 
   const next: PetIntake = { ...current };
+  const canMerge = (field: keyof PetIntake) => allowedFields?.[field] ?? true;
 
-  if (!next.species && extracted.species) next.species = extracted.species;
-  if (!next.name && extracted.petName) next.name = formatPetDisplayName(extracted.petName);
-  if (!next.weight && typeof extracted.weightKg === "number") next.weight = extracted.weightKg;
-  if (!next.age && typeof extracted.ageYears === "number") next.age = extracted.ageYears;
-  if (!next.activityLevel && extracted.activityLevel) {
+  if (canMerge("species") && !next.species && extracted.species) next.species = extracted.species;
+  if (canMerge("name") && !next.name && extracted.petName) next.name = formatPetDisplayName(extracted.petName);
+  if (canMerge("weight") && !next.weight && typeof extracted.weightKg === "number") next.weight = extracted.weightKg;
+  if (canMerge("age") && !next.age && typeof extracted.ageYears === "number") next.age = extracted.ageYears;
+  if (canMerge("activityLevel") && !next.activityLevel && extracted.activityLevel) {
     next.activityLevel = extracted.activityLevel;
   }
-  if (next.neutered === undefined && typeof extracted.neutered === "boolean") {
+  if (canMerge("neutered") && next.neutered === undefined && typeof extracted.neutered === "boolean") {
     next.neutered = extracted.neutered;
   }
-  if (!next.currentFoodName && extracted.currentFoodName) {
+  if (canMerge("currentFoodName") && !next.currentFoodName && extracted.currentFoodName) {
     next.currentFoodName = extracted.currentFoodName;
     next.currentFoodAnswered = true;
   }
-  if (!next.weightGoal && extracted.weightGoal) next.weightGoal = extracted.weightGoal;
+  if (canMerge("weightGoal") && !next.weightGoal && extracted.weightGoal) next.weightGoal = extracted.weightGoal;
 
-  next.healthIssues = uniqueTerms([
-    ...(next.healthIssues ?? []),
-    ...normalizeExtractedList(extracted.healthIssues),
-  ]);
-  next.allergies = uniqueTerms([
-    ...(next.allergies ?? []),
-    ...normalizeExtractedList(extracted.allergies),
-  ]);
-  if (
-    extracted.healthIssues?.length ||
-    extracted.allergies?.length ||
-    next.healthIssues.length > 0 ||
-    next.allergies.length > 0
-  ) {
-    next.healthAnswered = true;
+  if (canMerge("healthIssues") || canMerge("allergies")) {
+    next.healthIssues = uniqueTerms([
+      ...(next.healthIssues ?? []),
+      ...(canMerge("healthIssues") ? normalizeExtractedList(extracted.healthIssues) : []),
+    ]);
+    next.allergies = uniqueTerms([
+      ...(next.allergies ?? []),
+      ...(canMerge("allergies") ? normalizeExtractedList(extracted.allergies) : []),
+    ]);
+    if (
+      (canMerge("healthIssues") && extracted.healthIssues?.length) ||
+      (canMerge("allergies") && extracted.allergies?.length) ||
+      next.healthIssues.length > 0 ||
+      next.allergies.length > 0
+    ) {
+      next.healthAnswered = true;
+    }
   }
-  next.excludedIngredients = uniqueTerms([
-    ...(next.excludedIngredients ?? []),
-    ...normalizeExtractedList(extracted.excludedIngredients),
-  ]);
-  next.preferredProteins = removeExcludedFromPreferred(
-    [
-      ...(next.preferredProteins ?? []),
-      ...normalizeExtractedList(extracted.preferredProteins),
-    ],
-    next.excludedIngredients ?? []
-  );
-  if (
-    extracted.excludedIngredients?.length ||
-    extracted.preferredProteins?.length ||
-    next.excludedIngredients.length > 0 ||
-    next.preferredProteins.length > 0
-  ) {
-    next.preferencesAnswered = true;
+
+  if (canMerge("excludedIngredients") || canMerge("preferredProteins")) {
+    next.excludedIngredients = uniqueTerms([
+      ...(next.excludedIngredients ?? []),
+      ...(canMerge("excludedIngredients")
+        ? normalizeExtractedList(extracted.excludedIngredients)
+        : []),
+    ]);
+    next.preferredProteins = removeExcludedFromPreferred(
+      [
+        ...(next.preferredProteins ?? []),
+        ...(canMerge("preferredProteins")
+          ? normalizeExtractedList(extracted.preferredProteins)
+          : []),
+      ],
+      next.excludedIngredients ?? []
+    );
+    if (
+      (canMerge("excludedIngredients") && extracted.excludedIngredients?.length) ||
+      (canMerge("preferredProteins") && extracted.preferredProteins?.length) ||
+      next.excludedIngredients.length > 0 ||
+      next.preferredProteins.length > 0
+    ) {
+      next.preferencesAnswered = true;
+    }
   }
 
   return sanitizePetIntake(next);
+}
+
+function getAllowedExtractedFieldsForStep(
+  step: IntakeStep,
+  current: PetIntake
+): Partial<Record<keyof PetIntake, boolean>> | undefined {
+  if (step === "petChoice") return undefined;
+
+  const base: Partial<Record<keyof PetIntake, boolean>> = {
+    species: !current.species,
+    name: !current.name,
+    weight: !current.weight,
+    age: !current.age,
+    activityLevel: false,
+    neutered: false,
+    currentFoodName: false,
+    weightGoal: false,
+    healthIssues: false,
+    allergies: false,
+    excludedIngredients: false,
+    preferredProteins: false,
+  };
+
+  if (step === "species") return { ...base, species: true };
+  if (step === "name") return { ...base, name: true };
+  if (step === "weight") return { ...base, weight: true };
+  if (step === "age") return { ...base, age: true };
+  if (step === "activity") return { ...base, activityLevel: true };
+  if (step === "neutered") return { ...base, neutered: true };
+  if (step === "health") return { ...base, healthIssues: true, allergies: true };
+  if (step === "currentFood") return { ...base, currentFoodName: true };
+  if (step === "preferences") {
+    return {
+      ...base,
+      excludedIngredients: true,
+      preferredProteins: true,
+    };
+  }
+  if (step === "weightGoal") return { ...base, weightGoal: true };
+
+  return base;
 }
 
 function parseTastePreferences(text: string): {
@@ -5221,8 +5273,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
 
     const intakeExtraction = await extractIntakeFactsFromMessage(text);
+    const allowedExtractedFields = getAllowedExtractedFieldsForStep(step, pet);
     const workingPet = mergeTastePreferencesFromText(sanitizePetIntake({
-      ...mergeExtractedPetFacts(pet, intakeExtraction?.data),
+      ...mergeExtractedPetFacts(pet, intakeExtraction?.data, allowedExtractedFields),
       healthAnswered:
         pet.healthAnswered ||
         (step === "health" && hasNoHealthIssueAnswer(text)) ||

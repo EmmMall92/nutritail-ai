@@ -1,5 +1,6 @@
 import { validateAiIntakeExtraction } from "@/lib/ai/intakeValidation";
 import { fallbackExtractIntake } from "@/lib/ai/intakeFallback";
+import { readFileSync } from "node:fs";
 import {
   parseTastePreferences,
   removeExcludedFromPreferred,
@@ -17,6 +18,7 @@ function hasAll(values: string[] | undefined, expected: string[]) {
 }
 
 function runChecks(): Check[] {
+  const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
   const greekKyrki = "\u03c4\u03b7\u03bd \u03bb\u03b5\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
   const greekKyrkiWithAccent =
     "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
@@ -62,6 +64,17 @@ function runChecks(): Check[] {
   );
 
   return [
+    {
+      name: "Chatbot intake extraction is scoped to the active question",
+      pass:
+        chatbotPage.includes("function getAllowedExtractedFieldsForStep") &&
+        chatbotPage.includes("allowedExtractedFields") &&
+        chatbotPage.includes("activityLevel: false") &&
+        chatbotPage.includes('if (step === "activity") return { ...base, activityLevel: true };') &&
+        chatbotPage.includes("mergeExtractedPetFacts(pet, intakeExtraction?.data, allowedExtractedFields)"),
+      details:
+        "Prevents OpenAI/fallback extraction from skipping activity or neuter questions from unrelated answers.",
+    },
     {
       name: "Fallback infers dog species from Great Dane breed",
       pass:
