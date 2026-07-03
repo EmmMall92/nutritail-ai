@@ -1029,6 +1029,8 @@ export default function PrintablePetReportPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reportFeedbackStatus, setReportFeedbackStatus] = useState("");
+  const [isReportFeedbackSending, setIsReportFeedbackSending] = useState(false);
 
   const loadPet = useCallback(async () => {
     try {
@@ -1146,6 +1148,56 @@ export default function PrintablePetReportPage() {
     : latestAnalysis?.mer
       ? `${latestAnalysis.mer} kcal/ημέρα μέχρι να κλειδώσει τροφή`
       : "Χρειάζεται νέα ανάλυση";
+  const reportPet = pet;
+
+  async function submitReportFeedback(rating: "helpful" | "not_helpful") {
+    try {
+      setIsReportFeedbackSending(true);
+      setReportFeedbackStatus("");
+
+      const response = await fetch("/api/feedback/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventType: "chat_helpfulness",
+          rating,
+          message:
+            rating === "helpful"
+              ? "Customer marked printable report as helpful."
+              : "Customer marked printable report as needing improvement.",
+          context: {
+            source: "printable_pet_report",
+            petId: reportPet.id,
+            petSpecies: reportPet.species,
+            weightGoal: latestAnalysis?.weight_goal ?? null,
+            currentFoodName: latestAnalysis?.matched_food_name ?? null,
+            feedingGramsPerDay: latestAnalysis?.feeding_grams_per_day ?? null,
+            mer: latestAnalysis?.mer ?? null,
+            reportHasCompleteFoodPlan: hasCompleteFoodPlan,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Report feedback request failed.");
+      }
+
+      setReportFeedbackStatus(
+        rating === "helpful"
+          ? "Ευχαριστούμε. Το κρατήσαμε ως χρήσιμο report."
+          : "Ευχαριστούμε. Θα το δούμε για να βελτιωθεί η αναφορά."
+      );
+    } catch (err) {
+      console.error(err);
+      setReportFeedbackStatus(
+        "Δεν μπόρεσα να καταγράψω feedback τώρα. Η αναφορά παραμένει διαθέσιμη."
+      );
+    } finally {
+      setIsReportFeedbackSending(false);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-gray-100 p-4 text-black sm:p-6 print:bg-white print:p-0">
@@ -2531,6 +2583,54 @@ export default function PrintablePetReportPage() {
             </div>
           </div>
         )}
+
+        <div
+          className="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm print:hidden"
+          data-testid="report-feedback-panel"
+        >
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Feedback αναφοράς
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-emerald-950">
+                Ήταν χρήσιμη αυτή η αναφορά;
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-emerald-900">
+                Η απάντησή σου βοηθά να βελτιώνουμε τις προτάσεις, τα reports
+                και το follow-up για πραγματικούς πελάτες.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                disabled={isReportFeedbackSending}
+                onClick={() => void submitReportFeedback("helpful")}
+                className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
+                data-testid="report-feedback-helpful"
+              >
+                Χρήσιμο
+              </button>
+              <button
+                type="button"
+                disabled={isReportFeedbackSending}
+                onClick={() => void submitReportFeedback("not_helpful")}
+                className="rounded-xl border border-emerald-700 bg-white px-5 py-3 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+                data-testid="report-feedback-not-helpful"
+              >
+                Θέλει βελτίωση
+              </button>
+            </div>
+          </div>
+          {reportFeedbackStatus && (
+            <p
+              className="mt-4 rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-900"
+              data-testid="report-feedback-status"
+            >
+              {reportFeedbackStatus}
+            </p>
+          )}
+        </div>
 
         <div className="mt-10 border-t border-gray-200 pt-6 text-xs text-gray-500">
           <p>
