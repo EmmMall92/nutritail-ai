@@ -116,10 +116,12 @@ function evaluateEntry(entry: BetaUserProofEntry) {
 const docs = read("docs/beta-user-proof.md");
 const testCard = read("docs/beta-user-test-card.md");
 const sessionPlaybook = read("docs/beta-user-session-playbook.md");
+const sessionPacket = read("docs/beta-user-proof-session-packet.md");
 const template = read(templateFile);
 const packageJson = read("package.json");
 const productProgress = read("docs/product-progress-score.md");
 const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
+const adminActivityPage = read("app/admin/activity/page.tsx");
 
 for (const marker of [
   "signup/login",
@@ -135,6 +137,10 @@ for (const marker of [
     sessionPlaybook.includes(marker),
     `Beta user session playbook is missing marker: ${marker}`,
   );
+  assert(
+    sessionPacket.includes(marker),
+    `Beta user proof session packet is missing marker: ${marker}`,
+  );
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
 }
 
@@ -147,6 +153,10 @@ for (const journey of requiredJourneyTypes) {
   assert(
     template.includes(`"journey_type": "${journey.type}"`),
     `Beta user proof template is missing journey type: ${journey.type}`,
+  );
+  assert(
+    sessionPacket.includes(journey.label),
+    `Beta user proof session packet is missing journey label: ${journey.label}`,
   );
 }
 
@@ -176,6 +186,25 @@ assert(
     sessionPlaybook.includes("Only `qa:beta-user-proof-contract` returning `PASS` should justify moving") &&
     productProgress.includes("docs/beta-user-session-playbook.md"),
   "Beta user session playbook must define moderator rules, outcomes, launch-track follow-up, and the score rule.",
+);
+
+assert(
+  docs.includes("docs/beta-user-proof-session-packet.md") &&
+    sessionPacket.includes("Beta User Proof Session Packet") &&
+    sessionPacket.includes("Evidence Note Template") &&
+    sessionPacket.includes("Pass Rule") &&
+    sessionPacket.includes("Copy-Item docs/beta-user-proof.template.json") &&
+    sessionPacket.includes("npm.cmd run qa:beta-user-proof-contract"),
+  "Beta user proof docs must include a quick session packet with the exact evidence note and commands.",
+);
+
+assert(
+  adminActivityPage.includes('data-testid="admin-beta-proof-session-packet"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-session-packet-step"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-evidence-note-template"') &&
+    adminActivityPage.includes("docs/beta-user-proof-session-packet.md") &&
+    adminActivityPage.includes("Use this as the 10-minute operating packet"),
+  "Admin activity page must expose the beta proof session packet and exact evidence note template.",
 );
 
 assert(

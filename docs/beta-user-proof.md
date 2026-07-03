@@ -35,6 +35,8 @@ tester flow, the minimum evidence checklist, and examples of strong versus weak
 proof notes. Use `docs/beta-user-session-playbook.md` as the moderator runbook:
 it explains what the moderator may say, what counts as no manual help, and how
 to turn review/fail sessions into follow-up work across the ten launch tracks.
+Use `docs/beta-user-proof-session-packet.md` as the quick operating packet
+right before the tester starts.
 
 For each beta user, keep `passed: true` only if the evidence note proves the
 whole flow:
