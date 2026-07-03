@@ -68,6 +68,25 @@ const sourceQualitySteps = [
   },
 ];
 
+const customerOutputSteps = [
+  {
+    title: "1. Καθαρή λίστα επιλογών",
+    text: "Ο πελάτης βλέπει πρώτα λίγες δυνατές επιλογές, συνήθως premium και value, αντί για μεγάλη τεχνική λίστα.",
+  },
+  {
+    title: "2. Γιατί προτάθηκε",
+    text: "Κάθε τροφή συνοδεύεται από απλή εξήγηση: ηλικία, βάρος, δραστηριότητα, στείρωση, ευαισθησίες, γεύση και διαθέσιμα θρεπτικά στοιχεία.",
+  },
+  {
+    title: "3. Επιλογή και γραμμάρια/ημέρα",
+    text: "Αφού ο πελάτης διαλέξει τροφή, το NutriTail υπολογίζει μια πρώτη ποσότητα σε γραμμάρια/ημέρα με βάση τον θερμιδικό στόχο.",
+  },
+  {
+    title: "4. Συνέχεια μετά την ανάλυση",
+    text: "Η ανάλυση μπορεί να αποθηκευτεί, να γίνει αναφορά, να μπει σε timeline και να χρησιμοποιηθεί αργότερα για έλεγχο προόδου ή νέα πρόταση.",
+  },
+];
+
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -238,6 +257,42 @@ export default function HowItWorksPage() {
               <p className="mt-3 text-sm leading-6 text-gray-700">{step.text}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section
+        className="border-b border-black/10 bg-white"
+        data-testid="public-customer-output-model"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Τι βλέπει τελικά ο πελάτης
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Η πρόταση πρέπει να είναι χρήσιμη στο σπίτι, όχι μόνο σωστή στον κώδικα.
+            </h2>
+            <p className="mt-4 leading-8 text-gray-700">
+              Το NutriTail μετατρέπει τη διατροφική αξιολόγηση σε μια απλή ροή:
+              λίγες καθαρές επιλογές τροφής, λόγος πρότασης, ποσότητα για αρχή,
+              αποθήκευση και επόμενος έλεγχος. Έτσι ο πελάτης μπορεί να θυμάται
+              τι πρέπει να κάνει και να επιστρέφει όταν αλλάξει βάρος, γεύση ή αποτέλεσμα.
+            </p>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-4">
+            {customerOutputSteps.map((step) => (
+              <article
+                key={step.title}
+                className="rounded-xl border border-black/10 bg-[#f7f7f4] p-5"
+              >
+                <h3 className="font-black">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {step.text}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

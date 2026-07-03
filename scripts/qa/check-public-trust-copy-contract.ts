@@ -63,6 +63,21 @@ const sourceQualityMarkers = [
   "Ελλιπή δεδομένα",
 ];
 
+const customerOutputMarkers = [
+  'data-testid="public-customer-output-model"',
+  "Τι βλέπει τελικά ο πελάτης",
+  "Η πρόταση πρέπει να είναι χρήσιμη στο σπίτι, όχι μόνο σωστή στον κώδικα.",
+  "λίγες καθαρές επιλογές τροφής",
+  "premium και value",
+  "Γιατί προτάθηκε",
+  "Επιλογή και γραμμάρια/ημέρα",
+  "αποθηκευτεί",
+  "αναφορά",
+  "timeline",
+  "έλεγχο προόδου",
+  "νέα πρόταση",
+];
+
 const betaTermsMarkers = [
   'import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";',
   "Beta πρόσβαση και πλάνα",
@@ -111,6 +126,13 @@ for (const marker of sourceQualityMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include source quality trust marker: ${marker}`
+  );
+}
+
+for (const marker of customerOutputMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include customer output trust marker: ${marker}`
   );
 }
 
