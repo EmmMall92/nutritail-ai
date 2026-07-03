@@ -35,18 +35,18 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer UX readiness is currently **84%**",
+  "Customer UX readiness is currently **85%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
   "## Customer UX Scorecard",
   "Customer-facing journey",
   "What is proven now",
   "What blocks the next move",
-  "Logged-in production browser proof now covers ordered intake",
-  "cleaner single guidance strip",
-  "Needs live save, printable report, timeline, and returning progress proof",
-  "npm.cmd run qa:customer-live-journey-proof",
-  "non-destructive logged-in route/extraction/recommendation part",
+  "Logged-in production proof now covers ordered intake",
+  "compact compare, choose, grams/day strip",
+  "Needs clean customer wording proof across live chatbot/report output",
+  "`qa:customer-live-journey-proof`",
+  "non-destructive checks passing",
   "Do not collapse them into one",
   "customer-facing",
   "The latest launch-wide move from **89%** to **90%**",
@@ -90,7 +90,12 @@ const requiredMarkers = [
   "subscription or payment direction",
   "legal/trust",
   "real public SaaS",
-  "The latest customer-facing work moves Customer UX readiness from **83%** to",
+  "The latest customer-facing work moves Customer UX readiness from **84%** to",
+  "PASS_FULL",
+  "controlled authenticated live",
+  "95 grams/day",
+  "returned to the same pet in progress mode",
+  "The previous customer-facing work moved Customer UX readiness from **83%** to",
   "duplicate guide panels",
   "one compact decision strip",
   "compare fit and taste, choose",
@@ -164,11 +169,12 @@ const requiredMarkers = [
   "wet/canned dog or cat recommendations",
   "3 premium + 3 value choices",
   "progress check, no-progress advice, new food, flavour change, brand change, and timeline review",
-  "authenticated live chatbot extract proof",
+  "OpenAI intake extraction",
   "Customer UX Unlock Gates",
   "Full recommendation journey proof",
-  "The non-save journey is live-proven for one logged-in customer path",
-  "84-85% Customer UX readiness",
+  "`qa:customer-live-journey-proof` reached PASS_FULL",
+  "same saved pet",
+  "completed to 85% Customer UX readiness",
   "Clean customer wording proof",
   "85-86% Customer UX readiness",
   "Returning pet proof",
@@ -182,7 +188,7 @@ const requiredMarkers = [
   "95% beta-candidate",
   "Overall SaaS Blockers",
   "Food V2 dry-food recommendations are usable",
-  "authenticated live chatbot extraction route",
+  "authenticated extraction",
   "Production monitoring and post-deploy freshness",
   "first real beta-user feedback cycle",
   "Beta access, plan limits, subscription/payment direction",
@@ -331,7 +337,7 @@ assert(
     liveQaPage.includes('data-testid="customer-product-next-unlock"') &&
     liveQaPage.includes("Next customer score unlock") &&
     liveQaPage.includes("Evidence needed next") &&
-    liveQaPage.includes("normal customer can finish the full flow") &&
+    liveQaPage.includes("normal customer sees clean, simple chatbot") &&
     liveQaPage.includes('data-testid="customer-product-score-rule"') &&
     liveQaPage.includes("Score movement rule") &&
     liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
@@ -339,7 +345,7 @@ assert(
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
     liveQaPage.includes("customerUxUnlockGates") &&
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
-    liveQaPage.includes("Full recommendation journey proof") &&
+    liveQaPage.includes("Clean customer wording proof") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),
@@ -366,6 +372,7 @@ assert(
     liveQaPage.includes("reports/customer_live_journey_proof_qa.md") &&
     liveQaPage.includes('data-testid="customer-live-journey-proof-summary"') &&
     liveQaPage.includes("Customer live journey proof") &&
+    liveQaPage.includes("Logged-in live journey proof is passing") &&
     liveQaPage.includes("Logged-in live journey proof is still pending") &&
     liveQaPage.includes("customerLiveJourneyProof.unlockImpact") &&
     liveQaPage.includes("customerLiveJourneyProof.authCookieSource") &&
@@ -374,7 +381,7 @@ assert(
     liveQaPage.includes("customerLiveJourneyProof.journeyChecklist") &&
     liveQaPage.includes('data-testid="customer-live-journey-checklist"') &&
     liveQaPage.includes("Customer journey checklist") &&
-    liveQaPage.includes("To complete the 84-85% gate") &&
+    liveQaPage.includes("Customer live journey proof checklist") &&
     liveQaPage.includes("npm.cmd run qa:customer-live-journey-proof"),
   "Admin live QA page must expose the non-destructive customer live journey proof status and next steps."
 );
