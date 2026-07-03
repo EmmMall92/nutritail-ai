@@ -419,6 +419,10 @@ assert(
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
     liveQaPage.includes("Real beta-user proof") &&
     liveQaPage.includes('data-testid="beta-user-proof-summary"') &&
+    liveQaPage.includes('data-testid="beta-user-proof-required-journeys"') &&
+    liveQaPage.includes('data-testid="beta-user-proof-missing-journeys"') &&
+    liveQaPage.includes("Missing journey types:") &&
+    liveQaPage.includes("Journey: {user.journey}") &&
     liveQaPage.includes("qa:beta-user-proof-contract") &&
     liveQaPage.includes("Beta-user proof is still pending") &&
     liveQaPage.includes("95%+") &&

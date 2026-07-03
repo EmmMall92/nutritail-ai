@@ -107,9 +107,12 @@ type BetaUserProofSummary = {
   betaUsersVerified: string;
   betaUsersNeedingReview: string;
   minimumForNextMove: string;
+  missingJourneyTypes: string;
+  requiredJourneyTypes: string[];
   requiredEvidence: string[];
   betaUsers: {
     user: string;
+    journey: string;
     status: string;
     evidenceNotes: string;
     missingTerms: string;
@@ -610,6 +613,13 @@ function readBetaUserProofSummary(): BetaUserProofSummary {
     betaUsersVerified: "0",
     betaUsersNeedingReview: "0",
     minimumForNextMove: "3 complete beta journeys",
+    missingJourneyTypes:
+      "dog owner journey, cat owner journey, returning saved-pet journey",
+    requiredJourneyTypes: [
+      "dog owner journey",
+      "cat owner journey",
+      "returning saved-pet journey",
+    ],
     requiredEvidence: [
       "signup/login",
       "pet intake",
@@ -639,6 +649,13 @@ function readBetaUserProofSummary(): BetaUserProofSummary {
       .map((line) => line.trim())
       .filter((line) => line.startsWith("- "))
       .map((line) => line.replace(/^- /, ""));
+    const requiredJourneySection =
+      report.match(/## Required Journey Types\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const requiredJourneyTypes = requiredJourneySection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("- "))
+      .map((line) => line.replace(/^- /, ""));
     const betaUsers = report
       .split("\n")
       .map((line) => line.trim())
@@ -656,9 +673,10 @@ function readBetaUserProofSummary(): BetaUserProofSummary {
 
         return {
           user: cells[0] ?? "unknown",
-          status: cells[1] ?? "unknown",
-          evidenceNotes: cells[2] ?? "No evidence notes yet.",
-          missingTerms: cells[3] ?? "-",
+          journey: cells[1] ?? "unknown",
+          status: cells[2] ?? "unknown",
+          evidenceNotes: cells[3] ?? "No evidence notes yet.",
+          missingTerms: cells[4] ?? "-",
         };
       });
     const nextAction =
@@ -681,6 +699,13 @@ function readBetaUserProofSummary(): BetaUserProofSummary {
       minimumForNextMove:
         report.match(/- Minimum for next score move:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.minimumForNextMove,
+      missingJourneyTypes:
+        report.match(/- Missing required journey types:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.missingJourneyTypes,
+      requiredJourneyTypes:
+        requiredJourneyTypes.length > 0
+          ? requiredJourneyTypes
+          : fallback.requiredJourneyTypes,
       requiredEvidence:
         requiredEvidence.length > 0 ? requiredEvidence : fallback.requiredEvidence,
       betaUsers,
@@ -1365,7 +1390,29 @@ export default function FoodV2LiveQaPage() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
+            <p className="text-sm font-semibold">Required journey types</p>
+            <ul
+              className="mt-3 grid gap-2 text-sm"
+              data-testid="beta-user-proof-required-journeys"
+            >
+              {betaUserProof.requiredJourneyTypes.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p
+              className="mt-3 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-950"
+              data-testid="beta-user-proof-missing-journeys"
+            >
+              Missing journey types: {betaUserProof.missingJourneyTypes}
+            </p>
+          </div>
           <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
             <p className="text-sm font-semibold">Required evidence</p>
             <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
@@ -1389,10 +1436,13 @@ export default function FoodV2LiveQaPage() {
         <div className="mt-4 grid gap-3 lg:grid-cols-3">
           {betaUserProof.betaUsers.map((user) => (
             <article
-              key={`${user.user}-${user.status}`}
+              key={`${user.user}-${user.journey}-${user.status}`}
               className="rounded-xl border border-amber-200 bg-white/80 p-4 text-sm"
             >
               <p className="font-semibold">{user.user}</p>
+              <p className="mt-2 rounded-lg border border-amber-200 bg-white px-2 py-1 text-xs font-bold">
+                Journey: {user.journey}
+              </p>
               <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-bold">
                 {user.status}
               </p>
