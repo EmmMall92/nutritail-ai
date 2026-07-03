@@ -113,6 +113,33 @@ function BetaSignupDetails({ log }: { log: AdminActivityLog }) {
   );
 }
 
+const betaRolloutReadinessItems = [
+  {
+    track: "Beta access",
+    status: "Soft launch only",
+    proof: "Waitlist signups are captured with plan metadata and current limits.",
+    nextAction: "Invite a small batch only when dog, cat, and returning-pet proof slots are covered.",
+  },
+  {
+    track: "Customer proof",
+    status: "Needs real users",
+    proof: "The next Customer UX move needs three complete beta journeys without manual help.",
+    nextAction: "Run the beta session playbook and record evidence in the local beta-user proof file.",
+  },
+  {
+    track: "Usage limits",
+    status: "Soft warn only",
+    proof: "Beta limits are visible to customers but do not block use yet.",
+    nextAction: "Review over-limit usage before deciding paid-plan thresholds.",
+  },
+  {
+    track: "Paid-plan decision",
+    status: "Not active",
+    proof: "Plans page explains Beta, Personal, and Pro direction without taking payment.",
+    nextAction: "Do not add checkout until pricing, cancellation, legal copy, and support flow are ready.",
+  },
+] as const;
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -365,6 +392,60 @@ export default function AdminActivityPage() {
               Open session playbook
             </a>
           </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-slate-200 bg-slate-950 p-6 text-white shadow-sm"
+        data-testid="admin-beta-rollout-readiness"
+      >
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+              Beta rollout readiness
+            </p>
+            <h3 className="mt-1 text-xl font-bold">
+              What must be true before opening access wider?
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+              This keeps the business layer honest: beta access can grow only
+              when customer proof, soft-limit usage, feedback quality, and paid
+              plan readiness are clear enough.
+            </p>
+          </div>
+          <Link
+            href="/plans"
+            className="rounded-lg border border-white/20 bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+          >
+            Review public plans
+          </Link>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {betaRolloutReadinessItems.map((item) => (
+            <article
+              key={item.track}
+              className="rounded-xl border border-slate-700 bg-white/10 p-4 text-sm"
+              data-testid="admin-beta-rollout-readiness-item"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <h4 className="font-bold text-white">{item.track}</h4>
+                <span className="rounded-full bg-white px-2 py-1 text-xs font-bold text-slate-950">
+                  {item.status}
+                </span>
+              </div>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Current proof
+              </p>
+              <p className="mt-1 leading-6 text-slate-200">{item.proof}</p>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Next business action
+              </p>
+              <p className="mt-1 font-semibold leading-6 text-white">
+                {item.nextAction}
+              </p>
+            </article>
+          ))}
         </div>
       </div>
 
