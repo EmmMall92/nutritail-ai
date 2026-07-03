@@ -553,6 +553,57 @@ function getTomorrowFeedingPlan(
   };
 }
 
+function getReportDailyUseBrief(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return {
+    title: "\u039a\u03b1\u03b8\u03b7\u03bc\u03b5\u03c1\u03b9\u03bd\u03cc brief",
+    subtitle:
+      "\u0397 \u03c3\u03cd\u03bd\u03c4\u03bf\u03bc\u03b7 \u03ba\u03ac\u03c1\u03c4\u03b1 \u03c0\u03bf\u03c5 \u03bc\u03c0\u03bf\u03c1\u03b5\u03af \u03bd\u03b1 \u03ba\u03c1\u03b1\u03c4\u03ae\u03c3\u03b5\u03b9 \u03bf \u03c0\u03b5\u03bb\u03ac\u03c4\u03b7\u03c2 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9.",
+    cards: [
+      {
+        label: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
+        value:
+          analysis?.matched_food_name ??
+          "\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae",
+        detail: analysis?.matched_food_name
+          ? "\u0391\u03c5\u03c4\u03ae \u03b5\u03af\u03bd\u03b1\u03b9 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03c0\u03bf\u03c5 \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c4\u03c9\u03c1\u03b9\u03bd\u03cc \u03c0\u03bb\u03ac\u03bd\u03bf."
+          : "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03bc\u03af\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b1\u03c0\u03cc \u03c4\u03bf chatbot \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b3\u03af\u03bd\u03b5\u03b9 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03c0\u03bb\u03ae\u03c1\u03b5\u03c2.",
+      },
+      {
+        label: "\u03a0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1",
+        value: analysis?.feeding_grams_per_day
+          ? `${analysis.feeding_grams_per_day}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/\u03b7\u03bc\u03ad\u03c1\u03b1`
+            : "\u0398\u03ad\u03bb\u03b5\u03b9 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+        detail:
+          analysis?.feeding_grams_per_day && mealSplit
+            ? `${mealSplit.twoMeals}g x 2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1 \u03ae ${mealSplit.threeMeals}g x 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1.`
+            : "\u03a4\u03b1 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03b2\u03b3\u03b1\u03af\u03bd\u03bf\u03c5\u03bd \u03cc\u03c4\u03b1\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03bf\u03c5\u03bd \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2.",
+      },
+      {
+        label: "\u039b\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
+        value: treatAllowance
+          ? `\u03ad\u03c9\u03c2 ${treatAllowance.treats} kcal/\u03b7\u03bc\u03ad\u03c1\u03b1`
+          : "\u03ad\u03c9\u03c2 10%",
+        detail: treatAllowance
+          ? `\u039a\u03c1\u03ac\u03c4\u03b1 \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${treatAllowance.mainFood} kcal \u03b3\u03b9\u03b1 \u03c4\u03b7\u03bd \u03ba\u03cd\u03c1\u03b9\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae.`
+          : "\u039a\u03c1\u03ac\u03c4\u03b1 \u03c4\u03b9\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03bc\u03b9\u03ba\u03c1\u03cc \u03bc\u03ad\u03c1\u03bf\u03c2 \u03c4\u03b7\u03c2 \u03b7\u03bc\u03ad\u03c1\u03b1\u03c2.",
+      },
+      {
+        label: "\u0395\u03c0\u03b1\u03bd\u03ad\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2",
+        value: getRecheckWindow(analysis),
+        detail:
+          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ba\u03b1\u03b9 \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1.",
+      },
+    ],
+  };
+}
+
 function getReportHandoffStrip(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -1081,6 +1132,7 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const reportDailyUseBrief = getReportDailyUseBrief(latestAnalysis, mealSplit);
   const reportExecutiveSummary = getReportExecutiveSummary(
     pet,
     latestAnalysis,
@@ -1477,6 +1529,42 @@ export default function PrintablePetReportPage() {
               Ημέρες 5-6: 25% παλιά + 75% νέα. Ημέρα 7+: 100% νέα, αν
               όρεξη και κόπρανα είναι σταθερά.
             </p>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-daily-use-brief"
+        >
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                {reportDailyUseBrief.title}
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-emerald-950">
+                {reportDailyUseBrief.subtitle}
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-emerald-900">
+              {latestAnalysis?.matched_food_name
+                ? latestAnalysis.matched_food_name
+                : reportPortionLabel}
+            </p>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportDailyUseBrief.cards.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm text-emerald-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-black">{item.value}</p>
+                <p className="mt-2 leading-6 text-emerald-900">{item.detail}</p>
+              </div>
+            ))}
           </div>
         </div>
 
