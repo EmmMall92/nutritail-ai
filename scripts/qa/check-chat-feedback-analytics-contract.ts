@@ -81,6 +81,17 @@ assert(
   "Admin feedback page must compute the next best feedback fix."
 );
 assert(
+  adminFeedbackPage.includes("function getCustomerFrictionScorecards") &&
+    adminFeedbackPage.includes("customerFrictionScorecards.map") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-customer-friction-scorecard"') &&
+    adminFeedbackPage.includes("Open top friction queue") &&
+    adminFeedbackPage.includes("choice clarity") &&
+    adminFeedbackPage.includes("save confidence") &&
+    adminFeedbackPage.includes("food matching") &&
+    adminFeedbackPage.includes("answer usefulness"),
+  "Admin feedback page must translate drop-off analytics into a customer friction scorecard."
+);
+assert(
   adminFeedbackPage.includes('data-testid="chat-feedback-next-best-fix"'),
   "Admin feedback page must expose the next best feedback fix panel."
 );
