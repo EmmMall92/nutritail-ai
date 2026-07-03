@@ -205,10 +205,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     ],
     customerUxUnlockGates: [
       {
-        gate: "Clean customer wording proof",
-        unlocks: "85-86% Customer UX readiness",
+        gate: "Returning saved-pet continuation proof",
+        unlocks: "86-87% Customer UX readiness",
         evidenceNeeded:
-          "Prove that live chatbot and report output contain no back-office wording visible to customers.",
+          "Prove that a returning customer can continue with progress, no-progress, flavour-change, and new-food flows for the same saved pet.",
       },
     ],
     overallLaunchBlockers: [
@@ -517,8 +517,9 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
       "utf8",
     );
     const completeSection =
-      report.match(/## To Complete The (83|84)-85% Customer UX Gate\s+([\s\S]*)/i)?.[2]?.trim() ??
-      "";
+      report
+        .match(/## To Complete The (?:Current|\d+(?:-\d+)?) Customer UX Gate\s+([\s\S]*)/i)?.[1]
+        ?.trim() ?? "";
     const nextSteps = completeSection
       .split("\n")
       .map((line) => line.trim())
@@ -869,12 +870,12 @@ export default function FoodV2LiveQaPage() {
                 <p className="text-sm font-semibold">Next customer score unlock</p>
                 <p className="mt-2 text-2xl font-black">
                   {productProgress.customerUxUnlockGates[0]?.unlocks ??
-                    "85-86% Customer UX readiness"}
+                    "86-87% Customer UX readiness"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   The next visible movement is not another merge by itself. It is
-                  proof that a normal customer sees clean, simple chatbot and
-                  report wording without back-office details.
+                  proof that a returning customer can continue from a saved pet
+                  without starting over.
                 </p>
               </div>
               <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
@@ -883,11 +884,11 @@ export default function FoodV2LiveQaPage() {
                 </p>
                 <p className="mt-2 text-sm font-semibold">
                   {productProgress.customerUxUnlockGates[0]?.gate ??
-                    "Clean customer wording proof"}
+                    "Returning saved-pet continuation proof"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   {productProgress.customerUxUnlockGates[0]?.evidenceNeeded ??
-                    "Prove that live chatbot and report output contain no back-office wording visible to customers."}
+                    "Prove that a returning customer can continue with progress, no-progress, flavour-change, and new-food flows for the same saved pet."}
                 </p>
               </div>
             </div>

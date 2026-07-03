@@ -35,7 +35,7 @@ for (const marker of categoryMarkers) {
 }
 
 const requiredMarkers = [
-  "Customer UX readiness is currently **85%**",
+  "Customer UX readiness is currently **86%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
   "## Customer UX Scorecard",
@@ -44,7 +44,7 @@ const requiredMarkers = [
   "What blocks the next move",
   "Logged-in production proof now covers ordered intake",
   "compact compare, choose, grams/day strip",
-  "Needs clean customer wording proof across live chatbot/report output",
+  "Needs broader returning saved-pet continuation proof",
   "`qa:customer-live-journey-proof`",
   "non-destructive checks passing",
   "Do not collapse them into one",
@@ -90,7 +90,13 @@ const requiredMarkers = [
   "subscription or payment direction",
   "legal/trust",
   "real public SaaS",
-  "The latest customer-facing work moves Customer UX readiness from **84%** to",
+  "The latest customer-facing work moves Customer UX readiness from **85%** to",
+  "`qa:clean-customer-wording-proof` protects generated recommendation output",
+  "clean composed",
+  "clean printable report wording",
+  "d14cb9ca-a114-4bb4-937a-096260c5f4d4",
+  "broader returning saved-pet continuation proof",
+  "The previous customer-facing work moved Customer UX readiness from **84%** to",
   "PASS_FULL",
   "controlled authenticated live",
   "95 grams/day",
@@ -176,10 +182,10 @@ const requiredMarkers = [
   "same saved pet",
   "completed to 85% Customer UX readiness",
   "Clean customer wording proof",
-  "`qa:clean-customer-wording-proof` now protects generated customer recommendation output",
+  "completed to 86% Customer UX readiness",
+  "`qa:clean-customer-wording-proof` protects generated customer recommendation output",
   "proof-status",
-  "final score move still needs a current live/browser spot check",
-  "85-86% Customer UX readiness",
+  "clean composed chatbot wording plus clean printable report wording",
   "Returning pet proof",
   "86-87% Customer UX readiness",
   "Report/account proof",
@@ -259,7 +265,11 @@ assert(
     customerLiveJourneyProof.includes("This is a non-destructive live proof") &&
     customerLiveJourneyProof.includes("It does not save pets") &&
     customerLiveJourneyProof.includes("/api/account/chatbot/extract-intake") &&
+    customerLiveJourneyProof.includes("/api/account/chatbot/compose-recommendation") &&
     customerLiveJourneyProof.includes("/api/account/foods/v2-recommendations") &&
+    customerLiveJourneyProof.includes("Clean chatbot recommendation wording") &&
+    customerLiveJourneyProof.includes("report_clean_wording") &&
+    customerLiveJourneyProof.includes("clean report wording") &&
     customerLiveJourneyProof.includes("NUTRITAIL_QA_AUTH_COOKIE_FILE") &&
     customerLiveJourneyProof.includes("fallbackCookieFiles") &&
     customerLiveJourneyProof.includes("Customer Journey Proof Checklist") &&
@@ -341,7 +351,7 @@ assert(
     liveQaPage.includes('data-testid="customer-product-next-unlock"') &&
     liveQaPage.includes("Next customer score unlock") &&
     liveQaPage.includes("Evidence needed next") &&
-    liveQaPage.includes("normal customer sees clean, simple chatbot") &&
+    liveQaPage.includes("returning customer can continue from a saved pet") &&
     liveQaPage.includes('data-testid="customer-product-score-rule"') &&
     liveQaPage.includes("Score movement rule") &&
     liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
@@ -349,7 +359,7 @@ assert(
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
     liveQaPage.includes("customerUxUnlockGates") &&
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
-    liveQaPage.includes("Clean customer wording proof") &&
+    liveQaPage.includes("Returning saved-pet continuation proof") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),

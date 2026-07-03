@@ -1,6 +1,7 @@
 # Customer Live Journey Proof
 
-This proof decides whether Customer UX can move beyond the current 84% gate.
+This proof decides whether Customer UX can move beyond the current live customer
+journey gate.
 It is intentionally stricter than API-only QA because the customer journey must
 work as a real logged-in pet owner experience.
 
@@ -17,6 +18,7 @@ The runner checks:
 - logged-in `/account/chatbot` access when a QA auth cookie is available
 - OpenAI intake extraction for a Greek customer message
 - Food V2 returns 3 first-choice cards and 3 value-style alternatives
+- composed chatbot recommendation wording hides back-office terms from customers
 - manual browser proof for save, report, timeline, and returning progress
 
 ## Auth Cookie
@@ -131,24 +133,26 @@ Remove-Item Env:\NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF
 ```
 
 This mode uses the authenticated QA cookie, creates a clearly named QA pet in
-the live account, saves a test analysis with grams/day, opens the report and
-timeline routes, and writes one progress note. Use it only when you are ready
-to create live QA data. The runner never prints the cookie or the user id.
+the live account, saves a test analysis with grams/day, checks clean printable
+report wording, opens the report and timeline routes, and writes one progress
+note. Use it only when you are ready to create live QA data. The runner never
+prints the cookie or the user id.
 
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.
-- `PASS_NON_DESTRUCTIVE`: logged-in chatbot, OpenAI extraction, and Food V2 card proof passed, but save/report/timeline/progress browser proof is still missing.
-- `PASS_FULL`: authenticated extraction, recommendations, save, report, timeline, and returning progress all have current proof.
+- `PASS_NON_DESTRUCTIVE`: logged-in chatbot, OpenAI extraction, Food V2 card proof, and clean composed chatbot wording passed, but save/report/timeline/progress browser proof is still missing.
+- `PASS_FULL`: authenticated extraction, recommendations, clean chatbot wording, clean printable report wording, save, report, timeline, and returning progress all have current proof.
 - `REVIEW`: at least one checked route or shape failed.
 
-Only `PASS_FULL` should justify moving Customer UX above 84%.
+Only `PASS_FULL` should justify moving Customer UX at the current live customer journey gate.
 
 ## Current Practical Gate
 
 If the runner returns `PASS_NON_DESTRUCTIVE`, the customer journey is no longer
-blocked by login, OpenAI extraction, or Food V2 card retrieval. The remaining
-work is the live browser part that writes and reopens a real customer flow:
+blocked by login, OpenAI extraction, Food V2 card retrieval, or clean composed
+chatbot wording. The remaining work is the live browser part that writes and
+reopens a real customer flow:
 
 1. choose a food and confirm grams/day plus first-week next steps
 2. save the analysis
