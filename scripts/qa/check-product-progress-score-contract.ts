@@ -16,6 +16,8 @@ const packageJson = read("package.json");
 const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
 const customerJourneyUnlockGate = read("scripts/qa/check-customer-journey-unlock-gate.ts");
 const customerLiveJourneyProof = read("scripts/qa/check-customer-live-journey-proof.mjs");
+const betaUserProof = read("scripts/qa/check-beta-user-proof-contract.ts");
+const betaUserProofDoc = read("docs/beta-user-proof.md");
 
 const categoryMarkers = [
   "Final chatbot experience",
@@ -207,6 +209,9 @@ const requiredMarkers = [
   "completed to 88% Customer UX readiness",
   "Real beta-user proof",
   "88-90% Customer UX readiness",
+  "`qa:beta-user-proof-contract`",
+  ".qa-secrets/beta-user-proof.json",
+  "without manual help",
   "Customer UX readiness",
   "Recommendation engine beta confidence",
   "95% beta-candidate",
@@ -261,6 +266,16 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:beta-user-proof-contract"'),
+  "package.json must expose qa:beta-user-proof-contract for the real beta-user proof gate."
+);
+
+assert(
+  packageJson.includes("qa:customer-live-journey-proof && npm run qa:beta-user-proof-contract"),
+  "CI readiness must run beta-user proof after customer live journey proof."
+);
+
+assert(
   packageJson.includes('"qa:chatbot-calorie-copy"') &&
     packageJson.includes('"qa:clean-customer-wording-proof"') &&
     packageJson.includes("qa:customer-ux-copy && npm run qa:clean-customer-wording-proof && npm run qa:chatbot-calorie-copy"),
@@ -304,15 +319,39 @@ assert(
 );
 
 assert(
+  betaUserProof.includes("reports/beta_user_proof_qa.md") &&
+    betaUserProof.includes(".qa-secrets/beta-user-proof.json") &&
+    betaUserProof.includes("PENDING") &&
+    betaUserProof.includes("PASS") &&
+    betaUserProof.includes("REVIEW") &&
+    betaUserProof.includes("signup/login") &&
+    betaUserProof.includes("pet intake") &&
+    betaUserProof.includes("food cards") &&
+    betaUserProof.includes("selected food") &&
+    betaUserProof.includes("grams/day") &&
+    betaUserProof.includes("no manual help") &&
+    betaUserProof.includes("passedUsers.length >= 3"),
+  "Beta user proof must define a non-blocking PENDING/PASS/REVIEW gate for at least three real beta-user journeys."
+);
+
+assert(
+  betaUserProofDoc.includes("Only `PASS` should justify moving Customer UX from 88% toward 90%") &&
+    betaUserProofDoc.includes("one dog owner") &&
+    betaUserProofDoc.includes("one cat owner") &&
+    betaUserProofDoc.includes("one returning saved-pet user"),
+  "Beta user proof doc must explain the minimum real-user evidence for the 88-90% move."
+);
+
+assert(
   packageJson.includes('"qa:food-v2-format-coverage"'),
   "package.json must expose qa:food-v2-format-coverage so wet/dry data coverage can be checked."
 );
 
 assert(
   packageJson.includes(
-    "qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate && npm run qa:launch-readiness-score-contract"
+    "qa:customer-journey-readiness-contract && npm run qa:customer-journey-unlock-gate && npm run qa:customer-live-journey-proof && npm run qa:beta-user-proof-contract && npm run qa:launch-readiness-score-contract"
   ),
-  "CI readiness must run the customer journey unlock gate before launch and product progress score contracts."
+  "CI readiness must run customer journey, live journey, and beta-user proof gates before launch and product progress score contracts."
 );
 
 assert(
@@ -379,6 +418,9 @@ assert(
     liveQaPage.includes("customerUxUnlockGates") &&
     liveQaPage.includes("What actually moves Customer UX readiness above") &&
     liveQaPage.includes("Real beta-user proof") &&
+    liveQaPage.includes('data-testid="beta-user-proof-summary"') &&
+    liveQaPage.includes("qa:beta-user-proof-contract") &&
+    liveQaPage.includes("Beta-user proof is still pending") &&
     liveQaPage.includes("95%+") &&
     liveQaPage.includes('data-testid="overall-saas-launch-blockers"') &&
     liveQaPage.includes("What still keeps overall SaaS launch lower"),

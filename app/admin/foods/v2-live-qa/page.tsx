@@ -100,6 +100,23 @@ type CustomerLiveJourneyProofSummary = {
   nextSteps: string[];
 };
 
+type BetaUserProofSummary = {
+  status: string;
+  generated: string;
+  proofSource: string;
+  betaUsersVerified: string;
+  betaUsersNeedingReview: string;
+  minimumForNextMove: string;
+  requiredEvidence: string[];
+  betaUsers: {
+    user: string;
+    status: string;
+    evidenceNotes: string;
+    missingTerms: string;
+  }[];
+  nextAction: string;
+};
+
 function readLiveReadinessSummary(): ReadinessSummary {
   const fallback = {
     result: "Not generated",
@@ -585,6 +602,95 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
   }
 }
 
+function readBetaUserProofSummary(): BetaUserProofSummary {
+  const fallback = {
+    status: "Not generated",
+    generated: "unknown",
+    proofSource: "missing",
+    betaUsersVerified: "0",
+    betaUsersNeedingReview: "0",
+    minimumForNextMove: "3 complete beta journeys",
+    requiredEvidence: [
+      "signup/login",
+      "pet intake",
+      "food cards",
+      "selected food",
+      "grams/day",
+      "save",
+      "report",
+      "timeline or progress",
+      "feedback",
+      "no manual help",
+    ],
+    betaUsers: [],
+    nextAction:
+      "Collect at least three real beta-user journeys before moving Customer UX above 88%.",
+  };
+
+  try {
+    const report = readFileSync(
+      path.join(process.cwd(), "reports/beta_user_proof_qa.md"),
+      "utf8",
+    );
+    const requiredSection =
+      report.match(/## Required Evidence\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
+    const requiredEvidence = requiredSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("- "))
+      .map((line) => line.replace(/^- /, ""));
+    const betaUsers = report
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          line.startsWith("| ") &&
+          !line.includes("---") &&
+          !line.includes("User |")
+      )
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          user: cells[0] ?? "unknown",
+          status: cells[1] ?? "unknown",
+          evidenceNotes: cells[2] ?? "No evidence notes yet.",
+          missingTerms: cells[3] ?? "-",
+        };
+      });
+    const nextAction =
+      report.match(/## Next Action\s+([\s\S]*)/i)?.[1]?.trim() ?? fallback.nextAction;
+
+    return {
+      status: report.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.status,
+      generated:
+        report.match(/^Generated:\s*([^\n\r]+)/im)?.[1]?.trim() ??
+        fallback.generated,
+      proofSource:
+        report.match(/- Proof source:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.proofSource,
+      betaUsersVerified:
+        report.match(/- Beta users verified:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.betaUsersVerified,
+      betaUsersNeedingReview:
+        report.match(/- Beta users needing review:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.betaUsersNeedingReview,
+      minimumForNextMove:
+        report.match(/- Minimum for next score move:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.minimumForNextMove,
+      requiredEvidence:
+        requiredEvidence.length > 0 ? requiredEvidence : fallback.requiredEvidence,
+      betaUsers,
+      nextAction,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 const liveChecks = [
   {
     title: "Deploy sanity",
@@ -688,6 +794,7 @@ export default function FoodV2LiveQaPage() {
   const formatCoverage = readFoodV2FormatCoverageSummary();
   const customerJourneyProof = readCustomerJourneyUnlockProofSummary();
   const customerLiveJourneyProof = readCustomerLiveJourneyProofSummary();
+  const betaUserProof = readBetaUserProofSummary();
   const isPassing = readiness.result === "PASS";
 
   return (
@@ -1196,6 +1303,111 @@ export default function FoodV2LiveQaPage() {
               <li key={step}>{step}</li>
             ))}
           </ol>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm"
+        data-testid="beta-user-proof-summary"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide">
+              Real beta-user proof
+            </p>
+            <h3 className="mt-1 text-2xl font-bold">
+              {betaUserProof.status === "PASS"
+                ? "Beta-user proof is ready for the 88-90% move"
+                : "Beta-user proof is still pending"}
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6">
+              This is the next Customer UX unlock after the controlled QA
+              account. It proves that real beta users can finish signup/login,
+              chatbot intake, food choice, grams/day, save, report, timeline or
+              progress, and feedback without manual explanation.
+            </p>
+          </div>
+          <code className="rounded-lg border border-amber-300 bg-white/80 px-3 py-2 text-xs font-semibold text-amber-950">
+            npm.cmd run qa:beta-user-proof-contract
+          </code>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-4">
+          <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+              Status
+            </p>
+            <p className="mt-1 text-2xl font-bold">{betaUserProof.status}</p>
+          </div>
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-green-700">
+              Verified users
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {betaUserProof.betaUsersVerified}
+            </p>
+          </div>
+          <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-orange-950">
+            <p className="text-xs font-semibold uppercase tracking-wide text-orange-700">
+              Review users
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {betaUserProof.betaUsersNeedingReview}
+            </p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+              Minimum
+            </p>
+            <p className="mt-1 text-sm font-bold">
+              {betaUserProof.minimumForNextMove}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
+            <p className="text-sm font-semibold">Required evidence</p>
+            <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+              {betaUserProof.requiredEvidence.map((item) => (
+                <li key={item} className="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white/80 p-4">
+            <p className="text-sm font-semibold">Next action</p>
+            <p className="mt-2 text-sm leading-6">{betaUserProof.nextAction}</p>
+            <p className="mt-3 text-xs text-amber-800">
+              Proof source: {betaUserProof.proofSource}. Generated:{" "}
+              {betaUserProof.generated}.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          {betaUserProof.betaUsers.map((user) => (
+            <article
+              key={`${user.user}-${user.status}`}
+              className="rounded-xl border border-amber-200 bg-white/80 p-4 text-sm"
+            >
+              <p className="font-semibold">{user.user}</p>
+              <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-bold">
+                {user.status}
+              </p>
+              <p className="mt-2 text-xs leading-5">{user.evidenceNotes}</p>
+              <p className="mt-2 text-xs font-semibold">
+                Missing: {user.missingTerms}
+              </p>
+            </article>
+          ))}
+          {betaUserProof.betaUsers.length === 0 && (
+            <div className="rounded-xl border border-amber-200 bg-white/80 p-4 text-sm">
+              Run the beta-user proof QA command to generate the pending report,
+              then collect real beta evidence in the ignored local proof file.
+            </div>
+          )}
         </div>
       </div>
 
