@@ -78,6 +78,18 @@ const customerOutputMarkers = [
   "νέα πρόταση",
 ];
 
+const commercialTrustMarkers = [
+  'data-testid="public-commercial-trust-guard"',
+  'data-testid="public-commercial-trust-rule"',
+  "Εμπορική διαφάνεια",
+  "Η πρόταση δεν πρέπει να αγοράζεται από το brand.",
+  "Featured ή προωθημένες επιλογές μπορούν να εμφανιστούν μόνο μέσα στα ασφαλή αποτελέσματα.",
+  "κανόνες καταλληλότητας",
+  "Οι κανόνες προηγούνται",
+  "Οι συνεργασίες δεν κρύβουν τα όρια",
+  "Ο πελάτης χρειάζεται καθαρό λόγο",
+];
+
 const launchTrustChecklistMarkers = [
   'data-testid="public-launch-trust-checklist"',
   'data-testid="public-launch-trust-checklist-item"',
@@ -145,6 +157,13 @@ for (const marker of customerOutputMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include customer output trust marker: ${marker}`
+  );
+}
+
+for (const marker of commercialTrustMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include commercial trust guard marker: ${marker}`
   );
 }
 
