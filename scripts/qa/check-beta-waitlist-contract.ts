@@ -121,6 +121,17 @@ assert(
   "Admin activity should expose a dedicated beta waitlist summary and readable signup details."
 );
 assert(
+  adminActivityPage.includes('data-testid="admin-beta-proof-recruiting-board"') &&
+    adminActivityPage.includes("Beta proof recruiting") &&
+    adminActivityPage.includes("Dog owner journey") &&
+    adminActivityPage.includes("Cat owner journey") &&
+    adminActivityPage.includes("Returning saved-pet journey") &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-slot"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-evidence-checklist"') &&
+    adminActivityPage.includes("qa:beta-user-proof-contract"),
+  "Admin activity should turn beta waitlist signups into a practical beta proof recruiting board."
+);
+assert(
   adminActivityPage.includes('"accessPlan"') &&
     adminActivityPage.includes('"petLimit"') &&
     adminActivityPage.includes('"monthlyAnalysisLimit"'),

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { AdminActivityLog } from "@/types/admin-activity-log";
 
@@ -25,6 +26,47 @@ function formatDateTime(value?: string | null) {
 
 function isBetaWaitlistLog(log: AdminActivityLog) {
   return log.action === "beta_waitlist_signup";
+}
+
+function getBetaSignupText(log: AdminActivityLog) {
+  const metadata = log.metadata ?? {};
+
+  return [
+    getMetadataText(metadata, "role", ""),
+    getMetadataText(metadata, "pets", ""),
+    getMetadataText(metadata, "goal", ""),
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+function matchesAny(value: string, terms: string[]) {
+  return terms.some((term) => value.includes(term));
+}
+
+function hasDogSignal(log: AdminActivityLog) {
+  return matchesAny(getBetaSignupText(log), [
+    "dog",
+    "dogs",
+    "σκυ",
+    "σκύ",
+    "σκυλ",
+    "σκύλ",
+    "puppy",
+    "κουταβ",
+  ]);
+}
+
+function hasCatSignal(log: AdminActivityLog) {
+  return matchesAny(getBetaSignupText(log), [
+    "cat",
+    "cats",
+    "γατ",
+    "γατ",
+    "kitten",
+    "γατακ",
+    "γατάκ",
+  ]);
 }
 
 function BetaSignupDetails({ log }: { log: AdminActivityLog }) {
@@ -78,6 +120,45 @@ export default function AdminActivityPage() {
   const betaSignupLogs = logs.filter(isBetaWaitlistLog);
   const latestBetaSignup = betaSignupLogs[0];
   const latestBetaMetadata = latestBetaSignup?.metadata ?? {};
+  const betaDogProspects = betaSignupLogs.filter(hasDogSignal);
+  const betaCatProspects = betaSignupLogs.filter(hasCatSignal);
+  const betaReturningProspects = betaSignupLogs.filter((log) =>
+    matchesAny(getBetaSignupText(log), [
+      "progress",
+      "timeline",
+      "return",
+      "again",
+      "ξανα",
+      "προοδο",
+      "πρόοδο",
+      "αλλαγη",
+      "αλλαγή",
+    ])
+  );
+  const betaProofSlots = [
+    {
+      label: "Dog owner journey",
+      status: betaDogProspects.length > 0 ? "candidate found" : "needs signup",
+      count: betaDogProspects.length,
+      detail:
+        "Needs one dog owner to finish signup/login, pet intake, food choice, grams/day, save, report, and feedback.",
+    },
+    {
+      label: "Cat owner journey",
+      status: betaCatProspects.length > 0 ? "candidate found" : "needs signup",
+      count: betaCatProspects.length,
+      detail:
+        "Needs one cat owner to finish the same journey so cat UX is proven too.",
+    },
+    {
+      label: "Returning saved-pet journey",
+      status:
+        betaReturningProspects.length > 0 ? "candidate found" : "schedule after first save",
+      count: betaReturningProspects.length,
+      detail:
+        "Needs one saved-pet user to return for progress, timeline, new food, or flavour/brand change.",
+    },
+  ];
 
   useEffect(() => {
     async function loadLogs() {
@@ -190,6 +271,70 @@ export default function AdminActivityPage() {
             ))}
           </div>
         )}
+      </div>
+
+      <div
+        className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm"
+        data-testid="admin-beta-proof-recruiting-board"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+              Beta proof recruiting
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-gray-950">
+              3 real journeys needed for the 88-90% Customer UX move
+            </h3>
+            <p className="mt-2 max-w-2xl text-sm text-amber-950">
+              Use the waitlist to pick one dog owner, one cat owner, and one
+              returning saved-pet user. Each must complete the full customer
+              journey without manual help and leave feedback.
+            </p>
+          </div>
+
+          <Link
+            href="/admin/foods/v2-live-qa"
+            className="rounded-lg border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+          >
+            Open proof gate
+          </Link>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {betaProofSlots.map((slot) => (
+            <article
+              key={slot.label}
+              className="rounded-xl border border-amber-200 bg-white p-4 text-sm"
+              data-testid="admin-beta-proof-slot"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-semibold text-gray-950">{slot.label}</p>
+                <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-800">
+                  {slot.count}
+                </span>
+              </div>
+              <p className="mt-2 rounded-lg border border-amber-100 bg-amber-50 px-2 py-1 text-xs font-bold text-amber-900">
+                {slot.status}
+              </p>
+              <p className="mt-3 text-gray-700">{slot.detail}</p>
+            </article>
+          ))}
+        </div>
+
+        <div
+          className="mt-5 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
+          data-testid="admin-beta-proof-evidence-checklist"
+        >
+          <p className="font-semibold text-gray-950">Evidence to collect</p>
+          <p className="mt-2">
+            signup/login, pet intake, food cards, selected food, grams/day,
+            save, report, timeline or progress, feedback, no manual help.
+          </p>
+          <p className="mt-2 text-xs text-gray-500">
+            Store final proof locally in .qa-secrets/beta-user-proof.json, then
+            run npm.cmd run qa:beta-user-proof-contract.
+          </p>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">

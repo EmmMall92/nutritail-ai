@@ -431,7 +431,9 @@ These are the most likely moves from **88% Customer UX readiness** toward a real
    chatbot, recommendation, food button, grams/day, save, report, and return
    progress so the controlled QA pet proof becomes broader customer proof.
    Track this with `qa:beta-user-proof-contract` and the ignored
-   `.qa-secrets/beta-user-proof.json` evidence file.
+   `.qa-secrets/beta-user-proof.json` evidence file. Use the `/admin/activity`
+   beta proof recruiting board to pick one dog owner, one cat owner, and one
+   returning saved-pet user from the waitlist.
 2. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
 3. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
