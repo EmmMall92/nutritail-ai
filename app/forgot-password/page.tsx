@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +22,15 @@ export default function ForgotPasswordPage() {
       setError("");
       setSuccess("");
 
-      if (!email.trim()) {
+      const normalizedEmail = email.trim();
+
+      if (!normalizedEmail) {
         throw new Error("Γράψε το email σου.");
       }
 
       const supabase = createClient();
       const { error } = await supabase.auth.resetPasswordForEmail(
-        email.trim(),
+        normalizedEmail,
         {
           redirectTo: `${window.location.origin}/reset-password`,
         }
@@ -40,6 +43,7 @@ export default function ForgotPasswordPage() {
       setSuccess(
         "Αν υπάρχει λογαριασμός με αυτό το email, έχει σταλεί σύνδεσμος επαναφοράς κωδικού."
       );
+      setSubmittedEmail(normalizedEmail);
     } catch (err) {
       console.error(err);
       setError(getCustomerAuthErrorMessage(err, "forgot"));
@@ -116,6 +120,14 @@ export default function ForgotPasswordPage() {
             data-testid="auth-forgot-email-sent-next-steps"
           >
             <p>{success}</p>
+            {submittedEmail && (
+              <p
+                className="mt-2 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-green-800"
+                data-testid="auth-forgot-submitted-email"
+              >
+                Στείλαμε οδηγίες στο: {submittedEmail}
+              </p>
+            )}
             <p className="mt-1 text-xs text-green-700">
               Άνοιξε τον σύνδεσμο από την ίδια συσκευή ή γύρνα εδώ αν χρειαστεί να
               ζητήσεις νέο.
