@@ -176,7 +176,7 @@ const checks: ContractCheck[] = [
       "open_report",
       "open_timeline",
       "return_for_progress",
-      "update the Customer UX score above 83%",
+      "update the Customer UX score above 84%",
     ],
   },
   {
@@ -192,7 +192,7 @@ const checks: ContractCheck[] = [
       "The runner rejects TODO, placeholder, draft, or example evidence text",
       "food_choice_grams",
       "Required evidence terms",
-      "Only `PASS_FULL` should justify moving Customer UX above 83%",
+      "Only `PASS_FULL` should justify moving Customer UX above 84%",
     ],
   },
   {

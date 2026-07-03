@@ -1,6 +1,6 @@
 # Customer Live Journey Proof
 
-This proof decides whether Customer UX can move beyond the current 83% gate.
+This proof decides whether Customer UX can move beyond the current 84% gate.
 It is intentionally stricter than API-only QA because the customer journey must
 work as a real logged-in pet owner experience.
 
@@ -119,4 +119,4 @@ the live browser.
 - `PASS_FULL`: authenticated extraction, recommendations, save, report, timeline, and returning progress all have current proof.
 - `REVIEW`: at least one checked route or shape failed.
 
-Only `PASS_FULL` should justify moving Customer UX above 83%.
+Only `PASS_FULL` should justify moving Customer UX above 84%.
