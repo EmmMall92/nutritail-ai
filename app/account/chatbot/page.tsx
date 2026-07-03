@@ -6613,7 +6613,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     </p>
                     <p className="font-semibold text-black">
                       {analysisMetadata?.matchedFoodName ??
-                        botText("Δεν επιλέχθηκε ακόμη τροφή", "No food selected yet")}
+                        botText(
+                          "Διάλεξε τροφή για να ολοκληρωθεί το πλάνο",
+                          "Choose a food to complete the plan"
+                        )}
                     </p>
                   </div>
                   <div className="rounded-lg bg-gray-50 p-3">
@@ -6624,8 +6627,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {analysisMetadata?.feedingGramsPerDay
                         ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
                         : botText(
-                            "Διάλεξε τροφή για ποσότητα",
-                            "Choose a food for portions"
+                            "Διάλεξε τροφή με θερμίδες για ποσότητα",
+                            "Choose a food with calories for portions"
                           )}
                     </p>
                     {analysisMetadata?.feedingGramsPerDay && (
@@ -6688,7 +6691,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     <p className="text-xs text-lime-800">
                       {analysisMetadata.feedingGramsPerDay
                         ? botText("ανά ημέρα", "per day")
-                        : botText("θέλει ετικέτα για ποσότητα", "label kcal needed")}
+                        : botText("διάλεξε τροφή με θερμίδες", "choose a food with calories")}
                     </p>
                   </div>
                 </div>
@@ -6990,7 +6993,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </p>
                   <p className="mt-1 font-semibold">
                     {analysisMetadata?.matchedFoodName ??
-                      botText("Δεν επιλέχθηκε τροφή", "No food selected")}
+                      botText(
+                        "Διάλεξε τροφή για να ολοκληρωθεί το πλάνο",
+                        "Choose a food to complete the plan"
+                      )}
                   </p>
                 </div>
                 <div
@@ -7003,7 +7009,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <p className="mt-1 font-semibold">
                     {analysisMetadata?.feedingGramsPerDay
                       ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
-                      : botText("Θέλει kcal τροφής", "Food kcal needed")}
+                      : botText("Διάλεξε τροφή με θερμίδες", "Choose a food with calories")}
                   </p>
                 </div>
                 <div
