@@ -22,6 +22,7 @@ import {
   type FoodV2ChatbotRecommendationItem,
   type FoodV2ChatbotRecommendationResponse,
 } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { buildCustomerRecommendationIntro } from "@/lib/food-v2/customerRecommendationPresentation";
 import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
@@ -2527,6 +2528,17 @@ function formatCompactFoodV2RecommendationFallback({
   const topChoice = foodChoices[0];
 
   if (!topChoice) return "";
+
+  const cleanIntro = buildCustomerRecommendationIntro({
+    choices: foodChoices.map((choice) => ({
+      name: choice.name,
+      role: choice.role,
+    })),
+    language,
+    mode,
+  });
+
+  if (cleanIntro) return cleanIntro;
 
   if (language === "el") {
     const intro =
