@@ -137,6 +137,21 @@ assert(
   "Admin activity should turn beta waitlist signups into a practical beta proof recruiting board with session playbook guidance."
 );
 assert(
+  adminActivityPage.includes("betaRolloutReadinessItems") &&
+    adminActivityPage.includes('data-testid="admin-beta-rollout-readiness"') &&
+    adminActivityPage.includes('data-testid="admin-beta-rollout-readiness-item"') &&
+    adminActivityPage.includes("Beta rollout readiness") &&
+    adminActivityPage.includes("What must be true before opening access wider?") &&
+    adminActivityPage.includes("Beta access") &&
+    adminActivityPage.includes("Customer proof") &&
+    adminActivityPage.includes("Usage limits") &&
+    adminActivityPage.includes("Paid-plan decision") &&
+    adminActivityPage.includes("Current proof") &&
+    adminActivityPage.includes("Next business action") &&
+    adminActivityPage.includes("Review public plans"),
+  "Admin activity should expose a beta rollout readiness board for business-layer launch decisions."
+);
+assert(
   adminActivityPage.includes('"accessPlan"') &&
     adminActivityPage.includes('"petLimit"') &&
     adminActivityPage.includes('"monthlyAnalysisLimit"'),
