@@ -13,6 +13,7 @@ function read(path: string) {
 const appError = read("app/error.tsx");
 const globalError = read("app/global-error.tsx");
 const monitoringRoute = read("app/api/monitoring/client-error/route.ts");
+const adminActivityPage = read("app/admin/activity/page.tsx");
 const packageJson = read("package.json");
 const runtimeErrorQaIndex = packageJson.indexOf("qa:runtime-error-monitoring-contract");
 const chatbotTrainingQaIndex = packageJson.indexOf("qa:openai-chatbot-training-contract");
@@ -51,6 +52,20 @@ assert(
 assert(
   monitoringRoute.includes("MAX_TEXT_LENGTH"),
   "Monitoring route must truncate incoming error text."
+);
+assert(
+  adminActivityPage.includes("function isRuntimeMonitoringLog") &&
+    adminActivityPage.includes("function isClientRuntimeError") &&
+    adminActivityPage.includes("function isWebVitalThreshold") &&
+    adminActivityPage.includes('data-testid="admin-runtime-monitoring-board"') &&
+    adminActivityPage.includes('data-testid="admin-runtime-monitoring-paths"') &&
+    adminActivityPage.includes("Runtime monitoring") &&
+    adminActivityPage.includes("Runtime errors") &&
+    adminActivityPage.includes("Web Vital warnings") &&
+    adminActivityPage.includes("Affected paths") &&
+    adminActivityPage.includes("Next launch action") &&
+    adminActivityPage.includes("qa:live-readiness-deploy-freshness"),
+  "Admin activity must expose runtime monitoring and Web Vital launch signals."
 );
 assert(
   packageJson.includes("\"qa:runtime-error-monitoring-contract\""),
