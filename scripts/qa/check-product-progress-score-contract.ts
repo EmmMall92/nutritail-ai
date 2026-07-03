@@ -176,6 +176,9 @@ const requiredMarkers = [
   "same saved pet",
   "completed to 85% Customer UX readiness",
   "Clean customer wording proof",
+  "`qa:clean-customer-wording-proof` now protects generated customer recommendation output",
+  "proof-status",
+  "final score move still needs a current live/browser spot check",
   "85-86% Customer UX readiness",
   "Returning pet proof",
   "86-87% Customer UX readiness",
@@ -238,8 +241,9 @@ assert(
 
 assert(
   packageJson.includes('"qa:chatbot-calorie-copy"') &&
-    packageJson.includes("qa:customer-ux-copy && npm run qa:chatbot-calorie-copy"),
-  "CI readiness must protect customer-facing chatbot calorie wording after the customer UX copy contract."
+    packageJson.includes('"qa:clean-customer-wording-proof"') &&
+    packageJson.includes("qa:customer-ux-copy && npm run qa:clean-customer-wording-proof && npm run qa:chatbot-calorie-copy"),
+  "CI readiness must protect clean customer wording and chatbot calorie wording after the customer UX copy contract."
 );
 
 assert(

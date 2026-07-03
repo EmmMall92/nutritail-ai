@@ -391,7 +391,7 @@ normal customer can complete the flow without manual explanation.
 | Gate | Unlocks | Evidence Needed |
 | --- | --- | --- |
 | Full recommendation journey proof | completed to 85% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with authenticated extraction, Food V2 cards, selected food grams/day, save, report, timeline, and return-progress proof for the same saved pet. |
-| Clean customer wording proof | 85-86% Customer UX readiness | Live chatbot and report output contain no source-tier, needs-review, missing-field, score-debug, or back-office wording visible to customers. |
+| Clean customer wording proof | 85-86% Customer UX readiness | `qa:clean-customer-wording-proof` now protects generated customer recommendation output from source-tier, needs-review, missing-field, score-debug, proof-status, and back-office wording. The final score move still needs a current live/browser spot check across chatbot and printable report output. |
 | Returning pet proof | 86-87% Customer UX readiness | A saved pet can run progress check, no-progress follow-up, flavour/brand change, new food recommendation, and timeline review without restarting intake. |
 | Report/account proof | 87-88% Customer UX readiness | Account dashboard and printable report make calories, chosen food, grams/day, why it fits, transition plan, and next check-in obvious on mobile and desktop. |
 | Real beta-user proof | 88-90% Customer UX readiness | At least a small beta group completes analyses, chooses foods, saves plans, returns for progress, and leaves usable feedback with no critical launch blockers. |
