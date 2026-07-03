@@ -617,6 +617,11 @@ const bannedExactCustomerStrings = [
     reason: "Chatbot summary should say no food is selected yet, not expose matching internals.",
   },
   {
+    file: "app/account/chatbot/page.tsx",
+    text: "the customer will find",
+    reason: "Saved-analysis handoff should speak directly to the logged-in customer.",
+  },
+  {
     file: "lib/nutrition/chatGuardrails.ts",
     text: "Safety notes:",
     reason: "Guardrail copy should use customer wording instead of internal safety-section labels.",

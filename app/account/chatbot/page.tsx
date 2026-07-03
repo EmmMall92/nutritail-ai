@@ -6976,8 +6976,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </p>
               <p className="mt-1 text-sm text-gray-700">
                 {botText(
-                  "Αυτή είναι η σύντομη εικόνα που θα βρει ο πελάτης στο report και στο ιστορικό.",
-                  "This is the short version the customer will find in the report and timeline."
+                  "Αυτή είναι η σύντομη εικόνα που θα βρίσκεις στην αναφορά και στο ιστορικό.",
+                  "This is the short version you will find in the report and timeline."
                 )}
               </p>
               <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
