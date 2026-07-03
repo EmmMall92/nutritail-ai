@@ -2675,7 +2675,7 @@ async function getFoodV2RecommendationMessage(
   };
 
   if (!response.ok) {
-    console.error(result.error || "Food V2 recommendations request failed.");
+    console.error(result.error || "Recommendations request failed.");
     throw new Error(
       getChatbotApiErrorMessage("recommendations", options.language ?? "el")
     );
