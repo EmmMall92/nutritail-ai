@@ -3618,27 +3618,27 @@ function formatAnalysisResult(
     ? `\n- Treats: up to about ${treats.maxTreatCalories} kcal/day, inside the daily target.`
     : "";
   const englishDailyTargetBlock = hasGoalAdjustment
-    ? `- Final daily target: ${finalCalories} kcal/day
-  This is the number we will use for the feeding plan. The starting estimate was ${nutrition.der} kcal/day and it was adjusted for the weight goal.${treatsLineEn}`
-    : `- Final daily target: ${finalCalories} kcal/day
-  This is the practical target for the day, based on weight, age, activity, neuter status, and weight goal.${treatsLineEn}`;
+    ? `- Daily calories for this plan: ${finalCalories} kcal/day
+  This is the number we will use for portions. The first estimate was ${nutrition.der} kcal/day and I adjusted it for the weight goal.${treatsLineEn}`
+    : `- Daily calories for this plan: ${finalCalories} kcal/day
+  This is the practical daily amount after weight, age, activity, neuter status, and weight goal are considered.${treatsLineEn}`;
 
   if (language === "el") {
     const greekDailyTargetBlock = hasGoalAdjustment
-      ? `- Τελικός ημερήσιος στόχος: ${finalCalories} kcal/ημέρα
-  Αυτό είναι το ποσό που θα χρησιμοποιήσουμε για το πλάνο ταΐσματος. Η αρχική εκτίμηση ήταν ${nutrition.der} kcal/ημέρα και προσαρμόστηκε με βάση τον στόχο βάρους.${treatsLineEl}`
-      : `- Τελικός ημερήσιος στόχος: ${finalCalories} kcal/ημέρα
-  Αυτό είναι το πρακτικό ποσό για την ημέρα, με βάση βάρος, ηλικία, δραστηριότητα, στείρωση και στόχο βάρους.${treatsLineEl}`;
+      ? `- Ημερήσιες θερμίδες για το πλάνο: ${finalCalories} kcal/ημέρα
+  Αυτός είναι ο αριθμός που θα χρησιμοποιήσουμε για τις μερίδες. Η πρώτη εκτίμηση ήταν ${nutrition.der} kcal/ημέρα και την προσάρμοσα στον στόχο βάρους.${treatsLineEl}`
+      : `- Ημερήσιες θερμίδες για το πλάνο: ${finalCalories} kcal/ημέρα
+  Αυτό είναι το πρακτικό ποσό της ημέρας αφού υπολογίσουμε βάρος, ηλικία, δραστηριότητα, στείρωση και στόχο βάρους.${treatsLineEl}`;
 
     return `Το διατροφικό πλάνο είναι έτοιμο:
 
-Οδηγός ημερήσιων θερμίδων
-- Θερμίδες ηρεμίας: ${nutrition.rer} kcal/ημέρα
-  Αυτό είναι περίπου το βασικό ποσό ενέργειας που χρειάζεται το σώμα σε πλήρη ηρεμία.
+Με απλά λόγια για τις θερμίδες
+- Βασικές θερμίδες σώματος: ${nutrition.rer} kcal/ημέρα
+  Αυτό είναι η ενέργεια που χρειάζεται περίπου το σώμα πριν προσθέσουμε δραστηριότητα και στόχο βάρους.
 
 ${greekDailyTargetBlock}
 
-Τι έχει σημασία για αυτό το κατοικίδιο:
+Τι προσέχουμε για αυτό το κατοικίδιο:
 ${
   advice.length > 0
     ? advice
@@ -3650,19 +3650,19 @@ ${
     : "- Δεν υπάρχουν ειδικές σημειώσεις για αυτή την ανάλυση."
 }
 
-Οι κάρτες τροφών παρακάτω είναι το επόμενο βήμα. Διάλεξε μία επιλογή για να υπολογίσουμε την ημερήσια ποσότητα.
+Τώρα διάλεξε μία κάρτα τροφής από κάτω για να υπολογίσουμε γραμμάρια/ημέρα και να κλειδώσουμε το πλάνο.
 
 Σημείωση: Η καθοδήγηση είναι ενημερωτική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
   }
   return `Your nutrition plan is ready:
 
-Daily calorie guide
-- Resting calories: ${nutrition.rer} kcal/day
-  This is the basic energy the body needs at complete rest.
+Calories in plain language
+- Basic body calories: ${nutrition.rer} kcal/day
+  This is the energy the body roughly needs before activity and weight goal are added.
 
 ${englishDailyTargetBlock}
 
-What matters for this pet:
+What to watch for this pet:
 ${
   advice.length > 0
     ? advice
@@ -3671,7 +3671,7 @@ ${
     : "- No special notes for this analysis."
 }
 
-The food cards below are the next step. Choose one option to calculate grams/day.
+Now choose one food card below and I will calculate grams/day to complete the plan.
 
 Note: This guidance is educational and does not replace veterinary advice.`;
 }
