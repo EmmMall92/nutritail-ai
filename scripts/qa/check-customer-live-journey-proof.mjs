@@ -19,6 +19,28 @@ const shouldWriteManualProofDraft =
   process.env.NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT === "1";
 const shouldRunLiveWriteProof =
   process.env.NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF === "1";
+const forbiddenCustomerWordingPatterns = [
+  /\bneeds[_\s-]?review\b/i,
+  /\bsource\s*tier\b/i,
+  /\bsource_priority\b/i,
+  /\bsource\s*priority\b/i,
+  /\bdata\s*quality\b/i,
+  /\bmissing\s*nutrition\b/i,
+  /\bmissing\s*fields?\b/i,
+  /\bquality\s*:/i,
+  /\bsource\s*:/i,
+  /\bretailer\s*source\b/i,
+  /\bFood\s*V2\b/i,
+  /\bscore-debug\b/i,
+  /\bdebug\b/i,
+  /\bmanual-required\b/i,
+  /\bPASS_NON_DESTRUCTIVE\b/i,
+  /\bPASS_FULL\b/i,
+  /\bconfidence internals\b/i,
+  /\b(?:high|medium|low)\s+confidence\b/i,
+  /\bconfidence\s*[:=]\s*(?:high|medium|low)\b/i,
+  /\b(?:score|total_score|match_score)\s*[:=]?\s*\d{1,3}\s*(?:\/\s*100)?\b/i,
+];
 
 const sampleMessage =
   "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7 \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.";
@@ -322,6 +344,28 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     durationMs: report.durationMs,
   });
 
+  const reportPage = await fetchJson(`/print/pet-report/${savedPetId}`, {
+    cookie: authCookie.value,
+  });
+  const reportPageText =
+    typeof reportPage.payload === "string" ? reportPage.payload : "";
+  const reportPageLeaks = findCustomerWordingLeaks(reportPageText);
+  const reportPageCleanOk =
+    reportPage.status === 200 &&
+    reportPageText.length > 0 &&
+    reportPageLeaks.length === 0;
+  steps.push({
+    key: "report_clean_wording",
+    ok: reportPageCleanOk,
+    route: `/print/pet-report/${savedPetId}`,
+    status: reportPage.status,
+    durationMs: reportPage.durationMs,
+    note:
+      reportPageLeaks.length > 0
+        ? `Printable report leaked: ${reportPageLeaks.join(", ")}`
+        : "Printable report customer wording is clean.",
+  });
+
   const timeline = await fetchJson(`/print/pet-timeline/${savedPetId}`, {
     cookie: authCookie.value,
   });
@@ -408,7 +452,7 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
           open_report: {
             passed: true,
             evidence: [
-              `Live report API returned calories, selected food ${foodName}, grams/day, and transition-ready analysis for pet ${savedPetId}.`,
+              `Live report returned calories, selected food ${foodName}, grams/day, transition-ready analysis, and clean customer wording for pet ${savedPetId}.`,
             ],
           },
           open_timeline: {
@@ -533,6 +577,71 @@ function hasVisibleRecommendationCards(payload) {
   };
 }
 
+function findCustomerWordingLeaks(value) {
+  const text = String(value ?? "");
+
+  return forbiddenCustomerWordingPatterns
+    .filter((pattern) => pattern.test(text))
+    .map((pattern) => pattern.source);
+}
+
+async function checkLiveComposedRecommendationCopy({
+  authCookie,
+  recommendationPayload,
+}) {
+  if (!authCookie.value) {
+    return {
+      status: 0,
+      ok: false,
+      durationMs: 0,
+      leaks: [],
+      note: "Needs authenticated QA cookie.",
+    };
+  }
+
+  const response = await fetchJson("/api/account/chatbot/compose-recommendation", {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      locale: "el",
+      deterministicText: [
+        "Προτεινόμενες τροφές:",
+        "source tier: retailer",
+        "data quality: needs_review",
+        "missing nutrition fields: sodium_percent, magnesium_percent",
+        "PASS_NON_DESTRUCTIVE",
+      ].join("\n"),
+      cardsFollow: true,
+      petSummary: {
+        species: samplePet.species,
+        name: samplePet.name,
+        weightKg: samplePet.weight,
+        ageYears: samplePet.age,
+        activityLevel: samplePet.activityLevel,
+        neutered: samplePet.neutered,
+        weightGoal: "maintain",
+        healthIssues: samplePet.healthIssues,
+        preferredProteins: samplePet.preferredProteins,
+        excludedIngredients: samplePet.excludedIngredients,
+      },
+      recommendation: recommendationPayload,
+    },
+  });
+  const text = String(response.payload?.text ?? "");
+  const leaks = findCustomerWordingLeaks(text);
+
+  return {
+    status: response.status,
+    ok: response.status === 200 && text.length > 0 && leaks.length === 0,
+    durationMs: response.durationMs,
+    leaks,
+    note:
+      leaks.length > 0
+        ? `Customer recommendation copy leaked: ${leaks.join(", ")}`
+        : "Composed recommendation copy is customer-clean.",
+  };
+}
+
 function renderTable(rows) {
   return [
     "| Step | Route | Status | Result | Duration | Notes |",
@@ -648,6 +757,10 @@ async function main() {
     },
   });
   const recommendationShape = hasVisibleRecommendationCards(recommendations.payload);
+  const composedCopyProof = await checkLiveComposedRecommendationCopy({
+    authCookie,
+    recommendationPayload: recommendations.payload,
+  });
   const liveWriteProof = await runLiveWriteProof({
     authCookie,
     recommendationShape,
@@ -667,6 +780,14 @@ async function main() {
     result: recommendations.status === 200 && recommendationShape.ok ? "pass" : "fail",
     durationMs: recommendations.durationMs,
     notes: `${recommendationShape.visibleCount} visible choices; premium ${recommendationShape.premiumCount}/3; value ${recommendationShape.valueCount}/3; first ${recommendationShape.firstFood || "-"}`,
+  });
+  rows.push({
+    step: "Clean chatbot recommendation wording",
+    route: "/api/account/chatbot/compose-recommendation",
+    status: composedCopyProof.status,
+    result: composedCopyProof.ok ? "pass" : authCookie.value ? "fail" : "skip",
+    durationMs: composedCopyProof.durationMs,
+    notes: composedCopyProof.note,
   });
 
   const manualJourneyResults = Object.entries(manualJourneyRequirements).map(([key, requirement]) => {
@@ -744,10 +865,10 @@ async function main() {
   ];
   const unlockImpact =
     status === "PASS_FULL"
-      ? "This supports moving Customer UX beyond 84% because authenticated extraction, recommendations, save, report, timeline, and returning progress have current proof."
+      ? "This supports Customer UX readiness at 86% because authenticated extraction, recommendations, clean customer wording, save, report, timeline, and returning progress have current proof."
       : status === "PASS_NON_DESTRUCTIVE"
-        ? "This supports the non-destructive part of the Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score above 84%."
-        : "This does not move Customer UX above 84% yet because logged-in production journey proof is still missing.";
+        ? "This supports the non-destructive part of the Customer UX unlock. Live write proof is still required before using it as full customer-journey evidence."
+        : "This does not move Customer UX yet because logged-in production journey proof is still missing.";
 
   mkdirSync(path.dirname(reportPath), { recursive: true });
   writeFileSync(
@@ -778,6 +899,7 @@ async function main() {
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
       `- Manual browser journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
+      `- Clean chatbot wording: ${composedCopyProof.ok ? "pass" : authCookie.value ? "review" : "skip"}`,
       `- Missing manual proof keys: ${missingManualProofKeys.length > 0 ? missingManualProofKeys.join(", ") : "none"}`,
       `- Manual proof draft: ${manualProofDraft.wrote ? manualProofDraft.path : "not written"}`,
       "",
@@ -788,7 +910,7 @@ async function main() {
       "## Optional Live Write Proof",
       "",
       "This section only runs when `NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1` is set.",
-      "It writes a controlled QA pet and progress note to the authenticated live account, then verifies report, timeline, and return-to-progress routes.",
+      "It writes a controlled QA pet and progress note to the authenticated live account, then verifies clean report wording, timeline, and return-to-progress routes.",
       "",
       `- Enabled: ${liveWriteProof.enabled ? "yes" : "no"}`,
       `- Result: ${liveWriteProof.ok ? "pass" : liveWriteProof.enabled ? "review" : "not run"}`,
@@ -808,7 +930,7 @@ async function main() {
       "",
       "## Customer Journey Proof Checklist",
       "",
-      "These are the five customer-visible journeys that must pass before Customer UX can move above the 82% band.",
+      "These are the customer-visible journeys that must stay passing before Customer UX can move further.",
       "",
       renderJourneyTable(journeyProofs),
       "",
@@ -821,7 +943,7 @@ async function main() {
           `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"}${journey.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""}${journey.missingTerms.length > 0 ? ` Missing terms: ${journey.missingTerms.join(", ")}` : ""} |`,
       ),
       "",
-      "## To Complete The 84-85% Customer UX Gate",
+      "## To Complete The Current Customer UX Gate",
       "",
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt`, keep using `.qa-secrets/account-cookie.txt`, or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
@@ -829,7 +951,7 @@ async function main() {
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
       "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
       "6. Or, for a controlled authenticated write proof, run `$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF='1'; npm.cmd run qa:customer-live-journey-proof`; this creates a QA pet in the live account and should be used intentionally.",
-      "7. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 84%.",
+      "7. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score.",
     ].join("\n") + "\n",
     "utf8",
   );
