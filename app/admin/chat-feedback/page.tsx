@@ -24,6 +24,11 @@ function getFeedbackContext(log: AdminActivityLog) {
     : {};
 }
 
+function getFeedbackSource(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  return String(context.source ?? log.metadata?.source ?? "unknown").trim();
+}
+
 function getCurrentFoodName(log: AdminActivityLog) {
   const context = getFeedbackContext(log);
   return String(context.currentFoodName ?? log.metadata?.message ?? "").trim();
@@ -364,9 +369,23 @@ export default function AdminChatFeedbackPage() {
   const notHelpful = feedbackLogs.filter(
     (log) => String(log.metadata?.rating ?? "") === "not_helpful"
   );
+  const reportFeedback = feedbackLogs.filter(
+    (log) => getFeedbackSource(log) === "printable_pet_report"
+  );
+  const reportHelpful = reportFeedback.filter(
+    (log) => String(log.metadata?.rating ?? "") === "helpful"
+  );
+  const reportNotHelpful = reportFeedback.filter(
+    (log) => String(log.metadata?.rating ?? "") === "not_helpful"
+  );
   const helpfulnessTotal = helpful.length + notHelpful.length;
   const helpfulRate =
     helpfulnessTotal > 0 ? Math.round((helpful.length / helpfulnessTotal) * 100) : 0;
+  const reportHelpfulnessTotal = reportHelpful.length + reportNotHelpful.length;
+  const reportHelpfulRate =
+    reportHelpfulnessTotal > 0
+      ? Math.round((reportHelpful.length / reportHelpfulnessTotal) * 100)
+      : 0;
   const foodSelectionRate =
     analysisCompleted.length > 0
       ? Math.round((selectedFoodChoices.length / analysisCompleted.length) * 100)
@@ -750,6 +769,77 @@ export default function AdminChatFeedbackPage() {
             </p>
             <p className="mt-1 text-xs leading-5 text-indigo-800">
               High-priority repeated failed matches to fix first.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm"
+        data-testid="chat-feedback-report-quality"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+              Report quality
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-emerald-950">
+              Printable report feedback
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900">
+              Separate signal for the final customer report. This tells us
+              whether calories, food choice, grams/day, transition plan, and
+              next steps were clear after the chatbot answer.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter("chat_helpfulness");
+              setRatingFilter("all");
+              setSearch("printable_pet_report");
+            }}
+            className="rounded-xl bg-emerald-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900"
+          >
+            Open report feedback
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div className="rounded-xl border border-emerald-100 bg-white p-4">
+            <p className="text-sm text-emerald-700">Report feedback</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-950">
+              {reportFeedback.length}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-emerald-800">
+              Helpful/not-helpful clicks from printable reports.
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-100 bg-white p-4">
+            <p className="text-sm text-emerald-700">Report helpful rate</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-950">
+              {reportHelpfulnessTotal > 0 ? `${reportHelpfulRate}%` : "-"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-emerald-800">
+              Quality signal for the final saved/report experience.
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-100 bg-white p-4">
+            <p className="text-sm text-emerald-700">Useful reports</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-950">
+              {reportHelpful.length}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-emerald-800">
+              Customers who found the report useful.
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-100 bg-white p-4">
+            <p className="text-sm text-emerald-700">Needs improvement</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-950">
+              {reportNotHelpful.length}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-emerald-800">
+              Reports that should guide copy, layout, or follow-up fixes.
             </p>
           </div>
         </div>
