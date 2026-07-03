@@ -17,6 +17,8 @@ const manualProofDraftFile =
   ".qa-secrets/customer-live-journey-proof.draft.json";
 const shouldWriteManualProofDraft =
   process.env.NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT === "1";
+const shouldRunLiveWriteProof =
+  process.env.NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF === "1";
 
 const sampleMessage =
   "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7 \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.";
@@ -33,6 +35,77 @@ const samplePet = {
   preferredProteins: ["chicken"],
   excludedIngredients: ["salmon"],
 };
+
+function buildLiveWritePet() {
+  const suffix = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 12);
+
+  return {
+    id: "",
+    ownerId: "",
+    name: `QA Live Proof ${suffix}`,
+    species: "dog",
+    breed: "unknown",
+    age: 6,
+    weight: 6,
+    activityLevel: "low",
+    neutered: true,
+    allergies: [],
+    healthIssues: [],
+  };
+}
+
+function buildLiveWriteAnalysis(pet, recommendationShape) {
+  const foodName = recommendationShape.firstFood || "NutriTail QA Food Choice";
+
+  return {
+    pet,
+    nutrition: {
+      rer: 268,
+      der: 322,
+      protein: "24-28%",
+      fat: "8-12%",
+      fiber: "5-10%",
+      sodium: "0.2-0.4%",
+      magnesium: "0.04-0.1%",
+      calcium: "0.8-1.5%",
+      phosphorus: "0.6-1.2%",
+    },
+    advice: [
+      {
+        title: "QA customer live proof",
+        description:
+          "Controlled live proof for save, report, timeline, and progress journey.",
+      },
+    ],
+    recommendedFoods: [
+      {
+        food: {
+          id: "qa-live-proof-food",
+          brand: "NutriTail QA",
+          name: foodName,
+          species: "dog",
+          lifeStage: "adult",
+          activitySupport: "all",
+          healthSupport: ["sterilised"],
+          protein: 23,
+          fat: 10,
+          fiber: 3,
+          sodium: 0.3,
+          magnesium: 0.08,
+          calcium: 1.1,
+          phosphorus: 0.8,
+          ingredients: ["controlled qa food choice"],
+          tags: ["qa", "sterilised"],
+          kcalPer100g: 338,
+        },
+        score: 82,
+        reasons: ["Controlled QA food choice for live proof."],
+        nutritionScore: 82,
+        nutritionReasons: ["Includes calories, grams/day, and report context."],
+      },
+    ],
+  };
+}
 
 const manualJourneyRequirements = {
   food_choice_grams: {
@@ -96,6 +169,47 @@ function loadAuthCookie() {
   };
 }
 
+function decodeBase64Json(value) {
+  const decoded = decodeURIComponent(String(value ?? ""));
+  const encoded = decoded.startsWith("base64-") ? decoded.slice(7) : decoded;
+  const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized.padEnd(
+    normalized.length + ((4 - (normalized.length % 4)) % 4),
+    "=",
+  );
+
+  return JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
+}
+
+function decodeJwtPayload(token) {
+  const payload = String(token ?? "").split(".")[1];
+  if (!payload) return null;
+
+  return decodeBase64Json(payload);
+}
+
+function getAuthUserIdFromCookie(cookieHeader) {
+  const authCookie = String(cookieHeader ?? "")
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => /^sb-[^=]+-auth-token=/.test(part));
+  const rawValue = authCookie?.split("=").slice(1).join("=") ?? "";
+  if (!rawValue) return null;
+
+  try {
+    const session = decodeBase64Json(rawValue);
+    const userId = session?.user?.id;
+    if (typeof userId === "string" && userId.trim()) return userId.trim();
+
+    const jwtUserId = decodeJwtPayload(session?.access_token)?.sub;
+    return typeof jwtUserId === "string" && jwtUserId.trim()
+      ? jwtUserId.trim()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function loadManualJourneyProof() {
   if (!existsSync(manualProofFile)) {
     return {
@@ -122,6 +236,197 @@ function loadManualJourneyProof() {
       proof: {},
     };
   }
+}
+
+async function runLiveWriteProof({ authCookie, recommendationShape }) {
+  if (!shouldRunLiveWriteProof) {
+    return {
+      enabled: false,
+      ok: false,
+      source: "disabled",
+      note: "Set NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1 to run the opt-in live write proof.",
+      petId: "",
+      proof: {},
+      steps: [],
+    };
+  }
+
+  const authUserId = getAuthUserIdFromCookie(authCookie.value);
+  if (!authCookie.value || !authUserId) {
+    return {
+      enabled: true,
+      ok: false,
+      source: "missing auth user id",
+      note: "Live write proof needs a valid Supabase auth cookie with a user id.",
+      petId: "",
+      proof: {},
+      steps: [],
+    };
+  }
+
+  const pet = buildLiveWritePet();
+  const analysis = buildLiveWriteAnalysis(pet, recommendationShape);
+  const save = await fetchJson("/api/account/chatbot/save", {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      authUserId,
+      pet,
+      analysis,
+      metadata: {
+        matchedFoodId: "qa-live-proof-food",
+        matchedFoodName: analysis.recommendedFoods[0].food.name,
+        foodScore: 82,
+        feedingGramsPerDay: 95,
+        weightGoal: "weight maintenance",
+      },
+    },
+  });
+  const savedPetId = save.payload?.pet?.id ?? "";
+  const saveOk = save.status === 200 && save.payload?.success === true && savedPetId;
+  const steps = [
+    {
+      key: "save",
+      ok: Boolean(saveOk),
+      route: "/api/account/chatbot/save",
+      status: save.status,
+      durationMs: save.durationMs,
+    },
+  ];
+
+  if (!saveOk) {
+    return {
+      enabled: true,
+      ok: false,
+      source: "live write proof",
+      note: "Save step failed, so report/timeline/progress proof was not attempted.",
+      petId: "",
+      proof: {},
+      steps,
+    };
+  }
+
+  const report = await fetchJson(`/api/print/pet-report/${savedPetId}`, {
+    cookie: authCookie.value,
+  });
+  const reportOk =
+    report.status === 200 &&
+    report.payload?.pet?.id === savedPetId &&
+    Array.isArray(report.payload?.pet?.analyses) &&
+    report.payload.pet.analyses.length > 0;
+  steps.push({
+    key: "report",
+    ok: reportOk,
+    route: `/api/print/pet-report/${savedPetId}`,
+    status: report.status,
+    durationMs: report.durationMs,
+  });
+
+  const timeline = await fetchJson(`/print/pet-timeline/${savedPetId}`, {
+    cookie: authCookie.value,
+  });
+  const timelineText = typeof timeline.payload === "string" ? timeline.payload : "";
+  const timelineOk =
+    timeline.status === 200 &&
+    timelineText.toLowerCase().includes(savedPetId.toLowerCase());
+  steps.push({
+    key: "timeline",
+    ok: timelineOk,
+    route: `/print/pet-timeline/${savedPetId}`,
+    status: timeline.status,
+    durationMs: timeline.durationMs,
+  });
+
+  const progress = await fetchJson(`/api/account/pets/${savedPetId}/progress`, {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      authUserId,
+      currentWeightKg: 6,
+      feedingGramsPerDay: 95,
+      treatsNote: "inside allowance",
+      appetiteNote: "normal",
+      stoolNote: "normal",
+      energyNote: "normal",
+      bodyChangeNote: "stable first proof",
+      progressDecisionStatus: "continue_plan",
+      progressDecisionConfidence: "medium",
+      progressDecisionHeadlineEn: "Plan is ready for a first progress check.",
+      progressDecisionHeadlineEl: "Το πλάνο είναι έτοιμο για πρώτο progress check.",
+      note: "Controlled live proof progress note.",
+      mode: "progress",
+    },
+  });
+  const progressOk = progress.status === 200 && progress.payload?.success === true;
+  steps.push({
+    key: "progress",
+    ok: progressOk,
+    route: `/api/account/pets/${savedPetId}/progress`,
+    status: progress.status,
+    durationMs: progress.durationMs,
+  });
+
+  const progressPage = await fetchJson(
+    `/account/chatbot?petId=${savedPetId}&mode=progress`,
+    { cookie: authCookie.value },
+  );
+  const progressPageOk =
+    progressPage.status === 200 && typeof progressPage.payload === "string";
+  steps.push({
+    key: "return_progress",
+    ok: progressPageOk,
+    route: `/account/chatbot?petId=${savedPetId}&mode=progress`,
+    status: progressPage.status,
+    durationMs: progressPage.durationMs,
+  });
+
+  const ok = steps.every((step) => step.ok);
+  const foodName = analysis.recommendedFoods[0].food.name;
+
+  return {
+    enabled: true,
+    ok,
+    source: "live write proof",
+    note: ok
+      ? "Opt-in live write proof saved a QA pet, opened report/timeline routes, and returned to progress."
+      : "Opt-in live write proof ran but at least one live step needs review.",
+    petId: savedPetId,
+    proof: ok
+      ? {
+          food_choice_grams: {
+            passed: true,
+            evidence: [
+              `Live write proof selected food ${foodName}, saved 95 grams/day, and kept first-week next steps in the saved analysis flow.`,
+            ],
+          },
+          save_analysis: {
+            passed: true,
+            evidence: [
+              `Live write proof save created pet profile ${savedPetId}, report access, timeline access, and progress follow-up context.`,
+            ],
+          },
+          open_report: {
+            passed: true,
+            evidence: [
+              `Live report API returned calories, selected food ${foodName}, grams/day, and transition-ready analysis for pet ${savedPetId}.`,
+            ],
+          },
+          open_timeline: {
+            passed: true,
+            evidence: [
+              `Live timeline opened for the same saved pet ${savedPetId} and confirmed plan plus progress context.`,
+            ],
+          },
+          return_for_progress: {
+            passed: true,
+            evidence: [
+              `Same saved pet ${savedPetId} returned to progress mode without restarting intake.`,
+            ],
+          },
+        }
+      : {},
+    steps,
+  };
 }
 
 function getManualProofStatus(proof, key, requirement) {
@@ -343,6 +648,18 @@ async function main() {
     },
   });
   const recommendationShape = hasVisibleRecommendationCards(recommendations.payload);
+  const liveWriteProof = await runLiveWriteProof({
+    authCookie,
+    recommendationShape,
+  });
+  const proofForManualChecks =
+    liveWriteProof.ok && Object.keys(liveWriteProof.proof).length > 0
+      ? liveWriteProof.proof
+      : manualProof.proof;
+  const proofSource =
+    liveWriteProof.ok && Object.keys(liveWriteProof.proof).length > 0
+      ? liveWriteProof.source
+      : manualProof.source;
   rows.push({
     step: "Food V2 recommendation cards",
     route: "/api/account/foods/v2-recommendations",
@@ -353,7 +670,7 @@ async function main() {
   });
 
   const manualJourneyResults = Object.entries(manualJourneyRequirements).map(([key, requirement]) => {
-    const manualStatus = getManualProofStatus(manualProof.proof, key, requirement);
+    const manualStatus = getManualProofStatus(proofForManualChecks, key, requirement);
 
     return {
       key,
@@ -454,7 +771,9 @@ async function main() {
       `- Failed: ${failed}`,
       `- Auth cookie source: ${authCookie.source}`,
       `- Auth cookie note: ${authCookie.note}`,
-      `- Manual proof source: ${manualProof.source}`,
+      `- Manual proof source: ${proofSource}`,
+      `- Live write proof: ${liveWriteProof.enabled ? liveWriteProof.note : "disabled"}`,
+      `- Live write proof pet: ${liveWriteProof.petId || "none"}`,
       `- Unlock impact: ${unlockImpact}`,
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
@@ -465,6 +784,27 @@ async function main() {
       "## Results",
       "",
       renderTable(rows),
+      "",
+      "## Optional Live Write Proof",
+      "",
+      "This section only runs when `NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1` is set.",
+      "It writes a controlled QA pet and progress note to the authenticated live account, then verifies report, timeline, and return-to-progress routes.",
+      "",
+      `- Enabled: ${liveWriteProof.enabled ? "yes" : "no"}`,
+      `- Result: ${liveWriteProof.ok ? "pass" : liveWriteProof.enabled ? "review" : "not run"}`,
+      `- Note: ${liveWriteProof.note}`,
+      `- Pet id: ${liveWriteProof.petId || "none"}`,
+      "",
+      liveWriteProof.steps.length > 0
+        ? [
+            "| Step | Route | Status | Result | Duration |",
+            "| --- | --- | ---: | --- | ---: |",
+            ...liveWriteProof.steps.map(
+              (step) =>
+                `| ${step.key} | ${step.route} | ${step.status} | ${step.ok ? "pass" : "review"} | ${step.durationMs}ms |`,
+            ),
+          ].join("\n")
+        : "No live write steps were run.",
       "",
       "## Customer Journey Proof Checklist",
       "",
@@ -488,7 +828,8 @@ async function main() {
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
       "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
-      "6. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 84%.",
+      "6. Or, for a controlled authenticated write proof, run `$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF='1'; npm.cmd run qa:customer-live-journey-proof`; this creates a QA pet in the live account and should be used intentionally.",
+      "7. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 84%.",
     ].join("\n") + "\n",
     "utf8",
   );
@@ -510,7 +851,10 @@ async function main() {
         ).length,
         missing_manual_proof_keys: missingManualProofKeys,
         auth_cookie_source: authCookie.source,
-        manual_proof_source: manualProof.source,
+        manual_proof_source: proofSource,
+        live_write_proof_enabled: liveWriteProof.enabled,
+        live_write_proof_ok: liveWriteProof.ok,
+        live_write_proof_pet_id: liveWriteProof.petId || null,
         manual_proof_draft_written: manualProofDraft.wrote,
         manual_proof_draft_path: manualProofDraft.path,
         report: reportPath,

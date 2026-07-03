@@ -251,14 +251,17 @@ assert(
     customerLiveJourneyProof.includes("/api/account/chatbot/extract-intake") &&
     customerLiveJourneyProof.includes("/api/account/foods/v2-recommendations") &&
     customerLiveJourneyProof.includes("NUTRITAIL_QA_AUTH_COOKIE_FILE") &&
+    customerLiveJourneyProof.includes("fallbackCookieFiles") &&
     customerLiveJourneyProof.includes("Customer Journey Proof Checklist") &&
     customerLiveJourneyProof.includes("Customer journeys tracked") &&
     customerLiveJourneyProof.includes("Manual journeys still required") &&
     customerLiveJourneyProof.includes("New pet recommendation") &&
     customerLiveJourneyProof.includes("Return for progress") &&
     customerLiveJourneyProof.includes("SKIP_AUTH") &&
-    !customerLiveJourneyProof.includes("/api/account/chatbot/save"),
-  "Customer live journey proof must be non-destructive, authenticated-cookie aware, and report SKIP_AUTH until live proof can run."
+    customerLiveJourneyProof.includes("PASS_NON_DESTRUCTIVE") &&
+    customerLiveJourneyProof.includes("NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF") &&
+    customerLiveJourneyProof.includes("/api/account/chatbot/save"),
+  "Customer live journey proof must default to non-destructive auth/card checks and require an explicit live-write flag for save/report/timeline/progress proof."
 );
 
 assert(
