@@ -6269,120 +6269,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <div
               data-testid="customer-choice-decision-guide"
-              className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-900"
+              className="mt-3 grid grid-cols-3 gap-2 text-xs font-semibold text-gray-700"
             >
-              <p className="font-semibold">
-                {botText(
-                  "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03bc\u03b5 \u03b1\u03c5\u03c4\u03ae \u03c4\u03b7 \u03c3\u03b5\u03b9\u03c1\u03ac",
-                  "Choose in this order"
-                )}
-              </p>
-              <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
-                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                    {botText("\u0391\u03bd\u03ac\u03b3\u03ba\u03b5\u03c2", "Fit")}
-                  </span>
-                  <span className="mt-1 block leading-5">
-                    {botText(
-                      "\u03a0\u03c1\u03ce\u03c4\u03b1 \u03ba\u03bf\u03b9\u03c4\u03ac\u03bc\u03b5 \u03b7\u03bb\u03b9\u03ba\u03af\u03b1, \u03bc\u03ad\u03b3\u03b5\u03b8\u03bf\u03c2, \u03c3\u03c4\u03b5\u03af\u03c1\u03c9\u03c3\u03b7, \u03b2\u03ac\u03c1\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03c5\u03c7\u03cc\u03bd \u03b5\u03c5\u03b1\u03b9\u03c3\u03b8\u03b7\u03c3\u03af\u03b5\u03c2.",
-                      "First we check age, size, neuter status, weight goal, and sensitivities."
-                    )}
-                  </span>
-                </div>
-                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-sky-700">
-                    {botText("\u0393\u03b5\u03cd\u03c3\u03b7", "Taste")}
-                  </span>
-                  <span className="mt-1 block leading-5">
-                    {botText(
-                      "\u039c\u03b5\u03c4\u03ac \u03bc\u03b5\u03c4\u03c1\u03ac\u03b5\u03b9 \u03c4\u03b9 \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03b4\u03b5\u03bd \u03c4\u03c1\u03ce\u03b5\u03b9 \u03ae \u03c0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03b1\u03c0\u03bf\u03c6\u03b5\u03cd\u03b3\u03b5\u03b9.",
-                      "Then we respect what the pet likes, refuses, or should avoid."
-                    )}
-                  </span>
-                </div>
-                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-amber-700">
-                    {botText("Budget", "Budget")}
-                  </span>
-                  <span className="mt-1 block leading-5">
-                    {botText(
-                      "\u03a4\u03ad\u03bb\u03bf\u03c2 \u03b2\u03bb\u03ad\u03c0\u03b5\u03b9\u03c2 \u03c0\u03b9\u03bf premium \u03ba\u03b1\u03b9 \u03c0\u03b9\u03bf \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2 \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2, \u03c7\u03c9\u03c1\u03af\u03c2 \u03bd\u03b1 \u03c7\u03b1\u03b8\u03b5\u03af \u03c4\u03bf fit.",
-                      "Finally you compare premium and practical alternatives without losing the fit."
-                    )}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div
-              data-testid="customer-food-choice-guide"
-              className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-3"
-            >
-              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-3 text-emerald-950">
-                <p className="font-semibold">
-                  {botText(
-                    "\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03c4\u03b7\u03bd \u03c0\u03b9\u03bf \u03b4\u03c5\u03bd\u03b1\u03c4\u03ae \u03b1\u03c1\u03c7\u03ae",
-                    "For the strongest start"
-                  )}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-emerald-800">
-                  {botText(
-                    "\u0394\u03b5\u03c2 \u03c0\u03c1\u03ce\u03c4\u03b1 \u03c4\u03b9\u03c2 \u03c0\u03c1\u03ac\u03c3\u03b9\u03bd\u03b5\u03c2 \u03ba\u03ac\u03c1\u03c4\u03b5\u03c2. \u0395\u03af\u03bd\u03b1\u03b9 \u03bf\u03b9 \u03ba\u03b1\u03bb\u03cd\u03c4\u03b5\u03c1\u03b5\u03c2 \u03c0\u03c1\u03ce\u03c4\u03b5\u03c2 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ad\u03c2 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c0\u03c1\u03bf\u03c6\u03af\u03bb.",
-                    "Look at the green cards first. They are the strongest starting fits for this profile."
-                  )}
-                </p>
-              </div>
-              <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-3 text-sky-950">
-                <p className="font-semibold">
-                  {botText(
-                    "\u0391\u03bd \u03bc\u03b5\u03c4\u03c1\u03ac\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03b7 \u03c4\u03b9\u03bc\u03ae",
-                    "If budget also matters"
-                  )}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-sky-800">
-                  {botText(
-                    "\u0394\u03b5\u03c2 \u03c4\u03b9\u03c2 \u03bc\u03c0\u03bb\u03b5 \u03ba\u03ac\u03c1\u03c4\u03b5\u03c2 \u03c3\u03b1\u03bd \u03c0\u03b9\u03bf \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2 \u03ae \u03bf\u03b9\u03ba\u03bf\u03bd\u03bf\u03bc\u03b9\u03ba\u03ad\u03c2 \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2.",
-                    "Use the blue cards as practical or budget-friendly alternatives."
-                  )}
-                </p>
-              </div>
-              <div className="rounded-xl border border-lime-100 bg-lime-50 px-3 py-3 text-lime-950">
-                <p className="font-semibold">
-                  {botText(
-                    "\u039c\u03b5\u03c4\u03ac \u03c0\u03ac\u03c4\u03b1 \u03bc\u03af\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae",
-                    "Then tap one food"
-                  )}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-lime-800">
-                  {botText(
-                    "\u0398\u03b1 \u03c3\u03bf\u03c5 \u03b4\u03ce\u03c3\u03c9 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03c3\u03b5 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1 \u03ba\u03b1\u03b9 \u03bc\u03b5\u03c4\u03ac \u03bc\u03c0\u03bf\u03c1\u03b5\u03af\u03c2 \u03bd\u03b1 \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03cd\u03c3\u03b5\u03b9\u03c2 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf.",
-                    "I will calculate the first grams/day estimate, then you can save the plan."
-                  )}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block text-emerald-800">
-                  {botText("1. Σύγκρινε", "1. Compare")}
+                  {botText("1. \u03a3\u03cd\u03b3\u03ba\u03c1\u03b9\u03bd\u03b5", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("τι σου ταιριάζει", "what matters most")}
+                  {botText("fit \u03ba\u03b1\u03b9 \u03b3\u03b5\u03cd\u03c3\u03b7", "fit and taste")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block text-sky-800">
-                  {botText("2. Διάλεξε", "2. Choose")}
+                  {botText("2. \u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5", "2. Choose")}
                 </span>
                 <span className="font-normal text-sky-950">
-                  {botText("μία κάρτα τροφής", "one food card")}
+                  {botText("\u03bc\u03af\u03b1 \u03ba\u03ac\u03c1\u03c4\u03b1", "one food card")}
                 </span>
               </div>
               <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
                 <span className="block text-amber-800">
-                  {botText("3. Πάρε", "3. Get")}
+                  {botText("3. \u03a0\u03ac\u03c1\u03b5", "3. Get")}
                 </span>
                 <span className="font-normal text-amber-950">
-                  {botText("ποσότητα/ημέρα", "grams/day")}
+                  {botText("\u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1", "grams/day")}
                 </span>
               </div>
             </div>
@@ -6421,26 +6331,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   )}
                 </span>
               </div>
-            </div>
-            <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm leading-5 text-gray-700 ring-1 ring-gray-100">
-              {botText(
-                "Δεν χρειάζεται να διαλέξεις αμέσως την πρώτη. Διάλεξε αυτή που ταιριάζει καλύτερα σε γεύση, budget και καθημερινότητα.",
-                "You do not have to choose the first card immediately. Pick the one that fits flavour, budget, and daily routine best."
-              )}
-            </p>
-            <div
-              data-testid="recommendation-final-choice-guide"
-              className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-3 text-sm leading-5 text-emerald-950"
-            >
-              <p className="font-semibold">
-                {botText("Πώς συνεχίζουμε", "How to continue")}
-              </p>
-              <p className="mt-1">
-                {botText(
-                  "Πάτησε μία τροφή για να δεις περίπου γραμμάρια/ημέρα. Μετά μπορείς να αποθηκεύσεις το πλάνο ή να δοκιμάσεις άλλη επιλογή.",
-                  "Choose one food first. I will calculate grams/day, then you can save the plan or try another option."
-                )}
-              </p>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
               {getRecommendationShortlistHighlights(
