@@ -205,10 +205,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     ],
     customerUxUnlockGates: [
       {
-        gate: "Full recommendation journey proof",
-        unlocks: "84-85% Customer UX readiness",
+        gate: "Clean customer wording proof",
+        unlocks: "85-86% Customer UX readiness",
         evidenceNeeded:
-          "Run live journeys from login/signup through chatbot, selected food, grams/day, save, report, and return progress.",
+          "Prove that live chatbot and report output contain no back-office wording visible to customers.",
       },
     ],
     overallLaunchBlockers: [
@@ -869,13 +869,12 @@ export default function FoodV2LiveQaPage() {
                 <p className="text-sm font-semibold">Next customer score unlock</p>
                 <p className="mt-2 text-2xl font-black">
                   {productProgress.customerUxUnlockGates[0]?.unlocks ??
-                    "84-85% Customer UX readiness"}
+                    "85-86% Customer UX readiness"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   The next visible movement is not another merge by itself. It is
-                  proof that a normal customer can finish the full flow without
-                  help: recommendation, food choice, grams/day, save, report, and
-                  return progress.
+                  proof that a normal customer sees clean, simple chatbot and
+                  report wording without back-office details.
                 </p>
               </div>
               <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
@@ -884,11 +883,11 @@ export default function FoodV2LiveQaPage() {
                 </p>
                 <p className="mt-2 text-sm font-semibold">
                   {productProgress.customerUxUnlockGates[0]?.gate ??
-                    "Full recommendation journey proof"}
+                    "Clean customer wording proof"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   {productProgress.customerUxUnlockGates[0]?.evidenceNeeded ??
-                    "Run live journeys from login/signup through chatbot, selected food, grams/day, save, report, and return progress."}
+                    "Prove that live chatbot and report output contain no back-office wording visible to customers."}
                 </p>
               </div>
             </div>
@@ -1190,7 +1189,7 @@ export default function FoodV2LiveQaPage() {
         </div>
 
         <div className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4">
-          <p className="text-sm font-semibold">To complete the 84-85% gate</p>
+          <p className="text-sm font-semibold">Customer live journey proof checklist</p>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">
             {customerLiveJourneyProof.nextSteps.map((step) => (
               <li key={step}>{step}</li>
