@@ -40,6 +40,10 @@ const requiredMarkers = [
   "Customer UX readiness is currently **88%**",
   "Recommendation engine beta confidence is currently **95% beta-candidate**",
   "Overall SaaS launch progress is currently **90%**",
+  "## Progress Ladder",
+  "88-90% launch-hardening band",
+  "Three real beta journeys without manual help",
+  "NutriTail is not stuck at 78-80%",
   "## Customer UX Scorecard",
   "Customer-facing journey",
   "What is proven now",
@@ -385,7 +389,12 @@ assert(
 );
 
 assert(
-  liveQaPage.includes('data-testid="progress-truth-panel"') &&
+    liveQaPage.includes('data-testid="progress-truth-panel"') &&
+    liveQaPage.includes('data-testid="customer-progress-ladder"') &&
+    liveQaPage.includes("Progress ladder") &&
+    liveQaPage.includes("Current band: 88-90% launch hardening") &&
+    liveQaPage.includes("Old foundation") &&
+    liveQaPage.includes("Do not treat this as the current state") &&
     liveQaPage.includes("Progress truth panel") &&
     liveQaPage.includes("past the old 78-80% foundation stage") &&
     liveQaPage.includes("The next percentage jump needs real customer evidence") &&
