@@ -254,6 +254,7 @@ async function main() {
   });
 
   const manualJourneyKeys = {
+    food_choice_grams: "Food choice and grams/day",
     save_analysis: "Save analysis",
     open_report: "Open report",
     open_timeline: "Open timeline",
@@ -294,6 +295,12 @@ async function main() {
       status: recommendationShape.ok ? "api-pass" : "review",
       proofNeeded:
         "Food V2 must return 3 first-choice cards and 3 budget-friendly alternatives; browser proof still needs food selection and grams/day.",
+    },
+    {
+      name: "Food choice and grams/day",
+      status: manualJourneyResults.find((journey) => journey.key === "food_choice_grams")?.status ?? "manual-required",
+      proofNeeded:
+        "Tap one food card in the live chatbot and confirm the selected-food plan shows grams/day and first-week next steps.",
     },
     {
       name: "Save analysis",
@@ -352,7 +359,7 @@ async function main() {
       `- Unlock impact: ${unlockImpact}`,
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
-      `- Manual journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
+      `- Manual browser journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
       "",
       "## Results",
       "",

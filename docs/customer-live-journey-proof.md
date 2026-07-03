@@ -47,6 +47,10 @@ Use this shape:
 
 ```json
 {
+  "food_choice_grams": {
+    "passed": true,
+    "evidence": ["Tapped a food card and the selected-food plan showed grams/day and first-week next steps."]
+  },
   "save_analysis": {
     "passed": true,
     "evidence": ["Selected a food, grams/day appeared, and Save completed."]
