@@ -117,18 +117,33 @@ function getManualProofStatus(proof, key, requirement) {
   const entry = proof?.[key];
   const evidence = Array.isArray(entry?.evidence) ? entry.evidence.filter(Boolean) : [];
   const evidenceText = evidence.join(" ").toLowerCase();
+  const placeholderPatterns = [
+    /\btodo\b/i,
+    /replace this/i,
+    /draft proof/i,
+    /placeholder/i,
+    /example evidence/i,
+  ];
+  const hasPlaceholderEvidence = evidence.some((note) =>
+    placeholderPatterns.some((pattern) => pattern.test(String(note))),
+  );
   const missingTerms = requirement.requiredTerms.filter(
     (term) => !evidenceText.includes(term.toLowerCase()),
   );
-  const ok = entry?.passed === true && evidence.length > 0 && missingTerms.length === 0;
+  const ok =
+    entry?.passed === true &&
+    evidence.length > 0 &&
+    missingTerms.length === 0 &&
+    !hasPlaceholderEvidence;
 
   return {
     ok,
     evidenceCount: evidence.length,
+    hasPlaceholderEvidence,
     missingTerms,
     note: ok
       ? evidence.slice(0, 2).join("; ")
-      : `Needs browser proof with passed=true, at least one evidence note, and these terms: ${requirement.requiredTerms.join(", ")}.`,
+      : `Needs browser proof with passed=true, at least one real evidence note, no TODO/placeholder text, and these terms: ${requirement.requiredTerms.join(", ")}.`,
   };
 }
 
@@ -334,6 +349,7 @@ async function main() {
       name: requirement.name,
       status: manualStatus.ok ? "manual-pass" : "manual-required",
       evidenceCount: manualStatus.evidenceCount,
+      hasPlaceholderEvidence: manualStatus.hasPlaceholderEvidence,
       missingTerms: manualStatus.missingTerms,
       note: manualStatus.note,
     };
@@ -450,7 +466,7 @@ async function main() {
       "| --- | --- | --- |",
       ...manualJourneyResults.map(
         (journey) =>
-          `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"}${journey.missingTerms.length > 0 ? ` Missing terms: ${journey.missingTerms.join(", ")}` : ""} |`,
+          `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"}${journey.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""}${journey.missingTerms.length > 0 ? ` Missing terms: ${journey.missingTerms.join(", ")}` : ""} |`,
       ),
       "",
       "## To Complete The 83-85% Customer UX Gate",

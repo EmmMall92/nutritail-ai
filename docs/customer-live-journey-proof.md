@@ -108,6 +108,10 @@ the browser journey really passed and each TODO note has been replaced with
 evidence from the live page. The draft is a checklist helper, not proof by
 itself.
 
+The runner rejects TODO, placeholder, draft, or example evidence text even if
+`passed` is set to `true`. Proof notes must describe what actually happened in
+the live browser.
+
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.
