@@ -96,7 +96,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "Tap one food to calculate grams/day",
+    text: "Choose one food first. I will calculate grams/day",
   },
   {
     file: "app/account/chatbot/page.tsx",

@@ -46,7 +46,7 @@ assert(
   "Greek customer-facing shortlist copy must not expose the English value label."
 );
 assert(
-  chatbotPage.includes("3 simpler / budget-friendly options"),
+  chatbotPage.includes("Budget-friendly alternatives"),
   "English food shortlist section should use customer-friendly budget wording."
 );
 assert(

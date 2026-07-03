@@ -6145,7 +6145,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm"
           >
             <p className="font-semibold text-emerald-950">
-              {botText("Οι προτάσεις σου είναι έτοιμες", "Your recommendations are ready")}
+              {botText("Οι προτάσεις σου είναι έτοιμες", "Food choices are ready")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
@@ -6153,8 +6153,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   ? "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου και μετά πιο απλές ή οικονομικές εναλλακτικές."
                   : "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου. Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
                 recommendedFoodChoices.some((choice) => choice.role === "value")
-                  ? "First you see the best starting choices for this pet profile, then simpler or budget-friendly alternatives."
-                  : "First you see the best starting choices for this pet profile. Simpler or budget-friendly alternatives appear only when they fit well enough."
+                  ? "Start with the strongest choices. If budget also matters, check the practical alternatives too."
+                  : "Start with the strongest choices for this pet. Budget alternatives appear only when they fit well enough."
               )}
             </p>
             <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
@@ -6192,7 +6192,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
-                  {botText("Οι 3 καλύτερες πρώτες επιλογές", "Top 3 first choices")}
+                  {botText("Οι 3 βασικές προτάσεις", "Best starting choices")}
                 </span>
                 <span className="text-xs text-emerald-800">
                   {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
@@ -6203,11 +6203,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 <span className="block font-semibold text-sky-950">
                   {botText(
                     recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "3 πιο απλές / οικονομικές επιλογές"
-                      : "Πιο απλές / οικονομικές επιλογές",
+                      ? "Πιο πρακτικές / οικονομικές επιλογές"
+                      : "Πιο πρακτικές επιλογές",
                     recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "3 simpler / budget-friendly options"
-                      : "Simpler / budget-friendly options"
+                      ? "Budget-friendly alternatives"
+                      : "Practical alternatives"
                   )}
                 </span>
                 <span className="text-xs text-sky-800">
@@ -6241,7 +6241,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               <p className="mt-1">
                 {botText(
                   "Πάτησε μία τροφή για να δεις περίπου γραμμάρια/ημέρα. Μετά μπορείς να αποθηκεύσεις το πλάνο ή να δοκιμάσεις άλλη επιλογή.",
-                  "Tap one food to calculate grams/day. Then save the plan or try another option."
+                  "Choose one food first. I will calculate grams/day, then you can save the plan or try another option."
                 )}
               </p>
             </div>
