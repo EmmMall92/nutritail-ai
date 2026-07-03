@@ -50,6 +50,8 @@ const pages = [
       'data-testid="auth-next-step-card"',
       'data-testid="auth-recovery-help-card"',
       'data-testid="auth-forgot-email-sent-next-steps"',
+      'data-testid="auth-forgot-submitted-email"',
+      "submittedEmail",
       "Πίσω στη σύνδεση",
     ],
   },
