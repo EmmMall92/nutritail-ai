@@ -991,8 +991,9 @@ if (missingGroupedChoiceMarkers.length > 0) {
 const pendingCompareNewPetMarkers = [
   "pendingCompareLabel",
   "pendingCompareQueries.length >= 2",
-  "I will keep the ${pendingCompareLabel} comparison ready",
-  "run it after I collect the pet details",
+  "I will keep this comparison ready: ${pendingCompareLabel}",
+  "species, age, weight, goal, and sensitivities",
+  "run it with the right context",
 ];
 const missingPendingCompareNewPetMarkers = pendingCompareNewPetMarkers.filter(
   (marker) => !chatbotPage.includes(marker)
