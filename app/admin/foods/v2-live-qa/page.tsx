@@ -90,6 +90,13 @@ type CustomerLiveJourneyProofSummary = {
   failed: string;
   authCookieSource: string;
   unlockImpact: string;
+  customerJourneysTracked: string;
+  manualJourneysStillRequired: string;
+  journeyChecklist: {
+    journey: string;
+    status: string;
+    proofNeeded: string;
+  }[];
   nextSteps: string[];
 };
 
@@ -487,6 +494,16 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
     authCookieSource: "missing",
     unlockImpact:
       "Run qa:customer-live-journey-proof with an authenticated QA cookie to produce non-destructive live journey evidence.",
+    customerJourneysTracked: "unknown",
+    manualJourneysStillRequired: "unknown",
+    journeyChecklist: [
+      {
+        journey: "New pet recommendation",
+        status: "not generated",
+        proofNeeded:
+          "Run the live proof and then finish the customer-facing browser flow.",
+      },
+    ],
     nextSteps: [
       "Put a QA account Cookie header in .qa-secrets/nutritail-auth-cookie.txt.",
       "Run npm.cmd run qa:customer-live-journey-proof.",
@@ -507,6 +524,30 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
       .map((line) => line.trim())
       .filter((line) => /^\d+\./.test(line))
       .map((line) => line.replace(/^\d+\.\s*/, ""));
+    const checklistSection =
+      report.match(/## Customer Journey Proof Checklist\s+([\s\S]*?)\n## /i)?.[1]?.trim() ??
+      "";
+    const journeyChecklist = checklistSection
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          line.startsWith("| ") &&
+          !line.includes("---") &&
+          !line.includes("Journey |")
+      )
+      .map((line) => {
+        const cells = line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+
+        return {
+          journey: cells[0] ?? "Unknown journey",
+          status: cells[1] ?? "unknown",
+          proofNeeded: cells[2] ?? "Proof needed is not listed.",
+        };
+      });
 
     return {
       status: report.match(/^Status:\s*([^\n\r]+)/im)?.[1]?.trim() ?? fallback.status,
@@ -528,6 +569,14 @@ function readCustomerLiveJourneyProofSummary(): CustomerLiveJourneyProofSummary 
       unlockImpact:
         report.match(/- Unlock impact:\s*([^\n\r]+)/i)?.[1]?.trim() ??
         fallback.unlockImpact,
+      customerJourneysTracked:
+        report.match(/- Customer journeys tracked:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.customerJourneysTracked,
+      manualJourneysStillRequired:
+        report.match(/- Manual journeys still required:\s*([^\n\r]+)/i)?.[1]?.trim() ??
+        fallback.manualJourneysStillRequired,
+      journeyChecklist:
+        journeyChecklist.length > 0 ? journeyChecklist : fallback.journeyChecklist,
       nextSteps: nextSteps.length > 0 ? nextSteps : fallback.nextSteps,
     };
   } catch {
@@ -1098,6 +1147,46 @@ export default function FoodV2LiveQaPage() {
             Generated:{" "}
             <span className="font-semibold">{customerLiveJourneyProof.generated}</span>
           </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            <p className="rounded-lg border border-cyan-100 bg-cyan-50 px-3 py-2 text-sm">
+              Customer journeys tracked:{" "}
+              <span className="font-semibold">
+                {customerLiveJourneyProof.customerJourneysTracked}
+              </span>
+            </p>
+            <p className="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+              Manual journeys still required:{" "}
+              <span className="font-semibold">
+                {customerLiveJourneyProof.manualJourneysStillRequired}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4"
+          data-testid="customer-live-journey-checklist"
+        >
+          <p className="text-sm font-semibold">Customer journey checklist</p>
+          <p className="mt-2 text-sm leading-6 text-cyan-900">
+            These are the customer-visible journeys that must be proven on
+            production before Customer UX readiness can move above the current
+            band.
+          </p>
+          <div className="mt-3 grid gap-3 lg:grid-cols-5">
+            {customerLiveJourneyProof.journeyChecklist.map((journey) => (
+              <article
+                key={`${journey.journey}-${journey.status}`}
+                className="rounded-xl border border-cyan-100 bg-cyan-50/70 p-3 text-sm"
+              >
+                <p className="font-semibold">{journey.journey}</p>
+                <p className="mt-2 rounded-lg border border-cyan-200 bg-white/80 px-2 py-1 text-xs font-bold">
+                  {journey.status}
+                </p>
+                <p className="mt-2 text-xs leading-5">{journey.proofNeeded}</p>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-4 rounded-xl border border-cyan-200 bg-white/80 p-4">
