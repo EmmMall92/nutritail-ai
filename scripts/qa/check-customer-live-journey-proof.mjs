@@ -6,6 +6,7 @@ const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH ||
   "reports/customer_live_journey_proof_qa.md";
 const defaultCookieFile = ".qa-secrets/nutritail-auth-cookie.txt";
+const fallbackCookieFiles = [".qa-secrets/account-cookie.txt"];
 const authCookieFile =
   process.env.NUTRITAIL_QA_AUTH_COOKIE_FILE?.trim() || defaultCookieFile;
 const defaultManualProofFile = ".qa-secrets/customer-live-journey-proof.json";
@@ -66,22 +67,32 @@ function loadAuthCookie() {
     };
   }
 
-  if (!existsSync(authCookieFile)) {
+  const candidateFiles = [
+    authCookieFile,
+    ...fallbackCookieFiles.filter((file) => file !== authCookieFile),
+  ];
+  const existingFile = candidateFiles.find((file) => existsSync(file));
+
+  if (!existingFile) {
     return {
       value: "",
       source: "missing",
-      note: `No cookie file found at ${authCookieFile}.`,
+      note: `No cookie file found at ${candidateFiles.join(" or ")}.`,
     };
   }
 
-  const fromFile = readFileSync(authCookieFile, "utf8").trim();
+  const fromFile = readFileSync(existingFile, "utf8").trim();
 
   return {
     value: fromFile,
-    source: fromFile ? "NUTRITAIL_QA_AUTH_COOKIE_FILE" : "empty file",
+    source: fromFile
+      ? existingFile === authCookieFile
+        ? "NUTRITAIL_QA_AUTH_COOKIE_FILE"
+        : "fallback cookie file"
+      : "empty file",
     note: fromFile
-      ? "Cookie loaded from local ignored file."
-      : `Cookie file ${authCookieFile} is empty.`,
+      ? `Cookie loaded from local ignored file ${existingFile}.`
+      : `Cookie file ${existingFile} is empty.`,
   };
 }
 
@@ -442,6 +453,7 @@ async function main() {
       `- Skipped: ${skipped}`,
       `- Failed: ${failed}`,
       `- Auth cookie source: ${authCookie.source}`,
+      `- Auth cookie note: ${authCookie.note}`,
       `- Manual proof source: ${manualProof.source}`,
       `- Unlock impact: ${unlockImpact}`,
       `- Customer journeys tracked: ${journeyProofs.length}`,
@@ -471,7 +483,7 @@ async function main() {
       "",
       "## To Complete The 84-85% Customer UX Gate",
       "",
-      "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
+      "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt`, keep using `.qa-secrets/account-cookie.txt`, or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
