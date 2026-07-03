@@ -150,6 +150,19 @@ const manualJourneyRequirements = {
     name: "Return for progress",
     requiredTerms: ["same saved pet", "progress", "without restarting"],
   },
+  returning_continuation: {
+    name: "Returning saved-pet continuation",
+    requiredTerms: [
+      "same saved pet",
+      "progress",
+      "no-result",
+      "flavour",
+      "brand",
+      "new food",
+      "timeline",
+      "without restarting",
+    ],
+  },
 };
 
 function loadAuthCookie() {
@@ -410,6 +423,96 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     durationMs: progress.durationMs,
   });
 
+  const noResult = await fetchJson(`/api/account/pets/${savedPetId}/progress`, {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      authUserId,
+      currentWeightKg: 6.2,
+      feedingGramsPerDay: 95,
+      treatsNote: "customer says plan did not move enough",
+      appetiteNote: "normal",
+      stoolNote: "normal",
+      energyNote: "normal",
+      bodyChangeNote: "no visible result yet",
+      progressDecisionStatus: "review_food_fit",
+      progressDecisionConfidence: "medium",
+      progressDecisionHeadlineEn: "Plan needs a practical review.",
+      progressDecisionHeadlineEl: "Το πλάνο θέλει πρακτικό έλεγχο.",
+      note: "Controlled live proof no-result continuation note.",
+      mode: "no_result",
+    },
+  });
+  const noResultOk = noResult.status === 200 && noResult.payload?.success === true;
+  steps.push({
+    key: "no_result",
+    ok: noResultOk,
+    route: `/api/account/pets/${savedPetId}/progress`,
+    status: noResult.status,
+    durationMs: noResult.durationMs,
+    note: "Same saved pet can record a no-result follow-up without restarting.",
+  });
+
+  const changeFood = await fetchJson(`/api/account/pets/${savedPetId}/progress`, {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      authUserId,
+      feedingGramsPerDay: 95,
+      treatsNote: "customer wants a different flavour or brand",
+      appetiteNote: "accepted food but bored of flavour",
+      stoolNote: "normal",
+      energyNote: "normal",
+      bodyChangeNote: "stable",
+      progressDecisionStatus: "review_food_fit",
+      progressDecisionConfidence: "medium",
+      progressDecisionHeadlineEn: "A flavour or brand alternative is reasonable.",
+      progressDecisionHeadlineEl: "Μια εναλλακτική γεύση ή εταιρεία είναι λογική.",
+      note: "Controlled live proof flavour or brand continuation note.",
+      mode: "change_food",
+    },
+  });
+  const changeFoodOk =
+    changeFood.status === 200 && changeFood.payload?.success === true;
+  steps.push({
+    key: "change_food",
+    ok: changeFoodOk,
+    route: `/api/account/pets/${savedPetId}/progress`,
+    status: changeFood.status,
+    durationMs: changeFood.durationMs,
+    note: "Same saved pet can record a flavour or brand-change follow-up.",
+  });
+
+  const newFood = await fetchJson(`/api/account/pets/${savedPetId}/progress`, {
+    method: "POST",
+    cookie: authCookie.value,
+    body: {
+      authUserId,
+      currentWeightKg: 6,
+      feedingGramsPerDay: 95,
+      treatsNote: "customer asks for a fresh recommendation",
+      appetiteNote: "normal",
+      stoolNote: "normal",
+      energyNote: "normal",
+      bodyChangeNote: "goal or needs changed",
+      progressDecisionStatus: "review_food_fit",
+      progressDecisionConfidence: "medium",
+      progressDecisionHeadlineEn: "A fresh food recommendation can be run.",
+      progressDecisionHeadlineEl: "Μπορεί να γίνει νέα πρόταση τροφής.",
+      note: "Controlled live proof new-food continuation note.",
+      mode: "new_analysis",
+    },
+  });
+  const newFoodOk = newFood.status === 200 && newFood.payload?.success === true;
+  steps.push({
+    key: "new_food",
+    ok: newFoodOk,
+    route: `/api/account/pets/${savedPetId}/progress`,
+    status: newFood.status,
+    durationMs: newFood.durationMs,
+    note: "Same saved pet can record a fresh recommendation follow-up.",
+  });
+
   const progressPage = await fetchJson(
     `/account/chatbot?petId=${savedPetId}&mode=progress`,
     { cookie: authCookie.value },
@@ -424,6 +527,36 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     durationMs: progressPage.durationMs,
   });
 
+  const continuationRoutes = [
+    {
+      key: "return_continuation_panel",
+      route: `/account/chatbot?petId=${savedPetId}`,
+      note: "Same saved pet can reopen the continuation panel without restarting.",
+    },
+    {
+      key: "return_change_food",
+      route: `/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour`,
+      note: "Same saved pet can open the flavour or brand-change recommendation route.",
+    },
+    {
+      key: "return_new_food",
+      route: `/account/chatbot?petId=${savedPetId}&mode=recommendation`,
+      note: "Same saved pet can open a fresh recommendation route.",
+    },
+  ];
+
+  for (const routeCheck of continuationRoutes) {
+    const page = await fetchJson(routeCheck.route, { cookie: authCookie.value });
+    steps.push({
+      key: routeCheck.key,
+      ok: page.status === 200 && typeof page.payload === "string",
+      route: routeCheck.route,
+      status: page.status,
+      durationMs: page.durationMs,
+      note: routeCheck.note,
+    });
+  }
+
   const ok = steps.every((step) => step.ok);
   const foodName = analysis.recommendedFoods[0].food.name;
 
@@ -432,7 +565,7 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     ok,
     source: "live write proof",
     note: ok
-      ? "Opt-in live write proof saved a QA pet, opened report/timeline routes, and returned to progress."
+      ? "Opt-in live write proof saved a QA pet, opened report/timeline routes, and proved progress, no-result, flavour/brand, and new-food continuation."
       : "Opt-in live write proof ran but at least one live step needs review.",
     petId: savedPetId,
     proof: ok
@@ -465,6 +598,12 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
             passed: true,
             evidence: [
               `Same saved pet ${savedPetId} returned to progress mode without restarting intake.`,
+            ],
+          },
+          returning_continuation: {
+            passed: true,
+            evidence: [
+              `Same saved pet ${savedPetId} handled progress, no-result advice, flavour/brand change, new food recommendation route, and timeline review without restarting intake.`,
             ],
           },
         }
@@ -860,12 +999,18 @@ async function main() {
       name: "Return for progress",
       status: manualJourneyResults.find((journey) => journey.key === "return_for_progress")?.status ?? "manual-required",
       proofNeeded:
-        "Return to the same saved pet and complete progress, no-result, or flavour/brand-change follow-up.",
+        "Return to the same saved pet and complete progress without restarting intake.",
+    },
+    {
+      name: "Returning saved-pet continuation",
+      status: manualJourneyResults.find((journey) => journey.key === "returning_continuation")?.status ?? "manual-required",
+      proofNeeded:
+        "Use the same saved pet for progress, no-result advice, flavour/brand change, new food recommendation, and timeline review without restarting intake.",
     },
   ];
   const unlockImpact =
     status === "PASS_FULL"
-      ? "This supports Customer UX readiness at 86% because authenticated extraction, recommendations, clean customer wording, save, report, timeline, and returning progress have current proof."
+      ? "This supports Customer UX readiness at 87% because authenticated extraction, recommendations, clean customer wording, save, report, timeline, returning progress, no-result advice, flavour/brand change, and new-food continuation have current proof."
       : status === "PASS_NON_DESTRUCTIVE"
         ? "This supports the non-destructive part of the Customer UX unlock. Live write proof is still required before using it as full customer-journey evidence."
         : "This does not move Customer UX yet because logged-in production journey proof is still missing.";

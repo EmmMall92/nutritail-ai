@@ -28,5 +28,11 @@
     "evidence": [
       "Same saved pet returned to progress mode without restarting intake."
     ]
+  },
+  "returning_continuation": {
+    "passed": true,
+    "evidence": [
+      "Same saved pet handled progress, no-result advice, flavour/brand change, new food recommendation, and timeline review without restarting intake."
+    ]
   }
 }

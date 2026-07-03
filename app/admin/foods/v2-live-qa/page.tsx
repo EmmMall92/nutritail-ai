@@ -205,10 +205,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     ],
     customerUxUnlockGates: [
       {
-        gate: "Returning saved-pet continuation proof",
-        unlocks: "86-87% Customer UX readiness",
+        gate: "Report/account clarity proof",
+        unlocks: "87-88% Customer UX readiness",
         evidenceNeeded:
-          "Prove that a returning customer can continue with progress, no-progress, flavour-change, and new-food flows for the same saved pet.",
+          "Prove that account and printable report pages make calories, chosen food, grams/day, why it fits, transition plan, timeline, and next check-in obvious on mobile and desktop.",
       },
     ],
     overallLaunchBlockers: [
@@ -414,7 +414,7 @@ function readCustomerJourneyUnlockProofSummary(): CustomerJourneyUnlockProofSumm
     journeys: [],
     manualFollowUp: [
       "Run qa:customer-journey-unlock-gate to generate the proof report.",
-      "Then repeat the five journeys on production with a logged-in customer account.",
+      "Then repeat the protected customer journeys on production with a logged-in customer account.",
     ],
   };
 
@@ -870,12 +870,12 @@ export default function FoodV2LiveQaPage() {
                 <p className="text-sm font-semibold">Next customer score unlock</p>
                 <p className="mt-2 text-2xl font-black">
                   {productProgress.customerUxUnlockGates[0]?.unlocks ??
-                    "86-87% Customer UX readiness"}
+                    "87-88% Customer UX readiness"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   The next visible movement is not another merge by itself. It is
-                  proof that a returning customer can continue from a saved pet
-                  without starting over.
+                  proof that account and report pages make the next action obvious
+                  without reading admin notes.
                 </p>
               </div>
               <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
@@ -884,11 +884,11 @@ export default function FoodV2LiveQaPage() {
                 </p>
                 <p className="mt-2 text-sm font-semibold">
                   {productProgress.customerUxUnlockGates[0]?.gate ??
-                    "Returning saved-pet continuation proof"}
+                    "Report/account clarity proof"}
                 </p>
                 <p className="mt-2 text-sm leading-6">
                   {productProgress.customerUxUnlockGates[0]?.evidenceNeeded ??
-                    "Prove that a returning customer can continue with progress, no-progress, flavour-change, and new-food flows for the same saved pet."}
+                    "Prove that account and printable report pages make calories, chosen food, grams/day, why it fits, transition plan, timeline, and next check-in obvious on mobile and desktop."}
                 </p>
               </div>
             </div>
