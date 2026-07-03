@@ -50,6 +50,16 @@ assert(
   "English food shortlist section should use customer-friendly budget wording."
 );
 assert(
+  chatbotPage.includes('data-testid="customer-food-choice-guide"') &&
+    chatbotPage.includes("For the strongest start") &&
+    chatbotPage.includes("If budget also matters") &&
+    chatbotPage.includes("Then tap one food") &&
+    chatbotPage.includes("Look at the green cards first") &&
+    chatbotPage.includes("Use the blue cards as practical or budget-friendly alternatives") &&
+    chatbotPage.includes("I will calculate the first grams/day estimate"),
+  "Food shortlist must include a customer-facing guide for strong picks, value picks, and grams/day action."
+);
+assert(
   chatbotPage.includes("md:grid-cols-4"),
   "Food shortlist summary should have room for first pick, portion, list shape, and alternatives."
 );
