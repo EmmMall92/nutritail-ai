@@ -41,18 +41,18 @@ function coverageLine(
 
   if (typeof total !== "number" || total <= 0) {
     return language === "el"
-      ? "Αυτό μοιάζει περισσότερο με κενό στη βάση μας για αυτή τη μορφή τροφής, όχι με πρόβλημα του κατοικιδίου."
-      : "This looks like a coverage gap in our database for this food format, not a problem with the pet profile.";
+      ? "Αυτό μοιάζει περισσότερο με κενό στη βάση μας για αυτή τη μορφή τροφής, όχι με πρόβλημα στο προφίλ του κατοικιδίου."
+      : "This looks like a database gap for this food format, not a problem with the pet profile.";
   }
 
   if (typeof held === "number" && held > 0) {
     return language === "el"
-      ? "Βρήκα κάποιες τροφές στη βάση, αλλά δεν τις δείχνω γιατί δεν ταιριάζουν αρκετά σε ηλικία, στόχο ή ασφάλεια."
+      ? "Βρήκα κάποιες τροφές στη βάση, αλλά δεν τις εμφανίζω γιατί δεν ταιριάζουν αρκετά σε ηλικία, στόχο ή ασφάλεια."
       : "I found a few foods in the database, but I am not showing them because they do not fit the age, goal, or safety context closely enough.";
   }
 
   return language === "el"
-    ? "Δεν βρήκα αρκετά ασφαλή και κατάλληλη επιλογή για να την προτείνω υπεύθυνα."
+    ? "Δεν βρήκα αρκετά ασφαλή και κατάλληλη επιλογή για να την προτείνω υπεύθυνα ακόμη."
     : "I did not find a safe enough option to recommend responsibly yet.";
 }
 
@@ -77,13 +77,13 @@ export function formatMissingFormatRecommendationMessage({
         "",
         coverageLine(coverage, language),
         "",
-        "Δεν θα σου προτείνω ξηρά τροφή ενώ μου είπες ότι χρειάζεται υγρή/κονσέρβα.",
+        "Θέλω να το κρατήσω σωστό: αυτή τη στιγμή δεν έχω αρκετές υγρές τροφές/κονσέρβες στη βάση NutriTail για αξιόπιστη κατάταξη.",
         "",
         "Καλύτερο επόμενο βήμα:",
-        "1. Στείλε μου 1-2 υγρές τροφές που βρίσκεις εύκολα, ή",
-        "2. ανέβασε/γράψε τα στοιχεία από την ετικέτα της κονσέρβας ή του φακέλου.",
+        "1. στείλε 1-2 κονσέρβες ή φακελάκια που μπορείς να αγοράσεις εύκολα, ή",
+        "2. στείλε φωτογραφία/στοιχεία ετικέτας με συστατικά, θερμίδες και ανάλυση.",
         "",
-        "Μετά θα τις αξιολογήσω με το ίδιο προφίλ κατοικιδίου και θα σου δώσω πιο σωστή ποσότητα ανά ημέρα.",
+        "Μόλις έχω αυτά τα στοιχεία, μπορώ να συγκρίνω θερμίδες και να υπολογίσω πιο σωστή ποσότητα/ημέρα.",
       ].join("\n");
     }
 
@@ -93,9 +93,9 @@ export function formatMissingFormatRecommendationMessage({
         "",
         coverageLine(coverage, language),
         "",
-        "Για ανάμειξη ξηράς με υγρή, χρειάζεται να ξέρουμε ποια τροφή είναι η βάση και ποια μπαίνει σαν topper.",
+        "Για ξηρά μαζί με υγρή, θέλω πρώτα να ξέρουμε ποια τροφή θα είναι η βάση και ποια θα μπαίνει σαν topper.",
         "",
-        "Καλύτερο επόμενο βήμα: διάλεξε μία βασική ξηρά τροφή ή στείλε την υγρή που θέλεις να προσθέτεις, ώστε να κρατήσουμε σωστές θερμίδες και μερίδα.",
+        "Καλύτερο επόμενο βήμα: διάλεξε μία βασική ξηρά τροφή από τη λίστα ή στείλε την υγρή τροφή που θέλεις να προσθέτεις. Έτσι θα κρατήσουμε σωστές θερμίδες και μερίδα.",
       ].join("\n");
     }
 
@@ -118,13 +118,13 @@ export function formatMissingFormatRecommendationMessage({
       "",
       coverageLine(coverage, language),
       "",
-      "I will not recommend dry food when you told me this pet needs wet or canned food.",
+      "I want to keep this accurate: I do not yet have enough wet/canned foods in NutriTail to rank them reliably.",
       "",
       "Best next step:",
-      "1. Send me 1-2 wet foods you can buy easily, or",
-      "2. send the label details from the can or pouch.",
+      "1. send 1-2 cans or pouches you can buy easily, or",
+      "2. send a label photo with ingredients, calories, and analysis.",
       "",
-      "Then I can evaluate those options against the same pet profile and estimate a better daily portion.",
+      "Once I have those details, I can compare calories and estimate a better daily amount.",
     ].join("\n");
   }
 
@@ -134,9 +134,9 @@ export function formatMissingFormatRecommendationMessage({
       "",
       coverageLine(coverage, language),
       "",
-      "For dry plus wet feeding, we need to know which food is the base and which one is the topper.",
+      "For dry plus wet feeding, I first need to know which food is the base and which one is the topper.",
       "",
-      "Best next step: choose one base dry food or share the wet topper you want to add, so we can keep calories and portions sensible.",
+      "Best next step: choose one base dry food from the list or share the wet topper you want to add, so we can keep calories and portions sensible.",
     ].join("\n");
   }
 

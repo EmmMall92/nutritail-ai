@@ -24,17 +24,17 @@ const greekWetDog = formatMissingFormatRecommendationMessage({
 
 assertIncludes(
   greekWetDog,
-  "Δεν θα σου προτείνω ξηρά τροφή",
-  "Greek wet dog format fallback"
+  "δεν έχω αρκετές υγρές τροφές/κονσέρβες",
+  "Greek wet dog customer fallback"
 );
+assertIncludes(greekWetDog, "αξιόπιστη κατάταξη", "Greek wet dog ranking clarity");
 assertIncludes(greekWetDog, "Καλύτερο επόμενο βήμα", "Greek wet dog next step");
-assertIncludes(
-  greekWetDog,
-  "δεν τις δείχνω γιατί δεν ταιριάζουν",
-  "Greek wet dog held-candidate explanation"
-);
+assertIncludes(greekWetDog, "θερμίδες", "Greek wet dog calorie guidance");
+assertIncludes(greekWetDog, "ποσότητα/ημέρα", "Greek wet dog daily portion guidance");
 assertNotIncludes(greekWetDog, "source:", "Greek wet dog customer copy");
 assertNotIncludes(greekWetDog, "needs_review", "Greek wet dog customer copy");
+assertNotIncludes(greekWetDog, "data coverage gap", "Greek wet dog customer copy");
+assertNotIncludes(greekWetDog, "Δεν θα σου προτείνω ξηρά τροφή", "Greek wet dog customer copy");
 
 const englishWetDog = formatMissingFormatRecommendationMessage({
   pet: { species: "dog", preferredFoodFormat: "wet" },
@@ -44,14 +44,21 @@ const englishWetDog = formatMissingFormatRecommendationMessage({
 
 assertIncludes(
   englishWetDog,
-  "I will not recommend dry food",
-  "English wet dog format fallback"
+  "do not yet have enough wet/canned foods",
+  "English wet dog customer fallback"
 );
 assertIncludes(
   englishWetDog,
-  "coverage gap",
-  "English wet dog coverage explanation"
+  "rank them reliably",
+  "English wet dog ranking clarity"
 );
+assertIncludes(
+  englishWetDog,
+  "Best next step",
+  "English wet dog next step"
+);
+assertNotIncludes(englishWetDog, "I will not recommend dry food", "English wet dog customer copy");
+assertNotIncludes(englishWetDog, "needs_review", "English wet dog customer copy");
 
 const greekMixed = formatMissingFormatRecommendationMessage({
   pet: { species: "cat", preferredFoodFormat: "mixed" },
@@ -61,5 +68,6 @@ const greekMixed = formatMissingFormatRecommendationMessage({
 
 assertIncludes(greekMixed, "βάση", "Greek mixed base-food guidance");
 assertIncludes(greekMixed, "topper", "Greek mixed topper guidance");
+assertIncludes(greekMixed, "σωστές θερμίδες και μερίδα", "Greek mixed portion guidance");
 
 console.log("Missing format recommendation message QA passed.");

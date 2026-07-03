@@ -278,8 +278,9 @@ assert(
 assert(
   packageJson.includes('"qa:chatbot-calorie-copy"') &&
     packageJson.includes('"qa:clean-customer-wording-proof"') &&
-    packageJson.includes("qa:customer-ux-copy && npm run qa:clean-customer-wording-proof && npm run qa:chatbot-calorie-copy"),
-  "CI readiness must protect clean customer wording and chatbot calorie wording after the customer UX copy contract."
+    packageJson.includes('"qa:missing-format-recommendation-message"') &&
+    packageJson.includes("qa:customer-ux-copy && npm run qa:missing-format-recommendation-message && npm run qa:clean-customer-wording-proof && npm run qa:chatbot-calorie-copy"),
+  "CI readiness must protect missing-format fallback, clean customer wording, and chatbot calorie wording after the customer UX copy contract."
 );
 
 assert(
