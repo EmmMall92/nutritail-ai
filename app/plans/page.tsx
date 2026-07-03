@@ -93,6 +93,25 @@ const launchSignals = [
   "Πριν ενεργοποιηθούν πληρωμές, θα υπάρχουν καθαροί όροι, τιμές, limits και τρόπος ακύρωσης.",
 ];
 
+const paymentReadinessChecklist = [
+  {
+    title: "Beta proof",
+    text: "Πρώτα θέλουμε πραγματικά beta sessions που δείχνουν ότι ο πελάτης καταλαβαίνει την πρόταση χωρίς βοήθεια.",
+  },
+  {
+    title: "Τιμή και limits",
+    text: "Πριν ζητηθεί πληρωμή πρέπει να είναι ξεκάθαρα η τιμή, τα κατοικίδια, οι αναλύσεις ανά μήνα και τι γίνεται αν φτάσεις το όριο.",
+  },
+  {
+    title: "Ακύρωση και υποστήριξη",
+    text: "Πρέπει να υπάρχει απλή πολιτική ακύρωσης, επικοινωνία υποστήριξης και καθαρή εξήγηση για αλλαγές πλάνου.",
+  },
+  {
+    title: "Legal review",
+    text: "Οι όροι, το απόρρητο και τα όρια της διατροφικής καθοδήγησης πρέπει να είναι έτοιμα πριν ενεργοποιηθούν συνδρομές.",
+  },
+];
+
 export default function PlansPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -238,6 +257,23 @@ export default function PlansPage() {
               </div>
             ))}
           </div>
+        </div>
+        <div
+          className="mx-auto grid max-w-6xl gap-3 px-6 pb-12 md:grid-cols-4"
+          data-testid="plans-payment-readiness-checklist"
+        >
+          {paymentReadinessChecklist.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-lg border border-white/10 bg-white/5 p-4"
+              data-testid="plans-payment-readiness-checklist-item"
+            >
+              <h3 className="font-black text-white">{item.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-200">
+                {item.text}
+              </p>
+            </article>
+          ))}
         </div>
       </section>
     </main>
