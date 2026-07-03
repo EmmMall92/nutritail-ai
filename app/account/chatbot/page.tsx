@@ -6281,30 +6281,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             </p>
             <div
               data-testid="customer-choice-decision-guide"
-              className="mt-3 grid grid-cols-3 gap-2 text-xs font-semibold text-gray-700"
+              className="mt-3 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3"
             >
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block text-emerald-800">
-                  {botText("1. \u03a3\u03cd\u03b3\u03ba\u03c1\u03b9\u03bd\u03b5", "1. Compare")}
+                  {botText("1. Σύγκρινε", "1. Compare")}
                 </span>
                 <span className="font-normal text-emerald-950">
-                  {botText("fit \u03ba\u03b1\u03b9 \u03b3\u03b5\u03cd\u03c3\u03b7", "fit and taste")}
+                  {botText("ταίριασμα και γεύση", "fit and taste")}
                 </span>
               </div>
               <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
                 <span className="block text-sky-800">
-                  {botText("2. \u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5", "2. Choose")}
+                  {botText("2. Διάλεξε", "2. Choose")}
                 </span>
                 <span className="font-normal text-sky-950">
-                  {botText("\u03bc\u03af\u03b1 \u03ba\u03ac\u03c1\u03c4\u03b1", "one food card")}
+                  {botText("μία κάρτα", "one food card")}
                 </span>
               </div>
               <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
                 <span className="block text-amber-800">
-                  {botText("3. \u03a0\u03ac\u03c1\u03b5", "3. Get")}
+                  {botText("3. Πάρε", "3. Get")}
                 </span>
                 <span className="font-normal text-amber-950">
-                  {botText("\u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1", "grams/day")}
+                  {botText("γραμμάρια/ημέρα", "grams/day")}
                 </span>
               </div>
             </div>
