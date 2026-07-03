@@ -114,6 +114,7 @@ function evaluateEntry(entry: BetaUserProofEntry) {
 }
 
 const docs = read("docs/beta-user-proof.md");
+const testCard = read("docs/beta-user-test-card.md");
 const template = read(templateFile);
 const packageJson = read("package.json");
 const productProgress = read("docs/product-progress-score.md");
@@ -128,11 +129,16 @@ for (const marker of [
   "feedback",
 ]) {
   assert(docs.includes(marker), `Beta user proof doc is missing marker: ${marker}`);
+  assert(testCard.includes(marker), `Beta user test card is missing marker: ${marker}`);
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
 }
 
 for (const journey of requiredJourneyTypes) {
   assert(docs.includes(journey.type), `Beta user proof doc is missing journey type: ${journey.type}`);
+  assert(
+    testCard.includes(journey.label),
+    `Beta user test card is missing journey label: ${journey.label}`,
+  );
   assert(
     template.includes(`"journey_type": "${journey.type}"`),
     `Beta user proof template is missing journey type: ${journey.type}`,
@@ -142,6 +148,16 @@ for (const journey of requiredJourneyTypes) {
 assert(
   docs.includes("Only `PASS` should justify moving Customer UX from 88% toward 90%"),
   "Beta user proof doc must explain when Customer UX can move from 88% toward 90%.",
+);
+
+assert(
+  docs.includes("docs/beta-user-test-card.md") &&
+    testCard.includes("What The Tester Should Do") &&
+    testCard.includes("without a developer, admin, or pet-shop expert") &&
+    testCard.includes("Good evidence note") &&
+    testCard.includes("Weak evidence note") &&
+    testCard.includes("Only a `PASS` result should justify moving Customer UX readiness from 88%"),
+  "Beta user proof docs must include a practical test card for collecting real beta-user evidence.",
 );
 
 assert(
