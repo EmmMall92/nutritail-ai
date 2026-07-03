@@ -282,6 +282,12 @@ function getAccountHomeBrief({
 
   const foodName = getAnalysisFoodName(latestAnalysis);
   const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
+  const mealSplit = feedingGrams
+    ? {
+        twoMeals: Math.round(feedingGrams / 2),
+        threeMeals: Math.round(feedingGrams / 3),
+      }
+    : null;
   const treatCalories =
     typeof latestAnalysis.mer === "number" && Number.isFinite(latestAnalysis.mer)
       ? Math.round(latestAnalysis.mer * 0.1)
@@ -290,6 +296,10 @@ function getAccountHomeBrief({
     treatCalories !== null && typeof latestAnalysis.mer === "number"
       ? Math.max(0, latestAnalysis.mer - treatCalories)
       : null;
+  const quantityDetail =
+    feedingGrams && mealSplit
+      ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα. Κράτα την ποσότητα σταθερή πριν κρίνεις το αποτέλεσμα.`
+      : "\u039f\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b5\u03c2, \u03b1\u03bb\u03bb\u03ac \u03bb\u03b5\u03af\u03c0\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 kcal/100g \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.";
 
   return {
     title: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03c3\u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9",
@@ -312,9 +322,7 @@ function getAccountHomeBrief({
         value: feedingGrams
           ? `${feedingGrams}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
           : formatDailyCalories(latestAnalysis.mer),
-        detail: feedingGrams
-          ? "\u03a7\u03ce\u03c1\u03b9\u03c3\u03ad \u03c4\u03bf \u03c3\u03b5 2-3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1 \u03ba\u03b1\u03b9 \u03bc\u03b7\u03bd \u03b1\u03bb\u03bb\u03ac\u03b6\u03b5\u03b9\u03c2 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03bc\u03ad\u03c1\u03b1."
-          : "\u039f\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b5\u03c2, \u03b1\u03bb\u03bb\u03ac \u03bb\u03b5\u03af\u03c0\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 kcal/100g \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
+        detail: quantityDetail,
       },
       {
         label: "\u039b\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
