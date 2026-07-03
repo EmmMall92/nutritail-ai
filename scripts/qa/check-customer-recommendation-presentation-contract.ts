@@ -27,7 +27,8 @@ const requiredGreekCopy = [
   "κάρτες",
   "Πρώτη πρόταση",
   "γραμμάρια/ημέρα",
-  "value",
+  "οικονομικές εναλλακτικές",
+  "ξεκάθαρο πλάνο",
 ];
 
 const requiredEnglishCopy = [
@@ -51,7 +52,10 @@ function assertIncludes(label: string, text: string, required: string[]) {
 
 function assertNoForbiddenTerms(label: string, text: string) {
   const lower = text.toLowerCase();
-  const found = forbiddenTerms.filter((term) => lower.includes(term.toLowerCase()));
+  const found = [
+    ...forbiddenTerms,
+    "πιο πρακτικές/value",
+  ].filter((term) => lower.includes(term.toLowerCase()));
   if (found.length > 0) {
     console.error(`${label} leaked back-office wording:`);
     console.error(found.join(", "));
