@@ -6917,7 +6917,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )}
 
         {savedPetId && (
-          <div className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4">
+          <div
+            data-testid="saved-analysis-handoff-panel"
+            className="space-y-4 rounded-2xl border border-green-200 bg-green-50 p-4"
+          >
             <div>
               <p className="font-semibold text-black">
                 {botText("Η ανάλυση αποθηκεύτηκε", "Analysis saved")}
@@ -6928,6 +6931,59 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   "Your pet profile, report, timeline, and progress check are ready. Choose what you want to do next."
                 )}
               </p>
+            </div>
+
+            <div
+              data-testid="saved-analysis-handoff-summary"
+              className="rounded-xl border border-green-200 bg-white p-4"
+            >
+              <p className="font-semibold text-black">
+                {botText("Τι κρατήθηκε στο προφίλ", "What was saved")}
+              </p>
+              <p className="mt-1 text-sm text-gray-700">
+                {botText(
+                  "Αυτή είναι η σύντομη εικόνα που θα βρει ο πελάτης στο report και στο ιστορικό.",
+                  "This is the short version the customer will find in the report and timeline."
+                )}
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                <div
+                  data-testid="saved-analysis-summary-food"
+                  className="rounded-lg bg-green-50 p-3 text-green-950 ring-1 ring-green-100"
+                >
+                  <p className="text-xs font-semibold uppercase text-green-700">
+                    {botText("Τροφή", "Food")}
+                  </p>
+                  <p className="mt-1 font-semibold">
+                    {analysisMetadata?.matchedFoodName ??
+                      botText("Δεν επιλέχθηκε τροφή", "No food selected")}
+                  </p>
+                </div>
+                <div
+                  data-testid="saved-analysis-summary-portion"
+                  className="rounded-lg bg-green-50 p-3 text-green-950 ring-1 ring-green-100"
+                >
+                  <p className="text-xs font-semibold uppercase text-green-700">
+                    {botText("Ποσότητα", "Portion")}
+                  </p>
+                  <p className="mt-1 font-semibold">
+                    {analysisMetadata?.feedingGramsPerDay
+                      ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
+                      : botText("Θέλει kcal τροφής", "Food kcal needed")}
+                  </p>
+                </div>
+                <div
+                  data-testid="saved-analysis-summary-next-check"
+                  className="rounded-lg bg-green-50 p-3 text-green-950 ring-1 ring-green-100"
+                >
+                  <p className="text-xs font-semibold uppercase text-green-700">
+                    {botText("Επανέλεγχος", "Next check")}
+                  </p>
+                  <p className="mt-1 font-semibold">
+                    {botText("σε 2-4 εβδομάδες", "in 2-4 weeks")}
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-green-950">
@@ -6944,6 +7000,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <a
+                data-testid="saved-analysis-open-profile"
                 href={`/account/pets/${savedPetId}`}
                 className="rounded-xl border border-green-300 bg-white px-4 py-3 text-sm font-medium text-green-900 transition hover:bg-green-100"
               >
@@ -6955,6 +7012,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </a>
               <a
+                data-testid="saved-analysis-open-report"
                 href={`/print/pet-report/${savedPetId}`}
                 className="rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700"
               >
@@ -6966,6 +7024,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </a>
               <a
+                data-testid="saved-analysis-open-timeline"
                 href={`/print/pet-timeline/${savedPetId}`}
                 className="rounded-xl border border-green-300 bg-white px-4 py-3 text-sm font-medium text-green-900 transition hover:bg-green-100"
               >
@@ -6977,6 +7036,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </a>
               <a
+                data-testid="saved-analysis-progress-check"
                 href={`/account/chatbot?petId=${savedPetId}&mode=progress`}
                 className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-950 transition hover:bg-blue-100"
               >
@@ -6988,6 +7048,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </a>
               <a
+                data-testid="saved-analysis-change-food"
                 href={`/account/chatbot?petId=${savedPetId}&mode=recommendation&reason=flavour`}
                 className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-medium text-violet-950 transition hover:bg-violet-100"
               >
@@ -7003,6 +7064,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </a>
               <button
                 type="button"
+                data-testid="saved-analysis-new-analysis"
                 onClick={restartChat}
                 className="rounded-xl border border-gray-300 bg-white px-4 py-3 text-left text-sm font-medium text-black transition hover:bg-gray-100"
               >
