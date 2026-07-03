@@ -618,6 +618,21 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/chatbot/page.tsx",
+    text: "No food selected",
+    reason: "Saved analysis summary should guide the customer to choose a food, not show an empty-state label.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "Food kcal needed",
+    reason: "Saved analysis summary should ask for a calorie-backed food choice in plain customer language.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
+    text: "label kcal needed",
+    reason: "Food selection cards should use customer wording instead of calorie-label internals.",
+  },
+  {
+    file: "app/account/chatbot/page.tsx",
     text: "the customer will find",
     reason: "Saved-analysis handoff should speak directly to the logged-in customer.",
   },
