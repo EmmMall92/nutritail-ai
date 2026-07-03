@@ -19,6 +19,22 @@ headline, because that is what made progress feel stuck or misleading.
 - Recommendation engine beta confidence is currently **95% beta-candidate**.
 - Overall SaaS launch progress is currently **90%**.
 
+## Progress Ladder
+
+Use this ladder when the score feels stuck. It makes the next movement explicit
+and prevents small merges from being counted as launch progress without the
+right evidence.
+
+| Progress number | What it means | What moves it next |
+| --- | --- | --- |
+| 88% Customer UX readiness | The controlled customer journey is proven: chatbot intake, 3 premium + 3 value recommendations, food choice, grams/day, save, report, account, timeline, and returning progress all have QA evidence. | Three real beta journeys without manual help: one dog owner, one cat owner, and one returning saved-pet user. |
+| 95% recommendation engine beta confidence | Food V2 retrieval, deterministic ranking, OpenAI extraction, safety guards, and large dog/cat QA banks are strong enough for beta use. | Real mistakes from beta users must become new ranking/intake guards; do not let OpenAI choose foods independently. |
+| 90% overall SaaS launch progress | The product is beyond the foundation stage, but still needs business, legal, monitoring, and real-user operating proof. | Beta-user proof, final trust/legal review, production monitoring freshness, and payment/subscription or beta-limit enforcement. |
+
+Today the honest answer is: NutriTail is not stuck at 78-80%. It is in the
+88-90% launch-hardening band. The remaining points are deliberately harder
+because they require real customer proof, not only code quality.
+
 Customer UX readiness is the number to use when the question is "does a normal
 pet owner experience the site as simple, beautiful, and complete?". It has moved
 above the old 80-82% band because a logged-in live browser journey now proves

@@ -1132,6 +1132,59 @@ export default function FoodV2LiveQaPage() {
             </p>
 
             <div
+              className="mt-4 rounded-xl border border-slate-200 bg-white/85 p-4 text-slate-950"
+              data-testid="customer-progress-ladder"
+            >
+              <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Progress ladder</p>
+                  <p className="mt-1 text-sm text-slate-700">
+                    This is why the score can look flat even while the product
+                    improves: each band needs stronger proof than the previous one.
+                  </p>
+                </div>
+                <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-800">
+                  Current band: 88-90% launch hardening
+                </span>
+              </div>
+              <div className="mt-4 grid gap-3 lg:grid-cols-4">
+                {[
+                  {
+                    label: "Old foundation",
+                    value: "78-80%",
+                    copy: "Passed. Do not treat this as the current state.",
+                  },
+                  {
+                    label: "Customer UX",
+                    value: productProgress.customerUxEstimate,
+                    copy: "Controlled journey proof exists; beta-user proof unlocks the next move.",
+                  },
+                  {
+                    label: "Engine beta confidence",
+                    value: productProgress.recommendationEngineEstimate,
+                    copy: "Food V2, rules, OpenAI extraction, and dog/cat QA are beta-candidate.",
+                  },
+                  {
+                    label: "SaaS launch",
+                    value: productProgress.overallSaasEstimate,
+                    copy: "Needs business enforcement, trust/legal review, monitoring, and beta feedback.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-600">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-xl font-black">{item.value}</p>
+                    <p className="mt-2 text-xs leading-5 text-slate-700">{item.copy}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div
               className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-indigo-950"
               data-testid="customer-progress-proof-gate"
             >

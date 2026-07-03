@@ -12,6 +12,15 @@ adds internal code.
 - Next honest unlock: real beta-user proof across dog, cat, and returning
   saved-pet journeys without manual help.
 
+## Progress Ladder
+
+| Band | Meaning | Honest next unlock |
+| --- | --- | --- |
+| 78-80% | Old foundation stage: routes, auth, data architecture, and first chatbot logic existed but the customer journey was not yet proven. | Already passed. Do not keep reporting this as the current state. |
+| 88% Customer UX | Controlled production proof covers the customer journey from intake to saved plan, report, timeline, and returning progress. | Three real beta users complete the same flow without manual help. |
+| 90% SaaS launch | The wider product has strong automated QA, trust pages, auth recovery, monitoring contracts, and beta direction. | Business enforcement, final legal/trust review, fresh monitoring, and beta feedback loop. |
+| 95%+ launch candidate | Real users have completed the core journeys and recurring issues are captured in analytics/feedback. | Paid launch operations and ongoing support readiness. |
+
 ## Track Audit
 
 | Track | State | Current proof | Next proof needed |
