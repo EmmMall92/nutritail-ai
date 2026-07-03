@@ -164,6 +164,15 @@ assert(
   "Account dashboard must generate a current plan snapshot from the latest saved analysis."
 );
 assert(
+  accountPage.includes("type AccountHomeBrief") &&
+    accountPage.includes("function getAccountHomeBrief") &&
+    accountPage.includes('data-testid="account-home-brief"') &&
+    accountPage.includes("accountHomeBrief.cards.map") &&
+    accountPage.includes("accountHomeBrief.reportHref") &&
+    accountPage.includes("accountHomeBrief.progressHref"),
+  "Account dashboard must show a compact home-use brief with report and progress actions."
+);
+assert(
   accountPage.includes('data-testid="account-latest-activity-strip"'),
   "Account dashboard must expose the latest activity strip."
 );

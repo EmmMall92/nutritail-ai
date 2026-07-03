@@ -106,6 +106,20 @@ type AccountPlanSnapshot = {
   alternativeHref: string;
 };
 
+type AccountHomeBriefCard = {
+  label: string;
+  value: string;
+  detail: string;
+};
+
+type AccountHomeBrief = {
+  title: string;
+  subtitle: string;
+  reportHref: string;
+  progressHref: string;
+  cards: AccountHomeBriefCard[];
+};
+
 type AccountPlanWatchItem = {
   label: string;
   detail: string;
@@ -254,6 +268,70 @@ function getAccountPlanSnapshot({
     reportHref: `/print/pet-report/${latestPet.id}`,
     timelineHref: `/print/pet-timeline/${latestPet.id}`,
     alternativeHref: `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`,
+  };
+}
+
+function getAccountHomeBrief({
+  latestPet,
+  latestAnalysis,
+}: {
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+}): AccountHomeBrief | null {
+  if (!latestPet || !latestAnalysis) return null;
+
+  const foodName = getAnalysisFoodName(latestAnalysis);
+  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
+  const treatCalories =
+    typeof latestAnalysis.mer === "number" && Number.isFinite(latestAnalysis.mer)
+      ? Math.round(latestAnalysis.mer * 0.1)
+      : null;
+  const mainFoodCalories =
+    treatCalories !== null && typeof latestAnalysis.mer === "number"
+      ? Math.max(0, latestAnalysis.mer - treatCalories)
+      : null;
+
+  return {
+    title: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03c3\u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9",
+    subtitle:
+      "\u0397 \u03c0\u03b9\u03bf \u03b1\u03c0\u03bb\u03ae \u03ad\u03ba\u03b4\u03bf\u03c3\u03b7 \u03c4\u03bf\u03c5 \u03c0\u03bb\u03ac\u03bd\u03bf\u03c5 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b7 \u03c7\u03b1\u03b8\u03b5\u03af \u03b7 \u03c0\u03c1\u03ac\u03be\u03b7.",
+    reportHref: `/print/pet-report/${latestPet.id}`,
+    progressHref: `/account/chatbot?petId=${latestPet.id}&mode=progress`,
+    cards: [
+      {
+        label: "\u03a4\u03c1\u03bf\u03c6\u03ae",
+        value:
+          foodName ??
+          "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae",
+        detail: foodName
+          ? "\u0391\u03c5\u03c4\u03ae \u03b5\u03af\u03bd\u03b1\u03b9 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03c0\u03bf\u03c5 \u03ba\u03c1\u03b1\u03c4\u03ae\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03b7\u03bd \u03c4\u03b5\u03bb\u03b5\u03c5\u03c4\u03b1\u03af\u03b1 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7."
+          : "\u0391\u03bd\u03bf\u03af\u03be\u03b5 \u03c4\u03bf chatbot \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9 \u03bc\u03af\u03b1 \u03c3\u03c5\u03b3\u03ba\u03b5\u03ba\u03c1\u03b9\u03bc\u03ad\u03bd\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae.",
+      },
+      {
+        label: "\u03a0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1",
+        value: feedingGrams
+          ? `${feedingGrams}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
+          : formatDailyCalories(latestAnalysis.mer),
+        detail: feedingGrams
+          ? "\u03a7\u03ce\u03c1\u03b9\u03c3\u03ad \u03c4\u03bf \u03c3\u03b5 2-3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1 \u03ba\u03b1\u03b9 \u03bc\u03b7\u03bd \u03b1\u03bb\u03bb\u03ac\u03b6\u03b5\u03b9\u03c2 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03bc\u03ad\u03c1\u03b1."
+          : "\u039f\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b5\u03c2, \u03b1\u03bb\u03bb\u03ac \u03bb\u03b5\u03af\u03c0\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 kcal/100g \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
+      },
+      {
+        label: "\u039b\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
+        value: treatCalories
+          ? `\u03ad\u03c9\u03c2 ${treatCalories} kcal`
+          : "\u03ad\u03c9\u03c2 10%",
+        detail: mainFoodCalories
+          ? `\u039a\u03c1\u03ac\u03c4\u03b1 \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${mainFoodCalories} kcal \u03b3\u03b9\u03b1 \u03c4\u03b7\u03bd \u03ba\u03cd\u03c1\u03b9\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae.`
+          : "\u039c\u03b9\u03ba\u03c1\u03cc \u03bc\u03ad\u03c1\u03bf\u03c2 \u03c4\u03b7\u03c2 \u03b7\u03bc\u03ad\u03c1\u03b1\u03c2, \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b7\u03bd \u03c7\u03b1\u03bb\u03ac\u03b5\u03b9 \u03bf \u03b8\u03b5\u03c1\u03bc\u03b9\u03b4\u03b9\u03ba\u03cc\u03c2 \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2.",
+      },
+      {
+        label: "\u0395\u03c0\u03b1\u03bd\u03ad\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2",
+        value: "2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2",
+        detail:
+          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b7 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae.",
+      },
+    ],
   };
 }
 
@@ -803,6 +881,10 @@ export default function AccountPage() {
     latestPet,
     latestAnalysis,
   });
+  const accountHomeBrief = getAccountHomeBrief({
+    latestPet,
+    latestAnalysis,
+  });
   const accountPlanWatchlist = getAccountPlanWatchlist({
     latestPet,
     latestAnalysis,
@@ -974,6 +1056,55 @@ export default function AccountPage() {
           ))}
         </div>
       </div>
+
+      {accountHomeBrief && (
+        <div
+          className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm"
+          data-testid="account-home-brief"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                {accountHomeBrief.title}
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-black">
+                {accountHomeBrief.subtitle}
+              </h2>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Link
+                href={accountHomeBrief.reportHref}
+                className="rounded-xl bg-emerald-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
+              >
+                Πλήρης αναφορά
+              </Link>
+              <Link
+                href={accountHomeBrief.progressHref}
+                className="rounded-xl border border-emerald-300 px-4 py-3 text-center text-sm font-semibold text-emerald-950 transition hover:bg-emerald-50"
+              >
+                Έλεγχος προόδου
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {accountHomeBrief.cards.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-emerald-100 bg-emerald-50 p-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-bold text-emerald-950">{item.value}</p>
+                <p className="mt-2 text-sm leading-6 text-emerald-900">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {accountPlanSnapshot && (
         <div
