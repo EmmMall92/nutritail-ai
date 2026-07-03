@@ -368,6 +368,11 @@ const bannedExactCustomerStrings = [
   },
   {
     file: "app/account/page.tsx",
+    text: "transition plan",
+    reason: "Account dashboard should use Greek wording for the food-change plan.",
+  },
+  {
+    file: "app/account/page.tsx",
     text: "Δυνατό fit",
     reason: "Account dashboard should use fully Greek food-suitability wording.",
   },

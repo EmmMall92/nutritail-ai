@@ -941,7 +941,7 @@ export default function AccountPage() {
               Καλώς ήρθες, {customer.fullName}
             </h1>
             <p className="mt-2 max-w-3xl text-gray-600">
-              Ο προσωπικός σου πίνακας Nutritail AI για διατροφική καθοδήγηση,
+              Ο προσωπικός σου πίνακας NutriTail AI για διατροφική καθοδήγηση,
               αποθηκευμένα κατοικίδια, αναφορές και επόμενα βήματα.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">
@@ -1002,7 +1002,7 @@ export default function AccountPage() {
               {"\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03bd\u03b1 \u03b4\u03b5\u03b9\u03c2 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf"}
             </p>
             <p className="mt-1 leading-5 text-emerald-800">
-              {"\u0386\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03b3\u03b9\u03b1 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2, \u03c4\u03c1\u03bf\u03c6\u03ae, \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03ba\u03b1\u03b9 transition plan."}
+              {"Άνοιξε την αναφορά για θερμίδες, τροφή, γραμμάρια και πλάνο αλλαγής τροφής."}
             </p>
           </div>
           <div className="rounded-2xl border border-amber-100 bg-white p-4 text-amber-950">
