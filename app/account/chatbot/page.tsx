@@ -434,6 +434,30 @@ const savedPetDecisionGuide: {
   },
 ];
 
+const savedPetContinuationPrepChecklist = [
+  {
+    label: "\u039d\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2",
+    helper:
+      "\u0393\u03b9\u03b1 progress check \u03ae \u03b1\u03bd \u03b4\u03b5\u03bd \u03b5\u03af\u03b4\u03b5\u03c2 \u03b1\u03c0\u03bf\u03c4\u03ad\u03bb\u03b5\u03c3\u03bc\u03b1.",
+    labelEn: "Current weight",
+    helperEn: "For progress checks or when the plan did not move the result.",
+  },
+  {
+    label: "\u0393\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 & \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
+    helper:
+      "\u03a0\u03cc\u03c3\u03bf \u03c4\u03c1\u03ce\u03b5\u03b9 \u03c3\u03c4\u03b7\u03bd \u03c0\u03c1\u03ac\u03be\u03b7, \u03cc\u03c7\u03b9 \u03bc\u03cc\u03bd\u03bf \u03c4\u03bf \u03b1\u03c1\u03c7\u03b9\u03ba\u03cc \u03c0\u03bb\u03ac\u03bd\u03bf.",
+    labelEn: "Grams & treats",
+    helperEn: "What the pet actually eats, not only the first plan.",
+  },
+  {
+    label: "\u0393\u03b5\u03cd\u03c3\u03b7 / \u03b5\u03c4\u03b1\u03b9\u03c1\u03b5\u03af\u03b1",
+    helper:
+      "\u0391\u03bd \u03b2\u03b1\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5, \u03b4\u03b5\u03bd \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ae \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ac\u03bb\u03bb\u03b7 \u03c0\u03c1\u03bf\u03c4\u03b5\u0390\u03bd\u03b7.",
+    labelEn: "Flavor or brand",
+    helperEn: "If taste, brand, or protein preference changed.",
+  },
+];
+
 const KNOWN_FOOD_BRANDS = [
   "royal canin",
   "ambrosia",
@@ -6058,6 +6082,33 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 >
                   {botText("Ιστορικό", "Timeline")}
                 </a>
+              </div>
+            </div>
+
+            <div
+              data-testid="saved-pet-continuation-prep-checklist"
+              className="mt-4 rounded-2xl border border-blue-200 bg-white p-4"
+            >
+              <p className="text-sm font-semibold text-blue-950">
+                {botText(
+                  "\u03a4\u03b9 \u03bd\u03b1 \u03ad\u03c7\u03b5\u03b9\u03c2 \u03c0\u03c1\u03cc\u03c7\u03b5\u03b9\u03c1\u03bf",
+                  "What to have ready"
+                )}
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
+                {savedPetContinuationPrepChecklist.map((item) => (
+                  <div
+                    key={item.labelEn}
+                    className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-3"
+                  >
+                    <span className="block text-sm font-semibold text-blue-950">
+                      {botText(item.label, item.labelEn)}
+                    </span>
+                    <span className="mt-1 block text-sm leading-5 text-blue-900">
+                      {botText(item.helper, item.helperEn)}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
