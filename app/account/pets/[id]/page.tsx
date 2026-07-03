@@ -925,6 +925,36 @@ export default function AccountPetDetailPage() {
               </div>
             </div>
 
+            <div
+              className="mt-4 rounded-xl border border-green-200 bg-white p-4"
+              data-testid="pet-profile-calorie-explainer"
+            >
+              <p className="text-sm font-semibold text-black">
+                Τι σημαίνουν αυτές οι θερμίδες
+              </p>
+              <div className="mt-3 grid gap-3 text-sm text-gray-700 md:grid-cols-2">
+                <div className="rounded-lg bg-green-50 p-3">
+                  <p className="font-semibold text-green-950">Θερμίδες ηρεμίας</p>
+                  <p className="mt-1">
+                    Είναι η βασική ενέργεια που χρειάζεται το σώμα σε πλήρη
+                    ηρεμία. Δεν είναι η τελική ποσότητα που ταΐζουμε.
+                  </p>
+                </div>
+                <div className="rounded-lg bg-lime-50 p-3">
+                  <p className="font-semibold text-lime-950">Ημερήσιος στόχος</p>
+                  <p className="mt-1">
+                    Είναι ο πρακτικός στόχος της ημέρας, αφού υπολογιστούν
+                    ηλικία, βάρος, δραστηριότητα, στείρωση και στόχος βάρους.
+                  </p>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-gray-600">
+                Η ποσότητα σε γραμμάρια εξαρτάται από τις θερμίδες της τροφής
+                που επιλέχθηκε, γι&apos; αυτό την κρατάμε μαζί με τη συγκεκριμένη
+                τροφή.
+              </p>
+            </div>
+
             <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div className="rounded-xl border border-green-200 bg-white p-4">
                 <p className="text-sm font-semibold text-black">Στοιχεία τροφής</p>

@@ -13,6 +13,7 @@ function read(path: string) {
 const accountPage = read("app/account/page.tsx");
 const betaAccessPlan = read("lib/beta/accessPlan.ts");
 const petsPage = read("app/account/pets/page.tsx");
+const petDetailPage = read("app/account/pets/[id]/page.tsx");
 const packageJson = read("package.json");
 
 const customerFacingSources = [
@@ -234,6 +235,17 @@ assert(
   petsPage.includes("/print/pet-report/") &&
     petsPage.includes("/print/pet-timeline/"),
   "Pets dashboard must expose report and timeline actions for saved pets."
+);
+
+assert(
+  petDetailPage.includes('data-testid="pet-profile-calorie-explainer"') &&
+    petDetailPage.includes("Τι σημαίνουν αυτές οι θερμίδες") &&
+    petDetailPage.includes("Θερμίδες ηρεμίας") &&
+    petDetailPage.includes("Δεν είναι η τελική ποσότητα που ταΐζουμε.") &&
+    petDetailPage.includes("Ημερήσιος στόχος") &&
+    petDetailPage.includes("ηλικία, βάρος, δραστηριότητα, στείρωση και στόχος βάρους") &&
+    petDetailPage.includes("Η ποσότητα σε γραμμάρια εξαρτάται από τις θερμίδες της τροφής"),
+  "Pet detail page must explain resting calories, final daily target, and why grams depend on the selected food."
 );
 
 const customerVisibleEnglishActionCopy = [
