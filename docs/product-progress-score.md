@@ -431,9 +431,11 @@ These are the most likely moves from **88% Customer UX readiness** toward a real
    chatbot, recommendation, food button, grams/day, save, report, and return
    progress so the controlled QA pet proof becomes broader customer proof.
    Track this with `qa:beta-user-proof-contract` and the ignored
-   `.qa-secrets/beta-user-proof.json` evidence file. Use the `/admin/activity`
-   beta proof recruiting board to pick one dog owner, one cat owner, and one
-   returning saved-pet user from the waitlist.
+   `.qa-secrets/beta-user-proof.json` evidence file. Use
+   `docs/beta-user-session-playbook.md` during the session so "no manual help"
+   is measured consistently, then use the `/admin/activity` beta proof
+   recruiting board to pick one dog owner, one cat owner, and one returning
+   saved-pet user from the waitlist.
 2. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
 3. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
@@ -453,6 +455,11 @@ normal customer can complete the flow without manual explanation.
 | Returning pet proof | completed to 87% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with progress check, no-result follow-up, flavour/brand change, new food recommendation route, and timeline review for the same saved pet in production. |
 | Report/account proof | completed to 88% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with account, pet profile, printable report, timeline, and progress clarity for the same saved pet in production. |
 | Real beta-user proof | 88-90% Customer UX readiness | At least three beta users complete signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, and feedback without manual help. The set must include one `dog_owner`, one `cat_owner`, and one `returning_saved_pet` journey. `qa:beta-user-proof-contract` must report PASS before this moves the score. |
+
+The session-level operating proof is defined in
+`docs/beta-user-session-playbook.md`. It keeps the score from moving on vague
+positive feedback alone: a beta session needs factual evidence, a journey type,
+and no manual explanation.
 
 ## Overall SaaS Blockers
 

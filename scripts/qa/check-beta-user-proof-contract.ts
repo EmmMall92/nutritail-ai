@@ -115,6 +115,7 @@ function evaluateEntry(entry: BetaUserProofEntry) {
 
 const docs = read("docs/beta-user-proof.md");
 const testCard = read("docs/beta-user-test-card.md");
+const sessionPlaybook = read("docs/beta-user-session-playbook.md");
 const template = read(templateFile);
 const packageJson = read("package.json");
 const productProgress = read("docs/product-progress-score.md");
@@ -130,6 +131,10 @@ for (const marker of [
 ]) {
   assert(docs.includes(marker), `Beta user proof doc is missing marker: ${marker}`);
   assert(testCard.includes(marker), `Beta user test card is missing marker: ${marker}`);
+  assert(
+    sessionPlaybook.includes(marker),
+    `Beta user session playbook is missing marker: ${marker}`,
+  );
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
 }
 
@@ -152,12 +157,25 @@ assert(
 
 assert(
   docs.includes("docs/beta-user-test-card.md") &&
+    docs.includes("docs/beta-user-session-playbook.md") &&
     testCard.includes("What The Tester Should Do") &&
     testCard.includes("without a developer, admin, or pet-shop expert") &&
     testCard.includes("Good evidence note") &&
     testCard.includes("Weak evidence note") &&
     testCard.includes("Only a `PASS` result should justify moving Customer UX readiness from 88%"),
   "Beta user proof docs must include a practical test card for collecting real beta-user evidence.",
+);
+
+assert(
+  sessionPlaybook.includes("Moderator Rules") &&
+    sessionPlaybook.includes("not guide the product") &&
+    sessionPlaybook.includes("Decision After Each Session") &&
+    sessionPlaybook.includes("final chatbot experience") &&
+    sessionPlaybook.includes("food recommendation accuracy") &&
+    sessionPlaybook.includes("business layer") &&
+    sessionPlaybook.includes("Only `qa:beta-user-proof-contract` returning `PASS` should justify moving") &&
+    productProgress.includes("docs/beta-user-session-playbook.md"),
+  "Beta user session playbook must define moderator rules, outcomes, launch-track follow-up, and the score rule.",
 );
 
 assert(
