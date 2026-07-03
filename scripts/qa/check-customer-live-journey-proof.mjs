@@ -11,6 +11,11 @@ const authCookieFile =
 const defaultManualProofFile = ".qa-secrets/customer-live-journey-proof.json";
 const manualProofFile =
   process.env.NUTRITAIL_QA_MANUAL_PROOF_FILE?.trim() || defaultManualProofFile;
+const manualProofDraftFile =
+  process.env.NUTRITAIL_QA_MANUAL_PROOF_DRAFT_FILE?.trim() ||
+  ".qa-secrets/customer-live-journey-proof.draft.json";
+const shouldWriteManualProofDraft =
+  process.env.NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT === "1";
 
 const sampleMessage =
   "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7 \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.";
@@ -218,6 +223,46 @@ function renderJourneyTable(journeys) {
   ].join("\n");
 }
 
+function buildManualProofDraft(manualJourneyResults) {
+  return Object.fromEntries(
+    manualJourneyResults.map((journey) => [
+      journey.key,
+      {
+        passed: false,
+        required_terms: manualJourneyRequirements[journey.key].requiredTerms,
+        evidence: [
+          `TODO: replace this with live browser evidence that includes: ${manualJourneyRequirements[
+            journey.key
+          ].requiredTerms.join(", ")}`,
+        ],
+      },
+    ]),
+  );
+}
+
+function writeManualProofDraft(manualJourneyResults) {
+  if (!shouldWriteManualProofDraft) {
+    return {
+      wrote: false,
+      path: manualProofDraftFile,
+      note: "Set NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT=1 to create a local draft proof file.",
+    };
+  }
+
+  mkdirSync(path.dirname(manualProofDraftFile), { recursive: true });
+  writeFileSync(
+    manualProofDraftFile,
+    `${JSON.stringify(buildManualProofDraft(manualJourneyResults), null, 2)}\n`,
+    "utf8",
+  );
+
+  return {
+    wrote: true,
+    path: manualProofDraftFile,
+    note: `Wrote local draft proof file at ${manualProofDraftFile}. Keep it ignored and replace TODO notes only with real browser evidence.`,
+  };
+}
+
 async function main() {
   const authCookie = loadAuthCookie();
   const manualProof = loadManualJourneyProof();
@@ -294,6 +339,7 @@ async function main() {
     };
   });
   const manualJourneysPassed = manualJourneyResults.every((journey) => journey.status === "manual-pass");
+  const manualProofDraft = writeManualProofDraft(manualJourneyResults);
   const missingManualProofKeys = manualJourneyResults
     .filter((journey) => journey.status !== "manual-pass")
     .map((journey) => journey.key);
@@ -386,6 +432,7 @@ async function main() {
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
       `- Manual browser journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
       `- Missing manual proof keys: ${missingManualProofKeys.length > 0 ? missingManualProofKeys.join(", ") : "none"}`,
+      `- Manual proof draft: ${manualProofDraft.wrote ? manualProofDraft.path : "not written"}`,
       "",
       "## Results",
       "",
@@ -411,8 +458,9 @@ async function main() {
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
-      "4. Copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json` and record only evidence that really passed.",
-      "5. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 83%.",
+      "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
+      "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
+      "6. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 83%.",
     ].join("\n") + "\n",
     "utf8",
   );
@@ -435,6 +483,8 @@ async function main() {
         missing_manual_proof_keys: missingManualProofKeys,
         auth_cookie_source: authCookie.source,
         manual_proof_source: manualProof.source,
+        manual_proof_draft_written: manualProofDraft.wrote,
+        manual_proof_draft_path: manualProofDraft.path,
         report: reportPath,
       },
       null,

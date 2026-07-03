@@ -88,6 +88,26 @@ checks those terms so a vague note such as "looks good" cannot unlock
 | `open_timeline` | `timeline`, `same saved pet`, `plan`, `progress` |
 | `return_for_progress` | `same saved pet`, `progress`, `without restarting` |
 
+To avoid typing the keys by hand, you can ask the runner to create a local
+ignored draft:
+
+```powershell
+$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT="1"
+npm.cmd run qa:customer-live-journey-proof
+Remove-Item Env:\NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT
+```
+
+This writes:
+
+```txt
+.qa-secrets/customer-live-journey-proof.draft.json
+```
+
+Rename or copy it to `.qa-secrets/customer-live-journey-proof.json` only after
+the browser journey really passed and each TODO note has been replaced with
+evidence from the live page. The draft is a checklist helper, not proof by
+itself.
+
 ## Status Meaning
 
 - `SKIP_AUTH`: API recommendation proof ran, but logged-in production proof is missing.
