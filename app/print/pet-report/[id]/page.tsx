@@ -1088,7 +1088,7 @@ export default function PrintablePetReportPage() {
   const reportHandoffStrip = getReportHandoffStrip(latestAnalysis, mealSplit);
   const reportNextActionHelper = [
     {
-      title: "\u03a0\u03cc\u03c4\u03b5 \u03ba\u03ac\u03bd\u03c9 progress check",
+      title: "Πότε κάνω έλεγχο προόδου",
       detail:
         "\u039c\u03b5\u03c4\u03ac \u03b1\u03c0\u03cc 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2, \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03b1\u03bb\u03bb\u03b1\u03b3\u03ad\u03c2 \u03c3\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ae \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1.",
     },
@@ -2047,7 +2047,7 @@ export default function PrintablePetReportPage() {
                 Τι φέρνεις στον επόμενο έλεγχο
               </p>
               <h2 className="mt-1 text-2xl font-bold text-indigo-950">
-                Progress kit για να μη μαντεύουμε την επόμενη φορά
+                Σημείωμα για τον επόμενο έλεγχο
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-indigo-900">
