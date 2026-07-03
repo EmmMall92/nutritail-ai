@@ -44,15 +44,26 @@ whole flow:
 - feedback
 - no manual help
 
+Each entry must also include one of these `journey_type` values:
+
+- `dog_owner`
+- `cat_owner`
+- `returning_saved_pet`
+
+The score should not move with three nearly identical tests. The proof needs one
+dog owner, one cat owner, and one returning saved-pet user so the main customer
+journeys are covered.
+
 The runner rejects TODO, placeholder, draft, or example notes.
 
 ## Suggested Minimum
 
 For the next score move, collect at least three real beta journeys:
 
-1. one dog owner
-2. one cat owner
+1. one dog owner (`journey_type: "dog_owner"`)
+2. one cat owner (`journey_type: "cat_owner"`)
 3. one returning saved-pet user who comes back for progress or a new food
+   (`journey_type: "returning_saved_pet"`)
 
 The proof is not about perfect scientific accuracy. That is covered by the
 Food V2 and recommendation QA banks. This proof is about whether the online
@@ -63,7 +74,8 @@ customer experience is understandable enough to use.
 - `PENDING`: no real beta proof file exists yet, or fewer than three users have
   complete evidence.
 - `PASS`: at least three beta users completed the full journey with usable
-  feedback and no manual help.
+  feedback and no manual help, including one dog owner, one cat owner, and one
+  returning saved-pet user.
 - `REVIEW`: a local proof file exists, but one or more entries has vague,
   placeholder, or incomplete evidence.
 

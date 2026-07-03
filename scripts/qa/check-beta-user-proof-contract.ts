@@ -3,6 +3,7 @@ import path from "node:path";
 
 type BetaUserProofEntry = {
   label?: string;
+  journey_type?: string;
   passed?: boolean;
   evidence?: string[];
 };
@@ -31,6 +32,24 @@ const flexibleTermGroups = [
   ["timeline", "progress"],
 ];
 
+const requiredJourneyTypes = [
+  {
+    type: "dog_owner",
+    label: "dog owner journey",
+    aliases: ["dog", "dog owner", "σκυλος", "σκύλος", "σκυλι", "σκύλι"],
+  },
+  {
+    type: "cat_owner",
+    label: "cat owner journey",
+    aliases: ["cat", "cat owner", "γατα", "γάτα", "γατι", "γατί"],
+  },
+  {
+    type: "returning_saved_pet",
+    label: "returning saved-pet journey",
+    aliases: ["returning", "saved pet", "progress", "timeline", "ξανα", "προοδο", "πρόοδο"],
+  },
+];
+
 const placeholderPatterns = [
   /\btodo\b/i,
   /replace with real evidence/i,
@@ -57,6 +76,13 @@ function parseProof(raw: string): BetaUserProofEntry[] {
 function evaluateEntry(entry: BetaUserProofEntry) {
   const evidence = Array.isArray(entry.evidence) ? entry.evidence.filter(Boolean) : [];
   const evidenceText = evidence.join(" ").toLowerCase();
+  const journeyText = `${entry.journey_type ?? ""} ${entry.label ?? ""} ${evidenceText}`.toLowerCase();
+  const journeyType =
+    requiredJourneyTypes.find(
+      (journey) =>
+        entry.journey_type === journey.type ||
+        journey.aliases.some((alias) => journeyText.includes(alias)),
+    )?.type ?? "unknown";
   const missingRequiredTerms = requiredTerms.filter(
     (term) => !evidenceText.includes(term.toLowerCase()),
   );
@@ -68,6 +94,7 @@ function evaluateEntry(entry: BetaUserProofEntry) {
   );
   const ok =
     entry.passed === true &&
+    journeyType !== "unknown" &&
     evidence.length > 0 &&
     missingRequiredTerms.length === 0 &&
     missingFlexibleGroups.length === 0 &&
@@ -76,6 +103,7 @@ function evaluateEntry(entry: BetaUserProofEntry) {
   return {
     label: entry.label || "unnamed beta user",
     ok,
+    journeyType,
     evidenceCount: evidence.length,
     missingTerms: [...missingRequiredTerms, ...missingFlexibleGroups],
     hasPlaceholderEvidence,
@@ -101,6 +129,14 @@ for (const marker of [
 ]) {
   assert(docs.includes(marker), `Beta user proof doc is missing marker: ${marker}`);
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
+}
+
+for (const journey of requiredJourneyTypes) {
+  assert(docs.includes(journey.type), `Beta user proof doc is missing journey type: ${journey.type}`);
+  assert(
+    template.includes(`"journey_type": "${journey.type}"`),
+    `Beta user proof template is missing journey type: ${journey.type}`,
+  );
 }
 
 assert(
@@ -145,7 +181,15 @@ const reviewUsers = results.filter(
     result.evidenceCount > 0 &&
     (!result.ok || result.hasPlaceholderEvidence || result.missingTerms.length > 0),
 );
-const status = passedUsers.length >= 3 ? "PASS" : reviewUsers.length > 0 ? "REVIEW" : "PENDING";
+const missingJourneyTypes = requiredJourneyTypes
+  .filter((journey) => !passedUsers.some((result) => result.journeyType === journey.type))
+  .map((journey) => journey.label);
+const status =
+  passedUsers.length >= 3 && missingJourneyTypes.length === 0
+    ? "PASS"
+    : reviewUsers.length > 0
+      ? "REVIEW"
+      : "PENDING";
 
 mkdirSync(path.dirname(reportPath), { recursive: true });
 writeFileSync(
@@ -165,6 +209,13 @@ writeFileSync(
     `- Beta users verified: ${passedUsers.length}`,
     `- Beta users needing review: ${reviewUsers.length}`,
     `- Minimum for next score move: 3 complete beta journeys`,
+    `- Missing required journey types: ${missingJourneyTypes.join(", ") || "-"}`,
+    "",
+    "## Required Journey Types",
+    "",
+    "- dog owner journey",
+    "- cat owner journey",
+    "- returning saved-pet journey",
     "",
     "## Required Evidence",
     "",
@@ -181,15 +232,15 @@ writeFileSync(
     "",
     "## Beta Users",
     "",
-    "| User | Status | Evidence notes | Missing terms |",
-    "| --- | --- | --- | --- |",
+    "| User | Journey | Status | Evidence notes | Missing terms |",
+    "| --- | --- | --- | --- | --- |",
     ...(results.length > 0
       ? results.map(
           (result) =>
-            `| ${result.label} | ${result.ok ? "pass" : "review"} | ${result.note}${result.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""} | ${result.missingTerms.join(", ") || "-"} |`,
+            `| ${result.label} | ${result.journeyType} | ${result.ok ? "pass" : "review"} | ${result.note}${result.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""} | ${result.missingTerms.join(", ") || "-"} |`,
         )
       : [
-          "| none yet | pending | Add real beta-user proof to `.qa-secrets/beta-user-proof.json`. | signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help |",
+          "| none yet | unknown | pending | Add real beta-user proof to `.qa-secrets/beta-user-proof.json`. | signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help |",
         ]),
     "",
     "## Next Action",
@@ -208,6 +259,7 @@ console.log(
       proofSource,
       betaUsersVerified: passedUsers.length,
       betaUsersNeedingReview: reviewUsers.length,
+      missingJourneyTypes,
       report: reportPath,
     },
     null,
