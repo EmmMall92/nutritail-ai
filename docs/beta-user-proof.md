@@ -32,7 +32,9 @@ Copy-Item docs/beta-user-proof.template.json .qa-secrets/beta-user-proof.json
 
 Use `docs/beta-user-test-card.md` during the actual beta session. It gives the
 tester flow, the minimum evidence checklist, and examples of strong versus weak
-proof notes.
+proof notes. Use `docs/beta-user-session-playbook.md` as the moderator runbook:
+it explains what the moderator may say, what counts as no manual help, and how
+to turn review/fail sessions into follow-up work across the ten launch tracks.
 
 For each beta user, keep `passed: true` only if the evidence note proves the
 whole flow:
@@ -84,3 +86,10 @@ customer experience is understandable enough to use.
   placeholder, or incomplete evidence.
 
 Only `PASS` should justify moving Customer UX from 88% toward 90%.
+
+## Operating Rule
+
+The proof file is evidence, not a wish list. If a tester needed manual help,
+mark that entry as `passed: false` even if the feedback was positive. If a
+tester completed the journey but found confusing copy, keep the entry factual
+and create a follow-up task from the session playbook.
