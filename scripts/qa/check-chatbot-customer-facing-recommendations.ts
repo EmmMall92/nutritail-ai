@@ -739,7 +739,7 @@ const requiredCardFlowCopy = [
   "Another suitable option if you want a different direction.",
   "Your nutrition plan is ready:",
   "Daily calorie guide",
-  "Resting need:",
+  "Resting calories:",
   "Final daily target:",
   "Γράψε μια ρεαλιστική ηλικία σε χρόνια",
   "Preparing reply...",
