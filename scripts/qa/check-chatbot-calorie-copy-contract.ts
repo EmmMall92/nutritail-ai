@@ -7,12 +7,16 @@ const reportPath =
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 
 const requiredCustomerPhrases = [
-  "Daily calorie guide",
-  "Resting calories",
-  "This is the basic energy the body needs at complete rest.",
-  "Final daily target:",
-  "This is the practical target for the day",
-  "The food cards below are the next step. Choose one option to calculate grams/day.",
+  "Calories in plain language",
+  "Basic body calories",
+  "This is the energy the body roughly needs before activity and weight goal are added.",
+  "Daily calories for this plan:",
+  "This is the practical daily amount",
+  "Now choose one food card below and I will calculate grams/day to complete the plan.",
+  "Με απλά λόγια για τις θερμίδες",
+  "Βασικές θερμίδες σώματος",
+  "Ημερήσιες θερμίδες για το πλάνο:",
+  "Τώρα διάλεξε μία κάρτα τροφής",
 ];
 
 const forbiddenCustomerPhrases = [
@@ -22,6 +26,14 @@ const forbiddenCustomerPhrases = [
   "Your first nutrition analysis is ready:",
   "Key notes:",
   "Recommended foods:",
+  "Daily calorie guide",
+  "Resting calories:",
+  "Final daily target:",
+  "The food cards below are the next step. Choose one option to calculate grams/day.",
+  "Οδηγός ημερήσιων θερμίδων",
+  "Θερμίδες ηρεμίας:",
+  "Τελικός ημερήσιος στόχος:",
+  "Οι κάρτες τροφών παρακάτω είναι το επόμενο βήμα.",
 ];
 
 const failures: string[] = [];
