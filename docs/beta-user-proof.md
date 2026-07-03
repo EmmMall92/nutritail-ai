@@ -30,6 +30,10 @@ Start from:
 Copy-Item docs/beta-user-proof.template.json .qa-secrets/beta-user-proof.json
 ```
 
+Use `docs/beta-user-test-card.md` during the actual beta session. It gives the
+tester flow, the minimum evidence checklist, and examples of strong versus weak
+proof notes.
+
 For each beta user, keep `passed: true` only if the evidence note proves the
 whole flow:
 
