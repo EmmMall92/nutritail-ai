@@ -162,6 +162,7 @@ const checks: ContractCheck[] = [
       "PASS_FULL",
       "manualProofFile",
       "manualJourneyResults",
+      "missingManualProofKeys",
       "food_choice_grams",
       "save_analysis",
       "open_report",
@@ -180,6 +181,19 @@ const checks: ContractCheck[] = [
       "customer-live-journey-proof.json",
       "food_choice_grams",
       "Only `PASS_FULL` should justify moving Customer UX above 83%",
+    ],
+  },
+  {
+    area: "Launch QA",
+    file: "docs/customer-live-journey-proof.template.json",
+    markers: [
+      "food_choice_grams",
+      "save_analysis",
+      "open_report",
+      "open_timeline",
+      "return_for_progress",
+      "passed",
+      "evidence",
     ],
   },
   {

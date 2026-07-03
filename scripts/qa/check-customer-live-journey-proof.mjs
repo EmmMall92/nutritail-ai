@@ -272,6 +272,9 @@ async function main() {
     };
   });
   const manualJourneysPassed = manualJourneyResults.every((journey) => journey.status === "manual-pass");
+  const missingManualProofKeys = manualJourneyResults
+    .filter((journey) => journey.status !== "manual-pass")
+    .map((journey) => journey.key);
   const passed = rows.filter((row) => row.result === "pass").length;
   const skipped = rows.filter((row) => row.result === "skip").length;
   const failed = rows.filter((row) => row.result === "fail").length;
@@ -360,6 +363,7 @@ async function main() {
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
       `- Manual browser journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
+      `- Missing manual proof keys: ${missingManualProofKeys.length > 0 ? missingManualProofKeys.join(", ") : "none"}`,
       "",
       "## Results",
       "",
@@ -385,7 +389,7 @@ async function main() {
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
-      "4. Record browser evidence in `.qa-secrets/customer-live-journey-proof.json` using the documented keys.",
+      "4. Copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json` and record only evidence that really passed.",
       "5. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 83%.",
     ].join("\n") + "\n",
     "utf8",
@@ -406,6 +410,7 @@ async function main() {
         manual_journeys_passed: manualJourneyResults.filter(
           (journey) => journey.status === "manual-pass",
         ).length,
+        missing_manual_proof_keys: missingManualProofKeys,
         auth_cookie_source: authCookie.source,
         manual_proof_source: manualProof.source,
         report: reportPath,

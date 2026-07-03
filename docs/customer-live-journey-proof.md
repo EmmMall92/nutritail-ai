@@ -43,7 +43,13 @@ After completing the browser part of the flow, create:
 .qa-secrets/customer-live-journey-proof.json
 ```
 
-Use this shape:
+Start from the committed template:
+
+```powershell
+Copy-Item docs/customer-live-journey-proof.template.json .qa-secrets/customer-live-journey-proof.json
+```
+
+Then keep only evidence that really passed in the live browser. Use this shape:
 
 ```json
 {
