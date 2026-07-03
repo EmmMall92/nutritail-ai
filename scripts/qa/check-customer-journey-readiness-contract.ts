@@ -155,6 +155,32 @@ const checks: ContractCheck[] = [
     ],
   },
   {
+    area: "Launch QA",
+    file: "scripts/qa/check-customer-live-journey-proof.mjs",
+    markers: [
+      "PASS_NON_DESTRUCTIVE",
+      "PASS_FULL",
+      "manualProofFile",
+      "manualJourneyResults",
+      "save_analysis",
+      "open_report",
+      "open_timeline",
+      "return_for_progress",
+      "update the Customer UX score above 83%",
+    ],
+  },
+  {
+    area: "Launch QA",
+    file: "docs/customer-live-journey-proof.md",
+    markers: [
+      "Customer Live Journey Proof",
+      "PASS_NON_DESTRUCTIVE",
+      "PASS_FULL",
+      "customer-live-journey-proof.json",
+      "Only `PASS_FULL` should justify moving Customer UX above 83%",
+    ],
+  },
+  {
     area: "Business layer",
     file: "app/account/page.tsx",
     markers: [

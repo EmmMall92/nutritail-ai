@@ -8,6 +8,9 @@ const reportPath =
 const defaultCookieFile = ".qa-secrets/nutritail-auth-cookie.txt";
 const authCookieFile =
   process.env.NUTRITAIL_QA_AUTH_COOKIE_FILE?.trim() || defaultCookieFile;
+const defaultManualProofFile = ".qa-secrets/customer-live-journey-proof.json";
+const manualProofFile =
+  process.env.NUTRITAIL_QA_MANUAL_PROOF_FILE?.trim() || defaultManualProofFile;
 
 const sampleMessage =
   "\u0388\u03c7\u03c9 \u03c3\u03ba\u03cd\u03bb\u03bf, \u03c4\u03b7 \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7, \u03b5\u03af\u03bd\u03b1\u03b9 6 \u03ba\u03b9\u03bb\u03ac, 6 \u03b5\u03c4\u03ce\u03bd, \u03c7\u03b1\u03bc\u03b7\u03bb\u03ae \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1, \u03c3\u03c4\u03b5\u03b9\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7. \u03a4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03bf\u03c4\u03cc\u03c0\u03bf\u03c5\u03bb\u03bf \u03ba\u03b1\u03b9 \u03b4\u03b5\u03bd \u03c4\u03b7\u03c2 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03c3\u03bf\u03bb\u03bf\u03bc\u03cc\u03c2.";
@@ -51,6 +54,48 @@ function loadAuthCookie() {
     note: fromFile
       ? "Cookie loaded from local ignored file."
       : `Cookie file ${authCookieFile} is empty.`,
+  };
+}
+
+function loadManualJourneyProof() {
+  if (!existsSync(manualProofFile)) {
+    return {
+      source: "missing",
+      note: `No manual proof file found at ${manualProofFile}.`,
+      proof: {},
+    };
+  }
+
+  try {
+    const proof = JSON.parse(readFileSync(manualProofFile, "utf8"));
+
+    return {
+      source: "NUTRITAIL_QA_MANUAL_PROOF_FILE",
+      note: "Manual browser journey proof loaded from local ignored file.",
+      proof: proof && typeof proof === "object" ? proof : {},
+    };
+  } catch (error) {
+    return {
+      source: "invalid",
+      note: `Manual proof file could not be parsed: ${
+        error instanceof Error ? error.message : "unknown JSON error"
+      }`,
+      proof: {},
+    };
+  }
+}
+
+function getManualProofStatus(proof, key) {
+  const entry = proof?.[key];
+  const evidence = Array.isArray(entry?.evidence) ? entry.evidence.filter(Boolean) : [];
+  const ok = entry?.passed === true && evidence.length > 0;
+
+  return {
+    ok,
+    evidenceCount: evidence.length,
+    note: ok
+      ? evidence.slice(0, 2).join("; ")
+      : "Needs browser proof with passed=true and at least one evidence note.",
   };
 }
 
@@ -147,6 +192,7 @@ function renderJourneyTable(journeys) {
 
 async function main() {
   const authCookie = loadAuthCookie();
+  const manualProof = loadManualJourneyProof();
   const rows = [];
 
   const chatbotPage = await fetchJson("/account/chatbot", {
@@ -207,6 +253,24 @@ async function main() {
     notes: `${recommendationShape.visibleCount} visible choices; premium ${recommendationShape.premiumCount}/3; value ${recommendationShape.valueCount}/3; first ${recommendationShape.firstFood || "-"}`,
   });
 
+  const manualJourneyKeys = {
+    save_analysis: "Save analysis",
+    open_report: "Open report",
+    open_timeline: "Open timeline",
+    return_for_progress: "Return for progress",
+  };
+  const manualJourneyResults = Object.entries(manualJourneyKeys).map(([key, name]) => {
+    const manualStatus = getManualProofStatus(manualProof.proof, key);
+
+    return {
+      key,
+      name,
+      status: manualStatus.ok ? "manual-pass" : "manual-required",
+      evidenceCount: manualStatus.evidenceCount,
+      note: manualStatus.note,
+    };
+  });
+  const manualJourneysPassed = manualJourneyResults.every((journey) => journey.status === "manual-pass");
   const passed = rows.filter((row) => row.result === "pass").length;
   const skipped = rows.filter((row) => row.result === "skip").length;
   const failed = rows.filter((row) => row.result === "fail").length;
@@ -214,43 +278,54 @@ async function main() {
     ["Authenticated chatbot page", "OpenAI fact extraction"].includes(row.step),
   );
   const authenticatedPassed = authenticatedSteps.every((row) => row.result === "pass");
-  const status = failed > 0 ? "REVIEW" : authenticatedPassed ? "PASS" : "SKIP_AUTH";
+  const nonDestructivePassed =
+    failed === 0 && authenticatedPassed && recommendationShape.ok;
+  const status =
+    failed > 0
+      ? "REVIEW"
+      : nonDestructivePassed && manualJourneysPassed
+        ? "PASS_FULL"
+        : nonDestructivePassed
+          ? "PASS_NON_DESTRUCTIVE"
+          : "SKIP_AUTH";
   const journeyProofs = [
     {
       name: "New pet recommendation",
-      status: recommendationShape.ok ? "partial-pass" : "review",
+      status: recommendationShape.ok ? "api-pass" : "review",
       proofNeeded:
         "Food V2 must return 3 first-choice cards and 3 budget-friendly alternatives; browser proof still needs food selection and grams/day.",
     },
     {
       name: "Save analysis",
-      status: "manual-required",
+      status: manualJourneyResults.find((journey) => journey.key === "save_analysis")?.status ?? "manual-required",
       proofNeeded:
         "Choose one food in the live chatbot, confirm grams/day, then save the analysis.",
     },
     {
       name: "Open report",
-      status: "manual-required",
+      status: manualJourneyResults.find((journey) => journey.key === "open_report")?.status ?? "manual-required",
       proofNeeded:
         "Open the printable report and confirm calories, selected food, grams/day, transition plan, and next action are clear.",
     },
     {
       name: "Open timeline",
-      status: "manual-required",
+      status: manualJourneyResults.find((journey) => journey.key === "open_timeline")?.status ?? "manual-required",
       proofNeeded:
         "Open the saved pet timeline and confirm the latest plan and progress context are visible.",
     },
     {
       name: "Return for progress",
-      status: "manual-required",
+      status: manualJourneyResults.find((journey) => journey.key === "return_for_progress")?.status ?? "manual-required",
       proofNeeded:
         "Return to the same saved pet and complete progress, no-result, or flavour/brand-change follow-up.",
     },
   ];
   const unlockImpact =
-    status === "PASS"
-      ? "This supports the non-destructive part of the first Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score."
-      : "This does not move Customer UX above 82% yet because logged-in production journey proof is still missing.";
+    status === "PASS_FULL"
+      ? "This supports moving Customer UX beyond 83% because authenticated extraction, recommendations, save, report, timeline, and returning progress have current proof."
+      : status === "PASS_NON_DESTRUCTIVE"
+        ? "This supports the non-destructive part of the Customer UX unlock. Manual save/report/timeline/progress proof is still required before raising the score above 83%."
+        : "This does not move Customer UX above 83% yet because logged-in production journey proof is still missing.";
 
   mkdirSync(path.dirname(reportPath), { recursive: true });
   writeFileSync(
@@ -273,9 +348,11 @@ async function main() {
       `- Skipped: ${skipped}`,
       `- Failed: ${failed}`,
       `- Auth cookie source: ${authCookie.source}`,
+      `- Manual proof source: ${manualProof.source}`,
       `- Unlock impact: ${unlockImpact}`,
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
+      `- Manual journeys passed: ${manualJourneyResults.filter((journey) => journey.status === "manual-pass").length}/${manualJourneyResults.length}`,
       "",
       "## Results",
       "",
@@ -287,13 +364,22 @@ async function main() {
       "",
       renderJourneyTable(journeyProofs),
       "",
+      "## Manual Browser Proof",
+      "",
+      "| Journey | Status | Evidence notes |",
+      "| --- | --- | --- |",
+      ...manualJourneyResults.map(
+        (journey) =>
+          `| ${journey.name} | ${journey.status} | ${journey.evidenceCount > 0 ? journey.note : "missing"} |`,
+      ),
+      "",
       "## To Complete The 83-85% Customer UX Gate",
       "",
       "1. Put a QA account Cookie header in `.qa-secrets/nutritail-auth-cookie.txt` or set `NUTRITAIL_QA_AUTH_COOKIE_FILE`.",
       "2. Run `npm.cmd run qa:customer-live-journey-proof`.",
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open report, open timeline, and return for progress.",
-      "4. Record whether each checklist journey passed without manual explanation.",
-      "5. Only then update the Customer UX score above 82%.",
+      "4. Record browser evidence in `.qa-secrets/customer-live-journey-proof.json` using the documented keys.",
+      "5. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score above 83%.",
     ].join("\n") + "\n",
     "utf8",
   );
@@ -310,7 +396,11 @@ async function main() {
         manual_journeys_still_required: journeyProofs.filter(
           (journey) => journey.status === "manual-required",
         ).length,
+        manual_journeys_passed: manualJourneyResults.filter(
+          (journey) => journey.status === "manual-pass",
+        ).length,
         auth_cookie_source: authCookie.source,
+        manual_proof_source: manualProof.source,
         report: reportPath,
       },
       null,
