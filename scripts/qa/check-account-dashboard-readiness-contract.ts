@@ -154,7 +154,7 @@ assert(
 );
 assert(
   accountPage.includes('data-testid="account-next-action-guide"') &&
-    accountPage.includes("transition plan") &&
+    accountPage.includes("πλάνο αλλαγής τροφής") &&
     accountPage.includes("\\u03c0\\u03c1\\u03b1\\u03b3\\u03bc\\u03b1\\u03c4\\u03b9\\u03ba\\u03ac \\u03b3\\u03c1\\u03b1\\u03bc\\u03bc\\u03ac\\u03c1\\u03b9\\u03b1") &&
     accountPage.includes("\\u03ac\\u03bb\\u03bb\\u03b7 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7 \\u03ae \\u03b5\\u03c4\\u03b1\\u03b9\\u03c1\\u03b5\\u03af\\u03b1"),
   "Account dashboard must show a simple next-action guide for report, progress, and flavour/brand change."
