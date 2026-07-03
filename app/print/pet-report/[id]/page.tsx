@@ -371,6 +371,54 @@ function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
   ];
 }
 
+function getReportCustomerSuccessStrip(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const hasFood = Boolean(analysis?.matched_food_name);
+  const hasPortion = Boolean(analysis?.feeding_grams_per_day);
+  const hasCompletePlan = hasFood && hasPortion;
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return {
+    title: hasCompletePlan
+      ? `Το πλάνο του/της ${pet.name} είναι έτοιμο για χρήση`
+      : `Το πλάνο του/της ${pet.name} θέλει ένα τελευταίο βήμα`,
+    subtitle: hasCompletePlan
+      ? "Κράτα την τροφή και την ποσότητα σταθερές για 2-4 εβδομάδες πριν κρίνεις αν δουλεύει."
+      : "Χρειαζόμαστε επιλεγμένη τροφή και θερμίδες τροφής για να κλειδώσει η ποσότητα σε γραμμάρια.",
+    cards: [
+      {
+        label: "Σήμερα",
+        value: analysis?.matched_food_name ?? "Διάλεξε τροφή",
+        detail: hasFood
+          ? "Αυτή είναι η τροφή που κρατάμε ως βάση του πλάνου."
+          : "Άνοιξε το chatbot και διάλεξε μία από τις προτεινόμενες κάρτες τροφών.",
+      },
+      {
+        label: "Ποσότητα",
+        value: hasPortion
+          ? `${analysis?.feeding_grams_per_day}g/ημέρα`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/ημέρα`
+            : "Θέλει ανάλυση",
+        detail:
+          hasPortion && mealSplit
+            ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+            : "Η ποσότητα σε γραμμάρια βγαίνει μόλις ξέρουμε kcal/100g ή kcal/kg της τροφής.",
+      },
+      {
+        label: "Επόμενος έλεγχος",
+        value: getRecheckWindow(analysis),
+        detail: treatAllowance
+          ? `Κράτα λιχουδιές έως περίπου ${treatAllowance.treats} kcal/ημέρα και γύρνα με νέο βάρος.`
+          : "Γύρνα με νέο βάρος, γραμμάρια/ημέρα, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
+      },
+    ],
+  };
+}
+
 function getReportCustomerTakeaway(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -1215,6 +1263,11 @@ export default function PrintablePetReportPage() {
   );
   const reportDailyUseBrief = getReportDailyUseBrief(latestAnalysis, mealSplit);
   const reportOnePagePlan = getReportOnePagePlan(latestAnalysis, mealSplit);
+  const reportCustomerSuccessStrip = getReportCustomerSuccessStrip(
+    pet,
+    latestAnalysis,
+    mealSplit
+  );
   const reportExecutiveSummary = getReportExecutiveSummary(
     pet,
     latestAnalysis,
@@ -1327,6 +1380,57 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-customer-success-strip"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Γρήγορη χρήση
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-emerald-950">
+                {reportCustomerSuccessStrip.title}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900">
+                {reportCustomerSuccessStrip.subtitle}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row print:hidden">
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=progress`}
+                className="rounded-xl bg-emerald-700 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
+              >
+                Έλεγχος προόδου
+              </Link>
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=recommendation`}
+                className="rounded-xl border border-emerald-700 bg-white px-4 py-3 text-center text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
+              >
+                Νέα πρόταση τροφής
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {reportCustomerSuccessStrip.cards.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm text-emerald-950 print:border-gray-300"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-emerald-900">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
 
