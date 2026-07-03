@@ -26,6 +26,22 @@ function getSafeRedirectPath() {
   return nextPath;
 }
 
+function getRedirectLabel(path: string) {
+  if (path.startsWith("/account/chatbot")) {
+    return "στο chatbot για την πρώτη ανάλυση";
+  }
+
+  if (path.startsWith("/account/pets")) {
+    return "στο προφίλ κατοικιδίου";
+  }
+
+  if (path.startsWith("/print/")) {
+    return "στην εκτυπώσιμη αναφορά";
+  }
+
+  return "στον λογαριασμό σου";
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [redirectPath, setRedirectPath] = useState("/account");
@@ -33,6 +49,7 @@ export default function RegisterPage() {
     redirectPath === "/account"
       ? "/login"
       : `/login?next=${encodeURIComponent(redirectPath)}`;
+  const redirectLabel = getRedirectLabel(redirectPath);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -140,6 +157,12 @@ export default function RegisterPage() {
         <p className="mt-1">
           Μπορείς να δημιουργήσεις προφίλ κατοικιδίου, να τρέξεις ανάλυση και να κρατήσεις
           αναφορά για μελλοντικό έλεγχο προόδου.
+        </p>
+        <p
+          className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-blue-950"
+          data-testid="auth-redirect-destination"
+        >
+          Μετά την εγγραφή θα συνεχίσεις {redirectLabel}.
         </p>
       </div>
 

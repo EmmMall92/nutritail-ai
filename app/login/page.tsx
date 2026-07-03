@@ -26,6 +26,26 @@ function getSafeRedirectPath() {
   return nextPath;
 }
 
+function getRedirectLabel(path: string) {
+  if (path.startsWith("/account/chatbot")) {
+    return "στο chatbot για νέα ανάλυση ή συνέχεια συζήτησης";
+  }
+
+  if (path.startsWith("/account/pets")) {
+    return "στο προφίλ κατοικιδίου";
+  }
+
+  if (path.startsWith("/print/")) {
+    return "στην εκτυπώσιμη αναφορά";
+  }
+
+  if (path.startsWith("/admin")) {
+    return "στη σελίδα διαχείρισης";
+  }
+
+  return "στον λογαριασμό σου";
+}
+
 async function verifyAdminRedirect(accessToken: string, redirectPath: string) {
   if (!redirectPath.startsWith("/admin")) {
     return;
@@ -58,6 +78,7 @@ export default function LoginPage() {
     redirectPath === "/account"
       ? "/register"
       : `/register?next=${encodeURIComponent(redirectPath)}`;
+  const redirectLabel = getRedirectLabel(redirectPath);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -146,6 +167,12 @@ export default function LoginPage() {
         <p className="mt-1">
           Αν ήρθες από αναφορά, σύνδεσμο ή έλεγχο προόδου, θα σε γυρίσουμε αυτόματα
           στη σωστή σελίδα μετά τη σύνδεση.
+        </p>
+        <p
+          className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-blue-950"
+          data-testid="auth-redirect-destination"
+        >
+          Επόμενος προορισμός: {redirectLabel}.
         </p>
       </div>
 
