@@ -49,7 +49,7 @@ from overall SaaS launch readiness.
 
 | Track | Current | What is proven now | What blocks the next move |
 | --- | --- | --- | --- |
-| Customer-facing journey | 88% | Logged-in production proof now covers ordered intake, 3 premium + 3 value cards, clean customer wording, food choice, grams/day, selected-food plan, first-week checklist, next steps, save, printable report, account/pet profile clarity, timeline, return-to-progress, no-result follow-up, flavour/brand change, and fresh recommendation routes for the same saved pet. | Needs broader beta-user proof across real users instead of only the controlled QA account. |
+| Customer-facing journey | 88% | Logged-in production proof now covers ordered intake, 3 premium + 3 value cards, clean customer wording, food choice, grams/day, selected-food plan, first-week checklist, next steps, save, printable report, account/pet profile clarity, timeline, return-to-progress, no-result follow-up, flavour/brand change, and fresh recommendation routes for the same saved pet. | Needs broader beta-user proof across real users instead of only the controlled QA account; `qa:beta-user-proof-contract` now defines that gate. |
 | Recommendation engine | 95% beta-candidate | Food V2 retrieval, deterministic ranking, OpenAI fact extraction, safety guards, dog 201-600, and cat 001-500 QA are passing. | Keep converting every real manual/live mistake into a ranking or intake guard. |
 | Saved-pet retention loop | live-proven for the controlled QA journey | Account, pet profile, report, timeline, progress check, no-result advice, flavour/brand change, and new recommendation paths are protected and covered by controlled production proof. | Needs broader beta-user proof across more real saved pets. |
 | Report/account clarity | live-proven for the controlled QA journey | Report/account surfaces calories, selected food, grams/day, food reasoning, transition context, progress context, timeline, and return actions for the same saved pet. | Needs broader beta-user proof on real saved pets and devices. |
@@ -430,6 +430,8 @@ These are the most likely moves from **88% Customer UX readiness** toward a real
 1. Run broader full live customer journeys from signup/login through
    chatbot, recommendation, food button, grams/day, save, report, and return
    progress so the controlled QA pet proof becomes broader customer proof.
+   Track this with `qa:beta-user-proof-contract` and the ignored
+   `.qa-secrets/beta-user-proof.json` evidence file.
 2. Keep dog/cat live QA fresh after each recommendation-ranking change and
    convert any real mistake into a ranking guard.
 3. Backfill enough wet/canned dog foods that `qa:food-v2-format-coverage` no
@@ -448,7 +450,7 @@ normal customer can complete the flow without manual explanation.
 | Clean customer wording proof | completed to 86% Customer UX readiness | `qa:clean-customer-wording-proof` protects generated customer recommendation output, and `qa:customer-live-journey-proof` reached PASS_FULL with clean composed chatbot wording plus clean printable report wording in production. |
 | Returning pet proof | completed to 87% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with progress check, no-result follow-up, flavour/brand change, new food recommendation route, and timeline review for the same saved pet in production. |
 | Report/account proof | completed to 88% Customer UX readiness | `qa:customer-live-journey-proof` reached PASS_FULL with account, pet profile, printable report, timeline, and progress clarity for the same saved pet in production. |
-| Real beta-user proof | 88-90% Customer UX readiness | At least a small beta group completes analyses, chooses foods, saves plans, returns for progress, and leaves usable feedback with no critical launch blockers. |
+| Real beta-user proof | 88-90% Customer UX readiness | At least three beta users complete signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, and feedback without manual help. `qa:beta-user-proof-contract` must report PASS before this moves the score. |
 
 ## Overall SaaS Blockers
 
@@ -470,7 +472,8 @@ around 88%:
   broader public launch.
 - The first real beta-user feedback cycle is not complete yet: users need to
   run analyses, choose foods, save plans, return for progress, and generate
-  actionable feedback.
+  actionable feedback. The `qa:beta-user-proof-contract` report now tracks this
+  explicitly as PENDING until real beta evidence exists.
 
 ## Reporting Rule
 

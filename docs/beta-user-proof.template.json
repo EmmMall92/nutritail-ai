@@ -1,0 +1,25 @@
+{
+  "beta_users": [
+    {
+      "label": "beta-user-1",
+      "passed": false,
+      "evidence": [
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+      ]
+    },
+    {
+      "label": "beta-user-2",
+      "passed": false,
+      "evidence": [
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+      ]
+    },
+    {
+      "label": "beta-user-3",
+      "passed": false,
+      "evidence": [
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+      ]
+    }
+  ]
+}
