@@ -6217,6 +6217,52 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               )}
             </p>
             <div
+              data-testid="customer-choice-decision-guide"
+              className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-900"
+            >
+              <p className="font-semibold">
+                {botText(
+                  "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03bc\u03b5 \u03b1\u03c5\u03c4\u03ae \u03c4\u03b7 \u03c3\u03b5\u03b9\u03c1\u03ac",
+                  "Choose in this order"
+                )}
+              </p>
+              <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                    {botText("\u0391\u03bd\u03ac\u03b3\u03ba\u03b5\u03c2", "Fit")}
+                  </span>
+                  <span className="mt-1 block leading-5">
+                    {botText(
+                      "\u03a0\u03c1\u03ce\u03c4\u03b1 \u03ba\u03bf\u03b9\u03c4\u03ac\u03bc\u03b5 \u03b7\u03bb\u03b9\u03ba\u03af\u03b1, \u03bc\u03ad\u03b3\u03b5\u03b8\u03bf\u03c2, \u03c3\u03c4\u03b5\u03af\u03c1\u03c9\u03c3\u03b7, \u03b2\u03ac\u03c1\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03c5\u03c7\u03cc\u03bd \u03b5\u03c5\u03b1\u03b9\u03c3\u03b8\u03b7\u03c3\u03af\u03b5\u03c2.",
+                      "First we check age, size, neuter status, weight goal, and sensitivities."
+                    )}
+                  </span>
+                </div>
+                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-sky-700">
+                    {botText("\u0393\u03b5\u03cd\u03c3\u03b7", "Taste")}
+                  </span>
+                  <span className="mt-1 block leading-5">
+                    {botText(
+                      "\u039c\u03b5\u03c4\u03ac \u03bc\u03b5\u03c4\u03c1\u03ac\u03b5\u03b9 \u03c4\u03b9 \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03b4\u03b5\u03bd \u03c4\u03c1\u03ce\u03b5\u03b9 \u03ae \u03c0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03b1\u03c0\u03bf\u03c6\u03b5\u03cd\u03b3\u03b5\u03b9.",
+                      "Then we respect what the pet likes, refuses, or should avoid."
+                    )}
+                  </span>
+                </div>
+                <div className="rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-amber-700">
+                    {botText("Budget", "Budget")}
+                  </span>
+                  <span className="mt-1 block leading-5">
+                    {botText(
+                      "\u03a4\u03ad\u03bb\u03bf\u03c2 \u03b2\u03bb\u03ad\u03c0\u03b5\u03b9\u03c2 \u03c0\u03b9\u03bf premium \u03ba\u03b1\u03b9 \u03c0\u03b9\u03bf \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2 \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ad\u03c2, \u03c7\u03c9\u03c1\u03af\u03c2 \u03bd\u03b1 \u03c7\u03b1\u03b8\u03b5\u03af \u03c4\u03bf fit.",
+                      "Finally you compare premium and practical alternatives without losing the fit."
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
               data-testid="customer-food-choice-guide"
               className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-3"
             >

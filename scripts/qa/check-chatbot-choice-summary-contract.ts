@@ -60,6 +60,14 @@ assert(
   "Food shortlist must include a customer-facing guide for strong picks, value picks, and grams/day action."
 );
 assert(
+  chatbotPage.includes('data-testid="customer-choice-decision-guide"') &&
+    chatbotPage.includes("Choose in this order") &&
+    chatbotPage.includes("First we check age, size, neuter status, weight goal, and sensitivities.") &&
+    chatbotPage.includes("Then we respect what the pet likes, refuses, or should avoid.") &&
+    chatbotPage.includes("Finally you compare premium and practical alternatives without losing the fit."),
+  "Food shortlist must explain the customer decision order: fit, taste, then budget."
+);
+assert(
   chatbotPage.includes("md:grid-cols-4"),
   "Food shortlist summary should have room for first pick, portion, list shape, and alternatives."
 );
