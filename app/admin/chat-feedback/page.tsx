@@ -205,6 +205,30 @@ function getNextFeedbackFix(
   };
 }
 
+function getCustomerFrictionScorecards(
+  dropoffPriorityItems: ReturnType<typeof getDropoffPriorityItems>
+) {
+  return dropoffPriorityItems.map((item, index) => {
+    const priority =
+      item.value >= 5 ? "Fix first" : item.value > 0 ? "Watch closely" : "No signal";
+    const customerImpact =
+      item.label === "Analysis without food choice"
+        ? "The customer saw results but did not choose a food."
+        : item.label === "Food choice without save"
+          ? "The customer chose a food but did not keep the plan."
+          : item.label === "Failed food match"
+            ? "The customer mentioned a food we could not resolve."
+            : "The customer told us the answer was not useful enough.";
+
+    return {
+      ...item,
+      priority,
+      customerImpact,
+      rank: index + 1,
+    };
+  });
+}
+
 function TriageButton({
   label,
   value,
@@ -457,6 +481,8 @@ export default function AdminChatFeedbackPage() {
     notHelpfulCount: notHelpful.length,
   });
   const nextFeedbackFix = getNextFeedbackFix(dropoffPriorityItems);
+  const customerFrictionScorecards =
+    getCustomerFrictionScorecards(dropoffPriorityItems);
 
   return (
     <section className="space-y-6">
@@ -789,6 +815,70 @@ export default function AdminChatFeedbackPage() {
                 Next action
               </p>
               <p className="mt-1 text-sm leading-6 text-gray-700">
+                {item.action}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-sm"
+        data-testid="chat-feedback-customer-friction-scorecard"
+      >
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-rose-700">
+              Customer friction scorecard
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-rose-950">
+              Which part of the customer journey should we fix next?
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-rose-900">
+              This turns raw feedback into a practical QA queue: choice clarity,
+              save confidence, food matching, or answer usefulness.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter(nextFeedbackFix.typeFilter);
+              setRatingFilter(nextFeedbackFix.ratingFilter);
+              setSearch("");
+            }}
+            className="rounded-xl bg-rose-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-800"
+          >
+            Open top friction queue
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {customerFrictionScorecards.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => {
+                setTypeFilter(item.typeFilter);
+                setRatingFilter(item.ratingFilter);
+                setSearch("");
+              }}
+              className="rounded-xl border border-rose-100 bg-white p-4 text-left transition hover:border-rose-400 hover:bg-rose-100"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-rose-700">
+                    #{item.rank} {item.priority}
+                  </p>
+                  <h4 className="mt-2 font-bold text-rose-950">{item.label}</h4>
+                </div>
+                <span className="rounded-full bg-rose-100 px-3 py-1 text-sm font-bold text-rose-900">
+                  {item.value}
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-rose-900">
+                {item.customerImpact}
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-rose-950">
                 {item.action}
               </p>
             </button>
