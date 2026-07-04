@@ -79,6 +79,21 @@ const paidLaunchNotice = [
   },
 ] as const;
 
+const recommendationBoundaries = [
+  {
+    title: "Food database first",
+    text: "Οι τροφές που εμφανίζονται πρέπει να υπάρχουν στη βάση NutriTail ή σε ελεγμένη ροή εισαγωγής. Το AI δεν επιτρέπεται να εφευρίσκει προϊόντα, θρεπτικές τιμές ή claims.",
+  },
+  {
+    title: "Safety before promotion",
+    text: "Αλλεργίες, είδος ζώου, ηλικία, μέγεθος, ιατρικά red flags και βασικοί διατροφικοί κανόνες προηγούνται από οποιαδήποτε εμπορική προτεραιότητα ή featured επιλογή.",
+  },
+  {
+    title: "Owner decision with vet boundary",
+    text: "Η πρόταση βοηθά τον ιδιοκτήτη να διαλέξει πιο οργανωμένα. Για νόσο, φάρμακα, επείγοντα συμπτώματα ή θεραπευτικές δίαιτες, η τελική καθοδήγηση ανήκει στον κτηνίατρο.",
+  },
+] as const;
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12">
@@ -119,6 +134,38 @@ export default function TermsPage() {
                 key={item.title}
                 className="rounded-xl border border-emerald-200 bg-white p-4"
                 data-testid="terms-paid-launch-notice-item"
+              >
+                <h3 className="font-bold text-black">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {item.text}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="rounded-2xl border border-blue-200 bg-blue-50 p-8 shadow-sm"
+          data-testid="terms-recommendation-boundaries"
+        >
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+            Recommendation boundaries
+          </p>
+          <h2 className="mt-3 text-2xl font-bold text-black">
+            Πώς πρέπει να διαβάζεις τις προτάσεις τροφής
+          </h2>
+          <p className="mt-4 text-gray-700">
+            Το NutriTail βοηθά να μετατραπούν τα στοιχεία του κατοικιδίου σε καθαρές επιλογές
+            τροφής, ποσότητα και επόμενα βήματα. Δεν αντικαθιστά κτηνίατρο και δεν πρέπει
+            να χρησιμοποιείται ως θεραπευτική οδηγία.
+          </p>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {recommendationBoundaries.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-xl border border-blue-200 bg-white p-4"
+                data-testid="terms-recommendation-boundary"
               >
                 <h3 className="font-bold text-black">{item.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-gray-700">
