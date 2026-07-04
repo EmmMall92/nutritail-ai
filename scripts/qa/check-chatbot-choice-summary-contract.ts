@@ -62,6 +62,18 @@ assert(
   "Food shortlist must keep one compact customer decision strip: compare, choose, grams/day."
 );
 assert(
+  chatbotPage.includes('data-testid="customer-food-journey-stepper"') &&
+    chatbotPage.includes('data-testid="customer-food-journey-stepper-item"') &&
+    chatbotPage.includes("Τι γίνεται μετά") &&
+    chatbotPage.includes("What happens next") &&
+    chatbotPage.includes("Βλέπεις τις κάρτες") &&
+    chatbotPage.includes("Πατάς μία τροφή") &&
+    chatbotPage.includes("Βγαίνουν γραμμάρια/ημέρα") &&
+    chatbotPage.includes("Αποθηκεύεις και επιστρέφεις για πρόοδο") &&
+    chatbotPage.includes("Save and check progress"),
+  "Food shortlist must show a visible customer journey stepper from cards to grams/day, save, and progress."
+);
+assert(
   chatbotPage.includes("md:grid-cols-4"),
   "Food shortlist summary should have room for first pick, portion, list shape, and alternatives."
 );

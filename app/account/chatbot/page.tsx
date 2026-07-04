@@ -6327,6 +6327,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
               </div>
             </div>
+            <div
+              data-testid="customer-food-journey-stepper"
+              className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                {botText("Τι γίνεται μετά", "What happens next")}
+              </p>
+              <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-gray-700 sm:grid-cols-4">
+                {[
+                  botText("1. Βλέπεις τις κάρτες", "1. Review cards"),
+                  botText("2. Πατάς μία τροφή", "2. Pick one food"),
+                  botText("3. Βγαίνουν γραμμάρια/ημέρα", "3. Get grams/day"),
+                  botText("4. Αποθηκεύεις και επιστρέφεις για πρόοδο", "4. Save and check progress"),
+                ].map((step) => (
+                  <div
+                    key={step}
+                    className="rounded-lg bg-white px-3 py-2 ring-1 ring-gray-200"
+                    data-testid="customer-food-journey-stepper-item"
+                  >
+                    {step}
+                  </div>
+                ))}
+              </div>
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
                 <span className="block font-semibold text-emerald-950">
