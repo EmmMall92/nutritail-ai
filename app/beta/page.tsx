@@ -91,6 +91,9 @@ export default function BetaPage() {
             <Link href="/plans" className="rounded-full border border-black/15 px-4 py-2">
               Plans
             </Link>
+            <Link href="/support" className="rounded-full border border-black/15 px-4 py-2">
+              Support
+            </Link>
           </nav>
         </div>
       </header>
