@@ -128,7 +128,15 @@ assert(
     adminActivityPage.includes("Returning saved-pet journey") &&
     adminActivityPage.includes('data-testid="admin-beta-proof-slot"') &&
     adminActivityPage.includes('data-testid="admin-beta-proof-evidence-checklist"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-invite-queue"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-invite-candidate"') &&
     adminActivityPage.includes('data-testid="admin-beta-session-playbook"') &&
+    adminActivityPage.includes("Next beta invites") &&
+    adminActivityPage.includes("proof-first invites") &&
+    adminActivityPage.includes("Use first for the dog-owner proof slot") &&
+    adminActivityPage.includes("Use first for the cat-owner proof slot") &&
+    adminActivityPage.includes("Use after this user has one saved pet and report") &&
+    adminActivityPage.includes("Required session proof: signup/login") &&
     adminActivityPage.includes("Session playbook for real beta proof") &&
     adminActivityPage.includes("must not") &&
     adminActivityPage.includes("pass, review, or fail") &&

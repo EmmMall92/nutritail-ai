@@ -210,11 +210,16 @@ assert(
 assert(
   adminActivityPage.includes('data-testid="admin-beta-proof-current-score"') &&
     adminActivityPage.includes('data-testid="admin-beta-proof-score-card"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-invite-queue"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-invite-candidate"') &&
     adminActivityPage.includes("Do not count this as 78-80% anymore") &&
     adminActivityPage.includes("88-90% launch-hardening band") &&
     adminActivityPage.includes("real beta-user proof") &&
+    adminActivityPage.includes("proof-first invites") &&
+    adminActivityPage.includes("invite a broad batch") &&
+    adminActivityPage.includes("these three slots are covered") &&
     adminActivityPage.includes("One dog owner, one cat owner, and one returning saved-pet user"),
-  "Admin activity page must show the current score, why it is not 78-80%, and the exact beta-proof unlock.",
+  "Admin activity page must show the current score, why it is not 78-80%, the proof-first invite queue, and the exact beta-proof unlock.",
 );
 
 assert(
