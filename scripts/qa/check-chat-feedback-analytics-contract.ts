@@ -208,6 +208,21 @@ assert(
   "Admin feedback page must show whether not-helpful feedback has enough context to become an actionable fix."
 );
 assert(
+  adminFeedbackPage.includes("function getLikelyNotHelpfulCause") &&
+    adminFeedbackPage.includes("function getNotHelpfulPatternPlaybook") &&
+    adminFeedbackPage.includes("notHelpfulPatternPlaybook") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-not-helpful-pattern-playbook"') &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-not-helpful-pattern"') &&
+    adminFeedbackPage.includes("Not-helpful pattern playbook") &&
+    adminFeedbackPage.includes("Not-Helpful Patterns: which repeated negative signals should we") &&
+    adminFeedbackPage.includes("Probable cause") &&
+    adminFeedbackPage.includes("Next fix") &&
+    adminFeedbackPage.includes("Replay this pattern") &&
+    adminFeedbackPage.includes("Food V2 match, aliases, or canonical naming may be missing.") &&
+    adminFeedbackPage.includes("Replay the same pet goal and food context"),
+  "Admin feedback page must group repeated not-helpful signals into a replayable fix playbook."
+);
+assert(
   adminFeedbackPage.includes("Open this queue") &&
     adminFeedbackPage.includes("nextFeedbackFix.action") &&
     adminFeedbackPage.includes("setTypeFilter(nextFeedbackFix.typeFilter)") &&
