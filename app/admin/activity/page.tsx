@@ -182,6 +182,27 @@ const betaProofSessionPacket = [
   },
 ] as const;
 
+const betaProofScoreCards = [
+  {
+    label: "Customer UX readiness",
+    value: "88%",
+    detail:
+      "Controlled QA proves the journey, but real beta users have not completed it without help yet.",
+  },
+  {
+    label: "Overall SaaS launch",
+    value: "90%",
+    detail:
+      "The product is in launch hardening; payments, legal review, monitoring freshness, and beta feedback still matter.",
+  },
+  {
+    label: "Next honest unlock",
+    value: "3 sessions",
+    detail:
+      "One dog owner, one cat owner, and one returning saved-pet user must finish the full flow without manual help.",
+  },
+] as const;
+
 export default function AdminActivityPage() {
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -353,6 +374,53 @@ export default function AdminActivityPage() {
         className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm"
         data-testid="admin-beta-proof-recruiting-board"
       >
+        <div
+          className="mb-5 rounded-xl border border-amber-300 bg-white p-4"
+          data-testid="admin-beta-proof-current-score"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                Current launch score
+              </p>
+              <h3 className="mt-1 text-xl font-bold text-gray-950">
+                Do not count this as 78-80% anymore
+              </h3>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-950">
+                NutriTail is in the 88-90% launch-hardening band. The next score
+                movement should come from real beta-user proof, not another
+                internal polish PR.
+              </p>
+            </div>
+            <Link
+              href="/admin/foods/v2-live-qa"
+              className="inline-flex rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+            >
+              View readiness dashboard
+            </Link>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {betaProofScoreCards.map((card) => (
+              <article
+                key={card.label}
+                className="rounded-lg border border-amber-100 bg-amber-50 p-3"
+                data-testid="admin-beta-proof-score-card"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  {card.label}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-gray-950">
+                  {card.value}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-amber-950">
+                  {card.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">

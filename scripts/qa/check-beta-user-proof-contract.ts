@@ -208,6 +208,16 @@ assert(
 );
 
 assert(
+  adminActivityPage.includes('data-testid="admin-beta-proof-current-score"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-score-card"') &&
+    adminActivityPage.includes("Do not count this as 78-80% anymore") &&
+    adminActivityPage.includes("88-90% launch-hardening band") &&
+    adminActivityPage.includes("real beta-user proof") &&
+    adminActivityPage.includes("One dog owner, one cat owner, and one returning saved-pet user"),
+  "Admin activity page must show the current score, why it is not 78-80%, and the exact beta-proof unlock.",
+);
+
+assert(
   packageJson.includes('"qa:beta-user-proof-contract"'),
   "package.json must expose qa:beta-user-proof-contract.",
 );
