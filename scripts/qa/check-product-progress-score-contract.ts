@@ -461,6 +461,18 @@ assert(
 );
 
 assert(
+  liveQaPage.includes('data-testid="food-v2-format-data-action-list"') &&
+    liveQaPage.includes('data-testid="food-v2-format-data-action"') &&
+    liveQaPage.includes("What closes the wet/canned coverage gap") &&
+    liveQaPage.includes("Add wet dog rows") &&
+    liveQaPage.includes("Expand wet cat rows") &&
+    liveQaPage.includes("Require kcal for portions") &&
+    liveQaPage.includes("Keep format guard strict") &&
+    liveQaPage.includes("should not silently recommend dry food"),
+  "Admin live QA page must turn wet/canned format coverage gaps into a concrete Food V2 data action list."
+);
+
+assert(
   liveQaPage.includes('data-testid="customer-product-progress-summary"') &&
     liveQaPage.includes('data-testid="customer-product-progress-readout"') &&
     liveQaPage.includes('data-testid="customer-ux-scorecard"') &&
