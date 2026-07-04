@@ -1631,6 +1631,73 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-violet-200 bg-violet-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-food-plan-journey-stepper"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
+                Πού βρίσκεται το πλάνο
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-violet-950">
+                Από την επιλογή τροφής μέχρι τον επανέλεγχο
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-violet-900">
+              Αυτά είναι τα 4 βήματα που κρατούν την πρόταση πρακτική: τροφή,
+              ποσότητα, αποθήκευση και επανέλεγχος με πραγματικά δεδομένα.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {[
+              {
+                label: "1. Τροφή",
+                value: latestAnalysis?.matched_food_name ?? "Διάλεξε τροφή",
+                detail: latestAnalysis?.matched_food_name
+                  ? "Η επιλογή τροφής έχει περάσει στο report."
+                  : "Διάλεξε τροφή από το chatbot για να κλειδώσει το πλάνο.",
+              },
+              {
+                label: "2. Ποσότητα",
+                value: latestAnalysis?.feeding_grams_per_day
+                  ? `${latestAnalysis.feeding_grams_per_day}g/ημέρα`
+                  : "Θέλει θερμίδες τροφής",
+                detail: latestAnalysis?.feeding_grams_per_day
+                  ? "Αυτό είναι το αρχικό σημείο εφαρμογής για το σπίτι."
+                  : "Τα γραμμάρια βγαίνουν μόλις έχουμε τροφή και kcal.",
+              },
+              {
+                label: "3. Report",
+                value: "Κράτα το πλάνο",
+                detail:
+                  "Εδώ μένουν θερμίδες, τροφή, ποσότητα και transition plan.",
+              },
+              {
+                label: "4. Επανέλεγχος",
+                value: "Γύρνα με δεδομένα",
+                detail:
+                  "Φέρε βάρος, πραγματικά γραμμάρια, λιχουδιές, κόπρανα και όρεξη.",
+              },
+            ].map((item) => (
+              <article
+                key={item.label}
+                className="rounded-2xl border border-violet-100 bg-white p-4 text-sm text-violet-950 print:border-gray-300"
+                data-testid="report-food-plan-journey-stepper-item"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-violet-900">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div
           className="mt-6 break-inside-avoid rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-handoff-strip"
         >
