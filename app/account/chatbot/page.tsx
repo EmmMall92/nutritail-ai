@@ -7158,6 +7158,43 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
+        {followUpPet && latestProgressDecisionStatus && followUpMode && (
+          <div
+            className="mb-3 rounded-2xl border border-blue-200 bg-blue-50 p-3"
+            data-testid="saved-pet-progress-sticky-next-actions"
+          >
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">
+              {botText("Επόμενη κίνηση", "Next action")}
+            </p>
+            <div className="flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
+              {getProgressDecisionActions(latestProgressDecisionStatus).map((item) => (
+                <button
+                  key={`sticky-${latestProgressDecisionStatus}-${item.action}-${item.title}`}
+                  data-testid={`saved-pet-progress-sticky-action-${item.action}`}
+                  type="button"
+                  onClick={() => handleFollowUpAction(item.action)}
+                  className={`min-h-11 max-w-[78vw] shrink-0 snap-start rounded-xl border px-3 py-2 text-left text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                    item.tone === "primary"
+                      ? "border-blue-700 bg-blue-700 text-white"
+                      : "border-blue-200 bg-white text-blue-950"
+                  }`}
+                >
+                  <span className="block leading-5">
+                    {botText(item.titleEl, item.title)}
+                  </span>
+                  <span
+                    className={`mt-1 block text-xs font-normal leading-4 ${
+                      item.tone === "primary" ? "text-blue-50" : "text-blue-800"
+                    }`}
+                  >
+                    {botText(item.helperEl, item.helper)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {quickReplies.length > 0 && !isProcessingMessage && !isAnalyzing && !isSaving && (
           <div className="mb-3 flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
