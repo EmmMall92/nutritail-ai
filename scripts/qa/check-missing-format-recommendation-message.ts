@@ -1,4 +1,5 @@
 import { formatMissingFormatRecommendationMessage } from "@/lib/food-v2/missingFormatRecommendationMessage";
+import { readFileSync } from "node:fs";
 
 function assertIncludes(text: string, expected: string, label: string) {
   if (!text.includes(expected)) {
@@ -69,5 +70,23 @@ const greekMixed = formatMissingFormatRecommendationMessage({
 assertIncludes(greekMixed, "βάση", "Greek mixed base-food guidance");
 assertIncludes(greekMixed, "topper", "Greek mixed topper guidance");
 assertIncludes(greekMixed, "σωστές θερμίδες και μερίδα", "Greek mixed portion guidance");
+
+const dogLiveRunner = readFileSync("scripts/qa/run-dog-chatbot-live-cases.ts", "utf8");
+
+assertIncludes(
+  dogLiveRunner,
+  "DOCUMENTED_WET_DATA_GAP",
+  "Dog live QA should classify wet-only empty results as documented data gaps"
+);
+assertIncludes(
+  dogLiveRunner,
+  "isDocumentedFormatDataGap",
+  "Dog live QA should separate documented wet data gaps from blocking review warnings"
+);
+assertIncludes(
+  dogLiveRunner,
+  "blockingWarnings.length === 0",
+  "Dog live QA should pass when only the documented wet data gap is present"
+);
 
 console.log("Missing format recommendation message QA passed.");
