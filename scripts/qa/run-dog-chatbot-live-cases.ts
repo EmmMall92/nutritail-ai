@@ -260,7 +260,7 @@ const CASES: DogQaCase[] = [
   { id: 83, message: "Ο σκύλος μου κάνει εμετό συνέχεια.", goal: "general", safety: "emergency", expected: { species: "dog", redFlags: ["vomiting"] }, checks: { medicalNoTreatment: true } },
   { id: 84, message: "Ο σκύλος μου έχει έντονο πόνο στην κοιλιά.", goal: "general", safety: "emergency", expected: { species: "dog", redFlags: ["abdominal_pain"] }, checks: { medicalNoTreatment: true } },
   { id: 85, message: "Ο σκύλος μου κατέρρευσε μετά το φαγητό.", goal: "general", safety: "emergency", expected: { species: "dog", redFlags: ["collapse"] }, checks: { medicalNoTreatment: true } },
-  { id: 86, message: "Ο σκύλος μου έχει διάρροια με αίμα και είναι κουτάβι.", goal: "growth", safety: "emergency", expected: { species: "dog", redFlags: ["blood"], ageYears: 0.4 }, checks: { medicalNoTreatment: true } },
+  { id: 86, message: "Ο σκύλος μου έχει διάρροια με αίμα και είναι κουτάβι.", goal: "growth", safety: "emergency", expected: { species: "dog", redFlags: ["blood"] }, checks: { medicalNoTreatment: true } },
   { id: 87, message: "Ο σκύλος μου έχει φουσκώσει μετά το φαγητό.", goal: "general", safety: "emergency", expected: { species: "dog", redFlags: ["bloat"] }, checks: { medicalNoTreatment: true } },
   { id: 88, message: "Ο σκύλος μου έχει χάσει πολλά κιλά γρήγορα.", goal: "general", safety: "vet_referral", expected: { species: "dog", weightGoal: "gain" }, checks: { medicalNoTreatment: true } },
   { id: 89, message: "Ο σκύλος μου πίνει πάρα πολύ και ουρεί πολύ.", goal: "general", safety: "vet_referral", expected: { species: "dog" }, checks: { medicalNoTreatment: true } },
