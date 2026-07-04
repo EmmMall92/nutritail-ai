@@ -159,6 +159,12 @@ export default function HomePage() {
             >
               Plans
             </Link>
+            <Link
+              href="/support"
+              className="flex-1 rounded-full border border-black/20 px-5 py-2 text-center text-sm font-medium transition hover:bg-gray-100 sm:flex-none"
+            >
+              Support
+            </Link>
           </nav>
         </div>
       </header>
