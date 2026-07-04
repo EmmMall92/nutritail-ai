@@ -5735,8 +5735,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτο πλάνο ημέρας:\n- Ποσότητα: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΞεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες. Κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΕπόμενο βήμα: πάτησε Αποθήκευση για να κρατήσουμε την τροφή, την ποσότητα και το report στο προφίλ. Μετά μπορείς να γυρίσεις για έλεγχο προόδου με νέο βάρος και τα πραγματικά γραμμάρια που έτρωγε.`,
-          `Great, we will keep ${choice.name}.\n\nFirst daily plan:\n- Portion: about ${gramsPerDay}g/day\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nStart with this amount for 2-4 weeks. Keep treats inside the daily allowance and watch weight, appetite, stool, and energy.\n\nNext step: press save to keep the food, portion, and report on the profile. Then come back for a progress check with the new weight and the grams actually fed.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα:\n- Σύνολο: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΞεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες. Για την πρώτη εβδομάδα κράτα τα γεύματα σταθερά, χωρίς πολλές νέες λιχουδιές ή πρόσθετα. Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΕπόμενο βήμα: πάτησε Αποθήκευση για να κρατήσουμε την τροφή, την ποσότητα και το report στο προφίλ. Μετά μπορείς να γυρίσεις για έλεγχο προόδου με νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν εξακολουθεί να του αρέσει η γεύση.`,
+          `Great, we will keep ${choice.name}.\n\nFirst portion:\n- Total: about ${gramsPerDay}g/day\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nStart with this amount for 2-4 weeks. For the first week, keep meals consistent and avoid adding many new treats or toppers. Review weight, appetite, and stool in 2-4 weeks.\n\nNext step: press save to keep the food, portion, and report on the profile. After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour.`
         )
       : botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετά καθαρή θερμιδική πληροφορία για αξιόπιστα γραμμάρια/ημέρα.\n\nΜπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες. Αν βρεις kcal στην ετικέτα, γύρνα για νέο έλεγχο και θα υπολογίσουμε ποσότητα.`,
@@ -5744,18 +5744,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         );
 
     addMessages(createMessage("bot", selectedFoodReply));
-
-    if (gramsPerDay) {
-      addMessages(
-        createMessage(
-          "bot",
-          botText(
-            "Για την πρώτη εβδομάδα κράτα τα γεύματα σταθερά, χωρίς πολλές νέες λιχουδιές ή πρόσθετα. Μετά από 2-4 εβδομάδες γύρνα για έλεγχο προόδου με νέο βάρος, πραγματικά γραμμάρια/ημέρα, όρεξη, κόπρανα, ενέργεια και αν εξακολουθεί να του αρέσει η γεύση.",
-            "For the first week, keep meals consistent and avoid adding many new treats or toppers. After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour."
-          )
-        )
-      );
-    }
   }
 
   async function saveToMyAccount() {

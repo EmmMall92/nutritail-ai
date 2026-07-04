@@ -59,7 +59,7 @@ const journeys: JourneyProof[] = [
         "one food card",
         "grams/day",
         "Calculate grams/day",
-        "First daily plan:",
+        "First portion:",
         "selected-food-plan-card",
         "selected-food-first-week-checklist",
       ],
