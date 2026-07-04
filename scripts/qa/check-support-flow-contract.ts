@@ -1,0 +1,51 @@
+import { readFileSync } from "node:fs";
+
+function assert(condition: unknown, message: string) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+function read(path: string) {
+  return readFileSync(path, "utf8");
+}
+
+const supportPage = read("app/support/page.tsx");
+const sitemap = read("app/sitemap.ts");
+const packageJson = read("package.json");
+
+for (const marker of [
+  'title: `Support | ${brand.name}`',
+  'canonical: "/support"',
+  'data-testid="support-hero"',
+  'data-testid="support-primary-email"',
+  'data-testid="support-request-types"',
+  'data-testid="support-request-type"',
+  'data-testid="support-operating-flow"',
+  'data-testid="support-vet-boundary"',
+  "Account or beta access",
+  "Nutrition analysis or report",
+  "Food data or missing product",
+  "Privacy or data request",
+  "Support feedback becomes product improvement",
+  "NutriTail can help organize nutrition information, but it does not",
+  "cat straining or unable to urinate",
+]) {
+  assert(supportPage.includes(marker), `Support page is missing marker: ${marker}`);
+}
+
+assert(sitemap.includes('path: "/support"'), "Sitemap must include /support.");
+
+assert(
+  packageJson.includes('"qa:support-flow-contract"'),
+  "package.json must expose qa:support-flow-contract."
+);
+
+assert(
+  packageJson.includes(
+    "qa:public-trust-copy && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
+  ),
+  "CI readiness must run support flow contract after public trust copy."
+);
+
+console.log("Support flow contract passed.");

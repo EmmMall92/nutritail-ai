@@ -27,6 +27,10 @@ const publicRoutes = [
     priority: 0.6,
   },
   {
+    path: "/support",
+    priority: 0.5,
+  },
+  {
     path: "/terms",
     priority: 0.3,
   },
