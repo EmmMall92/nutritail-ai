@@ -4186,6 +4186,43 @@ export default function AccountChatbotPage() {
     }
   }
 
+  function getCustomerFeedbackContext(context?: Record<string, unknown>) {
+    const selectedFoodName =
+      analysisMetadata?.matchedFoodName ?? pet.currentFoodName ?? null;
+    const selectedFoodBrand =
+      recommendedFoodChoices.find((choice) => choice.name === selectedFoodName)
+        ?.brand ?? null;
+    const feedingGramsPerDay = analysisMetadata?.feedingGramsPerDay ?? null;
+
+    return {
+      source: "account_chatbot",
+      petSpecies: pet.species ?? null,
+      petName: pet.name ?? null,
+      petAge: pet.age ?? null,
+      petWeightKg: pet.weight ?? null,
+      selectedPetId,
+      savedPetId,
+      currentFoodName: pet.currentFoodName ?? selectedFoodName,
+      selectedFoodName,
+      selectedFoodBrand,
+      feedingGramsPerDay,
+      hasPortionEstimate: typeof feedingGramsPerDay === "number",
+      weightGoal: pet.weightGoal ?? analysisMetadata?.weightGoal ?? null,
+      healthIssues: pet.healthIssues,
+      allergies: pet.allergies,
+      excludedIngredients: pet.excludedIngredients ?? [],
+      preferredProteins: pet.preferredProteins ?? [],
+      recommendationMode,
+      followUpMode,
+      showSave,
+      hasSelectableFoodRecommendations,
+      hasSelectedRecommendedFood,
+      recommendedFoodCount: recommendedFoodChoices.length,
+      latestDailyCalories: latestAnalysis?.nutrition.der ?? null,
+      ...context,
+    };
+  }
+
   async function submitChatFeedback({
     eventType,
     rating,
@@ -4209,14 +4246,7 @@ export default function AccountChatbotPage() {
           eventType,
           rating,
           message,
-          context: {
-            petSpecies: pet.species ?? null,
-            currentFoodName: pet.currentFoodName ?? null,
-            weightGoal: pet.weightGoal ?? null,
-            healthIssues: pet.healthIssues,
-            allergies: pet.allergies,
-            ...context,
-          },
+          context: getCustomerFeedbackContext(context),
         }),
       });
 
@@ -6941,6 +6971,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       eventType: "chat_helpfulness",
                       rating: "helpful",
                       message: "User marked chatbot analysis as helpful.",
+                      context: {
+                        source: "account_chatbot_analysis_feedback",
+                        feedbackSurface: "save_analysis_panel",
+                      },
                       showConfirmation: true,
                     })
                   }
@@ -6955,6 +6989,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       eventType: "chat_helpfulness",
                       rating: "not_helpful",
                       message: "User marked chatbot analysis as not helpful.",
+                      context: {
+                        source: "account_chatbot_analysis_feedback",
+                        feedbackSurface: "save_analysis_panel",
+                      },
                       showConfirmation: true,
                     })
                   }
