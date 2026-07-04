@@ -312,6 +312,53 @@ function getNotHelpfulActionQueue(notHelpfulLogs: AdminActivityLog[]) {
     .slice(0, 6);
 }
 
+function getFeedbackContextQuality(notHelpfulLogs: AdminActivityLog[]) {
+  const rows = notHelpfulLogs.map((log) => {
+    const context = getFeedbackContext(log);
+    const type = getFeedbackType(log);
+    const source = getFeedbackSource(log);
+    const foodName =
+      String(context.selectedFoodName ?? context.currentFoodName ?? "").trim() ||
+      String(log.metadata?.message ?? log.message ?? "").trim();
+    const goal = String(context.weightGoal ?? "").trim();
+    const petSpecies = String(context.petSpecies ?? "").trim();
+    const missing = [
+      foodName ? null : "food/query",
+      goal ? null : "goal",
+      source === "unknown" ? "source" : null,
+      petSpecies ? null : "species",
+    ].filter(Boolean) as string[];
+
+    return {
+      id: log.id,
+      type,
+      missing,
+      isActionable: missing.length <= 1,
+    };
+  });
+
+  const missingCounts = rows.reduce<Record<string, number>>((acc, row) => {
+    row.missing.forEach((missing) => {
+      acc[missing] = (acc[missing] ?? 0) + 1;
+    });
+    return acc;
+  }, {});
+  const commonMissing = Object.entries(missingCounts)
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  const actionable = rows.filter((row) => row.isActionable).length;
+  const needsContext = rows.length - actionable;
+
+  return {
+    total: rows.length,
+    actionable,
+    needsContext,
+    actionableRate:
+      rows.length > 0 ? Math.round((actionable / rows.length) * 100) : 0,
+    commonMissing,
+  };
+}
+
 function getBetaProofSignals(feedbackLogs: AdminActivityLog[]) {
   const hasDogJourney = feedbackLogs.some((log) => {
     const context = getFeedbackContext(log);
@@ -656,6 +703,7 @@ export default function AdminChatFeedbackPage() {
     getCustomerFrictionScorecards(dropoffPriorityItems);
   const launchTrackFixQueue = getLaunchTrackFixQueue(customerFrictionScorecards);
   const notHelpfulActionQueue = getNotHelpfulActionQueue(notHelpful);
+  const notHelpfulContextQuality = getFeedbackContextQuality(notHelpful);
   const betaProofSignals = getBetaProofSignals(feedbackLogs);
 
   return (
@@ -855,6 +903,96 @@ export default function AdminChatFeedbackPage() {
               setSearch("");
             }}
           />
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        data-testid="chat-feedback-context-quality"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+              Feedback quality
+            </p>
+            <h3 className="mt-2 text-xl font-bold text-black">
+              Can we act on not-helpful feedback?
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600">
+              This separates actionable feedback from events that need better
+              context before we change ranking, copy, reports, or food data.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter("all");
+              setRatingFilter("not_helpful");
+              setSearch("");
+            }}
+            className="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+          >
+            Open all not-helpful
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-sm text-gray-500">Actionable feedback</p>
+            <p className="mt-2 text-2xl font-bold text-black">
+              {notHelpfulContextQuality.actionable}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-gray-600">
+              Has enough food/query, goal, source, or species context to replay.
+            </p>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-sm text-gray-500">Needs more context</p>
+            <p className="mt-2 text-2xl font-bold text-black">
+              {notHelpfulContextQuality.needsContext}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-gray-600">
+              Improve event metadata before changing ranking rules.
+            </p>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-sm text-gray-500">Actionable rate</p>
+            <p className="mt-2 text-2xl font-bold text-black">
+              {notHelpfulContextQuality.total > 0
+                ? `${notHelpfulContextQuality.actionableRate}%`
+                : "-"}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-gray-600">
+              Higher means negative feedback can turn into focused fixes faster.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-sm font-semibold text-black">
+            Most common missing context
+          </p>
+          {notHelpfulContextQuality.commonMissing.length > 0 ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {notHelpfulContextQuality.commonMissing.map((item) => (
+                <span
+                  key={item.label}
+                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700"
+                >
+                  {item.label}: {item.count}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-gray-600">
+              No missing-context pattern yet.
+            </p>
+          )}
+          <p className="mt-3 text-sm leading-6 text-gray-600">
+            If context is missing, improve event metadata before changing ranking.
+            If context is present, replay the case and fix ranking, copy, report,
+            or food data.
+          </p>
         </div>
       </div>
 
