@@ -257,6 +257,61 @@ function getLaunchTrackFixQueue(
   }));
 }
 
+function getNotHelpfulActionQueue(notHelpfulLogs: AdminActivityLog[]) {
+  return notHelpfulLogs
+    .map((log) => {
+      const context = getFeedbackContext(log);
+      const type = getFeedbackType(log);
+      const foodName =
+        String(context.selectedFoodName ?? context.currentFoodName ?? "").trim() ||
+        "No food attached";
+      const goal = String(context.weightGoal ?? "").trim() || "No goal attached";
+      const source = getFeedbackSource(log);
+      const petSpecies = String(context.petSpecies ?? "").trim() || "unknown pet";
+      const hasFoodContext = foodName !== "No food attached";
+      const hasGoalContext = goal !== "No goal attached";
+
+      const launchTrack =
+        type === "failed_food_match"
+          ? "Food recommendation accuracy"
+          : source === "printable_pet_report"
+            ? "Pet report page"
+            : hasFoodContext
+              ? "Final chatbot experience"
+              : "Analytics/feedback loop";
+
+      const nextAction =
+        type === "failed_food_match"
+          ? "Fix aliases, canonical food names, or missing Food V2 rows before tuning copy."
+          : source === "printable_pet_report"
+            ? "Check whether the report explains calories, selected food, grams/day, transition, and next step clearly."
+            : hasFoodContext && hasGoalContext
+              ? "Replay this pet goal and food context, then decide whether ranking, explanation, or next action needs a guard."
+              : "Ask for more structured feedback or run a focused live case before changing rules.";
+
+      return {
+        id: log.id,
+        createdAt: log.createdAt,
+        launchTrack,
+        customerSignal: log.message || type,
+        foodName,
+        goal,
+        petSpecies,
+        source,
+        nextAction,
+        typeFilter: type,
+        ratingFilter: "not_helpful",
+        search: hasFoodContext ? foodName : goal,
+      };
+    })
+    .sort((a, b) => {
+      const aTime = new Date(a.createdAt ?? "").getTime();
+      const bTime = new Date(b.createdAt ?? "").getTime();
+      return bTime - aTime;
+    })
+    .slice(0, 6);
+}
+
 function getBetaProofSignals(feedbackLogs: AdminActivityLog[]) {
   const hasDogJourney = feedbackLogs.some((log) => {
     const context = getFeedbackContext(log);
@@ -600,6 +655,7 @@ export default function AdminChatFeedbackPage() {
   const customerFrictionScorecards =
     getCustomerFrictionScorecards(dropoffPriorityItems);
   const launchTrackFixQueue = getLaunchTrackFixQueue(customerFrictionScorecards);
+  const notHelpfulActionQueue = getNotHelpfulActionQueue(notHelpful);
   const betaProofSignals = getBetaProofSignals(feedbackLogs);
 
   return (
@@ -1492,6 +1548,98 @@ export default function AdminChatFeedbackPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+      </div>
+
+      <div
+        className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm"
+        data-testid="chat-feedback-not-helpful-action-queue"
+      >
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-red-700">
+              Not-helpful action queue
+            </p>
+            <h3 className="mt-2 text-lg font-semibold text-black">
+              Turn negative feedback into the next fix
+            </h3>
+            <p className="mt-1 text-sm text-red-900">
+              Each row connects a customer signal to a 10-task launch area, the
+              food or goal involved, and the safest next action before changing
+              ranking or copy.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter("all");
+              setRatingFilter("not_helpful");
+              setSearch("");
+            }}
+            className="rounded-lg bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800"
+          >
+            Open all not-helpful
+          </button>
+        </div>
+
+        {notHelpfulActionQueue.length === 0 ? (
+          <p className="mt-4 text-sm text-red-900">
+            No not-helpful action items yet. Keep collecting ratings after food
+            choices, saves, reports, and progress checks.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 xl:grid-cols-2">
+            {notHelpfulActionQueue.map((item) => (
+              <article
+                key={item.id}
+                className="rounded-xl border border-red-200 bg-white p-4"
+                data-testid="chat-feedback-not-helpful-action-item"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-red-700 px-2 py-1 text-xs font-semibold text-white">
+                    {item.launchTrack}
+                  </span>
+                  <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-800">
+                    {item.petSpecies}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {formatDateTime(item.createdAt)}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm font-semibold text-black">
+                  Customer signal: {item.customerSignal}
+                </p>
+                <div className="mt-3 grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
+                  <p>
+                    <span className="font-semibold text-gray-950">Food/query:</span>{" "}
+                    {item.foodName}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-gray-950">Goal:</span>{" "}
+                    {item.goal}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-gray-950">Source:</span>{" "}
+                    {item.source}
+                  </p>
+                </div>
+                <p className="mt-3 rounded-lg border border-red-100 bg-red-50 p-3 text-sm leading-6 text-red-950">
+                  What to fix next: {item.nextAction}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTypeFilter(item.typeFilter);
+                    setRatingFilter(item.ratingFilter);
+                    setSearch(item.search === "No goal attached" ? "" : item.search);
+                  }}
+                  className="mt-3 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-800 transition hover:bg-red-100"
+                >
+                  Open this feedback
+                </button>
+              </article>
+            ))}
           </div>
         )}
       </div>
