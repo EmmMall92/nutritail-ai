@@ -43,6 +43,18 @@ const methodologyMarkers = [
   "Δεν επιτρέπεται να κάνει διάγνωση ή θεραπευτικές υποσχέσεις.",
 ];
 
+const customerSimpleFlowMarkers = [
+  'data-testid="public-customer-simple-flow"',
+  'data-testid="public-customer-simple-flow-item"',
+  "customerSimpleFlow",
+  "Food V2",
+  "OpenAI",
+  "\\u03a4\\u03bf \\u03b6\\u03ce\\u03bf \\u03c0\\u03c1\\u03ce\\u03c4\\u03b1",
+  "\\u0397 \\u03b2\\u03ac\\u03c3\\u03b7 \\u03c4\\u03c1\\u03bf\\u03c6\\u03ce\\u03bd",
+  "\\u039f\\u03b9 \\u03ba\\u03b1\\u03bd\\u03cc\\u03bd\\u03b5\\u03c2",
+  "\\u03c0\\u03cc\\u03c3\\u03b1 \\u03b3\\u03c1\\u03b1\\u03bc\\u03bc\\u03ac\\u03c1\\u03b9\\u03b1",
+];
+
 const feedbackLoopMarkers = [
   'data-testid="public-feedback-loop"',
   "Κύκλος βελτίωσης",
@@ -188,6 +200,13 @@ for (const marker of methodologyMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include methodology trust marker: ${marker}`
+  );
+}
+
+for (const marker of customerSimpleFlowMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include simple customer flow marker: ${marker}`
   );
 }
 
