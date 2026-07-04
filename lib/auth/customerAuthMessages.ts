@@ -31,6 +31,24 @@ export function getCustomerAuthErrorMessage(
   }
 
   if (
+    normalized.includes("invalid email") ||
+    normalized.includes("email address is invalid") ||
+    normalized.includes("unable to validate email") ||
+    normalized.includes("valid email")
+  ) {
+    return "Έλεγξε ότι το email είναι γραμμένο σωστά, χωρίς κενά ή λάθος χαρακτήρες.";
+  }
+
+  if (
+    normalized.includes("weak password") ||
+    normalized.includes("password should be") ||
+    normalized.includes("password must be") ||
+    normalized.includes("at least 6")
+  ) {
+    return "Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες. Διάλεξε έναν λίγο πιο δυνατό κωδικό και δοκίμασε ξανά.";
+  }
+
+  if (
     normalized.includes("already registered") ||
     normalized.includes("already been registered") ||
     normalized.includes("user already")
