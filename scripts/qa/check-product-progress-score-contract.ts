@@ -103,6 +103,11 @@ const requiredMarkers = [
   "account, pet profile, report",
   "why it fits",
   "next check-in",
+  "## Latest No-Score Movement",
+  "does **not** raise Customer UX readiness",
+  "selected food, brand when",
+  "save_analysis_panel",
+  "Customer UX score should stay at **88%**",
   "The previous customer-facing work moved Customer UX readiness from **86%** to",
   "6b524f8b-fb05-45c6-a91d-f63b68768d33",
   "6/6",
@@ -465,7 +470,10 @@ assert(
     liveQaPage.includes("Evidence needed next") &&
     liveQaPage.includes("real beta users can finish the whole nutrition") &&
     liveQaPage.includes('data-testid="customer-product-score-rule"') &&
+    liveQaPage.includes('data-testid="customer-product-no-score-movement"') &&
     liveQaPage.includes("Score movement rule") &&
+    liveQaPage.includes("Latest quality movement without score change") &&
+    liveQaPage.includes("productProgress.latestNoScoreMovement") &&
     liveQaPage.includes("Automated readiness can stay high while Customer UX readiness stays") &&
     liveQaPage.includes("Next moves toward") &&
     liveQaPage.includes('data-testid="customer-ux-unlock-gates"') &&
