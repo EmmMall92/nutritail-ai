@@ -203,6 +203,31 @@ function enforceUserVisibleRecommendationEligibility(
   };
 }
 
+function isFormatDataGap(format: string) {
+  return ["wet", "mixed"].includes(normalizedText(format));
+}
+
+function noCandidateNotes(format: string, goal: string) {
+  const notes = [
+    "No customer-visible Food V2 candidates were available for the requested format.",
+    "Treat this as a data coverage gap, not permission to recommend a different format automatically.",
+  ];
+
+  if (isFormatDataGap(format)) {
+    notes.push(
+      "Ask the customer for a label photo or exact wet/canned product before ranking that format."
+    );
+  }
+
+  if (["renal", "urinary"].includes(goal)) {
+    notes.push(
+      "For renal or urinary contexts, keep veterinary guidance first and do not substitute a non-matching format just to fill the shortlist."
+    );
+  }
+
+  return notes;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -283,10 +308,14 @@ export async function POST(request: Request) {
     if (productIds.length === 0) {
       return NextResponse.json({
         goal,
+        pet: petContext,
         premium: [],
         value: [],
         hold: [],
         total_candidates: 0,
+        format_gap: isFormatDataGap(format),
+        requested_format: format,
+        notes: noCandidateNotes(format, goal),
       });
     }
 
@@ -349,9 +378,15 @@ export async function POST(request: Request) {
       premium: hydrate(split.premium),
       value: hydrate(split.value),
       hold: hydrate(split.hold).slice(0, 10),
+      format_gap:
+        isFormatDataGap(format) && split.premium.length === 0 && split.value.length === 0,
+      requested_format: format,
       notes: [
         "Value ranking is a proxy until price data is available.",
         "Medical-condition matches are ranking support, not diagnosis or treatment.",
+        ...(isFormatDataGap(format) && split.premium.length === 0 && split.value.length === 0
+          ? noCandidateNotes(format, goal)
+          : []),
       ],
     });
   } catch (error) {
