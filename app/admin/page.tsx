@@ -103,6 +103,27 @@ function InlineMetric({
   );
 }
 
+const launchProgressSnapshot = [
+  {
+    label: "Customer UX readiness",
+    value: "88%",
+    helper:
+      "Chatbot intake, 3 + 3 food cards, grams/day, save, report, timeline, and returning-pet flows are QA-proven.",
+  },
+  {
+    label: "Recommendation engine",
+    value: "95%",
+    helper:
+      "Food V2 retrieval, deterministic ranking, OpenAI extraction, and dog/cat QA banks are beta-candidate strong.",
+  },
+  {
+    label: "Overall SaaS launch",
+    value: "90%",
+    helper:
+      "The product is in launch hardening. The next move needs real beta-user proof, monitoring, legal, and business gates.",
+  },
+] as const;
+
 function percent(part: number, total: number) {
   if (!total) return 0;
   return Math.round((part / total) * 100);
@@ -225,6 +246,64 @@ export default function AdminDashboardPage() {
               description={`${stats?.foodV2AuditRows ?? 0} total import audit rows`}
               tone="warning"
             />
+          </section>
+
+          <section
+            data-testid="admin-launch-progress-snapshot"
+            className="rounded-xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm"
+          >
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                  Launch progress
+                </p>
+                <h2 className="mt-2 text-2xl font-bold text-black">
+                  NutriTail is not in the 78-80% foundation stage anymore
+                </h2>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-950">
+                  The honest current view is 88% customer UX readiness, 95%
+                  recommendation-engine beta confidence, and 90% overall SaaS
+                  launch progress. These numbers move only when customer-visible
+                  risk is reduced with evidence, not just because a PR merged.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Link
+                  href="/admin/foods/v2-live-qa"
+                  className="rounded-xl bg-emerald-700 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
+                >
+                  View live QA
+                </Link>
+                <Link
+                  href="/admin/activity"
+                  className="rounded-xl border border-emerald-300 bg-white px-4 py-2 text-center text-sm font-semibold text-emerald-950 transition hover:bg-emerald-100"
+                >
+                  Beta proof queue
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
+              {launchProgressSnapshot.map((item) => (
+                <div
+                  key={item.label}
+                  data-testid="admin-launch-progress-snapshot-item"
+                  className="rounded-xl border border-white/80 bg-white p-4 shadow-sm"
+                >
+                  <p className="text-sm font-medium text-gray-500">{item.label}</p>
+                  <p className="mt-2 text-3xl font-bold text-black">{item.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                    {item.helper}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-6 text-emerald-950">
+              <span className="font-semibold">Next honest unlock:</span> three
+              real beta journeys without manual help: one dog owner, one cat
+              owner, and one returning saved-pet user.
+            </div>
           </section>
 
           <section className="grid grid-cols-1 gap-5 xl:grid-cols-[1.2fr_0.8fr]">
