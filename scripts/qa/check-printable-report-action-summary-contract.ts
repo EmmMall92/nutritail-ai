@@ -205,6 +205,8 @@ const requiredDigitalActionMarkers = [
   "Timeline",
   "Προφίλ κατοικιδίου",
   "mode=progress",
+  "reason=no_result",
+  "Δεν είδα αποτέλεσμα",
   "mode=recommendation",
   "reason=flavour",
   "/print/pet-timeline/",
