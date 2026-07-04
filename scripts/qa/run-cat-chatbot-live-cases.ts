@@ -68,6 +68,9 @@ type RecommendationResponse = {
   premium?: FoodV2Item[];
   value?: FoodV2Item[];
   hold?: FoodV2Item[];
+  format_gap?: boolean;
+  requested_format?: string;
+  notes?: string[];
   safety?: {
     hard_stop?: boolean;
     warnings?: Array<{ code?: string; severity?: string; message?: string }>;
@@ -378,6 +381,10 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   const signals = new Set(testCase.expectedSignals);
   const safetyHardStop = response.safety?.hard_stop === true;
   const formatPreference = detectFoodFormatPreference(testCase.prompt);
+  const documentedWetGap =
+    formatPreference === "wet" &&
+    foods.length === 0 &&
+    (response.format_gap === true || response.requested_format === "wet");
 
   if (response.error) warnings.push(`Recommendation endpoint returned error: ${response.error}`);
   if (!response.total_candidates && !safetyHardStop) warnings.push("Food V2 returned zero cat candidates.");
@@ -438,11 +445,15 @@ function validateCase(testCase: CatFixtureCase, response: RecommendationResponse
   }
 
   if (signals.has("urinary") && !hasFoodMatch(foods, [/urinary/, /struvite/, /oxalate/, /\u03bf\u03c5\u03c1\u03bf/])) {
-    warnings.push("Urinary case did not surface urinary/struvite/oxalate candidates.");
+    if (!documentedWetGap) {
+      warnings.push("Urinary case did not surface urinary/struvite/oxalate candidates.");
+    }
   }
 
   if (signals.has("renal") && !hasFoodMatch(foods, [/renal/, /kidney/, /\u03bd\u03b5\u03c6\u03c1/])) {
-    warnings.push("Renal case did not surface renal/kidney candidates.");
+    if (!documentedWetGap) {
+      warnings.push("Renal case did not surface renal/kidney candidates.");
+    }
   }
 
   if (signals.has("kitten_growth") && !hasFoodMatch(foods, [/kitten/, /growth/, /junior/, /\u03b3\u03b1\u03c4\u03b1\u03ba\u03b9/])) {

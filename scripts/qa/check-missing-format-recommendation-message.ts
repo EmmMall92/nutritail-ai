@@ -73,6 +73,10 @@ assertIncludes(greekMixed, "σωστές θερμίδες και μερίδα", 
 
 const dogLiveRunner = readFileSync("scripts/qa/run-dog-chatbot-live-cases.ts", "utf8");
 const catLiveRunner = readFileSync("scripts/qa/run-cat-chatbot-live-cases.ts", "utf8");
+const foodV2RecommendationRoute = readFileSync(
+  "app/api/account/foods/v2-recommendations/route.ts",
+  "utf8"
+);
 
 assertIncludes(
   dogLiveRunner,
@@ -104,6 +108,32 @@ assertIncludes(
   catLiveRunner,
   "blockingWarnings.length === 0",
   "Cat live QA should pass when only the documented wet data gap is present"
+);
+assertIncludes(
+  catLiveRunner,
+  "documentedWetGap",
+  "Cat live QA should treat medical wet-only no-result cases as documented format gaps instead of ranking failures"
+);
+assertIncludes(
+  catLiveRunner,
+  "response.format_gap === true || response.requested_format === \"wet\"",
+  "Cat live QA should read explicit format-gap metadata from the recommendation endpoint"
+);
+
+assertIncludes(
+  foodV2RecommendationRoute,
+  "format_gap",
+  "Food V2 recommendation endpoint should expose format-gap metadata for no-result format requests"
+);
+assertIncludes(
+  foodV2RecommendationRoute,
+  "No customer-visible Food V2 candidates were available for the requested format.",
+  "Food V2 recommendation endpoint should explain no-result format coverage"
+);
+assertIncludes(
+  foodV2RecommendationRoute,
+  "do not substitute a non-matching format just to fill the shortlist",
+  "Medical wet-only gaps should not silently fall back to a different food format"
 );
 
 console.log("Missing format recommendation message QA passed.");
