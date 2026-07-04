@@ -264,6 +264,12 @@ const betaProofSessionPacket = [
   },
 ] as const;
 
+const betaProofWorksheetSteps = [
+  "Mark every required journey step as PASS, REVIEW, or FAIL.",
+  "Do not move the percentage unless the worksheet result is PASS.",
+  "Turn REVIEW or FAIL into a follow-up task under the ten launch tracks.",
+] as const;
+
 const betaProofScoreCards = [
   {
     label: "Customer UX readiness",
@@ -703,6 +709,41 @@ export default function AdminActivityPage() {
             food cards were visible; selected food was [food name]; grams/day
             was shown; save completed; report opened; timeline or progress
             opened; feedback submitted; no manual help.
+          </div>
+
+          <div
+            className="mt-4 rounded-lg border border-amber-100 bg-white p-4"
+            data-testid="admin-beta-proof-worksheet"
+          >
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="font-semibold text-gray-950">
+                  Score-safe worksheet
+                </p>
+                <p className="mt-2 max-w-3xl leading-6">
+                  Use the worksheet after each real beta session so PASS,
+                  REVIEW, and FAIL are recorded consistently before any Customer
+                  UX readiness score changes.
+                </p>
+              </div>
+              <a
+                href="https://github.com/EmmMall92/nutritail-ai/blob/master/docs/beta-user-proof-worksheet.md"
+                className="inline-flex rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+              >
+                Open worksheet
+              </a>
+            </div>
+            <ul className="mt-3 grid gap-2 text-sm leading-6 text-gray-700 md:grid-cols-3">
+              {betaProofWorksheetSteps.map((step) => (
+                <li
+                  key={step}
+                  className="rounded-md border border-amber-100 bg-amber-50 p-3"
+                  data-testid="admin-beta-proof-worksheet-step"
+                >
+                  {step}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 

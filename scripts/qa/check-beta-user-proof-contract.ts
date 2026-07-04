@@ -117,6 +117,7 @@ const docs = read("docs/beta-user-proof.md");
 const testCard = read("docs/beta-user-test-card.md");
 const sessionPlaybook = read("docs/beta-user-session-playbook.md");
 const sessionPacket = read("docs/beta-user-proof-session-packet.md");
+const worksheet = read("docs/beta-user-proof-worksheet.md");
 const template = read(templateFile);
 const packageJson = read("package.json");
 const productProgress = read("docs/product-progress-score.md");
@@ -140,6 +141,10 @@ for (const marker of [
   assert(
     sessionPacket.includes(marker),
     `Beta user proof session packet is missing marker: ${marker}`,
+  );
+  assert(
+    worksheet.includes(marker),
+    `Beta user proof worksheet is missing marker: ${marker}`,
   );
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
 }
@@ -199,12 +204,38 @@ assert(
 );
 
 assert(
+  docs.includes("docs/beta-user-proof-worksheet.md") &&
+    docs.includes("PASS`, `REVIEW`, or `FAIL`") &&
+    docs.includes("ten launch tracks") &&
+    docs.includes("Do not move the percentage") &&
+    worksheet.includes("Beta User Proof Worksheet") &&
+    worksheet.includes("Score-Safe Decision") &&
+    worksheet.includes("Do not move the percentage") &&
+    worksheet.includes("ten launch tracks") &&
+    worksheet.includes("Customer UX readiness") &&
+    worksheet.includes("Only a `PASS` result for all three required tester slots"),
+  "Beta user proof docs must include the score-safe worksheet and percentage movement rule.",
+);
+
+assert(
   adminActivityPage.includes('data-testid="admin-beta-proof-session-packet"') &&
     adminActivityPage.includes('data-testid="admin-beta-proof-session-packet-step"') &&
     adminActivityPage.includes('data-testid="admin-beta-proof-evidence-note-template"') &&
     adminActivityPage.includes("docs/beta-user-proof-session-packet.md") &&
     adminActivityPage.includes("Use this as the 10-minute operating packet"),
   "Admin activity page must expose the beta proof session packet and exact evidence note template.",
+);
+
+assert(
+  adminActivityPage.includes('data-testid="admin-beta-proof-worksheet"') &&
+    adminActivityPage.includes('data-testid="admin-beta-proof-worksheet-step"') &&
+    adminActivityPage.includes("Score-safe worksheet") &&
+    adminActivityPage.includes("PASS,") &&
+    adminActivityPage.includes("REVIEW, and FAIL are recorded") &&
+    adminActivityPage.includes("docs/beta-user-proof-worksheet.md") &&
+    adminActivityPage.includes("Do not move the percentage unless the worksheet result is PASS") &&
+    adminActivityPage.includes("ten launch tracks"),
+  "Admin activity page must expose the beta proof worksheet and score-safe decision rule.",
 );
 
 assert(

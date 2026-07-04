@@ -37,6 +37,9 @@ it explains what the moderator may say, what counts as no manual help, and how
 to turn review/fail sessions into follow-up work across the ten launch tracks.
 Use `docs/beta-user-proof-session-packet.md` as the quick operating packet
 right before the tester starts.
+Use `docs/beta-user-proof-worksheet.md` immediately after the session to mark
+each required step as `PASS`, `REVIEW`, or `FAIL` and turn unclear sessions into
+follow-up work under the ten launch tracks.
 
 For each beta user, keep `passed: true` only if the evidence note proves the
 whole flow:
@@ -63,6 +66,10 @@ dog owner, one cat owner, and one returning saved-pet user so the main customer
 journeys are covered.
 
 The runner rejects TODO, placeholder, draft, or example notes.
+
+Do not move the percentage from a session unless the worksheet result is
+`PASS`. A `REVIEW` or `FAIL` result is still useful evidence, but it should
+create a product task instead of raising Customer UX readiness.
 
 ## Suggested Minimum
 
