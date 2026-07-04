@@ -91,6 +91,13 @@ dog-side baseline is materially beyond the old 78-80% foundation stage:
   positioning, senior needs, GI/sensitive digestion, emergency safety, pregnancy
   and lactation, rescue dogs, climate/activity contexts, and portion/transition
   questions.
+- Cat live QA cases **001-500** now also pass with **500/500** checked and
+  **0 review** against `https://nutritail.ai` after the renal wet-only case was
+  converted from a misleading review into a clear wet/canned Food V2 data
+  coverage gap.
+- The cat suite checks the live Food V2 recommendation endpoint, not OpenAI fact
+  extraction. That is intentional evidence for deterministic cat-food retrieval,
+  ranking, format handling, and safety-direction coverage.
 - This does **not** raise Customer UX readiness above 88% by itself, because the
   next customer-facing unlock still requires real beta-user journeys. It does
   keep recommendation engine beta confidence at **95% beta-candidate** with fresh
