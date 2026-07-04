@@ -319,6 +319,10 @@ assert(
     customerLiveJourneyProof.includes("SKIP_AUTH") &&
     customerLiveJourneyProof.includes("PASS_NON_DESTRUCTIVE") &&
     customerLiveJourneyProof.includes("NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF") &&
+    customerLiveJourneyProof.includes("NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF") &&
+    customerLiveJourneyProof.includes("cleanup_live_write_pet") &&
+    customerLiveJourneyProof.includes("soft-delete enabled by default") &&
+    customerLiveJourneyProof.includes("DELETE /api/account/pets/:id") &&
     customerLiveJourneyProof.includes("/api/account/chatbot/save"),
   "Customer live journey proof must default to non-destructive auth/card checks and require an explicit live-write flag for save/report/timeline/progress proof."
 );

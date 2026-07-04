@@ -19,6 +19,8 @@ const shouldWriteManualProofDraft =
   process.env.NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT === "1";
 const shouldRunLiveWriteProof =
   process.env.NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF === "1";
+const shouldCleanupLiveWriteProof =
+  process.env.NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF !== "1";
 const forbiddenCustomerWordingPatterns = [
   /\bneeds[_\s-]?review\b/i,
   /\bsource\s*tier\b/i,
@@ -648,6 +650,34 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     });
   }
 
+  if (shouldCleanupLiveWriteProof) {
+    const cleanup = await fetchJson(`/api/account/pets/${savedPetId}`, {
+      method: "DELETE",
+      cookie: authCookie.value,
+      body: { authUserId },
+    });
+    const cleanupOk = cleanup.status === 200 && cleanup.payload?.success === true;
+    steps.push({
+      key: "cleanup_live_write_pet",
+      ok: cleanupOk,
+      route: `/api/account/pets/${savedPetId}`,
+      status: cleanup.status,
+      durationMs: cleanup.durationMs,
+      note: cleanupOk
+        ? "Controlled QA pet was soft-deleted after live journey proof."
+        : "Controlled QA pet cleanup failed; review live account trash before rerunning.",
+    });
+  } else {
+    steps.push({
+      key: "keep_live_write_pet",
+      ok: true,
+      route: `/api/account/pets/${savedPetId}`,
+      status: 200,
+      durationMs: 0,
+      note: "NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF=1 kept the controlled QA pet for manual inspection.",
+    });
+  }
+
   const ok = steps.every((step) => step.ok);
 
   return {
@@ -655,7 +685,11 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
     ok,
     source: "live write proof",
     note: ok
-      ? "Opt-in live write proof saved a QA pet, opened report/account/timeline routes, and proved progress, no-result, flavour/brand, new-food continuation, and customer-visible report/account clarity."
+      ? `Opt-in live write proof saved a QA pet, opened report/account/timeline routes, proved progress, no-result, flavour/brand, new-food continuation, customer-visible report/account clarity, and ${
+          shouldCleanupLiveWriteProof
+            ? "soft-deleted the QA pet afterward."
+            : "kept the QA pet for manual inspection."
+        }`
       : "Opt-in live write proof ran but at least one live step needs review.",
     petId: savedPetId,
     proof: ok
@@ -669,7 +703,7 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
           save_analysis: {
             passed: true,
             evidence: [
-              `Live write proof save created pet profile ${savedPetId}, report access, timeline access, and progress follow-up context.`,
+              `Live write proof save created pet profile ${savedPetId}, report access, timeline access, progress follow-up context, and ${shouldCleanupLiveWriteProof ? "soft-deleted the QA profile after proof" : "kept the QA profile for manual inspection"}.`,
             ],
           },
           open_report: {
@@ -1142,6 +1176,7 @@ async function main() {
       `- Manual proof source: ${proofSource}`,
       `- Live write proof: ${liveWriteProof.enabled ? liveWriteProof.note : "disabled"}`,
       `- Live write proof pet: ${liveWriteProof.petId || "none"}`,
+      `- Live write proof cleanup: ${shouldCleanupLiveWriteProof ? "soft-delete enabled by default" : "kept for manual inspection"}`,
       `- Unlock impact: ${unlockImpact}`,
       `- Customer journeys tracked: ${journeyProofs.length}`,
       `- Manual journeys still required: ${journeyProofs.filter((journey) => journey.status === "manual-required").length}`,
@@ -1158,11 +1193,13 @@ async function main() {
       "",
       "This section only runs when `NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF=1` is set.",
       "It writes a controlled QA pet and progress note to the authenticated live account, then verifies clean report wording, account/report clarity, timeline, and return-to-progress routes.",
+      "By default it soft-deletes the controlled QA pet after proof through the customer-owned `DELETE /api/account/pets/:id` cleanup route. Set `NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF=1` only when you intentionally want to inspect the QA pet afterward.",
       "",
       `- Enabled: ${liveWriteProof.enabled ? "yes" : "no"}`,
       `- Result: ${liveWriteProof.ok ? "pass" : liveWriteProof.enabled ? "review" : "not run"}`,
       `- Note: ${liveWriteProof.note}`,
       `- Pet id: ${liveWriteProof.petId || "none"}`,
+      `- Cleanup mode: ${shouldCleanupLiveWriteProof ? "soft-delete after proof" : "keep QA pet"}`,
       "",
       liveWriteProof.steps.length > 0
         ? [
@@ -1197,8 +1234,9 @@ async function main() {
       "3. In the browser, complete the manual part: choose one food, confirm grams/day, save, open account/report, open timeline, and return for progress.",
       "4. Either copy `docs/customer-live-journey-proof.template.json` to `.qa-secrets/customer-live-journey-proof.json`, or run `$env:NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT='1'; npm.cmd run qa:customer-live-journey-proof` to create `.qa-secrets/customer-live-journey-proof.draft.json`.",
       "5. Rename/copy the local draft to `.qa-secrets/customer-live-journey-proof.json` only after replacing TODO notes with real evidence from the browser.",
-      "6. Or, for a controlled authenticated write proof, run `$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF='1'; npm.cmd run qa:customer-live-journey-proof`; this creates a QA pet in the live account and should be used intentionally.",
-      "7. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score.",
+      "6. Or, for a controlled authenticated write proof, run `$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF='1'; npm.cmd run qa:customer-live-journey-proof`; this creates a QA pet in the live account, verifies the full journey, and soft-deletes the QA pet by default.",
+      "7. If you intentionally need to inspect the created QA pet, also set `$env:NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF='1'` for that single run.",
+      "8. Re-run `npm.cmd run qa:customer-live-journey-proof` and only then update the Customer UX score.",
     ].join("\n") + "\n",
     "utf8",
   );
@@ -1224,6 +1262,9 @@ async function main() {
         live_write_proof_enabled: liveWriteProof.enabled,
         live_write_proof_ok: liveWriteProof.ok,
         live_write_proof_pet_id: liveWriteProof.petId || null,
+        live_write_proof_cleanup: shouldCleanupLiveWriteProof
+          ? "soft-delete"
+          : "kept",
         manual_proof_draft_written: manualProofDraft.wrote,
         manual_proof_draft_path: manualProofDraft.path,
         report: reportPath,
