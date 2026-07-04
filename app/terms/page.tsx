@@ -64,6 +64,21 @@ const sections = [
   },
 ];
 
+const paidLaunchNotice = [
+  {
+    title: "Δεν υπάρχει αυτόματη χρέωση",
+    text: "Αν στο μέλλον ανοίξουν πληρωμένα πλάνα, η beta χρήση δεν θα μετατραπεί αυτόματα σε συνδρομή.",
+  },
+  {
+    title: "Θα προηγηθεί καθαρή ενημέρωση",
+    text: "Πριν ζητηθεί οποιαδήποτε πληρωμή, θα εμφανιστούν καθαρά τιμή, όρια, ακύρωση, υποστήριξη και τι αλλάζει σε σχέση με τη beta.",
+  },
+  {
+    title: "Ο χρήστης θα επιλέγει συνειδητά",
+    text: "Η συνέχιση σε paid plan θα απαιτεί σαφή επιλογή από τον χρήστη, όχι σιωπηρή ενεργοποίηση.",
+  },
+] as const;
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12">
@@ -80,6 +95,38 @@ export default function TermsPage() {
             κατανοείς ότι παρέχει ενημερωτική καθοδήγηση, όχι κτηνιατρική
             φροντίδα.
           </p>
+        </div>
+
+        <div
+          className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 shadow-sm"
+          data-testid="terms-paid-launch-notice"
+        >
+          <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+            Πριν από οποιοδήποτε paid launch
+          </p>
+          <h2 className="mt-3 text-2xl font-bold text-black">
+            Η beta δεν γίνεται συνδρομή χωρίς καθαρή επιλογή.
+          </h2>
+          <p className="mt-4 text-gray-700">
+            Αυτή τη στιγμή το NutriTail λειτουργεί ως beta πρόσβαση χωρίς
+            πληρωμή. Αν αργότερα ενεργοποιηθούν πληρωμένα πλάνα, ο χρήστης θα
+            ενημερωθεί καθαρά πριν ζητηθεί οποιαδήποτε πληρωμή.
+          </p>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {paidLaunchNotice.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-xl border border-emerald-200 bg-white p-4"
+                data-testid="terms-paid-launch-notice-item"
+              >
+                <h3 className="font-bold text-black">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {item.text}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
 
         {sections.map((section) => (

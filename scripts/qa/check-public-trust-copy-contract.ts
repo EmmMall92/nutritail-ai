@@ -104,6 +104,13 @@ const launchTrustChecklistMarkers = [
 
 const betaTermsMarkers = [
   'import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";',
+  'data-testid="terms-paid-launch-notice"',
+  'data-testid="terms-paid-launch-notice-item"',
+  "paidLaunchNotice",
+  "paid launch",
+  "Δεν υπάρχει αυτόματη χρέωση",
+  "Θα προηγηθεί καθαρή ενημέρωση",
+  "Ο χρήστης θα επιλέγει συνειδητά",
   "Beta πρόσβαση και πλάνα",
   "δεν ενεργοποιεί πληρωμή",
   "δεν ζητά στοιχεία κάρτας",
