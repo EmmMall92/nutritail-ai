@@ -2004,6 +2004,63 @@ export default function FoodV2LiveQaPage() {
             </div>
           )}
         </div>
+
+        <div
+          className="mt-4 rounded-xl border border-purple-200 bg-white/80 p-4"
+          data-testid="food-v2-format-data-action-list"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-purple-700">
+                Format data action list
+              </p>
+              <h4 className="mt-1 text-lg font-bold text-purple-950">
+                What closes the wet/canned coverage gap
+              </h4>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-purple-900">
+              Treat wet-only requests as a data-coverage queue, not a chatbot
+              failure. Do not fill the gap with dry foods when the customer
+              clearly asks for wet or canned food.
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                title: "Add wet dog rows",
+                detail:
+                  "Prioritise canned/pouch dog foods with ingredients, protein, fat, fibre, ash or moisture, kcal, and source URL.",
+              },
+              {
+                title: "Expand wet cat rows",
+                detail:
+                  "Keep visible wet cat options growing beyond the first Purina rows, especially sterilised, urinary, renal, senior, and kitten.",
+              },
+              {
+                title: "Require kcal for portions",
+                detail:
+                  "A wet row is more useful when kcal/100g or kcal/package is present, so the customer can still get grams or packs per day.",
+              },
+              {
+                title: "Keep format guard strict",
+                detail:
+                  "Wet-only journeys should either show wet foods or a clear next step; they should not silently recommend dry food.",
+              },
+            ].map((item) => (
+              <article
+                key={item.title}
+                className="rounded-lg border border-purple-100 bg-purple-50 p-3 text-sm text-purple-950"
+                data-testid="food-v2-format-data-action"
+              >
+                <p className="font-semibold">{item.title}</p>
+                <p className="mt-2 text-xs leading-5 text-purple-800">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div
