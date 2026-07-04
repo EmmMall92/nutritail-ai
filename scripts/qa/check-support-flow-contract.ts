@@ -12,6 +12,7 @@ function read(path: string) {
 
 const supportPage = read("app/support/page.tsx");
 const sitemap = read("app/sitemap.ts");
+const publicLiveRoutes = read("scripts/qa/check-public-launch-live-routes.mjs");
 const packageJson = read("package.json");
 
 for (const marker of [
@@ -35,6 +36,12 @@ for (const marker of [
 }
 
 assert(sitemap.includes('path: "/support"'), "Sitemap must include /support.");
+
+assert(
+  publicLiveRoutes.includes('path: "/support"') &&
+    publicLiveRoutes.includes("https://nutritail.ai/support"),
+  "Public launch live route smoke must include /support and the sitemap URL."
+);
 
 assert(
   packageJson.includes('"qa:support-flow-contract"'),
