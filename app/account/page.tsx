@@ -93,6 +93,20 @@ type AccountTodayTask = {
   tone: "primary" | "calm";
 };
 
+type AccountNextBestMoveAction = {
+  label: string;
+  href: string;
+  tone: "primary" | "secondary";
+};
+
+type AccountNextBestMove = {
+  eyebrow: string;
+  title: string;
+  detail: string;
+  helper: string;
+  actions: AccountNextBestMoveAction[];
+};
+
 type AccountPlanSnapshot = {
   petName: string;
   weightGoal: string;
@@ -754,6 +768,132 @@ function getAccountTodayTasks({
   return tasks;
 }
 
+function getAccountNextBestMove({
+  pets,
+  latestPet,
+  latestAnalysis,
+  latestProgressPet,
+  nextPetToAnalyze,
+}: {
+  pets: AccountPet[];
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+  latestProgressPet?: AccountPet;
+  nextPetToAnalyze?: AccountPet;
+}): AccountNextBestMove {
+  if (pets.length === 0) {
+    return {
+      eyebrow: "\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf \u03ba\u03b1\u03bb\u03cd\u03c4\u03b5\u03c1\u03bf \u03b2\u03ae\u03bc\u03b1",
+      title:
+        "\u03a6\u03c4\u03b9\u03ac\u03be\u03b5 \u03c4\u03b7\u03bd \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf \u03c3\u03bf\u03c5",
+      detail:
+        "\u039f \u03c3\u03cd\u03bc\u03b2\u03bf\u03c5\u03bb\u03bf\u03c2 \u03b8\u03b1 \u03c1\u03c9\u03c4\u03ae\u03c3\u03b5\u03b9 \u03c4\u03b1 \u03b1\u03c0\u03b1\u03c1\u03b1\u03af\u03c4\u03b7\u03c4\u03b1 \u03ba\u03b1\u03b9 \u03b8\u03b1 \u03b2\u03b3\u03ac\u03bb\u03b5\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2, \u03c4\u03c1\u03bf\u03c6\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1.",
+      helper:
+        "\u0398\u03ad\u03bb\u03b5\u03b9 2-3 \u03bb\u03b5\u03c0\u03c4\u03ac \u03ba\u03b1\u03b9 \u03bc\u03b5\u03c4\u03ac \u03b8\u03b1 \u03ad\u03c7\u03b5\u03b9\u03c2 \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03c5\u03bc\u03ad\u03bd\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf.",
+      actions: [
+        {
+          label: "\u039e\u03b5\u03ba\u03af\u03bd\u03b1 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+          href: "/account/chatbot",
+          tone: "primary",
+        },
+        {
+          label: "\u0394\u03b5\u03c2 \u03c0\u03ce\u03c2 \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03b5\u03af",
+          href: "/how-it-works",
+          tone: "secondary",
+        },
+      ],
+    };
+  }
+
+  if (nextPetToAnalyze) {
+    return {
+      eyebrow: "\u039b\u03b5\u03af\u03c0\u03b5\u03b9 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+      title: `${
+        nextPetToAnalyze.name ?? "\u03a4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf"
+      } \u03b4\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b7 \u03c0\u03bb\u03ac\u03bd\u03bf`,
+      detail:
+        "\u039f\u03bb\u03bf\u03ba\u03bb\u03ae\u03c1\u03c9\u03c3\u03b5 \u03c0\u03c1\u03ce\u03c4\u03b1 \u03b1\u03c5\u03c4\u03ae \u03c4\u03b7\u03bd \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03ce\u03c3\u03c4\u03b5 \u03bd\u03b1 \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03c3\u03b1\u03c6\u03ae\u03c2 \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2, \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2 \u03ba\u03b1\u03b9 \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac.",
+      helper:
+        "\u0391\u03bd \u03ad\u03c7\u03b5\u03b9\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1 \u03b5\u03c4\u03b9\u03ba\u03ad\u03c4\u03b1\u03c2 \u03ae \u03c4\u03c9\u03c1\u03b9\u03bd\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae, \u03bc\u03c0\u03bf\u03c1\u03b5\u03af\u03c2 \u03bd\u03b1 \u03c4\u03b7 \u03b3\u03c1\u03ac\u03c8\u03b5\u03b9\u03c2 \u03c3\u03c4\u03bf chat.",
+      actions: [
+        {
+          label: "\u039a\u03ac\u03bd\u03b5 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+          href: `/account/chatbot?petId=${nextPetToAnalyze.id}`,
+          tone: "primary",
+        },
+        {
+          label: "\u0394\u03b5\u03c2 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03b1",
+          href: "/account/pets",
+          tone: "secondary",
+        },
+      ],
+    };
+  }
+
+  const activePet = latestProgressPet ?? latestPet;
+  const hasFoodPlan = Boolean(
+    latestAnalysis &&
+      getAnalysisFoodName(latestAnalysis) &&
+      getAnalysisFeedingGrams(latestAnalysis)
+  );
+
+  if (activePet && hasFoodPlan) {
+    return {
+      eyebrow: "\u03a3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5 \u03c7\u03c9\u03c1\u03af\u03c2 \u03bd\u03b1 \u03be\u03b5\u03ba\u03b9\u03bd\u03ae\u03c3\u03b5\u03b9\u03c2 \u03b1\u03c0\u03cc \u03c4\u03b7\u03bd \u03b1\u03c1\u03c7\u03ae",
+      title: `\u03a4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03b3\u03b9\u03b1 ${
+        activePet.name ?? "\u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf"
+      } \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03c4\u03bf\u03b9\u03bc\u03bf`,
+      detail:
+        "\u0394\u03b5\u03c2 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac, \u03ba\u03ac\u03bd\u03b5 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5 \u03ae \u03b6\u03ae\u03c4\u03b7\u03c3\u03b5 \u03bd\u03ad\u03b1 \u03b3\u03b5\u03cd\u03c3\u03b7/\u03bc\u03ac\u03c1\u03ba\u03b1 \u03bc\u03b5 \u03c4\u03bf \u03af\u03b4\u03b9\u03bf \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc.",
+      helper:
+        "\u0393\u03b9\u03b1 \u03ba\u03b1\u03bb\u03cd\u03c4\u03b5\u03c1\u03bf \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf, \u03ba\u03c1\u03ac\u03c4\u03b1 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae.",
+      actions: [
+        {
+          label: "\u0394\u03b5\u03c2 \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac",
+          href: `/print/pet-report/${activePet.id}`,
+          tone: "primary",
+        },
+        {
+          label: "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5",
+          href: `/account/chatbot?petId=${activePet.id}&mode=progress`,
+          tone: "secondary",
+        },
+        {
+          label: "\u0386\u03bb\u03bb\u03b7 \u03b3\u03b5\u03cd\u03c3\u03b7/\u03bc\u03ac\u03c1\u03ba\u03b1",
+          href: `/account/chatbot?petId=${activePet.id}&mode=recommendation&reason=flavour`,
+          tone: "secondary",
+        },
+      ],
+    };
+  }
+
+  const fallbackPet = activePet ?? latestPet;
+
+  return {
+    eyebrow: "\u03a7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03c4\u03b5\u03bb\u03b9\u03ba\u03ae \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae",
+    title:
+      "\u039a\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b2\u03b3\u03bf\u03c5\u03bd \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1",
+    detail:
+      "\u0397 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03ad\u03c7\u03b5\u03b9 \u03b2\u03ac\u03c3\u03b7, \u03b1\u03bb\u03bb\u03ac \u03b7 \u03c4\u03b5\u03bb\u03b9\u03ba\u03ae \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03b8\u03ad\u03bb\u03b5\u03b9 \u03c3\u03c5\u03b3\u03ba\u03b5\u03ba\u03c1\u03b9\u03bc\u03ad\u03bd\u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 kcal/100g.",
+    helper:
+      "\u039c\u03c0\u03bf\u03c1\u03b5\u03af\u03c2 \u03bd\u03b1 \u03b6\u03b7\u03c4\u03ae\u03c3\u03b5\u03b9\u03c2 \u03bd\u03ad\u03b1 \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03ae \u03bd\u03b1 \u03b3\u03c1\u03ac\u03c8\u03b5\u03b9\u03c2 \u03c4\u03b7\u03bd \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae \u03c0\u03bf\u03c5 \u03ad\u03c7\u03b5\u03b9\u03c2.",
+    actions: [
+      {
+        label: "\u0392\u03c1\u03b5\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ae",
+        href: fallbackPet
+          ? `/account/chatbot?petId=${fallbackPet.id}&mode=recommendation`
+          : "/account/chatbot",
+        tone: "primary",
+      },
+      {
+        label: "\u0394\u03b5\u03c2 \u03c3\u03cd\u03bd\u03bf\u03c8\u03b7",
+        href: fallbackPet ? `/print/pet-report/${fallbackPet.id}` : "/account/chatbot",
+        tone: "secondary",
+      },
+    ],
+  };
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -911,6 +1051,13 @@ export default function AccountPage() {
     latestProgressPet,
     nextPetToAnalyze,
   });
+  const accountNextBestMove = getAccountNextBestMove({
+    pets,
+    latestPet,
+    latestAnalysis,
+    latestProgressPet,
+    nextPetToAnalyze,
+  });
   const accountActivityStrip = getAccountActivityStrip({
     latestPet,
     latestAnalysis,
@@ -970,6 +1117,44 @@ export default function AccountPage() {
             >
               Δες τα κατοικίδια
             </Link>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-black bg-black p-6 text-white shadow-sm"
+        data-testid="account-next-best-move"
+      >
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+              {accountNextBestMove.eyebrow}
+            </p>
+            <h2 className="mt-2 text-2xl font-bold">
+              {accountNextBestMove.title}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-gray-200">
+              {accountNextBestMove.detail}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-300">
+              {accountNextBestMove.helper}
+            </p>
+          </div>
+
+          <div className="flex min-w-full flex-col gap-2 sm:min-w-64">
+            {accountNextBestMove.actions.map((action) => (
+              <Link
+                key={action.label}
+                href={action.href}
+                className={`rounded-xl px-4 py-3 text-center text-sm font-semibold transition ${
+                  action.tone === "primary"
+                    ? "bg-white text-black hover:bg-gray-100"
+                    : "border border-white/30 text-white hover:bg-white/10"
+                }`}
+              >
+                {action.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

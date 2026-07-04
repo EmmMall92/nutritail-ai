@@ -145,6 +145,23 @@ assert(
   "Account dashboard must generate a customer-facing command center from account data."
 );
 assert(
+  accountPage.includes("type AccountNextBestMove") &&
+    accountPage.includes("type AccountNextBestMoveAction") &&
+    accountPage.includes("function getAccountNextBestMove") &&
+    accountPage.includes("accountNextBestMove.actions.map") &&
+    accountPage.includes('data-testid="account-next-best-move"'),
+  "Account dashboard must expose a top-level next best move for customers."
+);
+assert(
+  accountPage.includes("\\u0395\\u03c0\\u03cc\\u03bc\\u03b5\\u03bd\\u03bf \\u03ba\\u03b1\\u03bb\\u03cd\\u03c4\\u03b5\\u03c1\\u03bf \\u03b2\\u03ae\\u03bc\\u03b1") &&
+    accountPage.includes("\\u03a3\\u03c5\\u03bd\\u03ad\\u03c7\\u03b9\\u03c3\\u03b5 \\u03c7\\u03c9\\u03c1\\u03af\\u03c2 \\u03bd\\u03b1 \\u03be\\u03b5\\u03ba\\u03b9\\u03bd\\u03ae\\u03c3\\u03b5\\u03b9\\u03c2 \\u03b1\\u03c0\\u03cc \\u03c4\\u03b7\\u03bd \\u03b1\\u03c1\\u03c7\\u03ae") &&
+    accountPage.includes("\\u0394\\u03b5\\u03c2 \\u03b1\\u03bd\\u03b1\\u03c6\\u03bf\\u03c1\\u03ac") &&
+    accountPage.includes("\\u0388\\u03bb\\u03b5\\u03b3\\u03c7\\u03bf\\u03c2 \\u03c0\\u03c1\\u03bf\\u03cc\\u03b4\\u03bf\\u03c5") &&
+    accountPage.includes("\\u0386\\u03bb\\u03bb\\u03b7 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7/\\u03bc\\u03ac\\u03c1\\u03ba\\u03b1") &&
+    accountPage.includes("mode=recommendation&reason=flavour"),
+  "Top-level next best move must guide customers to report, progress check, and flavour/brand alternatives."
+);
+assert(
   accountPage.includes('data-testid="account-today-command-center"'),
   "Account dashboard must expose the today command center."
 );
