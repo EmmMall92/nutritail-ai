@@ -32,7 +32,7 @@ Paste one factual note per user into `.qa-secrets/beta-user-proof.json`.
 signup/login completed; pet intake completed in Greek or English; food cards
 were visible; selected food was [food name]; grams/day was shown; save
 completed; report opened; timeline or progress opened; feedback submitted; no
-manual help.
+manual help; device captured: mobile or desktop.
 ```
 
 ## Pass Rule
@@ -42,6 +42,10 @@ tester did not need help understanding what to do next.
 
 If the tester needed help, mark `passed: false`, keep the note factual, and turn
 the confusion into a follow-up task under one of the ten launch tracks.
+
+At least one of the first three proof sessions should be mobile. If all three
+sessions are desktop-only, keep the result as useful evidence but do not use it
+as the final Customer UX unlock yet.
 
 ## Commands
 

@@ -270,6 +270,24 @@ const betaProofWorksheetSteps = [
   "Turn REVIEW or FAIL into a follow-up task under the ten launch tracks.",
 ] as const;
 
+const betaProofDeviceCoverage = [
+  {
+    label: "Mobile proof",
+    detail:
+      "At least one mobile session should pass before Customer UX moves above the beta-user proof gate.",
+  },
+  {
+    label: "Desktop proof",
+    detail:
+      "Desktop sessions still count, but they cannot be the only proof for the final unlock.",
+  },
+  {
+    label: "Evidence note",
+    detail:
+      "Each note should include device captured: mobile or desktop.",
+  },
+] as const;
+
 const betaProofScoreCards = [
   {
     label: "Customer UX readiness",
@@ -597,6 +615,40 @@ export default function AdminActivityPage() {
 
         <div
           className="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
+          data-testid="admin-beta-proof-device-coverage"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="font-semibold text-gray-950">
+                Mobile/desktop coverage
+              </p>
+              <p className="mt-2 max-w-3xl leading-6">
+                At least one mobile session should pass before Customer UX moves
+                above the beta-user proof gate. The public site has to feel
+                clear on the device most customers will actually use.
+              </p>
+            </div>
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">
+              device captured
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {betaProofDeviceCoverage.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-lg border border-amber-100 bg-amber-50 p-3"
+                data-testid="admin-beta-proof-device-coverage-item"
+              >
+                <p className="font-semibold text-amber-950">{item.label}</p>
+                <p className="mt-2 leading-6 text-amber-950">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
           data-testid="admin-beta-proof-invite-queue"
         >
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -708,7 +760,8 @@ export default function AdminActivityPage() {
             signup/login completed; pet intake completed in Greek or English;
             food cards were visible; selected food was [food name]; grams/day
             was shown; save completed; report opened; timeline or progress
-            opened; feedback submitted; no manual help.
+            opened; feedback submitted; no manual help; device captured: mobile
+            or desktop.
           </div>
 
           <div

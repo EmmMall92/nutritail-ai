@@ -57,6 +57,11 @@ it fits, transition, timeline, and next check-in for the saved pet. It should
 not move higher yet until the same quality is proven by broader beta-user
 journeys, not just the controlled QA account.
 
+At least one of the required beta-user journeys should be mobile before using
+the proof as a Customer UX unlock. Desktop proof helps, but the live customer
+experience depends heavily on mobile chatbot intake, food cards, reports, and
+progress return paths.
+
 ## Customer UX Scorecard
 
 This scorecard explains why progress can feel flat even while the system is

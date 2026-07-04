@@ -13,6 +13,7 @@ Collect at least one complete journey from each group:
 - returning saved-pet journey
 
 Do not count three nearly identical journeys as the next Customer UX proof move.
+At least one of the first three complete journeys should be done on mobile.
 
 ## What The Tester Should Do
 
@@ -47,13 +48,15 @@ evidence terms so `qa:beta-user-proof-contract` can validate the proof:
 - timeline or progress
 - feedback
 - no manual help
+- device captured: mobile or desktop
 
 Good evidence note:
 
 ```text
 signup/login completed; pet intake completed in Greek; food cards were visible;
 selected food was Royal Canin Mini Adult; grams/day was shown; save completed;
-report opened; timeline or progress opened; feedback submitted; no manual help.
+report opened; timeline or progress opened; feedback submitted; no manual help;
+device captured: mobile.
 ```
 
 Weak evidence note:
