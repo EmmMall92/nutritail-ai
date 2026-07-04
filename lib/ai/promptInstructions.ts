@@ -104,6 +104,7 @@ export function buildAnswerWriterUserPrompt(input: {
         "- Keep the message compact: at most 4 short sentences.",
         "- Mention only the single best starting food by name; the rest are visible in cards.",
         "- Do not repeat card lists, scores, confidence labels, source quality, review status, or missing fields.",
+        "- Do not include kcal/100g, protein/fat/fiber percentages, or nutrition-table style snapshots in this compact intro.",
         "- End by telling the user to choose a food card to estimate daily portions.",
       ]
     : [];

@@ -28,6 +28,7 @@ const CUSTOMER_CARD_FLOW_RULES = [
   "If cards_follow is true, mention only the single best starting food, not every card",
   "If cards_follow is true, do not tell the user to save the plan in this intro",
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
+  "If cards_follow is true, do not include kcal/100g, protein/fat/fiber percentages, or nutrition-table style snapshots",
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
   "The best first choices are in the cards below.",
@@ -512,13 +513,33 @@ function isCompactCardIntro(text: string) {
     "recommended foods:",
     "food shortlist:",
   ];
+  const nutritionSnapshotTerms = [
+    "kcal/100g",
+    "protein",
+    "fat",
+    "fiber",
+    "πρωτε",
+    "λιπαρ",
+    "ίν",
+    "ινε",
+  ];
 
   if (wordCount(text) > 90) return false;
   if (sentenceCount(text) > 4) return false;
   if (numberedListLineCount(text) > 1) return false;
   if (/\bsave\b/i.test(text)) return false;
+  if (/\b\d+(?:[.,]\d+)?\s*kcal\s*\/\s*100g\b/i.test(text)) return false;
+  if (/\b(?:protein|fat|fiber)\s*:?\s*\d+(?:[.,]\d+)?\s*%/i.test(text)) {
+    return false;
+  }
+  if (/(?:πρωτεΐνη|πρωτεινη|λιπαρά|λιπαρα|ίνες|ινες)\s*:?\s*\d+(?:[.,]\d+)?\s*%/i.test(text)) {
+    return false;
+  }
 
-  return !listLikeTerms.some((term) => normalized.includes(term));
+  return (
+    !listLikeTerms.some((term) => normalized.includes(term)) &&
+    !nutritionSnapshotTerms.some((term) => normalized.includes(term))
+  );
 }
 
 
