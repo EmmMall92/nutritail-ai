@@ -35,6 +35,24 @@ assert(
   "Food-choice analytics must include the estimated grams/day when available."
 );
 assert(
+    chatbotPage.includes("function getCustomerFeedbackContext") &&
+    chatbotPage.includes("selectedFoodName =") &&
+    chatbotPage.includes("analysisMetadata?.matchedFoodName") &&
+    chatbotPage.includes("recommendedFoodChoices.find") &&
+    chatbotPage.includes("choice.name === selectedFoodName") &&
+    chatbotPage.includes("feedingGramsPerDay = analysisMetadata?.feedingGramsPerDay") &&
+    chatbotPage.includes("recommendedFoodCount: recommendedFoodChoices.length") &&
+    chatbotPage.includes("hasSelectableFoodRecommendations") &&
+    chatbotPage.includes("hasSelectedRecommendedFood") &&
+    chatbotPage.includes("latestDailyCalories: latestAnalysis?.nutrition.der"),
+  "Customer chatbot feedback must include actionable recommendation context for every feedback event."
+);
+assert(
+  chatbotPage.includes('source: "account_chatbot_analysis_feedback"') &&
+    chatbotPage.includes('feedbackSurface: "save_analysis_panel"'),
+  "Helpful/not-helpful feedback must identify the customer-facing analysis feedback surface."
+);
+assert(
   adminFeedbackPage.includes("Selected Food Trends"),
   "Admin feedback page must show selected food trends."
 );
