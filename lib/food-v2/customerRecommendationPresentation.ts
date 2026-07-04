@@ -19,6 +19,14 @@ function countByRole(
   ).length;
 }
 
+function countLabel(
+  count: number,
+  language: CustomerRecommendationPresentationLanguage
+) {
+  if (language === "el") return count === 3 ? "3" : `έως ${count}`;
+  return count === 3 ? "3" : `up to ${count}`;
+}
+
 export function buildCustomerRecommendationIntro({
   choices,
   language,
@@ -39,26 +47,26 @@ export function buildCustomerRecommendationIntro({
     const firstLine =
       mode === "alternative"
         ? "Βρήκα νέες επιλογές που μπορούν να αντικαταστήσουν την τωρινή τροφή."
-        : "Βρήκα τις πιο κατάλληλες επιλογές και τις έβαλα σε κάρτες από κάτω.";
+        : "Βρήκα τις πιο κατάλληλες επιλογές και τις έβαλα σε κάρτες για να διαλέξεις εύκολα.";
     const splitLine = hasValue
-      ? `Θα δεις ${bestCount} βασικές προτάσεις και ${valueCount} πιο πρακτικές/οικονομικές εναλλακτικές.`
-      : `Θα δεις ${bestCount} βασικές προτάσεις που ταιριάζουν περισσότερο στο προφίλ.`;
+      ? `Θα δεις ${countLabel(bestCount, "el")} δυνατές επιλογές και ${countLabel(valueCount, "el")} πιο πρακτικές/οικονομικές εναλλακτικές.`
+      : `Θα δεις ${countLabel(bestCount, "el")} δυνατές επιλογές που ταιριάζουν περισσότερο στο προφίλ.`;
 
     return [
       firstLine,
       splitLine,
       `Πρώτη πρόταση: ${topChoice.name}.`,
-      "Πάτησε μια κάρτα για να υπολογίσω περίπου γραμμάρια/ημέρα και να συνεχίσουμε με ξεκάθαρο πλάνο.",
+      "Πάτησε μία κάρτα για να υπολογίσω περίπου γραμμάρια/ημέρα και να συνεχίσουμε με ξεκάθαρο πλάνο.",
     ].join("\n");
   }
 
   const firstLine =
     mode === "alternative"
       ? "I found new options that can replace the current food."
-      : "I found the best-fitting options and placed them in the cards below.";
+      : "I found the best-fitting options and placed them in simple cards below.";
   const splitLine = hasValue
-    ? `You will see ${bestCount} main picks and ${valueCount} practical/value alternatives.`
-    : `You will see ${bestCount} main picks that fit this profile best.`;
+    ? `You will see ${countLabel(bestCount, "en")} strong picks and ${countLabel(valueCount, "en")} practical/value alternatives.`
+    : `You will see ${countLabel(bestCount, "en")} strong picks that fit this profile best.`;
 
   return [
     firstLine,
