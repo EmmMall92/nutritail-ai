@@ -76,6 +76,26 @@ dog/cat QA banks, OpenAI fact extraction, safety guards, and deterministic food
 selection have broad automated evidence. That does not mean the customer-facing
 experience is already 95%.
 
+## Fresh Recommendation Evidence
+
+The latest recommendation-evidence refresh on **July 4, 2026** confirms that the
+dog-side baseline is materially beyond the old 78-80% foundation stage:
+
+- Dog live QA cases **001-200** passed with **200/200** checked and **0 review**
+  against `https://nutritail.ai`.
+- OpenAI extraction was **enabled** and checked for each case, while Food V2
+  retrieval and deterministic NutriTail ranking remained the source of truth for
+  food selection.
+- Coverage included allergy conflicts, puppy and large-breed puppy growth,
+  active/working dogs, sterilised and weight-control logic, renal and urinary
+  positioning, senior needs, GI/sensitive digestion, emergency safety, pregnancy
+  and lactation, rescue dogs, climate/activity contexts, and portion/transition
+  questions.
+- This does **not** raise Customer UX readiness above 88% by itself, because the
+  next customer-facing unlock still requires real beta-user journeys. It does
+  keep recommendation engine beta confidence at **95% beta-candidate** with fresh
+  live OpenAI/NutriTail proof instead of stale confidence.
+
 Overall SaaS launch progress is lower on purpose. It includes everything needed
 for a real public SaaS, not just the nutrition engine: business limits, beta
 access, subscription or payment direction, production monitoring, legal/trust

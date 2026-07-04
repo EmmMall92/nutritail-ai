@@ -37,6 +37,8 @@ const docMarkers = [
   "Recommendation engine beta confidence: 95% beta-candidate",
   "Overall SaaS launch progress: 90%",
   "Next honest unlock: real beta-user proof",
+  "Dog 001-200, dog 201-600, and cat 001-500 QA banks pass",
+  "Fresh July 4 proof: dog 001-200 passed 200/200 live with OpenAI extraction enabled and 0 review",
   "Progress Ladder",
   "Already passed. Do not keep reporting this as the current state.",
   "95%+ launch candidate",
