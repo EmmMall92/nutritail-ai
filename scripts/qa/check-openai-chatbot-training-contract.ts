@@ -270,6 +270,22 @@ includesAll(
   "OpenAI full proof source"
 );
 
+const accountChatbotExtractLiveRouteSource = readFileSync(
+  "scripts/qa/check-account-chatbot-extract-live-route.mjs",
+  "utf8"
+);
+includesAll(
+  accountChatbotExtractLiveRouteSource,
+  [
+    ".qa-secrets/nutritail-auth-cookie.txt",
+    ".qa-secrets/account-cookie.txt",
+    "fallback cookie file",
+    "The cookie value was not written to this report.",
+    "Do not commit or print the cookie.",
+  ],
+  "account chatbot extract live route source"
+);
+
 const openAiFullProofRunbook = readFileSync("docs/openai-full-proof-runbook.md", "utf8");
 includesAll(
   openAiFullProofRunbook,
@@ -282,6 +298,8 @@ includesAll(
     "qa:openai-full-proof",
     ".qa-secrets/openai-api-key.txt",
     ".qa-secrets/nutritail-auth-cookie.txt",
+    ".qa-secrets/account-cookie.txt",
+    "reads this file by default",
     "reports/openai_full_proof_qa.md",
     "Full OpenAI proof status: PASS",
     "must not contain",

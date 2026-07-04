@@ -72,11 +72,15 @@ in:
 .qa-secrets/nutritail-auth-cookie.txt
 ```
 
-and run:
+The authenticated route proof now reads this file by default. You can also set
+an explicit file path when needed:
 
 ```powershell
 $env:NUTRITAIL_QA_AUTH_COOKIE_FILE=".qa-secrets/nutritail-auth-cookie.txt"
 ```
+
+For compatibility with older local QA setup, `.qa-secrets/account-cookie.txt` is
+also accepted as a fallback when the main file is not present.
 
 ## Safe Pass Criteria
 
@@ -103,7 +107,8 @@ NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE was not available
 ```
 
 Refresh the authenticated account cookie from a logged-in QA browser session,
-store it in `.qa-secrets/nutritail-auth-cookie.txt`, and rerun:
+store it in `.qa-secrets/nutritail-auth-cookie.txt` or
+`.qa-secrets/account-cookie.txt`, and rerun:
 
 ```powershell
 npm.cmd run qa:openai-full-proof
