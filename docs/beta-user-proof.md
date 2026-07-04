@@ -54,6 +54,7 @@ whole flow:
 - timeline or progress
 - feedback
 - no manual help
+- device captured: mobile or desktop
 
 Each entry must also include one of these `journey_type` values:
 
@@ -64,6 +65,11 @@ Each entry must also include one of these `journey_type` values:
 The score should not move with three nearly identical tests. The proof needs one
 dog owner, one cat owner, and one returning saved-pet user so the main customer
 journeys are covered.
+
+At least one of the three sessions should be completed on mobile before using
+the proof to move Customer UX readiness. Desktop proof is still useful, but the
+public customer experience depends heavily on the mobile chatbot, cards, report,
+and progress loop.
 
 The runner rejects TODO, placeholder, draft, or example notes.
 

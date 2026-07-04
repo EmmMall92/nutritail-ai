@@ -26,6 +26,7 @@ const requiredTerms = [
   "report",
   "feedback",
   "no manual help",
+  "device captured",
 ];
 
 const flexibleTermGroups = [
@@ -92,6 +93,12 @@ function evaluateEntry(entry: BetaUserProofEntry) {
   const hasPlaceholderEvidence = evidence.some((note) =>
     placeholderPatterns.some((pattern) => pattern.test(String(note))),
   );
+  const device =
+    evidenceText.includes("mobile") || evidenceText.includes("κινητ")
+      ? "mobile"
+      : evidenceText.includes("desktop")
+        ? "desktop"
+        : "unknown";
   const ok =
     entry.passed === true &&
     journeyType !== "unknown" &&
@@ -104,6 +111,7 @@ function evaluateEntry(entry: BetaUserProofEntry) {
     label: entry.label || "unnamed beta user",
     ok,
     journeyType,
+    device,
     evidenceCount: evidence.length,
     missingTerms: [...missingRequiredTerms, ...missingFlexibleGroups],
     hasPlaceholderEvidence,
@@ -147,6 +155,20 @@ for (const marker of [
     `Beta user proof worksheet is missing marker: ${marker}`,
   );
   assert(template.includes(marker), `Beta user proof template is missing marker: ${marker}`);
+}
+
+for (const marker of ["device captured", "mobile", "desktop"]) {
+  assert(docs.includes(marker), `Beta user proof doc is missing device marker: ${marker}`);
+  assert(testCard.includes(marker), `Beta user test card is missing device marker: ${marker}`);
+  assert(
+    sessionPacket.includes(marker),
+    `Beta user proof session packet is missing device marker: ${marker}`,
+  );
+  assert(
+    worksheet.includes(marker),
+    `Beta user proof worksheet is missing device marker: ${marker}`,
+  );
+  assert(template.includes(marker), `Beta user proof template is missing device marker: ${marker}`);
 }
 
 for (const journey of requiredJourneyTypes) {
@@ -254,6 +276,14 @@ assert(
 );
 
 assert(
+  adminActivityPage.includes('data-testid="admin-beta-proof-device-coverage"') &&
+    adminActivityPage.includes("At least one mobile session") &&
+    adminActivityPage.includes("device captured") &&
+    adminActivityPage.includes("mobile or desktop"),
+  "Admin activity page must show mobile/desktop capture as part of beta proof.",
+);
+
+assert(
   packageJson.includes('"qa:beta-user-proof-contract"'),
   "package.json must expose qa:beta-user-proof-contract.",
 );
@@ -266,7 +296,8 @@ assert(
 assert(
   productProgress.includes("Real beta-user proof") &&
     productProgress.includes("88-90% Customer UX readiness") &&
-    productProgress.includes("broader beta-user proof"),
+    productProgress.includes("broader beta-user proof") &&
+    productProgress.includes("At least one of the required beta-user journeys should be mobile"),
   "Product progress rubric must keep real beta-user proof as the next Customer UX unlock.",
 );
 
@@ -285,6 +316,7 @@ if (existsSync(proofFile)) {
 }
 
 const passedUsers = results.filter((result) => result.ok);
+const hasMobileProof = passedUsers.some((result) => result.device === "mobile");
 const reviewUsers = results.filter(
   (result) =>
     result.evidenceCount > 0 &&
@@ -294,7 +326,7 @@ const missingJourneyTypes = requiredJourneyTypes
   .filter((journey) => !passedUsers.some((result) => result.journeyType === journey.type))
   .map((journey) => journey.label);
 const status =
-  passedUsers.length >= 3 && missingJourneyTypes.length === 0
+  passedUsers.length >= 3 && missingJourneyTypes.length === 0 && hasMobileProof
     ? "PASS"
     : reviewUsers.length > 0
       ? "REVIEW"
@@ -319,6 +351,7 @@ writeFileSync(
     `- Beta users needing review: ${reviewUsers.length}`,
     `- Minimum for next score move: 3 complete beta journeys`,
     `- Missing required journey types: ${missingJourneyTypes.join(", ") || "-"}`,
+    `- Mobile proof captured: ${hasMobileProof ? "yes" : "no"}`,
     "",
     "## Required Journey Types",
     "",
@@ -338,25 +371,26 @@ writeFileSync(
     "- timeline or progress",
     "- feedback",
     "- no manual help",
+    "- device captured: mobile or desktop",
     "",
     "## Beta Users",
     "",
-    "| User | Journey | Status | Evidence notes | Missing terms |",
-    "| --- | --- | --- | --- | --- |",
+    "| User | Journey | Device | Status | Evidence notes | Missing terms |",
+    "| --- | --- | --- | --- | --- | --- |",
     ...(results.length > 0
       ? results.map(
           (result) =>
-            `| ${result.label} | ${result.journeyType} | ${result.ok ? "pass" : "review"} | ${result.note}${result.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""} | ${result.missingTerms.join(", ") || "-"} |`,
+            `| ${result.label} | ${result.journeyType} | ${result.device} | ${result.ok ? "pass" : "review"} | ${result.note}${result.hasPlaceholderEvidence ? " Placeholder/TODO evidence is not accepted." : ""} | ${result.missingTerms.join(", ") || "-"} |`,
         )
       : [
-          "| none yet | unknown | pending | Add real beta-user proof to `.qa-secrets/beta-user-proof.json`. | signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help |",
+          "| none yet | unknown | unknown | pending | Add real beta-user proof to `.qa-secrets/beta-user-proof.json`. | signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help, device captured |",
         ]),
     "",
     "## Next Action",
     "",
     status === "PASS"
       ? "Use this report as supporting evidence for the 88-90% Customer UX move."
-      : "Collect at least three real beta-user journeys before moving Customer UX above 88%.",
+      : "Collect at least three real beta-user journeys, including at least one mobile session, before moving Customer UX above 88%.",
   ].join("\n") + "\n",
   "utf8",
 );
@@ -368,6 +402,7 @@ console.log(
       proofSource,
       betaUsersVerified: passedUsers.length,
       betaUsersNeedingReview: reviewUsers.length,
+      hasMobileProof,
       missingJourneyTypes,
       report: reportPath,
     },

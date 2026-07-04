@@ -5,7 +5,7 @@
       "journey_type": "dog_owner",
       "passed": false,
       "evidence": [
-        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help, device captured: mobile or desktop."
       ]
     },
     {
@@ -13,7 +13,7 @@
       "journey_type": "cat_owner",
       "passed": false,
       "evidence": [
-        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help, device captured: mobile or desktop."
       ]
     },
     {
@@ -21,7 +21,7 @@
       "journey_type": "returning_saved_pet",
       "passed": false,
       "evidence": [
-        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help."
+        "TODO: replace with real evidence that includes signup/login, pet intake, food cards, selected food, grams/day, save, report, timeline or progress, feedback, no manual help, device captured: mobile or desktop."
       ]
     }
   ]

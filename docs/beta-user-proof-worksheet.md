@@ -28,6 +28,7 @@ Mark each item as `PASS`, `REVIEW`, or `FAIL`.
 | timeline or progress | User found progress/timeline or knew how to return later. | |
 | feedback | User submitted feedback or explained what was confusing. | |
 | no manual help | Moderator did not explain what button to press or what the result meant. | |
+| device captured | Session notes include whether the tester used mobile or desktop. | |
 
 ## Score-Safe Decision
 
@@ -39,6 +40,10 @@ Mark each item as `PASS`, `REVIEW`, or `FAIL`.
 Do not move the percentage from this session unless the result is `PASS`.
 Review and fail sessions are still valuable, but they become follow-up tasks
 under the ten launch tracks.
+
+At least one of the three required tester slots should be completed on mobile
+before treating the beta proof as the final Customer UX unlock. If the first
+three sessions are all desktop-only, schedule a mobile follow-up.
 
 ## Launch Track Follow-Up
 
@@ -63,7 +68,7 @@ Use one short factual note in `.qa-secrets/beta-user-proof.json`.
 signup/login completed; pet intake completed in Greek or English; food cards
 were visible; selected food was [food name]; grams/day was shown; save
 completed; report opened; timeline or progress opened; feedback submitted; no
-manual help. Worksheet result: PASS.
+manual help; device captured: mobile. Worksheet result: PASS.
 ```
 
 If the result is `REVIEW` or `FAIL`, keep `passed: false` and include the exact
