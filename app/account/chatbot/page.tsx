@@ -4697,11 +4697,12 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
     handledDeepLinkRef.current = deepLinkKey;
 
     if (mode === "progress" && (targetPet.analysisHistory?.length ?? 0) > 0) {
+      const noResultMode = reason === "no_result";
       setSelectedPetId(targetPet.id);
       setFollowUpPet(targetPet);
       setPet(createIntakeFromSavedPet(targetPet));
       setStep("petChoice");
-      setFollowUpMode("progress");
+      setFollowUpMode(noResultMode ? "no_result" : "progress");
       addMessages(
         createMessage("user", chatLanguage === "el" ? "Έλεγχος προόδου" : "Progress check"),
         createMessage("bot", formatSavedPetProgressPrompt(targetPetName, chatLanguage))
@@ -7151,6 +7152,21 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </span>
                 <span className="mt-1 block text-xs font-normal text-blue-900">
                   {botText("Βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.", "Weight, grams, treats, and results.")}
+                </span>
+              </a>
+              <a
+                data-testid="saved-analysis-no-result"
+                href={`/account/chatbot?petId=${savedPetId}&mode=progress&reason=no_result`}
+                className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950 transition hover:bg-amber-100"
+              >
+                <span className="block">
+                  {botText("Δεν είδα αποτέλεσμα", "No visible progress")}
+                </span>
+                <span className="mt-1 block text-xs font-normal text-amber-900">
+                  {botText(
+                    "Έλεγχος ποσότητας, λιχουδιών και πιθανή νέα πρόταση.",
+                    "Check portions, treats, and whether a new food is needed."
+                  )}
                 </span>
               </a>
               <a
