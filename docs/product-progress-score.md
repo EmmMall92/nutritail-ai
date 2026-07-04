@@ -78,6 +78,32 @@ experience is already 95%.
 
 ## Fresh Recommendation Evidence
 
+The latest fast golden-suite refresh on **July 4, 2026** confirms that the
+recommendation engine is still in the **95% beta-candidate** band, while
+Customer UX readiness should stay at **88%** until real beta-user journeys prove
+the same quality without manual help:
+
+- `qa:chatbot-golden-suite:fast` passed **23/23** checks with **0 failures**.
+- Bulk chatbot intake validated **1,103** dog/cat user cases for ids, prompts,
+  species, locale, safety expectations, and duplicate integrity.
+- Dog live smoke passed the representative **001-200** set with **21/21**
+  checked and **0 review**.
+- Dog live smoke for the **201-600** bank passed **20/20** representative cases
+  with **0 review**.
+- Cat live recommendation cases **001-100** passed **100/100** with
+  **0 review**.
+- Cat safety smoke passed **10/10** and cat quality smoke passed **10/10**,
+  covering urinary blockage, urinary stones, renal disease, kitten growth,
+  allergy, senior appetite, sensitive digestion, sterilised, weight loss,
+  senior, renal, urinary, and preference-fit scenarios.
+- The only visible non-code gap in this fast refresh was the already-known
+  wet/canned coverage gap: cat case 084 is handled safely, but Food V2 has no
+  visible wet/canned candidates for a wet-only cat request.
+- This is meaningful evidence for recommendation accuracy, but it is **not** a
+  customer-score unlock by itself. The next Customer UX move still needs real
+  beta users to complete one dog-owner journey, one cat-owner journey, and one
+  returning saved-pet journey without manual explanation.
+
 The latest recommendation-evidence refresh on **July 4, 2026** confirms that the
 dog-side baseline is materially beyond the old 78-80% foundation stage:
 
