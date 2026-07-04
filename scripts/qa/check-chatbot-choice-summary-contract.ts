@@ -90,6 +90,15 @@ assert(
   "Selected-food card must show a visible next-steps panel after choosing a food."
 );
 assert(
+  chatbotPage.includes('data-testid="selected-food-action-buttons"') &&
+    chatbotPage.includes('href="#save-analysis-panel"') &&
+    chatbotPage.includes('data-testid="save-analysis-panel"') &&
+    chatbotPage.includes("Save this plan") &&
+    chatbotPage.includes("Keep the report") &&
+    chatbotPage.includes("Check progress later"),
+  "Selected-food card must expose direct action buttons that take the customer to save/report/progress next steps."
+);
+assert(
   chatbotPage.includes("1. Αποθήκευση") &&
     chatbotPage.includes("2. Μετάβαση") &&
     chatbotPage.includes("3. Επανέλεγχος") &&

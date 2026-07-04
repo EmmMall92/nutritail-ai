@@ -6845,6 +6845,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     </p>
                   </div>
                 </div>
+
+                <div
+                  data-testid="selected-food-action-buttons"
+                  className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3"
+                >
+                  <a
+                    href="#save-analysis-panel"
+                    className="rounded-xl bg-lime-700 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-lime-800"
+                  >
+                    {botText("Αποθήκευση πλάνου", "Save this plan")}
+                  </a>
+                  <a
+                    href="#save-analysis-panel"
+                    className="rounded-xl border border-lime-300 bg-white px-4 py-3 text-center text-sm font-semibold text-lime-950 transition hover:bg-lime-100"
+                  >
+                    {botText("Κράτα το report", "Keep the report")}
+                  </a>
+                  <a
+                    href="#save-analysis-panel"
+                    className="rounded-xl border border-lime-300 bg-white px-4 py-3 text-center text-sm font-semibold text-lime-950 transition hover:bg-lime-100"
+                  >
+                    {botText("Μετά κάνε έλεγχο", "Check progress later")}
+                  </a>
+                </div>
               </div>
             )}
 
@@ -6889,7 +6913,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
             </div>
 
-            <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+            <div
+              id="save-analysis-panel"
+              data-testid="save-analysis-panel"
+              className="scroll-mt-24 rounded-xl border border-green-200 bg-green-50 p-4"
+            >
               <p className="font-semibold text-black">
                 {botText("Αποθήκευση στον λογαριασμό μου", "Save to my account")}
               </p>
