@@ -145,6 +145,19 @@ assert(
   "Admin feedback page must expose beta-user proof signals for dog, cat, and returning saved-pet journeys."
 );
 assert(
+  adminFeedbackPage.includes("function getBetaProofEvidenceCandidates") &&
+    adminFeedbackPage.includes("betaProofRequiredTerms") &&
+    adminFeedbackPage.includes("no manual help must be confirmed manually") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-beta-proof-evidence-candidates"') &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-beta-proof-evidence-candidate"') &&
+    adminFeedbackPage.includes("Evidence draft") &&
+    adminFeedbackPage.includes("Captured terms") &&
+    adminFeedbackPage.includes("Missing before proof") &&
+    adminFeedbackPage.includes("These are not automatic proof") &&
+    adminFeedbackPage.includes("no manual help still requires human confirmation"),
+  "Admin feedback page must turn feedback logs into beta proof evidence candidates without treating them as automatic proof."
+);
+assert(
   adminFeedbackPage.includes('data-testid="chat-feedback-next-best-fix"'),
   "Admin feedback page must expose the next best feedback fix panel."
 );

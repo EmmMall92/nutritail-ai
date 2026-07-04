@@ -464,6 +464,130 @@ function getBetaProofSignals(feedbackLogs: AdminActivityLog[]) {
   };
 }
 
+const betaProofRequiredTerms = [
+  "signup/login",
+  "pet intake",
+  "food cards",
+  "selected food",
+  "grams/day",
+  "save",
+  "report",
+  "timeline or progress",
+  "feedback",
+  "no manual help",
+] as const;
+
+function getBetaProofJourneyType(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  const type = getFeedbackType(log);
+  const species = String(context.petSpecies ?? "").toLowerCase();
+  const action = String(context.action ?? "").toLowerCase();
+  const source = getFeedbackSource(log);
+
+  if (
+    type === "chat_followup_action" ||
+    action === "progress" ||
+    action === "no_result" ||
+    action === "change_food" ||
+    action === "timeline"
+  ) {
+    return "returning_saved_pet";
+  }
+
+  if (species === "cat") return "cat_owner";
+  if (species === "dog") return "dog_owner";
+  if (source === "printable_pet_report" && context.petId) {
+    return "returning_saved_pet";
+  }
+
+  return "unknown";
+}
+
+function getBetaProofTermsFromLog(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  const type = getFeedbackType(log);
+  const source = getFeedbackSource(log);
+  const terms = new Set<string>();
+
+  if (log.metadata?.authUserId) terms.add("signup/login");
+  if (context.petSpecies) terms.add("pet intake");
+  if (
+    type === "analysis_completed" ||
+    type === "food_choice_selected" ||
+    type === "plan_saved" ||
+    context.selectedFoodName ||
+    context.currentFoodName
+  ) {
+    terms.add("food cards");
+  }
+  if (context.selectedFoodName || context.currentFoodName) {
+    terms.add("selected food");
+  }
+  if (context.feedingGramsPerDay) terms.add("grams/day");
+  if (type === "plan_saved" || source === "printable_pet_report") {
+    terms.add("save");
+  }
+  if (source === "printable_pet_report") terms.add("report");
+  if (
+    type === "chat_followup_action" ||
+    source === "printable_pet_report" ||
+    context.action === "progress" ||
+    context.action === "timeline"
+  ) {
+    terms.add("timeline or progress");
+  }
+  terms.add("feedback");
+
+  return terms;
+}
+
+function getBetaProofEvidenceCandidates(feedbackLogs: AdminActivityLog[]) {
+  return feedbackLogs
+    .map((log) => {
+      const terms = getBetaProofTermsFromLog(log);
+      const missing = betaProofRequiredTerms.filter((term) => !terms.has(term));
+      const context = getFeedbackContext(log);
+      const selectedFood =
+        String(context.selectedFoodName ?? context.currentFoodName ?? "").trim() ||
+        "selected food not recorded";
+      const grams = context.feedingGramsPerDay
+        ? `${context.feedingGramsPerDay}g/day`
+        : "grams/day not recorded";
+      const journeyType = getBetaProofJourneyType(log);
+
+      return {
+        log,
+        journeyType,
+        selectedFood,
+        grams,
+        capturedTerms: [...terms],
+        missing,
+        completeness: Math.round(
+          ((betaProofRequiredTerms.length - missing.length) /
+            betaProofRequiredTerms.length) *
+            100
+        ),
+        evidenceDraft: [
+          terms.has("signup/login") ? "signup/login completed" : "",
+          terms.has("pet intake") ? "pet intake completed" : "",
+          terms.has("food cards") ? "food cards were visible" : "",
+          terms.has("selected food") ? `selected food was ${selectedFood}` : "",
+          terms.has("grams/day") ? `grams/day was shown (${grams})` : "",
+          terms.has("save") ? "save completed" : "",
+          terms.has("report") ? "report opened" : "",
+          terms.has("timeline or progress") ? "timeline or progress opened" : "",
+          "feedback submitted",
+          "no manual help must be confirmed manually",
+        ]
+          .filter(Boolean)
+          .join("; "),
+      };
+    })
+    .filter((candidate) => candidate.journeyType !== "unknown")
+    .sort((a, b) => b.completeness - a.completeness)
+    .slice(0, 6);
+}
+
 function TriageButton({
   label,
   value,
@@ -738,6 +862,8 @@ export default function AdminChatFeedbackPage() {
   const notHelpfulActionQueue = getNotHelpfulActionQueue(notHelpful);
   const notHelpfulContextQuality = getFeedbackContextQuality(notHelpful);
   const betaProofSignals = getBetaProofSignals(feedbackLogs);
+  const betaProofEvidenceCandidates =
+    getBetaProofEvidenceCandidates(feedbackLogs);
 
   return (
     <section className="space-y-6">
@@ -1164,6 +1290,96 @@ export default function AdminChatFeedbackPage() {
               </p>
             </button>
           ))}
+        </div>
+
+        <div
+          className="mt-5 rounded-2xl border border-cyan-200 bg-white p-5"
+          data-testid="chat-feedback-beta-proof-evidence-candidates"
+        >
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
+                Beta proof evidence candidates
+              </p>
+              <h4 className="mt-1 text-lg font-bold text-cyan-950">
+                Feedback events that are closest to real beta proof
+              </h4>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-cyan-900">
+                These are not automatic proof. They show which customer feedback
+                events already contain useful evidence terms and what still
+                needs manual confirmation before copying anything into the beta
+                proof file.
+              </p>
+            </div>
+            <span className="rounded-full bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-900">
+              no manual help still requires human confirmation
+            </span>
+          </div>
+
+          {betaProofEvidenceCandidates.length > 0 ? (
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              {betaProofEvidenceCandidates.map((candidate) => (
+                <article
+                  key={candidate.log.id}
+                  className="rounded-xl border border-cyan-100 bg-cyan-50 p-4 text-sm"
+                  data-testid="chat-feedback-beta-proof-evidence-candidate"
+                >
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-bold text-cyan-950">
+                        {candidate.journeyType}
+                      </p>
+                      <p className="mt-1 text-xs text-cyan-800">
+                        {getFeedbackType(candidate.log)} /{" "}
+                        {formatDateTime(candidate.log.createdAt)}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-cyan-900">
+                      {candidate.completeness}% captured
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-cyan-950">
+                    Food: {candidate.selectedFood} · Portion: {candidate.grams}
+                  </p>
+
+                  <div className="mt-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-cyan-700">
+                      Evidence draft
+                    </p>
+                    <p className="mt-1 rounded-lg bg-white p-3 font-mono text-xs leading-6 text-cyan-950">
+                      {candidate.evidenceDraft}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    <div className="rounded-lg bg-white p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                        Captured terms
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-emerald-900">
+                        {candidate.capturedTerms.join(", ")}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-white p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                        Missing before proof
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-amber-900">
+                        {candidate.missing.join(", ") || "none"}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 rounded-xl border border-cyan-100 bg-cyan-50 p-4 text-sm text-cyan-900">
+              No beta proof candidates yet. Run one live beta session, ask the
+              tester to choose a food, save, open the report or progress, and
+              leave feedback.
+            </p>
+          )}
         </div>
       </div>
 
