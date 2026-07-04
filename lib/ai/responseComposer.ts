@@ -14,6 +14,7 @@ import {
   mentionsUnallowedGuardedBrand,
 } from "@/lib/ai/foodBrandGuard";
 import type { FoodV2ChatbotRecommendationResponse } from "@/lib/food-v2/chatbotRecommendationSummary";
+import { buildCustomerRecommendationIntro } from "@/lib/food-v2/customerRecommendationPresentation";
 import {
   customerFoodDisplayName,
   customerFoodName,
@@ -623,8 +624,9 @@ function polishCustomerFacingLanguage(text: string, locale: ComposerLocale) {
 
 function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] = []): ChatbotRecommendationComposerResult {
   const locale = input.locale ?? "el";
+  const cardIntro = buildCardIntroFallback(input);
   const customerText = polishCustomerFacingLanguage(
-    buildCustomerFallbackText(input),
+    cardIntro || buildCustomerFallbackText(input),
     locale
   );
 
@@ -633,6 +635,27 @@ function fallback(input: ChatbotRecommendationComposerInput, warnings: string[] 
     source: "fallback",
     warnings,
   };
+}
+
+function buildCardIntroFallback(input: ChatbotRecommendationComposerInput) {
+  if (!input.cardsFollow) return "";
+
+  const choices = [
+    ...(input.recommendation.premium ?? []).slice(0, 3).map((food) => ({
+      name: customerFoodName(food),
+      role: "best" as const,
+    })),
+    ...(input.recommendation.value ?? []).slice(0, 3).map((food) => ({
+      name: customerFoodName(food),
+      role: "value" as const,
+    })),
+  ].filter((choice) => choice.name.trim().length > 0);
+
+  return buildCustomerRecommendationIntro({
+    choices,
+    language: input.locale ?? "el",
+    mode: "default",
+  });
 }
 
 function hasAtLeastOneKnownFood(text: string, input: ChatbotRecommendationComposerInput) {
