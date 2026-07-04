@@ -18,6 +18,16 @@ const cases = [
     expected: "Υπάρχει ήδη λογαριασμός",
   },
   {
+    flow: "register",
+    error: new Error("Unable to validate email address: invalid format"),
+    expected: "Έλεγξε ότι το email",
+  },
+  {
+    flow: "reset",
+    error: new Error("Password should be at least 6 characters"),
+    expected: "τουλάχιστον 6 χαρακτήρες",
+  },
+  {
     flow: "forgot",
     error: new Error("over email send rate limit"),
     expected: "Έγιναν πολλές προσπάθειες",
