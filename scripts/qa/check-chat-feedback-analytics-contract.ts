@@ -150,6 +150,18 @@ assert(
   "Admin feedback page must turn not-helpful feedback into a launch-track action queue."
 );
 assert(
+  adminFeedbackPage.includes("function getFeedbackContextQuality") &&
+    adminFeedbackPage.includes("notHelpfulContextQuality") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-context-quality"') &&
+    adminFeedbackPage.includes("Can we act on not-helpful feedback?") &&
+    adminFeedbackPage.includes("Actionable feedback") &&
+    adminFeedbackPage.includes("Needs more context") &&
+    adminFeedbackPage.includes(
+      "improve event metadata before changing ranking"
+    ),
+  "Admin feedback page must show whether not-helpful feedback has enough context to become an actionable fix."
+);
+assert(
   adminFeedbackPage.includes("Open this queue") &&
     adminFeedbackPage.includes("nextFeedbackFix.action") &&
     adminFeedbackPage.includes("setTypeFilter(nextFeedbackFix.typeFilter)") &&
