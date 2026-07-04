@@ -77,11 +77,15 @@ function getCleanupPriority(log: AdminActivityLog, fallbackCount: number) {
 
 function getQualityGroupKey(log: AdminActivityLog) {
   const context = getFeedbackContext(log);
-  const food = String(context.currentFoodName ?? "").trim() || "No food";
+  const food =
+    String(context.selectedFoodName ?? context.currentFoodName ?? "").trim() ||
+    "No food";
   const goal = String(context.weightGoal ?? "").trim() || "No goal";
   const type = getFeedbackType(log);
+  const source = getFeedbackSource(log);
+  const species = String(context.petSpecies ?? "").trim() || "unknown pet";
 
-  return `${type} | ${food} | ${goal}`;
+  return `${type} | ${source} | ${species} | ${food} | ${goal}`;
 }
 
 function getLaunchSignalStatus({
@@ -388,6 +392,117 @@ function getFeedbackContextQuality(notHelpfulLogs: AdminActivityLog[]) {
       rows.length > 0 ? Math.round((actionable / rows.length) * 100) : 0,
     commonMissing,
   };
+}
+
+function getLikelyNotHelpfulCause({
+  type,
+  source,
+  foodName,
+  goal,
+}: {
+  type: string;
+  source: string;
+  foodName: string;
+  goal: string;
+}) {
+  if (type === "failed_food_match") {
+    return "Food V2 match, aliases, or canonical naming may be missing.";
+  }
+
+  if (source === "printable_pet_report") {
+    return "The final report may not explain the result clearly enough.";
+  }
+
+  if (foodName === "No food attached") {
+    return "The answer may have been too generic or the feedback event missed food context.";
+  }
+
+  if (goal === "No goal attached") {
+    return "The answer may not have captured the customer goal clearly enough.";
+  }
+
+  return "Replay the same pet goal and food context to decide whether ranking, wording, or next action needs a fix.";
+}
+
+function getNotHelpfulPatternPlaybook(notHelpfulLogs: AdminActivityLog[]) {
+  const groups = Object.entries(
+    notHelpfulLogs.reduce<
+      Record<string, { count: number; latestLog: AdminActivityLog }>
+    >((acc, log) => {
+      const key = getQualityGroupKey(log);
+      acc[key] = {
+        count: (acc[key]?.count ?? 0) + 1,
+        latestLog: log,
+      };
+      return acc;
+    }, {})
+  );
+
+  return groups
+    .map(([key, data]) => {
+      const context = getFeedbackContext(data.latestLog);
+      const type = getFeedbackType(data.latestLog);
+      const source = getFeedbackSource(data.latestLog);
+      const foodName =
+        String(context.selectedFoodName ?? context.currentFoodName ?? "").trim() ||
+        "No food attached";
+      const goal = String(context.weightGoal ?? "").trim() || "No goal attached";
+      const petSpecies = String(context.petSpecies ?? "").trim() || "unknown pet";
+      const recommendedCount = Number(context.recommendedFoodCount ?? 0);
+      const selectedFoodBrand =
+        String(context.selectedFoodBrand ?? "").trim() || "Unknown brand";
+      const priority: "Fix first" | "Review soon" | "Watch" =
+        data.count >= 3
+          ? "Fix first"
+          : data.count >= 2
+            ? "Review soon"
+            : "Watch";
+      const likelyCause = getLikelyNotHelpfulCause({
+        type,
+        source,
+        foodName,
+        goal,
+      });
+      const nextAction =
+        type === "failed_food_match"
+          ? "Open Food V2/backfill, add aliases or merge duplicates, then rerun the same query."
+          : source === "printable_pet_report"
+            ? "Open the report for this pet context and check calories, food choice, grams/day, transition, and next steps."
+            : foodName !== "No food attached"
+              ? "Replay this exact food recommendation and compare premium/value options, rejected foods, and next-step clarity."
+              : "Improve feedback metadata first, then replay a live customer case before changing ranking.";
+
+      return {
+        key,
+        count: data.count,
+        latestLog: data.latestLog,
+        type,
+        source,
+        foodName,
+        goal,
+        petSpecies,
+        recommendedCount,
+        selectedFoodBrand,
+        priority,
+        likelyCause,
+        nextAction,
+        search:
+          foodName !== "No food attached"
+            ? foodName
+            : goal !== "No goal attached"
+              ? goal
+              : source,
+      };
+    })
+    .sort((a, b) => {
+      const priorityRank = { "Fix first": 0, "Review soon": 1, Watch: 2 };
+      return (
+        priorityRank[a.priority] - priorityRank[b.priority] ||
+        b.count - a.count ||
+        a.foodName.localeCompare(b.foodName)
+      );
+    })
+    .slice(0, 8);
 }
 
 function getBetaProofSignals(feedbackLogs: AdminActivityLog[]) {
@@ -826,21 +941,7 @@ export default function AdminChatFeedbackPage() {
       return bTime - aTime;
     })
     .slice(0, 5);
-  const notHelpfulGroups = Object.entries(
-    notHelpful.reduce<
-      Record<string, { count: number; latestLog: AdminActivityLog }>
-    >((acc, log) => {
-      const key = getQualityGroupKey(log);
-      acc[key] = {
-        count: (acc[key]?.count ?? 0) + 1,
-        latestLog: log,
-      };
-      return acc;
-    }, {})
-  )
-    .map(([key, data]) => ({ key, ...data }))
-    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key))
-    .slice(0, 8);
+  const notHelpfulPatternPlaybook = getNotHelpfulPatternPlaybook(notHelpful);
   const launchSignalStatus = getLaunchSignalStatus({
     foodSelectionRate,
     planSaveRate,
@@ -2081,50 +2182,122 @@ export default function AdminChatFeedbackPage() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-black">
-          Not-Helpful Patterns
-        </h3>
-        <p className="mt-1 text-sm text-gray-600">
-          Grouped signals by feedback type, current food, and weight goal.
-        </p>
+      <div
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+        data-testid="chat-feedback-not-helpful-pattern-playbook"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+              Not-helpful pattern playbook
+            </p>
+            <h3 className="mt-2 text-lg font-semibold text-black">
+              Not-Helpful Patterns: which repeated negative signals should we
+              fix first?
+            </h3>
+            <p className="mt-1 max-w-3xl text-sm text-gray-600">
+              Groups not-helpful feedback by type, source, species, food/query,
+              and goal, then turns each pattern into a probable cause and a
+              concrete replay/fix step.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter("all");
+              setRatingFilter("not_helpful");
+              setSearch("");
+            }}
+            className="rounded-lg border border-black px-3 py-2 text-sm font-semibold text-black transition hover:bg-black hover:text-white"
+          >
+            Open not-helpful patterns
+          </button>
+        </div>
 
-        {notHelpfulGroups.length === 0 ? (
+        {notHelpfulPatternPlaybook.length === 0 ? (
           <p className="mt-4 text-sm text-gray-600">
             No not-helpful patterns yet.
           </p>
         ) : (
           <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
-            {notHelpfulGroups.map((group) => {
-              const context = getFeedbackContext(group.latestLog);
+            {notHelpfulPatternPlaybook.map((pattern) => (
+              <article
+                key={pattern.key}
+                className="rounded-xl border border-red-200 bg-red-50 p-4"
+                data-testid="chat-feedback-not-helpful-pattern"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-red-700 px-2 py-1 text-xs font-semibold text-white">
+                    {pattern.count} signals
+                  </span>
+                  <span className="rounded-full border border-red-200 bg-white px-2 py-1 text-xs font-semibold text-red-800">
+                    {pattern.priority}
+                  </span>
+                  <span className="rounded-full border border-gray-200 bg-white px-2 py-1 text-xs font-semibold text-gray-700">
+                    {pattern.type}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    Latest: {formatDateTime(pattern.latestLog.createdAt)}
+                  </span>
+                </div>
 
-              return (
-                <div
-                  key={group.key}
-                  className="rounded-xl border border-red-200 bg-red-50 p-4"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-red-700 px-2 py-1 text-xs font-semibold text-white">
-                      {group.count}
-                    </span>
-                    <p className="font-semibold text-black">
-                      {getFeedbackType(group.latestLog)}
-                    </p>
-                  </div>
-                  <p className="mt-2 text-sm text-red-900">
-                    Food/query:{" "}
-                    {String(context.currentFoodName ?? "").trim() ||
-                      "not provided"}
+                <div className="mt-3 grid gap-2 text-sm text-red-950 sm:grid-cols-2">
+                  <p>
+                    <span className="font-semibold">Food/query:</span>{" "}
+                    {pattern.foodName}
                   </p>
-                  <p className="mt-1 text-sm text-red-900">
-                    Goal: {String(context.weightGoal ?? "unknown")}
+                  <p>
+                    <span className="font-semibold">Goal:</span> {pattern.goal}
                   </p>
-                  <p className="mt-2 text-xs text-red-800">
-                    Latest: {formatDateTime(group.latestLog.createdAt)}
+                  <p>
+                    <span className="font-semibold">Species:</span>{" "}
+                    {pattern.petSpecies}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Source:</span>{" "}
+                    {pattern.source}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Brand:</span>{" "}
+                    {pattern.selectedFoodBrand}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Shown foods:</span>{" "}
+                    {pattern.recommendedCount || "unknown"}
                   </p>
                 </div>
-              );
-            })}
+
+                <div className="mt-3 rounded-lg border border-red-100 bg-white p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Probable cause
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-red-950">
+                    {pattern.likelyCause}
+                  </p>
+                </div>
+
+                <div className="mt-3 rounded-lg border border-red-100 bg-white p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-red-700">
+                    Next fix
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-red-950">
+                    {pattern.nextAction}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTypeFilter(pattern.type);
+                    setRatingFilter("not_helpful");
+                    setSearch(pattern.search);
+                  }}
+                  className="mt-3 rounded-lg bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800"
+                >
+                  Replay this pattern
+                </button>
+              </article>
+            ))}
           </div>
         )}
       </div>
