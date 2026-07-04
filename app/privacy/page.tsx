@@ -66,6 +66,21 @@ const sections = [
   },
 ];
 
+const customerTrustSummary = [
+  {
+    title: "AI dialogue only",
+    text: "Το AI μπορεί να βοηθά να καταλάβουμε φυσική γλώσσα και να γράφουμε πιο καθαρά, αλλά οι τροφές, οι αποκλεισμοί και οι θερμίδες πρέπει να βασίζονται στη βάση NutriTail και στους κανόνες αξιολόγησης.",
+  },
+  {
+    title: "Pet data stays practical",
+    text: "Κρατάμε στοιχεία που χρειάζονται για την ανάλυση, όπως είδος, ηλικία, βάρος, στείρωση, στόχο, προτιμήσεις, ευαισθησίες, επιλεγμένη τροφή, report και progress check.",
+  },
+  {
+    title: "User control",
+    text: "Ο χρήστης μπορεί να ζητήσει διόρθωση, εξαγωγή ή διαγραφή στοιχείων λογαριασμού και κατοικιδίων. Δεν πουλάμε προσωπικά δεδομένα.",
+  },
+] as const;
+
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12">
@@ -84,6 +99,38 @@ export default function PrivacyPage() {
             Αφορά την τρέχουσα έκδοση του προϊόντος και μπορεί να ενημερωθεί όσο
             η υπηρεσία εξελίσσεται.
           </p>
+        </div>
+
+        <div
+          className="rounded-2xl border border-blue-200 bg-blue-50 p-8 shadow-sm"
+          data-testid="privacy-customer-ai-data-summary"
+        >
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+            Customer trust summary
+          </p>
+          <h2 className="mt-3 text-2xl font-bold text-black">
+            Τι κρατάμε, τι κάνει το AI και τι ελέγχει ο χρήστης
+          </h2>
+          <p className="mt-4 text-gray-700">
+            Η εμπειρία πρέπει να είναι απλή για τον πελάτη, αλλά τα όρια από πίσω να είναι καθαρά:
+            το NutriTail χρησιμοποιεί τα δεδομένα κατοικιδίου για πρακτική διατροφική καθοδήγηση,
+            όχι για διάγνωση ή θεραπεία.
+          </p>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {customerTrustSummary.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-xl border border-blue-200 bg-white p-4"
+                data-testid="privacy-customer-ai-data-summary-item"
+              >
+                <h3 className="font-bold text-black">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  {item.text}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
 
         {sections.map((section) => (

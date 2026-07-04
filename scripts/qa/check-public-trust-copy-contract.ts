@@ -145,6 +145,31 @@ const privacyTrustMarkers = [
   "τι μπορεί να διαγραφεί άμεσα",
 ];
 
+const privacyCustomerSummaryMarkers = [
+  'data-testid="privacy-customer-ai-data-summary"',
+  'data-testid="privacy-customer-ai-data-summary-item"',
+  "Customer trust summary",
+  "AI dialogue only",
+  "Pet data stays practical",
+  "User control",
+  "οι τροφές, οι αποκλεισμοί και οι θερμίδες πρέπει να βασίζονται στη βάση NutriTail",
+  "προτιμήσεις",
+  "progress check",
+  "Δεν πουλάμε προσωπικά δεδομένα.",
+];
+
+const termsRecommendationBoundaryMarkers = [
+  'data-testid="terms-recommendation-boundaries"',
+  'data-testid="terms-recommendation-boundary"',
+  "Recommendation boundaries",
+  "Food database first",
+  "Safety before promotion",
+  "Owner decision with vet boundary",
+  "Το AI δεν επιτρέπεται να εφευρίσκει προϊόντα, θρεπτικές τιμές ή claims.",
+  "προηγούνται από οποιαδήποτε εμπορική προτεραιότητα ή featured επιλογή",
+  "η τελική καθοδήγηση ανήκει στον κτηνίατρο",
+];
+
 for (const marker of aboutMarkers) {
   assert(
     aboutPage.includes(marker),
@@ -212,6 +237,20 @@ for (const marker of privacyTrustMarkers) {
   assert(
     privacyPage.includes(marker),
     `Privacy page must include public trust privacy marker: ${marker}`
+  );
+}
+
+for (const marker of privacyCustomerSummaryMarkers) {
+  assert(
+    privacyPage.includes(marker),
+    `Privacy page must include customer AI/data summary marker: ${marker}`
+  );
+}
+
+for (const marker of termsRecommendationBoundaryMarkers) {
+  assert(
+    termsPage.includes(marker),
+    `Terms page must include recommendation boundary marker: ${marker}`
   );
 }
 
