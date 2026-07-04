@@ -117,6 +117,14 @@ const launchTrustChecklist = [
   },
 ];
 
+const betaUserProofChecklist = [
+  "Ολοκλήρωσε μια πλήρη ανάλυση από login μέχρι προτεινόμενες τροφές.",
+  "Διάλεξε μία τροφή και έλεγξε αν τα γραμμάρια/ημέρα βγάζουν νόημα.",
+  "Αποθήκευσε την ανάλυση και άνοιξε το report του κατοικιδίου.",
+  "Ξαναμπές μετά από 2-4 εβδομάδες για progress check με βάρος, γραμμάρια, λιχουδιές, κόπρανα και όρεξη.",
+  "Άφησε feedback αν η πρόταση ήταν μπερδεμένη, αν λείπει τροφή ή αν το κατοικίδιο δεν δέχτηκε τη γεύση.",
+];
+
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
@@ -185,6 +193,36 @@ export default function HowItWorksPage() {
                 </p>
               </article>
             ))}
+          </div>
+
+          <div
+            className="mt-8 rounded-lg border border-emerald-200 bg-white p-5"
+            data-testid="public-beta-user-proof-checklist"
+          >
+            <div className="max-w-3xl">
+              <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
+                Beta user proof checklist
+              </p>
+              <h3 className="mt-2 text-2xl font-black text-emerald-950">
+                Πώς βοηθά ένας beta χρήστης να ανεβάσουμε το πραγματικό readiness
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                Το ποσοστό προόδου ανεβαίνει όταν αποδεικνύουμε ότι η ροή δουλεύει
+                για πραγματικούς πελάτες, όχι μόνο επειδή περνάει ο κώδικας. Αυτά
+                είναι τα βήματα που θέλουμε να βλέπουμε σε κάθε beta δοκιμή.
+              </p>
+            </div>
+            <ul className="mt-5 grid gap-3 text-sm leading-6 text-gray-700 md:grid-cols-2">
+              {betaUserProofChecklist.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-md border border-emerald-100 bg-emerald-50/60 p-3"
+                  data-testid="public-beta-user-proof-checklist-item"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">

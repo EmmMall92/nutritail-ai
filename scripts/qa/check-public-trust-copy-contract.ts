@@ -102,6 +102,19 @@ const launchTrustChecklistMarkers = [
   "Δες όρους beta",
 ];
 
+const betaUserProofChecklistMarkers = [
+  'data-testid="public-beta-user-proof-checklist"',
+  'data-testid="public-beta-user-proof-checklist-item"',
+  "Beta user proof checklist",
+  "Πώς βοηθά ένας beta χρήστης να ανεβάσουμε το πραγματικό readiness",
+  "πραγματικούς πελάτες",
+  "πλήρη ανάλυση",
+  "γραμμάρια/ημέρα",
+  "report του κατοικιδίου",
+  "progress check",
+  "feedback",
+];
+
 const betaTermsMarkers = [
   'import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";',
   'data-testid="terms-paid-launch-notice"',
@@ -178,6 +191,13 @@ for (const marker of launchTrustChecklistMarkers) {
   assert(
     howItWorksPage.includes(marker),
     `How-it-works page must include launch trust checklist marker: ${marker}`
+  );
+}
+
+for (const marker of betaUserProofChecklistMarkers) {
+  assert(
+    howItWorksPage.includes(marker),
+    `How-it-works page must include beta user proof checklist marker: ${marker}`
   );
 }
 
