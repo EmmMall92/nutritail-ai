@@ -518,6 +518,7 @@ if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
 const transitionGuideSource = readFileSync("lib/foodTransitionGuide.ts", "utf8");
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
+const promptInstructions = readFileSync("lib/ai/promptInstructions.ts", "utf8");
 const responseAdapter = readFileSync("lib/food-v2/recommendationResponseAdapter.ts", "utf8");
 const recommendationSummarySource = readFileSync(
   "lib/food-v2/chatbotRecommendationSummary.ts",
@@ -573,6 +574,8 @@ const requiredCompactComposerFlow = [
   "If cards_follow is true, mention only the single best starting food, not every card",
   "If cards_follow is true, do not tell the user to save the plan in this intro",
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
+  "If cards_follow is true, do not include kcal/100g, protein/fat/fiber percentages, or nutrition-table style snapshots",
+  "nutritionSnapshotTerms",
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
 ];
@@ -583,6 +586,19 @@ const missingCompactComposerFlow = requiredCompactComposerFlow.filter(
 if (missingCompactComposerFlow.length > 0) {
   console.error("OpenAI/fallback composer is missing compact customer card-flow rules:");
   console.error(missingCompactComposerFlow.join(", "));
+  process.exit(1);
+}
+
+const requiredCompactPromptFlow = [
+  "Do not include kcal/100g, protein/fat/fiber percentages, or nutrition-table style snapshots in this compact intro.",
+];
+const missingCompactPromptFlow = requiredCompactPromptFlow.filter(
+  (term) => !promptInstructions.includes(term)
+);
+
+if (missingCompactPromptFlow.length > 0) {
+  console.error("OpenAI answer-writer prompt is missing compact customer nutrition-snapshot limits:");
+  console.error(missingCompactPromptFlow.join(", "));
   process.exit(1);
 }
 
