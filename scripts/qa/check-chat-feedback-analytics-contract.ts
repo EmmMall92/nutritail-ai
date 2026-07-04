@@ -245,5 +245,17 @@ assert(
     adminFeedbackPage.includes("Not helpful feedback"),
   "Drop-off priority must include the four core launch-risk groups."
 );
+assert(
+  adminFeedbackPage.includes("function getGoalConversionRows") &&
+    adminFeedbackPage.includes("goalConversionRows") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-goal-conversion"') &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-goal-conversion-row"') &&
+    adminFeedbackPage.includes("Goal conversion by customer intent") &&
+    adminFeedbackPage.includes("Food choice rate") &&
+    adminFeedbackPage.includes("Save rate") &&
+    adminFeedbackPage.includes("Open goal funnel") &&
+    adminFeedbackPage.includes("Use this before changing recommendation rules"),
+  "Admin feedback page must expose goal-level conversion analytics for recommendation fixes."
+);
 
 console.log("Chat feedback analytics contract passed.");
