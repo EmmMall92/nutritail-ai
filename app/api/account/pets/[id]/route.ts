@@ -173,3 +173,49 @@ export async function PATCH(request: Request, context: Context) {
     );
   }
 }
+
+export async function DELETE(request: Request, context: Context) {
+  try {
+    const { id } = await context.params;
+    const body = await request.json().catch(() => ({}));
+    const authUserId = String(body.authUserId ?? "").trim();
+
+    if (!authUserId) {
+      return NextResponse.json({ error: "Missing auth user id." }, { status: 400 });
+    }
+
+    const customer = await getCustomerForAuthUser(authUserId);
+
+    if (!customer) {
+      return NextResponse.json({ error: "Customer not found." }, { status: 404 });
+    }
+
+    const now = new Date().toISOString();
+    const { data: pet, error: petError } = await supabaseAdmin
+      .from("pets")
+      .update({
+        deleted_at: now,
+        updated_at: now,
+      })
+      .eq("id", id)
+      .eq("customer_id", customer.id)
+      .is("deleted_at", null)
+      .select("id")
+      .maybeSingle();
+
+    if (petError) {
+      return NextResponse.json({ error: petError.message }, { status: 500 });
+    }
+
+    if (!pet) {
+      return NextResponse.json({ error: "Pet not found." }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, deletedId: id });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to delete pet." },
+      { status: 500 }
+    );
+  }
+}

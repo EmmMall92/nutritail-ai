@@ -146,8 +146,22 @@ This mode uses the authenticated QA cookie, creates a clearly named QA pet in
 the live account, saves a test analysis with grams/day, checks clean printable
 report wording, proves account/report clarity for the same saved pet, opens the
 report and timeline routes, and writes controlled progress, no-result,
-flavour/brand, and new-food continuation notes. Use it only when you are ready
-to create live QA data. The runner never prints the cookie or the user id.
+flavour/brand, and new-food continuation notes. By default, the runner then
+soft-deletes the controlled QA pet through the customer-owned cleanup route
+`DELETE /api/account/pets/:id`, so the live account does not accumulate test
+pets. Use it only when you are ready to create live QA data. The runner never
+prints the cookie or the user id.
+
+If you intentionally need to inspect the created QA pet after the run, keep it
+for that single run:
+
+```powershell
+$env:NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF="1"
+$env:NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF="1"
+npm.cmd run qa:customer-live-journey-proof
+Remove-Item Env:\NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF
+Remove-Item Env:\NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF
+```
 
 ## Status Meaning
 
