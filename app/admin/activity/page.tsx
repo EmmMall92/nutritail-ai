@@ -164,6 +164,29 @@ const betaRolloutReadinessItems = [
   },
 ] as const;
 
+const betaBusinessDecisionChecklist = [
+  {
+    decision: "Keep beta soft limits",
+    readyWhen:
+      "Real users still need help, feedback patterns are unclear, or support load is unknown.",
+  },
+  {
+    decision: "Open a wider beta batch",
+    readyWhen:
+      "Dog, cat, and returning-pet proof slots pass, and no critical feedback issue is repeating.",
+  },
+  {
+    decision: "Turn on hard limits",
+    readyWhen:
+      "Users understand the limits, over-limit cases are rare, and support copy is ready.",
+  },
+  {
+    decision: "Start paid-plan work",
+    readyWhen:
+      "Pricing, cancellation, legal copy, support flow, and plan-limit enforcement are approved.",
+  },
+] as const;
+
 const betaProofSessionPacket = [
   {
     step: "Pick the slot",
@@ -610,6 +633,43 @@ export default function AdminActivityPage() {
               </p>
             </article>
           ))}
+        </div>
+
+        <div
+          className="mt-5 rounded-xl border border-slate-700 bg-white/10 p-4"
+          data-testid="admin-beta-business-decision-checklist"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-white">
+                Business decision guard
+              </p>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+                Keep beta limits soft until customer proof, support load, and
+                plan/legal readiness are visible. This prevents turning on
+                payments or hard gates before the customer journey proves it can
+                stand on its own.
+              </p>
+            </div>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-950">
+              beta-only until approved
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {betaBusinessDecisionChecklist.map((item) => (
+              <article
+                key={item.decision}
+                className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-sm"
+                data-testid="admin-beta-business-decision"
+              >
+                <p className="font-semibold text-white">{item.decision}</p>
+                <p className="mt-2 leading-6 text-slate-300">
+                  {item.readyWhen}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
 

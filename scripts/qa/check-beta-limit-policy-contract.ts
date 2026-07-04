@@ -54,6 +54,25 @@ for (const marker of [
   assert(accountPage.includes(marker), `Account page beta usage is missing marker: ${marker}`);
 }
 
+const adminActivityPage = read("app/admin/activity/page.tsx");
+
+for (const marker of [
+  "betaBusinessDecisionChecklist",
+  'data-testid="admin-beta-business-decision-checklist"',
+  'data-testid="admin-beta-business-decision"',
+  "Business decision guard",
+  "Keep beta limits soft until customer proof",
+  "Open a wider beta batch",
+  "Turn on hard limits",
+  "Start paid-plan work",
+  "Pricing, cancellation, legal copy, support flow, and plan-limit enforcement",
+]) {
+  assert(
+    adminActivityPage.includes(marker),
+    `Admin beta business readiness is missing marker: ${marker}`
+  );
+}
+
 assert(
   packageJson.includes('"qa:beta-limit-policy-contract"'),
   "package.json must expose qa:beta-limit-policy-contract."
