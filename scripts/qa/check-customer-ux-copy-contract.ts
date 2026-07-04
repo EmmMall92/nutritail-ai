@@ -140,7 +140,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "lib/ai/responseComposer.ts",
-    text: "What matters most here",
+    text: "Main focus",
   },
 ];
 
