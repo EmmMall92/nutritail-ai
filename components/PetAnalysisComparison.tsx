@@ -44,7 +44,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
           Latest Analysis Comparison
         </h2>
         <p className="mt-1 text-sm text-gray-600">
-          Compare the current analysis with the previous saved one.
+          Compare the latest plan with the previous saved one.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-sm text-gray-600">RER</p>
+          <p className="text-sm text-gray-600">Resting calories</p>
           <p className="mt-2 text-sm text-black">
             Previous:{" "}
             <span className="font-semibold">{comparison.previousRer}</span>
@@ -77,7 +77,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="text-sm text-gray-600">MER</p>
+          <p className="text-sm text-gray-600">Daily target</p>
           <p className="mt-2 text-sm text-black">
             Previous:{" "}
             <span className="font-semibold">{comparison.previousMer}</span>
@@ -121,9 +121,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="mb-2 font-semibold text-black">
-            Added Legacy Food Signals
-          </p>
+          <p className="mb-2 font-semibold text-black">New food signals</p>
           {comparison.addedFoodIds.length === 0 ? (
             <p className="text-sm text-gray-600">No newly added foods.</p>
           ) : (
@@ -136,9 +134,7 @@ export default function PetAnalysisComparison({ comparison }: Props) {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <p className="mb-2 font-semibold text-black">
-            Removed Legacy Food Signals
-          </p>
+          <p className="mb-2 font-semibold text-black">Removed food signals</p>
           {comparison.removedFoodIds.length === 0 ? (
             <p className="text-sm text-gray-600">No removed foods.</p>
           ) : (
