@@ -2,6 +2,7 @@ import {
   buildCustomerRecommendationIntro,
   customerRecommendationPresentationForbiddenTerms,
 } from "@/lib/food-v2/customerRecommendationPresentation";
+import { readFileSync } from "node:fs";
 
 const greekIntro = buildCustomerRecommendationIntro({
   language: "el",
@@ -40,6 +41,7 @@ const requiredEnglishCopy = [
 ];
 
 const forbiddenTerms = customerRecommendationPresentationForbiddenTerms();
+const responseComposerSource = readFileSync("lib/ai/responseComposer.ts", "utf8");
 
 function assertIncludes(label: string, text: string, required: string[]) {
   const missing = required.filter((term) => !text.includes(term));
@@ -78,5 +80,16 @@ assertNoForbiddenTerms("Greek recommendation intro", greekIntro);
 assertNoForbiddenTerms("English recommendation intro", englishIntro);
 assertShort("Greek recommendation intro", greekIntro);
 assertShort("English recommendation intro", englishIntro);
+
+if (
+  !responseComposerSource.includes("buildCustomerRecommendationIntro") ||
+  !responseComposerSource.includes("buildCardIntroFallback") ||
+  !responseComposerSource.includes("cardIntro || buildCustomerFallbackText(input)")
+) {
+  console.error(
+    "OpenAI recommendation composer fallback must reuse the shared customer card intro."
+  );
+  process.exit(1);
+}
 
 console.log("Customer recommendation presentation contract passed.");
