@@ -582,6 +582,67 @@ function getReportActionSummary(
   ];
 }
 
+function getReportCustomerCommandCard(
+  pet: PetDetail,
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const hasCompletePlan = Boolean(
+    analysis?.matched_food_name && analysis?.feeding_grams_per_day
+  );
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return {
+    eyebrow:
+      "\u0397 \u03bf\u03c5\u03c3\u03af\u03b1 \u03c4\u03b7\u03c2 \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac\u03c2",
+    title: hasCompletePlan
+      ? `\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b3\u03b9\u03b1 ${
+          pet.name
+        }: ${analysis?.feeding_grams_per_day}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
+      : `\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b3\u03b9\u03b1 ${pet.name}: \u03ba\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae`,
+    detail: hasCompletePlan
+      ? "\u039a\u03c1\u03ac\u03c4\u03b1 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae \u03ba\u03b1\u03b9 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03b3\u03b9\u03b1 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03ce\u03c3\u03c4\u03b5 \u03bd\u03b1 \u03b4\u03bf\u03cd\u03bc\u03b5 \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ae \u03c4\u03ac\u03c3\u03b7."
+      : "\u0397 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03ad\u03c7\u03b5\u03b9 \u03b2\u03b3\u03ac\u03bb\u03b5\u03b9 \u03b8\u03b5\u03c1\u03bc\u03b9\u03b4\u03b9\u03ba\u03cc \u03c3\u03c4\u03cc\u03c7\u03bf, \u03b1\u03bb\u03bb\u03ac \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 \u03b3\u03bd\u03c9\u03c3\u03c4\u03ad\u03c2 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
+    cards: [
+      {
+        label: "\u03a4\u03c1\u03bf\u03c6\u03ae",
+        value:
+          analysis?.matched_food_name ??
+          "\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9",
+        detail: analysis?.matched_food_name
+          ? "\u0391\u03c5\u03c4\u03ae \u03b5\u03af\u03bd\u03b1\u03b9 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03c0\u03bf\u03c5 \u03ba\u03c1\u03b1\u03c4\u03ac\u03bc\u03b5 \u03c3\u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf."
+          : "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03bc\u03af\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b1\u03c0\u03cc \u03c4\u03bf chatbot \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b3\u03af\u03bd\u03b5\u03b9 \u03c0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03cc \u03c0\u03bb\u03ac\u03bd\u03bf.",
+      },
+      {
+        label: "\u03a0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1",
+        value: analysis?.feeding_grams_per_day
+          ? `${analysis.feeding_grams_per_day}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
+          : analysis?.mer
+            ? `${analysis.mer} kcal/\u03b7\u03bc\u03ad\u03c1\u03b1`
+            : "\u0398\u03ad\u03bb\u03b5\u03b9 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+        detail:
+          analysis?.feeding_grams_per_day && mealSplit
+            ? `\u03a0\u03c1\u03b1\u03ba\u03c4\u03b9\u03ba\u03ac: ${mealSplit.twoMeals}g x 2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1 \u03ae ${mealSplit.threeMeals}g x 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1.`
+            : "\u039c\u03cc\u03bb\u03b9\u03c2 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae, \u03b8\u03b1 \u03b2\u03b3\u03bf\u03c5\u03bd \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1.",
+      },
+      {
+        label: "\u039b\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
+        value: treatAllowance
+          ? `\u03ad\u03c9\u03c2 ${treatAllowance.treats} kcal`
+          : "\u03ad\u03c9\u03c2 10%",
+        detail:
+          "\u039c\u03ad\u03c4\u03c1\u03b1 \u03ba\u03b1\u03b9 \u03c4\u03b9\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b7\u03bd \u03c7\u03b1\u03bb\u03ac\u03b5\u03b9 \u03bf \u03b7\u03bc\u03b5\u03c1\u03ae\u03c3\u03b9\u03bf\u03c2 \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2.",
+      },
+      {
+        label: "\u0395\u03c0\u03b1\u03bd\u03ad\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2",
+        value: getRecheckWindow(analysis),
+        detail:
+          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7 \u03ba\u03b1\u03b9 \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1.",
+      },
+    ],
+  };
+}
+
 function getTomorrowFeedingPlan(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -1311,6 +1372,11 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const reportCustomerCommandCard = getReportCustomerCommandCard(
+    pet,
+    latestAnalysis,
+    mealSplit
+  );
   const hasCompleteFoodPlan = Boolean(
     latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
   );
@@ -1418,6 +1484,60 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-black bg-black p-6 text-white shadow-sm print:border-gray-300 print:bg-white print:text-black print:shadow-none"
+          data-testid="report-customer-command-card"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-300 print:text-gray-600">
+                {reportCustomerCommandCard.eyebrow}
+              </p>
+              <h2 className="mt-2 text-2xl font-bold">
+                {reportCustomerCommandCard.title}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-gray-200 print:text-gray-700">
+                {reportCustomerCommandCard.detail}
+              </p>
+            </div>
+
+            <div className="grid min-w-full grid-cols-1 gap-2 sm:min-w-72 print:hidden">
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=progress`}
+                className="rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black transition hover:bg-gray-100"
+                data-testid="report-customer-command-card-action"
+              >
+                {"\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5"}
+              </Link>
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour`}
+                className="rounded-xl border border-white/30 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+                data-testid="report-customer-command-card-action"
+              >
+                {"\u0386\u03bb\u03bb\u03b7 \u03b3\u03b5\u03cd\u03c3\u03b7/\u03bc\u03ac\u03c1\u03ba\u03b1"}
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
+            {reportCustomerCommandCard.cards.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-2xl border border-white/10 bg-white/10 p-4 text-sm print:border-gray-200 print:bg-white"
+                data-testid="report-customer-command-card-item"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-200 print:text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-gray-200 print:text-gray-600">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
 
