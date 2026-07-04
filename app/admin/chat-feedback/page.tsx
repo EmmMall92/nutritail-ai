@@ -44,6 +44,11 @@ function getSelectedFoodBrand(log: AdminActivityLog) {
   return String(context.selectedFoodBrand ?? "").trim() || "Unknown brand";
 }
 
+function getFeedbackGoal(log: AdminActivityLog) {
+  const context = getFeedbackContext(log);
+  return String(context.weightGoal ?? context.goal ?? "").trim() || "Unknown goal";
+}
+
 function getCleanupMetadata(log: AdminActivityLog) {
   const cleanup = log.metadata?.cleanup;
   return typeof cleanup === "object" && cleanup !== null
@@ -220,6 +225,80 @@ function getNextFeedbackFix(
     typeFilter: topIssue.typeFilter,
     ratingFilter: topIssue.ratingFilter,
   };
+}
+
+function getGoalConversionRows({
+  analysisCompleted,
+  selectedFoodChoices,
+  savedPlans,
+}: {
+  analysisCompleted: AdminActivityLog[];
+  selectedFoodChoices: AdminActivityLog[];
+  savedPlans: AdminActivityLog[];
+}) {
+  const groups = new Map<
+    string,
+    {
+      goal: string;
+      analyses: number;
+      foodChoices: number;
+      savedPlans: number;
+      latestLog: AdminActivityLog | null;
+    }
+  >();
+
+  function ensure(goal: string) {
+    const existing = groups.get(goal);
+    if (existing) return existing;
+
+    const created = {
+      goal,
+      analyses: 0,
+      foodChoices: 0,
+      savedPlans: 0,
+      latestLog: null,
+    };
+    groups.set(goal, created);
+    return created;
+  }
+
+  for (const log of analysisCompleted) {
+    const row = ensure(getFeedbackGoal(log));
+    row.analyses += 1;
+    row.latestLog = log;
+  }
+
+  for (const log of selectedFoodChoices) {
+    const row = ensure(getFeedbackGoal(log));
+    row.foodChoices += 1;
+    row.latestLog = log;
+  }
+
+  for (const log of savedPlans) {
+    const row = ensure(getFeedbackGoal(log));
+    row.savedPlans += 1;
+    row.latestLog = log;
+  }
+
+  return [...groups.values()]
+    .map((row) => ({
+      ...row,
+      foodSelectionRate:
+        row.analyses > 0 ? Math.round((row.foodChoices / row.analyses) * 100) : 0,
+      saveRate:
+        row.analyses > 0 ? Math.round((row.savedPlans / row.analyses) * 100) : 0,
+      dropoff:
+        row.analyses > 0
+          ? Math.max(0, row.analyses - row.foodChoices)
+          : Math.max(0, row.foodChoices - row.savedPlans),
+    }))
+    .sort(
+      (a, b) =>
+        b.dropoff - a.dropoff ||
+        b.analyses - a.analyses ||
+        a.goal.localeCompare(b.goal)
+    )
+    .slice(0, 8);
 }
 
 function getCustomerFrictionScorecards(
@@ -871,6 +950,11 @@ export default function AdminChatFeedbackPage() {
     0,
     selectedFoodChoices.length - savedPlans.length
   );
+  const goalConversionRows = getGoalConversionRows({
+    analysisCompleted,
+    selectedFoodChoices,
+    savedPlans,
+  });
   const selectedFoodGroups = selectedFoodChoices.reduce<
     Record<string, { count: number; latestLog: AdminActivityLog }>
   >((acc, log) => {
@@ -1842,6 +1926,87 @@ export default function AdminChatFeedbackPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+        data-testid="chat-feedback-goal-conversion"
+      >
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-black">
+              Goal conversion by customer intent
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              See which goals move from analysis to selected food and saved plan.
+              Use this before changing recommendation rules.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter("analysis_completed");
+              setRatingFilter("all");
+              setSearch("");
+            }}
+            className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-50"
+          >
+            Open goal funnel
+          </button>
+        </div>
+
+        {goalConversionRows.length === 0 ? (
+          <p className="mt-4 text-sm text-gray-600">
+            No goal conversion events have been recorded yet.
+          </p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {goalConversionRows.map((row) => (
+              <button
+                key={row.goal}
+                type="button"
+                onClick={() => {
+                  setTypeFilter("all");
+                  setRatingFilter("all");
+                  setSearch(row.goal === "Unknown goal" ? "" : row.goal);
+                }}
+                className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-left transition hover:border-black hover:bg-white"
+                data-testid="chat-feedback-goal-conversion-row"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-black">{row.goal}</p>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {row.analyses} analyses · {row.foodChoices} food choices ·{" "}
+                      {row.savedPlans} saved plans
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-black px-2 py-1 text-xs font-semibold text-white">
+                    {row.dropoff} drop-off
+                  </span>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                    <p className="text-xs font-semibold text-emerald-700">
+                      Food choice rate
+                    </p>
+                    <p className="mt-1 text-xl font-bold text-emerald-800">
+                      {row.analyses > 0 ? `${row.foodSelectionRate}%` : "-"}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                    <p className="text-xs font-semibold text-blue-700">
+                      Save rate
+                    </p>
+                    <p className="mt-1 text-xl font-bold text-blue-800">
+                      {row.analyses > 0 ? `${row.saveRate}%` : "-"}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
