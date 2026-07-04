@@ -12,6 +12,7 @@ function assert(condition: unknown, message: string) {
 
 const doc = read("docs/customer-launch-10-track-audit.md");
 const liveQaPage = read("app/admin/foods/v2-live-qa/page.tsx");
+const adminDashboardPage = read("app/admin/page.tsx");
 const packageJson = read("package.json");
 
 const tracks = [
@@ -77,6 +78,32 @@ const pageMarkers = [
 
 for (const marker of pageMarkers) {
   assert(liveQaPage.includes(marker), `Admin live QA page is missing marker: ${marker}`);
+}
+
+const dashboardMarkers = [
+  'data-testid="admin-launch-progress-snapshot"',
+  'data-testid="admin-launch-progress-snapshot-item"',
+  "Launch progress",
+  "NutriTail is not in the 78-80% foundation stage anymore",
+  "88% customer UX readiness",
+  "95%",
+  "recommendation-engine beta confidence",
+  "90%",
+  "overall SaaS",
+  "launch progress",
+  "View live QA",
+  "Beta proof queue",
+  "Next honest unlock",
+  "three",
+  "real beta journeys",
+  "without manual help",
+  "one dog owner",
+  "one cat",
+  "one returning saved-pet user",
+];
+
+for (const marker of dashboardMarkers) {
+  assert(adminDashboardPage.includes(marker), `Admin dashboard is missing launch progress marker: ${marker}`);
 }
 
 assert(
