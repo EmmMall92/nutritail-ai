@@ -179,6 +179,24 @@ production proof:
 - This closes the report/account proof gate, but the next customer move needs
   broader beta-user proof across real users, not just the controlled QA account.
 
+## Latest No-Score Movement
+
+The latest feedback-loop work does **not** raise Customer UX readiness by
+itself, because it is not real beta-user journey proof. It still matters because
+it makes the next score movement easier to prove:
+
+- Chatbot helpful/not-helpful feedback now carries selected food, brand when
+  available, grams/day, daily calories, pet context, weight goal, allergy and
+  preference context, recommendation mode, follow-up mode, and whether the
+  customer had selectable food cards.
+- Helpful/not-helpful events now identify the customer-facing
+  `save_analysis_panel`, so admin feedback is less likely to become an orphan
+  "not helpful" signal with no actionable customer journey context.
+- This improves the analytics/feedback loop and beta-proof evidence collection,
+  but the Customer UX score should stay at **88%** until real beta users complete
+  the required dog-owner, cat-owner, and returning saved-pet journeys without
+  manual help.
+
 The previous customer-facing work moved Customer UX readiness from **86%** to
 **87%** because the returning saved-pet continuation gate gained current
 controlled production proof:

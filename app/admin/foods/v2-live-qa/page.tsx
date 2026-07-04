@@ -26,6 +26,7 @@ type CustomerProductProgressSummary = {
   recommendationEngineEstimate: string;
   overallSaasEstimate: string;
   latestMovement: string;
+  latestNoScoreMovement: string[];
   scoreReadout: string[];
   scorecard: {
     track: string;
@@ -217,6 +218,9 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     recommendationEngineEstimate: "unknown",
     overallSaasEstimate: "unknown",
     latestMovement: "No product progress rubric found.",
+    latestNoScoreMovement: [
+      "No latest no-score movement has been recorded yet.",
+    ],
     scoreReadout: [
       "Customer UX readiness, recommendation engine confidence, and overall SaaS launch progress are tracked separately.",
       "A high automated score does not mean the customer-facing journey is already polished.",
@@ -270,6 +274,8 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
     const latestMovement =
       doc.match(/## Latest Movement\s+([\s\S]*?)\n## /i)?.[1]?.trim().split("\n")[0] ??
       fallback.latestMovement;
+    const latestNoScoreSection =
+      doc.match(/## Latest No-Score Movement\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const whySection =
       doc.match(/## Why It Feels Stuck\s+([\s\S]*?)\n## /i)?.[1]?.trim() ?? "";
     const scorecardSection =
@@ -288,6 +294,13 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
         .filter((line) => line.startsWith("- "))
         .map((line) => line.replace(/^- /, ""))
         .slice(0, 5) || fallback.whyItFeelsStuck;
+    const latestNoScoreMovement =
+      latestNoScoreSection
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("- "))
+        .map((line) => line.replace(/^- /, ""))
+        .slice(0, 5);
 
     const nextScoreMoves =
       nextSection
@@ -349,6 +362,10 @@ function readCustomerProductProgressSummary(): CustomerProductProgressSummary {
       recommendationEngineEstimate,
       overallSaasEstimate,
       latestMovement,
+      latestNoScoreMovement:
+        latestNoScoreMovement.length > 0
+          ? latestNoScoreMovement
+          : fallback.latestNoScoreMovement,
       scoreReadout: [
         `Customer UX readiness: ${customerUxEstimate}.`,
         `Recommendation engine beta confidence: ${recommendationEngineEstimate}.`,
@@ -1335,6 +1352,25 @@ export default function FoodV2LiveQaPage() {
               QA. Overall SaaS launch progress rises from business, monitoring,
               legal, beta-user, and operating proof.
             </p>
+          </div>
+
+          <div
+            className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-violet-950 lg:col-span-2"
+            data-testid="customer-product-no-score-movement"
+          >
+            <p className="text-sm font-semibold">
+              Latest quality movement without score change
+            </p>
+            <p className="mt-2 text-sm leading-6">
+              Some PRs improve the next proof gate without moving the headline
+              score. Count these as evidence prep, not as an automatic percentage
+              increase.
+            </p>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
+              {productProgress.latestNoScoreMovement.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </div>
 
           <div className="rounded-xl border border-blue-200 bg-white/70 p-4">
