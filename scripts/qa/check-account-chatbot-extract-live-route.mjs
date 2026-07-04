@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -6,7 +6,10 @@ const siteUrl = process.env.NUTRITAIL_QA_SITE_URL || "https://nutritail.ai";
 const reportPath =
   process.env.NUTRITAIL_QA_REPORT_PATH ||
   "reports/account_chatbot_extract_live_route_qa.md";
-const authCookieFile = process.env.NUTRITAIL_QA_AUTH_COOKIE_FILE?.trim() || "";
+const defaultCookieFile = ".qa-secrets/nutritail-auth-cookie.txt";
+const fallbackCookieFiles = [".qa-secrets/account-cookie.txt"];
+const authCookieFile =
+  process.env.NUTRITAIL_QA_AUTH_COOKIE_FILE?.trim() || defaultCookieFile;
 
 const routePath = "/api/account/chatbot/extract-intake";
 const sampleMessage =
@@ -22,25 +25,33 @@ function loadAuthCookie() {
     };
   }
 
-  if (!authCookieFile) {
+  const candidateFiles = [
+    authCookieFile,
+    ...fallbackCookieFiles.filter((file) => file !== authCookieFile),
+  ];
+  const existingFile = candidateFiles.find((file) => existsSync(file));
+
+  if (!existingFile) {
     return {
       value: "",
       source: "missing",
-      warning: "",
+      warning: `No cookie file found at ${candidateFiles.join(" or ")}.`,
     };
   }
 
   try {
-    const fromFile = readFileSync(authCookieFile, "utf8").trim();
+    const fromFile = readFileSync(existingFile, "utf8").trim();
 
     return {
       value: fromFile,
       source: fromFile
-        ? "NUTRITAIL_QA_AUTH_COOKIE_FILE"
+        ? existingFile === authCookieFile
+          ? "NUTRITAIL_QA_AUTH_COOKIE_FILE"
+          : "fallback cookie file"
         : "empty NUTRITAIL_QA_AUTH_COOKIE_FILE",
       warning: fromFile
         ? ""
-        : "The configured cookie file was readable but empty.",
+        : `The cookie file ${existingFile} was readable but empty.`,
     };
   } catch (error) {
     return {
@@ -137,7 +148,7 @@ async function checkRoute() {
       source: "",
       duration_ms: Date.now() - started,
       notes:
-        "Set NUTRITAIL_QA_AUTH_COOKIE or NUTRITAIL_QA_AUTH_COOKIE_FILE to run this against an authenticated live account session.",
+        "Set NUTRITAIL_QA_AUTH_COOKIE, set NUTRITAIL_QA_AUTH_COOKIE_FILE, or place a cookie in .qa-secrets/nutritail-auth-cookie.txt to run this against an authenticated live account session.",
       error: authCookie.warning,
       authCookieSource: authCookie.source,
     };
@@ -231,7 +242,7 @@ async function main() {
     authCookieSource,
     notes:
       skipped > 0
-        ? "No authenticated cookie was available locally, so this test was skipped safely. To run it, set NUTRITAIL_QA_AUTH_COOKIE directly or set NUTRITAIL_QA_AUTH_COOKIE_FILE to a local ignored file containing the Cookie header. Do not commit or print the cookie."
+        ? "No authenticated cookie was available locally, so this test was skipped safely. To run it, set NUTRITAIL_QA_AUTH_COOKIE directly, set NUTRITAIL_QA_AUTH_COOKIE_FILE, or place the Cookie header in .qa-secrets/nutritail-auth-cookie.txt. Do not commit or print the cookie."
         : `The route was called with an authenticated session cookie from ${authCookieSource}. The cookie value was not written to this report.`,
   });
 
