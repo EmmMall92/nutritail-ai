@@ -102,6 +102,21 @@ for (const page of pages) {
   );
 }
 
+const authShell = read("components/AuthShell.tsx");
+
+for (const marker of [
+  'data-testid="auth-customer-journey-strip"',
+  'data-testid="auth-customer-journey-step"',
+  "CUSTOMER_JOURNEY_STEPS",
+  "report,",
+  "progress check",
+]) {
+  assert(
+    authShell.includes(marker),
+    `AuthShell must include customer journey marker: ${marker}`
+  );
+}
+
 const authMessages = read("lib/auth/customerAuthMessages.ts");
 
 for (const marker of [
