@@ -23,15 +23,16 @@ type ComposerLocale = "el" | "en";
 
 const CUSTOMER_CARD_FLOW_RULES = [
   "When selectable food cards follow, write only a short intro and next action",
-  "If cards_follow is true, keep the answer under 90 words",
-  "If cards_follow is true, use at most 4 short sentences",
+  "If cards_follow is true, keep the answer under 65 words",
+  "If cards_follow is true, use at most 3 short sentences",
   "If cards_follow is true, mention only the single best starting food, not every card",
   "If cards_follow is true, do not tell the user to save the plan in this intro",
   "Do not mention scores, confidence labels, source quality, review status, or missing fields",
   "If cards_follow is true, do not include kcal/100g, protein/fat/fiber percentages, or nutrition-table style snapshots",
+  "Do not use headings such as Food shortlist, Best nutrition fits, Safety notes, Confidence notes, or Cautions",
   "Explain one practical reason and one action, then stop",
   "the cards are the recommendation UI",
-  "The best first choices are in the cards below.",
+  "The strongest starting options are in the cards below.",
   "Choose one food card below to see the first daily portion in grams.",
 ] as const;
 
@@ -415,12 +416,11 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     }
 
     return [
-      "Done. The best first choices are in the cards below.",
+      "Done. The strongest starting options are in the cards below.",
       "",
-      `What matters most here: ${goalLabel}.`,
-      `Best first choice: ${topFood} - it ${topReason}.`,
+      `Main focus: ${goalLabel}.`,
+      `Start with ${topFood} because it ${topReason}, then tap a card to calculate grams/day.`,
       "",
-      "Choose one food card below to see the first daily portion in grams.",
     ].join("\n");
   }
 
@@ -444,7 +444,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   return [
     petName ? `For ${petName}, I would start with these options:` : "I would start with these options:",
     "",
-    `What matters most here: ${goalLabel}.`,
+    `Main focus: ${goalLabel}.`,
     "",
     foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
     "",
@@ -507,8 +507,13 @@ function isCompactCardIntro(text: string) {
     "option 1",
     "best choices:",
     "best matches:",
+    "best nutrition fits",
+    "cautions:",
+    "confidence notes:",
     "first picks:",
+    "food shortlist from",
     "simple alternatives:",
+    "safety notes:",
     "your food shortlist:",
     "recommended foods:",
     "food shortlist:",
@@ -524,10 +529,13 @@ function isCompactCardIntro(text: string) {
     "ινε",
   ];
 
-  if (wordCount(text) > 90) return false;
-  if (sentenceCount(text) > 4) return false;
+  if (wordCount(text) > 65) return false;
+  if (sentenceCount(text) > 3) return false;
   if (numberedListLineCount(text) > 1) return false;
   if (/\bsave\b/i.test(text)) return false;
+  if (/\b(?:source|needs[_\s-]?review|data quality|missing nutrition|confidence)\b/i.test(text)) {
+    return false;
+  }
   if (/\b\d+(?:[.,]\d+)?\s*kcal\s*\/\s*100g\b/i.test(text)) return false;
   if (/\b(?:protein|fat|fiber)\s*:?\s*\d+(?:[.,]\d+)?\s*%/i.test(text)) {
     return false;
