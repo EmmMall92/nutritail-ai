@@ -265,6 +265,19 @@ assert(
   "Pet detail page must explain resting calories, final daily target, and why grams depend on the selected food."
 );
 
+assert(
+  accountPage.includes('data-testid="account-beta-journey-checklist"') &&
+    accountPage.includes('data-testid="account-beta-journey-checklist-item"') &&
+    accountPage.includes('data-testid="account-beta-proof-reminder"') &&
+    accountPage.includes("Beta journey checklist") &&
+    accountPage.includes("\\u0392\\u03bf\\u03ae\\u03b8\\u03b7\\u03c3\\u03ad \\u03bc\\u03b1\\u03c2") &&
+    accountPage.includes("\\u03ba\\u03ac\\u03c1\\u03c4\\u03b5\\u03c2 \\u03c4\\u03c1\\u03bf\\u03c6\\u03ce\\u03bd") &&
+    accountPage.includes("\\u03b3\\u03c1\\u03b1\\u03bc\\u03bc\\u03ac\\u03c1\\u03b9\\u03b1/\\u03b7\\u03bc\\u03ad\\u03c1\\u03b1") &&
+    accountPage.includes("\\u03b1\\u03bd\\u03b1\\u03c6\\u03bf\\u03c1\\u03ac") &&
+    accountPage.includes("\\u03c0\\u03c1\\u03b1\\u03b3\\u03bc\\u03b1\\u03c4\\u03b9\\u03ba\\u03ae \\u03b1\\u03c0\\u03cc\\u03b4\\u03b5\\u03b9\\u03be\\u03b7 \\u03c7\\u03c1\\u03ae\\u03c3\\u03c4\\u03b7"),
+  "Account dashboard must show a customer-facing beta journey checklist that reduces manual beta-session explanation."
+);
+
 const customerVisibleEnglishActionCopy = [
   "Progress check",
   "Progress kit",

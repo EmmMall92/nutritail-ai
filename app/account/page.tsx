@@ -1936,6 +1936,86 @@ export default function AccountPage() {
         </div>
       </div>
 
+      <div
+        className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        data-testid="account-beta-journey-checklist"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Beta journey checklist
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-black">
+              {"\u0392\u03bf\u03ae\u03b8\u03b7\u03c3\u03ad \u03bc\u03b1\u03c2 \u03bd\u03b1 \u03b4\u03bf\u03cd\u03bc\u03b5 \u03b1\u03bd \u03c4\u03bf NutriTail \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03b8\u03b1\u03c1\u03cc \u03c7\u03c9\u03c1\u03af\u03c2 \u03b2\u03bf\u03ae\u03b8\u03b5\u03b9\u03b1"}
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              {"\u039c\u03af\u03b1 \u03bf\u03bb\u03bf\u03ba\u03bb\u03b7\u03c1\u03c9\u03bc\u03ad\u03bd\u03b7 beta \u03b4\u03bf\u03ba\u03b9\u03bc\u03ae \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03bc\u03cc\u03bd\u03bf \u03ad\u03bd\u03b1 \u03bc\u03ae\u03bd\u03c5\u03bc\u03b1 \u03c3\u03c4\u03bf chatbot. \u039a\u03ac\u03bd\u03b5 \u03bc\u03af\u03b1 \u03c6\u03bf\u03c1\u03ac \u03cc\u03bb\u03b7 \u03c4\u03b7 \u03c1\u03bf\u03ae \u03ba\u03b1\u03b9 \u03bc\u03b5\u03c4\u03ac \u03ac\u03c6\u03b7\u03c3\u03b5 feedback."}
+            </p>
+          </div>
+          <Link
+            href="/account/chatbot"
+            className="rounded-xl bg-black px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-gray-800"
+          >
+            {"\u039e\u03b5\u03ba\u03af\u03bd\u03b1 beta \u03b4\u03bf\u03ba\u03b9\u03bc\u03ae"}
+          </Link>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            {
+              title: "1. \u039a\u03ac\u03bd\u03b5 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+              detail:
+                "\u03a3\u03c5\u03bc\u03c0\u03bb\u03ae\u03c1\u03c9\u03c3\u03b5 \u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf, \u03b4\u03b5\u03c2 \u03ba\u03ac\u03c1\u03c4\u03b5\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ce\u03bd, \u03b4\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03bc\u03af\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae \u03ba\u03b1\u03b9 \u03c5\u03c0\u03bf\u03bb\u03cc\u03b3\u03b9\u03c3\u03b5 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1.",
+              href: "/account/chatbot",
+              action: "\u0386\u03bd\u03bf\u03b9\u03be\u03b5 chatbot",
+            },
+            {
+              title: "2. \u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b5 \u03ba\u03b1\u03b9 \u03b4\u03b9\u03ac\u03b2\u03b1\u03c3\u03b5",
+              detail:
+                "\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b5 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf, \u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03ba\u03b1\u03b9 \u03b4\u03b5\u03c2 \u03b1\u03bd \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2, \u03c4\u03c1\u03bf\u03c6\u03ae, \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03ba\u03b1\u03b9 \u03bc\u03b5\u03c4\u03ac\u03b2\u03b1\u03c3\u03b7 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03b1\u03b8\u03b1\u03c1\u03ac.",
+              href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/pets",
+              action: "\u0386\u03bd\u03bf\u03b9\u03be\u03b5 \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac",
+            },
+            {
+              title: "3. \u0393\u03cd\u03c1\u03bd\u03b1 \u03b1\u03c1\u03b3\u03cc\u03c4\u03b5\u03c1\u03b1",
+              detail:
+                "\u03a3\u03b5 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03b3\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03b2\u03ac\u03c1\u03bf\u03c2, \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2, \u03cc\u03c1\u03b5\u03be\u03b7, \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b7.",
+              href: latestPet
+                ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
+                : "/account/chatbot",
+              action: "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5",
+            },
+          ].map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-950 transition hover:border-black hover:bg-white"
+              data-testid="account-beta-journey-checklist-item"
+            >
+              <p className="font-semibold">{item.title}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {item.detail}
+              </p>
+              <p className="mt-4 text-sm font-semibold text-black">
+                {item.action}
+              </p>
+            </Link>
+          ))}
+        </div>
+
+        <div
+          className="mt-5 rounded-2xl border border-slate-200 bg-slate-950 p-4 text-white"
+          data-testid="account-beta-proof-reminder"
+        >
+          <p className="font-semibold">
+            {"\u03a4\u03b9 \u03bc\u03b5\u03c4\u03c1\u03ac\u03b5\u03b9 \u03c9\u03c2 \u03c7\u03c1\u03ae\u03c3\u03b9\u03bc\u03bf beta feedback;"}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-200">
+            {"\u03a0\u03b5\u03c2 \u03bc\u03b1\u03c2 \u03b1\u03bd \u03ba\u03b1\u03c4\u03ac\u03bb\u03b1\u03b2\u03b5\u03c2 \u03c4\u03b7\u03bd \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7, \u03b1\u03bd \u03b4\u03b9\u03ac\u03bb\u03b5\u03be\u03b5\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ae, \u03b1\u03bd \u03b5\u03af\u03b4\u03b5\u03c2 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1/\u03b7\u03bc\u03ad\u03c1\u03b1, \u03b1\u03bd \u03b1\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b5\u03c2 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf, \u03b1\u03bd \u03ac\u03bd\u03bf\u03b9\u03be\u03b5\u03c2 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03ba\u03b1\u03b9 \u03b1\u03bd \u03ae\u03be\u03b5\u03c1\u03b5\u03c2 \u03c4\u03bf \u03b5\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf \u03b2\u03ae\u03bc\u03b1. \u0391\u03c5\u03c4\u03cc \u03bc\u03b1\u03c2 \u03b4\u03af\u03bd\u03b5\u03b9 \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ae \u03b1\u03c0\u03cc\u03b4\u03b5\u03b9\u03be\u03b7 \u03c7\u03c1\u03ae\u03c3\u03c4\u03b7."}
+          </p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">Αποθηκευμένα κατοικίδια</p>
