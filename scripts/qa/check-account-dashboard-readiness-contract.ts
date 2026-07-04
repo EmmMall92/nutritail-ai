@@ -326,6 +326,25 @@ assert(
 );
 
 assert(
+  accountPage.includes("type AccountWeeklyLoop") &&
+    accountPage.includes("type AccountWeeklyLoopStep") &&
+    accountPage.includes("function getAccountWeeklyLoop") &&
+    accountPage.includes("accountWeeklyLoop.steps.map") &&
+    accountPage.includes('data-testid="account-customer-week-loop"') &&
+    accountPage.includes('data-testid="account-customer-week-loop-step"'),
+  "Account dashboard must expose a structured customer weekly loop."
+);
+
+assert(
+  accountPage.includes("\\u0395\\u03b2\\u03b4\\u03bf\\u03bc\\u03b1\\u03b4\\u03b9\\u03b1\\u03af\\u03bf \\u03c0\\u03bb\\u03ac\\u03bd\\u03bf") &&
+    accountPage.includes("\\u03a3\\u03b5 7 \\u03b7\\u03bc\\u03ad\\u03c1\\u03b5\\u03c2") &&
+    accountPage.includes("\\u03a3\\u03b5 2-4 \\u03b5\\u03b2\\u03b4\\u03bf\\u03bc\\u03ac\\u03b4\\u03b5\\u03c2") &&
+    accountPage.includes("\\u0391\\u03c0\\u03bf\\u03b4\\u03bf\\u03c7\\u03ae \\u03c4\\u03c1\\u03bf\\u03c6\\u03ae\\u03c2") &&
+    accountPage.includes("\\u039d\\u03ad\\u03b1 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7 \\u03ae \\u03bc\\u03ac\\u03c1\\u03ba\\u03b1"),
+  "Customer weekly loop must explain today, day-7 acceptance, 2-4 week progress, and alternative-food recovery."
+);
+
+assert(
   accountPage.includes('data-testid="account-progress-check-reminder"') &&
     accountPage.includes("Σε 2-4 εβδομάδες κάνε έλεγχο προόδου") &&
     accountPage.includes("Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα") &&
