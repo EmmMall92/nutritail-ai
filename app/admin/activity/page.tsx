@@ -93,6 +93,64 @@ function hasCatSignal(log: AdminActivityLog) {
   ]);
 }
 
+function getBetaProofFit(log: AdminActivityLog) {
+  const text = getBetaSignupText(log);
+  const fits = [];
+
+  if (hasDogSignal(log)) {
+    fits.push("dog owner");
+  }
+
+  if (hasCatSignal(log)) {
+    fits.push("cat owner");
+  }
+
+  if (
+    matchesAny(text, [
+      "progress",
+      "timeline",
+      "return",
+      "again",
+      "weight",
+      "change food",
+      "flavour",
+      "flavor",
+      "ξανα",
+      "προοδο",
+      "πρόοδο",
+      "βαρος",
+      "βάρος",
+      "αλλαγη",
+      "αλλαγή",
+      "γευση",
+      "γεύση",
+    ])
+  ) {
+    fits.push("returning saved-pet");
+  }
+
+  return fits.length > 0 ? fits : ["general beta"];
+}
+
+function getBetaInviteReason(log: AdminActivityLog) {
+  const fits = getBetaProofFit(log);
+  const primaryFit = fits[0];
+
+  if (primaryFit === "dog owner") {
+    return "Use first for the dog-owner proof slot.";
+  }
+
+  if (primaryFit === "cat owner") {
+    return "Use first for the cat-owner proof slot.";
+  }
+
+  if (primaryFit === "returning saved-pet") {
+    return "Use after this user has one saved pet and report.";
+  }
+
+  return "Invite only after dog, cat, and returning proof slots are covered.";
+}
+
 function BetaSignupDetails({ log }: { log: AdminActivityLog }) {
   const metadata = log.metadata ?? {};
 
@@ -255,6 +313,22 @@ export default function AdminActivityPage() {
       "αλλαγή",
     ])
   );
+  const betaInviteQueue = betaSignupLogs
+    .map((log) => ({
+      log,
+      fit: getBetaProofFit(log),
+      reason: getBetaInviteReason(log),
+    }))
+    .sort((a, b) => {
+      const getScore = (fit: string[]) => {
+        if (fit.includes("returning saved-pet")) return 3;
+        if (fit.includes("dog owner") || fit.includes("cat owner")) return 2;
+        return 1;
+      };
+
+      return getScore(b.fit) - getScore(a.fit);
+    })
+    .slice(0, 5);
   const betaProofSlots = [
     {
       label: "Dog owner journey",
@@ -501,6 +575,76 @@ export default function AdminActivityPage() {
             Store final proof locally in .qa-secrets/beta-user-proof.json, then
             run npm.cmd run qa:beta-user-proof-contract.
           </p>
+        </div>
+
+        <div
+          className="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm text-gray-700"
+          data-testid="admin-beta-proof-invite-queue"
+        >
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="font-semibold text-gray-950">Next beta invites</p>
+              <p className="mt-2 max-w-3xl leading-6">
+                Pick testers from this queue first so every invite fills a
+                proof gap: dog owner, cat owner, or returning saved-pet. Do not
+                invite a broad batch until these three slots are covered.
+              </p>
+            </div>
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">
+              proof-first invites
+            </span>
+          </div>
+
+          {betaInviteQueue.length > 0 ? (
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              {betaInviteQueue.map(({ log, fit, reason }) => {
+                const email = getMetadataText(log.metadata, "email", "");
+                const name = getMetadataText(log.metadata, "name", "Beta tester");
+
+                return (
+                  <article
+                    key={log.id}
+                    className="rounded-lg border border-amber-100 bg-amber-50 p-3"
+                    data-testid="admin-beta-proof-invite-candidate"
+                  >
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="font-semibold text-gray-950">{name}</p>
+                        <p className="mt-1 text-xs text-gray-600">{email}</p>
+                      </div>
+                      <a
+                        href={`mailto:${email}?subject=NutriTail beta test session&body=Hi ${encodeURIComponent(name)},%0D%0A%0D%0ACan you test NutriTail without guidance and send feedback after choosing a food, grams/day, saving, opening the report, and using timeline or progress?`}
+                        className="inline-flex rounded-lg border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-950 transition hover:bg-amber-100"
+                      >
+                        Invite
+                      </a>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {fit.map((item) => (
+                        <span
+                          key={item}
+                          className="rounded-full bg-white px-2 py-1 text-xs font-bold text-amber-900"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-3 leading-6 text-amber-950">{reason}</p>
+                    <p className="mt-2 text-xs text-amber-900">
+                      Required session proof: signup/login, pet intake, food
+                      cards, selected food, grams/day, save, report, timeline
+                      or progress, feedback, no manual help.
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="mt-4 rounded-lg border border-amber-100 bg-amber-50 p-3 text-amber-950">
+              No beta signups yet. Share /beta, then use this queue to schedule
+              the first dog, cat, and returning saved-pet proof sessions.
+            </p>
+          )}
         </div>
 
         <div
