@@ -1967,6 +1967,12 @@ export default function PrintablePetReportPage() {
                 Νέα πρόταση τροφής
               </Link>
               <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=progress&reason=no_result`}
+                className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm font-semibold text-amber-950 transition hover:bg-amber-100"
+              >
+                Δεν είδα αποτέλεσμα
+              </Link>
+              <Link
                 href={`/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour`}
                 className="rounded-xl border border-blue-300 bg-white px-4 py-3 text-center text-sm font-semibold text-blue-950 transition hover:bg-blue-100"
               >
