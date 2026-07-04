@@ -62,6 +62,19 @@ assert(
   "Food shortlist must keep one compact customer decision strip: compare, choose, grams/day."
 );
 assert(
+  chatbotPage.includes('data-testid="customer-food-choice-confidence-strip"') &&
+    chatbotPage.includes('data-testid="customer-food-choice-confidence-item"') &&
+    chatbotPage.includes("Πώς να διαλέξεις") &&
+    chatbotPage.includes("How to choose") &&
+    chatbotPage.includes("Διατροφικό ταίριασμα") &&
+    chatbotPage.includes("Γεύση και αποφυγές") &&
+    chatbotPage.includes("Πρακτική καθημερινότητα") &&
+    chatbotPage.includes("Nutrition fit") &&
+    chatbotPage.includes("Taste and avoidances") &&
+    chatbotPage.includes("Daily practicality"),
+  "Food shortlist must help customers choose between cards using fit, taste/avoidances, and practical daily use."
+);
+assert(
   chatbotPage.includes('data-testid="customer-food-journey-stepper"') &&
     chatbotPage.includes('data-testid="customer-food-journey-stepper-item"') &&
     chatbotPage.includes("Τι γίνεται μετά") &&

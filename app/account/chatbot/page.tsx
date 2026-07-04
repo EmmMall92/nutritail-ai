@@ -6299,6 +6299,58 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               )}
             </p>
             <div
+              data-testid="customer-food-choice-confidence-strip"
+              className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                {botText("Πώς να διαλέξεις", "How to choose")}
+              </p>
+              <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-emerald-950 sm:grid-cols-3">
+                <p
+                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
+                  data-testid="customer-food-choice-confidence-item"
+                >
+                  <span className="block font-semibold">
+                    {botText("1. Διατροφικό ταίριασμα", "1. Nutrition fit")}
+                  </span>
+                  <span>
+                    {botText(
+                      "Ξεκίνα από τις πρώτες επιλογές αν θέλεις την πιο δυνατή πρόταση.",
+                      "Start with the first picks when you want the strongest match."
+                    )}
+                  </span>
+                </p>
+                <p
+                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
+                  data-testid="customer-food-choice-confidence-item"
+                >
+                  <span className="block font-semibold">
+                    {botText("2. Γεύση και αποφυγές", "2. Taste and avoidances")}
+                  </span>
+                  <span>
+                    {botText(
+                      "Διάλεξε κάρτα που σέβεται τι του αρέσει και τι δεν τρώει.",
+                      "Pick a card that respects likes, dislikes, and avoidances."
+                    )}
+                  </span>
+                </p>
+                <p
+                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
+                  data-testid="customer-food-choice-confidence-item"
+                >
+                  <span className="block font-semibold">
+                    {botText("3. Πρακτική καθημερινότητα", "3. Daily practicality")}
+                  </span>
+                  <span>
+                    {botText(
+                      "Αν μετράει τιμή ή διαθεσιμότητα, δες και τις πρακτικές επιλογές.",
+                      "If price or availability matters, check the practical options too."
+                    )}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div
               data-testid="customer-choice-decision-guide"
               className="mt-3 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3"
             >
