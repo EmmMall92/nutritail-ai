@@ -183,6 +183,19 @@ export default function LoginPage() {
         </p>
       </div>
 
+      <div
+        className="mb-5 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
+        data-testid="auth-chatbot-prep-card"
+      >
+        <p className="font-semibold">{"\u0393\u03b9\u03b1 \u03c0\u03b9\u03bf \u03b3\u03c1\u03ae\u03b3\u03bf\u03c1\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7, \u03ad\u03c7\u03b5 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b1:"}</p>
+        <ul className="mt-2 space-y-1">
+          <li>{"- \u0392\u03ac\u03c1\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03b7\u03bb\u03b9\u03ba\u03af\u03b1 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03b9\u03b4\u03af\u03bf\u03c5"}</li>
+          <li>{"- \u03a3\u03c4\u03b5\u03af\u03c1\u03c9\u03c3\u03b7 \u03ba\u03b1\u03b9 \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1"}</li>
+          <li>{"- \u03a4\u03c9\u03c1\u03b9\u03bd\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae \u03ae \u03c6\u03c9\u03c4\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1 \u03b5\u03c4\u03b9\u03ba\u03ad\u03c4\u03b1\u03c2"}</li>
+          <li>{"- \u03a3\u03c4\u03cc\u03c7\u03bf\u03c2, \u03c0\u03c1\u03bf\u03c4\u03b9\u03bc\u03ae\u03c3\u03b5\u03b9\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03b1\u03c0\u03bf\u03c6\u03b5\u03cd\u03b3\u03b5\u03b9"}</li>
+        </ul>
+      </div>
+
       <form onSubmit={handleLogin} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
