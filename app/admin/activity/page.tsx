@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { getBetaLaunchDecision } from "@/lib/beta/launchDecisionPolicy";
 import type { AdminActivityLog } from "@/types/admin-activity-log";
 
 function getMetadataText(
@@ -353,6 +354,17 @@ export default function AdminActivityPage() {
         "Needs one saved-pet user to return for progress, timeline, new food, or flavour/brand change.",
     },
   ];
+  const betaLaunchDecision = getBetaLaunchDecision({
+    dogProofCandidates: betaDogProspects.length,
+    catProofCandidates: betaCatProspects.length,
+    returningPetProofCandidates: betaReturningProspects.length,
+    criticalFeedbackRepeats: 0,
+    overLimitUsageCount: 0,
+    pricingApproved: false,
+    legalApproved: false,
+    supportFlowReady: false,
+    hardLimitCopyReady: false,
+  });
 
   useEffect(() => {
     async function loadLogs() {
@@ -813,6 +825,56 @@ export default function AdminActivityPage() {
                 </p>
               </article>
             ))}
+          </div>
+
+          <div
+            className="mt-4 rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-slate-950"
+            data-testid="admin-beta-launch-decision-policy"
+          >
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-emerald-800">
+                  Current launch decision policy
+                </p>
+                <h4 className="mt-1 text-lg font-black">
+                  {betaLaunchDecision.label}
+                </h4>
+                <p className="mt-2 text-sm font-semibold text-emerald-950">
+                  {betaLaunchDecision.readinessLabel}
+                </p>
+              </div>
+              <span
+                className="rounded-full bg-white px-3 py-1 text-xs font-bold text-emerald-900"
+                data-testid="admin-beta-launch-decision-id"
+              >
+                {betaLaunchDecision.decision}
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-emerald-950">
+              {betaLaunchDecision.rationale}
+            </p>
+            <p className="mt-3 rounded-lg bg-white p-3 text-sm font-semibold leading-6 text-slate-950">
+              Next action: {betaLaunchDecision.nextAction}
+            </p>
+            {betaLaunchDecision.blockers.length > 0 ? (
+              <ul
+                className="mt-3 grid gap-2 text-sm text-emerald-950 md:grid-cols-2"
+                data-testid="admin-beta-launch-decision-blockers"
+              >
+                {betaLaunchDecision.blockers.map((blocker) => (
+                  <li key={blocker} className="rounded-lg bg-white px-3 py-2">
+                    {blocker}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p
+                className="mt-3 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-950"
+                data-testid="admin-beta-launch-decision-clear"
+              >
+                No blockers for this decision.
+              </p>
+            )}
           </div>
         </div>
       </div>

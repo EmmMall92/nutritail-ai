@@ -12,6 +12,7 @@ function read(path: string) {
 
 const accessPlan = read("lib/beta/accessPlan.ts");
 const limitPolicy = read("lib/beta/limitPolicy.ts");
+const launchDecisionPolicy = read("lib/beta/launchDecisionPolicy.ts");
 const accountPage = read("app/account/page.tsx");
 const packageJson = read("package.json");
 
@@ -38,6 +39,28 @@ for (const marker of [
 }
 
 for (const marker of [
+  "export type BetaLaunchDecisionInput",
+  "export type BetaLaunchDecisionId",
+  "getBetaLaunchDecision",
+  "keep_soft_beta",
+  "open_wider_beta_batch",
+  "prepare_hard_limits",
+  "prepare_paid_plan_work",
+  "pricingApproved",
+  "legalApproved",
+  "supportFlowReady",
+  "hardLimitCopyReady",
+  "missing dog-owner beta proof candidate",
+  "missing cat-owner beta proof candidate",
+  "missing returning saved-pet beta proof candidate",
+]) {
+  assert(
+    launchDecisionPolicy.includes(marker),
+    `Beta launch decision policy is missing marker: ${marker}`
+  );
+}
+
+for (const marker of [
   'import { getBetaLimitStatus } from "@/lib/beta/limitPolicy";',
   "type BetaUsageSnapshot",
   "petsRemaining",
@@ -57,10 +80,16 @@ for (const marker of [
 const adminActivityPage = read("app/admin/activity/page.tsx");
 
 for (const marker of [
+  'import { getBetaLaunchDecision } from "@/lib/beta/launchDecisionPolicy";',
   "betaBusinessDecisionChecklist",
+  "betaLaunchDecision",
   'data-testid="admin-beta-business-decision-checklist"',
   'data-testid="admin-beta-business-decision"',
+  'data-testid="admin-beta-launch-decision-policy"',
+  'data-testid="admin-beta-launch-decision-id"',
+  'data-testid="admin-beta-launch-decision-blockers"',
   "Business decision guard",
+  "Current launch decision policy",
   "Keep beta limits soft until customer proof",
   "Open a wider beta batch",
   "Turn on hard limits",
