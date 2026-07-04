@@ -257,6 +257,37 @@ function getLaunchTrackFixQueue(
   }));
 }
 
+function getFeedbackFixVerificationLoop(
+  nextFeedbackFix: ReturnType<typeof getNextFeedbackFix>
+) {
+  return [
+    {
+      step: "1. Capture baseline",
+      detail:
+        "Open the relevant queue and note the current signal count, feedback type, customer goal, and food context before changing code or data.",
+      action: nextFeedbackFix.title,
+    },
+    {
+      step: "2. Apply one focused fix",
+      detail:
+        "Change only the likely cause: ranking guard, food alias/data cleanup, wording, report clarity, or save-flow CTA.",
+      action: nextFeedbackFix.action,
+    },
+    {
+      step: "3. Re-run proof",
+      detail:
+        "Run the matching QA suite and one live customer-style journey for the same scenario, including food choice, grams/day, save, report, and feedback.",
+      action: "QA plus customer journey proof",
+    },
+    {
+      step: "4. Confirm movement",
+      detail:
+        "The fix counts only when the same signal stops repeating or moves from not-helpful/drop-off into a completed saved-plan journey.",
+      action: "Reduced repeat signal",
+    },
+  ];
+}
+
 function getNotHelpfulActionQueue(notHelpfulLogs: AdminActivityLog[]) {
   return notHelpfulLogs
     .map((log) => {
@@ -702,6 +733,8 @@ export default function AdminChatFeedbackPage() {
   const customerFrictionScorecards =
     getCustomerFrictionScorecards(dropoffPriorityItems);
   const launchTrackFixQueue = getLaunchTrackFixQueue(customerFrictionScorecards);
+  const feedbackFixVerificationLoop =
+    getFeedbackFixVerificationLoop(nextFeedbackFix);
   const notHelpfulActionQueue = getNotHelpfulActionQueue(notHelpful);
   const notHelpfulContextQuality = getFeedbackContextQuality(notHelpful);
   const betaProofSignals = getBetaProofSignals(feedbackLogs);
@@ -1406,6 +1439,56 @@ export default function AdminChatFeedbackPage() {
                 {item.priority}
               </p>
             </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm"
+        data-testid="chat-feedback-fix-verification-loop"
+      >
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-indigo-700">
+              Feedback fix verification
+            </p>
+            <h3 className="mt-1 text-xl font-bold text-gray-950">
+              Prove that the next fix actually helped
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-indigo-950">
+              Use this loop after the highest-impact queue. A merged PR is not
+              enough: the same customer signal should improve in QA or real
+              feedback before we count it as launch progress.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setTypeFilter(nextFeedbackFix.typeFilter);
+              setRatingFilter(nextFeedbackFix.ratingFilter);
+              setSearch("");
+            }}
+            className="rounded-xl border border-indigo-200 bg-white px-5 py-3 text-sm font-semibold text-indigo-950 transition hover:bg-indigo-100"
+          >
+            Open verification queue
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {feedbackFixVerificationLoop.map((item) => (
+            <article
+              key={item.step}
+              className="rounded-xl border border-indigo-200 bg-white p-4"
+              data-testid="chat-feedback-fix-verification-step"
+            >
+              <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                {item.step}
+              </p>
+              <h4 className="mt-2 font-bold text-gray-950">{item.action}</h4>
+              <p className="mt-3 text-sm leading-6 text-gray-700">
+                {item.detail}
+              </p>
+            </article>
           ))}
         </div>
       </div>

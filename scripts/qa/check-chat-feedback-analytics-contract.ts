@@ -116,6 +116,21 @@ assert(
   "Admin feedback page must map customer feedback signals to the 10-task launch tracks."
 );
 assert(
+  adminFeedbackPage.includes("function getFeedbackFixVerificationLoop") &&
+    adminFeedbackPage.includes("feedbackFixVerificationLoop.map") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-fix-verification-loop"') &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-fix-verification-step"') &&
+    adminFeedbackPage.includes("Feedback fix verification") &&
+    adminFeedbackPage.includes("Prove that the next fix actually helped") &&
+    adminFeedbackPage.includes("A merged PR is not") &&
+    adminFeedbackPage.includes("Capture baseline") &&
+    adminFeedbackPage.includes("Apply one focused fix") &&
+    adminFeedbackPage.includes("Re-run proof") &&
+    adminFeedbackPage.includes("Confirm movement") &&
+    adminFeedbackPage.includes("Open verification queue"),
+  "Admin feedback page must turn the next feedback fix into a closed-loop verification process."
+);
+assert(
   adminFeedbackPage.includes("function getBetaProofSignals") &&
     adminFeedbackPage.includes("betaProofSignals.items.map") &&
     adminFeedbackPage.includes('data-testid="chat-feedback-beta-proof-signals"') &&
