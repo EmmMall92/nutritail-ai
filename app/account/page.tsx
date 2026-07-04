@@ -139,6 +139,21 @@ type AccountPlanWatchItem = {
   detail: string;
 };
 
+type AccountWeeklyLoopStep = {
+  label: string;
+  value: string;
+  detail: string;
+  href: string;
+  actionLabel: string;
+  tone: "today" | "week" | "progress" | "change";
+};
+
+type AccountWeeklyLoop = {
+  title: string;
+  subtitle: string;
+  steps: AccountWeeklyLoopStep[];
+};
+
 type BetaUsageSnapshot = {
   petsUsed: number;
   petsLimit: number;
@@ -408,6 +423,90 @@ function getAccountPlanWatchlist({
   }
 
   return items.slice(0, 5);
+}
+
+function getAccountWeeklyLoop({
+  latestPet,
+  latestAnalysis,
+}: {
+  latestPet?: AccountPet;
+  latestAnalysis?: AnalysisHistoryItem;
+}): AccountWeeklyLoop {
+  const petName = latestPet?.name ?? "\u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf";
+  const foodName = getAnalysisFoodName(latestAnalysis);
+  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
+  const progressHref = latestPet
+    ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
+    : "/account/chatbot";
+  const reportHref = latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot";
+  const timelineHref = latestPet ? `/print/pet-timeline/${latestPet.id}` : "/account/chatbot";
+  const alternativeHref = latestPet
+    ? `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`
+    : "/account/chatbot";
+
+  if (!latestPet || !latestAnalysis) {
+    return {
+      title: "\u03a6\u03c4\u03b9\u03ac\u03be\u03b5 \u03c4\u03bf \u03c0\u03c1\u03ce\u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf",
+      subtitle:
+        "\u039c\u03cc\u03bb\u03b9\u03c2 \u03b3\u03af\u03bd\u03b5\u03b9 \u03b7 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7, \u03b5\u03b4\u03ce \u03b8\u03b1 \u03b2\u03bb\u03ad\u03c0\u03b5\u03b9\u03c2 \u03c4\u03b9 \u03ba\u03ac\u03bd\u03b5\u03b9\u03c2 \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1, \u03c4\u03b9 \u03b5\u03bb\u03ad\u03b3\u03c7\u03b5\u03b9\u03c2 \u03c3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2 \u03ba\u03b1\u03b9 \u03c0\u03cc\u03c4\u03b5 \u03b3\u03c5\u03c1\u03bd\u03ac\u03c2.",
+      steps: [
+        {
+          label: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
+          value: "\u039d\u03ad\u03b1 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
+          detail:
+            "\u0394\u03ce\u03c3\u03b5 \u03b5\u03af\u03b4\u03bf\u03c2, \u03b2\u03ac\u03c1\u03bf\u03c2, \u03b7\u03bb\u03b9\u03ba\u03af\u03b1, \u03c3\u03c4\u03cc\u03c7\u03bf \u03ba\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c4\u03b9\u03bc\u03ae\u03c3\u03b5\u03b9\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2.",
+          href: "/account/chatbot",
+          actionLabel: "\u039e\u03b5\u03ba\u03af\u03bd\u03b1",
+          tone: "today",
+        },
+      ],
+    };
+  }
+
+  return {
+    title: `\u0397 \u03c1\u03bf\u03ae \u03c4\u03bf\u03c5 \u03c0\u03bb\u03ac\u03bd\u03bf\u03c5 \u03b3\u03b9\u03b1 ${petName}`,
+    subtitle:
+      "\u039a\u03c1\u03ac\u03c4\u03b1 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03b1\u03c0\u03bb\u03cc: \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b4\u03af\u03bd\u03b5\u03b9\u03c2 \u03c4\u03b7\u03bd \u03c4\u03c1\u03bf\u03c6\u03ae, \u03c3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2 \u03b5\u03bb\u03ad\u03b3\u03c7\u03b5\u03b9\u03c2 \u03b1\u03c0\u03bf\u03b4\u03bf\u03c7\u03ae, \u03c3\u03b5 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03b3\u03c5\u03c1\u03bd\u03ac\u03c2 \u03bc\u03b5 \u03bd\u03ad\u03b1 \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1.",
+    steps: [
+      {
+        label: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
+        value: foodName ?? "\u039a\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae",
+        detail: feedingGrams
+          ? `\u039e\u03b5\u03ba\u03af\u03bd\u03b1 \u03bc\u03b5 ${feedingGrams}g/\u03b7\u03bc\u03ad\u03c1\u03b1 \u03ba\u03b1\u03b9 \u03ba\u03c1\u03ac\u03c4\u03b1 \u03c4\u03b9\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03bc\u03b5\u03c4\u03c1\u03b7\u03bc\u03ad\u03bd\u03b5\u03c2.`
+          : "\u0394\u03b5\u03c2 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03ba\u03b1\u03b9 \u03ba\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
+        href: reportHref,
+        actionLabel: "\u0394\u03b5\u03c2 \u03c0\u03bb\u03ac\u03bd\u03bf",
+        tone: "today",
+      },
+      {
+        label: "\u03a3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2",
+        value: "\u0391\u03c0\u03bf\u03b4\u03bf\u03c7\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2",
+        detail:
+          "\u03a3\u03b7\u03bc\u03b5\u03af\u03c9\u03c3\u03b5 \u03cc\u03c1\u03b5\u03be\u03b7, \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1, \u03b5\u03bd\u03ad\u03c1\u03b3\u03b5\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03c4\u03b7 \u03b2\u03b1\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03ae \u03c4\u03bf\u03c5 \u03ac\u03c1\u03b5\u03c3\u03b5.",
+        href: timelineHref,
+        actionLabel: "\u0394\u03b5\u03c2 \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc",
+        tone: "week",
+      },
+      {
+        label: "\u03a3\u03b5 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2",
+        value: "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5",
+        detail:
+          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03ac\u03bb\u03bb\u03b1\u03be\u03b5.",
+        href: progressHref,
+        actionLabel: "\u039a\u03ac\u03bd\u03b5 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf",
+        tone: "progress",
+      },
+      {
+        label: "\u0391\u03bd \u03ba\u03ac\u03c4\u03b9 \u03b4\u03b5\u03bd \u03c0\u03ac\u03b5\u03b9",
+        value: "\u039d\u03ad\u03b1 \u03b3\u03b5\u03cd\u03c3\u03b7 \u03ae \u03bc\u03ac\u03c1\u03ba\u03b1",
+        detail:
+          "\u0396\u03ae\u03c4\u03b7\u03c3\u03b5 \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03c7\u03c9\u03c1\u03af\u03c2 \u03bd\u03b1 \u03c7\u03b1\u03b8\u03b5\u03af \u03c4\u03bf \u03af\u03b4\u03b9\u03bf pet, \u03bf \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03bf \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc.",
+        href: alternativeHref,
+        actionLabel: "\u0392\u03c1\u03b5\u03c2 \u03ac\u03bb\u03bb\u03b7",
+        tone: "change",
+      },
+    ],
+  };
 }
 
 function getProgressDecisionLabel(value?: string | null) {
@@ -1037,6 +1136,10 @@ export default function AccountPage() {
     latestPet,
     latestAnalysis,
   });
+  const accountWeeklyLoop = getAccountWeeklyLoop({
+    latestPet,
+    latestAnalysis,
+  });
   const dashboardNextActions = getDashboardNextActions({
     pets,
     latestPet,
@@ -1234,6 +1337,61 @@ export default function AccountPage() {
               >
                 {task.actionLabel}
               </p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50 p-6 shadow-sm"
+        data-testid="account-customer-week-loop"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-fuchsia-700">
+              {"\u0395\u03b2\u03b4\u03bf\u03bc\u03b1\u03b4\u03b9\u03b1\u03af\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf"}
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-fuchsia-950">
+              {accountWeeklyLoop.title}
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-fuchsia-900">
+            {accountWeeklyLoop.subtitle}
+          </p>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {accountWeeklyLoop.steps.map((step) => (
+            <Link
+              key={`${step.label}-${step.value}`}
+              href={step.href}
+              data-testid="account-customer-week-loop-step"
+              className={`rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
+                step.tone === "today"
+                  ? "border-fuchsia-950 bg-fuchsia-950 text-white"
+                  : step.tone === "week"
+                    ? "border-sky-100 bg-white text-sky-950 hover:border-sky-300"
+                    : step.tone === "progress"
+                      ? "border-amber-100 bg-white text-amber-950 hover:border-amber-300"
+                      : "border-violet-100 bg-white text-violet-950 hover:border-violet-300"
+              }`}
+            >
+              <p
+                className={`text-xs font-semibold uppercase tracking-wide ${
+                  step.tone === "today" ? "text-fuchsia-100" : "text-gray-500"
+                }`}
+              >
+                {step.label}
+              </p>
+              <p className="mt-2 text-lg font-bold">{step.value}</p>
+              <p
+                className={`mt-2 text-sm leading-6 ${
+                  step.tone === "today" ? "text-fuchsia-50" : "text-gray-700"
+                }`}
+              >
+                {step.detail}
+              </p>
+              <p className="mt-4 text-sm font-semibold">{step.actionLabel}</p>
             </Link>
           ))}
         </div>
