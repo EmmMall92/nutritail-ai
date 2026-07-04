@@ -419,6 +419,40 @@ function getReportCustomerSuccessStrip(
   };
 }
 
+function getReportCustomerQuickStart(
+  analysis?: AnalysisHistoryItem | null,
+  mealSplit?: ReturnType<typeof getMealSplit>
+) {
+  const hasFood = Boolean(analysis?.matched_food_name);
+  const hasPortion = Boolean(analysis?.feeding_grams_per_day);
+  const treatAllowance = getTreatAllowance(analysis);
+
+  return [
+    {
+      label: "Σήμερα",
+      value: hasFood ? analysis?.matched_food_name : "Επιβεβαίωσε τροφή",
+      detail:
+        hasFood && hasPortion && mealSplit
+          ? `Ξεκίνα με ${analysis?.feeding_grams_per_day}g/ημέρα: περίπου ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
+          : "Κράτα τον θερμιδικό στόχο και διάλεξε τροφή με γνωστές θερμίδες για ακριβή γραμμάρια.",
+    },
+    {
+      label: "Κράτα σταθερό",
+      value: treatAllowance
+        ? `Λιχουδιές έως ${treatAllowance.treats} kcal`
+        : "Ποσότητα + λιχουδιές",
+      detail:
+        "Μην αλλάζεις πολλά μαζί την πρώτη εβδομάδα. Κράτα την ίδια τροφή, μετρημένη ποσότητα και σημείωσε τις λιχουδιές.",
+    },
+    {
+      label: "Επόμενος έλεγχος",
+      value: getRecheckWindow(analysis),
+      detail:
+        "Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές και αν ακόμη του αρέσει η τροφή.",
+    },
+  ];
+}
+
 function getReportCustomerTakeaway(
   analysis?: AnalysisHistoryItem | null,
   mealSplit?: ReturnType<typeof getMealSplit>
@@ -1268,6 +1302,10 @@ export default function PrintablePetReportPage() {
     latestAnalysis,
     mealSplit
   );
+  const reportCustomerQuickStart = getReportCustomerQuickStart(
+    latestAnalysis,
+    mealSplit
+  );
   const reportExecutiveSummary = getReportExecutiveSummary(
     pet,
     latestAnalysis,
@@ -1380,6 +1418,44 @@ export default function PrintablePetReportPage() {
             >
               Εκτύπωση / PDF
             </button>
+          </div>
+        </div>
+
+        <div
+          className="mt-6 break-inside-avoid rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          data-testid="report-customer-quick-start"
+        >
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-slate-600">
+                Τι κάνεις σήμερα
+              </p>
+              <h2 className="mt-1 text-2xl font-bold text-slate-950">
+                Το πλάνο με μια ματιά
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-slate-700">
+              Η απλή εκδοχή του report: τροφή, ποσότητα, σταθερότητα και πότε
+              επιστρέφεις για έλεγχο.
+            </p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {reportCustomerQuickStart.map((item) => (
+              <article
+                key={item.label}
+                className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-950 print:border-gray-300"
+                data-testid="report-customer-quick-start-card"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold">{item.value}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-700">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
 
