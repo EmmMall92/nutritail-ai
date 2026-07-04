@@ -1289,6 +1289,41 @@ const forbiddenChecks = [
     file: "app/print/pet-report/[id]/page.tsx",
     forbidden: "<strong>MER:</strong>",
   },
+  {
+    label: "Legacy summary stats do not expose RER acronym",
+    file: "components/PetSummaryStats.tsx",
+    forbidden: ">RER<",
+  },
+  {
+    label: "Legacy summary stats do not expose DER acronym",
+    file: "components/PetSummaryStats.tsx",
+    forbidden: ">DER<",
+  },
+  {
+    label: "Legacy analysis history does not expose RER acronym",
+    file: "components/PetAnalysisHistory.tsx",
+    forbidden: "RER:",
+  },
+  {
+    label: "Legacy analysis history does not expose MER acronym",
+    file: "components/PetAnalysisHistory.tsx",
+    forbidden: "MER:",
+  },
+  {
+    label: "Legacy comparison does not expose RER acronym",
+    file: "components/PetAnalysisComparison.tsx",
+    forbidden: ">RER<",
+  },
+  {
+    label: "Legacy comparison does not expose MER acronym",
+    file: "components/PetAnalysisComparison.tsx",
+    forbidden: ">MER<",
+  },
+  {
+    label: "Legacy comparison does not expose legacy-food wording",
+    file: "components/PetAnalysisComparison.tsx",
+    forbidden: "Legacy Food Signals",
+  },
 ];
 
 async function runPreserveCompareIntentCheck() {

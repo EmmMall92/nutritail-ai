@@ -124,8 +124,8 @@ export default function PetAnalysisHistory({ history, loading }: Props) {
         {filteredHistory.map((item) => (
           <div key={item.id} className="rounded-lg border p-3 text-sm space-y-1">
             <div>Date: {new Date(item.createdAt).toLocaleString()}</div>
-            <div>RER: {item.rer}</div>
-            <div>MER: {item.mer}</div>
+            <div>Resting calories: {item.rer} kcal/day</div>
+            <div>Daily target: {item.mer} kcal/day</div>
             <div>Weight: {item.weight ?? "-"} kg</div>
             <div>Age: {item.age ?? "-"}</div>
             <div>Activity: {item.activityLevel ?? "-"}</div>
