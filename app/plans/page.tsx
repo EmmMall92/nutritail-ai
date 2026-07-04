@@ -127,6 +127,9 @@ export default function PlansPage() {
             <Link href="/beta" className="rounded-full border border-emerald-300 px-4 py-2 text-emerald-800">
               Beta
             </Link>
+            <Link href="/support" className="rounded-full border border-slate-300 px-4 py-2">
+              Support
+            </Link>
             <Link href="/login" className="rounded-full bg-slate-950 px-4 py-2 text-white">
               Σύνδεση
             </Link>
