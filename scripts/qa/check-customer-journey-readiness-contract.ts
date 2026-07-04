@@ -31,7 +31,7 @@ const checks: ContractCheck[] = [
       "Calculate grams/day",
       'data-testid="selected-food-plan-card"',
       'data-testid="selected-food-next-steps"',
-      "First daily plan:",
+      "First portion:",
     ],
   },
   {
