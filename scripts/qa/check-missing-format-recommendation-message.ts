@@ -72,6 +72,7 @@ assertIncludes(greekMixed, "topper", "Greek mixed topper guidance");
 assertIncludes(greekMixed, "σωστές θερμίδες και μερίδα", "Greek mixed portion guidance");
 
 const dogLiveRunner = readFileSync("scripts/qa/run-dog-chatbot-live-cases.ts", "utf8");
+const catLiveRunner = readFileSync("scripts/qa/run-cat-chatbot-live-cases.ts", "utf8");
 
 assertIncludes(
   dogLiveRunner,
@@ -87,6 +88,22 @@ assertIncludes(
   dogLiveRunner,
   "blockingWarnings.length === 0",
   "Dog live QA should pass when only the documented wet data gap is present"
+);
+
+assertIncludes(
+  catLiveRunner,
+  "DOCUMENTED_WET_DATA_GAP",
+  "Cat live QA should classify wet-only empty results as documented data gaps"
+);
+assertIncludes(
+  catLiveRunner,
+  "isDocumentedFormatDataGap",
+  "Cat live QA should separate documented wet data gaps from blocking review warnings"
+);
+assertIncludes(
+  catLiveRunner,
+  "blockingWarnings.length === 0",
+  "Cat live QA should pass when only the documented wet data gap is present"
 );
 
 console.log("Missing format recommendation message QA passed.");
