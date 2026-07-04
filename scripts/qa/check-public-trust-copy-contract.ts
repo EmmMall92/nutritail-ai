@@ -202,9 +202,9 @@ assert(
 
 assert(
   packageJson.includes(
-    "qa:account-dashboard-readiness-contract && npm run qa:public-trust-copy && npm run qa:launch-recommendation-contract"
+    "qa:account-dashboard-readiness-contract && npm run qa:public-trust-copy && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
   ),
-  "CI readiness must include qa:public-trust-copy before launch recommendation checks."
+  "CI readiness must include qa:public-trust-copy and qa:support-flow-contract before launch recommendation checks."
 );
 
 console.log("Public trust copy contract passed.");
