@@ -134,6 +134,22 @@ assert(
   "Admin feedback page must expose the next best feedback fix panel."
 );
 assert(
+  adminFeedbackPage.includes("function getNotHelpfulActionQueue") &&
+    adminFeedbackPage.includes("notHelpfulActionQueue.map") &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-not-helpful-action-queue"') &&
+    adminFeedbackPage.includes('data-testid="chat-feedback-not-helpful-action-item"') &&
+    adminFeedbackPage.includes("Not-helpful action queue") &&
+    adminFeedbackPage.includes("Turn negative feedback into the next fix") &&
+    adminFeedbackPage.includes("Customer signal") &&
+    adminFeedbackPage.includes("What to fix next") &&
+    adminFeedbackPage.includes("Open all not-helpful") &&
+    adminFeedbackPage.includes("Open this feedback") &&
+    adminFeedbackPage.includes("Food recommendation accuracy") &&
+    adminFeedbackPage.includes("Pet report page") &&
+    adminFeedbackPage.includes("Final chatbot experience"),
+  "Admin feedback page must turn not-helpful feedback into a launch-track action queue."
+);
+assert(
   adminFeedbackPage.includes("Open this queue") &&
     adminFeedbackPage.includes("nextFeedbackFix.action") &&
     adminFeedbackPage.includes("setTypeFilter(nextFeedbackFix.typeFilter)") &&
