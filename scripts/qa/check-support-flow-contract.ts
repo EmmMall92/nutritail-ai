@@ -11,6 +11,7 @@ function read(path: string) {
 }
 
 const supportPage = read("app/support/page.tsx");
+const homepage = read("app/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const publicLiveRoutes = read("scripts/qa/check-public-launch-live-routes.mjs");
 const packageJson = read("package.json");
@@ -36,6 +37,11 @@ for (const marker of [
 }
 
 assert(sitemap.includes('path: "/support"'), "Sitemap must include /support.");
+
+assert(
+  homepage.includes('href="/support"') && homepage.includes("Support"),
+  "Homepage navigation must link to /support."
+);
 
 assert(
   publicLiveRoutes.includes('path: "/support"') &&
