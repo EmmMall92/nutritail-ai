@@ -85,6 +85,14 @@ function formatProgressMode(value?: string) {
   return "Σημείωση προόδου";
 }
 
+function getProgressDecisionHeadline(log: ProgressLog) {
+  return (
+    log.metadata?.progressDecisionHeadlineEl ??
+    log.metadata?.progressDecisionHeadlineEn ??
+    null
+  );
+}
+
 function getTimelineUseNotes(
   progressLogs: ProgressLog[],
   history: PetAnalysisHistory[]
@@ -143,6 +151,24 @@ function formatProgressChipLabel(value?: string | null) {
   };
 
   return labels[value] ?? value;
+}
+
+function getProgressTimelineSummary(log: ProgressLog) {
+  const headline = getProgressDecisionHeadline(log);
+  const grams = log.metadata?.feedingGramsPerDay
+    ? `${log.metadata.feedingGramsPerDay}g/ημέρα`
+    : null;
+  const weight = log.metadata?.currentWeightKg
+    ? `${log.metadata.currentWeightKg} kg`
+    : null;
+  const status = formatProgressChipLabel(log.metadata?.progressDecisionStatus);
+
+  if (headline) return headline;
+  if (status && grams) return `${status}: κρατάμε ως βάση τα ${grams}.`;
+  if (status && weight) return `${status}: τελευταίο βάρος ${weight}.`;
+  if (grams) return `Καταγράφηκε έλεγχος με ποσότητα ${grams}.`;
+
+  return "Καταγράφηκε έλεγχος προόδου για το επόμενο βήμα.";
 }
 
 export default function PetTimelineReportPage() {
@@ -445,6 +471,22 @@ export default function PetTimelineReportPage() {
                   )}
                 </div>
 
+                <div
+                  className="mt-3 rounded-xl border border-blue-100 bg-white p-3 text-blue-950"
+                  data-testid="timeline-progress-customer-summary"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                    Τι κρατάμε
+                  </p>
+                  <p className="mt-1 font-semibold">
+                    {getProgressTimelineSummary(log)}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-blue-900">
+                    Χρησιμοποίησέ το σαν συνέχεια του πλάνου, μαζί με βάρος,
+                    γραμμάρια, λιχουδιές, όρεξη και κόπρανα.
+                  </p>
+                </div>
+
                 <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
                   <p>
                     <span className="font-semibold">Προηγούμενο βάρος:</span>{" "}
@@ -493,11 +535,9 @@ export default function PetTimelineReportPage() {
                   </p>
                 </div>
 
-                {(log.metadata?.progressDecisionHeadlineEn ||
-                  log.metadata?.progressDecisionHeadlineEl) && (
+                {getProgressDecisionHeadline(log) && (
                   <p className="mt-3 font-semibold text-blue-950">
-                    {log.metadata.progressDecisionHeadlineEn ??
-                      log.metadata.progressDecisionHeadlineEl}
+                    {getProgressDecisionHeadline(log)}
                   </p>
                 )}
 

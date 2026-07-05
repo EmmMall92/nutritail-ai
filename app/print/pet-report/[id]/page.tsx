@@ -86,6 +86,16 @@ function formatWeightGoal(value?: string | null) {
     .join(" ");
 }
 
+function getCustomerGoalLabel(value?: string | null) {
+  const label = formatWeightGoal(value);
+
+  return label === "-" ? "Γενική καθοδήγηση" : label;
+}
+
+function getIncompletePortionLabel() {
+  return "Διάλεξε τροφή για ακριβή ποσότητα";
+}
+
 function getFoodScoreLabel(score?: number | null) {
   if (score === null || score === undefined || !Number.isFinite(score)) {
     return "Γενική καθοδήγηση";
@@ -212,7 +222,7 @@ function getRecheckWindow(analysis?: AnalysisHistoryItem | null) {
 }
 
 function getGoalLabel(value?: string | null) {
-  return formatWeightGoal(value);
+  return getCustomerGoalLabel(value);
 }
 
 function getCalorieExplanation(analysis?: AnalysisHistoryItem | null) {
@@ -347,7 +357,7 @@ function getReportStartChecklist(analysis?: AnalysisHistoryItem | null) {
     },
     {
       label: "Ημερήσια ποσότητα",
-      value: hasPortion ? "Έτοιμο" : "Θέλει θερμίδες τροφής",
+      value: hasPortion ? "Έτοιμο" : getIncompletePortionLabel(),
       detail: hasPortion
         ? "Ξεκίνα με αυτή την ποσότητα, μοίρασέ τη σε γεύματα και έλεγξε βάρος και κόπρανα."
         : "Τα γραμμάρια/ημέρα γίνονται ακριβή όταν το NutriTail ξέρει τις θερμίδες της επιλεγμένης τροφής.",
@@ -533,7 +543,7 @@ function getReportExecutiveSummary(
       label: "Ποσότητα",
       value: analysis?.feeding_grams_per_day
         ? `${analysis.feeding_grams_per_day}g/ημέρα`
-        : "Θέλει kcal τροφής",
+        : getIncompletePortionLabel(),
       detail:
         analysis?.feeding_grams_per_day && mealSplit
           ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
@@ -560,7 +570,7 @@ function getReportActionSummary(
       label: "Πρώτη ποσότητα",
       value: analysis?.feeding_grams_per_day
         ? `${analysis.feeding_grams_per_day}g/ημέρα`
-        : "Θέλει kcal τροφής",
+        : getIncompletePortionLabel(),
       detail:
         analysis?.feeding_grams_per_day && mealSplit
           ? `Πρακτικά: περίπου ${mealSplit.twoMeals}g ανά γεύμα σε 2 γεύματα ή ${mealSplit.threeMeals}g ανά γεύμα σε 3 γεύματα.`
@@ -923,7 +933,7 @@ function getReportPlanSnapshot(
       label: "Ποσότητα",
       value: analysis?.feeding_grams_per_day
         ? `${analysis.feeding_grams_per_day}g/ημέρα`
-        : "Θέλει kcal τροφής",
+        : getIncompletePortionLabel(),
       detail:
         analysis?.feeding_grams_per_day && mealSplit
           ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα.`
@@ -1442,6 +1452,8 @@ export default function PrintablePetReportPage() {
   const hasCompleteFoodPlan = Boolean(
     latestAnalysis?.matched_food_name && latestAnalysis?.feeding_grams_per_day
   );
+  const hasSelectedFood = Boolean(latestAnalysis?.matched_food_name);
+  const shouldShowDetailedReportSections = hasCompleteFoodPlan;
   const reportPortionLabel = latestAnalysis?.feeding_grams_per_day
     ? `${latestAnalysis.feeding_grams_per_day}g/ημέρα`
     : latestAnalysis?.mer
@@ -1603,6 +1615,73 @@ export default function PrintablePetReportPage() {
           </div>
         </div>
 
+        {!hasCompleteFoodPlan && (
+          <div
+            className="mt-6 break-inside-avoid rounded-3xl border border-amber-200 bg-amber-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+            data-testid="report-incomplete-plan-focus"
+          >
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                  Το πλάνο δεν έχει κλειδώσει ακόμη
+                </p>
+                <h2 className="mt-1 text-2xl font-bold text-amber-950">
+                  Έχουμε θερμίδες, αλλά λείπει η συγκεκριμένη τροφή.
+                </h2>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
+                  Για τον/την {pet.name} κρατάμε τον ημερήσιο στόχο, αλλά τα
+                  γραμμάρια/ημέρα γίνονται ακριβή μόνο όταν επιλεγεί τροφή με
+                  γνωστές θερμίδες. Έτσι αποφεύγουμε μπερδεμένες ποσότητες και
+                  κρατάμε ένα καθαρό επόμενο βήμα.
+                </p>
+              </div>
+
+              <Link
+                href={`/account/chatbot?petId=${pet.id}&mode=recommendation`}
+                className="rounded-xl bg-amber-900 px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-amber-950 print:hidden"
+                data-testid="report-incomplete-plan-primary-cta"
+              >
+                Διάλεξε τροφή
+              </Link>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-amber-100 bg-white p-4 text-sm text-amber-950">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Κρατάμε
+                </p>
+                <p className="mt-2 font-bold">
+                  {latestAnalysis ? `${latestAnalysis.mer} kcal/ημέρα` : "Τον πρώτο στόχο"}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-amber-900">
+                  Αυτός είναι ο ενεργειακός οδηγός μέχρι να επιλεγεί τροφή.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-amber-100 bg-white p-4 text-sm text-amber-950">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Λείπει
+                </p>
+                <p className="mt-2 font-bold">
+                  {hasSelectedFood ? "Οι θερμίδες της τροφής" : "Η επιλογή τροφής"}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-amber-900">
+                  Μόλις κλειδώσει αυτό, το report βγάζει απλά γραμμάρια/ημέρα.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-amber-100 bg-white p-4 text-sm text-amber-950">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                  Επόμενο
+                </p>
+                <p className="mt-2 font-bold">Μία επιλογή από το chatbot</p>
+                <p className="mt-2 text-xs leading-5 text-amber-900">
+                  Δεν χρειάζεται να ξαναρχίσεις. Συνέχισε με το ίδιο κατοικίδιο.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {shouldShowDetailedReportSections && (
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-customer-decision-passport"
@@ -1639,7 +1718,9 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+        )}
 
+        {shouldShowDetailedReportSections && (
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-customer-quick-start"
@@ -1677,7 +1758,9 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+        )}
 
+        {shouldShowDetailedReportSections && (
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-customer-success-strip"
@@ -1728,7 +1811,9 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+        )}
 
+        {shouldShowDetailedReportSections && (
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-violet-200 bg-violet-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-food-plan-journey-stepper"
@@ -1761,7 +1846,7 @@ export default function PrintablePetReportPage() {
                 label: "2. Ποσότητα",
                 value: latestAnalysis?.feeding_grams_per_day
                   ? `${latestAnalysis.feeding_grams_per_day}g/ημέρα`
-                  : "Θέλει θερμίδες τροφής",
+                  : getIncompletePortionLabel(),
                 detail: latestAnalysis?.feeding_grams_per_day
                   ? "Αυτό είναι το αρχικό σημείο εφαρμογής για το σπίτι."
                   : "Τα γραμμάρια βγαίνουν μόλις έχουμε τροφή και kcal.",
@@ -1795,7 +1880,9 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+        )}
 
+        {shouldShowDetailedReportSections && (
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-handoff-strip"
@@ -1832,6 +1919,7 @@ export default function PrintablePetReportPage() {
             ))}
           </div>
         </div>
+        )}
 
         <div
           className="mt-6 break-inside-avoid rounded-3xl border border-gray-900 bg-gray-950 p-6 text-white shadow-sm print:border-gray-300 print:bg-white print:text-black print:shadow-none"
@@ -3189,7 +3277,7 @@ export default function PrintablePetReportPage() {
                       {item.weight_goal && (
                         <p>
                           <strong>Στόχος:</strong>{" "}
-                            {formatWeightGoal(item.weight_goal)}
+                          {getCustomerGoalLabel(item.weight_goal)}
                         </p>
                       )}
 

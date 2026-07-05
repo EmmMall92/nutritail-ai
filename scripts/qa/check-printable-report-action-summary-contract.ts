@@ -76,6 +76,11 @@ const requiredReportMarkers = [
   'data-testid="report-next-action-helper"',
   'data-testid="report-plan-decision-guide"',
   'data-testid="report-completion-status"',
+  'data-testid="report-incomplete-plan-focus"',
+  'data-testid="report-incomplete-plan-primary-cta"',
+  "Το πλάνο δεν έχει κλειδώσει ακόμη",
+  "Έχουμε θερμίδες, αλλά λείπει η συγκεκριμένη τροφή.",
+  "Διάλεξε τροφή για ακριβή ποσότητα",
   "Πού βρίσκεται το πλάνο",
   "Από την επιλογή τροφής μέχρι τον επανέλεγχο",
   "1. Τροφή",
@@ -117,6 +122,7 @@ const requiredReportMarkers = [
   "Πλήρες πλάνο με τροφή και ποσότητα",
   "Χρειάζεται επιλογή τροφής για πλήρες πλάνο",
   "reportPortionLabel",
+  "shouldShowDetailedReportSections",
   "reportHandoffStrip.map",
   "reportTreatAllowance",
   "mealSplit.twoMeals",
@@ -274,6 +280,19 @@ for (const marker of reportEnglishMicrocopyThatShouldStayOut) {
   assert(
     !reportPage.includes(marker),
     `Printable pet report must not leak English microcopy into the Greek customer report: ${marker}`
+  );
+}
+
+const reportTechnicalCopyThatShouldStayOut = [
+  "Θέλει kcal τροφής",
+  "Θέλει θερμίδες τροφής",
+  "Στόχος:</strong>{\" \"}\n                            {formatWeightGoal",
+];
+
+for (const marker of reportTechnicalCopyThatShouldStayOut) {
+  assert(
+    !reportPage.includes(marker),
+    `Printable pet report must not show technical or empty-state copy from the video audit: ${marker}`
   );
 }
 
