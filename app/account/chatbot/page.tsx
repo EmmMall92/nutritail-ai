@@ -26,7 +26,7 @@ import { buildCustomerRecommendationIntro } from "@/lib/food-v2/customerRecommen
 import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
-import { formatPetDisplayName } from "@/lib/petName";
+import { formatPetDisplayName, isTechnicalPetName } from "@/lib/petName";
 import {
   parseTastePreferences as parseSharedTastePreferences,
   removeExcludedFromPreferred as removeSharedExcludedFromPreferred,
@@ -4396,7 +4396,9 @@ export default function AccountChatbotPage() {
           throw new Error(getChatbotApiErrorMessage("savedPets", chatLanguage));
         }
 
-        const pets = (result.pets ?? []) as AccountPet[];
+        const pets = ((result.pets ?? []) as AccountPet[]).filter(
+          (savedPet) => !isTechnicalPetName(savedPet.name)
+        );
         setSavedPets(pets);
 
         if (pets.length === 0) {
@@ -6678,7 +6680,9 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <div className="rounded-lg bg-gray-50 p-3">
                     <p className="text-gray-500">{botText("Κατοικίδιο", "Pet")}</p>
                     <p className="font-semibold text-black">
-                      {pet.name ?? botText("Κατοικίδιο", "Pet")} -{" "}
+                      {pet.name
+                        ? formatPetDisplayName(pet.name, botText("Κατοικίδιο", "Pet"))
+                        : botText("Κατοικίδιο", "Pet")} -{" "}
                       {pet.species === "dog"
                         ? botText("σκύλος", "dog")
                         : pet.species === "cat"

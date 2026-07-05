@@ -22,6 +22,15 @@ function titleCaseToken(value: string) {
   return value.charAt(0).toLocaleUpperCase("el-GR") + value.slice(1);
 }
 
+export function isTechnicalPetName(input: unknown) {
+  const value = String(input ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+  return /^qa live proof(?:\s+\d+)?$/.test(value);
+}
+
 function stripNamePrefix(value: string) {
   let cleaned = value
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
