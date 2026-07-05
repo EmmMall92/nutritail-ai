@@ -1014,6 +1014,7 @@ function formatFoodIntelligenceLabels(values: string[] | undefined, language: Ch
 
   return (values ?? [])
     .map((value) => formatFoodIntelligenceLabel(value, language))
+    .map((value) => cleanCustomerFoodIntelligenceLabel(value))
     .filter((value) => {
       const key = value.toLowerCase();
       if (!value || seen.has(key)) return false;
@@ -1021,6 +1022,26 @@ function formatFoodIntelligenceLabels(values: string[] | undefined, language: Ch
       return true;
     })
     .slice(0, 3);
+}
+
+function cleanCustomerFoodIntelligenceLabel(value: string) {
+  return value
+    .replace(/_/g, " ")
+    .replace(/\bmanual[-\s]?required\b/gi, "")
+    .replace(/\bneeds[-\s]?review\b/gi, "")
+    .replace(/\bdata[-\s]?review\b/gi, "data check")
+    .replace(/\bveterinary review\b/gi, "veterinary check")
+    .replace(/\bmineral review\b/gi, "mineral context")
+    .replace(/\bomega review\b/gi, "omega context")
+    .replace(/\bfeeding review\b/gi, "feeding context")
+    .replace(/\bformula review\b/gi, "formula fit")
+    .replace(/\breview\b/gi, "context")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function getCustomerFoodIntelligenceBadgeLabel(value: string) {
+  return cleanCustomerFoodIntelligenceLabel(value);
 }
 
 function isRelevantCustomerMedicalLine(
@@ -6775,7 +6796,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             key={item}
                             className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100"
                           >
-                            {item}
+                            {getCustomerFoodIntelligenceBadgeLabel(item)}
                           </span>
                         ))}
                         {choice.bestUseCases.length > 2 && (
@@ -6812,7 +6833,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                             key={item}
                             className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100"
                           >
-                            {item}
+                            {getCustomerFoodIntelligenceBadgeLabel(item)}
                           </span>
                         ))}
                         {choice.notIdealCases.length > 2 && (
