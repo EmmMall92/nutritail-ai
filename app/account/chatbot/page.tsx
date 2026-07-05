@@ -3960,6 +3960,71 @@ function getProgressDecisionActions(status: ProgressDecisionStatus) {
   return actionsByStatus[status];
 }
 
+type ProgressDecisionSnapshot = {
+  status: ProgressDecisionStatus;
+  headline: string;
+  confidence: string;
+  reasons: string[];
+  nextSteps: string[];
+  currentWeightKg: number | null;
+  feedingGramsPerDay: number | null;
+  treatsLabel: string | null;
+  recheckWindow: string;
+};
+
+function buildProgressDecisionSnapshot({
+  savedPet,
+  mode,
+  text,
+  language,
+}: {
+  savedPet: AccountPet;
+  mode: Exclude<FollowUpMode, null>;
+  text: string;
+  language: ChatLanguage;
+}): ProgressDecisionSnapshot {
+  const details = parseProgressUpdate(text);
+  const decision = buildProgressDecision({
+    details,
+    previousWeightKg: Number(savedPet.weight),
+    mode,
+  });
+  const isGreek = language === "el";
+  const confidence =
+    decision.confidence === "high"
+      ? isGreek
+        ? "Υψηλή σιγουριά"
+        : "High confidence"
+      : decision.confidence === "medium"
+        ? isGreek
+          ? "Μέτρια σιγουριά"
+          : "Medium confidence"
+        : isGreek
+          ? "Θέλει λίγα ακόμη στοιχεία"
+          : "Needs more data";
+
+  return {
+    status: decision.status,
+    headline: isGreek ? decision.headline.el : decision.headline.en,
+    confidence,
+    reasons: (isGreek ? decision.reasons.el : decision.reasons.en).slice(0, 2),
+    nextSteps: (isGreek ? decision.nextSteps.el : decision.nextSteps.en).slice(0, 3),
+    currentWeightKg: details.currentWeightKg,
+    feedingGramsPerDay: details.feedingGramsPerDay,
+    treatsLabel: details.treatsNote
+      ? formatProgressNote(details.treatsNote, language)
+      : null,
+    recheckWindow:
+      decision.status === "needs_more_data"
+        ? isGreek
+          ? "Μόλις συμπληρωθεί το στοιχείο που λείπει"
+          : "After the missing detail is added"
+        : isGreek
+          ? "Σε 2-4 εβδομάδες"
+          : "In 2-4 weeks",
+  };
+}
+
 export default function AccountChatbotPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -3977,6 +4042,8 @@ export default function AccountChatbotPage() {
   const [followUpMode, setFollowUpMode] = useState<FollowUpMode>(null);
   const [latestProgressDecisionStatus, setLatestProgressDecisionStatus] =
     useState<ProgressDecisionStatus | null>(null);
+  const [latestProgressDecisionSnapshot, setLatestProgressDecisionSnapshot] =
+    useState<ProgressDecisionSnapshot | null>(null);
   const [recommendationMode, setRecommendationMode] =
     useState<RecommendationMode>("default");
   const [isLoadingPets, setIsLoadingPets] = useState(true);
@@ -4112,13 +4179,14 @@ export default function AccountChatbotPage() {
     mode: Exclude<FollowUpMode, null>,
     text: string
   ) {
-    const details = parseProgressUpdate(text);
-    const decision = buildProgressDecision({
-      details,
-      previousWeightKg: Number(savedPet.weight),
+    const snapshot = buildProgressDecisionSnapshot({
+      savedPet,
       mode,
+      text,
+      language: chatLanguage,
     });
-    setLatestProgressDecisionStatus(decision.status);
+    setLatestProgressDecisionStatus(snapshot.status);
+    setLatestProgressDecisionSnapshot(snapshot);
   }
 
   function getNextMissingIntakeStep(draft: PetIntake): IntakeStep {
@@ -4599,6 +4667,7 @@ export default function AccountChatbotPage() {
     setPet(nextPet);
     setRecommendedFoodChoices([]);
     setLatestProgressDecisionStatus(null);
+    setLatestProgressDecisionSnapshot(null);
 
     if (pendingCompare.length >= 2) {
       setPendingCompareQueries([]);
@@ -4654,6 +4723,7 @@ export default function AccountChatbotPage() {
     setSelectedPetId(savedPet.id);
     setFollowUpPet(null);
     setLatestProgressDecisionStatus(null);
+    setLatestProgressDecisionSnapshot(null);
     setRecommendationMode("default");
     setPet(nextPet);
     setRecommendedFoodChoices([]);
@@ -4693,6 +4763,7 @@ export default function AccountChatbotPage() {
     setFollowUpPet(targetPet);
     setPet(nextPet);
     setLatestProgressDecisionStatus(null);
+    setLatestProgressDecisionSnapshot(null);
 
     if (action === "timeline") {
       addMessages(
@@ -4925,6 +4996,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
     setFollowUpPet(null);
     setFollowUpMode(null);
     setLatestProgressDecisionStatus(null);
+    setLatestProgressDecisionSnapshot(null);
     setRecommendationMode("default");
     setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
     setRecommendedFoodChoices([]);
@@ -6364,6 +6436,96 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 ))}
               </div>
             </div>
+
+            {latestProgressDecisionSnapshot && (
+              <div
+                className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm"
+                data-testid="progress-check-result-card"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                      {botText("Κάρτα ελέγχου προόδου", "Progress check card")}
+                    </p>
+                    <h3 className="mt-1 text-lg font-bold text-emerald-950">
+                      {latestProgressDecisionSnapshot.headline}
+                    </h3>
+                    <p className="mt-1 text-sm text-emerald-900">
+                      {latestProgressDecisionSnapshot.confidence}
+                    </p>
+                  </div>
+                  <span
+                    className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-200"
+                    data-testid="progress-check-save-action"
+                  >
+                    {botText("Αποθηκεύτηκε στο ιστορικό", "Saved to timeline")}
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-4">
+                  <div className="rounded-xl bg-white p-3 ring-1 ring-emerald-100">
+                    <p className="text-xs font-semibold uppercase text-emerald-700">
+                      {botText("Βάρος", "Weight")}
+                    </p>
+                    <p className="mt-1 font-bold text-emerald-950">
+                      {latestProgressDecisionSnapshot.currentWeightKg
+                        ? `${latestProgressDecisionSnapshot.currentWeightKg} kg`
+                        : botText("Θέλει βάρος", "Needs weight")}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white p-3 ring-1 ring-emerald-100">
+                    <p className="text-xs font-semibold uppercase text-emerald-700">
+                      {botText("Ποσότητα", "Amount")}
+                    </p>
+                    <p className="mt-1 font-bold text-emerald-950">
+                      {latestProgressDecisionSnapshot.feedingGramsPerDay
+                        ? `${latestProgressDecisionSnapshot.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
+                        : botText("Θέλει γραμμάρια", "Needs grams")}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white p-3 ring-1 ring-emerald-100">
+                    <p className="text-xs font-semibold uppercase text-emerald-700">
+                      {botText("Λιχουδιές", "Treats")}
+                    </p>
+                    <p className="mt-1 font-bold text-emerald-950">
+                      {latestProgressDecisionSnapshot.treatsLabel ??
+                        botText("Θέλει έλεγχο", "Check needed")}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-white p-3 ring-1 ring-emerald-100">
+                    <p className="text-xs font-semibold uppercase text-emerald-700">
+                      {botText("Επανέλεγχος", "Recheck")}
+                    </p>
+                    <p className="mt-1 font-bold text-emerald-950">
+                      {latestProgressDecisionSnapshot.recheckWindow}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div className="rounded-xl border border-emerald-100 bg-white p-3">
+                    <p className="text-sm font-semibold text-emerald-950">
+                      {botText("Γιατί", "Why")}
+                    </p>
+                    <ul className="mt-2 space-y-1 text-sm text-emerald-900">
+                      {latestProgressDecisionSnapshot.reasons.map((reason) => (
+                        <li key={reason}>- {reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100 bg-white p-3">
+                    <p className="text-sm font-semibold text-emerald-950">
+                      {botText("Τι κάνουμε τώρα", "What to do now")}
+                    </p>
+                    <ul className="mt-2 space-y-1 text-sm text-emerald-900">
+                      {latestProgressDecisionSnapshot.nextSteps.map((stepItem) => (
+                        <li key={stepItem}>- {stepItem}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {latestProgressDecisionStatus && (
               <div className="mt-4 rounded-2xl border border-blue-300 bg-white p-4 shadow-sm">
