@@ -1,0 +1,487 @@
+[
+  {
+    "id": "DOG-COMP-001",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Labrador",
+      "age_months": null,
+      "age_years": 5,
+      "weight_kg": 34,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Royal Canin",
+        "Acana"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Royal Canin",
+        "Acana"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο Labrador, 5 ετών, 34 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Royal Canin ή Acana."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-COMP-002",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Beagle",
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 14,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Josera",
+        "Happy Dog"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Josera",
+        "Happy Dog"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο Beagle, 4 ετών, 14 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Josera ή Happy Dog."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-COMP-003",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Maltese",
+      "age_months": null,
+      "age_years": 7,
+      "weight_kg": 4,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Monge",
+        "Schesir"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Monge",
+        "Schesir"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο Maltese, 7 ετών, 4 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Monge ή Schesir."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-COMP-004",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Boxer",
+      "age_months": null,
+      "age_years": 3,
+      "weight_kg": 28,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Farmina",
+        "Brit"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Farmina",
+        "Brit"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο Boxer, 3 ετών, 28 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Farmina ή Brit."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-COMP-005",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "German Shepherd",
+      "age_months": null,
+      "age_years": 2,
+      "weight_kg": 35,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Purina Pro Plan",
+        "Royal Canin"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Purina Pro Plan",
+        "Royal Canin"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο German Shepherd, 2 ετών, 35 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Purina Pro Plan ή Royal Canin."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]

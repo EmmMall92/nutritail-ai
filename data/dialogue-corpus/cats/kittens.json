@@ -1,0 +1,922 @@
+[
+  {
+    "id": "CAT-KITTEN-001",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Domestic kitten",
+      "age_months": 3,
+      "age_years": null,
+      "weight_kg": 1.2,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Domestic kitten, 3 μηνών, περίπου 1.2 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: chicken."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "chicken",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-002",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Maine Coon",
+      "age_months": 5,
+      "age_years": null,
+      "weight_kg": 3.5,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "salmon"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "salmon"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Maine Coon, 5 μηνών, περίπου 3.5 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: salmon."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "salmon",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-003",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Siamese",
+      "age_months": 4,
+      "age_years": null,
+      "weight_kg": 1.8,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "duck"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "duck"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Siamese, 4 μηνών, περίπου 1.8 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: duck."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "duck",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-004",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "British Shorthair",
+      "age_months": 6,
+      "age_years": null,
+      "weight_kg": 2.7,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι British Shorthair, 6 μηνών, περίπου 2.7 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: chicken."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "chicken",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-005",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Rescue kitten",
+      "age_months": 2,
+      "age_years": null,
+      "weight_kg": 0.8,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "wet"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "wet"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Rescue kitten, 2 μηνών, περίπου 0.8 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: wet."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "wet",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-006",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Ragdoll",
+      "age_months": 7,
+      "age_years": null,
+      "weight_kg": 3.2,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "turkey"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "turkey"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Ragdoll, 7 μηνών, περίπου 3.2 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: turkey."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "turkey",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-007",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "greeklish",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Bengal",
+      "age_months": 5,
+      "age_years": null,
+      "weight_kg": 2.4,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "fish"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "fish"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Bengal, 5 μηνών, περίπου 2.4 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: fish."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "fish",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-008",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Persian",
+      "age_months": 4,
+      "age_years": null,
+      "weight_kg": 1.6,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Persian, 4 μηνών, περίπου 1.6 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: chicken."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "chicken",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-009",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Aegean cat",
+      "age_months": 8,
+      "age_years": null,
+      "weight_kg": 3.1,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "salmon"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "kitten_life_stage_filter"
+      ],
+      "required_tags": [
+        "kitten",
+        "salmon"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Aegean cat, 8 μηνών, περίπου 3.1 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: salmon."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "salmon",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "CAT-KITTEN-010",
+    "species": "cat",
+    "category": "kitten",
+    "difficulty": "hard",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Found kitten",
+      "age_months": 1.5,
+      "age_years": null,
+      "weight_kg": 0.5,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "kitten",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "milk_replacement"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "kitten_growth_rules",
+        "orphan_kitten_vet_or_milk_replacer_context"
+      ],
+      "required_tags": [
+        "kitten",
+        "milk_replacement"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γατάκι Found kitten, 1.5 μηνών, περίπου 0.5 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω τροφή για σωστή ανάπτυξη. Προτίμηση: milk_replacement."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "age_months",
+        "weight_kg",
+        "life_stage"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "kitten",
+        "milk_replacement",
+        "energy_dense_growth_food"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]

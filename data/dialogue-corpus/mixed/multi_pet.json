@@ -1,0 +1,180 @@
+[
+  {
+    "id": "MIX-FEED-003",
+    "species": "dog",
+    "category": "feeding",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "feeding_amount",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 7,
+      "weight_kg": 30,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Brit Care"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "maintenance",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "portion_estimate_requires_kcal"
+      ],
+      "required_tags": [
+        "Brit Care",
+        "maintenance"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο 7 ετών, 30 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Τρώει Brit Care. Πόσα γραμμάρια να δίνω τη μέρα;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "selected_food_or_kcal"
+      ],
+      "ranking_should_prefer": [
+        "grams_per_day_after_kcal"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "MIX-FEED-004",
+    "species": "cat",
+    "category": "feeding",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "feeding_amount",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": null,
+      "age_months": null,
+      "age_years": 9,
+      "weight_kg": 6.5,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "senior",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Purina Pro Plan"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "weight_loss",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "portion_estimate_requires_kcal"
+      ],
+      "required_tags": [
+        "Purina Pro Plan",
+        "weight_loss"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γάτα 9 ετών, 6.5 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Τρώει Purina Pro Plan. Πόσα γραμμάρια να δίνω τη μέρα;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "selected_food_or_kcal"
+      ],
+      "ranking_should_prefer": [
+        "grams_per_day_after_kcal"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]

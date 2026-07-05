@@ -1,0 +1,522 @@
+[
+  {
+    "id": "DOG-REC-001",
+    "species": "dog",
+    "category": "recommendation",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Labrador",
+      "age_months": null,
+      "age_years": 5,
+      "weight_kg": 34,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": "Μέχρι 80 ευρώ",
+      "owner_goal": "maintenance",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "species_filter",
+        "life_stage_filter",
+        "sterilised_calorie_awareness"
+      ],
+      "required_tags": [
+        "normal",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Γεια σας, έχω Labrador 5 ετών, περίπου 34 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Είναι στειρωμένος."
+      },
+      {
+        "role": "user",
+        "content": "Δραστηριότητα κανονική, προτιμά chicken."
+      },
+      {
+        "role": "user",
+        "content": "Budget: Μέχρι 80 ευρώ. Θέλω πρόταση τροφής."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_years",
+        "weight_kg",
+        "neutered",
+        "activity_level",
+        "food_preferences",
+        "budget_preference"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "chicken",
+        "maintenance"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-REC-002",
+    "species": "dog",
+    "category": "recommendation",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "price_sensitive"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Beagle",
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 14,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "low",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "salmon"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": "οικονομική επιλογή",
+      "owner_goal": "weight_loss",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "species_filter",
+        "life_stage_filter",
+        "sterilised_calorie_awareness"
+      ],
+      "required_tags": [
+        "low",
+        "salmon"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Γεια σας, έχω Beagle 4 ετών, περίπου 14 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Είναι στειρωμένος."
+      },
+      {
+        "role": "user",
+        "content": "Δραστηριότητα χαμηλή, προτιμά salmon."
+      },
+      {
+        "role": "user",
+        "content": "Budget: οικονομική επιλογή. Θέλω πρόταση τροφής."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_years",
+        "weight_kg",
+        "neutered",
+        "activity_level",
+        "food_preferences",
+        "budget_preference"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "salmon",
+        "weight_loss"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-REC-003",
+    "species": "dog",
+    "category": "recommendation",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Border Collie",
+      "age_months": null,
+      "age_years": 3,
+      "weight_kg": 19,
+      "expected_adult_weight_kg": null,
+      "neutered": false,
+      "life_stage": "adult",
+      "activity_level": "high",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "lamb"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": "χωρίς όριο",
+      "owner_goal": "maintenance",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "species_filter",
+        "life_stage_filter",
+        "activity_energy_context"
+      ],
+      "required_tags": [
+        "high",
+        "lamb"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Γεια σας, έχω Border Collie 3 ετών, περίπου 19 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Δεν είναι στειρωμένος."
+      },
+      {
+        "role": "user",
+        "content": "Δραστηριότητα υψηλή, προτιμά lamb."
+      },
+      {
+        "role": "user",
+        "content": "Budget: χωρίς όριο. Θέλω πρόταση τροφής."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_years",
+        "weight_kg",
+        "neutered",
+        "activity_level",
+        "food_preferences",
+        "budget_preference"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "lamb",
+        "maintenance"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-REC-004",
+    "species": "dog",
+    "category": "recommendation",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "French Bulldog",
+      "age_months": null,
+      "age_years": 2,
+      "weight_kg": 11,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "low",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "duck"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": "μέχρι 60 ευρώ",
+      "owner_goal": "maintenance",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "species_filter",
+        "life_stage_filter",
+        "sterilised_calorie_awareness"
+      ],
+      "required_tags": [
+        "low",
+        "duck"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Γεια σας, έχω French Bulldog 2 ετών, περίπου 11 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Είναι στειρωμένος."
+      },
+      {
+        "role": "user",
+        "content": "Δραστηριότητα χαμηλή, προτιμά duck."
+      },
+      {
+        "role": "user",
+        "content": "Budget: μέχρι 60 ευρώ. Θέλω πρόταση τροφής."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_years",
+        "weight_kg",
+        "neutered",
+        "activity_level",
+        "food_preferences",
+        "budget_preference"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "duck",
+        "maintenance"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-REC-005",
+    "species": "dog",
+    "category": "recommendation",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "polite"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Maltese",
+      "age_months": null,
+      "age_years": 6,
+      "weight_kg": 4,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": "κάτι value",
+      "owner_goal": "maintenance",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "species_filter",
+        "life_stage_filter",
+        "sterilised_calorie_awareness"
+      ],
+      "required_tags": [
+        "normal",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Γεια σας, έχω Maltese 6 ετών, περίπου 4 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Είναι στειρωμένος."
+      },
+      {
+        "role": "user",
+        "content": "Δραστηριότητα κανονική, προτιμά chicken."
+      },
+      {
+        "role": "user",
+        "content": "Budget: κάτι value. Θέλω πρόταση τροφής."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_years",
+        "weight_kg",
+        "neutered",
+        "activity_level",
+        "food_preferences",
+        "budget_preference"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "chicken",
+        "maintenance"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]

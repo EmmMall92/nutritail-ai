@@ -1,0 +1,992 @@
+[
+  {
+    "id": "DOG-PUPPY-001",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Labrador",
+      "age_months": 5,
+      "age_years": null,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": 32,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "large_breed_puppy_calcium_phosphorus"
+      ],
+      "required_tags": [
+        "puppy",
+        "large",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Labrador, 5 μηνών, 18 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 32 κιλά. Του αρέσει chicken."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "large",
+        "calcium_phosphorus_available",
+        "chicken"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-002",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "hard",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Cane Corso",
+      "age_months": 8,
+      "age_years": null,
+      "weight_kg": 45,
+      "expected_adult_weight_kg": 55,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "lamb"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "large_breed_puppy_calcium_phosphorus"
+      ],
+      "required_tags": [
+        "puppy",
+        "giant",
+        "lamb"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Cane Corso, 8 μηνών, 45 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 55 κιλά. Του αρέσει lamb."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "giant",
+        "calcium_phosphorus_available",
+        "lamb"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-003",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Yorkshire Terrier",
+      "age_months": 4,
+      "age_years": null,
+      "weight_kg": 1.8,
+      "expected_adult_weight_kg": 3.5,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "puppy_life_stage_filter"
+      ],
+      "required_tags": [
+        "puppy",
+        "mini",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Yorkshire Terrier, 4 μηνών, 1.8 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 3.5 κιλά. Του αρέσει chicken."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "mini",
+        "calcium_phosphorus_available",
+        "chicken"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-004",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "German Shepherd",
+      "age_months": 6,
+      "age_years": null,
+      "weight_kg": 24,
+      "expected_adult_weight_kg": 38,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "salmon"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "large_breed_puppy_calcium_phosphorus"
+      ],
+      "required_tags": [
+        "puppy",
+        "large",
+        "salmon"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι German Shepherd, 6 μηνών, 24 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 38 κιλά. Του αρέσει salmon."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "large",
+        "calcium_phosphorus_available",
+        "salmon"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-005",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "hard",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Great Dane",
+      "age_months": 7,
+      "age_years": null,
+      "weight_kg": 60,
+      "expected_adult_weight_kg": 75,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "duck"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "large_breed_puppy_calcium_phosphorus"
+      ],
+      "required_tags": [
+        "puppy",
+        "giant",
+        "duck"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Great Dane, 7 μηνών, 60 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 75 κιλά. Του αρέσει duck."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "giant",
+        "calcium_phosphorus_available",
+        "duck"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-006",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "French Bulldog",
+      "age_months": 5,
+      "age_years": null,
+      "weight_kg": 7,
+      "expected_adult_weight_kg": 12,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "fish"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "puppy_life_stage_filter"
+      ],
+      "required_tags": [
+        "puppy",
+        "small",
+        "fish"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι French Bulldog, 5 μηνών, 7 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 12 κιλά. Του αρέσει fish."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "small",
+        "calcium_phosphorus_available",
+        "fish"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-007",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Maltese",
+      "age_months": 3,
+      "age_years": null,
+      "weight_kg": 1.4,
+      "expected_adult_weight_kg": 4,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "puppy_life_stage_filter"
+      ],
+      "required_tags": [
+        "puppy",
+        "small",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Maltese, 3 μηνών, 1.4 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 4 κιλά. Του αρέσει chicken."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "small",
+        "calcium_phosphorus_available",
+        "chicken"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-008",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Border Collie",
+      "age_months": 9,
+      "age_years": null,
+      "weight_kg": 14,
+      "expected_adult_weight_kg": 20,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "turkey"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "puppy_life_stage_filter"
+      ],
+      "required_tags": [
+        "puppy",
+        "medium",
+        "turkey"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Border Collie, 9 μηνών, 14 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 20 κιλά. Του αρέσει turkey."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "medium",
+        "calcium_phosphorus_available",
+        "turkey"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-009",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Rottweiler",
+      "age_months": 8,
+      "age_years": null,
+      "weight_kg": 42,
+      "expected_adult_weight_kg": 50,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "beef"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "large_breed_puppy_calcium_phosphorus"
+      ],
+      "required_tags": [
+        "puppy",
+        "large",
+        "beef"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Rottweiler, 8 μηνών, 42 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 50 κιλά. Του αρέσει beef."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "large",
+        "calcium_phosphorus_available",
+        "beef"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-PUPPY-010",
+    "species": "dog",
+    "category": "puppy",
+    "difficulty": "medium",
+    "language": "mixed",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "beginner",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Mixed breed",
+      "age_months": 4,
+      "age_years": null,
+      "weight_kg": 6,
+      "expected_adult_weight_kg": 15,
+      "neutered": false,
+      "life_stage": "puppy",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "healthy_growth",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "growth_rules",
+        "puppy_life_stage_filter"
+      ],
+      "required_tags": [
+        "puppy",
+        "medium",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω κουτάβι Mixed breed, 4 μηνών, 6 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θα γίνει περίπου 15 κιλά. Του αρέσει chicken."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σωστή τροφή για ανάπτυξη, όχι απλά ό,τι να είναι."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "age_months",
+        "weight_kg",
+        "expected_adult_weight_kg"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "puppy",
+        "medium",
+        "calcium_phosphorus_available",
+        "chicken"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]

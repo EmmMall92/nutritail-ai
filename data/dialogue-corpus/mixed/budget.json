@@ -1,0 +1,196 @@
+[
+  {
+    "id": "MIX-COMP-001",
+    "species": "dog",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "mixed",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": "Husky",
+      "age_months": null,
+      "age_years": 2,
+      "weight_kg": 25,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Acana",
+        "Ambrosia"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Acana",
+        "Ambrosia"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω σκύλο Husky, 2 ετών, 25 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Acana ή Ambrosia."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "MIX-COMP-002",
+    "species": "cat",
+    "category": "comparison",
+    "difficulty": "medium",
+    "language": "mixed",
+    "customer_profile": {
+      "intent": "comparison",
+      "knowledge_level": "normal",
+      "tone": "confused"
+    },
+    "pet_facts_expected": {
+      "species": "cat",
+      "breed": "Aegean cat",
+      "age_months": null,
+      "age_years": 3,
+      "weight_kg": 4,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [],
+      "allergies": [],
+      "sensitivities": [],
+      "food_preferences": [
+        "Happy Cat",
+        "Royal Canin"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "compare_foods",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "compare_only_retrieved_foods",
+        "no_invented_nutrients"
+      ],
+      "required_tags": [
+        "Happy Cat",
+        "Royal Canin"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Έχω γάτα Aegean cat, 3 ετών, 4 κιλά."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω σύγκριση Happy Cat ή Royal Canin."
+      },
+      {
+        "role": "user",
+        "content": "Πες μου πρακτικά ποια θα διάλεγες και γιατί."
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "breed",
+        "weight_kg",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences",
+        "requested_brands_or_foods"
+      ],
+      "ranking_should_prefer": [
+        "clear_tradeoffs",
+        "species_match"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]
