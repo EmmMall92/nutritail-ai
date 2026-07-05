@@ -34,6 +34,12 @@ const fullChecks = [
     covers: "Future dog/cat golden case batches have valid ids, prompts, species, locale, safety expectations, and duplicate checks.",
   },
   {
+    name: "Dialogue corpus v1",
+    command: "npm.cmd",
+    args: ["run", "qa:dialogue-corpus"],
+    covers: "Structured multi-turn dog/cat customer dialogues validate fact extraction, safety interrupts, Food V2 retrieval expectations, ranking constraints, and customer-facing answer quality.",
+  },
+  {
     name: "Chatbot intake cleanup",
     command: "npm.cmd",
     args: ["run", "qa:chatbot-intake-cleanup"],

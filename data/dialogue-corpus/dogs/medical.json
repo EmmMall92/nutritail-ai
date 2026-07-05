@@ -1,0 +1,499 @@
+[
+  {
+    "id": "DOG-ALG-001",
+    "species": "dog",
+    "category": "allergy",
+    "difficulty": "hard",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [
+        "allergy"
+      ],
+      "allergies": [
+        "κοτόπουλο"
+      ],
+      "sensitivities": [],
+      "food_preferences": [
+        "salmon"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "avoid_reaction",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "allergy_conflict_hard_reject",
+        "do_not_diagnose_allergy"
+      ],
+      "required_tags": [
+        "allergy",
+        "salmon"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Ο σκύλος μου ξύνεται μετά το φαγητό."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω να αποφύγω κοτόπουλο. Προτιμά salmon."
+      },
+      {
+        "role": "user",
+        "content": "Μπορείς να μου προτείνεις κάτι ασφαλές;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "allergies",
+        "sensitivities",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "allergy_conflict",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "salmon",
+        "no_κοτόπουλο"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-ALG-002",
+    "species": "dog",
+    "category": "allergy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [
+        "intolerance"
+      ],
+      "allergies": [],
+      "sensitivities": [
+        "αρνί"
+      ],
+      "food_preferences": [
+        "chicken"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "avoid_reaction",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "allergy_conflict_hard_reject",
+        "do_not_diagnose_allergy"
+      ],
+      "required_tags": [
+        "intolerance",
+        "chicken"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Ο σκύλος μου ξύνεται μετά το φαγητό."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω να αποφύγω αρνί. Προτιμά chicken."
+      },
+      {
+        "role": "user",
+        "content": "Μπορείς να μου προτείνεις κάτι ασφαλές;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "allergies",
+        "sensitivities",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "chicken",
+        "no_αρνί"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-ALG-003",
+    "species": "dog",
+    "category": "allergy",
+    "difficulty": "hard",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [
+        "allergy"
+      ],
+      "allergies": [
+        "μοσχάρι και γαλοπούλα"
+      ],
+      "sensitivities": [],
+      "food_preferences": [
+        "fish"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "avoid_reaction",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "allergy_conflict_hard_reject",
+        "do_not_diagnose_allergy"
+      ],
+      "required_tags": [
+        "allergy",
+        "fish"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Ο σκύλος μου ξύνεται μετά το φαγητό."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω να αποφύγω μοσχάρι και γαλοπούλα. Προτιμά fish."
+      },
+      {
+        "role": "user",
+        "content": "Μπορείς να μου προτείνεις κάτι ασφαλές;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "allergies",
+        "sensitivities",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "allergy_conflict",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "fish",
+        "no_μοσχάρι_και_γαλοπούλα"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-ALG-004",
+    "species": "dog",
+    "category": "allergy",
+    "difficulty": "medium",
+    "language": "greeklish",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [
+        "sensitive_digestion"
+      ],
+      "allergies": [],
+      "sensitivities": [
+        "σιτάρι"
+      ],
+      "food_preferences": [
+        "duck"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "avoid_reaction",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "allergy_conflict_hard_reject",
+        "do_not_diagnose_allergy"
+      ],
+      "required_tags": [
+        "sensitive_digestion",
+        "duck"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Ο σκύλος μου ξύνεται μετά το φαγητό."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω να αποφύγω σιτάρι. Προτιμά duck."
+      },
+      {
+        "role": "user",
+        "content": "Μπορείς να μου προτείνεις κάτι ασφαλές;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "allergies",
+        "sensitivities",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "duck",
+        "no_σιτάρι"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  },
+  {
+    "id": "DOG-ALG-005",
+    "species": "dog",
+    "category": "allergy",
+    "difficulty": "medium",
+    "language": "el",
+    "customer_profile": {
+      "intent": "recommendation",
+      "knowledge_level": "normal",
+      "tone": "anxious"
+    },
+    "pet_facts_expected": {
+      "species": "dog",
+      "breed": null,
+      "age_months": null,
+      "age_years": 4,
+      "weight_kg": 18,
+      "expected_adult_weight_kg": null,
+      "neutered": true,
+      "life_stage": "adult",
+      "activity_level": "normal",
+      "body_condition": null,
+      "health_conditions": [
+        "itchy_skin"
+      ],
+      "allergies": [],
+      "sensitivities": [
+        "καλαμπόκι"
+      ],
+      "food_preferences": [
+        "lamb"
+      ],
+      "feeding_format_preference": null,
+      "budget_preference": null,
+      "owner_goal": "avoid_reaction",
+      "urgency_flags": []
+    },
+    "expected_behavior": {
+      "should_interrupt": false,
+      "should_ask_followup": true,
+      "max_followup_questions_before_recommendation": 5,
+      "must_not_do": [
+        "invent_foods",
+        "invent_nutrients",
+        "override_rules",
+        "ask_unnecessary_questions"
+      ],
+      "required_rules": [
+        "allergy_conflict_hard_reject",
+        "do_not_diagnose_allergy"
+      ],
+      "required_tags": [
+        "itchy_skin",
+        "lamb"
+      ]
+    },
+    "conversation": [
+      {
+        "role": "user",
+        "content": "Ο σκύλος μου ξύνεται μετά το φαγητό."
+      },
+      {
+        "role": "user",
+        "content": "Θέλω να αποφύγω καλαμπόκι. Προτιμά lamb."
+      },
+      {
+        "role": "user",
+        "content": "Μπορείς να μου προτείνεις κάτι ασφαλές;"
+      },
+      {
+        "role": "assistant_expected_behavior",
+        "content": "Ask only the next missing question. Use NutriTail rules and Food V2 facts before recommending."
+      }
+    ],
+    "evaluation": {
+      "fact_extraction_must_include": [
+        "species",
+        "allergies",
+        "sensitivities",
+        "food_preferences"
+      ],
+      "safety_must_trigger": [],
+      "retrieval_must_filter_by": [
+        "species",
+        "life_stage",
+        "food_preferences"
+      ],
+      "ranking_should_prefer": [
+        "lamb",
+        "no_καλαμπόκι"
+      ],
+      "answer_quality_checks": [
+        "Greek natural tone",
+        "clear recommendation",
+        "no back-office wording",
+        "mentions uncertainty when data is missing"
+      ]
+    }
+  }
+]
