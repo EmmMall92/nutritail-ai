@@ -135,6 +135,27 @@ function runChecks(): Check[] {
         "Prevents live QA proof pets from appearing as customer pet names in the chatbot surface.",
     },
     {
+      name: "Customer chatbot asks for budget before flavor preferences",
+      pass:
+        chatbotPage.includes('| "budget"') &&
+        chatbotPage.includes("budgetMaxEuro?: number") &&
+        chatbotPage.includes("budgetAnswered?: boolean") &&
+        chatbotPage.includes('if (!draft.budgetAnswered) return "budget";') &&
+        chatbotPage.indexOf('return "budget";') < chatbotPage.indexOf('return "preferences";'),
+      details:
+        "Budget is captured as conversation context before taste/protein preferences, without requiring a schema change.",
+    },
+    {
+      name: "Customer chatbot summarizes budget for review before analysis",
+      pass:
+        chatbotPage.includes("parseBudgetMaxEuro") &&
+        chatbotPage.includes("isNoBudgetAnswer") &&
+        chatbotPage.includes("Budget: up to about") &&
+        chatbotPage.includes("Budget: no strict limit"),
+      details:
+        "The customer can see the captured budget in the review summary before recommendations.",
+    },
+    {
       name: "Preferences keep liked chicken and avoid disliked salmon",
       pass:
         hasAll(parsedSalmon.preferredProteins, ["chicken"]) &&
