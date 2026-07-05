@@ -111,6 +111,14 @@ assert(
   "Selected-food card must tell the customer what to monitor before the progress check."
 );
 assert(
+  chatbotPage.includes('data-testid="selected-food-pocket-plan"') &&
+    chatbotPage.includes("At-home pocket plan") &&
+    chatbotPage.includes("Today I feed") &&
+    chatbotPage.includes("per meal if fed twice") &&
+    chatbotPage.includes("with weight, appetite, stool, and taste response"),
+  "Selected-food card must show a compact at-home pocket plan after the customer chooses a food."
+);
+assert(
   chatbotPage.includes('data-testid="selected-food-next-steps"'),
   "Selected-food card must show a visible next-steps panel after choosing a food."
 );

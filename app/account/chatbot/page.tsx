@@ -6807,7 +6807,55 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </div>
 
                 {analysisMetadata.feedingGramsPerDay ? (
-                  <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                  <>
+                    <div
+                      data-testid="selected-food-pocket-plan"
+                      className="mt-4 rounded-2xl border border-lime-300 bg-white p-4 shadow-sm"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide text-lime-700">
+                        {botText("Το πλάνο με μία ματιά", "At-home pocket plan")}
+                      </p>
+                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                          <p className="text-xs font-semibold uppercase text-lime-700">
+                            {botText("Σήμερα δίνω", "Today I feed")}
+                          </p>
+                          <p className="mt-1 text-2xl font-bold">
+                            {analysisMetadata.feedingGramsPerDay}g
+                          </p>
+                          <p className="text-xs text-lime-800">
+                            {botText("σύνολο μέσα στην ημέρα", "total through the day")}
+                          </p>
+                        </div>
+                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                          <p className="text-xs font-semibold uppercase text-lime-700">
+                            {botText("Πρακτικά", "Practically")}
+                          </p>
+                          <p className="mt-1 text-2xl font-bold">
+                            {Math.round(analysisMetadata.feedingGramsPerDay / 2)}g
+                          </p>
+                          <p className="text-xs text-lime-800">
+                            {botText("ανά γεύμα αν κάνει 2 γεύματα", "per meal if fed twice")}
+                          </p>
+                        </div>
+                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
+                          <p className="text-xs font-semibold uppercase text-lime-700">
+                            {botText("Επανέλεγχος", "Check again")}
+                          </p>
+                          <p className="mt-1 text-lg font-bold">
+                            {botText("2-4 εβδομάδες", "2-4 weeks")}
+                          </p>
+                          <p className="text-xs text-lime-800">
+                            {botText(
+                              "με βάρος, όρεξη, κόπρανα και αν του αρέσει ακόμη",
+                              "with weight, appetite, stool, and taste response"
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
                     <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
                       <p className="font-semibold">{botText("2 γεύματα", "2 meals")}</p>
                       <p className="mt-1 text-lg font-bold">
@@ -6836,6 +6884,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </p>
                     </div>
                   </div>
+                  </>
                 ) : (
                   <p className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
                     {botText(
