@@ -256,6 +256,7 @@ type FoodMatchCandidate = Record<string, unknown> & {
 
 type FoodComparisonItem = {
   query: string;
+  query_kind?: string;
   match: {
     brand?: string | null;
     name?: string | null;
@@ -266,6 +267,12 @@ type FoodComparisonItem = {
   nutrition?: Record<string, number | null>;
   missing_nutrition_fields?: string[];
   cautions?: string[];
+  candidates?: Array<{
+    brand?: string | null;
+    name?: string | null;
+    score?: number | null;
+    source?: string | null;
+  }>;
 };
 
 type FoodCompareResponse = {
@@ -2317,12 +2324,18 @@ function formatCurrentFoodNoMatchMessage(params: {
 
 function parseCompareQueries(text: string) {
   const normalized = normalizeUserText(text);
+  const knownBrandMentions = KNOWN_FOOD_BRANDS.filter((brand) =>
+    normalized.includes(brand)
+  ).length;
+  const hasCompareSeparator =
+    /\b(?:vs|versus|or|and)\b/i.test(text) || /(?:\sή\s|\sη\s|,)/iu.test(text);
   const looksLikeCompare =
     normalized.includes("compare") ||
     normalized.includes("versus") ||
     normalized.includes(" vs ") ||
     normalized.includes("συγκριν") ||
-    normalized.includes("συγκρινε");
+    normalized.includes("συγκρινε") ||
+    (knownBrandMentions >= 2 && hasCompareSeparator);
 
   if (!looksLikeCompare) return [];
 
@@ -2432,6 +2445,29 @@ function compactCompareName(item: FoodComparisonItem, language: ChatLanguage) {
     .trim() || (language === "el" ? "Άγνωστη τροφή" : "Unknown food");
 }
 
+function formatCompareCandidateOptions(
+  item: FoodComparisonItem,
+  language: ChatLanguage
+) {
+  const candidates = (item.candidates ?? [])
+    .map((candidate) =>
+      [candidate.brand, candidate.name]
+        .map((value) => String(value ?? "").trim())
+        .filter(Boolean)
+        .join(" - ")
+    )
+    .filter(Boolean)
+    .slice(0, 3);
+
+  if (candidates.length === 0) return "";
+
+  const lines = candidates.map((candidate) => `- ${candidate}`).join("\n");
+
+  return language === "el"
+    ? `\nΠιθανές φόρμουλες για να διαλέξεις:\n${lines}`
+    : `\nPossible formulas to choose from:\n${lines}`;
+}
+
 function finalDailyCaloriesForAnalysis(
   analysis: PetAnalysis | null,
   goal?: WeightGoal
@@ -2507,11 +2543,22 @@ function formatFoodComparison(
 
   const rows = comparisons.map((item, index) => {
     if (!item.match) {
+      const candidateOptions = formatCompareCandidateOptions(item, language);
+      const isBrandOnly = item.query_kind === "brand_only";
+
       return greek
-        ? `${index + 1}. ${item.query}: δεν βρήκα αρκετά σίγουρη επιλογή στη βάση.
-Επόμενο βήμα: στείλε την ακριβή εταιρεία και φόρμουλα από τη συσκευασία ή δοκίμασε πιο σύντομο όνομα με brand + σειρά.`
-        : `${index + 1}. ${item.query}: I need the exact product name before I can compare it well.
-Next step: send the exact brand and formula from the bag, or try a shorter query with brand + line name.`;
+        ? `${index + 1}. ${item.query}: ${
+            isBrandOnly
+              ? "είναι εταιρεία, όχι συγκεκριμένη τροφή, οπότε δεν θα διαλέξω τυχαία φόρμουλα."
+              : "δεν βρήκα αρκετά σίγουρη επιλογή στη βάση."
+          }${candidateOptions}
+Επόμενο βήμα: στείλε την ακριβή φόρμουλα από τη συσκευασία ή διάλεξε μία από τις πιθανές φόρμουλες.`
+        : `${index + 1}. ${item.query}: ${
+            isBrandOnly
+              ? "this is a brand, not a specific food, so I will not pick a random formula."
+              : "I need the exact product name before I can compare it well."
+          }${candidateOptions}
+Next step: send the exact formula from the bag, or choose one of the possible formulas.`;
     }
 
     const nutrition = item.nutrition ?? {};

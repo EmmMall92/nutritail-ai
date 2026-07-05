@@ -8,6 +8,41 @@ import {
 import { customerFoodDisplayName } from "@/lib/food-v2/customerFoodName";
 
 const MAX_COMPARE_ITEMS = 5;
+const BRAND_ONLY_COMPARE_ALIASES = [
+  "royal canin",
+  "acana",
+  "orijen",
+  "farmina",
+  "n&d",
+  "josera",
+  "monge",
+  "schesir",
+  "ambrosia",
+  "purina",
+  "purina pro plan",
+  "pro plan",
+  "brit",
+  "happy dog",
+  "hills",
+  "hill's",
+] as const;
+
+function normalizeCompareQuery(value: unknown) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9&']+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isBrandOnlyCompareQuery(query: string) {
+  const normalized = normalizeCompareQuery(query);
+  return BRAND_ONLY_COMPARE_ALIASES.some(
+    (brand) => normalizeCompareQuery(brand) === normalized
+  );
+}
 
 function getNumber(food: FoodMatchRecord, keys: string[]) {
   for (const key of keys) {
@@ -225,6 +260,26 @@ export async function POST(request: Request) {
       const scored = findFoodMatches(foods, query);
       const best = scored[0];
       const bestV2 = foodV2Matches[index]?.[0] ?? null;
+      const foodV2Candidates = foodV2Matches[index].slice(0, 3).map((item) => ({
+        id: item.id,
+        brand: item.brand,
+        name: getFoodV2CustomerDisplayName(item),
+        score: item.match_score,
+        source: "food_v2",
+      }));
+
+      if (isBrandOnlyCompareQuery(query)) {
+        return {
+          query,
+          source: "food_v2",
+          query_kind: "brand_only",
+          match: null,
+          match_score: 0,
+          match_confidence: "needs_formula",
+          candidates: foodV2Candidates,
+        };
+      }
+
       const shouldUseV2 =
         bestV2 &&
         (bestV2.match_score >= (best?.score ?? 0) ||
@@ -261,15 +316,7 @@ export async function POST(request: Request) {
             ]),
           ],
           cautions: getComparisonCautions(nutrition),
-          candidates: bestV2
-            ? foodV2Matches[index].slice(0, 3).map((item) => ({
-                id: item.id,
-                brand: item.brand,
-                name: getFoodV2CustomerDisplayName(item),
-                score: item.match_score,
-                source: "food_v2",
-              }))
-            : [],
+          candidates: foodV2Candidates,
         };
       }
 
