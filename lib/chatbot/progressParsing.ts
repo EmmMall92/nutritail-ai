@@ -8,6 +8,7 @@ export type ProgressUpdateDetails = {
   stoolNote: "normal" | "better" | "soft" | "diarrhea" | "constipation" | null;
   energyNote: "normal" | "better" | "low" | "high" | null;
   bodyChangeNote: "leaner" | "same" | "heavier" | null;
+  foodAcceptanceNote: "accepted" | "bored" | "refused" | null;
   missingFollowUpFields: ProgressFollowUpField[];
   hasEnoughProgressContext: boolean;
 };
@@ -39,6 +40,7 @@ export function parseProgressUpdate(text: string): ProgressUpdateDetails {
   const stoolNote = detectStoolNote(normalized);
   const energyNote = detectEnergyNote(normalized);
   const bodyChangeNote = detectBodyChangeNote(normalized);
+  const foodAcceptanceNote = detectFoodAcceptanceNote(normalized);
   const missingFollowUpFields: ProgressFollowUpField[] = [];
 
   if (!treatsNote) missingFollowUpFields.push("treats");
@@ -58,6 +60,7 @@ export function parseProgressUpdate(text: string): ProgressUpdateDetails {
     stoolNote,
     energyNote,
     bodyChangeNote,
+    foodAcceptanceNote,
     missingFollowUpFields,
     hasEnoughProgressContext:
       currentWeightKg !== null && feedingGramsPerDay !== null && contextNotes >= 2,
@@ -122,5 +125,27 @@ function detectBodyChangeNote(text: string): ProgressUpdateDetails["bodyChangeNo
   if (/(αδυνατισ|πιο λεπ|leaner|slimmer)/u.test(text)) return "leaner";
   if (/(ιδιο σωμα|καμια αλλαγη|same body|unchanged)/u.test(text)) return "same";
   if (/(παχυνε|πιο βαρυ|heavier|gained)/u.test(text)) return "heavier";
+  return null;
+}
+
+function detectFoodAcceptanceNote(
+  text: string
+): ProgressUpdateDetails["foodAcceptanceNote"] {
+  if (
+    /(βαρεθ|δεν του αρεσει πια|δεν της αρεσει πια|δεν τη θελει|δεν την θελει|δεν το θελει|δεν την τρωει|δεν τη τρωει|bored|does not want|doesnt want|refuses this food|stopped eating it)/u.test(
+      text
+    )
+  ) {
+    return /βαρεθ|bored/u.test(text) ? "bored" : "refused";
+  }
+
+  if (
+    /(την τρωει καλα|τη τρωει καλα|την δεχτηκε|τη δεχτηκε|του αρεσει|της αρεσει|accepts|accepted|likes this food|eats it well)/u.test(
+      text
+    )
+  ) {
+    return "accepted";
+  }
+
   return null;
 }

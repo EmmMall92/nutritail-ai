@@ -8,6 +8,7 @@ type Expected = {
   appetite?: string | null;
   stool?: string | null;
   energy?: string | null;
+  foodAcceptance?: string | null;
   enough?: boolean;
   missing?: string[];
 };
@@ -75,6 +76,30 @@ const cases: Expected[] = [
     energy: "low",
     enough: false,
   },
+  {
+    text: "τώρα είναι 6 κιλά, 70γρ, λίγες λιχουδιές, καλή όρεξη, κανονικά κόπρανα, κανονική ενέργεια αλλά βαρέθηκε τη γεύση",
+    weight: 6,
+    grams: 70,
+    treats: "few",
+    appetite: "normal",
+    stool: "normal",
+    energy: "normal",
+    foodAcceptance: "bored",
+    enough: true,
+    missing: [],
+  },
+  {
+    text: "now 6 kg, 70 grams, no treats, normal appetite, normal stool, normal energy, refuses this food",
+    weight: 6,
+    grams: 70,
+    treats: "none",
+    appetite: "normal",
+    stool: "normal",
+    energy: "normal",
+    foodAcceptance: "refused",
+    enough: true,
+    missing: [],
+  },
 ];
 
 const failures: string[] = [];
@@ -93,6 +118,12 @@ for (const testCase of cases) {
   assertEqual(testCase.text, "appetiteNote", result.appetiteNote, testCase.appetite);
   assertEqual(testCase.text, "stoolNote", result.stoolNote, testCase.stool);
   assertEqual(testCase.text, "energyNote", result.energyNote, testCase.energy);
+  assertEqual(
+    testCase.text,
+    "foodAcceptanceNote",
+    result.foodAcceptanceNote,
+    testCase.foodAcceptance
+  );
   assertEqual(
     testCase.text,
     "hasEnoughProgressContext",

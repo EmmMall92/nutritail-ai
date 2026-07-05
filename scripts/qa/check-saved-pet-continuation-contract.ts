@@ -117,6 +117,7 @@ const checks: SourceCheck[] = [
       "appetiteNote",
       "stoolNote",
       "energyNote",
+      "foodAcceptanceNote",
       "missingFollowUpFields",
       "hasEnoughProgressContext",
     ],

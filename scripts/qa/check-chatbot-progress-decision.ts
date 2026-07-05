@@ -33,6 +33,18 @@ const cases = [
     mode: "no_result" as const,
     expectedStatus: "adjust_portions",
   },
+  {
+    name: "food boredom triggers food fit review",
+    text: "τώρα είναι 6 κιλά, 70γρ, λίγες λιχουδιές, καλή όρεξη, κανονικά κόπρανα, κανονική ενέργεια αλλά βαρέθηκε τη γεύση",
+    previousWeightKg: 6,
+    expectedStatus: "review_food_fit",
+  },
+  {
+    name: "food refusal triggers food fit review",
+    text: "now 6 kg, 70 grams per day, no treats, normal appetite, normal stool, normal energy, refuses this food",
+    previousWeightKg: 6,
+    expectedStatus: "review_food_fit",
+  },
 ];
 
 const failures: string[] = [];

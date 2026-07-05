@@ -96,12 +96,28 @@ export function buildProgressDecision({
   if (
     details.appetiteNote === "low" ||
     details.stoolNote === "diarrhea" ||
-    details.energyNote === "low"
+    details.energyNote === "low" ||
+    details.foodAcceptanceNote === "bored" ||
+    details.foodAcceptanceNote === "refused"
   ) {
     reasonsEl.push("Υπάρχει ένδειξη ότι η τροφή ή το πλάνο μπορεί να μην ταιριάζει τέλεια.");
     reasonsEn.push("There is a sign that the food or plan may not fit perfectly.");
     nextEl.push("Αν συνεχιστεί χαμηλή όρεξη, διάρροια ή χαμηλή ενέργεια, μίλα με κτηνίατρο.");
     nextEn.push("If low appetite, diarrhea, or low energy continues, speak with a veterinarian.");
+  }
+
+  if (details.foodAcceptanceNote === "bored") {
+    reasonsEl.push("Φαίνεται ότι βαρέθηκε τη γεύση ή τη φόρμουλα.");
+    reasonsEn.push("It sounds like the pet may be bored of the flavour or formula.");
+    nextEl.push("Κράτα τον ίδιο στόχο, αλλά ζήτησε εναλλακτική πρόταση με διαφορετική γεύση ή brand.");
+    nextEn.push("Keep the same goal, but ask for an alternative with a different flavour or brand.");
+  }
+
+  if (details.foodAcceptanceNote === "refused") {
+    reasonsEl.push("Η αποδοχή της τροφής φαίνεται χαμηλή.");
+    reasonsEn.push("Food acceptance seems low.");
+    nextEl.push("Μπορούμε να ψάξουμε νέα επιλογή με βάση τις γεύσεις που δέχεται και όσα αποφεύγει.");
+    nextEn.push("We can look for a new option based on accepted and avoided flavours.");
   }
 
   if (mode === "no_result" || (deltaKg !== null && deltaKg >= 0 && details.treatsNote !== "many")) {
@@ -117,7 +133,9 @@ export function buildProgressDecision({
   const hasFitConcern =
     details.appetiteNote === "low" ||
     details.stoolNote === "diarrhea" ||
-    details.energyNote === "low";
+    details.energyNote === "low" ||
+    details.foodAcceptanceNote === "bored" ||
+    details.foodAcceptanceNote === "refused";
 
   if (hasFitConcern) {
     return withFallbacks({
