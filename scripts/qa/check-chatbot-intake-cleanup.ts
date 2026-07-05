@@ -111,6 +111,18 @@ function runChecks(): Check[] {
       details: formatPetDisplayName(greekDogNamedLeonidas),
     },
     {
+      name: "Greek pet name title-cases and accents direct lowercase known names",
+      pass:
+        formatPetDisplayName("\u03bb\u03b5\u03c9\u03bd\u03b9\u03b4\u03b1\u03c2") === "\u039b\u03b5\u03c9\u03bd\u03af\u03b4\u03b1\u03c2" &&
+        formatPetDisplayName("\u03bc\u03c0\u03b5\u03bc\u03c0\u03b1") === "\u039c\u03c0\u03ad\u03bc\u03c0\u03b1" &&
+        formatPetDisplayName("\u03ba\u03bb\u03b5\u03bf\u03bc\u03b5\u03bd\u03b7\u03c2") === "\u039a\u03bb\u03b5\u03bf\u03bc\u03ad\u03bd\u03b7\u03c2",
+      details: JSON.stringify({
+        leonidas: formatPetDisplayName("\u03bb\u03b5\u03c9\u03bd\u03b9\u03b4\u03b1\u03c2"),
+        bempa: formatPetDisplayName("\u03bc\u03c0\u03b5\u03bc\u03c0\u03b1"),
+        kleomenis: formatPetDisplayName("\u03ba\u03bb\u03b5\u03bf\u03bc\u03b5\u03bd\u03b7\u03c2"),
+      }),
+    },
+    {
       name: "English pet name strips natural named phrase",
       pass: formatPetDisplayName("my dog is named luna") === "Luna",
       details: formatPetDisplayName("my dog is named luna"),
