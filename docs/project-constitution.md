@@ -94,6 +94,26 @@ Knowledge belongs inside:
 - Ingredient profiles
 - Dialogue corpus
 
+## Knowledge Gap Assetization
+
+Whenever a knowledge gap or repeating pattern appears, propose how it can become a permanent NutriTail asset instead of solving only the immediate case.
+
+The default permanent asset types are:
+
+- rule
+- dataset
+- test
+- profile
+- knowledge module
+
+Examples:
+
+- A repeated customer confusion becomes a dialogue corpus case.
+- A repeated recommendation mistake becomes a ranking or safety rule.
+- A missing nutrient pattern becomes a Food V2 data-quality task.
+- A recurring brand behavior becomes a brand profile note.
+- A new disease or life-stage nuance becomes a knowledge module plus golden case.
+
 ## Testing
 
 Everything important must become a test.
