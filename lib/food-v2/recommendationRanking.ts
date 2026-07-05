@@ -2388,17 +2388,12 @@ export function splitFoodV2Recommendations(
       ranking.total_score >= bestVisibleScore - 15
   );
   const bestOverallSource =
-    preferredMatches.length > 0
-      ? [
-          ...preferredMatches,
-          ...customerVisibleUsable.filter(
-            (ranking) => !preferredMatches.includes(ranking)
-          ),
-        ]
-      : customerVisibleUsable;
+    preferredMatches.length > 0 ? preferredMatches : customerVisibleUsable;
   const bestOverall = bestOverallSource.slice(0, limitPerBucket);
   const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
-  const practicalAlternatives = customerVisibleUsable
+  const practicalAlternativeSource =
+    preferredMatches.length > 0 ? preferredMatches : customerVisibleUsable;
+  const practicalAlternatives = practicalAlternativeSource
     .filter((ranking) => !bestKeys.has(ranking.formula_key))
     .sort(
       (a, b) =>
