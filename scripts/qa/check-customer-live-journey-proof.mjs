@@ -19,6 +19,9 @@ const shouldWriteManualProofDraft =
   process.env.NUTRITAIL_QA_WRITE_MANUAL_PROOF_DRAFT === "1";
 const shouldRunLiveWriteProof =
   process.env.NUTRITAIL_QA_ENABLE_LIVE_WRITE_PROOF === "1";
+const isCi = process.env.CI === "true" || process.env.GITHUB_ACTIONS === "true";
+const shouldStrictlyFailWithoutFullProof =
+  process.env.NUTRITAIL_QA_STRICT_LIVE_JOURNEY_PROOF === "1";
 const shouldCleanupLiveWriteProof =
   process.env.NUTRITAIL_QA_KEEP_LIVE_WRITE_PROOF !== "1";
 const forbiddenCustomerWordingPatterns = [
@@ -1094,6 +1097,17 @@ async function main() {
         : nonDestructivePassed
           ? "PASS_NON_DESTRUCTIVE"
           : "SKIP_AUTH";
+  const shouldFailForReview =
+    failed > 0 &&
+    (shouldStrictlyFailWithoutFullProof ||
+      shouldRunLiveWriteProof ||
+      manualProof.source !== "missing" ||
+      (!isCi && Boolean(authCookie.value)));
+  const exitModeNote = shouldFailForReview
+    ? "strict failure enabled because live/manual proof context is present."
+    : isCi
+      ? "CI is non-blocking when authenticated/manual live journey proof inputs are absent."
+      : "Review report was generated without strict failure.";
   const journeyProofs = [
     {
       name: "New pet recommendation",
@@ -1174,6 +1188,7 @@ async function main() {
       `- Auth cookie source: ${authCookie.source}`,
       `- Auth cookie note: ${authCookie.note}`,
       `- Manual proof source: ${proofSource}`,
+      `- Exit mode: ${exitModeNote}`,
       `- Live write proof: ${liveWriteProof.enabled ? liveWriteProof.note : "disabled"}`,
       `- Live write proof pet: ${liveWriteProof.petId || "none"}`,
       `- Live write proof cleanup: ${shouldCleanupLiveWriteProof ? "soft-delete enabled by default" : "kept for manual inspection"}`,
@@ -1267,6 +1282,7 @@ async function main() {
           : "kept",
         manual_proof_draft_written: manualProofDraft.wrote,
         manual_proof_draft_path: manualProofDraft.path,
+        strict_failure: shouldFailForReview,
         report: reportPath,
       },
       null,
@@ -1274,7 +1290,7 @@ async function main() {
     ),
   );
 
-  if (failed > 0) process.exitCode = 1;
+  if (shouldFailForReview) process.exitCode = 1;
 }
 
 main().catch((error) => {

@@ -1270,6 +1270,46 @@ function getRecommendationChoiceRoleSummary(
   return "Another suitable option if you want a different direction.";
 }
 
+function getRecommendationChoiceReasonText(
+  choice: RecommendedFoodChoice,
+  index: number,
+  language: ChatLanguage
+) {
+  if (choice.reason?.trim()) return choice.reason;
+
+  return getRecommendationChoiceRoleSummary(choice, index, language);
+}
+
+function getRecommendationChoiceWatchNote(
+  choice: RecommendedFoodChoice,
+  weightGoal: WeightGoal | undefined,
+  language: ChatLanguage
+) {
+  if (choice.caution?.trim()) return choice.caution;
+
+  if (choice.kcalPer100g == null) {
+    return language === "el"
+      ? "Για ακριβή γραμμάρια χρειάζεται καθαρή θερμιδική τιμή στην ετικέτα."
+      : "Exact grams need a clear calorie value on the label.";
+  }
+
+  if (weightGoal === "loss" || weightGoal === "maintain") {
+    return language === "el"
+      ? "Παρακολούθησε βάρος, όρεξη και λιχουδιές για 2-4 εβδομάδες."
+      : "Watch weight, appetite, and treats for 2-4 weeks.";
+  }
+
+  if (choice.fatPercent != null && choice.fatPercent >= 16) {
+    return language === "el"
+      ? "Κάνε σταδιακή μετάβαση και παρακολούθησε κόπρανα και ανοχή."
+      : "Transition gradually and watch stool quality and tolerance.";
+  }
+
+  return language === "el"
+    ? "Κάνε σταδιακή μετάβαση και έλεγξε όρεξη, κόπρανα και ενέργεια."
+    : "Transition gradually and watch appetite, stool, and energy.";
+}
+
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
   const emphasis =
     index === 0
@@ -6694,14 +6734,17 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  {choice.reason && (
-                    <span className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100">
+                  <span
+                    data-testid="recommendation-card-why"
+                    className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100"
+                  >
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
                         {botText("Γιατί την προτείνουμε", "Why we suggest it")}
                       </span>
-                      <span>{choice.reason}</span>
-                    </span>
-                  )}
+                      <span>
+                        {getRecommendationChoiceReasonText(choice, index, chatLanguage)}
+                      </span>
+                  </span>
                   {getRecommendationChoicePortionPreview(
                     choice,
                     latestAnalysis,
@@ -6743,14 +6786,21 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  {choice.caution && (
-                    <span className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100">
+                  <span
+                    data-testid="recommendation-card-watch"
+                    className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100"
+                  >
                       <span className="block text-xs font-semibold uppercase text-amber-700">
                         {botText("Προσοχή", "Watch")}
                       </span>
-                      <span>{choice.caution}</span>
-                    </span>
-                  )}
+                      <span>
+                        {getRecommendationChoiceWatchNote(
+                          choice,
+                          pet.weightGoal,
+                          chatLanguage
+                        )}
+                      </span>
+                  </span>
                   {choice.notIdealCases && choice.notIdealCases.length > 0 && (
                     <span className="mt-2 rounded-xl bg-orange-50 px-3 py-2 text-sm leading-5 text-orange-950 ring-1 ring-orange-100">
                       <span className="block text-xs font-semibold uppercase text-orange-700">
