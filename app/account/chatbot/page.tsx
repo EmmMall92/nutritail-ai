@@ -152,6 +152,7 @@ type IntakeStep =
   | "neutered"
   | "health"
   | "currentFood"
+  | "budget"
   | "preferences"
   | "weightGoal"
   | "analysis"
@@ -179,6 +180,8 @@ type PetIntake = {
   preferredFoodFormat?: FoodFormatPreference;
   currentFoodName?: string;
   currentFoodAnswered?: boolean;
+  budgetMaxEuro?: number;
+  budgetAnswered?: boolean;
   weightGoal?: WeightGoal;
 };
 
@@ -1405,6 +1408,11 @@ function getQuickReplies(step: IntakeStep, language: ChatLanguage) {
       : ["No", "Sensitive stomach", "Itchy skin", "Urinary issue"];
   }
   if (step === "currentFood") return greek ? ["Δεν ξέρω"] : ["I don't know"];
+  if (step === "budget") {
+    return greek
+      ? ["Δεν έχω budget", "Μέχρι 50€", "Μέχρι 80€"]
+      : ["No budget", "Up to €50", "Up to €80"];
+  }
   if (step === "preferences") {
     return greek
       ? ["Όχι", "Δεν τρώει κοτόπουλο", "Του αρέσει αρνί", "Του αρέσει σολομός"]
@@ -1477,6 +1485,45 @@ function parseNumber(text: string): number | null {
 
   const value = Number(match[0]);
   return Number.isFinite(value) ? value : null;
+}
+
+function parseBudgetMaxEuro(text: string): number | null {
+  const value = normalizeUserText(text);
+  const hasBudgetTerm =
+    value.includes("budget") ||
+    value.includes("price") ||
+    value.includes("cost") ||
+    value.includes("euro") ||
+    value.includes("eur") ||
+    value.includes("ευρω") ||
+    value.includes("ευρώ") ||
+    value.includes("€") ||
+    value.includes("μεχρι") ||
+    value.includes("μέχρι");
+
+  const amount = parseNumber(text);
+  if (!hasBudgetTerm && amount === null) return null;
+  if (amount === null || amount <= 0 || amount > 500) return null;
+
+  return Math.round(amount);
+}
+
+function isNoBudgetAnswer(text: string) {
+  const value = normalizeUserText(text);
+
+  return (
+    parseYesNoInput(text) === false ||
+    value.includes("no budget") ||
+    value.includes("no limit") ||
+    value.includes("does not matter") ||
+    value.includes("δεν εχω budget") ||
+    value.includes("δεν εχω μπατζετ") ||
+    value.includes("χωρις budget") ||
+    value.includes("χωρις μπατζετ") ||
+    value.includes("δεν με νοιαζει") ||
+    value.includes("δεν υπαρχει οριο") ||
+    value.includes("δεν υπάρχει όριο")
+  );
 }
 
 function getMaxWeightKg(species?: Species) {
@@ -1728,6 +1775,8 @@ function getAllowedExtractedFieldsForStep(
     activityLevel: false,
     neutered: false,
     currentFoodName: false,
+    budgetMaxEuro: false,
+    budgetAnswered: false,
     weightGoal: false,
     healthIssues: false,
     allergies: false,
@@ -2269,6 +2318,7 @@ function isPetIntakeStep(step: IntakeStep) {
     "neutered",
     "health",
     "currentFood",
+    "budget",
     "preferences",
     "weightGoal",
   ].includes(step);
@@ -2859,6 +2909,18 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
       greek
         ? `Προτιμά: ${(pet.preferredProteins ?? []).join(", ")}`
         : `Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`
+    );
+  }
+
+  if (pet.budgetAnswered) {
+    details.push(
+      pet.budgetMaxEuro
+        ? greek
+          ? `Budget: έως περίπου ${pet.budgetMaxEuro}€`
+          : `Budget: up to about €${pet.budgetMaxEuro}`
+        : greek
+          ? "Budget: χωρίς αυστηρό όριο"
+          : "Budget: no strict limit"
     );
   }
 
@@ -3982,6 +4044,7 @@ export default function AccountChatbotPage() {
       return "health";
     }
     if (!draft.currentFoodAnswered && !draft.currentFoodName) return "currentFood";
+    if (!draft.budgetAnswered) return "budget";
     if (
       !draft.preferencesAnswered &&
       (draft.preferredProteins ?? []).length === 0 &&
@@ -4026,6 +4089,11 @@ export default function AccountChatbotPage() {
         return botText(
           "Ποια τροφή τρώει τώρα; Γράψε εταιρεία και όνομα προϊόντος αν το ξέρεις. Αν δεν είσαι σίγουρος/η, γράψε δεν ξέρω.",
           "What food are you feeding now? Write the brand and product name if you know it. If you are not sure, type I don't know."
+        );
+      case "budget":
+        return botText(
+          "Υπάρχει κάποιο budget που θα ήθελες να κρατήσουμε; Π.χ. μέχρι 80€. Αν δεν έχεις όριο, γράψε δεν έχω budget.",
+          "Is there a budget you want me to keep in mind? For example: up to €80. If there is no limit, type no budget."
         );
       case "preferences":
         return botText(
@@ -5559,6 +5627,38 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       setPet(sanitizePetIntake(nextPet));
       await continueIntakeOrRunAnalysis(nextPet);
+
+      return;
+    }
+
+    if (step === "budget") {
+      const budgetMaxEuro = parseBudgetMaxEuro(text);
+      const nextPet: PetIntake = {
+        ...workingPet,
+        budgetAnswered: true,
+        budgetMaxEuro: isNoBudgetAnswer(text)
+          ? undefined
+          : budgetMaxEuro ?? workingPet.budgetMaxEuro,
+      };
+
+      setPet(sanitizePetIntake(nextPet));
+      setStep("preferences");
+
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            nextPet.budgetMaxEuro
+              ? `Το κρατάω. Θα έχω στο μυαλό μου budget έως περίπου ${nextPet.budgetMaxEuro}€.`
+              : "Το κρατάω. Δεν θα βάλω αυστηρό όριο budget.",
+            nextPet.budgetMaxEuro
+              ? `Got it. I will keep an approximate budget up to €${nextPet.budgetMaxEuro} in mind.`
+              : "Got it. I will not use a strict budget limit."
+          )
+        )
+      );
+
+      addMessages(createMessage("bot", getIntakeQuestion("preferences", nextPet)));
 
       return;
     }
