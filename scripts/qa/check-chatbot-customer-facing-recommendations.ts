@@ -1050,6 +1050,12 @@ const groupedChoiceMarkers = [
   "group.choices.map",
   "group.choices.length}/3",
   "If you change your mind before saving, you can tap another card.",
+  "cleanCustomerFoodIntelligenceLabel",
+  "getCustomerFoodIntelligenceBadgeLabel",
+  "veterinary check",
+  "mineral context",
+  "omega context",
+  "formula fit",
 ];
 const missingGroupedChoiceMarkers = groupedChoiceMarkers.filter(
   (marker) => !chatbotPage.includes(marker)
@@ -1058,6 +1064,13 @@ const missingGroupedChoiceMarkers = groupedChoiceMarkers.filter(
 if (missingGroupedChoiceMarkers.length > 0) {
   console.error("Recommendation cards must stay grouped into best and value choices:");
   console.error(missingGroupedChoiceMarkers.join(", "));
+  process.exit(1);
+}
+
+if (chatbotPage.includes("{item}</span>")) {
+  console.error(
+    "Recommendation cards must sanitize food-intelligence tags before rendering them to customers."
+  );
   process.exit(1);
 }
 
