@@ -526,6 +526,35 @@ const recommendationSummarySource = readFileSync(
 );
 const compareRoute = readFileSync("app/api/account/foods/compare/route.ts", "utf8");
 
+const requiredSeverityAwareSafetyCopy = [
+  "function hasMedicalSafetyContext",
+  "function customerSafetyReminder",
+  "Because there is a medical context, the final diet choice should be checked with a veterinarian.",
+  "If severe vomiting, diarrhea, blood, not eating, or trouble urinating appears, contact a veterinarian promptly.",
+  "customerSafetyReminder(input, \"el\")",
+  "customerSafetyReminder(input, \"en\")",
+];
+const missingSeverityAwareSafetyCopy = requiredSeverityAwareSafetyCopy.filter(
+  (term) => !responseComposer.includes(term)
+);
+
+if (missingSeverityAwareSafetyCopy.length > 0) {
+  console.error("Recommendation fallback must keep severity-aware customer safety copy:");
+  console.error(missingSeverityAwareSafetyCopy.join(", "));
+  process.exit(1);
+}
+
+if (
+  responseComposer.includes(
+    "For urinary, kidney, diabetes, pancreatitis, severe vomiting, diarrhea, blood, or not eating, speak with a veterinarian first."
+  )
+) {
+  console.error(
+    "General recommendation fallback should not use the old broad veterinary disclaimer."
+  );
+  process.exit(1);
+}
+
 const forbiddenComposerCopy = [
   "score: food.ranking?.total_score",
   "(${score}/100)",
