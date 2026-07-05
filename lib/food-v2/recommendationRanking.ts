@@ -2234,15 +2234,21 @@ export function splitFoodV2Recommendations(
         (signal) => signal.code === "preferred_protein_visible_match"
       )
     ) {
-      return 3;
+      return 30;
     }
     if (ranking.signals.some((signal) => signal.code === "preferred_protein_match")) {
-      return 2;
+      return 20;
     }
     if (ranking.signals.some((signal) => signal.code === "preferred_protein_missing")) {
-      return -1;
+      return -15;
     }
     return 0;
+  }
+
+  function hasPreferredProteinMatch(ranking: FoodV2RankingResult) {
+    return ranking.signals.some((signal) =>
+      ["preferred_protein_visible_match", "preferred_protein_match"].includes(signal.code)
+    );
   }
 
   function compareCustomerRecommendations(
@@ -2375,7 +2381,15 @@ export function splitFoodV2Recommendations(
     };
   }
 
-  const bestOverall = customerVisibleUsable.slice(0, limitPerBucket);
+  const bestVisibleScore = customerVisibleUsable[0]?.total_score ?? 0;
+  const preferredMatches = customerVisibleUsable.filter(
+    (ranking) =>
+      hasPreferredProteinMatch(ranking) &&
+      ranking.total_score >= bestVisibleScore - 15
+  );
+  const bestOverallSource =
+    preferredMatches.length >= limitPerBucket ? preferredMatches : customerVisibleUsable;
+  const bestOverall = bestOverallSource.slice(0, limitPerBucket);
   const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
   const practicalAlternatives = customerVisibleUsable
     .filter((ranking) => !bestKeys.has(ranking.formula_key))
