@@ -135,6 +135,7 @@ for (const marker of [
 }
 
 const packageJson = read("package.json");
+const resendAuthEmailRunbook = read("docs/email/resend-supabase-auth.md");
 
 assert(
   packageJson.includes('"qa:auth-customer-copy"'),
@@ -147,12 +148,24 @@ assert(
 );
 
 assert(
+  packageJson.includes('"qa:resend-auth-email-templates"'),
+  "package.json must expose qa:resend-auth-email-templates."
+);
+
+assert(
   packageJson.includes("qa:ci-readiness") &&
     packageJson.includes("npm run qa:customer-ux-copy") &&
     packageJson.includes("npm run qa:auth-customer-copy") &&
     packageJson.includes("npm run qa:auth-customer-errors") &&
+    packageJson.includes("npm run qa:resend-auth-email-templates") &&
     packageJson.includes("npm run qa:chatbot-customer-recommendations"),
-  "CI readiness must include customer UX, auth customer copy, auth error, and chatbot customer recommendation QA."
+  "CI readiness must include customer UX, auth customer copy, auth error, Resend auth email, and chatbot customer recommendation QA."
+);
+
+assert(
+  resendAuthEmailRunbook.includes("smtp.resend.com") &&
+    resendAuthEmailRunbook.includes("NutriTail AI <no-reply@nutritail.ai>"),
+  "Resend auth email runbook must document customer-facing SMTP sender settings."
 );
 
 console.log("Auth customer copy contract passed.");
