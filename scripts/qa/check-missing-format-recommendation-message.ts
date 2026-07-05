@@ -30,6 +30,8 @@ assertIncludes(
 );
 assertIncludes(greekWetDog, "αξιόπιστη κατάταξη", "Greek wet dog ranking clarity");
 assertIncludes(greekWetDog, "Καλύτερο επόμενο βήμα", "Greek wet dog next step");
+assertIncludes(greekWetDog, "εταιρεία + ακριβή φόρμουλα", "Greek wet dog exact formula request");
+assertIncludes(greekWetDog, "υποψήφιες επιλογές", "Greek wet dog candidate-food workflow");
 assertIncludes(greekWetDog, "θερμίδες", "Greek wet dog calorie guidance");
 assertIncludes(greekWetDog, "ποσότητα/ημέρα", "Greek wet dog daily portion guidance");
 assertNotIncludes(greekWetDog, "source:", "Greek wet dog customer copy");
@@ -57,6 +59,16 @@ assertIncludes(
   englishWetDog,
   "Best next step",
   "English wet dog next step"
+);
+assertIncludes(
+  englishWetDog,
+  "brand + exact formula",
+  "English wet dog exact formula request"
+);
+assertIncludes(
+  englishWetDog,
+  "candidate foods",
+  "English wet dog candidate-food workflow"
 );
 assertNotIncludes(englishWetDog, "I will not recommend dry food", "English wet dog customer copy");
 assertNotIncludes(englishWetDog, "needs_review", "English wet dog customer copy");

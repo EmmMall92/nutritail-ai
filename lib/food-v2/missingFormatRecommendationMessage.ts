@@ -80,10 +80,10 @@ export function formatMissingFormatRecommendationMessage({
         "Θέλω να το κρατήσω σωστό: αυτή τη στιγμή δεν έχω αρκετές υγρές τροφές/κονσέρβες στη βάση NutriTail για αξιόπιστη κατάταξη.",
         "",
         "Καλύτερο επόμενο βήμα:",
-        "1. στείλε 1-2 κονσέρβες ή φακελάκια που μπορείς να αγοράσεις εύκολα, ή",
-        "2. στείλε φωτογραφία/στοιχεία ετικέτας με συστατικά, θερμίδες και ανάλυση.",
+        "1. στείλε 1-2 κονσέρβες ή φακελάκια με εταιρεία + ακριβή φόρμουλα, ή",
+        "2. στείλε φωτογραφία ετικέτας με συστατικά, θερμίδες και ανάλυση.",
         "",
-        "Μόλις έχω αυτά τα στοιχεία, μπορώ να συγκρίνω θερμίδες και να υπολογίσω πιο σωστή ποσότητα/ημέρα.",
+        "Μόλις έχω αυτά τα στοιχεία, μπορώ να τα περάσω σαν υποψήφιες επιλογές, να συγκρίνω θερμίδες και να υπολογίσω πιο σωστή ποσότητα/ημέρα.",
       ].join("\n");
     }
 
@@ -121,10 +121,10 @@ export function formatMissingFormatRecommendationMessage({
       "I want to keep this accurate: I do not yet have enough wet/canned foods in NutriTail to rank them reliably.",
       "",
       "Best next step:",
-      "1. send 1-2 cans or pouches you can buy easily, or",
+      "1. send 1-2 cans or pouches with brand + exact formula, or",
       "2. send a label photo with ingredients, calories, and analysis.",
       "",
-      "Once I have those details, I can compare calories and estimate a better daily amount.",
+      "Once I have those details, I can treat them as candidate foods, compare calories, and estimate a better daily amount.",
     ].join("\n");
   }
 

@@ -2714,59 +2714,6 @@ function formatMissingFormatRecommendationMessage(
     mode,
     coverage,
   });
-
-  const alternativePrefix =
-    mode === "alternative"
-      ? language === "el"
-        ? "Δεν βρήκα ακόμη αρκετές ασφαλείς εναλλακτικές με αυτή τη μορφή τροφής."
-        : "I did not find enough safe alternatives in that food format yet."
-      : language === "el"
-        ? "Δεν βρήκα ακόμη αρκετές κατάλληλες επιλογές με αυτή τη μορφή τροφής."
-        : "I did not find enough suitable options in that food format yet.";
-
-  if (pet.preferredFoodFormat === "wet") {
-    return language === "el"
-      ? `${alternativePrefix}
-
-Δεν θέλω να σου προτείνω ξηρά τροφή ενώ μου είπες ότι χρειάζεται υγρή/κονσέρβα.
-
-Καλύτερο επόμενο βήμα:
-1. Στείλε μου 1-2 υγρές τροφές που βρίσκεις εύκολα, ή
-2. στείλε φωτογραφία/ετικέτα από την κονσέρβα/φακελάκι.
-
-Μετά θα τις αξιολογήσω με το ίδιο προφίλ κατοικιδίου και θα σου βγάλω πιο σωστή ποσότητα.`
-      : `${alternativePrefix}
-
-I do not want to recommend dry food when you told me this pet needs wet or canned food.
-
-Best next step:
-1. Send me 1-2 wet foods you can buy easily, or
-2. send a label/photo from the can or pouch.
-
-Then I can evaluate those options against the same pet profile and estimate a better portion.`;
-  }
-
-  if (pet.preferredFoodFormat === "mixed") {
-    return language === "el"
-      ? `${alternativePrefix}
-
-Για ανάμειξη ξηράς με υγρή, χρειάζεται να ξέρουμε ποια τροφή θα είναι η βάση και ποια θα μπαίνει σαν topper.
-
-Καλύτερο επόμενο βήμα: διάλεξε μία βασική ξηρά τροφή ή στείλε την υγρή που θέλεις να προσθέτεις, ώστε να κρατήσουμε σωστές θερμίδες και μερίδα.`
-      : `${alternativePrefix}
-
-For dry plus wet feeding, we need to know which food is the base and which one is the topper.
-
-Best next step: choose one base dry food or share the wet topper you want to add, so we can keep calories and portions sensible.`;
-  }
-
-  return language === "el"
-    ? `${alternativePrefix}
-
-Δώσε μου άλλη γεύση, μάρκα ή πιο συγκεκριμένη προτίμηση και θα ξαναψάξω πιο στοχευμένα.`
-    : `${alternativePrefix}
-
-Share another flavour, brand, or clearer preference and I will search again.`;
 }
 
 async function getFoodV2RecommendationMessage(
