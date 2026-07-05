@@ -3919,6 +3919,9 @@ export default function AccountChatbotPage() {
   const hasSelectedRecommendedFood = Boolean(analysisMetadata?.matchedFoodName);
   const requiresFoodChoiceBeforeSave =
     showSave && hasSelectableFoodRecommendations && !hasSelectedRecommendedFood;
+  const mobileFoodChoiceActions = requiresFoodChoiceBeforeSave
+    ? recommendedFoodChoices.slice(0, 3)
+    : [];
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
       ? botText(
@@ -7338,6 +7341,47 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {mobileFoodChoiceActions.length > 0 && (
+          <div
+            className="mb-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:hidden"
+            data-testid="mobile-food-choice-sticky-actions"
+          >
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                {botText("Διάλεξε τροφή", "Choose a food")}
+              </p>
+              <p className="text-[11px] font-medium text-emerald-900">
+                {botText("για γραμμάρια/ημέρα", "for grams/day")}
+              </p>
+            </div>
+            <div className="flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
+              {mobileFoodChoiceActions.map((choice, index) => (
+                <button
+                  key={`mobile-food-choice-${choice.name}`}
+                  type="button"
+                  onClick={() => chooseRecommendedFood(choice)}
+                  className="min-h-14 max-w-[78vw] shrink-0 snap-start rounded-xl border border-emerald-200 bg-white px-3 py-2 text-left shadow-sm transition focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                >
+                  <span className="block text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+                    {index === 0
+                      ? botText("Πρώτη πρόταση", "First pick")
+                      : getRecommendationChoiceBadgeLabel(choice, index, chatLanguage)}
+                  </span>
+                  <span className="mt-1 block max-h-10 overflow-hidden text-sm font-semibold leading-5 text-emerald-950">
+                    {choice.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs leading-5 text-emerald-900">
+              {botText(
+                "Πάτησε μία επιλογή εδώ ή σε κάρτα πιο πάνω. Μετά θα εμφανιστούν τα γραμμάρια/ημέρα.",
+                "Tap one option here or a card above. Then grams/day will appear."
+              )}
+            </p>
           </div>
         )}
 
