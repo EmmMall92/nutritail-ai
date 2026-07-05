@@ -40,6 +40,12 @@ const fullChecks = [
     covers: "Structured multi-turn dog/cat customer dialogues validate fact extraction, safety interrupts, Food V2 retrieval expectations, ranking constraints, and customer-facing answer quality.",
   },
   {
+    name: "Dialogue corpus smoke",
+    command: "npm.cmd",
+    args: ["run", "qa:dialogue-corpus-smoke"],
+    covers: "Executes dialogue corpus expectations into fast deterministic QA for safety interrupts, allergy filters, comparison authority, growth minerals, feeding context, and customer copy guards.",
+  },
+  {
     name: "Chatbot intake cleanup",
     command: "npm.cmd",
     args: ["run", "qa:chatbot-intake-cleanup"],
