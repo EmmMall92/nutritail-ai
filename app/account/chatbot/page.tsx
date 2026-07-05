@@ -1040,10 +1040,6 @@ function cleanCustomerFoodIntelligenceLabel(value: string) {
     .trim();
 }
 
-function getCustomerFoodIntelligenceBadgeLabel(value: string) {
-  return cleanCustomerFoodIntelligenceLabel(value);
-}
-
 function isRelevantCustomerMedicalLine(
   value: string,
   pet: PetIntake,
@@ -1203,7 +1199,7 @@ function getRecommendationChoiceFacts(
     },
   ];
 
-  return facts.filter((fact) => fact.value);
+  return facts.filter((fact) => fact.value).slice(0, 3);
 }
 
 function getRecommendationChoiceBadgeLabel(
@@ -1296,12 +1292,17 @@ function getRecommendationChoiceReasonText(
   index: number,
   language: ChatLanguage
 ) {
-  if (choice.reason?.trim()) return choice.reason;
+  if (choice.reason?.trim()) {
+    return choice.reason
+      .split(/;|\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)[0] ?? choice.reason.trim();
+  }
 
   return getRecommendationChoiceRoleSummary(choice, index, language);
 }
 
-function getRecommendationChoiceWatchNote(
+function getRecommendationChoiceImportantWatchNote(
   choice: RecommendedFoodChoice,
   weightGoal: WeightGoal | undefined,
   language: ChatLanguage
@@ -1310,25 +1311,21 @@ function getRecommendationChoiceWatchNote(
 
   if (choice.kcalPer100g == null) {
     return language === "el"
-      ? "Για ακριβή γραμμάρια χρειάζεται καθαρή θερμιδική τιμή στην ετικέτα."
-      : "Exact grams need a clear calorie value on the label.";
+      ? "Δεν έχουμε καθαρή θερμιδική τιμή, άρα η ποσότητα θα χρειαστεί επιβεβαίωση από την ετικέτα."
+      : "Calories are not clear yet, so the portion needs label confirmation.";
   }
 
-  if (weightGoal === "loss" || weightGoal === "maintain") {
+  if (
+    (weightGoal === "loss" || weightGoal === "maintain") &&
+    choice.fatPercent != null &&
+    choice.fatPercent >= 16
+  ) {
     return language === "el"
-      ? "Παρακολούθησε βάρος, όρεξη και λιχουδιές για 2-4 εβδομάδες."
-      : "Watch weight, appetite, and treats for 2-4 weeks.";
+      ? "Τα λιπαρά είναι σχετικά ψηλά για ζώο που θέλει έλεγχο βάρους."
+      : "Fat is relatively high for a pet that needs weight control.";
   }
 
-  if (choice.fatPercent != null && choice.fatPercent >= 16) {
-    return language === "el"
-      ? "Κάνε σταδιακή μετάβαση και παρακολούθησε κόπρανα και ανοχή."
-      : "Transition gradually and watch stool quality and tolerance.";
-  }
-
-  return language === "el"
-    ? "Κάνε σταδιακή μετάβαση και έλεγξε όρεξη, κόπρανα και ενέργεια."
-    : "Transition gradually and watch appetite, stool, and energy.";
+  return null;
 }
 
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
@@ -6734,9 +6731,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   <span className="mt-3 text-base font-semibold leading-5 text-black group-hover:text-emerald-800">
                     {choice.name}
                   </span>
-                  <span className="mt-1 text-sm leading-5 text-gray-600">
-                    {getRecommendationChoiceRoleSummary(choice, index, chatLanguage)}
-                  </span>
                   {getRecommendationChoiceFacts(choice, chatLanguage).length > 0 && (
                     <span className="mt-3 rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
                       <span className="block text-xs font-semibold uppercase text-gray-500">
@@ -6785,61 +6779,23 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       </span>
                     </span>
                   )}
-                  {choice.bestUseCases && choice.bestUseCases.length > 0 && (
-                    <span className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm leading-5 text-emerald-950 ring-1 ring-emerald-100">
-                      <span className="block text-xs font-semibold uppercase text-emerald-700">
-                        {botText("Ιδανικό για", "Best for")}
-                      </span>
-                      <span className="mt-1 flex flex-wrap gap-1.5">
-                        {choice.bestUseCases.slice(0, 2).map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100"
-                          >
-                            {getCustomerFoodIntelligenceBadgeLabel(item)}
-                          </span>
-                        ))}
-                        {choice.bestUseCases.length > 2 && (
-                          <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-emerald-900 ring-1 ring-emerald-100">
-                            +{choice.bestUseCases.length - 2}
-                          </span>
-                        )}
-                      </span>
-                    </span>
-                  )}
-                  <span
-                    data-testid="recommendation-card-watch"
-                    className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100"
-                  >
+                  {getRecommendationChoiceImportantWatchNote(
+                    choice,
+                    pet.weightGoal,
+                    chatLanguage
+                  ) && (
+                    <span
+                      data-testid="recommendation-card-watch"
+                      className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100"
+                    >
                       <span className="block text-xs font-semibold uppercase text-amber-700">
                         {botText("Προσοχή", "Watch")}
                       </span>
                       <span>
-                        {getRecommendationChoiceWatchNote(
+                        {getRecommendationChoiceImportantWatchNote(
                           choice,
                           pet.weightGoal,
                           chatLanguage
-                        )}
-                      </span>
-                  </span>
-                  {choice.notIdealCases && choice.notIdealCases.length > 0 && (
-                    <span className="mt-2 rounded-xl bg-orange-50 px-3 py-2 text-sm leading-5 text-orange-950 ring-1 ring-orange-100">
-                      <span className="block text-xs font-semibold uppercase text-orange-700">
-                        {botText("Όχι πρώτη επιλογή για", "Not first choice for")}
-                      </span>
-                      <span className="mt-1 flex flex-wrap gap-1.5">
-                        {choice.notIdealCases.slice(0, 2).map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100"
-                          >
-                            {getCustomerFoodIntelligenceBadgeLabel(item)}
-                          </span>
-                        ))}
-                        {choice.notIdealCases.length > 2 && (
-                          <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-orange-900 ring-1 ring-orange-100">
-                            +{choice.notIdealCases.length - 2}
-                          </span>
                         )}
                       </span>
                     </span>

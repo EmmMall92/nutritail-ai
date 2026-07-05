@@ -835,7 +835,7 @@ const requiredCardFlowCopy = [
   "analysisMetadata.feedingGramsPerDay / 2",
   "getRecommendationChoiceFacts(choice, chatLanguage)",
   "getRecommendationChoiceReasonText(choice, index, chatLanguage)",
-  "getRecommendationChoiceWatchNote(",
+  "getRecommendationChoiceImportantWatchNote(",
   "data-testid=\"recommendation-card-why\"",
   "data-testid=\"recommendation-card-watch\"",
   "dog: { el: \"σκύλους\", en: \"dogs\" }",
@@ -1051,7 +1051,6 @@ const groupedChoiceMarkers = [
   "group.choices.length}/3",
   "If you change your mind before saving, you can tap another card.",
   "cleanCustomerFoodIntelligenceLabel",
-  "getCustomerFoodIntelligenceBadgeLabel",
   "veterinary check",
   "mineral context",
   "omega context",
@@ -1071,6 +1070,21 @@ if (chatbotPage.includes("{item}</span>")) {
   console.error(
     "Recommendation cards must sanitize food-intelligence tags before rendering them to customers."
   );
+  process.exit(1);
+}
+
+const overloadedCardMarkers = [
+  "botText(\"Ιδανικό για\", \"Best for\")",
+  "botText(\"Όχι πρώτη επιλογή για\", \"Not first choice for\")",
+  "getRecommendationChoiceWatchNote(",
+];
+const presentOverloadedCardMarkers = overloadedCardMarkers.filter((marker) =>
+  chatbotPage.includes(marker)
+);
+
+if (presentOverloadedCardMarkers.length > 0) {
+  console.error("Recommendation cards must not overload customers with repeated back-office sections:");
+  console.error(presentOverloadedCardMarkers.join(", "));
   process.exit(1);
 }
 
