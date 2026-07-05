@@ -1860,6 +1860,27 @@ if (
   process.exit(1);
 }
 
+const sterilisedVisibleSplitWithActiveHold = splitFoodV2Recommendations(
+  [moderateActiveForSterilisedRanking, clearSmallSterilisedRanking],
+  3,
+  "sterilised"
+);
+const visibleSterilisedKeysWithActiveHold = [
+  ...sterilisedVisibleSplitWithActiveHold.premium,
+  ...sterilisedVisibleSplitWithActiveHold.value,
+].map((ranking) => ranking.formula_key);
+
+if (visibleSterilisedKeysWithActiveHold.includes(moderateActiveForSterilisedRanking.formula_key)) {
+  console.error(
+    "Held active/performance foods must not appear as customer-visible sterilised alternatives."
+  );
+  console.error({
+    visibleSterilisedKeysWithActiveHold,
+    sterilisedVisibleSplitWithActiveHold,
+  });
+  process.exit(1);
+}
+
 const visibleMiniButMetadataSmallFood = food({
   id: "visible-mini-metadata-small",
   formula_key: "qa|visible-mini-metadata-small|dog|dry",
