@@ -417,7 +417,7 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
       signals.push({
         type: "boost",
         code: "preferred_protein_match",
-        points: 20,
+        points: 24,
         message: "Matches a preferred protein or flavor.",
       });
 
@@ -425,7 +425,7 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
         signals.push({
           type: "boost",
           code: "preferred_protein_visible_match",
-          points: 18,
+          points: 16,
           message: "Formula name visibly matches a preferred protein or flavor.",
         });
       }
@@ -433,7 +433,7 @@ export function evaluateIngredientFitRules(input: IngredientFitInput) {
       signals.push({
         type: "caution",
         code: "preferred_protein_missing",
-        points: -10,
+        points: -12,
         message: "Does not clearly match the pet's preferred protein or flavor.",
       });
     }

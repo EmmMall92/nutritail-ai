@@ -139,6 +139,90 @@ const felineNamedDogFood = [...result.premium, ...result.value, ...result.hold].
   (item) => item.formula_key === "qa|urinary-feline|dog|dry"
 );
 
+const salmonPreferencePet = {
+  ...pet,
+  excludedIngredients: [],
+  preferredProteins: ["salmon"],
+  healthIssues: [],
+};
+const salmonPreferenceFoods = [
+  food({
+    id: "salmon-visible-one",
+    formula_key: "qa|salmon-visible-one|dog|dry",
+    display_name: "Small Adult Salmon",
+    formula_name: "Small Adult Salmon",
+    primary_animal_proteins: ["salmon"],
+    ingredients: ["salmon", "rice"],
+  }),
+  food({
+    id: "salmon-visible-two",
+    formula_key: "qa|salmon-visible-two|dog|dry",
+    display_name: "Small Adult Salmon And Rice",
+    formula_name: "Small Adult Salmon And Rice",
+    primary_animal_proteins: ["salmon"],
+    ingredients: ["salmon", "rice", "beet pulp"],
+    kcal_per_100g: 350,
+  }),
+  food({
+    id: "duck-visible",
+    formula_key: "qa|duck-visible|dog|dry",
+    display_name: "Small Adult Duck",
+    formula_name: "Small Adult Duck",
+    primary_animal_proteins: ["duck"],
+    ingredients: ["duck", "rice"],
+    kcal_per_100g: 330,
+  }),
+  food({
+    id: "lamb-visible",
+    formula_key: "qa|lamb-visible|dog|dry",
+    display_name: "Small Adult Lamb",
+    formula_name: "Small Adult Lamb",
+    primary_animal_proteins: ["lamb"],
+    ingredients: ["lamb", "rice"],
+    kcal_per_100g: 330,
+  }),
+  food({
+    id: "chicken-visible",
+    formula_key: "qa|chicken-visible|dog|dry",
+    display_name: "Small Adult Chicken",
+    formula_name: "Small Adult Chicken",
+    primary_animal_proteins: ["chicken"],
+    ingredients: ["chicken", "rice"],
+    kcal_per_100g: 330,
+  }),
+];
+const salmonPreferenceSplit = splitFoodV2Recommendations(
+  salmonPreferenceFoods.map((item) =>
+    rankFoodV2ForPet({
+      food: item,
+      nutrients: nutrients(item),
+      pet: salmonPreferencePet,
+      goal: "general",
+    })
+  )
+);
+const salmonPreferenceTopKeys = [
+  ...salmonPreferenceSplit.premium,
+  ...salmonPreferenceSplit.value,
+]
+  .slice(0, 2)
+  .map((item) => item.formula_key);
+
+if (
+  !salmonPreferenceTopKeys.every((key) =>
+    ["qa|salmon-visible-one|dog|dry", "qa|salmon-visible-two|dog|dry"].includes(key)
+  )
+) {
+  console.error(
+    "When the pet prefers salmon and suitable salmon foods exist, salmon formulas should be shown before duck, lamb, or chicken."
+  );
+  console.error({
+    salmonPreferenceTopKeys,
+    salmonPreferenceSplit,
+  });
+  process.exit(1);
+}
+
 const genericBreedAdultForSmallSterilised = food({
   id: "generic-breed-adult-small-sterilised",
   formula_key: "qa|generic-breed-adult-small-sterilised|dog|dry",
