@@ -99,12 +99,12 @@ const requiredCustomerCopy = [
     text: "fit and taste",
   },
   {
-    file: "app/account/chatbot/page.tsx",
-    text: "I do not want to recommend dry food when you told me this pet needs wet or canned food.",
+    file: "lib/food-v2/missingFormatRecommendationMessage.ts",
+    text: "I want to keep this accurate: I do not yet have enough wet/canned foods in NutriTail to rank them reliably.",
   },
   {
-    file: "app/account/chatbot/page.tsx",
-    text: "For dry plus wet feeding, we need to know which food is the base and which one is the topper.",
+    file: "lib/food-v2/missingFormatRecommendationMessage.ts",
+    text: "For dry plus wet feeding, I first need to know which food is the base and which one is the topper.",
   },
   {
     file: "app/account/chatbot/page.tsx",
