@@ -5,7 +5,7 @@ import {
   parseTastePreferences,
   removeExcludedFromPreferred,
 } from "@/lib/chatbot/tastePreferences";
-import { formatPetDisplayName } from "@/lib/petName";
+import { formatPetDisplayName, isTechnicalPetName } from "@/lib/petName";
 
 type Check = {
   name: string;
@@ -114,6 +114,25 @@ function runChecks(): Check[] {
       name: "English pet name strips natural named phrase",
       pass: formatPetDisplayName("my dog is named luna") === "Luna",
       details: formatPetDisplayName("my dog is named luna"),
+    },
+    {
+      name: "Technical QA pet names are detected",
+      pass:
+        isTechnicalPetName("QA Live Proof 202607031752") &&
+        isTechnicalPetName("qa live proof") &&
+        !isTechnicalPetName("\u039a\u03cd\u03c1\u03ba\u03b7"),
+      details: JSON.stringify({
+        qaLiveProof: isTechnicalPetName("QA Live Proof 202607031752"),
+        kyrki: isTechnicalPetName("\u039a\u03cd\u03c1\u03ba\u03b7"),
+      }),
+    },
+    {
+      name: "Customer chatbot hides technical QA pets from saved pet choices",
+      pass:
+        chatbotPage.includes("!isTechnicalPetName(savedPet.name)") &&
+        chatbotPage.includes('formatPetDisplayName(pet.name, botText("Κατοικίδιο", "Pet"))'),
+      details:
+        "Prevents live QA proof pets from appearing as customer pet names in the chatbot surface.",
     },
     {
       name: "Preferences keep liked chicken and avoid disliked salmon",
