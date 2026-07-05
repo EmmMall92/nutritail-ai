@@ -346,6 +346,40 @@ function cleanGreekFoodBullet(
     .join("\n");
 }
 
+function hasMedicalSafetyContext(input: ChatbotRecommendationComposerInput) {
+  const goal = String(input.recommendation.goal ?? "general").toLowerCase();
+  if (["renal", "urinary", "pancreatitis"].includes(goal)) return true;
+
+  const healthText = [
+    ...(input.petSummary?.healthIssues ?? []),
+    ...(input.recommendation.notes ?? []),
+    input.deterministicText,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return /\b(renal|kidney|urinary|diabetes|pancreatitis|vomit|vomiting|diarrhea|blood|not eating|anorexia)\b|νεφρ|ουρολογ|διαβητ|παγκρεατ|εμετ|διάρρο|διαρρο|αίμα|αιμα|ανορεξ/u.test(
+    healthText
+  );
+}
+
+function customerSafetyReminder(
+  input: ChatbotRecommendationComposerInput,
+  locale: ComposerLocale
+) {
+  const medicalContext = hasMedicalSafetyContext(input);
+
+  if (locale === "el") {
+    return medicalContext
+      ? "Αν υπάρχει ουρολογικό, νεφρικό, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, η τελική επιλογή πρέπει να γίνει με κτηνίατρο."
+      : "Αν εμφανιστεί έντονος εμετός, διάρροια, αίμα, ανορεξία ή δυσκολία στην ούρηση, μίλησε άμεσα με κτηνίατρο.";
+  }
+
+  return medicalContext
+    ? "Because there is a medical context, the final diet choice should be checked with a veterinarian."
+    : "If severe vomiting, diarrhea, blood, not eating, or trouble urinating appears, contact a veterinarian promptly.";
+}
+
 function buildCleanGreekCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
   const premium = input.recommendation.premium ?? [];
   const value = input.recommendation.value ?? [];
@@ -383,7 +417,7 @@ function buildCleanGreekCustomerFallbackText(input: ChatbotRecommendationCompose
     foods.map((food, index) => cleanGreekFoodBullet(food, index + 1)).join("\n\n"),
     "",
     "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις περίπου γραμμάρια/ημέρα.",
-    "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
+    customerSafetyReminder(input, "el"),
   ].join("\n");
 }
 
@@ -438,7 +472,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
       foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
       "",
       "Επόμενο βήμα: διάλεξε μία τροφή από τις κάρτες για να δεις την πρώτη ποσότητα σε γραμμάρια/ημέρα.",
-      "Αν υπάρχουν ουρολογικά, νεφρικά, διαβήτης, παγκρεατίτιδα, έντονος εμετός, διάρροια, αίμα ή ανορεξία, μίλα πρώτα με κτηνίατρο.",
+      customerSafetyReminder(input, "el"),
     ].join("\n");
   }
 
@@ -450,7 +484,7 @@ function buildCustomerFallbackText(input: ChatbotRecommendationComposerInput) {
     foods.map((food, index) => foodBullet(food, index + 1, locale)).join("\n\n"),
     "",
     "Next step: choose one food card to see the first daily portion in grams.",
-    "For urinary, kidney, diabetes, pancreatitis, severe vomiting, diarrhea, blood, or not eating, speak with a veterinarian first.",
+    customerSafetyReminder(input, "en"),
   ].join("\n");
 }
 
