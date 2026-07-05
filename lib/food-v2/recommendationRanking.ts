@@ -2229,11 +2229,20 @@ export function splitFoodV2Recommendations(
   goal?: FoodV2RecommendationGoal
 ) {
   function visiblePreferenceSortBonus(ranking: FoodV2RankingResult) {
-    return ranking.signals.some(
-      (signal) => signal.code === "preferred_protein_visible_match"
-    )
-      ? 1
-      : 0;
+    if (
+      ranking.signals.some(
+        (signal) => signal.code === "preferred_protein_visible_match"
+      )
+    ) {
+      return 3;
+    }
+    if (ranking.signals.some((signal) => signal.code === "preferred_protein_match")) {
+      return 2;
+    }
+    if (ranking.signals.some((signal) => signal.code === "preferred_protein_missing")) {
+      return -1;
+    }
+    return 0;
   }
 
   function compareCustomerRecommendations(
@@ -2347,7 +2356,12 @@ export function splitFoodV2Recommendations(
   const premium = customerVisibleUsable.filter((ranking) => ranking.bucket === "premium");
   const value = customerVisibleUsable
     .filter((ranking) => ranking.bucket === "value")
-    .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score);
+    .sort(
+      (a, b) =>
+        visiblePreferenceSortBonus(b) - visiblePreferenceSortBonus(a) ||
+        b.value_score - a.value_score ||
+        b.total_score - a.total_score
+    );
 
   if (goal === "value") {
     return {
@@ -2365,7 +2379,12 @@ export function splitFoodV2Recommendations(
   const bestKeys = new Set(bestOverall.map((ranking) => ranking.formula_key));
   const practicalAlternatives = customerVisibleUsable
     .filter((ranking) => !bestKeys.has(ranking.formula_key))
-    .sort((a, b) => b.value_score - a.value_score || b.total_score - a.total_score);
+    .sort(
+      (a, b) =>
+        visiblePreferenceSortBonus(b) - visiblePreferenceSortBonus(a) ||
+        b.value_score - a.value_score ||
+        b.total_score - a.total_score
+    );
 
   return {
     premium: bestOverall,
