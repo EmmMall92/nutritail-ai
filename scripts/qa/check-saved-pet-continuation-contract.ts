@@ -135,6 +135,29 @@ for (const check of checks) {
   }
 }
 
+const chatbotPage = read("app/account/chatbot/page.tsx");
+const handleStepIndex = chatbotPage.indexOf("async function handleStep(text: string)");
+const progressMetricRoutingIndex = chatbotPage.indexOf(
+  "if (hasProgressMetric(text))",
+  handleStepIndex
+);
+const genericPetChoiceFallbackIndex = chatbotPage.indexOf(
+  'if (step === "petChoice")',
+  progressMetricRoutingIndex
+);
+
+assert(
+  handleStepIndex >= 0 &&
+    progressMetricRoutingIndex >= 0 &&
+    genericPetChoiceFallbackIndex >= 0,
+  "Saved-pet continuation contract must include progress metric routing and the generic pet-choice fallback."
+);
+
+assert(
+  progressMetricRoutingIndex < genericPetChoiceFallbackIndex,
+  "Saved-pet progress replies such as `7κιλα` must be routed before the generic pet-choice fallback."
+);
+
 const packageJson = read("package.json");
 
 assert(
