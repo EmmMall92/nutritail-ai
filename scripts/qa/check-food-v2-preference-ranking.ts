@@ -236,6 +236,60 @@ if (
   process.exit(1);
 }
 
+const limitedSalmonPreferenceSplit = splitFoodV2Recommendations(
+  [
+    food({
+      id: "limited-salmon-visible",
+      formula_key: "qa|limited-salmon-visible|dog|dry",
+      display_name: "Small Adult Salmon",
+      formula_name: "Small Adult Salmon",
+      primary_animal_proteins: ["salmon"],
+      ingredients: ["salmon", "rice"],
+      kcal_per_100g: 342,
+    }),
+    food({
+      id: "limited-duck-visible",
+      formula_key: "qa|limited-duck-visible|dog|dry",
+      display_name: "Small Adult Duck",
+      formula_name: "Small Adult Duck",
+      primary_animal_proteins: ["duck"],
+      ingredients: ["duck", "rice"],
+      kcal_per_100g: 330,
+    }),
+    food({
+      id: "limited-chicken-visible",
+      formula_key: "qa|limited-chicken-visible|dog|dry",
+      display_name: "Small Adult Chicken",
+      formula_name: "Small Adult Chicken",
+      primary_animal_proteins: ["chicken"],
+      ingredients: ["chicken", "rice"],
+      kcal_per_100g: 330,
+    }),
+  ].map((item) =>
+    rankFoodV2ForPet({
+      food: item,
+      nutrients: nutrients(item),
+      pet: salmonPreferencePet,
+      goal: "general",
+    })
+  )
+);
+const limitedSalmonPreferenceTop = [
+  ...limitedSalmonPreferenceSplit.premium,
+  ...limitedSalmonPreferenceSplit.value,
+][0];
+
+if (limitedSalmonPreferenceTop?.formula_key !== "qa|limited-salmon-visible|dog|dry") {
+  console.error(
+    "A single suitable preferred flavour should still lead the shortlist before other flavours."
+  );
+  console.error({
+    limitedSalmonPreferenceTop,
+    limitedSalmonPreferenceSplit,
+  });
+  process.exit(1);
+}
+
 const genericBreedAdultForSmallSterilised = food({
   id: "generic-breed-adult-small-sterilised",
   formula_key: "qa|generic-breed-adult-small-sterilised|dog|dry",

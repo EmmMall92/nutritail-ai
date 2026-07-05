@@ -477,6 +477,42 @@ const KNOWN_FOOD_BRANDS = [
   "happy dog",
 ];
 
+const CUSTOMER_INGREDIENT_LABELS: Record<
+  string,
+  { el: string; en: string }
+> = {
+  chicken: { el: "κοτόπουλο", en: "chicken" },
+  turkey: { el: "γαλοπούλα", en: "turkey" },
+  salmon: { el: "σολομό", en: "salmon" },
+  fish: { el: "ψάρι", en: "fish" },
+  lamb: { el: "αρνί", en: "lamb" },
+  beef: { el: "μοσχάρι", en: "beef" },
+  duck: { el: "πάπια", en: "duck" },
+  pork: { el: "χοιρινό", en: "pork" },
+  rabbit: { el: "κουνέλι", en: "rabbit" },
+  rice: { el: "ρύζι", en: "rice" },
+  corn: { el: "καλαμπόκι", en: "corn" },
+  wheat: { el: "σιτάρι", en: "wheat" },
+  dairy: { el: "γαλακτοκομικά", en: "dairy" },
+  legumes: { el: "όσπρια", en: "legumes" },
+  grain: { el: "σιτηρά", en: "grain" },
+};
+
+function formatCustomerIngredientTerm(value: string, language: ChatLanguage) {
+  const key = value.trim().toLowerCase();
+  return CUSTOMER_INGREDIENT_LABELS[key]?.[language] ?? value.trim();
+}
+
+function formatCustomerIngredientList(
+  values: string[] | undefined,
+  language: ChatLanguage
+) {
+  return uniqueTerms(values ?? [])
+    .map((value) => formatCustomerIngredientTerm(value, language))
+    .filter(Boolean)
+    .join(", ");
+}
+
 function formatRecommendationChoiceName(food: FoodV2ChatbotRecommendationItem) {
   return customerFoodName(food);
 }
@@ -2828,7 +2864,7 @@ async function getFoodV2RecommendationMessage(
   }
 }
 
-function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
+function formatCleanPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
   const greek = language === "el";
   const speciesLabel =
     pet.species === "dog"
@@ -2899,16 +2935,16 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
   if ((pet.excludedIngredients ?? []).length > 0) {
     details.push(
       greek
-        ? `Αποφεύγει: ${(pet.excludedIngredients ?? []).join(", ")}`
-        : `Avoids: ${(pet.excludedIngredients ?? []).join(", ")}`
+        ? `Αποφεύγει: ${formatCustomerIngredientList(pet.excludedIngredients, "el")}`
+        : `Avoids: ${formatCustomerIngredientList(pet.excludedIngredients, "en")}`
     );
   }
 
   if ((pet.preferredProteins ?? []).length > 0) {
     details.push(
       greek
-        ? `Προτιμά: ${(pet.preferredProteins ?? []).join(", ")}`
-        : `Likes/prefers: ${(pet.preferredProteins ?? []).join(", ")}`
+        ? `Προτιμά: ${formatCustomerIngredientList(pet.preferredProteins, "el")}`
+        : `Likes/prefers: ${formatCustomerIngredientList(pet.preferredProteins, "en")}`
     );
   }
 
@@ -2932,7 +2968,7 @@ function formatPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "en") {
           : "wet food"
         : pet.preferredFoodFormat === "mixed"
           ? greek
-            ? "ξηρά με υγρή/ανάμειξη"
+            ? "ξηρά με υγρή/ανάμεικτη"
             : "dry with wet/mixed feeding"
           : greek
             ? "ξηρά τροφή"
@@ -4126,8 +4162,8 @@ export default function AccountChatbotPage() {
       createMessage(
         "bot",
         botText(
-          `Σύντομη περίληψη πριν υπολογίσω:\n${formatPetIntakeSummary(nextPet, "el")}`,
-          `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet, "en")}`
+          `Σύντομη περίληψη πριν υπολογίσω:\n${formatCleanPetIntakeSummary(nextPet, "el")}`,
+          `Quick summary before I calculate:\n${formatCleanPetIntakeSummary(nextPet, "en")}`
         )
       )
     );
@@ -5751,8 +5787,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         createMessage(
           "bot",
           botText(
-            `Σύντομη περίληψη πριν υπολογίσω:\n${formatPetIntakeSummary(nextPet, "el")}`,
-            `Quick summary before I calculate:\n${formatPetIntakeSummary(nextPet, "en")}`
+            `Σύντομη περίληψη πριν υπολογίσω:\n${formatCleanPetIntakeSummary(nextPet, "el")}`,
+            `Quick summary before I calculate:\n${formatCleanPetIntakeSummary(nextPet, "en")}`
           )
         )
       );
@@ -6403,6 +6439,38 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 "Choose the food you prefer to see grams per day. If you change your mind before saving, you can tap another card."
               )}
             </p>
+            {((pet.preferredProteins ?? []).length > 0 ||
+              (pet.excludedIngredients ?? []).length > 0) && (
+              <div
+                data-testid="customer-preferences-applied-strip"
+                className="mt-3 rounded-xl border border-emerald-100 bg-white px-3 py-2 text-sm text-emerald-950"
+              >
+                <p className="font-semibold">
+                  {botText(
+                    "Έλαβα υπόψη τις γεύσεις και τις αποφυγές.",
+                    "I used the taste preferences and avoidances."
+                  )}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-emerald-800">
+                  {[
+                    (pet.preferredProteins ?? []).length > 0
+                      ? botText(
+                          `Προτιμά: ${formatCustomerIngredientList(pet.preferredProteins, "el")}`,
+                          `Likes: ${formatCustomerIngredientList(pet.preferredProteins, "en")}`
+                        )
+                      : "",
+                    (pet.excludedIngredients ?? []).length > 0
+                      ? botText(
+                          `Αποφεύγει: ${formatCustomerIngredientList(pet.excludedIngredients, "el")}`,
+                          `Avoids: ${formatCustomerIngredientList(pet.excludedIngredients, "en")}`
+                        )
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
+            )}
             <div
               data-testid="customer-food-choice-confidence-strip"
               className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3"
