@@ -2986,10 +2986,10 @@ function formatCleanPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "e
     details.push(
       pet.budgetMaxEuro
         ? greek
-          ? `Budget: έως περίπου ${pet.budgetMaxEuro}€`
+          ? `Προϋπολογισμός: έως περίπου ${pet.budgetMaxEuro}€`
           : `Budget: up to about €${pet.budgetMaxEuro}`
         : greek
-          ? "Budget: χωρίς αυστηρό όριο"
+          ? "Προϋπολογισμός: χωρίς αυστηρό όριο"
           : "Budget: no strict limit"
     );
   }

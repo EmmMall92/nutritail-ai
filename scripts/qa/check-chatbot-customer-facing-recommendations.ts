@@ -697,6 +697,8 @@ const forbiddenChatbotPageCopy = [
   "Goal: weight maintenance. Calories are based on maintenance needs.",
   "There is no analysis to save yet. Run an analysis first.",
   "There was a problem saving the analysis. Please try again.",
+  "Budget: έως",
+  "Budget: χωρίς",
   "Στόχος: διατήρηση βάρους. Οι θερμίδες βασίζονται στις ανάγκες συντήρησης.",
   "The first card is the strongest start for this pet profile.",
   "stronger starting choices",
