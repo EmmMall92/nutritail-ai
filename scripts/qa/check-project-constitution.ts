@@ -96,6 +96,21 @@ const checks: Check[] = [
     details: "Long-term knowledge belongs in structured data/rules, not long prompts.",
   },
   {
+    name: "Constitution requires knowledge gaps to become assets",
+    pass: hasAll(constitution, [
+      "Knowledge Gap Assetization",
+      "knowledge gap or repeating pattern",
+      "permanent NutriTail asset",
+      "rule",
+      "dataset",
+      "test",
+      "profile",
+      "knowledge module",
+    ]),
+    details:
+      "Repeated gaps should become durable NutriTail assets instead of one-off fixes.",
+  },
+  {
     name: "Constitution requires regression-first testing",
     pass: hasAll(constitution, [
       "Everything important must become a test",
