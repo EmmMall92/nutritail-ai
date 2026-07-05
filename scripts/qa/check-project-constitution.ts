@@ -17,6 +17,16 @@ function hasAll(source: string, required: string[]) {
   return required.every((item) => lower.includes(item.toLowerCase()));
 }
 
+function scriptOrder(source: string, scripts: string[]) {
+  let cursor = -1;
+  for (const script of scripts) {
+    const index = source.indexOf(script);
+    if (index <= cursor) return false;
+    cursor = index;
+  }
+  return true;
+}
+
 const checks: Check[] = [
   {
     name: "Constitution defines NutriTail mission",
@@ -155,8 +165,14 @@ const checks: Check[] = [
     name: "CI readiness includes constitution QA",
     pass:
       packageJson.includes('"qa:project-constitution"') &&
-      packageJson.includes("qa:project-constitution && npm run qa:openai-chatbot-training-contract"),
-    details: "The constitution must stay protected in the default readiness chain.",
+      packageJson.includes('"qa:knowledge-gap-assets"') &&
+      scriptOrder(packageJson, [
+        "qa:project-constitution",
+        "qa:knowledge-gap-assets",
+        "qa:openai-chatbot-training-contract",
+      ]),
+    details:
+      "The constitution and knowledge-gap asset log must stay protected before OpenAI training checks.",
   },
 ];
 

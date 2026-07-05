@@ -164,6 +164,15 @@ const salmonPreferenceFoods = [
     kcal_per_100g: 350,
   }),
   food({
+    id: "salmon-visible-three",
+    formula_key: "qa|salmon-visible-three|dog|dry",
+    display_name: "Small Adult Salmon Sensitive",
+    formula_name: "Small Adult Salmon Sensitive",
+    primary_animal_proteins: ["salmon"],
+    ingredients: ["salmon", "potato", "fish oil"],
+    kcal_per_100g: 345,
+  }),
+  food({
     id: "duck-visible",
     formula_key: "qa|duck-visible|dog|dry",
     display_name: "Small Adult Duck",
@@ -205,12 +214,16 @@ const salmonPreferenceTopKeys = [
   ...salmonPreferenceSplit.premium,
   ...salmonPreferenceSplit.value,
 ]
-  .slice(0, 2)
+  .slice(0, 3)
   .map((item) => item.formula_key);
 
 if (
   !salmonPreferenceTopKeys.every((key) =>
-    ["qa|salmon-visible-one|dog|dry", "qa|salmon-visible-two|dog|dry"].includes(key)
+    [
+      "qa|salmon-visible-one|dog|dry",
+      "qa|salmon-visible-two|dog|dry",
+      "qa|salmon-visible-three|dog|dry",
+    ].includes(key)
   )
 ) {
   console.error(
