@@ -9,7 +9,17 @@ export type SeniorFitSignal = {
 };
 
 export type SeniorFitInput = {
-  food: Pick<FoodProductV2, "format" | "life_stage" | "kcal_per_100g" | "medical_tags">;
+  food: Pick<
+    FoodProductV2,
+    | "format"
+    | "life_stage"
+    | "kcal_per_100g"
+    | "medical_tags"
+    | "formula_name"
+    | "display_name"
+    | "dog_size"
+    | "commercial_tags"
+  >;
   nutrients: Pick<
     FoodNutrientsV2,
     | "protein_percent"
@@ -161,6 +171,26 @@ function hasSeniorChewingConcern(text: string) {
   );
 }
 
+function seniorChewingFoodText(food: SeniorFitInput["food"]) {
+  return [
+    food.formula_name,
+    food.display_name,
+    food.dog_size,
+    ...(food.commercial_tags ?? []),
+  ]
+    .join(" ")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function hasSmallKibbleOrEasyChewPositioning(food: SeniorFitInput["food"]) {
+  const text = seniorChewingFoodText(food);
+  return /xsmall|x-small|extra small|mini|small|small kibble|easy chew|soft kibble|soak|soaked|μικρ|μινι/.test(
+    text
+  );
+}
+
 export function evaluateSeniorFitRules(input: SeniorFitInput) {
   const signals: SeniorFitSignal[] = [];
   const { food, goal, nutrients, pet, positioning, stage } = input;
@@ -283,6 +313,21 @@ export function evaluateSeniorFitRules(input: SeniorFitInput) {
         code: "senior_chewing_soft_food_fit",
         points: 14,
         message: "Wet or soft-format food can help when chewing is difficult.",
+      });
+    } else if (hasSmallKibbleOrEasyChewPositioning(food)) {
+      signals.push({
+        type: "boost",
+        code: "senior_chewing_small_kibble_fit",
+        points: 10,
+        message:
+          "Small-kibble or easy-chew positioning is useful when chewing is difficult.",
+      });
+      signals.push({
+        type: "caution",
+        code: "senior_chewing_texture_review",
+        points: -6,
+        message:
+          "Chewing concerns still need texture review; soaking or wet food may be easier if dry food is difficult.",
       });
     } else {
       signals.push({

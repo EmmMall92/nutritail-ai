@@ -284,6 +284,21 @@ const seniorEnergyDense = rankFoodV2ForPet({
   goal: "senior",
 });
 
+const seniorSmallKibble = rankFoodV2ForPet({
+  food: food({
+    formula_key: "qa-senior-small-kibble",
+    display_name: "QA Senior Small Kibble",
+    formula_name: "Senior Small Kibble",
+    life_stage: "senior",
+    dog_size: "small",
+    commercial_tags: ["senior", "small_kibble"],
+    kcal_per_100g: 370,
+  }),
+  nutrients: nutrients({ protein_percent: 27, fat_percent: 13, fiber_percent: 3 }),
+  pet: seniorPet,
+  goal: "senior",
+});
+
 assert(
   codes(seniorLight).includes("senior_appetite_weight_loss_avoid_light_default"),
   "Senior low appetite or weight loss should not default to light food.",
@@ -298,6 +313,17 @@ assert(
   codes(seniorEnergyDense).includes("senior_chewing_texture_review"),
   "Senior chewing difficulty should request texture/kibble review for dry food.",
   seniorEnergyDense
+);
+assert(
+  codes(seniorSmallKibble).includes("senior_chewing_small_kibble_fit") &&
+    codes(seniorSmallKibble).includes("senior_chewing_texture_review"),
+  "Senior chewing difficulty should reward small-kibble/easy-chew positioning while keeping texture review.",
+  seniorSmallKibble
+);
+assert(
+  seniorSmallKibble.total_score > seniorEnergyDense.total_score,
+  "Senior small-kibble/easy-chew food should outrank otherwise similar dry senior food for chewing difficulty.",
+  { seniorSmallKibble, seniorEnergyDense }
 );
 
 const directSeniorWet = evaluateSeniorFitRules({
