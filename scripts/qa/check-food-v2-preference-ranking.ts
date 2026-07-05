@@ -290,6 +290,28 @@ if (limitedSalmonPreferenceTop?.formula_key !== "qa|limited-salmon-visible|dog|d
   process.exit(1);
 }
 
+const limitedSalmonVisibleKeys = [
+  ...limitedSalmonPreferenceSplit.premium,
+  ...limitedSalmonPreferenceSplit.value,
+].map((item) => item.formula_key);
+
+if (
+  limitedSalmonVisibleKeys.some((key) =>
+    ["qa|limited-duck-visible|dog|dry", "qa|limited-chicken-visible|dog|dry"].includes(
+      key
+    )
+  )
+) {
+  console.error(
+    "When a customer gives a clear preferred protein, non-preferred proteins should not fill the visible value alternatives."
+  );
+  console.error({
+    limitedSalmonVisibleKeys,
+    limitedSalmonPreferenceSplit,
+  });
+  process.exit(1);
+}
+
 const genericBreedAdultForSmallSterilised = food({
   id: "generic-breed-adult-small-sterilised",
   formula_key: "qa|generic-breed-adult-small-sterilised|dog|dry",
