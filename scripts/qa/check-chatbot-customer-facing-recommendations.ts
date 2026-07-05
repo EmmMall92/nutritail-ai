@@ -730,6 +730,8 @@ const requiredCompareNameCleanup = [
   "function getFoodV2CustomerDisplayName",
   "name: getFoodV2CustomerDisplayName(bestV2)",
   "name: getFoodV2CustomerDisplayName(item)",
+  "function isBrandOnlyCompareQuery",
+  'query_kind: "brand_only"',
 ];
 const missingCompareNameCleanup = requiredCompareNameCleanup.filter(
   (term) => !compareRoute.includes(term)
@@ -775,6 +777,9 @@ const requiredCardFlowCopy = [
   "preferredProteins: pet.preferredProteins ?? []",
   "excludedIngredients: pet.excludedIngredients ?? []",
   "formatCompareCustomerTakeaway",
+  "formatCompareCandidateOptions",
+  "this is a brand, not a specific food, so I will not pick a random formula.",
+  "Possible formulas to choose from:",
   "How to choose:",
   "I need the exact product name before I can compare it well.",
   "missing some label details",
