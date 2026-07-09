@@ -42,10 +42,6 @@ function getRedirectLabel(path: string) {
   return "στον λογαριασμό σου";
 }
 
-function isLikelyEmailTypo(value: string) {
-  return /^www\.[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(value.trim());
-}
-
 function isValidCustomerEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
@@ -88,12 +84,6 @@ export default function RegisterPage() {
       }
 
       const trimmedEmail = email.trim();
-
-      if (isLikelyEmailTypo(trimmedEmail)) {
-        throw new Error(
-          "Το email μοιάζει να έχει γραφτεί με www. στην αρχή. Έλεγξέ το, π.χ. niostb@hotmail.com αντί για www.niostb@hotmail.com."
-        );
-      }
 
       if (!isValidCustomerEmail(trimmedEmail)) {
         throw new Error(
