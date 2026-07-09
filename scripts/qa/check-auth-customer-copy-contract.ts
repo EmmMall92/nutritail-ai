@@ -136,6 +136,7 @@ for (const marker of [
 
 const packageJson = read("package.json");
 const resendAuthEmailRunbook = read("docs/email/resend-supabase-auth.md");
+const registerPage = read("app/register/page.tsx");
 
 assert(
   packageJson.includes('"qa:auth-customer-copy"'),
@@ -166,6 +167,13 @@ assert(
   resendAuthEmailRunbook.includes("smtp.resend.com") &&
     resendAuthEmailRunbook.includes("NutriTail AI <no-reply@nutritail.ai>"),
   "Resend auth email runbook must document customer-facing SMTP sender settings."
+);
+
+assert(
+  registerPage.includes("isLikelyEmailTypo") &&
+    registerPage.includes("www.niostb@hotmail.com") &&
+    registerPage.includes("isValidCustomerEmail"),
+  "Register page must catch likely www-prefixed email typos before calling Supabase."
 );
 
 console.log("Auth customer copy contract passed.");

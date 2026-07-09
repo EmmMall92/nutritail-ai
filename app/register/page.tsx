@@ -42,6 +42,14 @@ function getRedirectLabel(path: string) {
   return "στον λογαριασμό σου";
 }
 
+function isLikelyEmailTypo(value: string) {
+  return /^www\.[^@\s]+@[^@\s]+\.[^@\s]+$/i.test(value.trim());
+}
+
+function isValidCustomerEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [redirectPath, setRedirectPath] = useState("/account");
@@ -79,10 +87,24 @@ export default function RegisterPage() {
         );
       }
 
+      const trimmedEmail = email.trim();
+
+      if (isLikelyEmailTypo(trimmedEmail)) {
+        throw new Error(
+          "Το email μοιάζει να έχει γραφτεί με www. στην αρχή. Έλεγξέ το, π.χ. niostb@hotmail.com αντί για www.niostb@hotmail.com."
+        );
+      }
+
+      if (!isValidCustomerEmail(trimmedEmail)) {
+        throw new Error(
+          "Έλεγξε ότι το email είναι γραμμένο σωστά, π.χ. name@example.com."
+        );
+      }
+
       const supabase = createClient();
 
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: trimmedEmail,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}${redirectPath}`,
@@ -107,7 +129,7 @@ export default function RegisterPage() {
         },
         body: JSON.stringify({
           authUserId: data.user.id,
-          email: email.trim(),
+          email: trimmedEmail,
           fullName: fullName.trim(),
         }),
       });
