@@ -91,7 +91,7 @@ export function getCustomerAuthErrorMessage(
     return message;
   }
 
-  if (message.includes("www.") || message.includes("name@example.com")) {
+  if (message.includes("name@example.com")) {
     return message;
   }
 

@@ -28,11 +28,6 @@ const cases = [
     expected: "email επιβεβαίωσης",
   },
   {
-    flow: "register",
-    error: new Error("Το email μοιάζει να έχει γραφτεί με www. στην αρχή."),
-    expected: "www.",
-  },
-  {
     flow: "reset",
     error: new Error("Password should be at least 6 characters"),
     expected: "τουλάχιστον 6 χαρακτήρες",

@@ -170,10 +170,10 @@ assert(
 );
 
 assert(
-  registerPage.includes("isLikelyEmailTypo") &&
-    registerPage.includes("www.niostb@hotmail.com") &&
-    registerPage.includes("isValidCustomerEmail"),
-  "Register page must catch likely www-prefixed email typos before calling Supabase."
+  registerPage.includes("isValidCustomerEmail") &&
+    registerPage.includes("name@example.com") &&
+    !registerPage.includes("isLikelyEmailTypo"),
+  "Register page must validate email shape without blocking valid mailbox names."
 );
 
 console.log("Auth customer copy contract passed.");
