@@ -40,6 +40,16 @@ export function getCustomerAuthErrorMessage(
   }
 
   if (
+    normalized.includes("error sending") ||
+    normalized.includes("failed to send") ||
+    normalized.includes("confirmation email") ||
+    normalized.includes("smtp") ||
+    normalized.includes("email provider")
+  ) {
+    return "Δεν ολοκληρώθηκε η εγγραφή επειδή δεν στάλθηκε το email επιβεβαίωσης. Δοκίμασε ξανά σε λίγο. Αν συνεχιστεί, χρειάζεται έλεγχος στις ρυθμίσεις email του NutriTail.";
+  }
+
+  if (
     normalized.includes("weak password") ||
     normalized.includes("password should be") ||
     normalized.includes("password must be") ||
@@ -78,6 +88,10 @@ export function getCustomerAuthErrorMessage(
     message.startsWith("Οι δύο κωδικοί ") ||
     message.startsWith("Δεν ολοκληρώθηκε ")
   ) {
+    return message;
+  }
+
+  if (message.includes("www.") || message.includes("name@example.com")) {
     return message;
   }
 
