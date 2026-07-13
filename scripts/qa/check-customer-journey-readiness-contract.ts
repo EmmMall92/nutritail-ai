@@ -30,8 +30,8 @@ const checks: ContractCheck[] = [
       "Choose one food card below to estimate daily portions.",
       "Calculate grams/day",
       'data-testid="selected-food-plan-card"',
-      'data-testid="selected-food-next-steps"',
       "First portion:",
+      "Keep treats steady and review weight, appetite, and stool in 2-4 weeks.",
     ],
   },
   {

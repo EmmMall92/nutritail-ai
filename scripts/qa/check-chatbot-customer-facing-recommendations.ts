@@ -781,16 +781,9 @@ const requiredCardFlowCopy = [
   "Calculate grams/day",
   "customer-recommendation-choice-panel",
   "Food choices are ready",
-  "Next: calculate grams/day.",
   "Start with the strongest choices. If budget also matters, check the practical alternatives too.",
   "Choose the food you prefer to see grams per day.",
   "If you change your mind before saving, you can tap another card.",
-  "customer-choice-decision-guide",
-  "ταίριασμα και γεύση",
-  "one food card",
-  "1. Compare",
-  "2. Choose",
-  "3. Get",
   "sm:grid-cols-3",
   "At a glance",
   "Best first choice for this pet's profile.",
@@ -819,25 +812,17 @@ const requiredCardFlowCopy = [
   "Best starting choices",
   "starting choices",
   "Budget-friendly alternatives",
-  "alternatives when flavour, availability, or price matters",
   "Your plan is ready",
   "First portion",
-  "Total: about",
   "2 meals: about",
   "3 meals: about",
   "Save it to keep calories, food choice, and first portion on the profile.",
-  "Start with this amount for 2-4 weeks.",
-  "Review weight, appetite, and stool in 2-4 weeks.",
-  "Next step: press save to keep the food, portion, and report on the profile.",
-  "For the first week, keep meals consistent and avoid adding many new treats or toppers.",
-  "After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour.",
+  "Keep treats steady and review weight, appetite, and stool in 2-4 weeks.",
   "If you decide to change food, do it gradually:",
   "analysisMetadata.feedingGramsPerDay / 2",
   "getRecommendationChoiceFacts(choice, chatLanguage)",
   "getRecommendationChoiceReasonText(choice, index, chatLanguage)",
-  "getRecommendationChoiceImportantWatchNote(",
   "data-testid=\"recommendation-card-why\"",
-  "data-testid=\"recommendation-card-watch\"",
   "dog: { el: \"σκύλους\", en: \"dogs\" }",
   "dry: { el: \"ξηρά τροφή\", en: \"dry food\" }",
   "choice.kcalPer100g == null",
@@ -932,17 +917,11 @@ const requiredGreekCardFlowCopy = [
   "Καλή εναλλακτική",
   "Υπολόγισε γραμμάρια/ημέρα",
   "Οι προτάσεις σου είναι έτοιμες",
-  "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
   "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές",
   "Πάτησε την τροφή που προτιμάς",
   "Με μια ματιά",
   "Πιο οικονομική / πρακτική εναλλακτική",
   "Πώς να το διαβάσεις:",
-  "Οι 3 βασικές προτάσεις",
-  "Πιο πρακτικές / οικονομικές επιλογές",
-  "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή",
-  "Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
-  "εμφανίζονται μόνο όταν περνούν αρκετά καλά τα ίδια κριτήρια",
   "Το διατροφικό πλάνο είναι έτοιμο",
   "Με απλά λόγια για τις θερμίδες",
   "Βασικές θερμίδες σώματος:",
@@ -952,14 +931,9 @@ const requiredGreekCardFlowCopy = [
   "Τώρα διάλεξε μία κάρτα τροφής από κάτω",
   "Το πλάνο σου είναι έτοιμο",
   "Πρώτη ποσότητα",
-  "Σύνολο: περίπου",
   "Σε 2 γεύματα: περίπου",
   "Σε 3 γεύματα: περίπου",
   "Αποθήκευσέ το για να κρατήσεις θερμίδες",
-  "Ξεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες.",
-  "Για την πρώτη εβδομάδα κράτα τα γεύματα σταθερά",
-  "Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.",
-  "Επόμενο βήμα: πάτησε Αποθήκευση",
   "έλεγχο προόδου με νέο βάρος",
   "πρωτεΐνη",
   "λιπαρά",
@@ -1014,7 +988,7 @@ const recommendationBlockIndex = chatbotPage.lastIndexOf(
   "showSave && recommendedFoodChoices.length > 0",
   recommendedChoicesIndex
 );
-const pickStepIndex = chatbotPage.lastIndexOf("1. Compare", recommendedChoicesIndex);
+const pickStepIndex = chatbotPage.indexOf("Calculate grams/day", recommendedChoicesIndex);
 const nutritionFactsIndex = chatbotPage.indexOf(
   "getRecommendationChoiceFacts(choice, chatLanguage).map",
   recommendedChoicesIndex
@@ -1025,7 +999,9 @@ if (
   recommendedChoicesIndex === -1 ||
   recommendationBlockIndex === -1 ||
   pickStepIndex === -1 ||
-  pickStepIndex < recommendationBlockIndex
+  pickStepIndex < recommendationBlockIndex ||
+  nutritionFactsIndex === -1 ||
+  cardCtaIndex === -1
 ) {
   console.error(
     "Customer-facing Pick/Calculate/Save flow must appear inside the recommended food card area."
@@ -1048,7 +1024,7 @@ const groupedChoiceMarkers = [
   "formatCustomerIngredientList(pet.excludedIngredients",
   "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3",
   "group.choices.map",
-  "group.choices.length}/3",
+  "group.choices.length}/{group.key === \"premium\" ? 2 : 1}",
   "If you change your mind before saving, you can tap another card.",
   "cleanCustomerFoodIntelligenceLabel",
   "veterinary check",

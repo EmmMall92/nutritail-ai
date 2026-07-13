@@ -1246,14 +1246,6 @@ function getRecommendationChoiceActionHint(
   choice: RecommendedFoodChoice,
   language: ChatLanguage
 ) {
-  const hasPortionData = choice.kcalPer100g != null && Number.isFinite(choice.kcalPer100g);
-
-  if (hasPortionData) {
-    return language === "el"
-      ? "Επόμενο: υπολόγισε γραμμάρια/ημέρα."
-      : "Next: calculate grams/day.";
-  }
-
   return language === "el"
     ? "Μπορείς να την κρατήσεις στο πλάνο. Για γραμμάρια χρειαζόμαστε καθαρή θερμιδική τιμή."
     : "You can keep this food in the plan. Grams need a clear calorie value.";
@@ -1302,32 +1294,6 @@ function getRecommendationChoiceReasonText(
   return getRecommendationChoiceRoleSummary(choice, index, language);
 }
 
-function getRecommendationChoiceImportantWatchNote(
-  choice: RecommendedFoodChoice,
-  weightGoal: WeightGoal | undefined,
-  language: ChatLanguage
-) {
-  if (choice.caution?.trim()) return choice.caution;
-
-  if (choice.kcalPer100g == null) {
-    return language === "el"
-      ? "Δεν έχουμε καθαρή θερμιδική τιμή, άρα η ποσότητα θα χρειαστεί επιβεβαίωση από την ετικέτα."
-      : "Calories are not clear yet, so the portion needs label confirmation.";
-  }
-
-  if (
-    (weightGoal === "loss" || weightGoal === "maintain") &&
-    choice.fatPercent != null &&
-    choice.fatPercent >= 16
-  ) {
-    return language === "el"
-      ? "Τα λιπαρά είναι σχετικά ψηλά για ζώο που θέλει έλεγχο βάρους."
-      : "Fat is relatively high for a pet that needs weight control.";
-  }
-
-  return null;
-}
-
 function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: number) {
   const emphasis =
     index === 0
@@ -1344,107 +1310,6 @@ function getRecommendationCardClassName(choice: RecommendedFoodChoice, index: nu
   ].join(" ");
 }
 
-function getRecommendationChoicePortionPreview(
-  choice: RecommendedFoodChoice,
-  analysis: PetAnalysis | null,
-  weightGoal: WeightGoal | undefined
-) {
-  if (!analysis) return null;
-
-  const adjustedCalories = adjustCaloriesForWeightGoal({
-    calories: analysis.nutrition.der,
-    goal: weightGoal,
-  });
-  const portionEstimate = calculateMainFoodPortionEstimate({
-    finalDailyCalories: adjustedCalories,
-    kcalPer100g: choice.kcalPer100g,
-  });
-
-  return portionEstimate?.gramsPerDay ?? null;
-}
-
-function getRecommendationShortlistHighlights(
-  choices: RecommendedFoodChoice[],
-  analysis: PetAnalysis | null,
-  weightGoal: WeightGoal | undefined,
-  language: ChatLanguage
-) {
-  const firstChoice = choices[0];
-  const premiumCount = choices.filter((choice) => choice.role !== "value").length;
-  const valueCount = choices.filter((choice) => choice.role === "value").length;
-  const visiblePremiumCount = Math.min(premiumCount, 3);
-  const visibleValueCount = Math.min(valueCount, 3);
-  const hasValueChoices = visibleValueCount > 0;
-  const firstPortion = firstChoice
-    ? getRecommendationChoicePortionPreview(firstChoice, analysis, weightGoal)
-    : null;
-
-  return [
-    {
-      label: language === "el" ? "Πρώτη πρόταση" : "First recommendation",
-      value:
-        firstChoice?.name ??
-        (language === "el" ? "Δεν υπάρχει ακόμη" : "Not ready yet"),
-      detail:
-        language === "el"
-          ? "Η πιο καθαρή αρχή με βάση όσα δήλωσες."
-          : "The clearest starting point based on what you shared.",
-      tone: "border-emerald-200 bg-emerald-50 text-emerald-950",
-    },
-    {
-      label: language === "el" ? "Πρώτη μερίδα" : "First portion",
-      value: firstPortion
-        ? `${firstPortion}g/${language === "el" ? "ημέρα" : "day"}`
-        : language === "el"
-          ? "μετά την επιλογή"
-          : "after choosing",
-      detail:
-        language === "el"
-          ? "Πάτησε τροφή για να δεις γραμμάρια/ημέρα."
-          : "Choose a food to see grams per day.",
-      tone: "border-lime-200 bg-lime-50 text-lime-950",
-    },
-    {
-      label: language === "el" ? "Τι θα δεις" : "What you get",
-      value:
-        language === "el"
-          ? hasValueChoices
-            ? `${visiblePremiumCount} πρώτες + ${visibleValueCount} πρακτικές`
-            : `${visiblePremiumCount} πρώτες επιλογές`
-          : hasValueChoices
-            ? `${visiblePremiumCount} first picks + ${visibleValueCount} practical`
-            : `${visiblePremiumCount} first picks`,
-      detail:
-        language === "el"
-          ? hasValueChoices
-            ? "Πρώτα οι καλύτερες αρχικές επιλογές, μετά οι πιο απλές/οικονομικές."
-            : "Οι εμφανείς κάρτες είναι οι πιο κατάλληλες πρώτες επιλογές για αυτό το προφίλ."
-          : hasValueChoices
-            ? "Best starting choices first, then simpler budget-friendly options."
-            : "The visible cards are the strongest first choices for this profile.",
-      tone: "border-violet-200 bg-violet-50 text-violet-950",
-    },
-    {
-      label: language === "el" ? "Εναλλακτικές" : "Alternatives",
-      value:
-        valueCount > 0
-          ? `${valueCount} ${language === "el" ? "πρακτικές" : "practical"}`
-          : language === "el"
-            ? "μόνο αν ταιριάζουν"
-            : "when they fit",
-      detail:
-        language === "el"
-          ? valueCount > 0
-            ? "Χρήσιμες αν μετράει γεύση, διαθεσιμότητα ή τιμή."
-            : "Δεν δείχνουμε ξεχωριστές value επιλογές όταν δεν περνούν αρκετά καλά τα ίδια κριτήρια."
-          : valueCount > 0
-            ? "Useful when flavour, availability, or price matters."
-            : "We do not show separate value picks unless they pass the same fit checks.",
-      tone: "border-sky-200 bg-sky-50 text-sky-950",
-    },
-  ];
-}
-
 function getRecommendationChoiceGroups(
   choices: RecommendedFoodChoice[],
   language: ChatLanguage
@@ -1452,11 +1317,11 @@ function getRecommendationChoiceGroups(
   const premiumChoices = choices
     .map((choice, index) => ({ choice, index }))
     .filter(({ choice }) => choice.role !== "value")
-    .slice(0, 3);
+    .slice(0, 2);
   const valueChoices = choices
     .map((choice, index) => ({ choice, index }))
     .filter(({ choice }) => choice.role === "value")
-    .slice(0, 3);
+    .slice(0, 1);
 
   return [
     {
@@ -5995,7 +5860,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     });
     const gramsPerDay = portionEstimate?.gramsPerDay ?? null;
     const gramsPerMealTwoMeals = portionEstimate?.gramsPerMealTwoMeals ?? null;
-    const gramsPerMealThreeMeals = portionEstimate?.gramsPerMealThreeMeals ?? null;
 
     setPet((prev) => ({
       ...prev,
@@ -6031,8 +5895,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα:\n- Σύνολο: περίπου ${gramsPerDay}g/ημέρα\n- Σε 2 γεύματα: περίπου ${gramsPerMealTwoMeals}g ανά γεύμα\n- Σε 3 γεύματα: περίπου ${gramsPerMealThreeMeals}g ανά γεύμα\n\nΞεκίνα με αυτή την ποσότητα για 2-4 εβδομάδες. Για την πρώτη εβδομάδα κράτα τα γεύματα σταθερά, χωρίς πολλές νέες λιχουδιές ή πρόσθετα. Παρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια.\n\nΕπόμενο βήμα: πάτησε Αποθήκευση για να κρατήσουμε την τροφή, την ποσότητα και το report στο προφίλ. Μετά μπορείς να γυρίσεις για έλεγχο προόδου με νέο βάρος, πραγματικά γραμμάρια/ημέρα και αν εξακολουθεί να του αρέσει η γεύση.`,
-          `Great, we will keep ${choice.name}.\n\nFirst portion:\n- Total: about ${gramsPerDay}g/day\n- 2 meals: about ${gramsPerMealTwoMeals}g per meal\n- 3 meals: about ${gramsPerMealThreeMeals}g per meal\n\nStart with this amount for 2-4 weeks. For the first week, keep meals consistent and avoid adding many new treats or toppers. Review weight, appetite, and stool in 2-4 weeks.\n\nNext step: press save to keep the food, portion, and report on the profile. After 2-4 weeks, come back for a progress check with the new weight, actual grams/day, appetite, stool, energy, and whether the pet still likes the flavour.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα: περίπου ${gramsPerDay}g/ημέρα ή ${gramsPerMealTwoMeals}g x 2 γεύματα.\n\nΚράτα σταθερές τις λιχουδιές και ξαναδές βάρος, όρεξη και κόπρανα σε 2-4 εβδομάδες. Πάτησε Αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
+          `Great, we will keep ${choice.name}.\n\nFirst portion: about ${gramsPerDay}g/day or ${gramsPerMealTwoMeals}g x 2 meals.\n\nKeep treats steady and review weight, appetite, and stool in 2-4 weeks. Press save to keep this plan on the profile.`
         )
       : botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετά καθαρή θερμιδική πληροφορία για αξιόπιστα γραμμάρια/ημέρα.\n\nΜπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες. Αν βρεις kcal στην ετικέτα, γύρνα για νέο έλεγχο και θα υπολογίσουμε ποσότητα.`,
@@ -6685,166 +6549,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </p>
               </div>
             )}
-            <div
-              data-testid="customer-food-choice-confidence-strip"
-              className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/70 p-3"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                {botText("Πώς να διαλέξεις", "How to choose")}
-              </p>
-              <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-emerald-950 sm:grid-cols-3">
-                <p
-                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
-                  data-testid="customer-food-choice-confidence-item"
-                >
-                  <span className="block font-semibold">
-                    {botText("1. Διατροφικό ταίριασμα", "1. Nutrition fit")}
-                  </span>
-                  <span>
-                    {botText(
-                      "Ξεκίνα από τις πρώτες επιλογές αν θέλεις την πιο δυνατή πρόταση.",
-                      "Start with the first picks when you want the strongest match."
-                    )}
-                  </span>
-                </p>
-                <p
-                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
-                  data-testid="customer-food-choice-confidence-item"
-                >
-                  <span className="block font-semibold">
-                    {botText("2. Γεύση και αποφυγές", "2. Taste and avoidances")}
-                  </span>
-                  <span>
-                    {botText(
-                      "Διάλεξε κάρτα που σέβεται τι του αρέσει και τι δεν τρώει.",
-                      "Pick a card that respects likes, dislikes, and avoidances."
-                    )}
-                  </span>
-                </p>
-                <p
-                  className="rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-100"
-                  data-testid="customer-food-choice-confidence-item"
-                >
-                  <span className="block font-semibold">
-                    {botText("3. Πρακτική καθημερινότητα", "3. Daily practicality")}
-                  </span>
-                  <span>
-                    {botText(
-                      "Αν μετράει τιμή ή διαθεσιμότητα, δες και τις πρακτικές επιλογές.",
-                      "If price or availability matters, check the practical options too."
-                    )}
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div
-              data-testid="customer-choice-decision-guide"
-              className="mt-3 grid grid-cols-1 gap-2 text-xs font-semibold text-gray-700 sm:grid-cols-3"
-            >
-              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
-                <span className="block text-emerald-800">
-                  {botText("1. Σύγκρινε", "1. Compare")}
-                </span>
-                <span className="font-normal text-emerald-950">
-                  {botText("ταίριασμα και γεύση", "fit and taste")}
-                </span>
-              </div>
-              <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
-                <span className="block text-sky-800">
-                  {botText("2. Διάλεξε", "2. Choose")}
-                </span>
-                <span className="font-normal text-sky-950">
-                  {botText("μία κάρτα", "one food card")}
-                </span>
-              </div>
-              <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
-                <span className="block text-amber-800">
-                  {botText("3. Πάρε", "3. Get")}
-                </span>
-                <span className="font-normal text-amber-950">
-                  {botText("γραμμάρια/ημέρα", "grams/day")}
-                </span>
-              </div>
-            </div>
-            <div
-              data-testid="customer-food-journey-stepper"
-              className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {botText("Τι γίνεται μετά", "What happens next")}
-              </p>
-              <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-gray-700 sm:grid-cols-4">
-                {[
-                  botText("1. Βλέπεις τις κάρτες", "1. Review cards"),
-                  botText("2. Πατάς μία τροφή", "2. Pick one food"),
-                  botText("3. Βγαίνουν γραμμάρια/ημέρα", "3. Get grams/day"),
-                  botText("4. Αποθηκεύεις και επιστρέφεις για πρόοδο", "4. Save and check progress"),
-                ].map((step) => (
-                  <div
-                    key={step}
-                    className="rounded-lg bg-white px-3 py-2 ring-1 ring-gray-200"
-                    data-testid="customer-food-journey-stepper-item"
-                  >
-                    {step}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-              <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2">
-                <span className="block font-semibold text-emerald-950">
-                  {botText("Οι 3 βασικές προτάσεις", "Best starting choices")}
-                </span>
-                <span className="text-xs text-emerald-800">
-                  {recommendedFoodChoices.filter((choice) => choice.role !== "value").length}{" "}
-                  {botText("προτάσεις για να ξεκινήσεις", "starting choices")}
-                </span>
-              </div>
-              <div className="rounded-xl border border-sky-100 bg-sky-50 px-3 py-2">
-                <span className="block font-semibold text-sky-950">
-                  {botText(
-                    recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "Πιο πρακτικές / οικονομικές επιλογές"
-                      : "Πιο πρακτικές επιλογές",
-                    recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "Budget-friendly alternatives"
-                      : "Practical alternatives"
-                  )}
-                </span>
-                <span className="text-xs text-sky-800">
-                  {recommendedFoodChoices.some((choice) => choice.role === "value")
-                    ? `${recommendedFoodChoices.filter((choice) => choice.role === "value").length} `
-                    : ""}
-                  {botText(
-                    recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "εναλλακτικές όταν μετράνε γεύση, διαθεσιμότητα ή τιμή"
-                      : "εμφανίζονται μόνο όταν περνούν αρκετά καλά τα ίδια κριτήρια",
-                    recommendedFoodChoices.some((choice) => choice.role === "value")
-                      ? "alternatives when flavour, availability, or price matters"
-                      : "appear only when they pass the same fit checks"
-                  )}
-                </span>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
-              {getRecommendationShortlistHighlights(
-                recommendedFoodChoices,
-                latestAnalysis,
-                pet.weightGoal,
-                chatLanguage
-              ).map((item) => (
-                <div
-                  key={item.label}
-                  className={`rounded-xl border px-3 py-3 ${item.tone}`}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-wide opacity-75">
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-sm font-bold leading-5">{item.value}</p>
-                  <p className="mt-1 text-xs leading-5 opacity-80">{item.detail}</p>
-                </div>
-              ))}
-            </div>
             <div className="mt-4 space-y-4">
               {getRecommendationChoiceGroups(recommendedFoodChoices, chatLanguage).map(
                 (group) => (
@@ -6862,7 +6566,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         </p>
                       </div>
                       <p className="text-xs font-semibold text-gray-600">
-                        {group.choices.length}/3
+                        {group.choices.length}/{group.key === "premium" ? 2 : 1}
                       </p>
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -6922,57 +6626,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                         {getRecommendationChoiceReasonText(choice, index, chatLanguage)}
                       </span>
                   </span>
-                  {getRecommendationChoicePortionPreview(
-                    choice,
-                    latestAnalysis,
-                    pet.weightGoal
-                  ) && (
-                    <span className="mt-3 rounded-xl bg-lime-50 px-3 py-2 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
-                      <span className="block text-xs font-semibold uppercase text-lime-700">
-                        {botText("Περίπου ποσότητα", "Estimated portion")}
-                      </span>
-                      <span>
-                        {getRecommendationChoicePortionPreview(
-                          choice,
-                          latestAnalysis,
-                          pet.weightGoal
-                        )}
-                        g/{botText("ημέρα", "day")}
-                      </span>
-                    </span>
-                  )}
-                  {getRecommendationChoiceImportantWatchNote(
-                    choice,
-                    pet.weightGoal,
-                    chatLanguage
-                  ) && (
-                    <span
-                      data-testid="recommendation-card-watch"
-                      className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-sm leading-5 text-amber-950 ring-1 ring-amber-100"
-                    >
-                      <span className="block text-xs font-semibold uppercase text-amber-700">
-                        {botText("Προσοχή", "Watch")}
-                      </span>
-                      <span>
-                        {getRecommendationChoiceImportantWatchNote(
-                          choice,
-                          pet.weightGoal,
-                          chatLanguage
-                        )}
-                      </span>
-                    </span>
-                  )}
                   {choice.kcalPer100g == null && (
                     <span className="mt-3 text-xs font-medium text-gray-600">
                       {getRecommendationChoiceActionHint(choice, chatLanguage)}
                     </span>
                   )}
-                  <span className="mt-1 text-xs font-semibold text-emerald-800">
-                    {botText(
-                      "Επόμενο: υπολόγισε γραμμάρια/ημέρα.",
-                      "Next: calculate grams/day."
-                    )}
-                  </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Υπολόγισε γραμμάρια/ημέρα", "Calculate grams/day")}
                   </span>
@@ -7004,7 +6662,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </p>
               </div>
             )}
-            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <div className="hidden">
               <p className="font-semibold text-blue-950">
                 {botText("Το πλάνο σου είναι έτοιμο", "Your plan is ready")}
               </p>
@@ -7127,293 +6785,38 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             {analysisMetadata?.matchedFoodName && (
               <div
                 data-testid="selected-food-plan-card"
-                className="rounded-2xl border border-lime-200 bg-lime-50 p-4"
+                className="rounded-2xl border border-lime-200 bg-lime-50 p-3"
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-lime-800">
-                      {botText("Η επιλογή σου", "Your selected food")}
+                    <p className="text-xs font-semibold uppercase tracking-wide text-lime-800">
+                      {botText("Επιλεγμένη τροφή", "Selected food")}
                     </p>
-                    <p className="mt-1 text-lg font-bold leading-6 text-lime-950">
+                    <p className="mt-1 text-base font-bold leading-6 text-lime-950">
                       {analysisMetadata.matchedFoodName}
                     </p>
-                    <p className="mt-1 text-sm leading-5 text-lime-900">
-                      {botText(
-                        "Αν αυτή είναι η τροφή που θέλεις να δοκιμάσεις, αποθήκευσε το πλάνο για να κρατηθούν ποσότητα, θερμίδες και επόμενα βήματα.",
-                        "If this is the food you want to try, save the plan so portion, calories, and next steps stay on the profile."
-                      )}
-                    </p>
                   </div>
-                  <div className="rounded-xl bg-white px-4 py-3 text-center shadow-sm ring-1 ring-lime-100">
-                    <p className="text-xs font-semibold uppercase text-lime-700">
-                      {botText("Πρώτη ποσότητα", "Starting portion")}
-                    </p>
-                    <p className="mt-1 text-2xl font-bold text-lime-950">
-                      {analysisMetadata.feedingGramsPerDay
-                        ? `${analysisMetadata.feedingGramsPerDay}g`
-                        : botText("χωρίς kcal", "no kcal")}
-                    </p>
-                    <p className="text-xs text-lime-800">
-                      {analysisMetadata.feedingGramsPerDay
-                        ? botText("ανά ημέρα", "per day")
-                        : botText("διάλεξε τροφή με θερμίδες", "choose a food with calories")}
-                    </p>
-                  </div>
-                </div>
-
-                {analysisMetadata.feedingGramsPerDay ? (
-                  <>
-                    <div
-                      data-testid="selected-food-pocket-plan"
-                      className="mt-4 rounded-2xl border border-lime-300 bg-white p-4 shadow-sm"
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-wide text-lime-700">
-                        {botText("Το πλάνο με μία ματιά", "At-home pocket plan")}
+                  <div className="grid grid-cols-2 gap-2 text-sm sm:min-w-80">
+                    <div className="rounded-xl bg-white px-3 py-2 text-lime-950 ring-1 ring-lime-100">
+                      <p className="text-xs font-semibold uppercase text-lime-700">
+                        {botText("Ποσότητα", "Portion")}
                       </p>
-                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                          <p className="text-xs font-semibold uppercase text-lime-700">
-                            {botText("Σήμερα δίνω", "Today I feed")}
-                          </p>
-                          <p className="mt-1 text-2xl font-bold">
-                            {analysisMetadata.feedingGramsPerDay}g
-                          </p>
-                          <p className="text-xs text-lime-800">
-                            {botText("σύνολο μέσα στην ημέρα", "total through the day")}
-                          </p>
-                        </div>
-                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                          <p className="text-xs font-semibold uppercase text-lime-700">
-                            {botText("Πρακτικά", "Practically")}
-                          </p>
-                          <p className="mt-1 text-2xl font-bold">
-                            {Math.round(analysisMetadata.feedingGramsPerDay / 2)}g
-                          </p>
-                          <p className="text-xs text-lime-800">
-                            {botText("ανά γεύμα αν κάνει 2 γεύματα", "per meal if fed twice")}
-                          </p>
-                        </div>
-                        <div className="rounded-xl bg-lime-50 px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                          <p className="text-xs font-semibold uppercase text-lime-700">
-                            {botText("Επανέλεγχος", "Check again")}
-                          </p>
-                          <p className="mt-1 text-lg font-bold">
-                            {botText("2-4 εβδομάδες", "2-4 weeks")}
-                          </p>
-                          <p className="text-xs text-lime-800">
-                            {botText(
-                              "με βάρος, όρεξη, κόπρανα και αν του αρέσει ακόμη",
-                              "with weight, appetite, stool, and taste response"
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
-                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                      <p className="font-semibold">{botText("2 γεύματα", "2 meals")}</p>
-                      <p className="mt-1 text-lg font-bold">
-                        {Math.round(analysisMetadata.feedingGramsPerDay / 2)}g
-                      </p>
-                      <p className="text-xs text-lime-800">
-                        {botText("ανά γεύμα", "per meal")}
+                      <p className="font-bold">
+                        {analysisMetadata.feedingGramsPerDay
+                          ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
+                          : botText("θέλει kcal", "needs kcal")}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                      <p className="font-semibold">{botText("3 γεύματα", "3 meals")}</p>
-                      <p className="mt-1 text-lg font-bold">
-                        {Math.round(analysisMetadata.feedingGramsPerDay / 3)}g
+                    <div className="rounded-xl bg-white px-3 py-2 text-lime-950 ring-1 ring-lime-100">
+                      <p className="text-xs font-semibold uppercase text-lime-700">
+                        {botText("Έλεγχος", "Check")}
                       </p>
-                      <p className="text-xs text-lime-800">
-                        {botText("ανά γεύμα", "per meal")}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                      <p className="font-semibold">{botText("Έλεγχος", "Check-in")}</p>
-                      <p className="mt-1 text-sm leading-5">
-                        {botText(
-                          "Ξαναδές βάρος, όρεξη και κόπρανα σε 2-4 εβδομάδες.",
-                          "Review weight, appetite, and stool in 2-4 weeks."
-                        )}
-                      </p>
+                      <p className="font-bold">{botText("2-4 εβδομάδες", "2-4 weeks")}</p>
                     </div>
                   </div>
-                  </>
-                ) : (
-                  <p className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
-                    {botText(
-                      "Κράτα την τροφή ως επιλογή, αλλά για ακριβή γραμμάρια χρειαζόμαστε kcal/100g ή kcal/kg από την ετικέτα.",
-                      "Keep this food as the selected option, but exact grams need kcal/100g or kcal/kg from the label."
-                    )}
-                  </p>
-                )}
-
-                <div className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100">
-                  <p className="font-semibold">
-                    {botText("Πώς ξεκινάς", "How to start")}
-                  </p>
-                  <p className="mt-1">
-                    {botText(
-                      "Κάνε σταδιακή αλλαγή 7 ημερών, κράτα τις λιχουδιές μέσα στο ημερήσιο όριο και μην αλλάξεις ξανά τροφή πριν δεις σταθερά πώς πάει.",
-                      "Transition gradually over 7 days, keep treats inside the daily allowance, and avoid switching again before you see a stable response."
-                    )}
-                  </p>
-                </div>
-
-                <div
-                  data-testid="selected-food-first-week-checklist"
-                  className="mt-4 rounded-xl bg-white px-3 py-3 text-sm leading-5 text-lime-950 ring-1 ring-lime-100"
-                >
-                  <p className="font-semibold">
-                    {botText("Πρώτη εβδομάδα εφαρμογής", "First week checklist")}
-                  </p>
-                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-4">
-                    {[
-                      {
-                        titleEl: "Μέτρα την ποσότητα",
-                        titleEn: "Measure the portion",
-                        textEl: "Χρησιμοποίησε ζυγαριά ή ίδιο δοσομετρητή κάθε μέρα.",
-                        textEn: "Use a scale or the same measuring cup every day.",
-                      },
-                      {
-                        titleEl: "Κράτα σταθερές λιχουδιές",
-                        titleEn: "Keep treats steady",
-                        textEl: "Μην αλλάξεις πολλά πράγματα μαζί την πρώτη εβδομάδα.",
-                        textEn: "Do not change too many things at once in week one.",
-                      },
-                      {
-                        titleEl: "Παρακολούθησε αντίδραση",
-                        titleEn: "Watch the response",
-                        textEl: "Κοίτα όρεξη, κόπρανα, ενέργεια και αν του αρέσει η γεύση.",
-                        textEn:
-                          "Watch appetite, stool, energy, and whether the flavour still works.",
-                      },
-                      {
-                        titleEl: "Γύρνα για έλεγχο",
-                        titleEn: "Come back to check",
-                        textEl: "Σε 2-4 εβδομάδες φέρε βάρος, γραμμάρια/ημέρα και αποτέλεσμα.",
-                        textEn: "In 2-4 weeks, bring weight, grams/day, and the result.",
-                      },
-                    ].map((item) => (
-                      <div
-                        key={item.titleEn}
-                        className="rounded-xl bg-lime-50 px-3 py-2 ring-1 ring-lime-100"
-                      >
-                        <p className="font-semibold">{botText(item.titleEl, item.titleEn)}</p>
-                        <p className="mt-1 text-xs leading-5 text-lime-900">
-                          {botText(item.textEl, item.textEn)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div
-                  data-testid="selected-food-next-steps"
-                  className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3"
-                >
-                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                    <p className="font-semibold">
-                      {botText("1. Αποθήκευση", "1. Save")}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-lime-900">
-                      {botText(
-                        "Πάτησε αποθήκευση για να κρατηθούν τροφή, ποσότητα και στόχος στο προφίλ.",
-                        "Save to keep the food, portion, and goal on the profile."
-                      )}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                    <p className="font-semibold">
-                      {botText("2. Μετάβαση", "2. Transition")}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-lime-900">
-                      {botText(
-                        "Άλλαξε τροφή σταδιακά και μην αλλάξεις ξανά πριν δεις σταθερή εικόνα.",
-                        "Switch gradually and avoid changing again before the response is stable."
-                      )}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-white px-3 py-3 text-lime-950 ring-1 ring-lime-100">
-                    <p className="font-semibold">
-                      {botText("3. Επανέλεγχος", "3. Check-in")}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-lime-900">
-                      {botText(
-                        "Σε 2-4 εβδομάδες γύρνα με βάρος, γραμμάρια, λιχουδιές και αποτέλεσμα.",
-                        "In 2-4 weeks, come back with weight, grams, treats, and results."
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  data-testid="selected-food-action-buttons"
-                  className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3"
-                >
-                  <a
-                    href="#save-analysis-panel"
-                    className="rounded-xl bg-lime-700 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-lime-800"
-                  >
-                    {botText("Αποθήκευση πλάνου", "Save this plan")}
-                  </a>
-                  <a
-                    href="#save-analysis-panel"
-                    className="rounded-xl border border-lime-300 bg-white px-4 py-3 text-center text-sm font-semibold text-lime-950 transition hover:bg-lime-100"
-                  >
-                    {botText("Κράτα το report", "Keep the report")}
-                  </a>
-                  <a
-                    href="#save-analysis-panel"
-                    className="rounded-xl border border-lime-300 bg-white px-4 py-3 text-center text-sm font-semibold text-lime-950 transition hover:bg-lime-100"
-                  >
-                    {botText("Μετά κάνε έλεγχο", "Check progress later")}
-                  </a>
                 </div>
               </div>
             )}
-
-            <div className="rounded-xl border border-emerald-200 bg-white p-4">
-              <p className="font-semibold text-black">
-                {botText("Μετά την αποθήκευση", "After you save")}
-              </p>
-              <p className="mt-1 text-sm text-gray-700">
-                {botText(
-                  "Θα έχεις ένα καθαρό πλάνο για σήμερα και εύκολη συνέχεια αν αλλάξει βάρος, όρεξη, κόπρανα ή προτίμηση τροφής.",
-                  "You will have a clear plan for today and an easy way to continue if weight, appetite, stool, or food preference changes."
-                )}
-              </p>
-              <div className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
-                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
-                  <p className="font-semibold">{botText("Αναφορά", "Report")}</p>
-                  <p className="mt-1 text-xs text-emerald-900">
-                    {botText(
-                      "Θερμίδες, τροφή, ποσότητα και οδηγίες αλλαγής.",
-                      "Calories, food, portion, and transition notes."
-                    )}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
-                  <p className="font-semibold">{botText("Έλεγχος προόδου", "Progress check")}</p>
-                  <p className="mt-1 text-xs text-emerald-900">
-                    {botText(
-                      "Νέο βάρος, γραμμάρια/ημέρα, λιχουδιές και αποτέλεσμα.",
-                      "New weight, grams/day, treats, and results."
-                    )}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-950 ring-1 ring-emerald-100">
-                  <p className="font-semibold">{botText("Αλλαγή τροφής", "Change food")}</p>
-                  <p className="mt-1 text-xs text-emerald-900">
-                    {botText(
-                      "Νέα πρόταση αν αλλάξει γεύση, εταιρεία ή ανοχή.",
-                      "A new suggestion if flavour, brand, or tolerance changes."
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
 
             <div
               id="save-analysis-panel"
@@ -7443,7 +6846,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="hidden">
               <p className="font-semibold text-black">
                 {botText("Ήταν χρήσιμο;", "Was this helpful?")}
               </p>
