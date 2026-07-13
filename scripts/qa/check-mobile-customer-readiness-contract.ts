@@ -65,10 +65,11 @@ const checks: MobileCheck[] = [
     area: "Account dashboard mobile cards",
     file: "app/account/page.tsx",
     markers: [
-      'data-testid="account-today-command-center"',
-      'data-testid="account-latest-activity-strip"',
+      'data-testid="account-next-best-move"',
       'data-testid="account-plan-snapshot"',
       'data-testid="account-beta-usage"',
+      "Ενεργό πλάνο",
+      "Η πλήρης ανάλυση μένει στην αναφορά",
       "grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4",
       "flex flex-col gap-4 lg:flex-row",
       "w-full max-w-sm",
