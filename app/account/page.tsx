@@ -77,22 +77,6 @@ type AccountReadinessStep = {
   actionLabel: string;
 };
 
-type AccountActivityStripItem = {
-  label: string;
-  value: string;
-  detail: string;
-  href: string;
-  actionLabel: string;
-};
-
-type AccountTodayTask = {
-  title: string;
-  detail: string;
-  href: string;
-  actionLabel: string;
-  tone: "primary" | "calm";
-};
-
 type AccountNextBestMoveAction = {
   label: string;
   href: string;
@@ -118,40 +102,6 @@ type AccountPlanSnapshot = {
   reportHref: string;
   timelineHref: string;
   alternativeHref: string;
-};
-
-type AccountHomeBriefCard = {
-  label: string;
-  value: string;
-  detail: string;
-};
-
-type AccountHomeBrief = {
-  title: string;
-  subtitle: string;
-  reportHref: string;
-  progressHref: string;
-  cards: AccountHomeBriefCard[];
-};
-
-type AccountPlanWatchItem = {
-  label: string;
-  detail: string;
-};
-
-type AccountWeeklyLoopStep = {
-  label: string;
-  value: string;
-  detail: string;
-  href: string;
-  actionLabel: string;
-  tone: "today" | "week" | "progress" | "change";
-};
-
-type AccountWeeklyLoop = {
-  title: string;
-  subtitle: string;
-  steps: AccountWeeklyLoopStep[];
 };
 
 type BetaUsageSnapshot = {
@@ -297,215 +247,6 @@ function getAccountPlanSnapshot({
     reportHref: `/print/pet-report/${latestPet.id}`,
     timelineHref: `/print/pet-timeline/${latestPet.id}`,
     alternativeHref: `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`,
-  };
-}
-
-function getAccountHomeBrief({
-  latestPet,
-  latestAnalysis,
-}: {
-  latestPet?: AccountPet;
-  latestAnalysis?: AnalysisHistoryItem;
-}): AccountHomeBrief | null {
-  if (!latestPet || !latestAnalysis) return null;
-
-  const foodName = getAnalysisFoodName(latestAnalysis);
-  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
-  const mealSplit = feedingGrams
-    ? {
-        twoMeals: Math.round(feedingGrams / 2),
-        threeMeals: Math.round(feedingGrams / 3),
-      }
-    : null;
-  const treatCalories =
-    typeof latestAnalysis.mer === "number" && Number.isFinite(latestAnalysis.mer)
-      ? Math.round(latestAnalysis.mer * 0.1)
-      : null;
-  const mainFoodCalories =
-    treatCalories !== null && typeof latestAnalysis.mer === "number"
-      ? Math.max(0, latestAnalysis.mer - treatCalories)
-      : null;
-  const quantityDetail =
-    feedingGrams && mealSplit
-      ? `Πρακτικά: ${mealSplit.twoMeals}g x 2 γεύματα ή ${mealSplit.threeMeals}g x 3 γεύματα. Κράτα την ποσότητα σταθερή πριν κρίνεις το αποτέλεσμα.`
-      : "\u039f\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b5\u03c2, \u03b1\u03bb\u03bb\u03ac \u03bb\u03b5\u03af\u03c0\u03b5\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 kcal/100g \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.";
-
-  return {
-    title: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03c3\u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9",
-    subtitle:
-      "\u0397 \u03c0\u03b9\u03bf \u03b1\u03c0\u03bb\u03ae \u03ad\u03ba\u03b4\u03bf\u03c3\u03b7 \u03c4\u03bf\u03c5 \u03c0\u03bb\u03ac\u03bd\u03bf\u03c5 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b7 \u03c7\u03b1\u03b8\u03b5\u03af \u03b7 \u03c0\u03c1\u03ac\u03be\u03b7.",
-    reportHref: `/print/pet-report/${latestPet.id}`,
-    progressHref: `/account/chatbot?petId=${latestPet.id}&mode=progress`,
-    cards: [
-      {
-        label: "\u03a4\u03c1\u03bf\u03c6\u03ae",
-        value:
-          foodName ??
-          "\u0394\u03b9\u03ac\u03bb\u03b5\u03be\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae",
-        detail: foodName
-          ? "\u0391\u03c5\u03c4\u03ae \u03b5\u03af\u03bd\u03b1\u03b9 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae \u03c0\u03bf\u03c5 \u03ba\u03c1\u03b1\u03c4\u03ae\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03b7\u03bd \u03c4\u03b5\u03bb\u03b5\u03c5\u03c4\u03b1\u03af\u03b1 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7."
-          : "\u0391\u03bd\u03bf\u03af\u03be\u03b5 \u03c4\u03bf chatbot \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9 \u03bc\u03af\u03b1 \u03c3\u03c5\u03b3\u03ba\u03b5\u03ba\u03c1\u03b9\u03bc\u03ad\u03bd\u03b7 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae.",
-      },
-      {
-        label: "\u03a0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1",
-        value: feedingGrams
-          ? `${feedingGrams}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
-          : formatDailyCalories(latestAnalysis.mer),
-        detail: quantityDetail,
-      },
-      {
-        label: "\u039b\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2",
-        value: treatCalories
-          ? `\u03ad\u03c9\u03c2 ${treatCalories} kcal`
-          : "\u03ad\u03c9\u03c2 10%",
-        detail: mainFoodCalories
-          ? `\u039a\u03c1\u03ac\u03c4\u03b1 \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${mainFoodCalories} kcal \u03b3\u03b9\u03b1 \u03c4\u03b7\u03bd \u03ba\u03cd\u03c1\u03b9\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae.`
-          : "\u039c\u03b9\u03ba\u03c1\u03cc \u03bc\u03ad\u03c1\u03bf\u03c2 \u03c4\u03b7\u03c2 \u03b7\u03bc\u03ad\u03c1\u03b1\u03c2, \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b7\u03bd \u03c7\u03b1\u03bb\u03ac\u03b5\u03b9 \u03bf \u03b8\u03b5\u03c1\u03bc\u03b9\u03b4\u03b9\u03ba\u03cc\u03c2 \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2.",
-      },
-      {
-        label: "\u0395\u03c0\u03b1\u03bd\u03ad\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2",
-        value: "2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2",
-        detail:
-          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03c4\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b7 \u03b7 \u03c4\u03c1\u03bf\u03c6\u03ae.",
-      },
-    ],
-  };
-}
-
-function getAccountPlanWatchlist({
-  latestPet,
-  latestAnalysis,
-}: {
-  latestPet?: AccountPet;
-  latestAnalysis?: AnalysisHistoryItem;
-}): AccountPlanWatchItem[] {
-  if (!latestPet || !latestAnalysis) return [];
-
-  const weightGoal = String(getAnalysisWeightGoal(latestAnalysis) ?? "").toLowerCase();
-  const species = latestPet.species;
-  const foodName = getAnalysisFoodName(latestAnalysis);
-  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
-  const items: AccountPlanWatchItem[] = [
-    {
-      label: "Βάρος",
-      detail: weightGoal.includes("loss")
-        ? "Ζύγισε κάθε 2-4 εβδομάδες. Θέλουμε σταδιακή πρόοδο, όχι απότομη πτώση."
-        : weightGoal.includes("gain")
-          ? "Παρακολούθησε αν ανεβαίνει σταδιακά χωρίς να χαλάει η όρεξη ή τα κόπρανα."
-          : "Κράτα σταθερό ρυθμό ζυγίσματος για να δεις γρήγορα αν ξεφεύγει η τάση.",
-    },
-    {
-      label: "Ποσότητα",
-      detail: feedingGrams
-        ? `Ξεκίνα από περίπου ${feedingGrams}g/ημέρα και σημείωσε αν έφαγε όλη την ποσότητα.`
-        : "Μόλις επιλέξεις τροφή με θερμίδες, το NutriTail θα κρατήσει και γραμμάρια/ημέρα.",
-    },
-    {
-      label: "Λιχουδιές",
-      detail:
-        "Σημείωσε πόσες δίνεις μέσα στη μέρα. Μικρές λιχουδιές μπορούν να αλλάξουν το αποτέλεσμα.",
-    },
-    {
-      label: species === "cat" ? "Όρεξη / ούρηση" : "Όρεξη / κόπρανα",
-      detail:
-        species === "cat"
-          ? "Για γάτα, κράτα σημείωση για όρεξη, νερό, τουαλέτα και αλλαγές στην ούρηση."
-          : "Για σκύλο, κράτα σημείωση για όρεξη, ενέργεια, κόπρανα και αποδοχή της τροφής.",
-    },
-  ];
-
-  if (foodName) {
-    items.push({
-      label: "Αποδοχή τροφής",
-      detail:
-        "Αν βαρεθεί γεύση ή εταιρεία, γύρνα στο chatbot για εναλλακτική χωρίς να ξεκινήσεις από την αρχή.",
-    });
-  }
-
-  return items.slice(0, 5);
-}
-
-function getAccountWeeklyLoop({
-  latestPet,
-  latestAnalysis,
-}: {
-  latestPet?: AccountPet;
-  latestAnalysis?: AnalysisHistoryItem;
-}): AccountWeeklyLoop {
-  const petName = latestPet?.name ?? "\u03c4\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf";
-  const foodName = getAnalysisFoodName(latestAnalysis);
-  const feedingGrams = getAnalysisFeedingGrams(latestAnalysis);
-  const progressHref = latestPet
-    ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
-    : "/account/chatbot";
-  const reportHref = latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot";
-  const timelineHref = latestPet ? `/print/pet-timeline/${latestPet.id}` : "/account/chatbot";
-  const alternativeHref = latestPet
-    ? `/account/chatbot?petId=${latestPet.id}&mode=recommendation&reason=flavour`
-    : "/account/chatbot";
-
-  if (!latestPet || !latestAnalysis) {
-    return {
-      title: "\u03a6\u03c4\u03b9\u03ac\u03be\u03b5 \u03c4\u03bf \u03c0\u03c1\u03ce\u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf",
-      subtitle:
-        "\u039c\u03cc\u03bb\u03b9\u03c2 \u03b3\u03af\u03bd\u03b5\u03b9 \u03b7 \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7, \u03b5\u03b4\u03ce \u03b8\u03b1 \u03b2\u03bb\u03ad\u03c0\u03b5\u03b9\u03c2 \u03c4\u03b9 \u03ba\u03ac\u03bd\u03b5\u03b9\u03c2 \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1, \u03c4\u03b9 \u03b5\u03bb\u03ad\u03b3\u03c7\u03b5\u03b9\u03c2 \u03c3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2 \u03ba\u03b1\u03b9 \u03c0\u03cc\u03c4\u03b5 \u03b3\u03c5\u03c1\u03bd\u03ac\u03c2.",
-      steps: [
-        {
-          label: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
-          value: "\u039d\u03ad\u03b1 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
-          detail:
-            "\u0394\u03ce\u03c3\u03b5 \u03b5\u03af\u03b4\u03bf\u03c2, \u03b2\u03ac\u03c1\u03bf\u03c2, \u03b7\u03bb\u03b9\u03ba\u03af\u03b1, \u03c3\u03c4\u03cc\u03c7\u03bf \u03ba\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c4\u03b9\u03bc\u03ae\u03c3\u03b5\u03b9\u03c2 \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2.",
-          href: "/account/chatbot",
-          actionLabel: "\u039e\u03b5\u03ba\u03af\u03bd\u03b1",
-          tone: "today",
-        },
-      ],
-    };
-  }
-
-  return {
-    title: `\u0397 \u03c1\u03bf\u03ae \u03c4\u03bf\u03c5 \u03c0\u03bb\u03ac\u03bd\u03bf\u03c5 \u03b3\u03b9\u03b1 ${petName}`,
-    subtitle:
-      "\u039a\u03c1\u03ac\u03c4\u03b1 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03b1\u03c0\u03bb\u03cc: \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b4\u03af\u03bd\u03b5\u03b9\u03c2 \u03c4\u03b7\u03bd \u03c4\u03c1\u03bf\u03c6\u03ae, \u03c3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2 \u03b5\u03bb\u03ad\u03b3\u03c7\u03b5\u03b9\u03c2 \u03b1\u03c0\u03bf\u03b4\u03bf\u03c7\u03ae, \u03c3\u03b5 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03b3\u03c5\u03c1\u03bd\u03ac\u03c2 \u03bc\u03b5 \u03bd\u03ad\u03b1 \u03c3\u03c4\u03bf\u03b9\u03c7\u03b5\u03af\u03b1.",
-    steps: [
-      {
-        label: "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
-        value: foodName ?? "\u039a\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae",
-        detail: feedingGrams
-          ? `\u039e\u03b5\u03ba\u03af\u03bd\u03b1 \u03bc\u03b5 ${feedingGrams}g/\u03b7\u03bc\u03ad\u03c1\u03b1 \u03ba\u03b1\u03b9 \u03ba\u03c1\u03ac\u03c4\u03b1 \u03c4\u03b9\u03c2 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03bc\u03b5\u03c4\u03c1\u03b7\u03bc\u03ad\u03bd\u03b5\u03c2.`
-          : "\u0394\u03b5\u03c2 \u03c4\u03b7\u03bd \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac \u03ba\u03b1\u03b9 \u03ba\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
-        href: reportHref,
-        actionLabel: "\u0394\u03b5\u03c2 \u03c0\u03bb\u03ac\u03bd\u03bf",
-        tone: "today",
-      },
-      {
-        label: "\u03a3\u03b5 7 \u03b7\u03bc\u03ad\u03c1\u03b5\u03c2",
-        value: "\u0391\u03c0\u03bf\u03b4\u03bf\u03c7\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2",
-        detail:
-          "\u03a3\u03b7\u03bc\u03b5\u03af\u03c9\u03c3\u03b5 \u03cc\u03c1\u03b5\u03be\u03b7, \u03ba\u03cc\u03c0\u03c1\u03b1\u03bd\u03b1, \u03b5\u03bd\u03ad\u03c1\u03b3\u03b5\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03b1\u03bd \u03c4\u03b7 \u03b2\u03b1\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03ae \u03c4\u03bf\u03c5 \u03ac\u03c1\u03b5\u03c3\u03b5.",
-        href: timelineHref,
-        actionLabel: "\u0394\u03b5\u03c2 \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc",
-        tone: "week",
-      },
-      {
-        label: "\u03a3\u03b5 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2",
-        value: "\u0388\u03bb\u03b5\u03b3\u03c7\u03bf\u03c2 \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5",
-        detail:
-          "\u0393\u03cd\u03c1\u03bd\u03b1 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1, \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03ac\u03bb\u03bb\u03b1\u03be\u03b5.",
-        href: progressHref,
-        actionLabel: "\u039a\u03ac\u03bd\u03b5 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf",
-        tone: "progress",
-      },
-      {
-        label: "\u0391\u03bd \u03ba\u03ac\u03c4\u03b9 \u03b4\u03b5\u03bd \u03c0\u03ac\u03b5\u03b9",
-        value: "\u039d\u03ad\u03b1 \u03b3\u03b5\u03cd\u03c3\u03b7 \u03ae \u03bc\u03ac\u03c1\u03ba\u03b1",
-        detail:
-          "\u0396\u03ae\u03c4\u03b7\u03c3\u03b5 \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ae \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03c7\u03c9\u03c1\u03af\u03c2 \u03bd\u03b1 \u03c7\u03b1\u03b8\u03b5\u03af \u03c4\u03bf \u03af\u03b4\u03b9\u03bf pet, \u03bf \u03c3\u03c4\u03cc\u03c7\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03bf \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc.",
-        href: alternativeHref,
-        actionLabel: "\u0392\u03c1\u03b5\u03c2 \u03ac\u03bb\u03bb\u03b7",
-        tone: "change",
-      },
-    ],
   };
 }
 
@@ -713,158 +454,6 @@ function getAccountReadinessSteps({
       actionLabel: latestProgress ? "Νέος έλεγχος" : "Έλεγχος προόδου",
     },
   ];
-}
-
-function getAccountActivityStrip({
-  latestPet,
-  latestAnalysis,
-  latestProgressPet,
-  latestProgress,
-  nextPetToAnalyze,
-}: {
-  latestPet?: AccountPet;
-  latestAnalysis?: AnalysisHistoryItem;
-  latestProgressPet?: AccountPet;
-  latestProgress?: AccountPet["latestProgressLog"];
-  nextPetToAnalyze?: AccountPet;
-}): AccountActivityStripItem[] {
-  const latestProgressMetadata = latestProgress?.metadata;
-
-  return [
-    {
-      label: "Τελευταία ανάλυση",
-      value: latestPet?.name ?? "Δεν υπάρχει ακόμη",
-      detail: latestAnalysis
-        ? getAnalysisFoodName(latestAnalysis)
-          ? `${formatDate(latestAnalysis.createdAt)} - ${getAnalysisFoodName(latestAnalysis)}`
-          : `${formatDate(latestAnalysis.createdAt)} - χρειάζεται επιλογή τροφής`
-        : "Ξεκίνα ανάλυση για να αποθηκευτούν θερμίδες, προτάσεις και αναφορά.",
-      href: latestPet ? `/print/pet-report/${latestPet.id}` : "/account/chatbot",
-      actionLabel: latestPet ? "Άνοιγμα αναφοράς" : "Ξεκίνα ανάλυση",
-    },
-    {
-      label: "Τελευταίος έλεγχος",
-      value: latestProgressPet?.name ?? "Δεν υπάρχει ακόμη",
-      detail: latestProgress
-        ? latestProgressMetadata?.progressDecisionHeadlineEl ??
-          latestProgressMetadata?.progressDecisionHeadlineEn ??
-          getProgressDecisionLabel(latestProgressMetadata?.progressDecisionStatus)
-        : "Μετά από 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια και λιχουδιές.",
-      href: latestProgressPet
-        ? `/account/chatbot?petId=${latestProgressPet.id}&mode=progress`
-        : latestPet
-          ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
-          : "/account/chatbot",
-      actionLabel: "Έλεγχος προόδου",
-    },
-    {
-      label: "Επόμενο καλύτερο βήμα",
-      value: nextPetToAnalyze?.name ?? latestPet?.name ?? "Πρώτο κατοικίδιο",
-      detail: nextPetToAnalyze
-        ? "Αυτό το κατοικίδιο δεν έχει ακόμη διατροφική ανάλυση."
-        : latestPet
-          ? "Αν άλλαξε βάρος, γεύση, μάρκα ή αποδοχή τροφής, ξεκίνα νέα ροή από εδώ."
-          : "Δημιούργησε το πρώτο προφίλ για να ξεκινήσει η προσωποποιημένη εμπειρία.",
-      href: nextPetToAnalyze
-        ? `/account/chatbot?petId=${nextPetToAnalyze.id}`
-        : latestPet
-          ? `/account/chatbot?petId=${latestPet.id}`
-          : "/account/chatbot",
-      actionLabel: nextPetToAnalyze ? "Κάνε ανάλυση" : "Νέα πρόταση",
-    },
-  ];
-}
-
-function getAccountTodayTasks({
-  pets,
-  latestPet,
-  latestAnalysis,
-  latestProgressPet,
-  nextPetToAnalyze,
-}: {
-  pets: AccountPet[];
-  latestPet?: AccountPet;
-  latestAnalysis?: AnalysisHistoryItem;
-  latestProgressPet?: AccountPet;
-  nextPetToAnalyze?: AccountPet;
-}): AccountTodayTask[] {
-  if (pets.length === 0) {
-    return [
-      {
-        title: "Ξεκίνα με το πρώτο κατοικίδιο",
-        detail:
-          "Ο σύμβουλος θα σε ρωτήσει τα βασικά και θα φτιάξει την πρώτη διατροφική εικόνα.",
-        href: "/account/chatbot",
-        actionLabel: "Νέα ανάλυση",
-        tone: "primary",
-      },
-      {
-        title: "Μάθε πώς δουλεύει",
-        detail:
-          "Δες τι δεδομένα χρησιμοποιεί το NutriTail και γιατί οι προτάσεις βασίζονται σε κανόνες.",
-        href: "/how-it-works",
-        actionLabel: "Πώς λειτουργεί",
-        tone: "calm",
-      },
-    ];
-  }
-
-  const reportTarget = latestPet;
-  const progressTarget = latestProgressPet ?? latestPet;
-  const recommendationTarget = latestPet ?? nextPetToAnalyze;
-
-  const tasks: AccountTodayTask[] = [
-    nextPetToAnalyze
-      ? {
-          title: `Ολοκλήρωσε ανάλυση για ${nextPetToAnalyze.name ?? "κατοικίδιο"}`,
-          detail:
-            "Αυτό το κατοικίδιο δεν έχει ακόμη αναφορά. Ξεκίνα από εδώ για θερμίδες, τροφές και ποσότητα.",
-          href: `/account/chatbot?petId=${nextPetToAnalyze.id}`,
-          actionLabel: "Κάνε ανάλυση",
-          tone: "primary",
-        }
-      : {
-          title: "Κάνε νέο έλεγχο ή νέα πρόταση",
-          detail:
-            "Χρήσιμο αν άλλαξε βάρος, γεύση, μάρκα, όρεξη, κόπρανα ή αποδοχή της τροφής.",
-          href: recommendationTarget
-            ? `/account/chatbot?petId=${recommendationTarget.id}`
-            : "/account/chatbot",
-          actionLabel: "Νέα πρόταση",
-          tone: "primary",
-        },
-    {
-      title: "Άνοιξε την τελευταία αναφορά",
-      detail: getAnalysisFeedingGrams(latestAnalysis)
-        ? "Δες θερμίδες, γραμμάρια/ημέρα, τροφή, λιχουδιές και πλάνο μετάβασης."
-        : "Δες την τελευταία σύνοψη και συμπλήρωσε τροφή για πιο ακριβή γραμμάρια.",
-      href: reportTarget ? `/print/pet-report/${reportTarget.id}` : "/account/chatbot",
-      actionLabel: "Άνοιγμα αναφοράς",
-      tone: "calm",
-    },
-    {
-      title: "Έλεγχος προόδου",
-      detail:
-        "Γύρνα με νέο βάρος, γραμμάρια, λιχουδιές, όρεξη, κόπρανα και ενέργεια.",
-      href: progressTarget
-        ? `/account/chatbot?petId=${progressTarget.id}&mode=progress`
-        : "/account/chatbot",
-      actionLabel: "Έλεγχος προόδου",
-      tone: "calm",
-    },
-    {
-      title: "Αλλαγή γεύσης ή εταιρείας",
-      detail:
-        "Αν βαρέθηκε την τροφή ή δεν του ταιριάζει, ζήτησε εναλλακτική χωρίς να ξεκινήσεις από την αρχή.",
-      href: recommendationTarget
-        ? `/account/chatbot?petId=${recommendationTarget.id}&mode=recommendation&reason=flavour`
-        : "/account/chatbot",
-      actionLabel: "Βρες εναλλακτική",
-      tone: "calm",
-    },
-  ];
-
-  return tasks;
 }
 
 function getAccountNextBestMove({
@@ -1128,26 +717,7 @@ export default function AccountPage() {
     latestPet,
     latestAnalysis,
   });
-  const accountHomeBrief = getAccountHomeBrief({
-    latestPet,
-    latestAnalysis,
-  });
-  const accountPlanWatchlist = getAccountPlanWatchlist({
-    latestPet,
-    latestAnalysis,
-  });
-  const accountWeeklyLoop = getAccountWeeklyLoop({
-    latestPet,
-    latestAnalysis,
-  });
   const dashboardNextActions = getDashboardNextActions({
-    pets,
-    latestPet,
-    latestAnalysis,
-    latestProgressPet,
-    nextPetToAnalyze,
-  });
-  const accountTodayTasks = getAccountTodayTasks({
     pets,
     latestPet,
     latestAnalysis,
@@ -1159,13 +729,6 @@ export default function AccountPage() {
     latestPet,
     latestAnalysis,
     latestProgressPet,
-    nextPetToAnalyze,
-  });
-  const accountActivityStrip = getAccountActivityStrip({
-    latestPet,
-    latestAnalysis,
-    latestProgressPet,
-    latestProgress,
     nextPetToAnalyze,
   });
   const betaUsage = getBetaUsageSnapshot(pets);
@@ -1262,231 +825,6 @@ export default function AccountPage() {
         </div>
       </div>
 
-      <div
-        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm"
-        data-testid="account-today-command-center"
-      >
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-              Σήμερα στο NutriTail
-            </p>
-            <h2 className="mt-1 text-2xl font-bold text-emerald-950">
-              Οι πιο χρήσιμες κινήσεις για τον λογαριασμό σου
-            </h2>
-          </div>
-          <p className="max-w-2xl text-sm leading-6 text-emerald-900">
-            Από εδώ συνεχίζεις γρήγορα: νέα ανάλυση, αναφορά, έλεγχο προόδου ή
-            αλλαγή τροφής χωρίς να ψάχνεις σε όλες τις σελίδες.
-          </p>
-        </div>
-
-        <div
-          data-testid="account-next-action-guide"
-          className="mt-5 grid grid-cols-1 gap-3 text-sm md:grid-cols-3"
-        >
-          <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-emerald-950">
-            <p className="font-semibold">
-              {"\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03bd\u03b1 \u03b4\u03b5\u03b9\u03c2 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf"}
-            </p>
-            <p className="mt-1 leading-5 text-emerald-800">
-              {"Άνοιξε την αναφορά για θερμίδες, τροφή, γραμμάρια και πλάνο αλλαγής τροφής."}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-amber-100 bg-white p-4 text-amber-950">
-            <p className="font-semibold">
-              {"\u0391\u03bd \u03c0\u03ad\u03c1\u03b1\u03c3\u03b1\u03bd 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2"}
-            </p>
-            <p className="mt-1 leading-5 text-amber-800">
-              {"\u039a\u03ac\u03bd\u03b5 \u03ad\u03bb\u03b5\u03b3\u03c7\u03bf \u03c0\u03c1\u03bf\u03cc\u03b4\u03bf\u03c5 \u03bc\u03b5 \u03bd\u03ad\u03bf \u03b2\u03ac\u03c1\u03bf\u03c2, \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ac \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03bb\u03b9\u03c7\u03bf\u03c5\u03b4\u03b9\u03ad\u03c2."}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-violet-100 bg-white p-4 text-violet-950">
-            <p className="font-semibold">
-              {"\u0391\u03bd \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03ac\u03bb\u03bb\u03b7 \u03b3\u03b5\u03cd\u03c3\u03b7 \u03ae \u03b5\u03c4\u03b1\u03b9\u03c1\u03b5\u03af\u03b1"}
-            </p>
-            <p className="mt-1 leading-5 text-violet-800">
-              {"\u0396\u03ae\u03c4\u03b7\u03c3\u03b5 \u03bd\u03ad\u03b1 \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7 \u03ba\u03c1\u03b1\u03c4\u03ce\u03bd\u03c4\u03b1\u03c2 \u03c4\u03bf \u03af\u03b4\u03b9\u03bf \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf, \u03c3\u03c4\u03cc\u03c7\u03bf \u03ba\u03b1\u03b9 \u03b9\u03c3\u03c4\u03bf\u03c1\u03b9\u03ba\u03cc."}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {accountTodayTasks.map((task) => (
-            <Link
-              key={task.title}
-              href={task.href}
-              className={`rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
-                task.tone === "primary"
-                  ? "border-emerald-950 bg-emerald-950 text-white"
-                  : "border-emerald-100 bg-white text-emerald-950 hover:border-emerald-400"
-              }`}
-            >
-              <p className="font-semibold">{task.title}</p>
-              <p
-                className={`mt-2 text-sm leading-6 ${
-                  task.tone === "primary" ? "text-emerald-50" : "text-emerald-900"
-                }`}
-              >
-                {task.detail}
-              </p>
-              <p
-                className={`mt-4 text-sm font-semibold ${
-                  task.tone === "primary" ? "text-white" : "text-emerald-950"
-                }`}
-              >
-                {task.actionLabel}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div
-        className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50 p-6 shadow-sm"
-        data-testid="account-customer-week-loop"
-      >
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-fuchsia-700">
-              {"\u0395\u03b2\u03b4\u03bf\u03bc\u03b1\u03b4\u03b9\u03b1\u03af\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf"}
-            </p>
-            <h2 className="mt-1 text-2xl font-bold text-fuchsia-950">
-              {accountWeeklyLoop.title}
-            </h2>
-          </div>
-          <p className="max-w-2xl text-sm leading-6 text-fuchsia-900">
-            {accountWeeklyLoop.subtitle}
-          </p>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {accountWeeklyLoop.steps.map((step) => (
-            <Link
-              key={`${step.label}-${step.value}`}
-              href={step.href}
-              data-testid="account-customer-week-loop-step"
-              className={`rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
-                step.tone === "today"
-                  ? "border-fuchsia-950 bg-fuchsia-950 text-white"
-                  : step.tone === "week"
-                    ? "border-sky-100 bg-white text-sky-950 hover:border-sky-300"
-                    : step.tone === "progress"
-                      ? "border-amber-100 bg-white text-amber-950 hover:border-amber-300"
-                      : "border-violet-100 bg-white text-violet-950 hover:border-violet-300"
-              }`}
-            >
-              <p
-                className={`text-xs font-semibold uppercase tracking-wide ${
-                  step.tone === "today" ? "text-fuchsia-100" : "text-gray-500"
-                }`}
-              >
-                {step.label}
-              </p>
-              <p className="mt-2 text-lg font-bold">{step.value}</p>
-              <p
-                className={`mt-2 text-sm leading-6 ${
-                  step.tone === "today" ? "text-fuchsia-50" : "text-gray-700"
-                }`}
-              >
-                {step.detail}
-              </p>
-              <p className="mt-4 text-sm font-semibold">{step.actionLabel}</p>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div
-        className="rounded-2xl border border-blue-100 bg-blue-50 p-6 shadow-sm"
-        data-testid="account-latest-activity-strip"
-      >
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-              Συνέχισε από εκεί που έμεινες
-            </p>
-            <h2 className="mt-1 text-2xl font-bold text-blue-950">
-              Η τελευταία εικόνα του λογαριασμού σου
-            </h2>
-          </div>
-          <p className="max-w-2xl text-sm leading-6 text-blue-900">
-            Εδώ βλέπεις γρήγορα την τελευταία ανάλυση, τον τελευταίο έλεγχο
-            προόδου και το πιο χρήσιμο επόμενο βήμα.
-          </p>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {accountActivityStrip.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="rounded-xl border border-blue-100 bg-white p-4 text-blue-950 transition hover:border-blue-400 hover:bg-blue-100"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
-                {item.label}
-              </p>
-              <p className="mt-2 font-bold">{item.value}</p>
-              <p className="mt-1 text-sm leading-5 text-blue-900">
-                {item.detail}
-              </p>
-              <p className="mt-3 text-sm font-semibold text-blue-950">
-                {item.actionLabel}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {accountHomeBrief && (
-        <div
-          className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm"
-          data-testid="account-home-brief"
-        >
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                {accountHomeBrief.title}
-              </p>
-              <h2 className="mt-1 text-2xl font-bold text-black">
-                {accountHomeBrief.subtitle}
-              </h2>
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Link
-                href={accountHomeBrief.reportHref}
-                className="rounded-xl bg-emerald-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-800"
-              >
-                Πλήρης αναφορά
-              </Link>
-              <Link
-                href={accountHomeBrief.progressHref}
-                className="rounded-xl border border-emerald-300 px-4 py-3 text-center text-sm font-semibold text-emerald-950 transition hover:bg-emerald-50"
-              >
-                Έλεγχος προόδου
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-4">
-            {accountHomeBrief.cards.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-xl border border-emerald-100 bg-emerald-50 p-4"
-              >
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                  {item.label}
-                </p>
-                <p className="mt-2 font-bold text-emerald-950">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-emerald-900">
-                  {item.detail}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {accountPlanSnapshot && (
         <div
           className="rounded-2xl border border-teal-200 bg-white p-6 shadow-sm"
@@ -1495,7 +833,7 @@ export default function AccountPage() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
-                Σημερινό πλάνο
+                Ενεργό πλάνο
               </p>
               <h2 className="mt-2 text-2xl font-bold text-black">
                 {accountPlanSnapshot.petName}
@@ -1504,23 +842,29 @@ export default function AccountPage() {
                 {accountPlanSnapshot.weightGoal}
               </p>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-700">
-                Η πιο πρόσφατη αποθηκευμένη οδηγία σου συγκεντρωμένη σε ένα
-                σημείο, για να ξέρεις τι ταΐζεις και πότε χρειάζεται έλεγχος.
+                Τα βασικά που χρειάζεσαι σήμερα: τροφή, θερμίδες, ποσότητα και επόμενο βήμα.
+                Η πλήρης ανάλυση μένει στην αναφορά.
               </p>
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
               <Link
-                href={accountPlanSnapshot.progressHref}
+                href={accountPlanSnapshot.reportHref}
                 className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+              >
+                Άνοιγμα αναφοράς
+              </Link>
+              <Link
+                href={accountPlanSnapshot.progressHref}
+                className="rounded-xl border border-teal-300 px-4 py-2 text-center text-sm font-medium text-teal-900 transition hover:bg-teal-50"
               >
                 Έλεγχος προόδου
               </Link>
               <Link
-                href={accountPlanSnapshot.reportHref}
-                className="rounded-xl border border-teal-300 px-4 py-2 text-center text-sm font-medium text-teal-900 transition hover:bg-teal-50"
+                href={accountPlanSnapshot.alternativeHref}
+                className="rounded-xl border border-violet-200 px-4 py-2 text-center text-sm font-medium text-violet-900 transition hover:bg-violet-50"
               >
-                Άνοιγμα αναφοράς
+                Άλλη τροφή
               </Link>
             </div>
           </div>
@@ -1544,7 +888,7 @@ export default function AccountPage() {
             </div>
             <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Γραμμάρια/ημέρα
+                Ποσότητα
               </p>
               <p className="mt-2 font-semibold text-gray-950">
                 {accountPlanSnapshot.gramsPerDay}
@@ -1552,191 +896,15 @@ export default function AccountPage() {
             </div>
             <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Κατάσταση
+                Επανέλεγχος
               </p>
               <p className="mt-2 font-semibold text-gray-950">
-                {accountPlanSnapshot.foodFit}
+                2-4 εβδομάδες
               </p>
             </div>
-          </div>
-
-          {accountPlanWatchlist.length > 0 && (
-            <div
-              data-testid="account-plan-watchlist"
-              className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
-            >
-              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                    Μέχρι τον επόμενο έλεγχο
-                  </p>
-                  <h3 className="mt-1 text-lg font-bold text-emerald-950">
-                    Τι αξίζει να παρακολουθείς
-                  </h3>
-                </div>
-                <p className="max-w-2xl text-sm leading-6 text-emerald-900">
-                  Κράτα αυτές τις μικρές σημειώσεις. Θα βοηθήσουν τον επόμενο
-                  έλεγχο προόδου να δώσει πιο σωστή απόφαση.
-                </p>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
-                {accountPlanWatchlist.map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-xl border border-emerald-100 bg-white p-3"
-                  >
-                    <p className="text-sm font-semibold text-emerald-950">
-                      {item.label}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-emerald-900">
-                      {item.detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div
-            data-testid="account-progress-check-reminder"
-            className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4"
-          >
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
-                  Επόμενος έλεγχος
-                </p>
-                <h3 className="mt-1 text-lg font-bold text-amber-950">
-                  Σε 2-4 εβδομάδες κάνε έλεγχο προόδου
-                </h3>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
-                  Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα, λιχουδιές,
-                  όρεξη, κόπρανα ή ούρηση, ενέργεια και αν του αρέσει ακόμη η
-                  τροφή. Έτσι η επόμενη πρόταση δεν ξεκινά από το μηδέν.
-                </p>
-              </div>
-              <Link
-                href={accountPlanSnapshot.progressHref}
-                className="rounded-xl bg-amber-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-amber-800"
-              >
-                Άνοιγμα ελέγχου προόδου
-              </Link>
-            </div>
-          </div>
-
-          <div
-            data-testid="account-plan-decision-guide"
-            className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4"
-          >
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Αν κάτι αλλάξει
-                </p>
-                <h3 className="mt-1 text-lg font-bold text-slate-950">
-                  Διάλεξε την επόμενη κίνηση χωρίς να ξεκινήσεις από την αρχή
-                </h3>
-              </div>
-              <p className="max-w-2xl text-sm leading-6 text-slate-700">
-                Το ίδιο κατοικίδιο μπορεί να συνεχίσει με έλεγχο προόδου, νέα
-                πρόταση ή αλλαγή γεύσης/εταιρείας, κρατώντας το ιστορικό του.
-              </p>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-              <Link
-                href={accountPlanSnapshot.reportHref}
-                className="rounded-xl border border-emerald-100 bg-white p-4 text-emerald-950 transition hover:border-emerald-300 hover:bg-emerald-50"
-              >
-                <p className="font-semibold">Πάει καλά</p>
-                <p className="mt-1 text-sm leading-5 text-emerald-800">
-                  Κράτα την ίδια ποσότητα, δες την αναφορά και έλεγξε ξανά σε
-                  2-4 εβδομάδες.
-                </p>
-              </Link>
-              <Link
-                href={accountPlanSnapshot.progressHref}
-                className="rounded-xl border border-amber-100 bg-white p-4 text-amber-950 transition hover:border-amber-300 hover:bg-amber-50"
-              >
-                <p className="font-semibold">Δεν βλέπω αλλαγή</p>
-                <p className="mt-1 text-sm leading-5 text-amber-800">
-                  Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα και λιχουδιές για
-                  να ελέγξουμε αν θέλει προσαρμογή.
-                </p>
-              </Link>
-              <Link
-                href={accountPlanSnapshot.alternativeHref}
-                className="rounded-xl border border-violet-100 bg-white p-4 text-violet-950 transition hover:border-violet-300 hover:bg-violet-50"
-              >
-                <p className="font-semibold">Δεν του ταιριάζει η τροφή</p>
-                <p className="mt-1 text-sm leading-5 text-violet-800">
-                  Ζήτησε άλλη γεύση ή εταιρεία χωρίς να χαθούν βάρος, στόχος και
-                  προηγούμενη ανάλυση.
-                </p>
-              </Link>
-            </div>
-          </div>
-
-          <div
-            data-testid="account-plan-next-steps"
-            className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2 xl:grid-cols-4"
-          >
-            <Link
-              href={accountPlanSnapshot.reportHref}
-              className="rounded-xl border border-teal-100 bg-teal-50 p-4 text-teal-950 transition hover:border-teal-300 hover:bg-teal-100"
-            >
-              <p className="font-semibold">1. Δες την αναφορά</p>
-              <p className="mt-1 leading-5 text-teal-800">
-                Κράτα σε ένα σημείο θερμίδες, τροφή, ποσότητα και οδηγίες μετάβασης.
-              </p>
-            </Link>
-            <Link
-              href={accountPlanSnapshot.timelineHref}
-              className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-blue-950 transition hover:border-blue-300 hover:bg-blue-100"
-            >
-              <p className="font-semibold">2. Παρακολούθησε την πορεία</p>
-              <p className="mt-1 leading-5 text-blue-800">
-                Το ιστορικό δείχνει αναλύσεις, αλλαγές τροφής και ελέγχους προόδου.
-              </p>
-            </Link>
-            <Link
-              href={accountPlanSnapshot.progressHref}
-              className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-amber-950 transition hover:border-amber-300 hover:bg-amber-100"
-            >
-              <p className="font-semibold">3. Κάνε έλεγχο προόδου</p>
-              <p className="mt-1 leading-5 text-amber-800">
-                Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές.
-              </p>
-            </Link>
-            <Link
-              href={accountPlanSnapshot.alternativeHref}
-              className="rounded-xl border border-violet-100 bg-violet-50 p-4 text-violet-950 transition hover:border-violet-300 hover:bg-violet-100"
-            >
-              <p className="font-semibold">4. Άλλαξε γεύση ή εταιρεία</p>
-              <p className="mt-1 leading-5 text-violet-800">
-                Αν βαρέθηκε την τροφή ή δεν του ταιριάζει, κράτα το ίδιο προφίλ και ζήτησε νέα πρόταση.
-              </p>
-            </Link>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2 text-sm">
-            <Link
-              href={accountPlanSnapshot.timelineHref}
-              className="rounded-full bg-teal-50 px-4 py-2 font-medium text-teal-900 transition hover:bg-teal-100"
-            >
-              Δες ιστορικό
-            </Link>
-            <Link
-              href={accountPlanSnapshot.progressHref}
-              className="rounded-full bg-gray-100 px-4 py-2 font-medium text-gray-900 transition hover:bg-gray-200"
-            >
-              Σε 2-4 εβδομάδες έλεγξε βάρος, όρεξη και κόπρανα
-            </Link>
           </div>
         </div>
       )}
-
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -1747,8 +915,7 @@ export default function AccountPage() {
               {completedReadinessSteps}/4 βασικά βήματα έτοιμα
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-gray-600">
-              Έτσι βλέπεις γρήγορα αν ο λογαριασμός έχει προφίλ, ανάλυση,
-              πλάνο τροφής και επόμενο έλεγχο προόδου.
+              Έτσι βλέπεις γρήγορα αν υπάρχει προφίλ, ανάλυση, πλάνο τροφής και επόμενος έλεγχος.
             </p>
           </div>
           <div className="w-full max-w-sm">
@@ -1763,8 +930,7 @@ export default function AccountPage() {
               />
             </div>
             <p className="mt-2 text-right text-xs font-medium text-gray-500">
-              {Math.round((completedReadinessSteps / readinessSteps.length) * 100)}
-              % ολοκλήρωση λογαριασμού
+              {Math.round((completedReadinessSteps / readinessSteps.length) * 100)}% ολοκλήρωση
             </p>
           </div>
         </div>
@@ -1779,30 +945,22 @@ export default function AccountPage() {
               <div className="flex items-center justify-between gap-3">
                 <span
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-                    step.isComplete
-                      ? "bg-black text-white"
-                      : "bg-white text-gray-700"
+                    step.isComplete ? "bg-black text-white" : "bg-white text-gray-700"
                   }`}
                 >
                   {step.isComplete ? "✓" : index + 1}
                 </span>
                 <span
                   className={`rounded-full px-2 py-1 text-xs font-semibold ${
-                    step.isComplete
-                      ? "bg-green-100 text-green-800"
-                      : "bg-white text-gray-600"
+                    step.isComplete ? "bg-green-100 text-green-800" : "bg-white text-gray-600"
                   }`}
                 >
                   {step.isComplete ? "Έτοιμο" : "Επόμενο"}
                 </span>
               </div>
               <h3 className="mt-4 font-semibold text-black">{step.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                {step.detail}
-              </p>
-              <p className="mt-3 text-sm font-semibold text-black">
-                {step.actionLabel}
-              </p>
+              <p className="mt-2 text-sm leading-6 text-gray-600">{step.detail}</p>
+              <p className="mt-3 text-sm font-semibold text-black">{step.actionLabel}</p>
             </Link>
           ))}
         </div>
@@ -1819,8 +977,7 @@ export default function AccountPage() {
             </h2>
           </div>
           <p className="max-w-2xl text-sm text-gray-600">
-            Διάλεξε γρήγορα αν θέλεις πρόοδο, αναφορά ή νέα πρόταση τροφής,
-            χωρίς να ψάχνεις σε όλες τις σελίδες.
+            Διάλεξε γρήγορα αν θέλεις πρόοδο, αναφορά ή νέα πρόταση τροφής.
           </p>
         </div>
 
@@ -1847,130 +1004,6 @@ export default function AccountPage() {
           ))}
         </div>
       </div>
-
-      <div
-        className="rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm"
-        data-testid="account-weekly-rhythm"
-      >
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-violet-700">
-              Ρυθμός παρακολούθησης
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-violet-950">
-              Τι να κάνεις από σήμερα μέχρι τον επόμενο έλεγχο
-            </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-violet-900">
-              Το NutriTail δουλεύει καλύτερα όταν κρατάς λίγα απλά στοιχεία:
-              τροφή, γραμμάρια, λιχουδιές, βάρος, όρεξη και κόπρανα.
-            </p>
-          </div>
-
-          <Link
-            href={
-              latestPet
-                ? `/account/chatbot?petId=${latestPet.id}&mode=progress`
-                : "/account/chatbot"
-            }
-            className="rounded-xl bg-violet-700 px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-violet-800"
-          >
-            {latestPet ? "Κάνε έλεγχο προόδου" : "Ξεκίνα ανάλυση"}
-          </Link>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-violet-100 bg-white p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
-              Σήμερα
-            </p>
-            <h3 className="mt-2 font-semibold text-violet-950">
-              Κράτα το πλάνο καθαρό
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-violet-900">
-              Άνοιξε την αναφορά, διάλεξε τροφή και κράτα την πρώτη ποσότητα σε
-              γραμμάρια/ημέρα.
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-violet-100 bg-white p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
-              Σε 7 ημέρες
-            </p>
-            <h3 className="mt-2 font-semibold text-violet-950">
-              Έλεγξε αποδοχή τροφής
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-violet-900">
-              Παρατήρησε όρεξη, ενέργεια, κόπρανα, φαγούρα και αν βαρέθηκε τη
-              γεύση ή την εταιρεία.
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-violet-100 bg-white p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
-              Σε 2-4 εβδομάδες
-            </p>
-            <h3 className="mt-2 font-semibold text-violet-950">
-              Κάνε νέο έλεγχο προόδου
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-violet-900">
-              Δώσε νέο βάρος, ποσότητα, λιχουδιές και αλλαγές για να δούμε αν
-              συνεχίζουμε ή αλλάζουμε πλάνο.
-            </p>
-          </div>
-        </div>
-
-        <div
-          className="mt-5 rounded-2xl border border-violet-100 bg-white p-4"
-          data-testid="account-progress-return-kit"
-        >
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
-                Στοιχεία προόδου
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-violet-950">
-                Τι να κρατάς μέχρι τον επόμενο έλεγχο
-              </h3>
-            </div>
-            <p className="max-w-2xl text-sm leading-6 text-violet-900">
-              Όταν γυρίσεις στο chatbot, αυτά τα στοιχεία βοηθούν να δούμε αν
-              συνεχίζουμε, αλλάζουμε ποσότητα ή ζητάμε άλλη τροφή.
-            </p>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
-            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
-              <p className="font-semibold">Βάρος</p>
-              <p className="mt-1 text-xs leading-5 text-violet-900">
-                Ζύγισμα στην ίδια ζυγαριά, ιδανικά παρόμοια ώρα.
-              </p>
-            </div>
-            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
-              <p className="font-semibold">Γραμμάρια</p>
-              <p className="mt-1 text-xs leading-5 text-violet-900">
-                Πόσα έτρωγε πραγματικά ανά ημέρα, όχι μόνο η αρχική οδηγία.
-              </p>
-            </div>
-            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
-              <p className="font-semibold">Λιχουδιές</p>
-              <p className="mt-1 text-xs leading-5 text-violet-900">
-                Πόσες, τι είδους και αν δίνονταν καθημερινά.
-              </p>
-            </div>
-            <div className="rounded-xl bg-violet-50 p-3 text-sm text-violet-950">
-              <p className="font-semibold">
-                {latestPet?.species === "cat" ? "Όρεξη / ούρηση" : "Όρεξη / κόπρανα"}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-violet-900">
-                {latestPet?.species === "cat"
-                  ? "Σημείωσε αν τρώει κάθε μέρα, τουαλέτα και τυχόν αλλαγές."
-                  : "Σημείωσε κόπρανα, ενέργεια και αν δέχεται καλά την τροφή."}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div
         className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm"
         data-testid="account-beta-plan"

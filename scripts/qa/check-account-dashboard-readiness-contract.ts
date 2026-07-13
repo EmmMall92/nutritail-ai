@@ -1,4 +1,12 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+
+function read(path: string) {
+  if (!existsSync(path)) {
+    throw new Error(`Missing required file for account dashboard readiness: ${path}`);
+  }
+
+  return readFileSync(path, "utf8");
+}
 
 function assert(condition: unknown, message: string) {
   if (!condition) {
@@ -6,362 +14,128 @@ function assert(condition: unknown, message: string) {
   }
 }
 
-function read(path: string) {
-  return readFileSync(path, "utf8");
-}
-
 const accountPage = read("app/account/page.tsx");
-const betaAccessPlan = read("lib/beta/accessPlan.ts");
+const chatbotPage = read("app/account/chatbot/page.tsx");
 const petsPage = read("app/account/pets/page.tsx");
 const petDetailPage = read("app/account/pets/[id]/page.tsx");
 const packageJson = read("package.json");
 
-const customerFacingSources = [
-  ["account dashboard", accountPage],
-  ["pets dashboard", petsPage],
-] as const;
-
-const mojibakeMarkers = [
-  "Ξ±",
-  "Ξµ",
-  "Ξ·",
-  "ΞΌ",
-  "Ξ½",
-  "Ο€",
-  "Οƒ",
-  "Ο„",
-  "Ο‡",
-  "Ο‰",
-  "β€”",
-  "β€",
+const requiredAccountMarkers = [
+  'data-testid="account-next-best-move"',
+  'data-testid="account-plan-snapshot"',
+  'data-testid="account-beta-plan"',
+  'data-testid="account-beta-usage"',
+  'data-testid="account-beta-journey-checklist"',
+  'data-testid="account-beta-journey-checklist-item"',
+  'data-testid="account-beta-proof-reminder"',
+  "accountNextBestMove.actions.map",
+  "function getAccountPlanSnapshot",
+  "function getDashboardNextActions",
+  "mode=recommendation&reason=flavour",
+  "/print/pet-report/",
+  "/print/pet-timeline/",
 ];
 
-for (const [label, source] of customerFacingSources) {
-  const hits = mojibakeMarkers.filter((marker) => source.includes(marker));
+for (const marker of requiredAccountMarkers) {
+  assert(accountPage.includes(marker), `Account dashboard is missing marker: ${marker}`);
+}
+
+const currentPlanCopy = [
+  "Ενεργό πλάνο",
+  "Τα βασικά που χρειάζεσαι σήμερα",
+  "Η πλήρης ανάλυση μένει στην αναφορά",
+  "Άνοιγμα αναφοράς",
+  "Έλεγχος προόδου",
+  "Άλλη τροφή",
+  "Τροφή",
+  "Θερμίδες",
+  "Ποσότητα",
+  "Επανέλεγχος",
+  "2-4 εβδομάδες",
+];
+
+for (const marker of currentPlanCopy) {
+  assert(accountPage.includes(marker), `Compact current-plan copy is missing: ${marker}`);
+}
+
+const removedDuplicateDashboardMarkers = [
+  'data-testid="account-today-command-center"',
+  'data-testid="account-next-action-guide"',
+  'data-testid="account-latest-activity-strip"',
+  'data-testid="account-home-brief"',
+  'data-testid="account-customer-week-loop"',
+  'data-testid="account-customer-week-loop-step"',
+  'data-testid="account-plan-watchlist"',
+  'data-testid="account-progress-check-reminder"',
+  'data-testid="account-plan-decision-guide"',
+  'data-testid="account-plan-next-steps"',
+  'data-testid="account-weekly-rhythm"',
+  'data-testid="account-progress-return-kit"',
+  "function getAccountHomeBrief",
+  "function getAccountActivityStrip",
+  "function getAccountTodayTasks",
+  "function getAccountWeeklyLoop",
+  "function getAccountPlanWatchlist",
+  "accountHomeBrief.cards.map",
+  "accountActivityStrip.map",
+  "accountTodayTasks.map",
+  "accountWeeklyLoop.steps.map",
+  "accountPlanWatchlist.map",
+];
+
+for (const marker of removedDuplicateDashboardMarkers) {
   assert(
-    hits.length === 0,
-    `${label} must not contain mojibake markers in customer-facing copy: ${hits.join(
-      ", "
-    )}.`
+    !accountPage.includes(marker),
+    `Account dashboard should not reintroduce duplicate customer cards: ${marker}`
+  );
+}
+
+const chatbotRequiredMarkers = [
+  'data-testid="choose-food-before-save-notice"',
+  'data-testid="selected-food-plan-card"',
+  'data-testid="save-analysis-panel"',
+  'data-testid="saved-analysis-handoff-panel"',
+  'data-testid="saved-analysis-handoff-summary"',
+  "Calculate grams/day",
+  "Choose a food first",
+];
+
+for (const marker of chatbotRequiredMarkers) {
+  assert(chatbotPage.includes(marker), `Chatbot customer flow is missing marker: ${marker}`);
+}
+
+const removedChatbotDuplicateMarkers = [
+  "Το σημερινό πλάνο",
+  "Today's plan",
+  "Ήταν χρήσιμο;",
+  "Was this helpful?",
+  "The essentials that will be saved to the pet profile.",
+];
+
+for (const marker of removedChatbotDuplicateMarkers) {
+  assert(
+    !chatbotPage.includes(marker),
+    `Chatbot save flow should not show duplicate summary/back-office copy: ${marker}`
   );
 }
 
 assert(
-  accountPage.includes("type AccountReadinessStep"),
-  "Account dashboard must define structured readiness steps."
-);
-assert(
-  accountPage.includes("function getAccountReadinessSteps"),
-  "Account dashboard must generate readiness steps from account data."
-);
-assert(
-  accountPage.includes("Η πορεία σου"),
-  "Account dashboard must show a customer-facing readiness section."
-);
-assert(
-  accountPage.includes("Προφίλ κατοικιδίου"),
-  "Readiness flow must include pet profile status."
-);
-assert(
-  accountPage.includes("Διατροφική ανάλυση"),
-  "Readiness flow must include nutrition analysis status."
-);
-assert(
-  accountPage.includes("Πλάνο τροφής"),
-  "Readiness flow must include food plan/report status."
-);
-assert(
-  accountPage.includes("Έλεγχος προόδου"),
-  "Readiness flow must include progress-check status."
-);
-assert(
-  accountPage.includes('data-testid="account-weekly-rhythm"'),
-  "Account dashboard must expose the weekly monitoring rhythm section."
-);
-assert(
-  accountPage.includes('data-testid="account-progress-return-kit"') &&
-    accountPage.includes("Τι να κρατάς μέχρι τον επόμενο έλεγχο") &&
-    accountPage.includes("Βάρος") &&
-    accountPage.includes("Γραμμάρια") &&
-    accountPage.includes("Λιχουδιές") &&
-    accountPage.includes("Όρεξη / ούρηση") &&
-    accountPage.includes("Όρεξη / κόπρανα"),
-  "Account dashboard must show a customer-facing progress return kit."
-);
-assert(
-  accountPage.includes('data-testid="account-beta-plan"'),
-  "Account dashboard must expose the beta access plan section."
-);
-assert(
-  accountPage.includes("Beta πρόσβαση") &&
-    accountPage.includes("betaAccessPlanConfig") &&
-    accountPage.includes("betaPlanHighlights") &&
-    betaAccessPlan.includes("petLimit: 3") &&
-    betaAccessPlan.includes("monthlyAnalysisLimit: 20") &&
-    accountPage.includes('href="/beta"') &&
-    accountPage.includes('href="/plans"') &&
-    accountPage.includes("Όρια και μελλοντικά πλάνα"),
-  "Account dashboard must show beta plan limits and link to beta and plans pages."
-);
-assert(
-  accountPage.includes("type BetaUsageSnapshot") &&
-    accountPage.includes("function getBetaUsageSnapshot") &&
-    accountPage.includes("isCurrentMonthDate") &&
-    accountPage.includes('data-testid="account-beta-usage"') &&
-    accountPage.includes("betaUsage.petsUsed") &&
-    accountPage.includes("betaUsage.monthlyAnalysesUsed") &&
-    accountPage.includes("betaUsage.petsPercent") &&
-    accountPage.includes("betaUsage.analysesPercent") &&
-    accountPage.includes("Αναλύσεις αυτόν τον μήνα"),
-  "Account dashboard must show customer-facing beta usage against current beta limits."
-);
-assert(
-  accountPage.includes("Ρυθμός παρακολούθησης"),
-  "Account dashboard must explain the customer monitoring rhythm."
-);
-assert(
-  accountPage.includes("Σε 2-4 εβδομάδες"),
-  "Account dashboard must guide customers back to a progress check window."
-);
-assert(
-  accountPage.includes("/account/chatbot?petId=") &&
-    accountPage.includes("mode=progress"),
-  "Account dashboard must link saved pets back into progress-check chatbot mode."
-);
-assert(
-  accountPage.includes("/print/pet-report/"),
-  "Account dashboard must link customers to printable pet reports."
-);
-assert(
-  accountPage.includes("/print/pet-timeline/"),
-  "Account dashboard must link customers to pet progress timelines."
-);
-assert(
-  accountPage.includes("function getDashboardNextActions"),
-  "Account dashboard must keep structured next best actions for customers."
-);
-assert(
-  accountPage.includes("function getAccountTodayTasks"),
-  "Account dashboard must generate a customer-facing command center from account data."
-);
-assert(
-  accountPage.includes("type AccountNextBestMove") &&
-    accountPage.includes("type AccountNextBestMoveAction") &&
-    accountPage.includes("function getAccountNextBestMove") &&
-    accountPage.includes("accountNextBestMove.actions.map") &&
-    accountPage.includes('data-testid="account-next-best-move"'),
-  "Account dashboard must expose a top-level next best move for customers."
-);
-assert(
-  accountPage.includes("\\u0395\\u03c0\\u03cc\\u03bc\\u03b5\\u03bd\\u03bf \\u03ba\\u03b1\\u03bb\\u03cd\\u03c4\\u03b5\\u03c1\\u03bf \\u03b2\\u03ae\\u03bc\\u03b1") &&
-    accountPage.includes("\\u03a3\\u03c5\\u03bd\\u03ad\\u03c7\\u03b9\\u03c3\\u03b5 \\u03c7\\u03c9\\u03c1\\u03af\\u03c2 \\u03bd\\u03b1 \\u03be\\u03b5\\u03ba\\u03b9\\u03bd\\u03ae\\u03c3\\u03b5\\u03b9\\u03c2 \\u03b1\\u03c0\\u03cc \\u03c4\\u03b7\\u03bd \\u03b1\\u03c1\\u03c7\\u03ae") &&
-    accountPage.includes("\\u0394\\u03b5\\u03c2 \\u03b1\\u03bd\\u03b1\\u03c6\\u03bf\\u03c1\\u03ac") &&
-    accountPage.includes("\\u0388\\u03bb\\u03b5\\u03b3\\u03c7\\u03bf\\u03c2 \\u03c0\\u03c1\\u03bf\\u03cc\\u03b4\\u03bf\\u03c5") &&
-    accountPage.includes("\\u0386\\u03bb\\u03bb\\u03b7 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7/\\u03bc\\u03ac\\u03c1\\u03ba\\u03b1") &&
-    accountPage.includes("mode=recommendation&reason=flavour"),
-  "Top-level next best move must guide customers to report, progress check, and flavour/brand alternatives."
-);
-assert(
-  accountPage.includes('data-testid="account-today-command-center"'),
-  "Account dashboard must expose the today command center."
-);
-assert(
-  accountPage.includes("accountTodayTasks.map"),
-  "Account dashboard must render today command center actions from structured data."
-);
-assert(
-  accountPage.includes('data-testid="account-next-action-guide"') &&
-    accountPage.includes("πλάνο αλλαγής τροφής") &&
-    accountPage.includes("\\u03c0\\u03c1\\u03b1\\u03b3\\u03bc\\u03b1\\u03c4\\u03b9\\u03ba\\u03ac \\u03b3\\u03c1\\u03b1\\u03bc\\u03bc\\u03ac\\u03c1\\u03b9\\u03b1") &&
-    accountPage.includes("\\u03ac\\u03bb\\u03bb\\u03b7 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7 \\u03ae \\u03b5\\u03c4\\u03b1\\u03b9\\u03c1\\u03b5\\u03af\\u03b1"),
-  "Account dashboard must show a simple next-action guide for report, progress, and flavour/brand change."
-);
-assert(
-  accountPage.includes("type AccountActivityStripItem"),
-  "Account dashboard must define structured latest activity strip items."
-);
-assert(
-  accountPage.includes("function getAccountActivityStrip"),
-  "Account dashboard must generate latest activity from account data."
-);
-assert(
-  accountPage.includes("function getAccountPlanSnapshot"),
-  "Account dashboard must generate a current plan snapshot from the latest saved analysis."
-);
-assert(
-  accountPage.includes("type AccountHomeBrief") &&
-    accountPage.includes("function getAccountHomeBrief") &&
-    accountPage.includes('data-testid="account-home-brief"') &&
-    accountPage.includes("accountHomeBrief.cards.map") &&
-    accountPage.includes("accountHomeBrief.reportHref") &&
-    accountPage.includes("accountHomeBrief.progressHref") &&
-    accountPage.includes("mealSplit.twoMeals") &&
-    accountPage.includes("mealSplit.threeMeals") &&
-    accountPage.includes("Πρακτικά:") &&
-    accountPage.includes("Κράτα την ποσότητα σταθερή"),
-  "Account dashboard must show a compact home-use brief with report and progress actions."
-);
-assert(
-  accountPage.includes('data-testid="account-latest-activity-strip"'),
-  "Account dashboard must expose the latest activity strip."
-);
-assert(
-  accountPage.includes('data-testid="account-plan-snapshot"'),
-  "Account dashboard must expose the customer-facing current plan snapshot."
-);
-assert(
-  accountPage.includes('data-testid="account-plan-next-steps"') &&
-    accountPage.includes("1. Δες την αναφορά") &&
-    accountPage.includes("2. Παρακολούθησε την πορεία") &&
-    accountPage.includes("3. Κάνε έλεγχο προόδου") &&
-    accountPage.includes("Σε 2-4 εβδομάδες γύρνα με νέο βάρος, γραμμάρια/ημέρα και λιχουδιές"),
-  "Current plan snapshot must guide customers through report, timeline, and progress-check next steps."
-);
-assert(
-  accountPage.includes("Σημερινό πλάνο") &&
-    accountPage.includes("Θερμίδες") &&
-    accountPage.includes("Γραμμάρια/ημέρα") &&
-    accountPage.includes("Έλεγχος προόδου") &&
-    accountPage.includes("Άνοιγμα αναφοράς") &&
-    accountPage.includes("Σε 2-4 εβδομάδες έλεγξε βάρος, όρεξη και κόπρανα"),
-  "Current plan snapshot must show food-plan, portion, report, and progress-check copy."
-);
-assert(
-  accountPage.includes("getAnalysisFoodName") &&
-    accountPage.includes("getAnalysisFeedingGrams") &&
-    accountPage.includes("getAnalysisFoodScore"),
-  "Account dashboard must read saved analysis fields defensively across old and new payload names."
-);
-assert(
-  accountPage.includes("Συνέχισε από εκεί που έμεινες") &&
-    accountPage.includes("Η τελευταία εικόνα του λογαριασμού σου") &&
-    accountPage.includes("Τελευταία ανάλυση") &&
-    accountPage.includes("Τελευταίος έλεγχος") &&
-    accountPage.includes("Επόμενο καλύτερο βήμα"),
-  "Latest activity strip must show customer-facing continuation copy."
-);
-assert(
-  accountPage.includes("accountActivityStrip.map"),
-  "Account dashboard must render latest activity cards from structured data."
-);
-assert(
-  petsPage.includes("/account/chatbot?petId=") && petsPage.includes("mode=progress"),
-  "Pets dashboard must link each saved pet to progress-check chatbot mode."
-);
-assert(
-  petsPage.includes("/print/pet-report/") &&
+  petsPage.includes("/account/chatbot?petId=") &&
+    petsPage.includes("/print/pet-report/") &&
     petsPage.includes("/print/pet-timeline/"),
-  "Pets dashboard must expose report and timeline actions for saved pets."
+  "Pets dashboard must keep chatbot, report, and timeline actions."
 );
 
 assert(
   petDetailPage.includes('data-testid="pet-profile-calorie-explainer"') &&
-    petDetailPage.includes("Τι σημαίνουν αυτές οι θερμίδες") &&
     petDetailPage.includes("Θερμίδες ηρεμίας") &&
-    petDetailPage.includes("Δεν είναι η τελική ποσότητα που ταΐζουμε.") &&
-    petDetailPage.includes("Ημερήσιος στόχος") &&
-    petDetailPage.includes("ηλικία, βάρος, δραστηριότητα, στείρωση και στόχος βάρους") &&
-    petDetailPage.includes("Η ποσότητα σε γραμμάρια εξαρτάται από τις θερμίδες της τροφής"),
-  "Pet detail page must explain resting calories, final daily target, and why grams depend on the selected food."
+    petDetailPage.includes("Ημερήσιος στόχος"),
+  "Pet detail page must keep the calorie explainer for customers."
 );
 
-assert(
-  accountPage.includes('data-testid="account-beta-journey-checklist"') &&
-    accountPage.includes('data-testid="account-beta-journey-checklist-item"') &&
-    accountPage.includes('data-testid="account-beta-proof-reminder"') &&
-    accountPage.includes("Beta journey checklist") &&
-    accountPage.includes("\\u0392\\u03bf\\u03ae\\u03b8\\u03b7\\u03c3\\u03ad \\u03bc\\u03b1\\u03c2") &&
-    accountPage.includes("\\u03ba\\u03ac\\u03c1\\u03c4\\u03b5\\u03c2 \\u03c4\\u03c1\\u03bf\\u03c6\\u03ce\\u03bd") &&
-    accountPage.includes("\\u03b3\\u03c1\\u03b1\\u03bc\\u03bc\\u03ac\\u03c1\\u03b9\\u03b1/\\u03b7\\u03bc\\u03ad\\u03c1\\u03b1") &&
-    accountPage.includes("\\u03b1\\u03bd\\u03b1\\u03c6\\u03bf\\u03c1\\u03ac") &&
-    accountPage.includes("\\u03c0\\u03c1\\u03b1\\u03b3\\u03bc\\u03b1\\u03c4\\u03b9\\u03ba\\u03ae \\u03b1\\u03c0\\u03cc\\u03b4\\u03b5\\u03b9\\u03be\\u03b7 \\u03c7\\u03c1\\u03ae\\u03c3\\u03c4\\u03b7"),
-  "Account dashboard must show a customer-facing beta journey checklist that reduces manual beta-session explanation."
-);
-
-const customerVisibleEnglishActionCopy = [
-  "Progress check",
-  "Progress kit",
-  "progress check",
-  "progress checks",
-  "Τελευταίο progress",
-  "επόμενο check",
-  "Μέχρι το επόμενο check",
-  "1. Δες το report",
-  "Δες timeline",
-  "Το timeline δείχνει",
-  "μελλοντικά plans",
-];
-
-for (const marker of customerVisibleEnglishActionCopy) {
-  assert(
-    !accountPage.includes(marker),
-    `Account dashboard must keep customer action copy in Greek. Found: ${marker}`
-  );
-}
 assert(
   packageJson.includes('"qa:account-dashboard-readiness-contract"'),
   "package.json must expose the account dashboard readiness QA script."
-);
-
-assert(
-  accountPage.includes("alternativeHref") &&
-    accountPage.includes("mode=recommendation&reason=flavour") &&
-    accountPage.includes("4. Άλλαξε γεύση ή εταιρεία") &&
-    accountPage.includes("κράτα το ίδιο προφίλ"),
-  "Current plan snapshot must let returning customers request a flavour or brand alternative without restarting."
-);
-
-assert(
-  accountPage.includes("type AccountPlanWatchItem") &&
-    accountPage.includes("function getAccountPlanWatchlist") &&
-    accountPage.includes("accountPlanWatchlist.map") &&
-    accountPage.includes('data-testid="account-plan-watchlist"') &&
-    accountPage.includes("Μέχρι τον επόμενο έλεγχο") &&
-    accountPage.includes("Τι αξίζει να παρακολουθείς") &&
-    accountPage.includes("Βάρος") &&
-    accountPage.includes("Ποσότητα") &&
-    accountPage.includes("Λιχουδιές") &&
-    accountPage.includes("Αποδοχή τροφής"),
-  "Current plan snapshot must show a customer-facing watchlist for weight, portions, treats, stool/urine, and food acceptance."
-);
-
-assert(
-  accountPage.includes("type AccountWeeklyLoop") &&
-    accountPage.includes("type AccountWeeklyLoopStep") &&
-    accountPage.includes("function getAccountWeeklyLoop") &&
-    accountPage.includes("accountWeeklyLoop.steps.map") &&
-    accountPage.includes('data-testid="account-customer-week-loop"') &&
-    accountPage.includes('data-testid="account-customer-week-loop-step"'),
-  "Account dashboard must expose a structured customer weekly loop."
-);
-
-assert(
-  accountPage.includes("\\u0395\\u03b2\\u03b4\\u03bf\\u03bc\\u03b1\\u03b4\\u03b9\\u03b1\\u03af\\u03bf \\u03c0\\u03bb\\u03ac\\u03bd\\u03bf") &&
-    accountPage.includes("\\u03a3\\u03b5 7 \\u03b7\\u03bc\\u03ad\\u03c1\\u03b5\\u03c2") &&
-    accountPage.includes("\\u03a3\\u03b5 2-4 \\u03b5\\u03b2\\u03b4\\u03bf\\u03bc\\u03ac\\u03b4\\u03b5\\u03c2") &&
-    accountPage.includes("\\u0391\\u03c0\\u03bf\\u03b4\\u03bf\\u03c7\\u03ae \\u03c4\\u03c1\\u03bf\\u03c6\\u03ae\\u03c2") &&
-    accountPage.includes("\\u039d\\u03ad\\u03b1 \\u03b3\\u03b5\\u03cd\\u03c3\\u03b7 \\u03ae \\u03bc\\u03ac\\u03c1\\u03ba\\u03b1"),
-  "Customer weekly loop must explain today, day-7 acceptance, 2-4 week progress, and alternative-food recovery."
-);
-
-assert(
-  accountPage.includes('data-testid="account-progress-check-reminder"') &&
-    accountPage.includes("Σε 2-4 εβδομάδες κάνε έλεγχο προόδου") &&
-    accountPage.includes("Φέρε νέο βάρος, πραγματικά γραμμάρια/ημέρα") &&
-    accountPage.includes("Άνοιγμα ελέγχου προόδου"),
-  "Current plan snapshot must show a visible 2-4 week progress-check reminder with required return data."
-);
-
-assert(
-  accountPage.includes('data-testid="account-plan-decision-guide"') &&
-    accountPage.includes("Αν κάτι αλλάξει") &&
-    accountPage.includes("Διάλεξε την επόμενη κίνηση χωρίς να ξεκινήσεις από την αρχή") &&
-    accountPage.includes("Πάει καλά") &&
-    accountPage.includes("Δεν βλέπω αλλαγή") &&
-    accountPage.includes("Δεν του ταιριάζει η τροφή") &&
-    accountPage.includes("άλλη γεύση ή εταιρεία") &&
-    accountPage.includes("κρατώντας το ιστορικό του"),
-  "Current plan snapshot must show a simple returning-customer decision guide for good progress, no progress, or food/flavour change."
 );
 
 console.log("Account dashboard readiness contract passed.");

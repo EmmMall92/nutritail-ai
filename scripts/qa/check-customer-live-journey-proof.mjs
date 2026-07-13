@@ -559,8 +559,8 @@ async function runLiveWriteProof({ authCookie, recommendationShape }) {
   const accountSource = readFileSync("app/account/page.tsx", "utf8");
   const accountPageMarkers = [
     "account-plan-snapshot",
-    "account-plan-next-steps",
-    "account-progress-return-kit",
+    "account-next-best-move",
+    "Η πλήρης ανάλυση μένει στην αναφορά",
   ];
   const missingAccountMarkers = accountPageMarkers.filter(
     (marker) => !accountSource.includes(marker),

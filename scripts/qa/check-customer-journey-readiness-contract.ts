@@ -90,10 +90,11 @@ const checks: ContractCheck[] = [
     area: "User account polish",
     file: "app/account/page.tsx",
     markers: [
-      'data-testid="account-today-command-center"',
-      'data-testid="account-latest-activity-strip"',
+      'data-testid="account-next-best-move"',
       'data-testid="account-plan-snapshot"',
       'data-testid="account-beta-plan"',
+      "Ενεργό πλάνο",
+      "Η πλήρης ανάλυση μένει στην αναφορά",
       "/print/pet-report/${latestPet.id}",
       "/print/pet-timeline/${latestPet.id}",
       "mode=recommendation&reason=flavour",

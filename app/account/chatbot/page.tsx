@@ -2391,18 +2391,6 @@ function formatCompareCandidateOptions(
     : `\nPossible formulas to choose from:\n${lines}`;
 }
 
-function finalDailyCaloriesForAnalysis(
-  analysis: PetAnalysis | null,
-  goal?: WeightGoal
-) {
-  if (!analysis) return null;
-
-  return adjustCaloriesForWeightGoal({
-    calories: analysis.nutrition.der,
-    goal,
-  });
-}
-
 function formatCompareCustomerTakeaway(
   result: FoodCompareResponse,
   language: ChatLanguage
@@ -3929,7 +3917,7 @@ export default function AccountChatbotPage() {
   const processingMessageRef = useRef(false);
   const [showSave, setShowSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [feedbackStatus, setFeedbackStatus] = useState("");
+  const [, setFeedbackStatus] = useState("");
   const [savedPetId, setSavedPetId] = useState<string | null>(null);
   const [recommendedFoodChoices, setRecommendedFoodChoices] = useState<
     RecommendedFoodChoice[]
@@ -6674,114 +6662,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </p>
             </div>
 
-            {latestAnalysis && (
-              <div className="rounded-xl border border-gray-200 bg-white p-4">
-                <p className="font-semibold text-black">
-                  {botText("Το σημερινό πλάνο", "Today's plan")}
-                </p>
-                <p className="mt-1 text-sm text-gray-600">
-                  {botText(
-                    "Τα βασικά που θα κρατηθούν στο προφίλ του κατοικιδίου.",
-                    "The essentials that will be saved to the pet profile."
-                  )}
-                </p>
-                <div className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">{botText("Κατοικίδιο", "Pet")}</p>
-                    <p className="font-semibold text-black">
-                      {pet.name
-                        ? formatPetDisplayName(pet.name, botText("Κατοικίδιο", "Pet"))
-                        : botText("Κατοικίδιο", "Pet")} -{" "}
-                      {pet.species === "dog"
-                        ? botText("σκύλος", "dog")
-                        : pet.species === "cat"
-                          ? botText("γάτα", "cat")
-                          : "pet"}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">
-                      {botText("Τελικός στόχος θερμίδων", "Final calorie target")}
-                    </p>
-                    <p className="font-semibold text-black">
-                      {finalDailyCaloriesForAnalysis(latestAnalysis, pet.weightGoal) ??
-                        latestAnalysis.nutrition.der}{" "}
-                      {botText("kcal/ημέρα", "kcal/day")}
-                    </p>
-                    <p className="mt-1 text-xs text-gray-500">
-                      {botText(
-                        "Περιλαμβάνει την προσαρμογή για τον στόχο βάρους.",
-                        "Includes the adjustment for the weight goal."
-                      )}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">
-                      {botText("Στόχος βάρους", "Weight goal")}
-                    </p>
-                    <p className="font-semibold text-black">
-                      {botText(
-                        pet.weightGoal === "loss"
-                          ? "απώλεια βάρους"
-                          : pet.weightGoal === "gain"
-                            ? "αύξηση βάρους"
-                            : "διατήρηση βάρους",
-                        getWeightGoalLabel(pet.weightGoal)
-                      )}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">
-                      {botText("Επιλογή τροφής", "Selected food")}
-                    </p>
-                    <p className="font-semibold text-black">
-                      {analysisMetadata?.matchedFoodName ??
-                        botText(
-                          "Διάλεξε τροφή για να ολοκληρωθεί το πλάνο",
-                          "Choose a food to complete the plan"
-                        )}
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-gray-50 p-3">
-                    <p className="text-gray-500">
-                      {botText("Πρώτη μερίδα", "First portion")}
-                    </p>
-                    <p className="font-semibold text-black">
-                      {analysisMetadata?.feedingGramsPerDay
-                        ? `${analysisMetadata.feedingGramsPerDay}g/${botText("ημέρα", "day")}`
-                        : botText(
-                            "Διάλεξε τροφή με θερμίδες για ποσότητα",
-                            "Choose a food with calories for portions"
-                          )}
-                    </p>
-                    {analysisMetadata?.feedingGramsPerDay && (
-                      <p className="mt-1 text-xs text-gray-600">
-                        {botText(
-                          `2 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${Math.round(
-                            analysisMetadata.feedingGramsPerDay / 2
-                          )}g/\u03b3\u03b5\u03cd\u03bc\u03b1 - 3 \u03b3\u03b5\u03cd\u03bc\u03b1\u03c4\u03b1: \u03c0\u03b5\u03c1\u03af\u03c0\u03bf\u03c5 ${Math.round(
-                            analysisMetadata.feedingGramsPerDay / 3
-                          )}g/\u03b3\u03b5\u03cd\u03bc\u03b1`,
-                          `2 meals: about ${Math.round(
-                            analysisMetadata.feedingGramsPerDay / 2
-                          )}g/meal - 3 meals: about ${Math.round(
-                            analysisMetadata.feedingGramsPerDay / 3
-                          )}g/meal`
-                        )}
-                      </p>
-                    )}
-                    <p className="mt-1 text-xs text-gray-500">
-                      {botText(
-                        "Η εκτίμηση αφήνει χώρο για μικρή ποσότητα λιχουδιών.",
-                        "The estimate leaves room for a small treat allowance."
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-            </div>
-            )}
-
             {analysisMetadata?.matchedFoodName && (
               <div
                 data-testid="selected-food-plan-card"
@@ -6844,53 +6724,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   {botText("Ιστορικό", "Analysis history")}
                 </span>
               </div>
-            </div>
-
-            <div className="hidden">
-              <p className="font-semibold text-black">
-                {botText("Ήταν χρήσιμο;", "Was this helpful?")}
-              </p>
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() =>
-                    submitChatFeedback({
-                      eventType: "chat_helpfulness",
-                      rating: "helpful",
-                      message: "User marked chatbot analysis as helpful.",
-                      context: {
-                        source: "account_chatbot_analysis_feedback",
-                        feedbackSurface: "save_analysis_panel",
-                      },
-                      showConfirmation: true,
-                    })
-                  }
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-                >
-                  {botText("Χρήσιμο", "Helpful")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    submitChatFeedback({
-                      eventType: "chat_helpfulness",
-                      rating: "not_helpful",
-                      message: "User marked chatbot analysis as not helpful.",
-                      context: {
-                        source: "account_chatbot_analysis_feedback",
-                        feedbackSurface: "save_analysis_panel",
-                      },
-                      showConfirmation: true,
-                    })
-                  }
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
-                >
-                  {botText("Όχι χρήσιμο", "Not helpful")}
-                </button>
-              </div>
-              {feedbackStatus && (
-                <p className="mt-2 text-sm text-gray-600">{feedbackStatus}</p>
-              )}
             </div>
 
             <button

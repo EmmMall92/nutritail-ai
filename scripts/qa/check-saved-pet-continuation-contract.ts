@@ -103,8 +103,8 @@ const checks: SourceCheck[] = [
       "mode=progress",
       "mode=recommendation&reason=flavour",
       "/print/pet-timeline/",
-      'data-testid="account-progress-check-reminder"',
-      'data-testid="account-progress-return-kit"',
+      'data-testid="account-plan-snapshot"',
+      "Η πλήρης ανάλυση μένει στην αναφορά",
     ],
   },
   {
