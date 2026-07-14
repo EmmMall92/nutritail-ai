@@ -1326,10 +1326,10 @@ function getRecommendationChoiceGroups(
   return [
     {
       key: "premium",
-      title: language === "el" ? "Οι 3 πρώτες επιλογές" : "Best starting choices",
+      title: language === "el" ? "Καλύτερες επιλογές" : "Best starting choices",
       description:
         language === "el"
-          ? "Ξεκίνα από εδώ αν θέλεις την πιο δυνατή διατροφική επιλογή για το προφίλ."
+          ? "Οι πιο κατάλληλες πρώτες επιλογές για αυτό το προφίλ."
           : "Start here for the strongest nutrition fits for this pet.",
       choices: premiumChoices,
       className: "border-emerald-200 bg-emerald-50/60",
@@ -1340,11 +1340,11 @@ function getRecommendationChoiceGroups(
       key: "value",
       title:
         language === "el"
-          ? "3 πιο οικονομικές / πρακτικές επιλογές"
+          ? "Πρακτική εναλλακτική"
           : "Budget-friendly alternatives",
       description:
         language === "el"
-          ? "Καλές εναλλακτικές όταν μετράει τιμή, γεύση ή διαθεσιμότητα."
+          ? "Καλή λύση όταν μετράει τιμή, γεύση ή διαθεσιμότητα."
           : "Good alternatives when price, flavour, or availability matters.",
       choices: valueChoices,
       className: "border-sky-200 bg-sky-50/60",
@@ -6487,22 +6487,25 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm"
           >
             <p className="font-semibold text-emerald-950">
-              {botText("Οι προτάσεις σου είναι έτοιμες", "Food choices are ready")}
+              {botText("Διάλεξε τροφή", "Choose a food")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
                 recommendedFoodChoices.some((choice) => choice.role === "value")
-                  ? "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου και μετά πιο απλές ή οικονομικές εναλλακτικές."
-                  : "Πρώτα βλέπεις τις πιο κατάλληλες επιλογές για το προφίλ του κατοικιδίου. Πιο απλές ή οικονομικές εναλλακτικές εμφανίζονται μόνο όταν ταιριάζουν αρκετά καλά.",
+                  ? "Πρώτα είναι οι πιο δυνατές επιλογές. Αν θες κάτι πιο πρακτικό, δες και την εναλλακτική."
+                  : "Πάτησε μία κάρτα για να υπολογίσουμε την πρώτη ποσότητα.",
                 recommendedFoodChoices.some((choice) => choice.role === "value")
-                  ? "Start with the strongest choices. If budget also matters, check the practical alternatives too."
-                  : "Start with the strongest choices for this pet. Budget alternatives appear only when they fit well enough."
+                  ? "Start with the strongest choices. If you want something simpler, check the alternative too."
+                  : "Tap one card to calculate the first portion."
               )}
             </p>
-            <p className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100">
+            <p
+              data-testid="customer-choice-decision-guide"
+              className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100"
+            >
               {botText(
-                "Πάτησε την τροφή που προτιμάς για να δεις περίπου γραμμάρια/ημέρα. Αν αλλάξεις γνώμη πριν την αποθήκευση, μπορείς να πατήσεις άλλη κάρτα.",
-                "Choose the food you prefer to see grams per day. If you change your mind before saving, you can tap another card."
+                "Μετά την επιλογή θα δεις γραμμάρια/ημέρα και μπορείς να αποθηκεύσεις το πλάνο.",
+                "Pick by fit and taste. After choosing, you will see grams/day and can save the plan."
               )}
             </p>
             {((pet.preferredProteins ?? []).length > 0 ||
@@ -6544,7 +6547,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     key={group.key}
                     className={`rounded-2xl border p-3 ${group.className}`}
                   >
-                    <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="mb-3">
                       <div>
                         <p className={`text-sm font-bold ${group.titleClassName}`}>
                           {group.title}
@@ -6553,9 +6556,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                           {group.description}
                         </p>
                       </div>
-                      <p className="text-xs font-semibold text-gray-600">
-                        {group.choices.length}/{group.key === "premium" ? 2 : 1}
-                      </p>
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                       {group.choices.map(({ choice, index }) => (

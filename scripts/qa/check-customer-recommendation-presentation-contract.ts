@@ -27,13 +27,11 @@ const englishIntro = buildCustomerRecommendationIntro({
 });
 
 const requiredGreekCopy = [
-  "Βρήκα τις πιο κατάλληλες επιλογές",
-  "κάρτες",
+  "Βρήκα τις καλύτερες πρώτες επιλογές",
   "3 δυνατές επιλογές",
-  "3 πιο πρακτικές/οικονομικές εναλλακτικές",
+  "3 πιο πρακτικές εναλλακτικές",
   "Πρώτη πρόταση",
   "γραμμάρια/ημέρα",
-  "ξεκάθαρο πλάνο",
 ];
 
 const requiredEnglishCopy = [
@@ -43,6 +41,7 @@ const requiredEnglishCopy = [
   "grams/day",
   "strong picks",
   "practical/value alternatives",
+  "Choose one card",
 ];
 
 const forbiddenTerms = customerRecommendationPresentationForbiddenTerms();

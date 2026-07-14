@@ -47,16 +47,17 @@ export function buildCustomerRecommendationIntro({
     const firstLine =
       mode === "alternative"
         ? "Βρήκα νέες επιλογές που μπορούν να αντικαταστήσουν την τωρινή τροφή."
-        : "Βρήκα τις πιο κατάλληλες επιλογές και τις έβαλα σε κάρτες για να διαλέξεις εύκολα.";
+        : "Βρήκα τις καλύτερες πρώτες επιλογές.";
+    const valueLabel =
+      valueCount === 1 ? "πιο πρακτική εναλλακτική" : "πιο πρακτικές εναλλακτικές";
     const splitLine = hasValue
-      ? `Θα δεις ${countLabel(bestCount, "el")} δυνατές επιλογές και ${countLabel(valueCount, "el")} πιο πρακτικές/οικονομικές εναλλακτικές.`
-      : `Θα δεις ${countLabel(bestCount, "el")} δυνατές επιλογές που ταιριάζουν περισσότερο στο προφίλ.`;
+      ? `Θα δεις ${countLabel(bestCount, "el")} δυνατές επιλογές και ${countLabel(valueCount, "el")} ${valueLabel}.`
+      : `Θα δεις ${countLabel(bestCount, "el")} επιλογές που ταιριάζουν περισσότερο στο προφίλ.`;
 
     return [
       firstLine,
       splitLine,
-      `Πρώτη πρόταση: ${topChoice.name}.`,
-      "Πάτησε μία κάρτα για να υπολογίσω περίπου γραμμάρια/ημέρα και να συνεχίσουμε με ξεκάθαρο πλάνο.",
+      `Πάτησε μία κάρτα για να δεις γραμμάρια/ημέρα. Πρώτη πρόταση: ${topChoice.name}.`,
     ].join("\n");
   }
 
@@ -71,8 +72,7 @@ export function buildCustomerRecommendationIntro({
   return [
     firstLine,
     splitLine,
-    `First pick: ${topChoice.name}.`,
-    "Choose one card and I will estimate grams/day and continue the plan.",
+    `Choose one card to see grams/day. First pick: ${topChoice.name}.`,
   ].join("\n");
 }
 
