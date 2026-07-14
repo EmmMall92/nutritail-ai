@@ -23,6 +23,8 @@ const packageJson = read("package.json");
 const requiredAccountMarkers = [
   'data-testid="account-next-best-move"',
   'data-testid="account-plan-snapshot"',
+  "const showDetailedDashboardReference = false;",
+  "showDetailedDashboardReference &&",
   'data-testid="account-beta-plan"',
   'data-testid="account-beta-usage"',
   'data-testid="account-beta-journey-checklist"',
