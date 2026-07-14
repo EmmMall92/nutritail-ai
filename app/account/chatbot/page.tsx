@@ -2613,6 +2613,31 @@ Start with: ${topChoice.name}.${reason}
 Choose one food card below to estimate daily portions.`;
 }
 
+function getRecommendationChoicePortionPreview({
+  choice,
+  dailyCalories,
+  language,
+}: {
+  choice: RecommendedFoodChoice;
+  dailyCalories: number | null;
+  language: ChatLanguage;
+}) {
+  const portionEstimate = calculateMainFoodPortionEstimate({
+    finalDailyCalories: dailyCalories,
+    kcalPer100g: choice.kcalPer100g,
+  });
+
+  if (!portionEstimate?.gramsPerDay) {
+    return language === "el"
+      ? "Ποσότητα: θα υπολογιστεί όταν υπάρχουν καθαρές θερμίδες."
+      : "Portion: I can calculate it when clear calories are available.";
+  }
+
+  return language === "el"
+    ? `Πρώτη εκτίμηση: περίπου ${portionEstimate.gramsPerDay}g/ημέρα.`
+    : `First estimate: about ${portionEstimate.gramsPerDay}g/day.`;
+}
+
 function formatMissingFormatRecommendationMessage(
   pet: PetIntake,
   language: ChatLanguage,
@@ -3989,6 +4014,12 @@ export default function AccountChatbotPage() {
   const hasSelectedRecommendedFood = Boolean(analysisMetadata?.matchedFoodName);
   const requiresFoodChoiceBeforeSave =
     showSave && hasSelectableFoodRecommendations && !hasSelectedRecommendedFood;
+  const recommendationChoiceDailyCalories = latestAnalysis
+    ? adjustCaloriesForWeightGoal({
+        calories: latestAnalysis.nutrition.der,
+        goal: pet.weightGoal,
+      })
+    : null;
   const mobileFoodChoiceActions = requiresFoodChoiceBeforeSave
     ? recommendedFoodChoices.slice(0, 3)
     : [];
@@ -5883,8 +5914,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     const selectedFoodReply = gramsPerDay
       ? botText(
-          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα: περίπου ${gramsPerDay}g/ημέρα ή ${gramsPerMealTwoMeals}g x 2 γεύματα.\n\nΚράτα σταθερές τις λιχουδιές και ξαναδές βάρος, όρεξη και κόπρανα σε 2-4 εβδομάδες. Πάτησε Αποθήκευση για να κρατηθεί το πλάνο στο προφίλ.`,
-          `Great, we will keep ${choice.name}.\n\nFirst portion: about ${gramsPerDay}g/day or ${gramsPerMealTwoMeals}g x 2 meals.\n\nKeep treats steady and review weight, appetite, and stool in 2-4 weeks. Press save to keep this plan on the profile.`
+          `Τέλεια, κρατάμε την ${choice.name}.\n\nΠρώτη ποσότητα: περίπου ${gramsPerDay}g/ημέρα ή ${gramsPerMealTwoMeals}g x 2 γεύματα.\n\nΠαρακολούθησε βάρος, όρεξη, κόπρανα και ενέργεια. Κράτα σταθερές τις λιχουδιές και ξαναδές το πλάνο σε 2-4 εβδομάδες.\n\nΕπόμενο βήμα: πάτησε Αποθήκευση για να κρατηθούν τροφή, ποσότητα και αναφορά στο προφίλ.`,
+          `Great, we will keep ${choice.name}.\n\nFirst portion: about ${gramsPerDay}g/day or ${gramsPerMealTwoMeals}g x 2 meals.\n\nKeep treats steady and review weight, appetite, and stool in 2-4 weeks.\n\nNext step: press save to keep the food, portion, and report on the profile.`
         )
       : botText(
           `Τέλεια, κρατάμε την ${choice.name}.\n\nΔεν έχω αρκετά καθαρή θερμιδική πληροφορία για αξιόπιστα γραμμάρια/ημέρα.\n\nΜπορείς να την αποθηκεύσεις ως επιλογή ή να διαλέξεις άλλη κάρτα που έχει θερμίδες. Αν βρεις kcal στην ετικέτα, γύρνα για νέο έλεγχο και θα υπολογίσουμε ποσότητα.`,
@@ -6619,6 +6650,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                       {getRecommendationChoiceActionHint(choice, chatLanguage)}
                     </span>
                   )}
+                  <span className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-950 ring-1 ring-emerald-100">
+                    {getRecommendationChoicePortionPreview({
+                      choice,
+                      dailyCalories: recommendationChoiceDailyCalories,
+                      language: chatLanguage,
+                    })}
+                  </span>
                   <span className="mt-4 rounded-xl bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition group-hover:bg-emerald-700">
                     {botText("Υπολόγισε γραμμάρια/ημέρα", "Calculate grams/day")}
                   </span>
@@ -6650,16 +6688,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </p>
               </div>
             )}
-            <div className="hidden">
-              <p className="font-semibold text-blue-950">
-                {botText("Το πλάνο σου είναι έτοιμο", "Your plan is ready")}
+            <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-950">
+              <p className="font-semibold">
+                {botText("Τι κερδίζεις με την αποθήκευση", "What saving gives you")}
               </p>
-              <p className="mt-1 text-sm text-blue-900">
-                {botText(
-                  "Αποθήκευσέ το για να κρατήσεις θερμίδες, τροφή και πρώτη ποσότητα στο προφίλ. Αν αλλάξει βάρος, όρεξη, κόπρανα ή τροφή, μπορείς να κάνεις νέο έλεγχο προόδου.",
-                  "Save it to keep calories, food choice, and first portion on the profile. If weight, appetite, stool, or food choice changes, you can run a new progress check."
-                )}
-              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                <p className="rounded-lg bg-white px-3 py-2 ring-1 ring-blue-100">
+                  {botText(
+                    "Καθαρό πλάνο για σήμερα και εύκολη συνέχεια αν αλλάξει βάρος, όρεξη, κόπρανα ή προτίμηση τροφής.",
+                    "You will have a clear plan for today and an easy way to continue if weight, appetite, stool, or food preference changes."
+                  )}
+                </p>
+                <p className="rounded-lg bg-white px-3 py-2 ring-1 ring-blue-100">
+                  {botText(
+                    "Θερμίδες, τροφή, ποσότητα και σημειώσεις μετάβασης.",
+                    "Calories, food, portion, and transition notes."
+                  )}
+                </p>
+                <p className="rounded-lg bg-white px-3 py-2 ring-1 ring-blue-100">
+                  {botText(
+                    "Νέα πρόταση αν αλλάξει γεύση, μάρκα ή ανοχή.",
+                    "A new suggestion if flavour, brand, or tolerance changes."
+                  )}
+                </p>
+              </div>
             </div>
 
             {analysisMetadata?.matchedFoodName && (
