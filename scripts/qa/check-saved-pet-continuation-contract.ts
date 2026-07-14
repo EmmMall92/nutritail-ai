@@ -87,6 +87,8 @@ const checks: SourceCheck[] = [
     file: "app/print/pet-timeline/[id]/page.tsx",
     markers: [
       'data-testid="timeline-progress-customer-summary"',
+      "/api/print/pet-report/${petId}",
+      "normalizePrintablePet",
       "getProgressTimelineSummary",
       "getProgressDecisionHeadline",
       "Τι κρατάμε",
