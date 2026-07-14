@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 import { petAnalysisService } from "@/services/petAnalysisService";
-import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import { comparePetAnalyses } from "@/services/petAnalysisComparisonService";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
@@ -33,6 +32,96 @@ type ProgressLog = {
     note?: string | null;
   };
 };
+
+type PrintablePetPayload = Partial<Pet> & {
+  owner_id?: string | null;
+  activity_level?: string | null;
+  health_issues?: unknown;
+  analyses?: unknown[];
+  progressLogs?: ProgressLog[];
+};
+
+type PrintableHistoryPayload = Partial<PetAnalysisHistory> & {
+  pet_id?: string | null;
+  owner_id?: string | null;
+  recommended_food_ids?: unknown;
+  activity_level?: string | null;
+  health_issues?: unknown;
+  food_score?: number | null;
+  matched_food_id?: string | null;
+  matched_food_name?: string | null;
+  feeding_grams_per_day?: number | null;
+  weight_goal?: string | null;
+  created_at?: string | null;
+};
+
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.map((item) => String(item).trim()).filter(Boolean)
+    : [];
+}
+
+function normalizePrintablePet(payload: PrintablePetPayload): Pet {
+  const activityLevel = payload.activityLevel ?? payload.activity_level;
+
+  return {
+    id: String(payload.id ?? ""),
+    ownerId: String(payload.ownerId ?? payload.owner_id ?? ""),
+    name: String(payload.name ?? "Κατοικίδιο"),
+    species: payload.species === "cat" ? "cat" : "dog",
+    breed: String(payload.breed ?? ""),
+    age: Number(payload.age ?? 0),
+    weight: Number(payload.weight ?? 0),
+    activityLevel:
+      activityLevel === "low" ||
+      activityLevel === "normal" ||
+      activityLevel === "high"
+        ? activityLevel
+        : "normal",
+    neutered: Boolean(payload.neutered),
+    allergies: normalizeStringArray(payload.allergies),
+    healthIssues: normalizeStringArray(
+      payload.healthIssues ?? payload.health_issues
+    ),
+  };
+}
+
+function normalizePrintableHistory(
+  payload: PrintableHistoryPayload
+): PetAnalysisHistory {
+  return {
+    id: String(payload.id ?? ""),
+    petId: String(payload.petId ?? payload.pet_id ?? ""),
+    ownerId: String(payload.ownerId ?? payload.owner_id ?? ""),
+    rer: Number(payload.rer ?? 0),
+    mer: Number(payload.mer ?? 0),
+    recommendedFoodIds: normalizeStringArray(
+      payload.recommendedFoodIds ?? payload.recommended_food_ids
+    ),
+    notes: payload.notes,
+    weight:
+      typeof payload.weight === "number" && Number.isFinite(payload.weight)
+        ? payload.weight
+        : undefined,
+    age:
+      typeof payload.age === "number" && Number.isFinite(payload.age)
+        ? payload.age
+        : undefined,
+    activityLevel: payload.activityLevel ?? payload.activity_level ?? undefined,
+    neutered: payload.neutered,
+    allergies: normalizeStringArray(payload.allergies),
+    healthIssues: normalizeStringArray(
+      payload.healthIssues ?? payload.health_issues
+    ),
+    foodScore: payload.foodScore ?? payload.food_score ?? null,
+    matchedFoodId: payload.matchedFoodId ?? payload.matched_food_id ?? null,
+    matchedFoodName: payload.matchedFoodName ?? payload.matched_food_name ?? null,
+    feedingGramsPerDay:
+      payload.feedingGramsPerDay ?? payload.feeding_grams_per_day ?? null,
+    weightGoal: payload.weightGoal ?? payload.weight_goal ?? null,
+    createdAt: String(payload.createdAt ?? payload.created_at ?? ""),
+  };
+}
 
 function InfoCard({
   label,
@@ -185,37 +274,29 @@ export default function PetTimelineReportPage() {
     try {
       setBrandSettings(getBrandSettings());
 
-      const petResponse = await fetch(`/api/pets/${petId}`, {
-        method: "GET",
+      const printResponse = await fetch(`/api/print/pet-report/${petId}`, {
         cache: "no-store",
       });
 
-      const petResult = await petResponse.json();
+      const printResult = await printResponse.json();
 
-      if (!petResponse.ok) {
+      if (!printResponse.ok || !printResult.pet) {
         setIsLoaded(true);
         return;
       }
 
-      const loadedPet = petResult as Pet;
+      const printablePet = printResult.pet as PrintablePetPayload;
+      const loadedPet = normalizePrintablePet(printablePet);
       setPet(loadedPet);
 
-      const [analysisResult, historyResult] = await Promise.all([
-        petAnalysisService.analyzePet(loadedPet),
-        petAnalysisHistoryService.getPetHistory(loadedPet.id),
-      ]);
+      const historyResult = (printablePet.analyses ?? []).map((item) =>
+        normalizePrintableHistory(item as PrintableHistoryPayload)
+      );
+      const analysisResult = await petAnalysisService.analyzePet(loadedPet);
 
       setAnalysis(analysisResult);
       setHistory(historyResult);
-
-      const progressResponse = await fetch(`/api/print/pet-report/${petId}`, {
-        cache: "no-store",
-      });
-
-      if (progressResponse.ok) {
-        const progressResult = await progressResponse.json();
-        setProgressLogs(progressResult.pet?.progressLogs ?? []);
-      }
+      setProgressLogs(printablePet.progressLogs ?? []);
     } catch (error) {
       console.error("Δεν μπόρεσα να φορτώσω την αναφορά ιστορικού:", error);
     } finally {
