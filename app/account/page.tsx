@@ -744,6 +744,7 @@ export default function AccountPage() {
   const completedReadinessSteps = readinessSteps.filter(
     (step) => step.isComplete
   ).length;
+  const showDetailedDashboardReference = false;
 
   return (
     <section className="space-y-6">
@@ -905,6 +906,8 @@ export default function AccountPage() {
           </div>
         </div>
       )}
+      {showDetailedDashboardReference && (
+        <>
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -1450,6 +1453,8 @@ export default function AccountPage() {
           </Link>
         </div>
       </div>
+        </>
+      )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
