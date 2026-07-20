@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
+import { normalizeSafeRedirectPath } from "@/lib/auth/safeRedirect";
 import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,15 +16,7 @@ function getSafeRedirectPath() {
 
   const nextPath = new URLSearchParams(window.location.search).get("next");
 
-  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
-    return "/account";
-  }
-
-  if (nextPath.startsWith("/login") || nextPath.startsWith("/register")) {
-    return "/account";
-  }
-
-  return nextPath;
+  return normalizeSafeRedirectPath(nextPath);
 }
 
 function getRedirectLabel(path: string) {
@@ -89,6 +82,13 @@ export default function LoginPage() {
 
   useEffect(() => {
     setRedirectPath(getSafeRedirectPath());
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error") === "confirmation") {
+      setError(
+        "Ο σύνδεσμος επιβεβαίωσης δεν ολοκληρώθηκε ή έχει λήξει. Ζήτησε νέο email και δοκίμασε ξανά."
+      );
+    }
   }, []);
 
   async function handleLogin(event?: FormEvent<HTMLFormElement>) {

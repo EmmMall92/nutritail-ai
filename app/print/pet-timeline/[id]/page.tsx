@@ -270,9 +270,15 @@ export default function PetTimelineReportPage() {
   const [progressLogs, setProgressLogs] = useState<ProgressLog[]>([]);
   const [brandSettings, setBrandSettings] = useState<BrandSettings | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<{
+    status: number;
+    message: string;
+  } | null>(null);
 
   const loadPage = useCallback(async () => {
     try {
+      setIsLoaded(false);
+      setLoadError(null);
       setBrandSettings(getBrandSettings());
 
       const printResponse = await fetch(`/api/print/pet-report/${petId}`, {
@@ -282,7 +288,10 @@ export default function PetTimelineReportPage() {
       const printResult = await printResponse.json();
 
       if (!printResponse.ok || !printResult.pet) {
-        setIsLoaded(true);
+        setLoadError({
+          status: printResponse.status,
+          message: String(printResult.error ?? "Δεν ήταν δυνατή η φόρτωση του ιστορικού."),
+        });
         return;
       }
 
@@ -300,6 +309,10 @@ export default function PetTimelineReportPage() {
       setProgressLogs(printablePet.progressLogs ?? []);
     } catch (error) {
       console.error("Δεν μπόρεσα να φορτώσω την αναφορά ιστορικού:", error);
+      setLoadError({
+        status: 0,
+        message: "Δεν ήταν δυνατή η σύνδεση. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.",
+      });
     } finally {
       setIsLoaded(true);
     }
@@ -343,16 +356,49 @@ export default function PetTimelineReportPage() {
     );
   }
 
-  if (!pet || !analysis || !brandSettings) {
+  if (loadError || !pet || !analysis || !brandSettings) {
+    const needsLogin = loadError?.status === 401;
+
     return (
       <main className="min-h-screen bg-gray-50 p-6">
-        <div className="mx-auto max-w-4xl rounded-xl border border-red-200 bg-red-50 p-8 shadow-sm">
-          <h1 className="text-2xl font-bold text-black">
-            Δεν υπάρχει διαθέσιμη αναφορά ιστορικού
-          </h1>
-          <p className="mt-2 text-red-700">
-            Δεν μπόρεσα να φορτώσω το επιλεγμένο κατοικίδιο.
+        <div className="mx-auto max-w-xl rounded-xl border border-red-200 bg-white p-8 text-center shadow-sm">
+          <p className="text-sm font-semibold uppercase text-red-700">
+            Χρειάζεται μια μικρή ενέργεια
           </p>
+          <h1 className="text-2xl font-bold text-black">
+            {needsLogin
+              ? "Συνδέσου για να δεις το ιστορικό"
+              : "Δεν φορτώθηκε το ιστορικό"}
+          </h1>
+          <p className="mt-3 text-gray-700">
+            {needsLogin
+              ? "Η αναφορά είναι ιδιωτική και εμφανίζεται μόνο στον λογαριασμό που ανήκει το κατοικίδιο."
+              : loadError?.message ?? "Δεν μπόρεσα να φορτώσω το επιλεγμένο κατοικίδιο."}
+          </p>
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            {needsLogin ? (
+              <a
+                href={`/login?next=${encodeURIComponent(`/print/pet-timeline/${petId}`)}`}
+                className="rounded-xl bg-black px-5 py-3 font-semibold text-white"
+              >
+                Σύνδεση
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={loadPage}
+                className="rounded-xl bg-black px-5 py-3 font-semibold text-white"
+              >
+                Δοκίμασε ξανά
+              </button>
+            )}
+            <a
+              href="/account"
+              className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-black"
+            >
+              Επιστροφή στον λογαριασμό
+            </a>
+          </div>
         </div>
       </main>
     );

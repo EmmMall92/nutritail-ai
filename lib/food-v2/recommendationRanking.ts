@@ -2382,10 +2382,11 @@ export function splitFoodV2Recommendations(
   }
 
   const bestVisibleScore = customerVisibleUsable[0]?.total_score ?? 0;
+  const preferredMatchFloor = Math.max(50, bestVisibleScore - 15);
   const preferredMatches = customerVisibleUsable.filter(
     (ranking) =>
       hasPreferredProteinMatch(ranking) &&
-      ranking.total_score >= bestVisibleScore - 15
+      ranking.total_score >= preferredMatchFloor
   );
   const bestOverallSource =
     preferredMatches.length > 0 ? preferredMatches : customerVisibleUsable;

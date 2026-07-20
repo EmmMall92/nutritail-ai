@@ -35,7 +35,7 @@ const checks: MobileCheck[] = [
     area: "Account chatbot mobile frame",
     file: "app/account/chatbot/page.tsx",
     markers: [
-      "h-[calc(100svh-8rem)]",
+      "h-[calc(100dvh-7.75rem)]",
       "sm:h-[calc(100svh-11rem)]",
       "overflow-hidden",
       "scroll-pb-72",

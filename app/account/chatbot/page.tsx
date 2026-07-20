@@ -2664,15 +2664,17 @@ async function getFoodV2RecommendationMessage(
     onChoices?: (choices: RecommendedFoodChoice[]) => void;
   } = {}
 ) {
-  if (!pet.species) return "";
+  const cleanPet = sanitizePetIntake(pet);
+
+  if (!cleanPet.species) return "";
 
   const goal = goalFromPetContext({
-    species: pet.species,
-    age: pet.age,
-    neutered: pet.neutered,
-    healthIssues: pet.healthIssues,
-    allergies: pet.allergies,
-    weightGoal: pet.weightGoal,
+    species: cleanPet.species,
+    age: cleanPet.age,
+    neutered: cleanPet.neutered,
+    healthIssues: cleanPet.healthIssues,
+    allergies: cleanPet.allergies,
+    weightGoal: cleanPet.weightGoal,
   });
 
   const response = await fetch("/api/account/foods/v2-recommendations", {
@@ -2680,24 +2682,24 @@ async function getFoodV2RecommendationMessage(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       pet: {
-        species: pet.species,
+        species: cleanPet.species,
         breed: "unknown",
-        age: pet.age,
-        weight: pet.weight,
-        activityLevel: pet.activityLevel,
-        neutered: pet.neutered,
-        weightGoal: pet.weightGoal,
-        allergies: pet.allergies,
-        healthIssues: pet.healthIssues,
-        excludedIngredients: pet.excludedIngredients ?? [],
-        preferredProteins: pet.preferredProteins ?? [],
+        age: cleanPet.age,
+        weight: cleanPet.weight,
+        activityLevel: cleanPet.activityLevel,
+        neutered: cleanPet.neutered,
+        weightGoal: cleanPet.weightGoal,
+        allergies: cleanPet.allergies,
+        healthIssues: cleanPet.healthIssues,
+        excludedIngredients: cleanPet.excludedIngredients ?? [],
+        preferredProteins: cleanPet.preferredProteins ?? [],
       },
       goal,
-      format: recommendationFormatFromPreference(pet.preferredFoodFormat),
+      format: recommendationFormatFromPreference(cleanPet.preferredFoodFormat),
       limit_per_bucket: 3,
       excluded_brands:
         options.mode === "alternative"
-          ? getExcludedBrandsForAlternative(pet.currentFoodName)
+          ? getExcludedBrandsForAlternative(cleanPet.currentFoodName)
           : [],
     }),
   });
@@ -2715,10 +2717,10 @@ async function getFoodV2RecommendationMessage(
 
   const foodChoices = [
     ...(result.premium ?? []).map((food) =>
-      toRecommendationChoice(food, "best", options.language ?? "el", pet, goal)
+      toRecommendationChoice(food, "best", options.language ?? "el", cleanPet, goal)
     ),
     ...(result.value ?? []).map((food) =>
-      toRecommendationChoice(food, "value", options.language ?? "el", pet, goal)
+      toRecommendationChoice(food, "value", options.language ?? "el", cleanPet, goal)
     ),
   ]
     .filter((food): food is RecommendedFoodChoice => Boolean(food?.name))
@@ -2726,9 +2728,9 @@ async function getFoodV2RecommendationMessage(
 
   options.onChoices?.(foodChoices);
 
-  if (foodChoices.length === 0 && pet.preferredFoodFormat) {
+  if (foodChoices.length === 0 && cleanPet.preferredFoodFormat) {
     return formatMissingFormatRecommendationMessage(
-      pet,
+      cleanPet,
       options.language ?? "el",
       options.mode ?? "default",
       {
@@ -2743,11 +2745,11 @@ async function getFoodV2RecommendationMessage(
     locale: options.language ?? "el",
     excludedBrands:
       options.mode === "alternative"
-        ? getExcludedBrandsForAlternative(pet.currentFoodName)
-        : [],
-    preferredProteins: pet.preferredProteins ?? [],
-    excludedIngredients: pet.excludedIngredients ?? [],
-    foodFormatPreference: pet.preferredFoodFormat,
+          ? getExcludedBrandsForAlternative(cleanPet.currentFoodName)
+          : [],
+    preferredProteins: cleanPet.preferredProteins ?? [],
+    excludedIngredients: cleanPet.excludedIngredients ?? [],
+    foodFormatPreference: cleanPet.preferredFoodFormat,
     maxItemsPerSection: 2,
     compactForCards: foodChoices.length > 0,
   });
@@ -2769,16 +2771,16 @@ async function getFoodV2RecommendationMessage(
         deterministicText,
         cardsFollow: foodChoices.length > 0,
         petSummary: {
-          species: pet.species,
-          name: pet.name,
-          weightKg: pet.weight,
-          ageYears: pet.age,
-          activityLevel: pet.activityLevel,
-          neutered: pet.neutered,
-          weightGoal: pet.weightGoal,
-          healthIssues: pet.healthIssues ?? [],
-          preferredProteins: pet.preferredProteins ?? [],
-          excludedIngredients: pet.excludedIngredients ?? [],
+          species: cleanPet.species,
+          name: cleanPet.name,
+          weightKg: cleanPet.weight,
+          ageYears: cleanPet.age,
+          activityLevel: cleanPet.activityLevel,
+          neutered: cleanPet.neutered,
+          weightGoal: cleanPet.weightGoal,
+          healthIssues: cleanPet.healthIssues ?? [],
+          preferredProteins: cleanPet.preferredProteins ?? [],
+          excludedIngredients: cleanPet.excludedIngredients ?? [],
         },
         recommendation: result,
       }),
@@ -3958,6 +3960,8 @@ export default function AccountChatbotPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage("bot", getChatbotWelcomeMessage("el")),
   ]);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const shouldStickToBottomRef = useRef(true);
   const botText = useCallback((el: string, en: string) => {
     if (!en.trim()) return "";
 
@@ -4027,6 +4031,14 @@ export default function AccountChatbotPage() {
   const mobileFoodChoiceActions = requiresFoodChoiceBeforeSave
     ? recommendedFoodChoices.slice(0, 3)
     : [];
+  const shouldCompactCompletedConversation =
+    Boolean(latestAnalysis) && messages.length > 8;
+  const archivedConversationMessages = shouldCompactCompletedConversation
+    ? messages.slice(0, -6)
+    : [];
+  const visibleConversationMessages = shouldCompactCompletedConversation
+    ? messages.slice(-6)
+    : messages;
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
       ? botText(
@@ -4438,46 +4450,85 @@ export default function AccountChatbotPage() {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
-    const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+  const scrollToLatestMessage = useCallback(
+    (behavior: ScrollBehavior = "smooth") => {
       const container = messagesContainerRef.current;
       if (!container) return;
 
-      const targetTop = Math.max(container.scrollHeight - container.clientHeight, 0);
+      shouldStickToBottomRef.current = true;
+      setShowJumpToLatest(false);
+      container.scrollTo({
+        top: Math.max(container.scrollHeight - container.clientHeight, 0),
+        behavior,
+      });
+    },
+    []
+  );
 
-      if (behavior === "auto") {
-        container.scrollTop = targetTop;
-      } else {
-        container.scrollTo({
-          top: targetTop,
-          behavior,
-        });
-      }
-    };
-
-    const frame = window.requestAnimationFrame(() => scrollToBottom("auto"));
-    const delayed = [80, 220, 500, 900].map((delay) =>
-      window.setTimeout(() => scrollToBottom("auto"), delay)
-    );
+  const handleMessagesScroll = useCallback(() => {
     const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    const isNearBottom = distanceFromBottom < 96;
+    shouldStickToBottomRef.current = isNearBottom;
+
+    if (isNearBottom) setShowJumpToLatest(false);
+  }, []);
+
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const lastMessage = messages[messages.length - 1];
+    const shouldFollow =
+      shouldStickToBottomRef.current ||
+      lastMessage?.role === "user" ||
+      isAnalyzing ||
+      isProcessingMessage ||
+      isSaving;
+
+    if (!shouldFollow) {
+      setShowJumpToLatest(true);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() =>
+      scrollToLatestMessage("auto")
+    );
+    const delayed = window.setTimeout(
+      () => scrollToLatestMessage("auto"),
+      160
+    );
     const resizeObserver =
-      container && "ResizeObserver" in window
-        ? new ResizeObserver(() => scrollToBottom("auto"))
+      "ResizeObserver" in window
+        ? new ResizeObserver(() => {
+            if (shouldStickToBottomRef.current) {
+              scrollToLatestMessage("auto");
+            }
+          })
         : null;
 
-    if (container && resizeObserver) {
+    if (resizeObserver) {
       resizeObserver.observe(container);
-      Array.from(container.children).forEach((child) =>
-        resizeObserver.observe(child)
-      );
     }
 
     return () => {
       window.cancelAnimationFrame(frame);
-      delayed.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      window.clearTimeout(delayed);
       resizeObserver?.disconnect();
     };
-  }, [messages, showSave, step, isAnalyzing, isProcessingMessage, recommendedFoodChoices.length]);
+  }, [
+    messages,
+    showSave,
+    step,
+    isAnalyzing,
+    isProcessingMessage,
+    isSaving,
+    recommendedFoodChoices.length,
+    scrollToLatestMessage,
+  ]);
 
   useEffect(() => {
     async function loadSavedPets() {
@@ -6061,6 +6112,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     setFeedbackStatus("");
     setSavedPetId(null);
     setRecommendedFoodChoices([]);
+    shouldStickToBottomRef.current = true;
+    setShowJumpToLatest(false);
 
     setMessages([
       createMessage(
@@ -6079,14 +6132,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   return (
-    <section className="mx-auto flex h-[calc(100svh-8rem)] min-h-[520px] max-w-3xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:h-[calc(100svh-11rem)] sm:min-h-[560px] sm:rounded-2xl">
-      <div className="flex shrink-0 flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-5">
+    <section className="relative mx-auto flex h-[calc(100dvh-7.75rem)] min-h-[500px] max-w-3xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:h-[calc(100svh-11rem)] sm:min-h-[560px] sm:rounded-2xl">
+      <div className="flex shrink-0 flex-col gap-3 border-b border-gray-200 p-3 sm:flex-row sm:items-start sm:justify-between sm:p-5">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold text-black">
+          <h1 className="text-xl font-bold text-black sm:text-2xl">
             {botText("Διατροφικός σύμβουλος NutriTail AI", "NutriTail AI Nutrition Advisor")}
           </h1>
 
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 hidden text-sm text-gray-600 sm:block">
             {botText(
               "Ξεκίνα με αποθηκευμένο ή νέο κατοικίδιο και πάρε προτάσεις τροφών, θερμίδες και επόμενο βήμα.",
               "Start with a saved pet or a new profile, then get a grounded food shortlist, calories, and safety notes."
@@ -6094,8 +6147,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </p>
         </div>
 
-        <div className="grid w-full shrink-0 grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
-          <div className="col-span-2 flex rounded-lg border border-gray-300 bg-white p-1 sm:col-span-1">
+        <div className="grid w-full shrink-0 grid-cols-[auto_1fr_1fr] gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
+          <div className="flex rounded-lg border border-gray-300 bg-white p-1">
             {(["el", "en"] as const).map((language) => (
               <button
                 key={language}
@@ -6131,6 +6184,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
       <div
         ref={messagesContainerRef}
+        onScroll={handleMessagesScroll}
         className="flex flex-1 scroll-pb-72 flex-col gap-4 overflow-y-auto overscroll-contain p-3 pb-40 [overflow-anchor:none] sm:p-5 sm:pb-44"
       >
         {!showSave && messages.length <= 1 && (
@@ -6269,16 +6323,16 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
             </div>
 
-            <div
+            <details
               data-testid="saved-pet-continuation-prep-checklist"
               className="mt-4 rounded-2xl border border-blue-200 bg-white p-4"
             >
-              <p className="text-sm font-semibold text-blue-950">
+              <summary className="cursor-pointer text-sm font-semibold text-blue-950">
                 {botText(
                   "\u03a4\u03b9 \u03bd\u03b1 \u03ad\u03c7\u03b5\u03b9\u03c2 \u03c0\u03c1\u03cc\u03c7\u03b5\u03b9\u03c1\u03bf",
                   "What to have ready"
                 )}
-              </p>
+              </summary>
               <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
                 {savedPetContinuationPrepChecklist.map((item) => (
                   <div
@@ -6294,7 +6348,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   </div>
                 ))}
               </div>
-            </div>
+            </details>
 
             <div
               data-testid="saved-pet-continuation-decision-guide"
@@ -6504,7 +6558,32 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        {messages.map((message) => (
+        {archivedConversationMessages.length > 0 && (
+          <details className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700">
+            <summary className="cursor-pointer font-semibold text-gray-900">
+              {botText(
+                `Δες τα προηγούμενα ${archivedConversationMessages.length} μηνύματα`,
+                `View ${archivedConversationMessages.length} earlier messages`
+              )}
+            </summary>
+            <div className="mt-3 flex flex-col gap-3 border-t border-gray-100 pt-3">
+              {archivedConversationMessages.map((message) => (
+                <div
+                  key={`archived-${message.id}`}
+                  className={`max-w-[96%] whitespace-pre-line rounded-xl px-3 py-2 text-sm leading-6 sm:max-w-[85%] ${
+                    message.role === "bot"
+                      ? "self-start bg-gray-100 text-black"
+                      : "self-end bg-black text-white"
+                  }`}
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+            </details>
+        )}
+
+        {visibleConversationMessages.map((message) => (
           <div
             key={message.id}
             className={`max-w-[96%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
@@ -6687,7 +6766,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </p>
               </div>
             )}
-            <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-950">
+            <div className="hidden rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-950">
               <p className="font-semibold">
                 {botText("Τι κερδίζεις με την αποθήκευση", "What saving gives you")}
               </p>
@@ -6980,6 +7059,16 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         <div ref={messagesEndRef} className="min-h-4 shrink-0" />
       </div>
 
+      {showJumpToLatest && (
+        <button
+          type="button"
+          onClick={() => scrollToLatestMessage("smooth")}
+          className="absolute bottom-24 left-1/2 z-30 -translate-x-1/2 rounded-full border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-black shadow-lg sm:bottom-28"
+        >
+          {botText("Νεότερα μηνύματα", "Latest messages")}
+        </button>
+      )}
+
       <div className="sticky bottom-0 z-20 shrink-0 border-t border-gray-200 bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sm:p-5">
         {followUpPet && step === "petChoice" && !followUpMode && (
           <div className="mb-3 sm:hidden">
@@ -7082,7 +7171,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        {quickReplies.length > 0 && !isProcessingMessage && !isAnalyzing && !isSaving && (
+        {quickReplies.length > 0 &&
+          mobileFoodChoiceActions.length === 0 &&
+          !isProcessingMessage &&
+          !isAnalyzing &&
+          !isSaving && (
           <div className="mb-3 flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
               <button
