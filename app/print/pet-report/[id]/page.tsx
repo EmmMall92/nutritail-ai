@@ -2198,7 +2198,7 @@ export default function PrintablePetReportPage() {
         )}
 
         <div
-          className="mt-6 break-inside-avoid rounded-3xl border border-black/10 bg-[#fbfaf7] p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          className="mt-6 hidden break-inside-avoid rounded-3xl border border-black/10 bg-[#fbfaf7] p-6 shadow-sm print:block print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-at-a-glance-summary"
         >
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -2282,7 +2282,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
-          className="mt-6 break-inside-avoid rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          className="mt-6 hidden break-inside-avoid rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm print:block print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-daily-use-brief"
         >
           <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
@@ -2582,7 +2582,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
-          className="mt-8 break-inside-avoid rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm print:border-gray-300 print:shadow-none"
+          className="mt-8 hidden break-inside-avoid rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm print:block print:border-gray-300 print:shadow-none"
           data-testid="report-next-action-summary"
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -2617,7 +2617,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
-          className="mt-8 break-inside-avoid rounded-2xl border border-black/10 bg-[#f7f7f4] p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          className="mt-8 hidden break-inside-avoid rounded-2xl border border-black/10 bg-[#f7f7f4] p-6 shadow-sm print:block print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-plan-snapshot"
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -2652,7 +2652,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
-          className="mt-8 break-inside-avoid rounded-2xl border border-sky-100 bg-sky-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          className="mt-8 hidden break-inside-avoid rounded-2xl border border-sky-100 bg-sky-50 p-6 shadow-sm print:block print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-customer-handoff"
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -2687,7 +2687,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div
-          className="mt-8 break-inside-avoid rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm print:border-gray-300 print:bg-white print:shadow-none"
+          className="mt-8 hidden break-inside-avoid rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm print:block print:border-gray-300 print:bg-white print:shadow-none"
           data-testid="report-pocket-summary"
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

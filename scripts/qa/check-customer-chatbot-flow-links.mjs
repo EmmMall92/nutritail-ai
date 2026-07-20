@@ -348,7 +348,7 @@ const checks = [
     expected: "await runFoodComparison(pendingCompare, { species: nextPet.species })",
   },
   {
-    label: "Saved pet chatbot intake uses formatted pet display names",
+    label: "Saved pet chatbot intake uses stored formatted pet display names",
     file: "app/account/chatbot/page.tsx",
     expected: "name: formatPetDisplayName(savedPet.name)",
   },
@@ -363,14 +363,14 @@ const checks = [
     expected: "Weight goal: ${savedWeightGoalLabel(getHistoryWeightGoal(latest), language)}",
   },
   {
-    label: "Saved pet chatbot messages use formatted pet display names",
+    label: "Saved pet chatbot messages use customer-safe pet display names",
     file: "app/account/chatbot/page.tsx",
-    expected: "const savedPetName = formatPetDisplayName(savedPet.name)",
+    expected: "const savedPetName = formatCustomerPetName(savedPet.name)",
   },
   {
-    label: "Saved pet follow-up messages use formatted pet display names",
+    label: "Saved pet follow-up messages use customer-safe pet display names",
     file: "app/account/chatbot/page.tsx",
-    expected: "const targetPetName = formatPetDisplayName(targetPet.name)",
+    expected: "const targetPetName = formatCustomerPetName(targetPet.name)",
   },
   {
     label: "Saved pet handoff user echo is localized",
