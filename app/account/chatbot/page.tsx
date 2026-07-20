@@ -4310,7 +4310,8 @@ export default function AccountChatbotPage() {
     const feedingGramsPerDay = analysisMetadata?.feedingGramsPerDay ?? null;
 
     return {
-      source: "account_chatbot",
+      source: "account_chatbot_analysis_feedback",
+      feedbackSurface: "save_analysis_panel",
       petSpecies: pet.species ?? null,
       petName: pet.name ?? null,
       petAge: pet.age ?? null,
