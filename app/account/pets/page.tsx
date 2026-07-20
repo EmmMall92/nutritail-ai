@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 
 type AnalysisHistoryItem = {
@@ -273,7 +274,7 @@ export default function AccountPetsPage() {
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-semibold text-black">
-                          {pet.name}
+                          {formatCustomerPetName(pet.name)}
                           {pet.breed ? ` - ${pet.breed}` : ""}
                         </p>
                         <span

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
+import { formatCustomerPetName } from "@/lib/petName";
 import { getPetSession } from "@/lib/storage";
 import { petAnalysisService } from "@/services/petAnalysisService";
 import type { PetNutritionSession } from "@/types/nutrition";
@@ -155,7 +156,7 @@ export default function PetReportPage() {
       </header>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <InfoCard label="Κατοικίδιο" value={pet.name} />
+        <InfoCard label="Κατοικίδιο" value={formatCustomerPetName(pet.name)} />
         <InfoCard label="Βάρος" value={`${pet.weight} kg`} />
         <InfoCard label="Θερμίδες ηρεμίας" value={`${nutrition.rer} kcal`} />
         <InfoCard label="Ημερήσιος στόχος" value={`${nutrition.der} kcal`} />

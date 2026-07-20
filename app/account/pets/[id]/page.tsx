@@ -3,6 +3,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
@@ -454,7 +455,7 @@ export default function AccountPetDetailPage() {
       <section className="mx-auto max-w-4xl space-y-6">
         <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-black">{pet.name}</h1>
+            <h1 className="text-3xl font-bold text-black">{formatCustomerPetName(pet.name)}</h1>
             <p className="mt-2 text-gray-600">
               Προφίλ κατοικιδίου, διατροφική ανάλυση και ιστορικό προόδου.
             </p>

@@ -83,3 +83,9 @@ export function formatPetDisplayName(input: unknown, fallback = "Pet") {
     )
     .join(" ");
 }
+
+export function formatCustomerPetName(input: unknown, fallback = "Κατοικίδιο") {
+  if (isTechnicalPetName(input)) return fallback;
+
+  return formatPetDisplayName(input, fallback);
+}

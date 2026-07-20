@@ -26,7 +26,11 @@ import { buildCustomerRecommendationIntro } from "@/lib/food-v2/customerRecommen
 import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanking";
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 import { calculateMainFoodPortionEstimate } from "@/lib/chatbot/portionEstimate";
-import { formatPetDisplayName, isTechnicalPetName } from "@/lib/petName";
+import {
+  formatCustomerPetName,
+  formatPetDisplayName,
+  isTechnicalPetName,
+} from "@/lib/petName";
 import {
   parseTastePreferences as parseSharedTastePreferences,
   removeExcludedFromPreferred as removeSharedExcludedFromPreferred,
@@ -2826,7 +2830,7 @@ function formatCleanPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "e
 
   const details = greek
     ? [
-        `Κατοικίδιο: ${pet.name ? formatPetDisplayName(pet.name) : "κατοικίδιο"} (${speciesLabel})`,
+        `Κατοικίδιο: ${formatCustomerPetName(pet.name, "κατοικίδιο")} (${speciesLabel})`,
         `Βάρος/ηλικία: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} ετών`,
         `Δραστηριότητα: ${activityLabel}`,
         `Στειρωμένο: ${
@@ -2836,7 +2840,7 @@ function formatCleanPetIntakeSummary(pet: PetIntake, language: ChatLanguage = "e
         `Τωρινή τροφή: ${pet.currentFoodName ?? "δεν δόθηκε"}`,
       ]
     : [
-        `Pet: ${pet.name ? formatPetDisplayName(pet.name) : "pet"} (${speciesLabel})`,
+        `Pet: ${formatCustomerPetName(pet.name, "pet")} (${speciesLabel})`,
         `Weight/age: ${pet.weight ?? "-"} kg, ${pet.age ?? "-"} years`,
         `Activity: ${activityLabel}`,
         `Neutered: ${
@@ -3225,7 +3229,7 @@ function formatSavedPetContinuityIntro(
   savedPet: AccountPet,
   language: ChatLanguage = "en"
 ) {
-  const petName = formatPetDisplayName(savedPet.name);
+  const petName = formatCustomerPetName(savedPet.name);
 
   if (language === "el") {
     return `Βρήκα προηγούμενο διατροφικό ιστορικό για ${petName}.
@@ -4543,7 +4547,7 @@ export default function AccountChatbotPage() {
 
   async function selectSavedPet(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
-    const savedPetName = formatPetDisplayName(savedPet.name);
+    const savedPetName = formatCustomerPetName(savedPet.name);
     const hasHistory = (savedPet.analysisHistory?.length ?? 0) > 0;
     const pendingCompare = [...pendingCompareQueries];
 
@@ -4602,7 +4606,7 @@ export default function AccountChatbotPage() {
 
   function startSavedPetAnalysis(savedPet: AccountPet) {
     const nextPet = createIntakeFromSavedPet(savedPet);
-    const savedPetName = formatPetDisplayName(savedPet.name);
+    const savedPetName = formatCustomerPetName(savedPet.name);
 
     setSelectedPetId(savedPet.id);
     setFollowUpPet(null);
@@ -4627,7 +4631,7 @@ export default function AccountChatbotPage() {
     options: { echoUser?: boolean } = {}
   ) {
     const echoUser = options.echoUser ?? true;
-    const targetPetName = formatPetDisplayName(targetPet.name);
+    const targetPetName = formatCustomerPetName(targetPet.name);
 
     void submitChatFeedback({
       eventType: "chat_followup_action",
@@ -4808,7 +4812,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
 
     const targetPet = savedPets.find((savedPet) => savedPet.id === targetPetId);
     if (!targetPet) return;
-    const targetPetName = formatPetDisplayName(targetPet.name);
+    const targetPetName = formatCustomerPetName(targetPet.name);
 
     handledDeepLinkRef.current = deepLinkKey;
 
@@ -6195,7 +6199,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     className="min-h-[92px] rounded-xl border border-gray-300 bg-white p-4 text-left transition hover:border-black focus:outline-none focus:ring-2 focus:ring-black"
                   >
                     <span className="block font-semibold text-black">
-                      {formatPetDisplayName(savedPet.name)}
+                      {formatCustomerPetName(savedPet.name)}
                     </span>
                     <span className="mt-1 block text-sm text-gray-600">
                       {formatSavedPetCardMeta(savedPet, chatLanguage)}
@@ -6234,8 +6238,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               <div>
                 <p className="font-semibold text-blue-950">
                   {botText(
-                    `Συνέχεια για το πλάνο του/της ${formatPetDisplayName(followUpPet.name)}`,
-                    `Continue ${formatPetDisplayName(followUpPet.name)}'s plan`
+                    `Συνέχεια για το πλάνο του/της ${formatCustomerPetName(followUpPet.name)}`,
+                    `Continue ${formatCustomerPetName(followUpPet.name)}'s plan`
                   )}
                 </p>
                 <p className="mt-1 whitespace-pre-line text-sm text-blue-900">
@@ -6523,20 +6527,11 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             <p className="mt-1 text-sm text-emerald-900">
               {botText(
                 recommendedFoodChoices.some((choice) => choice.role === "value")
-                  ? "Πρώτα είναι οι πιο δυνατές επιλογές. Αν θες κάτι πιο πρακτικό, δες και την εναλλακτική."
-                  : "Πάτησε μία κάρτα για να υπολογίσουμε την πρώτη ποσότητα.",
+                  ? "Πρώτα είναι οι πιο δυνατές επιλογές. Αν θες κάτι πιο πρακτικό, δες και την εναλλακτική. Μετά την επιλογή θα δεις γραμμάρια/ημέρα και μπορείς να αποθηκεύσεις το πλάνο."
+                  : "Πάτησε μία κάρτα για να υπολογίσουμε την πρώτη ποσότητα. Μετά την επιλογή θα δεις γραμμάρια/ημέρα και μπορείς να αποθηκεύσεις το πλάνο.",
                 recommendedFoodChoices.some((choice) => choice.role === "value")
-                  ? "Start with the strongest choices. If you want something simpler, check the alternative too."
-                  : "Tap one card to calculate the first portion."
-              )}
-            </p>
-            <p
-              data-testid="customer-choice-decision-guide"
-              className="mt-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-950 ring-1 ring-emerald-100"
-            >
-              {botText(
-                "Μετά την επιλογή θα δεις γραμμάρια/ημέρα και μπορείς να αποθηκεύσεις το πλάνο.",
-                "Pick by fit and taste. After choosing, you will see grams/day and can save the plan."
+                  ? "Pick by fit and taste. Start with the strongest choices. If you want something simpler, check the alternative too. After choosing, you will see grams/day and can save the plan."
+                  : "Pick by fit and taste. Tap one card to calculate the first portion. After choosing, you will see grams/day and can save the plan."
               )}
             </p>
             {((pet.preferredProteins ?? []).length > 0 ||
@@ -6578,15 +6573,18 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     key={group.key}
                     className={`rounded-2xl border p-3 ${group.className}`}
                   >
-                    <div className="mb-3">
+                    <div className="mb-3 flex items-start justify-between gap-3">
                       <div>
                         <p className={`text-sm font-bold ${group.titleClassName}`}>
                           {group.title}
                         </p>
-                        <p className={`text-xs leading-5 ${group.descriptionClassName}`}>
+                        <p className={`hidden text-xs leading-5 sm:block ${group.descriptionClassName}`}>
                           {group.description}
                         </p>
                       </div>
+                      <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 ring-1 ring-gray-200">
+                        {group.choices.length}/{group.key === "premium" ? 2 : 1}
+                      </span>
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                       {group.choices.map(({ choice, index }) => (
