@@ -6765,6 +6765,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   "This will save the pet profile, latest nutrition analysis, and report entry in your account."
                 )}
               </p>
+              <p className="mt-2 text-sm font-semibold text-green-950">
+                {botText(
+                  "Το πλάνο σου είναι έτοιμο. Αποθήκευσέ το για να κρατήσεις θερμίδες, τροφή, πρώτη ποσότητα και επόμενο έλεγχο.",
+                  "Your plan is ready. Save it to keep calories, food choice, and first portion on the profile."
+                )}
+              </p>
               <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-green-900 sm:grid-cols-3">
                 <span className="rounded-full bg-white px-3 py-1 text-center">
                   {botText("Προφίλ", "Pet profile")}
