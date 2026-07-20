@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
+import { formatCustomerPetName } from "@/lib/petName";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 import { petAnalysisService } from "@/services/petAnalysisService";
 import { comparePetAnalyses } from "@/services/petAnalysisComparisonService";
@@ -390,7 +391,7 @@ export default function PetTimelineReportPage() {
                 Ιστορικό διατροφής κατοικιδίου
               </h1>
               <p className="mt-2 text-sm text-gray-600">
-                Ιστορικό και περίληψη αλλαγών για {pet.name}
+                Ιστορικό και περίληψη αλλαγών για {formatCustomerPetName(pet.name)}
               </p>
               <p className="mt-1 text-sm text-gray-500">
                 Δημιουργήθηκε στις {new Date().toLocaleString()}
@@ -409,7 +410,7 @@ export default function PetTimelineReportPage() {
       </header>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <InfoCard label="Κατοικίδιο" value={pet.name} detail={pet.species} />
+        <InfoCard label="Κατοικίδιο" value={formatCustomerPetName(pet.name)} detail={pet.species} />
         <InfoCard label="Βάρος" value={`${pet.weight} kg`} />
         <InfoCard
           label="Θερμίδες ηρεμίας"

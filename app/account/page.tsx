@@ -8,6 +8,7 @@ import {
   betaPlanHighlights,
 } from "@/lib/beta/accessPlan";
 import { getBetaLimitStatus } from "@/lib/beta/limitPolicy";
+import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
 
@@ -179,7 +180,7 @@ function getPetLabel(pet: AccountPet) {
         ? " - γάτα"
         : "";
   const weight = pet.weight ? ` - ${pet.weight} kg` : "";
-  return `${pet.name ?? "Κατοικίδιο"}${species}${weight}`;
+  return `${formatCustomerPetName(pet.name)}${species}${weight}`;
 }
 
 function getNutritionPlanStatusCopy(score?: number | null) {
@@ -235,7 +236,7 @@ function getAccountPlanSnapshot({
   const foodScore = getAnalysisFoodScore(latestAnalysis);
 
   return {
-    petName: latestPet.name ?? "Κατοικίδιο",
+    petName: formatCustomerPetName(latestPet.name),
     weightGoal: getWeightGoalCopy(getAnalysisWeightGoal(latestAnalysis)),
     foodName: foodName ?? "Δεν έχει επιλεγεί ακόμη τροφή",
     dailyCalories: formatDailyCalories(latestAnalysis.mer),
@@ -1535,7 +1536,7 @@ export default function AccountPage() {
                 className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-black"
               >
                 <p className="font-semibold text-black">
-                  {pet.name ?? "Κατοικίδιο"}
+                  {formatCustomerPetName(pet.name)}
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
                   {getPetLabel(pet)}

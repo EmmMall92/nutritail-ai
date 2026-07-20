@@ -92,7 +92,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/chatbot/page.tsx",
-    text: "customer-choice-decision-guide",
+    text: 'group.choices.length}/{group.key === "premium" ? 2 : 1}',
   },
   {
     file: "app/account/chatbot/page.tsx",

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { formatCustomerPetName } from "@/lib/petName";
 
 type AnalysisHistoryItem = {
   id: string;
@@ -393,8 +394,8 @@ function getReportCustomerSuccessStrip(
 
   return {
     title: hasCompletePlan
-      ? `Το πλάνο του/της ${pet.name} είναι έτοιμο για χρήση`
-      : `Το πλάνο του/της ${pet.name} θέλει ένα τελευταίο βήμα`,
+      ? `Το πλάνο του/της ${formatCustomerPetName(pet.name)} είναι έτοιμο για χρήση`
+      : `Το πλάνο του/της ${formatCustomerPetName(pet.name)} θέλει ένα τελευταίο βήμα`,
     subtitle: hasCompletePlan
       ? "Κράτα την τροφή και την ποσότητα σταθερές για 2-4 εβδομάδες πριν κρίνεις αν δουλεύει."
       : "Χρειαζόμαστε επιλεγμένη τροφή και θερμίδες τροφής για να κλειδώσει η ποσότητα σε γραμμάρια.",
@@ -521,7 +522,7 @@ function getReportExecutiveSummary(
     {
       label: "Στόχος",
       value: analysis ? getGoalLabel(analysis.weight_goal) : "Χρειάζεται ανάλυση",
-      detail: `${pet.name}: ${pet.weight} kg, ${pet.age} ετών${
+      detail: `${formatCustomerPetName(pet.name)}: ${pet.weight} kg, ${pet.age} ετών${
         pet.neutered ? ", στειρωμένο" : ""
       }.`,
     },
@@ -607,9 +608,9 @@ function getReportCustomerCommandCard(
       "\u0397 \u03bf\u03c5\u03c3\u03af\u03b1 \u03c4\u03b7\u03c2 \u03b1\u03bd\u03b1\u03c6\u03bf\u03c1\u03ac\u03c2",
     title: hasCompletePlan
       ? `\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b3\u03b9\u03b1 ${
-          pet.name
+          formatCustomerPetName(pet.name)
         }: ${analysis?.feeding_grams_per_day}g/\u03b7\u03bc\u03ad\u03c1\u03b1`
-      : `\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b3\u03b9\u03b1 ${pet.name}: \u03ba\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae`,
+      : `\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 \u03b3\u03b9\u03b1 ${formatCustomerPetName(pet.name)}: \u03ba\u03bb\u03b5\u03af\u03b4\u03c9\u03c3\u03b5 \u03c4\u03c1\u03bf\u03c6\u03ae`,
     detail: hasCompletePlan
       ? "\u039a\u03c1\u03ac\u03c4\u03b1 \u03c4\u03b7\u03bd \u03af\u03b4\u03b9\u03b1 \u03c4\u03c1\u03bf\u03c6\u03ae \u03ba\u03b1\u03b9 \u03c0\u03bf\u03c3\u03cc\u03c4\u03b7\u03c4\u03b1 \u03b3\u03b9\u03b1 2-4 \u03b5\u03b2\u03b4\u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03ce\u03c3\u03c4\u03b5 \u03bd\u03b1 \u03b4\u03bf\u03cd\u03bc\u03b5 \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ae \u03c4\u03ac\u03c3\u03b7."
       : "\u0397 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03ad\u03c7\u03b5\u03b9 \u03b2\u03b3\u03ac\u03bb\u03b5\u03b9 \u03b8\u03b5\u03c1\u03bc\u03b9\u03b4\u03b9\u03ba\u03cc \u03c3\u03c4\u03cc\u03c7\u03bf, \u03b1\u03bb\u03bb\u03ac \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03c4\u03c1\u03bf\u03c6\u03ae \u03bc\u03b5 \u03b3\u03bd\u03c9\u03c3\u03c4\u03ad\u03c2 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2 \u03b3\u03b9\u03b1 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
@@ -912,7 +913,7 @@ function getReportPlanSnapshot(
   return [
     {
       label: "Κατοικίδιο",
-      value: `${pet.name} · ${pet.species}`,
+      value: `${formatCustomerPetName(pet.name)} · ${pet.species}`,
       detail: `${pet.weight} kg · ${pet.age} έτη`,
     },
     {
@@ -1135,7 +1136,7 @@ function getReportDecisionPassport(
       ? "\u03a4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf \u03bc\u03b5 \u03bc\u03af\u03b1 \u03bc\u03b1\u03c4\u03b9\u03ac"
       : "\u03a4\u03b9 \u03bc\u03b5\u03bd\u03b5\u03b9 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03bb\u03b5\u03b9\u03b4\u03ce\u03c3\u03b5\u03b9 \u03c4\u03bf \u03c0\u03bb\u03ac\u03bd\u03bf",
     subtitle: hasCompletePlan
-      ? `\u0393\u03c1\u03ae\u03b3\u03bf\u03c1\u03b7 \u03ba\u03ac\u03c1\u03c4\u03b1 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9: \u03c4\u03b9 \u03c4\u03c1\u03ce\u03b5\u03b9 \u03bf/\u03b7 ${pet.name}, \u03c0\u03cc\u03c3\u03bf, \u03c0\u03ce\u03c2 \u03be\u03b5\u03ba\u03b9\u03bd\u03ac\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03c0\u03cc\u03c4\u03b5 \u03b3\u03c5\u03c1\u03bd\u03ac\u03bc\u03b5.`
+      ? `\u0393\u03c1\u03ae\u03b3\u03bf\u03c1\u03b7 \u03ba\u03ac\u03c1\u03c4\u03b1 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c3\u03c0\u03af\u03c4\u03b9: \u03c4\u03b9 \u03c4\u03c1\u03ce\u03b5\u03b9 \u03bf/\u03b7 ${formatCustomerPetName(pet.name)}, \u03c0\u03cc\u03c3\u03bf, \u03c0\u03ce\u03c2 \u03be\u03b5\u03ba\u03b9\u03bd\u03ac\u03b5\u03b9 \u03ba\u03b1\u03b9 \u03c0\u03cc\u03c4\u03b5 \u03b3\u03c5\u03c1\u03bd\u03ac\u03bc\u03b5.`
       : "\u0397 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7 \u03b4\u03af\u03bd\u03b5\u03b9 \u03c3\u03c4\u03cc\u03c7\u03bf \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03c9\u03bd, \u03b1\u03bb\u03bb\u03ac \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03b5\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae\u03c2 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b2\u03b3\u03bf\u03c5\u03bd \u03b1\u03ba\u03c1\u03b9\u03b2\u03ae \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1.",
     cards: [
       {
@@ -1188,7 +1189,7 @@ function getFoodReasoningSummary(
   const goalLabel = getGoalLabel(analysis?.weight_goal);
 
   const fitDetail = hasFood
-    ? `Η επιλογή κρατήθηκε για το προφίλ του/της ${pet.name}, τον στόχο "${goalLabel}" και τα στοιχεία που δόθηκαν στην ανάλυση.`
+    ? `Η επιλογή κρατήθηκε για το προφίλ του/της ${formatCustomerPetName(pet.name)}, τον στόχο "${goalLabel}" και τα στοιχεία που δόθηκαν στην ανάλυση.`
     : "Δεν έχει κλειδώσει ακόμη συγκεκριμένη τροφή, οπότε η αναφορά μένει ως οδηγός θερμίδων και επόμενου βήματος.";
 
   const portionDetail =
@@ -1524,7 +1525,7 @@ export default function PrintablePetReportPage() {
             </h1>
 
             <p className="mt-2 text-gray-600">
-              Προσωπική διατροφική περίληψη για {pet.name}
+              Προσωπική διατροφική περίληψη για {formatCustomerPetName(pet.name)}
             </p>
 
             <p
@@ -1630,7 +1631,7 @@ export default function PrintablePetReportPage() {
                   Έχουμε θερμίδες, αλλά λείπει η συγκεκριμένη τροφή.
                 </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-900">
-                  Για τον/την {pet.name} κρατάμε τον ημερήσιο στόχο, αλλά τα
+                  Για τον/την {formatCustomerPetName(pet.name)} κρατάμε τον ημερήσιο στόχο, αλλά τα
                   γραμμάρια/ημέρα γίνονται ακριβή μόνο όταν επιλεγεί τροφή με
                   γνωστές θερμίδες. Έτσι αποφεύγουμε μπερδεμένες ποσότητες και
                   κρατάμε ένα καθαρό επόμενο βήμα.
@@ -1932,7 +1933,7 @@ export default function PrintablePetReportPage() {
                 Σύνοψη πλάνου
               </p>
               <h2 className="mt-1 text-2xl font-bold">
-                Τι κρατάμε για τον/την {pet.name}
+                Τι κρατάμε για τον/την {formatCustomerPetName(pet.name)}
               </h2>
             </div>
             <p className="max-w-2xl text-sm leading-6 text-gray-200 print:text-gray-700">
@@ -2206,7 +2207,7 @@ export default function PrintablePetReportPage() {
                 Με μια ματιά
               </p>
               <h2 className="mt-1 text-2xl font-bold text-black">
-                Το πρακτικό πλάνο για τον/την {pet.name}
+                Το πρακτικό πλάνο για τον/την {formatCustomerPetName(pet.name)}
               </h2>
             </div>
             <p className="max-w-2xl text-sm leading-6 text-gray-700">
@@ -2442,7 +2443,7 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <ReportCard label="Κατοικίδιο" value={pet.name} detail={pet.species} />
+          <ReportCard label="Κατοικίδιο" value={formatCustomerPetName(pet.name)} detail={pet.species} />
           <ReportCard label="Βάρος" value={`${pet.weight} kg`} />
           <ReportCard
             label="Ημερήσιος στόχος"

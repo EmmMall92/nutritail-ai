@@ -18,6 +18,7 @@ const requiredCompactFlow = [
   'data-testid="customer-preferences-applied-strip"',
   "getRecommendationChoiceGroups(recommendedFoodChoices, chatLanguage)",
   "group.choices.length}/{group.key === \"premium\" ? 2 : 1}",
+  "hidden text-xs leading-5 sm:block",
   "Calculate grams/day",
   'data-testid="selected-food-plan-card"',
   'data-testid="save-analysis-panel"',

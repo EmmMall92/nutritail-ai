@@ -5,7 +5,11 @@ import {
   parseTastePreferences,
   removeExcludedFromPreferred,
 } from "@/lib/chatbot/tastePreferences";
-import { formatPetDisplayName, isTechnicalPetName } from "@/lib/petName";
+import {
+  formatCustomerPetName,
+  formatPetDisplayName,
+  isTechnicalPetName,
+} from "@/lib/petName";
 
 type Check = {
   name: string;
@@ -19,6 +23,12 @@ function hasAll(values: string[] | undefined, expected: string[]) {
 
 function runChecks(): Check[] {
   const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+  const accountPage = readFileSync("app/account/page.tsx", "utf8");
+  const accountPetsPage = readFileSync("app/account/pets/page.tsx", "utf8");
+  const accountPetDetailPage = readFileSync("app/account/pets/[id]/page.tsx", "utf8");
+  const legacyPrintableReportPage = readFileSync("app/print/pet-report/page.tsx", "utf8");
+  const printableReportPage = readFileSync("app/print/pet-report/[id]/page.tsx", "utf8");
+  const printableTimelinePage = readFileSync("app/print/pet-timeline/[id]/page.tsx", "utf8");
   const greekKyrki = "\u03c4\u03b7\u03bd \u03bb\u03b5\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
   const greekKyrkiWithAccent =
     "\u03c4\u03b7\u03bd \u03bb\u03ad\u03bd\u03b5 \u039a\u03cd\u03c1\u03ba\u03b7";
@@ -132,17 +142,32 @@ function runChecks(): Check[] {
       pass:
         isTechnicalPetName("QA Live Proof 202607031752") &&
         isTechnicalPetName("qa live proof") &&
-        !isTechnicalPetName("\u039a\u03cd\u03c1\u03ba\u03b7"),
+        !isTechnicalPetName("\u039a\u03cd\u03c1\u03ba\u03b7") &&
+        formatCustomerPetName("QA Live Proof 202607031752") === "Κατοικίδιο",
       details: JSON.stringify({
         qaLiveProof: isTechnicalPetName("QA Live Proof 202607031752"),
+        customerName: formatCustomerPetName("QA Live Proof 202607031752"),
         kyrki: isTechnicalPetName("\u039a\u03cd\u03c1\u03ba\u03b7"),
       }),
+    },
+    {
+      name: "Customer account surfaces use safe pet display names",
+      pass:
+        chatbotPage.includes("formatCustomerPetName(") &&
+        accountPage.includes("formatCustomerPetName(") &&
+        accountPetsPage.includes("formatCustomerPetName(") &&
+        accountPetDetailPage.includes("formatCustomerPetName(") &&
+        legacyPrintableReportPage.includes("formatCustomerPetName(") &&
+        printableReportPage.includes("formatCustomerPetName(") &&
+        printableTimelinePage.includes("formatCustomerPetName("),
+      details:
+        "Prevents technical live-QA pet names from leaking into account, report, and timeline surfaces.",
     },
     {
       name: "Customer chatbot hides technical QA pets from saved pet choices",
       pass:
         chatbotPage.includes("!isTechnicalPetName(savedPet.name)") &&
-        chatbotPage.includes('formatPetDisplayName(pet.name, botText("Κατοικίδιο", "Pet"))'),
+        chatbotPage.includes("formatCustomerPetName(pet.name"),
       details:
         "Prevents live QA proof pets from appearing as customer pet names in the chatbot surface.",
     },
