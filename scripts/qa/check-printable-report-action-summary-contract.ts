@@ -123,6 +123,8 @@ const requiredReportMarkers = [
   "Χρειάζεται επιλογή τροφής για πλήρες πλάνο",
   "reportPortionLabel",
   "shouldShowDetailedReportSections",
+  "hidden break-inside-avoid",
+  "print:block",
   "reportHandoffStrip.map",
   "reportTreatAllowance",
   "mealSplit.twoMeals",
@@ -228,6 +230,15 @@ const requiredReportMarkers = [
   "Ζήτησε άλλη γεύση ή εταιρεία χωρίς να ξεκινήσεις από την αρχή",
 ];
 
+const screenDuplicateSectionsThatShouldBePrintOnly = [
+  'data-testid="report-at-a-glance-summary"',
+  'data-testid="report-daily-use-brief"',
+  'data-testid="report-next-action-summary"',
+  'data-testid="report-plan-snapshot"',
+  'data-testid="report-customer-handoff"',
+  'data-testid="report-pocket-summary"',
+];
+
 const requiredDigitalActionMarkers = [
   'data-testid="report-digital-next-actions"',
   "Συνέχεια online",
@@ -300,6 +311,17 @@ for (const marker of requiredReportMarkers) {
   assert(
     reportPage.includes(marker),
     `Printable pet report must include customer action summary marker: ${marker}`
+  );
+}
+
+for (const marker of screenDuplicateSectionsThatShouldBePrintOnly) {
+  const markerIndex = reportPage.indexOf(marker);
+  assert(markerIndex >= 0, `Printable pet report must keep report marker: ${marker}`);
+
+  const classWindow = reportPage.slice(Math.max(0, markerIndex - 240), markerIndex);
+  assert(
+    classWindow.includes("hidden break-inside-avoid") && classWindow.includes("print:block"),
+    `Repeated report summary should be print-only in the online customer report: ${marker}`
   );
 }
 
