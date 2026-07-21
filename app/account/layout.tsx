@@ -19,7 +19,7 @@ function AccountNavLink({
   return (
     <Link
       href={href}
-      className={`shrink-0 rounded-lg px-4 py-2 text-sm transition ${
+      className={`min-w-0 rounded-lg px-2 py-2 text-center text-xs transition sm:shrink-0 sm:px-4 sm:text-sm ${
         isActive ? "bg-black text-white" : "text-black hover:bg-gray-100"
       }`}
     >
@@ -45,7 +45,7 @@ export default function AccountLayout({
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
           <Link href="/account" className="text-lg font-bold text-black">
             Nutritail AI
           </Link>
@@ -61,7 +61,7 @@ export default function AccountLayout({
       </header>
 
       <nav className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-5xl gap-2 overflow-x-auto px-4 py-3 sm:flex-wrap sm:px-6">
+        <div className="mx-auto grid max-w-5xl grid-cols-4 gap-1 px-2 py-2 sm:flex sm:flex-wrap sm:gap-2 sm:px-6 sm:py-3">
           <AccountNavLink href="/account" label="Πίνακας" pathname={pathname} />
           <AccountNavLink
             href="/account/chatbot"
@@ -81,7 +81,7 @@ export default function AccountLayout({
         </div>
       </nav>
 
-      <section className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-6">
+      <section className="mx-auto max-w-5xl px-3 py-2 sm:px-6 sm:py-6">
         {children}
       </section>
     </main>

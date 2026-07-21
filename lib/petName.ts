@@ -28,10 +28,13 @@ export function isTechnicalPetName(input: unknown) {
     .trim()
     .toLowerCase();
 
-  return /^qa live proof(?:\s+\d+)?$/.test(value);
+  return /^(?:qa live proof|live qa|test pet)(?:[\s_-]+\d+)?$/.test(value);
 }
 
 function stripNamePrefix(value: string) {
+  const containsExplicitNamePhrase = /(?:λένε|λενε|λέγεται|λεγεται|name\s+is|called|named)/iu.test(
+    value
+  );
   let cleaned = value
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
     .trim();
@@ -44,6 +47,7 @@ function stripNamePrefix(value: string) {
     /^(?:his|her|their|the|my\s+(?:dog|cat|pet)'?s)\s+name\s+is\s+/iu,
     /^(?:my\s+)?(?:dog|cat|pet)\s+is\s+(?:called|named)\s+/iu,
     /^(?:called|named)\s+/iu,
+    /^(?:είναι|ειναι)\s+/iu,
   ];
 
   for (const pattern of phrasePatterns) {
@@ -57,6 +61,10 @@ function stripNamePrefix(value: string) {
 
   cleaned = cleaned.replace(/^(?:τον|την|τη|το)\s+(?=\S{2,})/iu, "");
 
+  if (containsExplicitNamePhrase) {
+    cleaned = cleaned.split(/\s+(?:και|που|and|who)\s+/iu)[0]?.trim() ?? cleaned;
+  }
+
   return cleaned
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
     .trim();
@@ -67,7 +75,7 @@ export function formatPetDisplayName(input: unknown, fallback = "Pet") {
     .replace(/\s+/g, " ")
     .replace(/^[\s"'`.,;:!?()[\]{}<>]+|[\s"'`.,;:!?()[\]{}<>]+$/g, "")
     .trim();
-  const raw = stripNamePrefix(rawInput);
+  const raw = stripNamePrefix(rawInput).slice(0, 60).trim();
   if (!raw) return fallback;
 
   const known = KNOWN_GREEK_PET_NAMES[normalizeLookup(raw)];

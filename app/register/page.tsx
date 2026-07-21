@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
+import { buildAuthCallbackPath, normalizeSafeRedirectPath } from "@/lib/auth/safeRedirect";
 import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,15 +16,7 @@ function getSafeRedirectPath() {
 
   const nextPath = new URLSearchParams(window.location.search).get("next");
 
-  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
-    return "/account";
-  }
-
-  if (nextPath.startsWith("/login") || nextPath.startsWith("/register")) {
-    return "/account";
-  }
-
-  return nextPath;
+  return normalizeSafeRedirectPath(nextPath);
 }
 
 function getRedirectLabel(path: string) {
@@ -97,7 +90,7 @@ export default function RegisterPage() {
         email: trimmedEmail,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}${redirectPath}`,
+          emailRedirectTo: `${window.location.origin}${buildAuthCallbackPath(redirectPath)}`,
           data: {
             full_name: fullName.trim(),
           },
