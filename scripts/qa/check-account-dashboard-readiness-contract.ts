@@ -99,7 +99,7 @@ const chatbotRequiredMarkers = [
   'data-testid="saved-analysis-handoff-panel"',
   'data-testid="saved-analysis-handoff-summary"',
   "Calculate grams/day",
-  "Choose a food first",
+  "Choose one food card first",
 ];
 
 for (const marker of chatbotRequiredMarkers) {
