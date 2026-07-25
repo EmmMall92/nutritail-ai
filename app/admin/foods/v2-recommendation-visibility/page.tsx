@@ -58,6 +58,29 @@ type SafetyFilter =
   | "review_before_enable"
   | "eligible_after_admin_choice";
 
+type AssortmentPreview = {
+  action: "preview" | "apply";
+  totalCatalogRows: number;
+  inputEntries: number;
+  matchedEntries: number;
+  matchedRows: number;
+  unmatchedEntries: string[];
+  ambiguousEntries: string[];
+  enabledRows?: number;
+  hiddenRows?: number;
+  entries: Array<{
+    entry: {
+      raw: string;
+      brand: string;
+      product: string | null;
+    };
+    matchedFoodIds: string[];
+    matchedFoodNames: string[];
+    status: "matched" | "unmatched" | "ambiguous";
+    suggestions: string[];
+  }>;
+};
+
 function SummaryCard({
   label,
   value,
@@ -101,6 +124,11 @@ export default function FoodV2RecommendationVisibilityPage() {
   const [visibilityFilter, setVisibilityFilter] =
     useState<VisibilityFilter>("all");
   const [safetyFilter, setSafetyFilter] = useState<SafetyFilter>("all");
+  const [assortmentText, setAssortmentText] = useState("");
+  const [previewedAssortmentText, setPreviewedAssortmentText] = useState("");
+  const [assortmentPreview, setAssortmentPreview] =
+    useState<AssortmentPreview | null>(null);
+  const [isAssortmentBusy, setIsAssortmentBusy] = useState(false);
 
   async function loadVisibility() {
     try {
@@ -222,6 +250,73 @@ export default function FoodV2RecommendationVisibilityPage() {
       setIsSaving(false);
     }
   }
+
+  async function runStoreAssortment(action: "preview" | "apply") {
+    const normalizedText = assortmentText.trim();
+    if (!normalizedText) {
+      setError("Add store brands or exact products before previewing.");
+      return;
+    }
+
+    if (
+      action === "apply" &&
+      !window.confirm(
+        `Use only the ${assortmentPreview?.matchedRows ?? 0} matched Food V2 rows for live recommendations? All other Food V2 rows will be hidden.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setError("");
+      setMessage("");
+      setIsAssortmentBusy(true);
+
+      const response = await fetch(
+        "/api/admin/foods/recommendation-visibility",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            assortment_text: normalizedText,
+            action,
+            confirm_replace: action === "apply",
+          }),
+        }
+      );
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Could not prepare the store assortment."
+        );
+      }
+
+      setAssortmentPreview(result as AssortmentPreview);
+      setPreviewedAssortmentText(normalizedText);
+
+      if (action === "apply") {
+        setMessage(
+          `Store assortment active: ${result.enabledRows ?? result.matchedRows} Food V2 rows allowed and ${result.hiddenRows ?? 0} hidden.`
+        );
+        await loadVisibility();
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not prepare the store assortment."
+      );
+    } finally {
+      setIsAssortmentBusy(false);
+    }
+  }
+
+  const assortmentHasUnresolved =
+    (assortmentPreview?.unmatchedEntries.length ?? 0) > 0 ||
+    (assortmentPreview?.ambiguousEntries.length ?? 0) > 0;
+  const assortmentPreviewIsCurrent =
+    previewedAssortmentText === assortmentText.trim();
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -392,6 +487,157 @@ export default function FoodV2RecommendationVisibilityPage() {
                   </select>
                 </div>
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-emerald-800">
+                    Store testing catalog
+                  </p>
+                  <h2 className="mt-1 text-2xl font-bold text-black">
+                    Recommend only products your stores carry
+                  </h2>
+                  <p className="mt-2 max-w-3xl text-sm text-gray-700">
+                    Add one brand per line to allow its full Food V2 range, or
+                    use <strong>Brand | Exact product name</strong> for
+                    formula-level control. Previewing never changes the live
+                    catalog. Applying replaces the current recommendation pool
+                    but does not change nutrition scores.
+                  </p>
+                </div>
+                <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-emerald-700 bg-white px-4 py-3 text-sm font-semibold text-emerald-900 hover:bg-emerald-100">
+                  Load TXT / CSV
+                  <input
+                    type="file"
+                    accept=".txt,.csv,.tsv,text/plain,text/csv"
+                    className="sr-only"
+                    onChange={async (event) => {
+                      const file = event.target.files?.[0];
+                      if (!file) return;
+                      const text = await file.text();
+                      setAssortmentText(text);
+                      setAssortmentPreview(null);
+                      setPreviewedAssortmentText("");
+                      event.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+
+              <textarea
+                value={assortmentText}
+                onChange={(event) => {
+                  setAssortmentText(event.target.value);
+                  setAssortmentPreview(null);
+                  setPreviewedAssortmentText("");
+                }}
+                rows={8}
+                placeholder={
+                  "Royal Canin\nJosera | SensiPlus\nMonge | Natural Superpremium Adult Chicken"
+                }
+                className="mt-4 w-full rounded-xl border border-emerald-300 bg-white p-4 font-mono text-sm text-black"
+              />
+
+              <div className="mt-4 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => runStoreAssortment("preview")}
+                  disabled={isAssortmentBusy || !assortmentText.trim()}
+                  className="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+                >
+                  {isAssortmentBusy ? "Checking..." : "Preview matches"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => runStoreAssortment("apply")}
+                  disabled={
+                    isAssortmentBusy ||
+                    !assortmentPreview ||
+                    !assortmentPreviewIsCurrent ||
+                    assortmentHasUnresolved ||
+                    assortmentPreview.matchedRows === 0
+                  }
+                  className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+                >
+                  Use only matched products
+                </button>
+              </div>
+
+              {assortmentPreview && assortmentPreviewIsCurrent && (
+                <div className="mt-5 space-y-4">
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    <div className="rounded-xl border border-emerald-200 bg-white p-3">
+                      <p className="text-xs font-semibold text-gray-500">
+                        List entries
+                      </p>
+                      <p className="mt-1 text-xl font-bold text-black">
+                        {assortmentPreview.inputEntries}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-emerald-200 bg-white p-3">
+                      <p className="text-xs font-semibold text-gray-500">
+                        Matched products
+                      </p>
+                      <p className="mt-1 text-xl font-bold text-black">
+                        {assortmentPreview.matchedRows}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-emerald-200 bg-white p-3">
+                      <p className="text-xs font-semibold text-gray-500">
+                        Unmatched
+                      </p>
+                      <p className="mt-1 text-xl font-bold text-black">
+                        {assortmentPreview.unmatchedEntries.length}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-emerald-200 bg-white p-3">
+                      <p className="text-xs font-semibold text-gray-500">
+                        Ambiguous
+                      </p>
+                      <p className="mt-1 text-xl font-bold text-black">
+                        {assortmentPreview.ambiguousEntries.length}
+                      </p>
+                    </div>
+                  </div>
+
+                  {assortmentHasUnresolved && (
+                    <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+                      <p className="font-semibold">
+                        Resolve these entries before applying:
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        {assortmentPreview.entries
+                          .filter((entry) => entry.status !== "matched")
+                          .map((entry) => (
+                            <div key={entry.entry.raw}>
+                              <p>
+                                <strong>{entry.entry.raw}</strong> -{" "}
+                                {entry.status}
+                              </p>
+                              {entry.suggestions.length > 0 && (
+                                <p className="mt-1 text-xs">
+                                  Possible matches:{" "}
+                                  {entry.suggestions.join("; ")}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {!assortmentHasUnresolved &&
+                    assortmentPreview.matchedRows > 0 && (
+                      <p className="rounded-xl border border-emerald-300 bg-white p-4 text-sm text-emerald-900">
+                        Preview is clean. Applying will allow exactly{" "}
+                        <strong>{assortmentPreview.matchedRows}</strong> Food V2
+                        rows and hide every other Food V2 product from customer
+                        recommendations.
+                      </p>
+                    )}
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">

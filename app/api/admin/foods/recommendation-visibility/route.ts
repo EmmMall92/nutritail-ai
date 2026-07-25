@@ -3,6 +3,10 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import {
+  matchStoreAssortment,
+  type StoreAssortmentFood,
+} from "@/lib/food-v2/storeAssortment";
 
 type Catalog = "foods" | "food_v2";
 
@@ -36,6 +40,66 @@ function nameColumnForCatalog(catalog: Catalog) {
 
 function normalizeCatalog(value: unknown): Catalog {
   return value === "food_v2" ? "food_v2" : "foods";
+}
+
+async function readAllFoodV2AssortmentRows() {
+  const pageSize = 1000;
+  const foods: Array<StoreAssortmentFood & { isRecommendable: boolean }> = [];
+
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabaseAdmin
+      .from("food_products_v2")
+      .select("id, brand, display_name, is_recommendable")
+      .order("brand", { ascending: true })
+      .order("display_name", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    const page = (data ?? []) as Array<{
+      id: string;
+      brand: string;
+      display_name: string;
+      is_recommendable: boolean | null;
+    }>;
+    foods.push(
+      ...page.map((food) => ({
+        id: String(food.id ?? ""),
+        brand: String(food.brand ?? ""),
+        name: String(food.display_name ?? ""),
+        isRecommendable: food.is_recommendable !== false,
+      }))
+    );
+
+    if (page.length < pageSize) break;
+  }
+
+  return foods.filter((food) => food.id && food.brand && food.name);
+}
+
+async function updateFoodV2VisibilityByIds(
+  foodIds: string[],
+  isRecommendable: boolean
+) {
+  const chunkSize = 250;
+  let updatedRows = 0;
+
+  for (let index = 0; index < foodIds.length; index += chunkSize) {
+    const chunk = foodIds.slice(index, index + chunkSize);
+    const { data, error } = await supabaseAdmin
+      .from("food_products_v2")
+      .update({
+        is_recommendable: isRecommendable,
+        updated_at: new Date().toISOString(),
+      })
+      .in("id", chunk)
+      .select("id");
+
+    if (error) throw error;
+    updatedRows += data?.length ?? 0;
+  }
+
+  return updatedRows;
 }
 
 function parseCsv(text: string) {
@@ -240,6 +304,122 @@ export async function GET(request: Request) {
           error instanceof Error
             ? error.message
             : "Failed to load recommendation visibility.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const forbidden = await requireAdminApiAccess();
+    if (forbidden) return forbidden;
+
+    const body = await request.json();
+    const assortmentText = String(body.assortment_text ?? "").trim();
+    const action = body.action === "apply" ? "apply" : "preview";
+
+    if (!assortmentText) {
+      return NextResponse.json(
+        { error: "Add at least one store brand or exact product." },
+        { status: 400 }
+      );
+    }
+
+    if (assortmentText.length > 100_000) {
+      return NextResponse.json(
+        { error: "The store assortment list is too large." },
+        { status: 400 }
+      );
+    }
+
+    const foods = await readAllFoodV2AssortmentRows();
+    const match = matchStoreAssortment(assortmentText, foods);
+    const result = {
+      action,
+      totalCatalogRows: foods.length,
+      inputEntries: match.entries.length,
+      matchedEntries: match.entries.filter(
+        (entry) => entry.status === "matched"
+      ).length,
+      matchedRows: match.matchedFoodIds.length,
+      unmatchedEntries: match.unmatchedEntries,
+      ambiguousEntries: match.ambiguousEntries,
+      entries: match.entries,
+    };
+
+    if (action === "preview") {
+      return NextResponse.json(result);
+    }
+
+    if (body.confirm_replace !== true) {
+      return NextResponse.json(
+        { error: "Preview and explicitly confirm the catalog replacement." },
+        { status: 400 }
+      );
+    }
+
+    if (match.entries.length === 0 || match.matchedFoodIds.length === 0) {
+      return NextResponse.json(
+        { error: "No Food V2 products matched. Nothing was changed.", ...result },
+        { status: 400 }
+      );
+    }
+
+    if (
+      match.unmatchedEntries.length > 0 ||
+      match.ambiguousEntries.length > 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Resolve all unmatched or ambiguous entries before replacing the live store assortment.",
+          ...result,
+        },
+        { status: 409 }
+      );
+    }
+
+    const previousIds = foods
+      .filter((food) => food.isRecommendable)
+      .map((food) => food.id);
+    const changedAt = new Date().toISOString();
+    const { error: hideError } = await supabaseAdmin
+      .from("food_products_v2")
+      .update({
+        is_recommendable: false,
+        updated_at: changedAt,
+      });
+    if (hideError) throw hideError;
+
+    try {
+      const enabledRows = await updateFoodV2VisibilityByIds(
+        match.matchedFoodIds,
+        true
+      );
+      return NextResponse.json({
+        success: true,
+        ...result,
+        enabledRows,
+        hiddenRows: Math.max(0, foods.length - enabledRows),
+      });
+    } catch (applyError) {
+      await supabaseAdmin
+        .from("food_products_v2")
+        .update({
+          is_recommendable: false,
+          updated_at: new Date().toISOString(),
+        });
+      await updateFoodV2VisibilityByIds(previousIds, true);
+      throw applyError;
+    }
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to prepare the store assortment.",
       },
       { status: 500 }
     );
