@@ -47,6 +47,7 @@ import {
   hasHardStop,
   shouldInterruptForSafety,
 } from "@/lib/chatbot/safetyRules";
+import { localizeNutritionAdviceItem } from "@/lib/chatbot/nutritionAdvicePresentation";
 import {
   parseProgressUpdate,
   type ProgressUpdateDetails,
@@ -166,6 +167,7 @@ type ChatMessage = {
   id: string;
   role: "bot" | "user";
   text: string;
+  presentation?: "standard" | "details";
 };
 
 type PetIntake = {
@@ -1358,11 +1360,16 @@ function getRecommendationChoiceGroups(
   ].filter((group) => group.choices.length > 0);
 }
 
-function createMessage(role: "bot" | "user", text: string): ChatMessage {
+function createMessage(
+  role: "bot" | "user",
+  text: string,
+  presentation: ChatMessage["presentation"] = "standard"
+): ChatMessage {
   return {
     id: crypto.randomUUID(),
     role,
     text,
+    presentation,
   };
 }
 
@@ -2226,6 +2233,38 @@ function formatCurrentFoodMatchMessage(params: {
   }
 
   return sections.filter((section) => section.trim()).join("\n\n");
+}
+
+function formatCurrentFoodMatchSummary(params: {
+  language: ChatLanguage;
+  brand: unknown;
+  name: unknown;
+  foodScore: number;
+  gramsPerDay?: number | null;
+}) {
+  const foodName = [params.brand, params.name]
+    .map((value) => String(value ?? "").trim())
+    .filter(Boolean)
+    .join(" - ");
+  const fit = formatCustomerFoodFit(params.foodScore, params.language);
+
+  if (params.language === "el") {
+    return [
+      `Η τωρινή τροφή: ${foodName}.`,
+      `Συνολική εικόνα: ${fit}.`,
+      params.gramsPerDay
+        ? `Πρώτη εκτίμηση: περίπου ${params.gramsPerDay}g/ημέρα.`
+        : "Δεν υπάρχουν αρκετές θερμιδικές πληροφορίες για ασφαλή εκτίμηση γραμμαρίων.",
+    ].join("\n");
+  }
+
+  return [
+    `Current food: ${foodName}.`,
+    `Overall fit: ${fit}.`,
+    params.gramsPerDay
+      ? `First estimate: about ${params.gramsPerDay}g/day.`
+      : "There is not enough calorie information for a reliable portion estimate.",
+  ].join("\n");
 }
 
 function formatCurrentFoodNoMatchMessage(params: {
@@ -3614,92 +3653,87 @@ function formatAnalysisResult(
     mainFoodCalories: number;
   } | null
 ) {
-  const { nutrition, advice } = analysis;
-  const translateAdviceTitle = (title: string) => {
-    if (language !== "el") return title;
-    if (title === "Weight Control") return "Έλεγχος βάρους";
-    if (title === "Senior Nutrition") return "Διατροφή senior";
-    if (title === "Puppy/Kitten Growth") return "Ανάπτυξη κουταβιού/γατιού";
-    if (title === "High Activity") return "Υψηλή δραστηριότητα";
-    return title;
-  };
-  const translateAdviceDescription = (description: string) => {
-    if (language !== "el") return description;
-    if (
-      /Highly active pets may require increased calories and protein levels\./i.test(
-        description
-      )
-    ) {
-      return "Τα πολύ δραστήρια ζώα μπορεί να χρειάζονται περισσότερες θερμίδες και επαρκή πρωτεΐνη.";
-    }
-    return description
-      .replace(
-        /Neutered or weight-prone pets often need calorie control, measured portions, and treat calories kept within the daily target\./gi,
-        "Τα στειρωμένα ή επιρρεπή σε βάρος ζώα συνήθως χρειάζονται έλεγχο θερμίδων, μετρημένες μερίδες και οι λιχουδιές να μένουν μέσα στον ημερήσιο στόχο."
-      )
-      .replace(
-        /Older pets need monitoring for appetite, weight trend, muscle condition, and digestibility\. Do not assume a light diet is best if the pet is losing weight\./gi,
-        "Τα μεγαλύτερα ζώα χρειάζονται παρακολούθηση όρεξης, τάσης βάρους, μυϊκής κατάστασης και πέψης. Δεν θεωρούμε αυτόματα ότι μια light τροφή είναι η καλύτερη αν χάνει βάρος."
-      );
-  };
+  const { nutrition } = analysis;
   const finalCalories =
     finalDailyCalories && finalDailyCalories > 0 ? finalDailyCalories : nutrition.der;
-  const hasGoalAdjustment = finalCalories !== nutrition.der;
-  const treatsLineEl = treats
-    ? `\n- Λιχουδιές: έως περίπου ${treats.maxTreatCalories} kcal/ημέρα, μέσα στον ημερήσιο στόχο.`
-    : "";
-  const treatsLineEn = treats
-    ? `\n- Treats: up to about ${treats.maxTreatCalories} kcal/day, inside the daily target.`
-    : "";
-  const englishDailyTargetBlock = hasGoalAdjustment
-    ? `- Daily calories for this plan: ${finalCalories} kcal/day
-  This is the number we will use for portions. The first estimate was ${nutrition.der} kcal/day and I adjusted it for the weight goal.${treatsLineEn}`
-    : `- Daily calories for this plan: ${finalCalories} kcal/day
-  This is the practical daily amount after weight, age, activity, neuter status, and weight goal are considered.${treatsLineEn}`;
 
   if (language === "el") {
-    const greekDailyTargetBlock = hasGoalAdjustment
-      ? `- Ημερήσιες θερμίδες για το πλάνο: ${finalCalories} kcal/ημέρα
-  Αυτός είναι ο αριθμός που θα χρησιμοποιήσουμε για τις μερίδες. Η πρώτη εκτίμηση ήταν ${nutrition.der} kcal/ημέρα και την προσάρμοσα στον στόχο βάρους.${treatsLineEl}`
-      : `- Ημερήσιες θερμίδες για το πλάνο: ${finalCalories} kcal/ημέρα
-  Αυτό είναι το πρακτικό ποσό της ημέρας αφού υπολογίσουμε βάρος, ηλικία, δραστηριότητα, στείρωση και στόχο βάρους.${treatsLineEl}`;
+    return [
+      "Το διατροφικό πλάνο είναι έτοιμο.",
+      `Ημερήσιος στόχος: ${finalCalories} kcal.`,
+      treats
+        ? `Λιχουδιές: έως περίπου ${treats.maxTreatCalories} kcal μέσα σε αυτόν τον στόχο.`
+        : "",
+      "Ελέγχω τώρα τις κατάλληλες τροφές και την πρώτη ποσότητα.",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
 
-    return `Το διατροφικό πλάνο είναι έτοιμο:
+  return [
+    "Your plan is ready.",
+    `Daily target: ${finalCalories} kcal.`,
+    treats
+      ? `Treats: up to about ${treats.maxTreatCalories} kcal inside that target.`
+      : "",
+    "I am now checking suitable foods and the first portion.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
 
-Με απλά λόγια για τις θερμίδες
+function formatAnalysisDetails(
+  analysis: PetAnalysis,
+  language: ChatLanguage = "en",
+  finalDailyCalories?: number | null,
+  treats?: {
+    dailyCalories: number;
+    maxTreatCalories: number;
+    mainFoodCalories: number;
+  } | null
+) {
+  const { nutrition, advice } = analysis;
+  const finalCalories =
+    finalDailyCalories && finalDailyCalories > 0 ? finalDailyCalories : nutrition.der;
+  const localizedAdvice = advice.map((item) =>
+    localizeNutritionAdviceItem(item, language)
+  );
+
+  if (language === "el") {
+    return `Με απλά λόγια για τις θερμίδες
 - Βασικές θερμίδες σώματος: ${nutrition.rer} kcal/ημέρα
-  Αυτό είναι η ενέργεια που χρειάζεται περίπου το σώμα πριν προσθέσουμε δραστηριότητα και στόχο βάρους.
-
-${greekDailyTargetBlock}
+- Ημερήσιες θερμίδες για το πλάνο: ${finalCalories} kcal/ημέρα
+${
+  treats
+    ? `- Λιχουδιές: έως περίπου ${treats.maxTreatCalories} kcal/ημέρα`
+    : ""
+}
 
 Τι προσέχουμε για αυτό το κατοικίδιο:
 ${
-  advice.length > 0
-    ? advice
-        .map(
-          (item) =>
-            `- ${translateAdviceTitle(item.title)}: ${translateAdviceDescription(item.description)}`
-        )
+  localizedAdvice.length > 0
+    ? localizedAdvice
+        .map((item) => `- ${item.title}: ${item.description}`)
         .join("\n")
     : "- Δεν υπάρχουν ειδικές σημειώσεις για αυτή την ανάλυση."
 }
 
-Τώρα διάλεξε μία κάρτα τροφής από κάτω για να υπολογίσουμε γραμμάρια/ημέρα και να κλειδώσουμε το πλάνο.
+Τώρα διάλεξε μία κάρτα τροφής από κάτω για να υπολογίσουμε γραμμάρια/ημέρα.
 
 Σημείωση: Η καθοδήγηση είναι ενημερωτική και δεν αντικαθιστά κτηνιατρική συμβουλή.`;
   }
+
   return `Your nutrition plan is ready:
 
 Calories in plain language
 - Basic body calories: ${nutrition.rer} kcal/day
-  This is the energy the body roughly needs before activity and weight goal are added.
-
-${englishDailyTargetBlock}
+- Daily calories for this plan: ${finalCalories} kcal/day
+${treats ? `- Treats: up to about ${treats.maxTreatCalories} kcal/day` : ""}
 
 What to watch for this pet:
 ${
-  advice.length > 0
-    ? advice
+  localizedAdvice.length > 0
+    ? localizedAdvice
         .map((item) => `- ${item.title}: ${item.description}`)
         .join("\n")
     : "- No special notes for this analysis."
@@ -3953,6 +3987,8 @@ export default function AccountChatbotPage() {
   const [recommendedFoodChoices, setRecommendedFoodChoices] = useState<
     RecommendedFoodChoice[]
   >([]);
+  const [selectedRecommendedFoodName, setSelectedRecommendedFoodName] =
+    useState<string | null>(null);
   const [pendingCompareQueries, setPendingCompareQueries] = useState<string[]>(
     []
   );
@@ -4019,7 +4055,7 @@ export default function AccountChatbotPage() {
 
   const quickReplies = getQuickReplies(step, chatLanguage);
   const hasSelectableFoodRecommendations = recommendedFoodChoices.length > 0;
-  const hasSelectedRecommendedFood = Boolean(analysisMetadata?.matchedFoodName);
+  const hasSelectedRecommendedFood = Boolean(selectedRecommendedFoodName);
   const requiresFoodChoiceBeforeSave =
     showSave && hasSelectableFoodRecommendations && !hasSelectedRecommendedFood;
   const recommendationChoiceDailyCalories = latestAnalysis
@@ -4031,14 +4067,20 @@ export default function AccountChatbotPage() {
   const mobileFoodChoiceActions = requiresFoodChoiceBeforeSave
     ? recommendedFoodChoices.slice(0, 3)
     : [];
+  const analysisDetailMessages = messages.filter(
+    (message) => message.presentation === "details"
+  );
+  const standardConversationMessages = messages.filter(
+    (message) => message.presentation !== "details"
+  );
   const shouldCompactCompletedConversation =
-    Boolean(latestAnalysis) && messages.length > 8;
+    Boolean(latestAnalysis) && standardConversationMessages.length > 8;
   const archivedConversationMessages = shouldCompactCompletedConversation
-    ? messages.slice(0, -6)
+    ? standardConversationMessages.slice(0, -6)
     : [];
   const visibleConversationMessages = shouldCompactCompletedConversation
-    ? messages.slice(-6)
-    : messages;
+    ? standardConversationMessages.slice(-6)
+    : standardConversationMessages;
   const inputHelper =
     followUpPet && step === "petChoice" && !followUpMode
       ? botText(
@@ -4236,6 +4278,7 @@ export default function AccountChatbotPage() {
     setRecommendationMode("default");
     setAnalysisMetadata({});
     setRecommendedFoodChoices([]);
+    setSelectedRecommendedFoodName(null);
     setPet(startingPet);
 
     await continueIntakeOrRunAnalysis(startingPet);
@@ -4606,6 +4649,7 @@ export default function AccountChatbotPage() {
     setSelectedPetId(savedPet.id);
     setPet(nextPet);
     setRecommendedFoodChoices([]);
+    setSelectedRecommendedFoodName(null);
     setLatestProgressDecisionStatus(null);
     setLatestProgressDecisionSnapshot(null);
 
@@ -4667,6 +4711,7 @@ export default function AccountChatbotPage() {
     setRecommendationMode("default");
     setPet(nextPet);
     setRecommendedFoodChoices([]);
+    setSelectedRecommendedFoodName(null);
     setStep("currentFood");
 
     addMessages(
@@ -4940,6 +4985,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
     setRecommendationMode("default");
     setPet({ healthIssues: [], allergies: [], excludedIngredients: [], preferredProteins: [] });
     setRecommendedFoodChoices([]);
+    setSelectedRecommendedFoodName(null);
     setStep("species");
 
     addMessages(
@@ -4994,6 +5040,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
       setIsAnalyzing(true);
       setStep("analysis");
       setRecommendedFoodChoices([]);
+      setSelectedRecommendedFoodName(null);
 
       addMessages(
         createMessage(
@@ -5041,13 +5088,18 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
         createMessage(
           "bot",
           formatAnalysisResult(displayAnalysis, chatLanguage, adjustedCalories, treats)
+        ),
+        createMessage(
+          "bot",
+          formatAnalysisDetails(displayAnalysis, chatLanguage, adjustedCalories, treats),
+          "details"
         )
       );
 
       const guardrailText = buildGuardrailText(nextPet, chatLanguage);
 
       if (guardrailText) {
-        addMessages(createMessage("bot", guardrailText));
+        addMessages(createMessage("bot", guardrailText, "details"));
       }
 
       let analysisFoodChoices: RecommendedFoodChoice[] = [];
@@ -5139,34 +5191,39 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
               magnesium,
               lifeStage: matchedFood.life_stage,
             });
-            const nutritionInsights = generateNutritionInsights({
-  species: nextPet.species,
-  neutered: nextPet.neutered,
-  activityLevel: nextPet.activityLevel,
-  weightGoal: nextPet.weightGoal,
-  healthIssues: nextPet.healthIssues,
+            const nutritionInsights = generateNutritionInsights(
+              {
+                species: nextPet.species,
+                neutered: nextPet.neutered,
+                activityLevel: nextPet.activityLevel,
+                weightGoal: nextPet.weightGoal,
+                healthIssues: nextPet.healthIssues,
+                protein,
+                fat,
+                fiber,
+                calcium,
+                phosphorus,
+                magnesium,
+                sodium,
+                kcalPer100g: getFoodKcalPer100g(matchedFood),
+                dataQualityStatus: matchedFood.data_quality_status,
+                ingredients: Array.isArray(matchedFood.ingredients)
+                  ? matchedFood.ingredients.join(", ")
+                  : matchedFood.ingredients ??
+                    matchedFood.ingredient_list ??
+                    null,
+              },
+              chatLanguage
+            );
 
-  protein,
-  fat,
-  fiber,
-  calcium,
-  phosphorus,
-  magnesium,
-  sodium,
-  kcalPer100g: getFoodKcalPer100g(matchedFood),
-  dataQualityStatus: matchedFood.data_quality_status,
-  ingredients: Array.isArray(matchedFood.ingredients)
-    ? matchedFood.ingredients.join(", ")
-    : matchedFood.ingredients ?? matchedFood.ingredient_list ?? null,
-});
-
-const ingredientInsights = generateIngredientInsights(
-  Array.isArray(matchedFood.ingredients)
-    ? matchedFood.ingredients.join(", ")
-    : matchedFood.ingredients ??
-      matchedFood.ingredient_list ??
-      null
-);
+            const ingredientInsights = generateIngredientInsights(
+              Array.isArray(matchedFood.ingredients)
+                ? matchedFood.ingredients.join(", ")
+                : matchedFood.ingredients ??
+                  matchedFood.ingredient_list ??
+                  null,
+              chatLanguage
+            );
             const explanation = buildFoodExplanation({
               species: nextPet.species ?? "dog",
               age: nextPet.age ?? 1,
@@ -5200,6 +5257,16 @@ const ingredientInsights = generateIngredientInsights(
                 addMessages(
                   createMessage(
                     "bot",
+                    formatCurrentFoodMatchSummary({
+                      language: chatLanguage,
+                      brand: matchedFood.brand,
+                      name: matchedFood.name,
+                      foodScore,
+                      gramsPerDay: grams.gramsPerDay,
+                    })
+                  ),
+                  createMessage(
+                    "bot",
                     formatCurrentFoodMatchMessage({
                       language: chatLanguage,
                       brand: matchedFood.brand,
@@ -5215,7 +5282,8 @@ const ingredientInsights = generateIngredientInsights(
                       grams,
                       treatCalories: treats?.maxTreatCalories ?? null,
                       weightGoal: nextPet.weightGoal,
-                    })
+                    }),
+                    "details"
                   )
                 );
               }
@@ -5228,6 +5296,16 @@ const ingredientInsights = generateIngredientInsights(
                 weightGoal: nextPet.weightGoal ?? "maintain",
               });
               addMessages(
+                createMessage(
+                  "bot",
+                  formatCurrentFoodMatchSummary({
+                    language: chatLanguage,
+                    brand: matchedFood.brand,
+                    name: matchedFood.name,
+                    foodScore,
+                    gramsPerDay: null,
+                  })
+                ),
                 createMessage(
                   "bot",
                   formatCurrentFoodMatchMessage({
@@ -5245,7 +5323,8 @@ const ingredientInsights = generateIngredientInsights(
                     grams: null,
                     treatCalories: null,
                     weightGoal: nextPet.weightGoal,
-                  })
+                  }),
+                  "details"
                 )
               );
             }
@@ -5298,7 +5377,8 @@ ${transitionGuide.map((item) => `- ${item}`).join("\n")}
 ${transitionGuide.map((item) => `- ${item}`).join("\n")}
 
 If vomiting, diarrhea, or strong discomfort appears, stop the transition and speak with a veterinarian.`
-            )
+            ),
+            "details"
           )
         );
       }
@@ -5922,6 +6002,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   function chooseRecommendedFood(choice: RecommendedFoodChoice) {
     addMessages(createMessage("user", choice.name));
+    setSelectedRecommendedFoodName(choice.name);
 
     const adjustedCalories = latestAnalysis
       ? adjustCaloriesForWeightGoal({
@@ -6112,6 +6193,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     setFeedbackStatus("");
     setSavedPetId(null);
     setRecommendedFoodChoices([]);
+    setSelectedRecommendedFoodName(null);
     shouldStickToBottomRef.current = true;
     setShowJumpToLatest(false);
 
@@ -6133,10 +6215,19 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
   return (
     <section className="relative mx-auto flex h-[calc(100dvh-7.75rem)] min-h-[500px] max-w-3xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:h-[calc(100svh-11rem)] sm:min-h-[560px] sm:rounded-2xl">
-      <div className="flex shrink-0 flex-col gap-3 border-b border-gray-200 p-3 sm:flex-row sm:items-start sm:justify-between sm:p-5">
+      <div
+        data-testid="mobile-chatbot-header"
+        className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 p-2.5 sm:items-start sm:p-5"
+      >
         <div className="min-w-0">
-          <h1 className="text-xl font-bold text-black sm:text-2xl">
-            {botText("Διατροφικός σύμβουλος NutriTail AI", "NutriTail AI Nutrition Advisor")}
+          <h1 className="text-lg font-bold leading-6 text-black sm:text-2xl">
+            <span className="sm:hidden">NutriTail AI</span>
+            <span className="hidden sm:inline">
+              {botText(
+                "Διατροφικός σύμβουλος NutriTail AI",
+                "NutriTail AI Nutrition Advisor"
+              )}
+            </span>
           </h1>
 
           <p className="mt-1 hidden text-sm text-gray-600 sm:block">
@@ -6147,14 +6238,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </p>
         </div>
 
-        <div className="grid w-full shrink-0 grid-cols-[auto_1fr_1fr] gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
+        <div className="flex shrink-0 items-center gap-1.5 sm:flex-wrap sm:justify-end sm:gap-2">
           <div className="flex rounded-lg border border-gray-300 bg-white p-1">
             {(["el", "en"] as const).map((language) => (
               <button
                 key={language}
                 type="button"
                 onClick={() => handleChatLanguageChange(language)}
-                className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
+                className={`rounded-md px-2 py-1.5 text-xs font-semibold transition sm:px-3 sm:text-sm ${
                   chatLanguage === language
                     ? "bg-black text-white"
                     : "text-gray-700 hover:bg-gray-100"
@@ -6167,7 +6258,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
           <a
             href="/account"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:flex-none"
+            className="hidden rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:block"
           >
             {botText("Λογαριασμός", "Account")}
           </a>
@@ -6175,7 +6266,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <button
             type="button"
             onClick={restartChat}
-            className="flex-1 rounded-lg border border-black px-4 py-2 text-sm text-black transition hover:bg-gray-100 sm:flex-none"
+            className="rounded-lg border border-black px-2.5 py-2 text-xs text-black transition hover:bg-gray-100 sm:px-4 sm:text-sm"
           >
             {botText("Επανεκκίνηση", "Restart")}
           </button>
@@ -6599,7 +6690,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {showSave && recommendedFoodChoices.length > 0 && (
           <div
             data-testid="customer-recommendation-choice-panel"
-            className="rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm"
+            className="hidden rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm sm:block"
           >
             <p className="font-semibold text-emerald-950">
               {botText("Διάλεξε τροφή", "Choose a food")}
@@ -6695,7 +6786,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     {choice.name}
                   </span>
                   {getRecommendationChoiceFacts(choice, chatLanguage).length > 0 && (
-                    <span className="mt-3 rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100">
+                    <span className="mt-3 hidden rounded-xl bg-white px-3 py-2 ring-1 ring-gray-100 sm:block">
                       <span className="block text-xs font-semibold uppercase text-gray-500">
                         {botText("Με μια ματιά", "At a glance")}
                       </span>
@@ -6714,7 +6805,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   )}
                   <span
                     data-testid="recommendation-card-why"
-                    className="mt-3 rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100"
+                    className="mt-3 hidden rounded-xl bg-white px-3 py-2 text-sm leading-5 text-gray-800 ring-1 ring-gray-100 sm:block"
                   >
                       <span className="block text-xs font-semibold uppercase text-emerald-700">
                         {botText("Γιατί την προτείνουμε", "Why we suggest it")}
@@ -6748,24 +6839,30 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        {showSave && (
+        {showSave && analysisDetailMessages.length > 0 && (
+          <details
+            data-testid="chatbot-analysis-details"
+            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700"
+          >
+            <summary className="cursor-pointer font-semibold text-gray-900">
+              {botText("Περισσότερες λεπτομέρειες", "More details")}
+            </summary>
+            <div className="mt-3 space-y-3 border-t border-gray-100 pt-3">
+              {analysisDetailMessages.map((message) => (
+                <div
+                  key={`analysis-detail-${message.id}`}
+                  className="whitespace-pre-line rounded-xl bg-gray-50 px-3 py-2 leading-6 text-gray-800"
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+
+        {showSave &&
+          (!hasSelectableFoodRecommendations || hasSelectedRecommendedFood) && (
           <div className="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-            {requiresFoodChoiceBeforeSave && (
-              <div
-                data-testid="choose-food-before-save-notice"
-                className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-5 text-amber-950"
-              >
-                <p className="font-semibold">
-                  {botText("Πρώτα διάλεξε τροφή", "Choose a food first")}
-                </p>
-                <p className="mt-1">
-                  {botText(
-                    "Πάτησε μία από τις κάρτες τροφών για να υπολογίσουμε γραμμάρια/ημέρα. Μετά η αποθήκευση θα κρατήσει πλήρες πλάνο με τροφή, θερμίδες και ποσότητα.",
-                    "Tap one food card to calculate grams/day. Then saving will keep a complete plan with food, calories, and portion."
-                  )}
-                </p>
-              </div>
-            )}
             <div className="hidden rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-950">
               <p className="font-semibold">
                 {botText("Τι κερδίζεις με την αποθήκευση", "What saving gives you")}
@@ -6792,7 +6889,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
             </div>
 
-            {analysisMetadata?.matchedFoodName && (
+            {analysisMetadata?.matchedFoodName &&
+              (!hasSelectableFoodRecommendations || hasSelectedRecommendedFood) && (
               <div
                 data-testid="selected-food-plan-card"
                 className="rounded-2xl border border-lime-200 bg-lime-50 p-3"
@@ -7136,7 +7234,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
             data-testid="mobile-food-choice-sticky-actions"
           >
             <div className="mb-2 flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
+              <p
+                data-testid="choose-food-before-save-notice"
+                className="text-xs font-semibold uppercase tracking-wide text-emerald-800"
+              >
                 {botText("Διάλεξε τροφή", "Choose a food")}
               </p>
               <p className="text-[11px] font-medium text-emerald-900">
@@ -7162,12 +7263,6 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-xs leading-5 text-emerald-900">
-              {botText(
-                "Πάτησε μία επιλογή εδώ ή σε κάρτα πιο πάνω. Μετά θα εμφανιστούν τα γραμμάρια/ημέρα.",
-                "Tap one option here or a card above. Then grams/day will appear."
-              )}
-            </p>
           </div>
         )}
 
@@ -7190,7 +7285,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           </div>
         )}
 
-        {inputHelper && (
+        {inputHelper && mobileFoodChoiceActions.length === 0 && (
           <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
         )}
 
