@@ -3727,7 +3727,9 @@ ${
 
 Calories in plain language
 - Basic body calories: ${nutrition.rer} kcal/day
+  This is the energy the body roughly needs before activity and weight goal are added.
 - Daily calories for this plan: ${finalCalories} kcal/day
+  This is the practical daily amount for the current profile and goal.
 ${treats ? `- Treats: up to about ${treats.maxTreatCalories} kcal/day` : ""}
 
 What to watch for this pet:
