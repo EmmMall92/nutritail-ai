@@ -13,6 +13,7 @@
     "qa:customer-beta-gates": "npm run qa:mobile-chatbot-result-compression && npm run qa:customer-quality-ten-task-pass && npm run qa:customer-ux-copy && npm run qa:chatbot-choice-summary-contract && npm run qa:chatbot-customer-recommendations && npm run qa:customer-recommendation-smoke && npm run qa:food-v2-preference-ranking && npm run qa:food-v2-launch-edge-accuracy && npm run qa:printable-report-action-summary && npm run qa:mobile-customer-readiness-contract && npm run qa:saved-pet-continuation-contract && npm run qa:customer-journey-unlock-gate && npm run qa:beta-user-proof-contract",
     "qa:mobile-chatbot-result-compression": "tsx scripts/qa/check-mobile-chatbot-result-compression.ts",
     "qa:store-assortment-recommendation-filter": "tsx scripts/qa/check-store-assortment-recommendation-filter.ts",
+    "qa:food-v2-brand-canonicalization": "tsx scripts/qa/check-food-v2-brand-canonicalization.ts",
     "qa:pr-quality-policy": "node scripts/qa/check-pr-quality-policy.mjs",
     "qa:project-constitution": "tsx scripts/qa/check-project-constitution.ts",
     "qa:knowledge-gap-assets": "tsx scripts/qa/check-knowledge-gap-asset-log.ts",

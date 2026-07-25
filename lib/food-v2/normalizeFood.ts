@@ -4,6 +4,7 @@ import type {
   LifeStage,
   Species,
 } from "@/types/food-v2";
+import { canonicalFoodBrand } from "@/lib/food-v2/brandIdentity";
 
 const PACK_SIZE_PATTERN =
   /\b\d+(?:[.,]\d+)?\s*(?:g|gr|gram|grams|kg|kgs|kilogram|kilograms|lb|lbs)\b/gi;
@@ -145,9 +146,9 @@ function detectTerms(ingredients: string[], terms: string[]) {
 }
 
 export function normalizeBrand(value: unknown) {
-  return cleanText(value)
-    .replace(/\broyal\s+canine\b/i, "Royal Canin")
-    .replace(/\bproplan\b/i, "Pro Plan");
+  return canonicalFoodBrand(
+    cleanText(value).replace(/\bproplan\b/i, "Pro Plan")
+  );
 }
 
 export function normalizeFormulaName(value: unknown) {

@@ -6,6 +6,7 @@ import type {
   RawFoodRow,
 } from "@/types/food-dataset";
 import { percentFromUnit } from "@/lib/import/foodUnitConversions";
+import { canonicalFoodBrand } from "@/lib/food-v2/brandIdentity";
 
 const NULL_STRINGS = new Set([
   "",
@@ -19,6 +20,8 @@ const NULL_STRINGS = new Set([
 ]);
 
 const BRAND_OVERRIDES: Record<string, string> = {
+  acana: "ACANA",
+  orijen: "ORIJEN",
   "royal canin": "Royal Canin",
 };
 
@@ -88,7 +91,7 @@ export function normalizeBrand(value: unknown): string | null {
   if (!cleaned) return null;
 
   const key = cleaned.toLowerCase();
-  return BRAND_OVERRIDES[key] ?? toTitleCase(cleaned);
+  return canonicalFoodBrand(BRAND_OVERRIDES[key] ?? toTitleCase(cleaned));
 }
 
 export function normalizeLifeStage(
