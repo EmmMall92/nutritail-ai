@@ -309,6 +309,49 @@ type IntakeExtractionApiResponse = {
   canUse?: boolean;
 };
 
+type FoodPhotoAnalysisResponse = {
+  extracted?: {
+    brand?: string | null;
+    product_name?: string | null;
+    species?: Species | null;
+    life_stage?: string | null;
+    format?: string | null;
+    ingredients?: string[];
+    protein_percent?: number | null;
+    fat_percent?: number | null;
+    fiber_percent?: number | null;
+    ash_percent?: number | null;
+    moisture_percent?: number | null;
+    calcium_percent?: number | null;
+    phosphorus_percent?: number | null;
+    omega3_percent?: number | null;
+    omega6_percent?: number | null;
+    kcal_per_kg?: number | null;
+    kcal_per_100g?: number | null;
+    confidence?: "high" | "medium" | "low";
+    missing_fields?: string[];
+    notes?: string[];
+  };
+  match?: {
+    brand?: string | null;
+    display_name?: string | null;
+    data_quality_status?: string | null;
+    match_score?: number | null;
+    match_confidence?: string | null;
+    missing_nutrition_fields?: string[];
+    nutrition?: {
+      kcal_per_100g?: number | null;
+      protein_percent?: number | null;
+      fat_percent?: number | null;
+      fiber_percent?: number | null;
+      calcium_percent?: number | null;
+      phosphorus_percent?: number | null;
+    };
+  } | null;
+  safety_note?: string;
+  error?: string;
+};
+
 const starterCards = [
   {
     title: "Find the right food",
@@ -2603,6 +2646,126 @@ What this means:
 ${rows.join("\n\n")}${summary}${customerTakeaway}${followUp}`;
 }
 
+function combineBrandAndFoodName(
+  brand?: string | null,
+  foodName?: string | null,
+  separator = " "
+) {
+  const cleanBrand = String(brand ?? "").trim();
+  const cleanName = String(foodName ?? "").trim();
+
+  if (!cleanBrand) return cleanName;
+  if (!cleanName) return cleanBrand;
+  if (cleanName.toLowerCase().startsWith(cleanBrand.toLowerCase())) {
+    return cleanName;
+  }
+
+  return `${cleanBrand}${separator}${cleanName}`;
+}
+
+function formatFoodPhotoAnalysisResult(
+  result: FoodPhotoAnalysisResponse,
+  language: ChatLanguage
+) {
+  const greek = language === "el";
+  const extracted = result.extracted;
+  const match = result.match;
+  const extractedName = [extracted?.brand, extracted?.product_name]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+  const matchedName = combineBrandAndFoodName(
+    match?.brand,
+    match?.display_name,
+    " - "
+  );
+  const nutrition = match?.nutrition ?? {};
+  const missing = [
+    ...(extracted?.missing_fields ?? []),
+    ...(match?.missing_nutrition_fields ?? []),
+  ].filter(Boolean);
+
+  if (!extracted && !match) {
+    return greek
+      ? "Δεν μπόρεσα να διαβάσω καθαρά την ετικέτα. Δοκίμασε μία πιο κοντινή φωτογραφία από το πίσω μέρος, με την ανάλυση και τα συστατικά να φαίνονται ολόκληρα."
+      : "I could not read the label clearly. Try a closer photo of the back label, with the analysis and ingredients fully visible.";
+  }
+
+  const nutrientLines = [
+    nutrition.kcal_per_100g != null
+      ? greek
+        ? `Θερμίδες: ${nutrition.kcal_per_100g} kcal/100g`
+        : `Calories: ${nutrition.kcal_per_100g} kcal/100g`
+      : null,
+    nutrition.protein_percent != null
+      ? greek
+        ? `Πρωτεΐνη: ${nutrition.protein_percent}%`
+        : `Protein: ${nutrition.protein_percent}%`
+      : null,
+    nutrition.fat_percent != null
+      ? greek
+        ? `Λιπαρά: ${nutrition.fat_percent}%`
+        : `Fat: ${nutrition.fat_percent}%`
+      : null,
+    nutrition.fiber_percent != null
+      ? greek
+        ? `Ίνες: ${nutrition.fiber_percent}%`
+        : `Fiber: ${nutrition.fiber_percent}%`
+      : null,
+    nutrition.calcium_percent != null || nutrition.phosphorus_percent != null
+      ? greek
+        ? `Ασβέστιο/Φώσφορος: ${nutrition.calcium_percent ?? "?"}% / ${
+            nutrition.phosphorus_percent ?? "?"
+          }%`
+        : `Calcium/Phosphorus: ${nutrition.calcium_percent ?? "?"}% / ${
+            nutrition.phosphorus_percent ?? "?"
+          }%`
+      : null,
+  ].filter(Boolean);
+
+  if (greek) {
+    return [
+      match
+        ? `Διάβασα τη φωτογραφία και το ταίριαξα με: ${matchedName}.`
+        : `Διάβασα πιθανή τροφή: ${extractedName || "δεν φαίνεται καθαρά"}. Δεν βρήκα αρκετά σίγουρο match στη βάση.`,
+      extracted?.confidence
+        ? `Εμπιστοσύνη ανάγνωσης φωτογραφίας: ${extracted.confidence}.`
+        : "",
+      nutrientLines.length > 0
+        ? `Βασικά στοιχεία:\n${nutrientLines.map((line) => `- ${line}`).join("\n")}`
+        : "",
+      missing.length > 0
+        ? `Λείπουν ή θέλουν έλεγχο: ${[...new Set(missing)].slice(0, 6).join(", ")}.`
+        : "",
+      result.safety_note ?? "",
+      match
+        ? "Μπορώ τώρα να το χρησιμοποιήσω ως τωρινή τροφή και να συνεχίσουμε με γραμμάρια/ημέρα ή εναλλακτική πρόταση."
+        : "Στείλε πιο καθαρή φωτογραφία από μπροστά και πίσω ή γράψε εταιρεία + ακριβές όνομα τροφής.",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  return [
+    match
+      ? `I read the photo and matched it to: ${matchedName}.`
+      : `I read a possible food: ${extractedName || "not clear enough"}. I could not match it confidently in the database.`,
+    extracted?.confidence ? `Photo-read confidence: ${extracted.confidence}.` : "",
+    nutrientLines.length > 0
+      ? `Key details:\n${nutrientLines.map((line) => `- ${line}`).join("\n")}`
+      : "",
+    missing.length > 0
+      ? `Missing or needs checking: ${[...new Set(missing)].slice(0, 6).join(", ")}.`
+      : "",
+    result.safety_note ?? "",
+    match
+      ? "I can now use this as the current food and continue with grams/day or alternative-food guidance."
+      : "Send a clearer front and back photo, or type the brand and exact formula name.",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 function formatCompactFoodV2RecommendationFallback({
   foodChoices,
   language,
@@ -3950,6 +4113,7 @@ export default function AccountChatbotPage() {
   const pathname = usePathname();
   const handledDeepLinkRef = useRef<string | null>(null);
   const skipInitialLanguageSaveRef = useRef(true);
+  const foodPhotoInputRef = useRef<HTMLInputElement | null>(null);
   const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -3981,6 +4145,7 @@ export default function AccountChatbotPage() {
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isProcessingMessage, setIsProcessingMessage] = useState(false);
+  const [isAnalyzingFoodPhoto, setIsAnalyzingFoodPhoto] = useState(false);
   const processingMessageRef = useRef(false);
   const [showSave, setShowSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -5971,7 +6136,14 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   async function sendMessage() {
     const text = input.trim();
 
-    if (!text || isProcessingMessage || processingMessageRef.current || isAnalyzing || isSaving) return;
+    if (
+      !text ||
+      isProcessingMessage ||
+      processingMessageRef.current ||
+      isAnalyzing ||
+      isAnalyzingFoodPhoto ||
+      isSaving
+    ) return;
 
     processingMessageRef.current = true;
     setIsProcessingMessage(true);
@@ -5987,7 +6159,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   async function sendQuickReply(text: string) {
-    if (isProcessingMessage || processingMessageRef.current || isAnalyzing || isSaving) return;
+    if (
+      isProcessingMessage ||
+      processingMessageRef.current ||
+      isAnalyzing ||
+      isAnalyzingFoodPhoto ||
+      isSaving
+    ) return;
 
     processingMessageRef.current = true;
     setIsProcessingMessage(true);
@@ -5999,6 +6177,129 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     } finally {
       processingMessageRef.current = false;
       setIsProcessingMessage(false);
+    }
+  }
+
+  function readFoodPhotoAsDataUrl(file: File) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(reader.error ?? new Error("Failed to read image."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFoodPhotoUpload(file: File | null) {
+    if (
+      !file ||
+      isProcessingMessage ||
+      processingMessageRef.current ||
+      isAnalyzing ||
+      isAnalyzingFoodPhoto ||
+      isSaving
+    ) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Στείλε φωτογραφία της συσκευασίας ή της ετικέτας τροφής.",
+            "Please upload a photo of the food bag or label."
+          )
+        )
+      );
+      return;
+    }
+
+    if (file.size > 6_500_000) {
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Η φωτογραφία είναι αρκετά μεγάλη. Δοκίμασε μικρότερη ή πιο συμπιεσμένη εικόνα.",
+            "That photo is quite large. Try a smaller or compressed image."
+          )
+        )
+      );
+      return;
+    }
+
+    processingMessageRef.current = true;
+    setIsProcessingMessage(true);
+    setIsAnalyzingFoodPhoto(true);
+
+    try {
+      addMessages(
+        createMessage(
+          "user",
+          botText(
+            `Ανέβασα φωτογραφία τροφής: ${file.name}`,
+            `Uploaded a food photo: ${file.name}`
+          )
+        )
+      );
+
+      const imageDataUrl = await readFoodPhotoAsDataUrl(file);
+      const response = await fetch("/api/account/chatbot/analyze-food-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageDataUrl,
+          locale: chatLanguage,
+          species: pet.species ?? null,
+        }),
+      });
+      const result = (await response.json()) as FoodPhotoAnalysisResponse;
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to analyze food photo.");
+      }
+
+      addMessages(createMessage("bot", formatFoodPhotoAnalysisResult(result, chatLanguage)));
+
+      const matchedFoodName = combineBrandAndFoodName(
+        result.match?.brand,
+        result.match?.display_name
+      );
+      const extractedFoodName = combineBrandAndFoodName(
+        result.extracted?.brand,
+        result.extracted?.product_name
+      );
+      const nextFoodName = matchedFoodName || extractedFoodName;
+
+      if (nextFoodName) {
+        const nextPet = sanitizePetIntake({
+          ...pet,
+          species: pet.species ?? result.extracted?.species ?? undefined,
+          currentFoodName: nextFoodName,
+          currentFoodAnswered: true,
+        });
+
+        setPet(nextPet);
+
+        if (step === "currentFood") {
+          await continueIntakeOrRunAnalysis(nextPet);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      addMessages(
+        createMessage(
+          "bot",
+          botText(
+            "Δεν μπόρεσα να διαβάσω τη φωτογραφία τώρα. Δοκίμασε καθαρή εικόνα από μπροστά και πίσω, ή γράψε εταιρεία και όνομα τροφής.",
+            "I could not read the photo right now. Try a clear front and back image, or type the brand and food name."
+          )
+        )
+      );
+    } finally {
+      processingMessageRef.current = false;
+      setIsProcessingMessage(false);
+      setIsAnalyzingFoodPhoto(false);
+      if (foodPhotoInputRef.current) foodPhotoInputRef.current.value = "";
     }
   }
 
@@ -7272,6 +7573,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           mobileFoodChoiceActions.length === 0 &&
           !isProcessingMessage &&
           !isAnalyzing &&
+          !isAnalyzingFoodPhoto &&
           !isSaving && (
           <div className="mb-3 flex snap-x gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
             {quickReplies.map((reply) => (
@@ -7291,7 +7593,13 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
         )}
 
-        {isProcessingMessage && !isAnalyzing && !isSaving && (
+        {isAnalyzingFoodPhoto && (
+          <p className="mb-2 text-xs font-medium leading-5 text-emerald-700">
+            {botText("Διαβάζω τη φωτογραφία τροφής...", "Reading the food photo...")}
+          </p>
+        )}
+
+        {isProcessingMessage && !isAnalyzing && !isAnalyzingFoodPhoto && !isSaving && (
           <p className="mb-2 text-xs font-medium leading-5 text-emerald-700">
             {botText("Το ετοιμάζω...", "Preparing reply...")}
           </p>
@@ -7299,8 +7607,37 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
         <div className="flex items-end gap-2 sm:gap-3">
           <input
+            ref={foodPhotoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            aria-label="Upload food label photo"
+            onChange={(event) => {
+              void handleFoodPhotoUpload(event.target.files?.[0] ?? null);
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={() => foodPhotoInputRef.current?.click()}
+            disabled={
+              isProcessingMessage ||
+              isAnalyzing ||
+              isAnalyzingFoodPhoto ||
+              isSaving
+            }
+            className="min-h-12 shrink-0 rounded-xl border border-gray-300 bg-white px-3 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:opacity-50"
+            title={botText(
+              "Ανέβασε φωτογραφία τροφής ή ετικέτας",
+              "Upload a food or label photo"
+            )}
+          >
+            {botText("Φωτο", "Photo")}
+          </button>
+
+          <input
             value={input}
-            disabled={isProcessingMessage || isAnalyzing || isSaving}
+            disabled={isProcessingMessage || isAnalyzing || isAnalyzingFoodPhoto || isSaving}
             aria-label="Chat message"
             autoComplete="off"
             onChange={(e) => setInput(e.target.value)}
@@ -7320,7 +7657,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <button
             type="button"
             onClick={sendMessage}
-            disabled={isProcessingMessage || isAnalyzing || isSaving}
+            disabled={isProcessingMessage || isAnalyzing || isAnalyzingFoodPhoto || isSaving}
             className="min-h-12 shrink-0 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50 sm:px-5"
           >
             {isAnalyzing ? "..." : botText("Αποστολή", "Send")}
