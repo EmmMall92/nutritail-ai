@@ -61,11 +61,16 @@ export default function AccountLayout({
       </header>
 
       <nav className="border-b border-gray-200 bg-white">
-        <div className="mx-auto grid max-w-5xl grid-cols-4 gap-1 px-2 py-2 sm:flex sm:flex-wrap sm:gap-2 sm:px-6 sm:py-3">
+        <div className="mx-auto grid max-w-5xl grid-cols-5 gap-1 px-2 py-2 sm:flex sm:flex-wrap sm:gap-2 sm:px-6 sm:py-3">
           <AccountNavLink href="/account" label="Πίνακας" pathname={pathname} />
           <AccountNavLink
             href="/account/chatbot"
             label="Σύμβουλος"
+            pathname={pathname}
+          />
+          <AccountNavLink
+            href="/account/food-compare"
+            label="Σύγκριση"
             pathname={pathname}
           />
           <AccountNavLink

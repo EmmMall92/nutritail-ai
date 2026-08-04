@@ -785,6 +785,12 @@ export default function AccountPage() {
             >
               Δες τα κατοικίδια
             </Link>
+            <Link
+              href="/account/food-compare"
+              className="rounded-xl border border-teal-300 px-5 py-3 text-center text-sm font-medium text-teal-950 transition hover:bg-teal-50"
+            >
+              Σύγκριση τροφών
+            </Link>
           </div>
         </div>
       </div>
