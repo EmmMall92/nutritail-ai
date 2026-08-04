@@ -156,6 +156,18 @@ function getFoodV2Confidence(food: FoodV2SearchResult) {
   return "moderate";
 }
 
+function isConfidentFoodV2CompareMatch(food: FoodV2SearchResult | null) {
+  return Boolean(
+    food &&
+      (food.match_confidence === "high" ||
+        (food.match_confidence === "moderate" && food.match_score >= 45))
+  );
+}
+
+function isConfidentLegacyCompareMatch(score?: number | null) {
+  return typeof score === "number" && score >= 90;
+}
+
 function getFoodV2CustomerDisplayName(food: FoodV2SearchResult) {
   return (
     customerFoodDisplayName({
@@ -282,6 +294,7 @@ export async function POST(request: Request) {
 
       const shouldUseV2 =
         bestV2 &&
+        isConfidentFoodV2CompareMatch(bestV2) &&
         (bestV2.match_score >= (best?.score ?? 0) ||
           bestV2.match_confidence === "high");
 
@@ -320,14 +333,23 @@ export async function POST(request: Request) {
         };
       }
 
-      if (!best) {
+      if (!best || !isConfidentLegacyCompareMatch(best.score)) {
         return {
           query,
           source: bestV2 ? "food_v2" : "legacy_foods",
           match: null,
           match_score: 0,
-          match_confidence: "none",
-          candidates: [],
+          match_confidence: bestV2 || best ? "needs_formula" : "none",
+          candidates: [
+            ...scored.slice(0, 3).map((item) => ({
+              id: item.food.id ?? null,
+              brand: item.food.brand ?? null,
+              name: item.food.name ?? null,
+              score: item.score,
+              source: "legacy_foods",
+            })),
+            ...foodV2Candidates,
+          ].slice(0, 5),
         };
       }
 

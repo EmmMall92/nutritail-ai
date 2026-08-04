@@ -516,6 +516,10 @@ if (/\b\d{1,3}\/100\b/.test(`${sample}\n${greekSample}`)) {
 }
 
 const chatbotPage = readFileSync("app/account/chatbot/page.tsx", "utf8");
+const accountFoodComparePage = readFileSync(
+  "app/account/food-compare/page.tsx",
+  "utf8"
+);
 const transitionGuideSource = readFileSync("lib/foodTransitionGuide.ts", "utf8");
 const responseComposer = readFileSync("lib/ai/responseComposer.ts", "utf8");
 const promptInstructions = readFileSync("lib/ai/promptInstructions.ts", "utf8");
@@ -763,6 +767,10 @@ const requiredCompareNameCleanup = [
   "name: getFoodV2CustomerDisplayName(item)",
   "function isBrandOnlyCompareQuery",
   'query_kind: "brand_only"',
+  "function isConfidentFoodV2CompareMatch",
+  "function isConfidentLegacyCompareMatch",
+  "return typeof score === \"number\" && score >= 90;",
+  'match_confidence: bestV2 || best ? "needs_formula" : "none"',
 ];
 const missingCompareNameCleanup = requiredCompareNameCleanup.filter(
   (term) => !compareRoute.includes(term)
@@ -771,6 +779,33 @@ const missingCompareNameCleanup = requiredCompareNameCleanup.filter(
 if (missingCompareNameCleanup.length > 0) {
   console.error("Food compare API must return customer-clean Food V2 names:");
   console.error(missingCompareNameCleanup.join(", "));
+  process.exit(1);
+}
+
+if (
+  compareRoute.includes(
+    "const shouldUseV2 =\n        bestV2 &&\n        (bestV2.match_score >= (best?.score ?? 0)"
+  )
+) {
+  console.error(
+    "Food compare API must not accept low-confidence Food V2 matches just because they beat legacy score."
+  );
+  process.exit(1);
+}
+
+const requiredAccountFoodCompareMarkers = [
+  "const EXAMPLES_BY_SPECIES: Record<Species, string[][]>",
+  "const examples = EXAMPLES_BY_SPECIES[species]",
+  "{examples.map((example) => (",
+];
+const missingAccountFoodCompareMarkers =
+  requiredAccountFoodCompareMarkers.filter(
+    (term) => !accountFoodComparePage.includes(term)
+  );
+
+if (missingAccountFoodCompareMarkers.length > 0) {
+  console.error("Account food comparison page must keep examples scoped by species:");
+  console.error(missingAccountFoodCompareMarkers.join(", "));
   process.exit(1);
 }
 

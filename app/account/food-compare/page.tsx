@@ -44,11 +44,16 @@ type FoodCompareResponse = {
   error?: string;
 };
 
-const EXAMPLES = [
-  ["Royal Canin Mini Adult", "Farmina N&D Pumpkin Lamb"],
-  ["Josera SensiPlus", "Happy Dog Sensible Ireland"],
-  ["Purina Pro Plan Sterilised Cat", "Royal Canin Sterilised"],
-];
+const EXAMPLES_BY_SPECIES: Record<Species, string[][]> = {
+  dog: [
+    ["Royal Canin Mini Adult", "Josera SensiPlus"],
+    ["Royal Canin Mini Adult", "Ambrosia Fresh Salmon & Chicken Adult Mini"],
+  ],
+  cat: [
+    ["Purina Pro Plan Sterilised Cat", "Royal Canin Sterilised"],
+    ["Royal Canin Sterilised", "Josera NatureCat"],
+  ],
+};
 
 const NUTRITION_FIELDS = [
   { key: "kcal_per_100g", label: "Θερμίδες", suffix: " kcal/100g" },
@@ -126,6 +131,7 @@ export default function AccountFoodComparePage() {
     () => queries.map((item) => item.trim()).filter(Boolean),
     [queries]
   );
+  const examples = EXAMPLES_BY_SPECIES[species];
 
   useEffect(() => {
     async function checkSession() {
@@ -319,7 +325,7 @@ export default function AccountFoodComparePage() {
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          {EXAMPLES.map((example) => (
+          {examples.map((example) => (
             <button
               key={example.join(" vs ")}
               type="button"
