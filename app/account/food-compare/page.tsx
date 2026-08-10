@@ -6,6 +6,27 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Species = "dog" | "cat";
+type FoodFormatFilter = "any" | "dry" | "wet";
+type LifeStageFilter = "any" | "adult" | "young" | "senior" | "all_life_stages";
+
+type FoodSearchCandidate = {
+  id?: string;
+  brand?: string | null;
+  display_name?: string | null;
+  name?: string | null;
+  species?: string | null;
+  format?: string | null;
+  life_stage?: string | null;
+  dog_size?: string | null;
+  match_confidence?: string | null;
+  nutrition?: Record<string, number | null>;
+  missing_nutrition_fields?: string[];
+};
+
+type FoodSearchResponse = {
+  candidates?: FoodSearchCandidate[];
+  error?: string;
+};
 
 type FoodComparisonItem = {
   query: string;
@@ -66,6 +87,26 @@ const NUTRITION_FIELDS = [
   { key: "magnesium_percent", label: "Μαγνήσιο", suffix: "%" },
 ];
 
+const FORMAT_FILTERS: Array<{ value: FoodFormatFilter; label: string }> = [
+  { value: "any", label: "Όλες" },
+  { value: "dry", label: "Ξηρά" },
+  { value: "wet", label: "Υγρή" },
+];
+
+const LIFE_STAGE_FILTERS: Array<{ value: LifeStageFilter; label: string }> = [
+  { value: "any", label: "Όλες" },
+  { value: "adult", label: "Adult" },
+  { value: "young", label: "Puppy / Kitten" },
+  { value: "senior", label: "Senior" },
+  { value: "all_life_stages", label: "All life stages" },
+];
+
+function getLifeStageSearchValue(filter: LifeStageFilter, species: Species) {
+  if (filter === "any") return null;
+  if (filter === "young") return species === "cat" ? "kitten" : "puppy";
+  return filter;
+}
+
 function normalizeFoodName(item: FoodComparisonItem) {
   if (!item.match) return item.query;
 
@@ -101,6 +142,37 @@ function getCandidateNames(item: FoodComparisonItem) {
     .slice(0, 3);
 }
 
+function getSearchCandidateName(candidate: FoodSearchCandidate) {
+  const brand = String(candidate.brand ?? "").trim();
+  const displayName = String(candidate.display_name ?? candidate.name ?? "").trim();
+
+  if (!brand) return displayName;
+  if (!displayName) return brand;
+  if (displayName.toLowerCase().startsWith(brand.toLowerCase())) return displayName;
+
+  return `${brand} ${displayName}`;
+}
+
+function getSearchCandidateMeta(candidate: FoodSearchCandidate) {
+  return [candidate.format, candidate.life_stage, candidate.dog_size]
+    .map((value) => String(value ?? "").trim())
+    .filter(Boolean)
+    .join(" · ");
+}
+
+function getSearchCandidateNutrition(candidate: FoodSearchCandidate) {
+  const protein = candidate.nutrition?.protein_percent;
+  const fat = candidate.nutrition?.fat_percent;
+  const calories = candidate.nutrition?.kcal_per_100g;
+  const parts = [];
+
+  if (typeof protein === "number") parts.push(`Πρωτ. ${protein}%`);
+  if (typeof fat === "number") parts.push(`Λίπος ${fat}%`);
+  if (typeof calories === "number") parts.push(`${calories} kcal/100g`);
+
+  return parts.join(" · ");
+}
+
 function getCautionCopy(caution: string) {
   const normalized = caution.toLowerCase();
 
@@ -121,10 +193,17 @@ export default function AccountFoodComparePage() {
   const router = useRouter();
   const pathname = usePathname();
   const [species, setSpecies] = useState<Species>("dog");
+  const [formatFilter, setFormatFilter] = useState<FoodFormatFilter>("any");
+  const [lifeStageFilter, setLifeStageFilter] = useState<LifeStageFilter>("any");
   const [queries, setQueries] = useState(["", ""]);
   const [result, setResult] = useState<FoodCompareResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [focusedInputIndex, setFocusedInputIndex] = useState<number | null>(null);
+  const [suggestionsByIndex, setSuggestionsByIndex] = useState<
+    Record<number, FoodSearchCandidate[]>
+  >({});
+  const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const [error, setError] = useState("");
 
   const cleanQueries = useMemo(
@@ -149,10 +228,108 @@ export default function AccountFoodComparePage() {
     checkSession();
   }, [pathname, router]);
 
+  useEffect(() => {
+    if (focusedInputIndex === null) return;
+
+    const query = queries[focusedInputIndex]?.trim() ?? "";
+
+    if (query.length < 2) {
+      setSuggestionsByIndex((current) => ({
+        ...current,
+        [focusedInputIndex]: [],
+      }));
+      setIsSuggestionLoading(false);
+      return;
+    }
+
+    let ignore = false;
+    const timeout = window.setTimeout(async () => {
+      try {
+        setIsSuggestionLoading(true);
+
+        const response = await fetch("/api/account/foods/v2-search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query,
+            species,
+            format: formatFilter === "any" ? null : formatFilter,
+            life_stage: getLifeStageSearchValue(lifeStageFilter, species),
+            limit: 6,
+          }),
+        });
+        const data = (await response.json()) as FoodSearchResponse;
+
+        if (ignore) return;
+
+        setSuggestionsByIndex((current) => ({
+          ...current,
+          [focusedInputIndex]: response.ok ? data.candidates ?? [] : [],
+        }));
+      } catch (err) {
+        console.error(err);
+        if (!ignore) {
+          setSuggestionsByIndex((current) => ({
+            ...current,
+            [focusedInputIndex]: [],
+          }));
+        }
+      } finally {
+        if (!ignore) setIsSuggestionLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      ignore = true;
+      window.clearTimeout(timeout);
+    };
+  }, [focusedInputIndex, formatFilter, lifeStageFilter, queries, species]);
+
   function updateQuery(index: number, value: string) {
     setQueries((current) =>
       current.map((item, itemIndex) => (itemIndex === index ? value : item))
     );
+    setResult(null);
+    setError("");
+  }
+
+  function updateSpecies(value: Species) {
+    setSpecies(value);
+    setLifeStageFilter("any");
+    setSuggestionsByIndex({});
+    setResult(null);
+    setError("");
+  }
+
+  function updateFormatFilter(value: FoodFormatFilter) {
+    setFormatFilter(value);
+    setSuggestionsByIndex({});
+    setResult(null);
+    setError("");
+  }
+
+  function updateLifeStageFilter(value: LifeStageFilter) {
+    setLifeStageFilter(value);
+    setSuggestionsByIndex({});
+    setResult(null);
+    setError("");
+  }
+
+  function chooseSuggestedFood(index: number, candidate: FoodSearchCandidate) {
+    setQueries((current) =>
+      current.map((item, itemIndex) =>
+        itemIndex === index ? getSearchCandidateName(candidate) : item
+      )
+    );
+    setFocusedInputIndex(null);
+    setSuggestionsByIndex((current) => ({
+      ...current,
+      [index]: [],
+    }));
+    setResult(null);
+    setError("");
   }
 
   function addFoodInput() {
@@ -261,7 +438,7 @@ export default function AccountFoodComparePage() {
               <button
                 key={value}
                 type="button"
-                onClick={() => setSpecies(value)}
+                onClick={() => updateSpecies(value)}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                   species === value
                     ? "bg-black text-white"
@@ -274,9 +451,63 @@ export default function AccountFoodComparePage() {
           </div>
         </div>
 
+        <div
+          className="mt-5 grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 lg:grid-cols-2"
+          data-testid="food-compare-helper-controls"
+        >
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Μορφή
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {FORMAT_FILTERS.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => updateFormatFilter(filter.value)}
+                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+                    formatFilter === filter.value
+                      ? "border-black bg-black text-white"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-400"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Ηλικία
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {LIFE_STAGE_FILTERS.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => updateLifeStageFilter(filter.value)}
+                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+                    lifeStageFilter === filter.value
+                      ? "border-black bg-black text-white"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-400"
+                  }`}
+                >
+                  {filter.value === "young"
+                    ? species === "cat"
+                      ? "Kitten"
+                      : "Puppy"
+                    : filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="mt-5 space-y-3">
           {queries.map((query, index) => (
-            <div key={index} className="flex gap-2">
+            <div key={index} className="relative">
+              <div className="flex gap-2">
               <label className="sr-only" htmlFor={`food-query-${index}`}>
                 Τροφή {index + 1}
               </label>
@@ -284,6 +515,9 @@ export default function AccountFoodComparePage() {
                 id={`food-query-${index}`}
                 value={query}
                 onChange={(event) => updateQuery(index, event.target.value)}
+                onFocus={() => setFocusedInputIndex(index)}
+                onBlur={() => setFocusedInputIndex(null)}
+                autoComplete="off"
                 placeholder={
                   index === 0
                     ? "π.χ. Royal Canin Mini Adult"
@@ -300,6 +534,60 @@ export default function AccountFoodComparePage() {
                 >
                   ×
                 </button>
+              )}
+              </div>
+
+              {focusedInputIndex === index && query.trim().length >= 2 && (
+                <div
+                  className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
+                  data-testid={`food-compare-suggestions-${index}`}
+                >
+                  {isSuggestionLoading ? (
+                    <p className="px-4 py-3 text-sm text-gray-600">
+                      Αναζήτηση τροφών...
+                    </p>
+                  ) : (suggestionsByIndex[index] ?? []).length > 0 ? (
+                    <div className="max-h-80 overflow-y-auto">
+                      {(suggestionsByIndex[index] ?? []).map(
+                        (candidate, candidateIndex) => {
+                          const candidateName = getSearchCandidateName(candidate);
+                          const meta = getSearchCandidateMeta(candidate);
+                          const nutrition = getSearchCandidateNutrition(candidate);
+
+                          return (
+                            <button
+                              key={candidate.id ?? `${candidateName}-${candidateIndex}`}
+                              type="button"
+                              onMouseDown={(event) => {
+                                event.preventDefault();
+                                chooseSuggestedFood(index, candidate);
+                              }}
+                              className="block w-full border-b border-gray-100 px-4 py-3 text-left transition last:border-b-0 hover:bg-teal-50"
+                            >
+                              <span className="block text-sm font-semibold text-black">
+                                {candidateName}
+                              </span>
+                              {meta && (
+                                <span className="mt-1 block text-xs text-gray-600">
+                                  {meta}
+                                </span>
+                              )}
+                              {nutrition && (
+                                <span className="mt-1 block text-xs font-medium text-teal-800">
+                                  {nutrition}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        }
+                      )}
+                    </div>
+                  ) : (
+                    <p className="px-4 py-3 text-sm text-gray-600">
+                      Δεν βρέθηκε κοντινή τροφή με αυτά τα φίλτρα.
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           ))}
