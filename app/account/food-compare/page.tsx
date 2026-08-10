@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Species = "dog" | "cat";
-type FoodFormatFilter = "any" | "dry" | "wet";
 type LifeStageFilter = "any" | "adult" | "young" | "senior" | "all_life_stages";
 
 type FoodSearchCandidate = {
@@ -87,11 +86,29 @@ const NUTRITION_FIELDS = [
   { key: "magnesium_percent", label: "Μαγνήσιο", suffix: "%" },
 ];
 
-const FORMAT_FILTERS: Array<{ value: FoodFormatFilter; label: string }> = [
-  { value: "any", label: "Όλες" },
-  { value: "dry", label: "Ξηρά" },
-  { value: "wet", label: "Υγρή" },
-];
+const BRAND_FILTERS_BY_SPECIES: Record<Species, string[]> = {
+  dog: [
+    "Royal Canin",
+    "Ambrosia",
+    "Josera",
+    "Farmina",
+    "Purina Pro Plan",
+    "Hill's",
+    "Brit",
+    "Acana",
+    "Orijen",
+  ],
+  cat: [
+    "Royal Canin",
+    "Purina Pro Plan",
+    "Josera",
+    "Farmina",
+    "Hill's",
+    "Brit",
+    "Acana",
+    "Orijen",
+  ],
+};
 
 const LIFE_STAGE_FILTERS: Array<{ value: LifeStageFilter; label: string }> = [
   { value: "any", label: "Όλες" },
@@ -105,6 +122,19 @@ function getLifeStageSearchValue(filter: LifeStageFilter, species: Species) {
   if (filter === "any") return null;
   if (filter === "young") return species === "cat" ? "kitten" : "puppy";
   return filter;
+}
+
+function getQueryWithBrand(query: string, brand: string) {
+  const cleanQuery = query.trim();
+  const cleanBrand = brand.trim();
+
+  if (!cleanBrand) return cleanQuery;
+  if (!cleanQuery) return cleanBrand;
+  if (cleanQuery.toLowerCase().startsWith(cleanBrand.toLowerCase())) {
+    return cleanQuery;
+  }
+
+  return `${cleanBrand} ${cleanQuery}`;
 }
 
 function normalizeFoodName(item: FoodComparisonItem) {
@@ -193,9 +223,9 @@ export default function AccountFoodComparePage() {
   const router = useRouter();
   const pathname = usePathname();
   const [species, setSpecies] = useState<Species>("dog");
-  const [formatFilter, setFormatFilter] = useState<FoodFormatFilter>("any");
   const [lifeStageFilter, setLifeStageFilter] = useState<LifeStageFilter>("any");
   const [queries, setQueries] = useState(["", ""]);
+  const [brandFilters, setBrandFilters] = useState(["", ""]);
   const [result, setResult] = useState<FoodCompareResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
@@ -207,10 +237,14 @@ export default function AccountFoodComparePage() {
   const [error, setError] = useState("");
 
   const cleanQueries = useMemo(
-    () => queries.map((item) => item.trim()).filter(Boolean),
-    [queries]
+    () =>
+      queries
+        .map((item, index) => getQueryWithBrand(item, brandFilters[index] ?? ""))
+        .filter(Boolean),
+    [brandFilters, queries]
   );
   const examples = EXAMPLES_BY_SPECIES[species];
+  const brandOptions = BRAND_FILTERS_BY_SPECIES[species];
 
   useEffect(() => {
     async function checkSession() {
@@ -231,7 +265,10 @@ export default function AccountFoodComparePage() {
   useEffect(() => {
     if (focusedInputIndex === null) return;
 
-    const query = queries[focusedInputIndex]?.trim() ?? "";
+    const query = getQueryWithBrand(
+      queries[focusedInputIndex] ?? "",
+      brandFilters[focusedInputIndex] ?? ""
+    );
 
     if (query.length < 2) {
       setSuggestionsByIndex((current) => ({
@@ -255,7 +292,6 @@ export default function AccountFoodComparePage() {
           body: JSON.stringify({
             query,
             species,
-            format: formatFilter === "any" ? null : formatFilter,
             life_stage: getLifeStageSearchValue(lifeStageFilter, species),
             limit: 6,
           }),
@@ -285,7 +321,7 @@ export default function AccountFoodComparePage() {
       ignore = true;
       window.clearTimeout(timeout);
     };
-  }, [focusedInputIndex, formatFilter, lifeStageFilter, queries, species]);
+  }, [brandFilters, focusedInputIndex, lifeStageFilter, queries, species]);
 
   function updateQuery(index: number, value: string) {
     setQueries((current) =>
@@ -298,13 +334,16 @@ export default function AccountFoodComparePage() {
   function updateSpecies(value: Species) {
     setSpecies(value);
     setLifeStageFilter("any");
+    setBrandFilters(queries.map(() => ""));
     setSuggestionsByIndex({});
     setResult(null);
     setError("");
   }
 
-  function updateFormatFilter(value: FoodFormatFilter) {
-    setFormatFilter(value);
+  function updateBrandFilter(index: number, value: string) {
+    setBrandFilters((current) =>
+      queries.map((_, itemIndex) => (itemIndex === index ? value : current[itemIndex] ?? ""))
+    );
     setSuggestionsByIndex({});
     setResult(null);
     setError("");
@@ -318,11 +357,20 @@ export default function AccountFoodComparePage() {
   }
 
   function chooseSuggestedFood(index: number, candidate: FoodSearchCandidate) {
+    const candidateBrand = String(candidate.brand ?? "").trim();
+
     setQueries((current) =>
       current.map((item, itemIndex) =>
         itemIndex === index ? getSearchCandidateName(candidate) : item
       )
     );
+    if (candidateBrand) {
+      setBrandFilters((current) =>
+        queries.map((_, itemIndex) =>
+          itemIndex === index ? candidateBrand : current[itemIndex] ?? ""
+        )
+      );
+    }
     setFocusedInputIndex(null);
     setSuggestionsByIndex((current) => ({
       ...current,
@@ -334,10 +382,16 @@ export default function AccountFoodComparePage() {
 
   function addFoodInput() {
     setQueries((current) => (current.length >= 5 ? current : [...current, ""]));
+    setBrandFilters((current) => (current.length >= 5 ? current : [...current, ""]));
   }
 
   function removeFoodInput(index: number) {
     setQueries((current) =>
+      current.length <= 2
+        ? current
+        : current.filter((_, itemIndex) => itemIndex !== index)
+    );
+    setBrandFilters((current) =>
       current.length <= 2
         ? current
         : current.filter((_, itemIndex) => itemIndex !== index)
@@ -452,31 +506,9 @@ export default function AccountFoodComparePage() {
         </div>
 
         <div
-          className="mt-5 grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 lg:grid-cols-2"
+          className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4"
           data-testid="food-compare-helper-controls"
         >
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Μορφή
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {FORMAT_FILTERS.map((filter) => (
-                <button
-                  key={filter.value}
-                  type="button"
-                  onClick={() => updateFormatFilter(filter.value)}
-                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${
-                    formatFilter === filter.value
-                      ? "border-black bg-black text-white"
-                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-400"
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Ηλικία
@@ -507,37 +539,57 @@ export default function AccountFoodComparePage() {
         <div className="mt-5 space-y-3">
           {queries.map((query, index) => (
             <div key={index} className="relative">
-              <div className="flex gap-2">
-              <label className="sr-only" htmlFor={`food-query-${index}`}>
-                Τροφή {index + 1}
-              </label>
-              <input
-                id={`food-query-${index}`}
-                value={query}
-                onChange={(event) => updateQuery(index, event.target.value)}
-                onFocus={() => setFocusedInputIndex(index)}
-                onBlur={() => setFocusedInputIndex(null)}
-                autoComplete="off"
-                placeholder={
-                  index === 0
-                    ? "π.χ. Royal Canin Mini Adult"
-                    : "π.χ. Farmina N&D Pumpkin Lamb"
-                }
-                className="min-w-0 flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm text-black outline-none transition focus:border-black"
-              />
-              {queries.length > 2 && (
-                <button
-                  type="button"
-                  onClick={() => removeFoodInput(index)}
-                  className="rounded-xl border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
-                  aria-label={`Αφαίρεση τροφής ${index + 1}`}
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(150px,190px)_1fr_auto]">
+                <label className="sr-only" htmlFor={`food-brand-${index}`}>
+                  Εταιρία {index + 1}
+                </label>
+                <select
+                  id={`food-brand-${index}`}
+                  value={brandFilters[index] ?? ""}
+                  onChange={(event) => updateBrandFilter(index, event.target.value)}
+                  onFocus={() => setFocusedInputIndex(index)}
+                  className="h-12 rounded-xl border border-gray-300 bg-white px-3 text-sm font-semibold text-black outline-none transition focus:border-black"
                 >
-                  ×
-                </button>
-              )}
+                  <option value="">Όλες οι εταιρίες</option>
+                  {brandOptions.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </select>
+                <label className="sr-only" htmlFor={`food-query-${index}`}>
+                  Τροφή {index + 1}
+                </label>
+                <input
+                  id={`food-query-${index}`}
+                  value={query}
+                  onChange={(event) => updateQuery(index, event.target.value)}
+                  onFocus={() => setFocusedInputIndex(index)}
+                  onBlur={() => setFocusedInputIndex(null)}
+                  autoComplete="off"
+                  placeholder={
+                    brandFilters[index]
+                      ? "Γράψε τη φόρμουλα"
+                      : index === 0
+                        ? "π.χ. Royal Canin Mini Adult"
+                        : "π.χ. Farmina N&D Pumpkin Lamb"
+                  }
+                  className="h-12 min-w-0 rounded-xl border border-gray-300 px-4 text-sm text-black outline-none transition focus:border-black"
+                />
+                {queries.length > 2 && (
+                  <button
+                    type="button"
+                    onClick={() => removeFoodInput(index)}
+                    className="h-12 rounded-xl border border-gray-300 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+                    aria-label={`Αφαίρεση τροφής ${index + 1}`}
+                  >
+                    ×
+                  </button>
+                )}
               </div>
 
-              {focusedInputIndex === index && query.trim().length >= 2 && (
+              {focusedInputIndex === index &&
+                getQueryWithBrand(query, brandFilters[index] ?? "").length >= 2 && (
                 <div
                   className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
                   data-testid={`food-compare-suggestions-${index}`}
@@ -619,6 +671,7 @@ export default function AccountFoodComparePage() {
               type="button"
               onClick={() => {
                 setQueries(example);
+                setBrandFilters(example.map(() => ""));
                 setResult(null);
                 setError("");
               }}
