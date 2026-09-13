@@ -39,12 +39,18 @@ for (const requiredMarker of [
   "latestHistory?.matchedFoodName",
   "latestHistory?.feedingGramsPerDay",
   "formatCustomerWeightGoal(latestHistory?.weightGoal)",
+  "Το κατοικίδιο δεν βρέθηκε ή έχει αφαιρεθεί από τον λογαριασμό.",
 ]) {
   assert(
     timelineSource.includes(requiredMarker),
     `Pet timeline must render saved plan data: ${requiredMarker}`
   );
 }
+
+assert(
+  !timelineSource.includes("String(printResult.error"),
+  "Pet timeline must not expose raw server errors to customers."
+);
 
 assert(
   supabaseAdminSource.includes('import "server-only"'),

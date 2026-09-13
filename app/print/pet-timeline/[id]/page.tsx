@@ -174,6 +174,14 @@ function formatDate(value?: string) {
   return date.toLocaleString();
 }
 
+function getTimelineLoadErrorMessage(status: number) {
+  if (status === 404) {
+    return "Το κατοικίδιο δεν βρέθηκε ή έχει αφαιρεθεί από τον λογαριασμό.";
+  }
+
+  return "Δεν ήταν δυνατή η φόρτωση του ιστορικού. Δοκίμασε ξανά.";
+}
+
 function formatProgressMode(value?: string) {
   if (value === "no_result") return "Χωρίς ορατό αποτέλεσμα";
   if (value === "progress") return "Έλεγχος προόδου";
@@ -294,7 +302,7 @@ export default function PetTimelineReportPage() {
       if (!printResponse.ok || !printResult.pet) {
         setLoadError({
           status: printResponse.status,
-          message: String(printResult.error ?? "Δεν ήταν δυνατή η φόρτωση του ιστορικού."),
+          message: getTimelineLoadErrorMessage(printResponse.status),
         });
         return;
       }
