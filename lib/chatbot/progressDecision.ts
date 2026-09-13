@@ -52,7 +52,7 @@ export function buildProgressDecision({
       status: "needs_more_data",
       confidence: "low",
       headline: {
-        el: "Χρειάζομαι λίγα ακόμη στοιχεία για ασφαλή συμπέρασμα.",
+        el: "Χρειάζομαι λίγα ακόμη στοιχεία για ασφαλές συμπέρασμα.",
         en: "I need a little more context before judging progress.",
       },
       reasons: {
@@ -187,7 +187,7 @@ export function buildProgressDecision({
     nextSteps: {
       el: [
         ...nextEl,
-        "Συνέχισε με τα ίδια γραμμάρια και ξανακάνε progress check σε 2-4 εβδομάδες.",
+        "Συνέχισε με τα ίδια γραμμάρια και ξανακάνε έλεγχο προόδου σε 2-4 εβδομάδες.",
       ],
       en: [
         ...nextEn,

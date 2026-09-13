@@ -70,6 +70,16 @@ for (const testCase of cases) {
   if (decision.reasons.el.length === 0 || decision.nextSteps.en.length === 0) {
     failures.push(`${testCase.name}: missing reasons or next steps`);
   }
+
+  const greekCopy = [
+    decision.headline.el,
+    ...decision.reasons.el,
+    ...decision.nextSteps.el,
+  ].join(" ");
+
+  if (/progress check|ασφαλή συμπέρασμα/i.test(greekCopy)) {
+    failures.push(`${testCase.name}: Greek decision contains mixed or incorrect copy`);
+  }
 }
 
 if (failures.length > 0) {
