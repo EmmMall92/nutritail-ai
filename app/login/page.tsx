@@ -6,7 +6,10 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
-import { normalizeSafeRedirectPath } from "@/lib/auth/safeRedirect";
+import {
+  buildAuthCallbackPath,
+  normalizeSafeRedirectPath,
+} from "@/lib/auth/safeRedirect";
 import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
 import { createClient } from "@/lib/supabase/client";
 
@@ -79,13 +82,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
+  const [confirmationRecovery, setConfirmationRecovery] = useState(false);
+  const [confirmationSuccess, setConfirmationSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResendingConfirmation, setIsResendingConfirmation] = useState(false);
 
   useEffect(() => {
     setRedirectPath(getSafeRedirectPath());
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("error") === "confirmation") {
+      setConfirmationRecovery(true);
       setError(
         "Ο σύνδεσμος επιβεβαίωσης δεν ολοκληρώθηκε ή έχει λήξει. Ζήτησε νέο email και δοκίμασε ξανά."
       );
@@ -98,6 +105,7 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       setError("");
+      setConfirmationSuccess("");
 
       if (!email.trim() || !password) {
         throw new Error("Γράψε email και κωδικό για να συνεχίσεις.");
@@ -145,6 +153,44 @@ export default function LoginPage() {
     }
   }
 
+  async function handleResendConfirmation() {
+    try {
+      setIsResendingConfirmation(true);
+      setError("");
+      setConfirmationSuccess("");
+
+      if (!email.trim()) {
+        throw new Error(
+          "Γράψε πρώτα το email που χρησιμοποίησες στην εγγραφή."
+        );
+      }
+
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email.trim(),
+        options: {
+          emailRedirectTo: `${window.location.origin}${buildAuthCallbackPath(
+            redirectPath
+          )}`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setConfirmationSuccess(
+        "Αν υπάρχει λογαριασμός που περιμένει επιβεβαίωση, στείλαμε νέο email. Άνοιξε μόνο τον πιο πρόσφατο σύνδεσμο."
+      );
+    } catch (err) {
+      console.error(err);
+      setError(getCustomerAuthErrorMessage(err, "confirmation"));
+    } finally {
+      setIsResendingConfirmation(false);
+    }
+  }
+
   return (
     <AuthShell
       eyebrow="Καλωσήρθες ξανά"
@@ -156,7 +202,10 @@ export default function LoginPage() {
           <span className="text-sm font-medium text-gray-800">Email</span>
           <input
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setConfirmationSuccess("");
+            }}
             placeholder="you@example.com"
             type="email"
             autoComplete="email"
@@ -203,22 +252,49 @@ export default function LoginPage() {
           >
             {error}
             <p className="mt-1 text-xs text-red-600">
-              Έλεγξε email και κωδικό ή κάνε επαναφορά αν δεν είσαι σίγουρος/η.
+              {confirmationRecovery
+                ? "Γράψε το ίδιο email που χρησιμοποίησες στην εγγραφή και ζήτησε νέο σύνδεσμο."
+                : "Έλεγξε email και κωδικό ή κάνε επαναφορά αν δεν είσαι σίγουρος/η."}
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <Link
-                href="/forgot-password"
-                className="rounded-lg bg-red-700 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-red-800"
-              >
-                Επαναφορά κωδικού
-              </Link>
-              <Link
-                href={registerHref}
-                className="rounded-lg border border-red-200 bg-white px-3 py-2 text-center text-xs font-semibold text-red-800 transition hover:bg-red-100"
-              >
-                Δημιουργία λογαριασμού
-              </Link>
+              {confirmationRecovery ? (
+                <button
+                  type="button"
+                  data-testid="auth-resend-confirmation"
+                  onClick={handleResendConfirmation}
+                  disabled={isResendingConfirmation}
+                  className="rounded-lg bg-red-700 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isResendingConfirmation
+                    ? "Στέλνεται..."
+                    : "Νέο email επιβεβαίωσης"}
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/forgot-password"
+                    className="rounded-lg bg-red-700 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-red-800"
+                  >
+                    Επαναφορά κωδικού
+                  </Link>
+                  <Link
+                    href={registerHref}
+                    className="rounded-lg border border-red-200 bg-white px-3 py-2 text-center text-xs font-semibold text-red-800 transition hover:bg-red-100"
+                  >
+                    Δημιουργία λογαριασμού
+                  </Link>
+                </>
+              )}
             </div>
+          </div>
+        )}
+
+        {confirmationSuccess && (
+          <div
+            className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm text-emerald-800"
+            data-testid="auth-resend-confirmation-success"
+          >
+            {confirmationSuccess}
           </div>
         )}
 

@@ -38,6 +38,21 @@ const cases = [
     expected: "Έγιναν πολλές προσπάθειες",
   },
   {
+    flow: "confirmation",
+    error: new Error("confirmation email provider unavailable"),
+    expected: "νέο email επιβεβαίωσης",
+  },
+  {
+    flow: "confirmation",
+    error: new Error("otp expired"),
+    expected: "σύνδεσμος επιβεβαίωσης",
+  },
+  {
+    flow: "confirmation",
+    error: new Error("Unexpected resend error"),
+    expected: "Δεν μπόρεσε να σταλεί νέο email επιβεβαίωσης",
+  },
+  {
     flow: "reset",
     error: new Error("invalid token"),
     expected: "Ο σύνδεσμος δεν είναι πλέον ενεργός",

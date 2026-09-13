@@ -1,8 +1,15 @@
-export type AuthCustomerFlow = "login" | "register" | "forgot" | "reset";
+export type AuthCustomerFlow =
+  | "login"
+  | "register"
+  | "confirmation"
+  | "forgot"
+  | "reset";
 
 const fallbackMessages: Record<AuthCustomerFlow, string> = {
   login: "Δεν ολοκληρώθηκε η σύνδεση. Έλεγξε τα στοιχεία σου και δοκίμασε ξανά.",
   register: "Δεν ολοκληρώθηκε η εγγραφή. Δοκίμασε ξανά σε λίγο.",
+  confirmation:
+    "Δεν μπόρεσε να σταλεί νέο email επιβεβαίωσης. Δοκίμασε ξανά σε λίγο.",
   forgot: "Δεν μπόρεσε να σταλεί email επαναφοράς. Έλεγξε το email και δοκίμασε ξανά.",
   reset: "Δεν μπόρεσε να ενημερωθεί ο κωδικός. Δοκίμασε ξανά σε λίγο.",
 };
@@ -46,6 +53,10 @@ export function getCustomerAuthErrorMessage(
     normalized.includes("smtp") ||
     normalized.includes("email provider")
   ) {
+    if (flow === "confirmation") {
+      return "Δεν μπόρεσε να σταλεί νέο email επιβεβαίωσης. Δοκίμασε ξανά σε λίγο. Αν συνεχιστεί, χρειάζεται έλεγχος στις ρυθμίσεις email του NutriTail.";
+    }
+
     return "Δεν ολοκληρώθηκε η εγγραφή επειδή δεν στάλθηκε το email επιβεβαίωσης. Δοκίμασε ξανά σε λίγο. Αν συνεχιστεί, χρειάζεται έλεγχος στις ρυθμίσεις email του NutriTail.";
   }
 
@@ -79,6 +90,10 @@ export function getCustomerAuthErrorMessage(
     normalized.includes("invalid token") ||
     normalized.includes("session")
   ) {
+    if (flow === "confirmation") {
+      return "Ο σύνδεσμος επιβεβαίωσης δεν είναι πλέον ενεργός. Ζήτησε νέο email επιβεβαίωσης και άνοιξε μόνο τον πιο πρόσφατο σύνδεσμο.";
+    }
+
     return "Ο σύνδεσμος δεν είναι πλέον ενεργός. Ζήτησε νέο σύνδεσμο επαναφοράς και άνοιξέ τον από την ίδια συσκευή.";
   }
 

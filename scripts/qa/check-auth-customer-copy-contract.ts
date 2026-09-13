@@ -13,8 +13,14 @@ const authPages = [
     path: "app/login/page.tsx",
     markers: [
       "signInWithPassword",
+      "supabase.auth.resend",
+      'type: "signup"',
       "getCustomerAuthErrorMessage",
+      "buildAuthCallbackPath",
       "normalizeSafeRedirectPath",
+      'data-testid="auth-resend-confirmation"',
+      'data-testid="auth-resend-confirmation-success"',
+      "Νέο email επιβεβαίωσης",
       'data-testid="auth-redirect-destination"',
       "showPassword",
       "EyeOff",
@@ -74,7 +80,15 @@ for (const marker of [
 }
 
 const authMessages = read("lib/auth/customerAuthMessages.ts");
-for (const marker of ["login", "register", "forgot", "reset", "invalid", "expired"]) {
+for (const marker of [
+  "login",
+  "register",
+  "confirmation",
+  "forgot",
+  "reset",
+  "invalid",
+  "expired",
+]) {
   assert(authMessages.includes(marker), `Auth error helper is missing case: ${marker}`);
 }
 

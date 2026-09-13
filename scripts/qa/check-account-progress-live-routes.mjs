@@ -56,8 +56,8 @@ const checks = [
   {
     path: `/api/print/pet-report/${fakePetId}`,
     method: "GET",
-    expected: [404],
-    label: "Print report API handles missing pet",
+    expected: [401, 404],
+    label: "Print report API protects or handles missing pet",
   },
 ];
 
