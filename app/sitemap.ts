@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brand } from "@/lib/brand";
+import { launchFeatures } from "@/lib/launch/features";
 
 const publicRoutes = [
   {
@@ -18,14 +19,12 @@ const publicRoutes = [
     path: "/how-it-works",
     priority: 0.7,
   },
-  {
-    path: "/beta",
-    priority: 0.6,
-  },
-  {
-    path: "/plans",
-    priority: 0.6,
-  },
+  ...(launchFeatures.betaWaitlist
+    ? [{ path: "/beta", priority: 0.6 }]
+    : []),
+  ...(launchFeatures.paidPlans
+    ? [{ path: "/plans", priority: 0.6 }]
+    : []),
   {
     path: "/support",
     priority: 0.5,

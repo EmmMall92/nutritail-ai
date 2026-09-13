@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { formatPetDisplayName } from "@/lib/petName";
 import { buildPetAnalysisHistoryRecord } from "@/services/petAnalysisHistoryBuilder";
@@ -80,21 +81,16 @@ function getPetValidationError(pet: Pet): string | null {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
 
-    const authUserId = String(body.authUserId ?? "").trim();
+    const authUserId = access.user.id;
     const existingPetId = body.existingPetId
       ? String(body.existingPetId)
       : null;
     const pet = normalizePetPayload(body.pet);
     const analysis = body.analysis as PetAnalysis | null;
     const metadata = body.metadata ?? null;
-
-    if (!authUserId) {
-      return NextResponse.json(
-        { error: "Missing auth user id." },
-        { status: 400 }
-      );
-    }
 
     if (!pet) {
       return NextResponse.json({ error: "Missing pet." }, { status: 400 });

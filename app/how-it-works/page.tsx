@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PublicFooter } from "@/components/PublicFooter";
+import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -147,21 +149,7 @@ const betaUserProofChecklist = [
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
-      <header className="border-b border-black/10 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="text-xl font-black tracking-tight">
-            Nutritail AI
-          </Link>
-          <nav className="flex flex-wrap gap-2 text-sm font-semibold">
-            <Link href="/" className="rounded-full border border-black/15 px-4 py-2">
-              Αρχική
-            </Link>
-            <Link href="/login" className="rounded-full bg-black px-4 py-2 text-white">
-              Σύνδεση
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto max-w-6xl px-6 py-14 md:py-20">
         <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
@@ -557,6 +545,7 @@ export default function HowItWorksPage() {
           </Link>
         </div>
       </section>
+      <PublicFooter />
     </main>
   );
 }

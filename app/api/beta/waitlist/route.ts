@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { betaAccessPlanMetadata } from "@/lib/beta/accessPlan";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { launchFeatures } from "@/lib/launch/features";
 
 const MAX_TEXT_LENGTH = 500;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,6 +24,10 @@ function getRequestIp(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!launchFeatures.betaWaitlist) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
+
   try {
     const body = await request.json().catch(() => ({}));
     const email = cleanEmail(body.email);

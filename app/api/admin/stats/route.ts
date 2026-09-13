@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/db/supabase";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
@@ -31,7 +30,7 @@ export async function GET() {
       foodV2AuditRowsResult,
       foodV2BlockedAuditRowsResult,
     ] = await Promise.all([
-      supabase
+      supabaseAdmin
         .from("foods")
         .select("id, species, brand, data_quality_status")
         .is("deleted_at", null),

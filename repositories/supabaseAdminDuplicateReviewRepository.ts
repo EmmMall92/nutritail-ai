@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/db/supabase";
+import { supabaseAdmin as supabase } from "@/lib/db/supabaseAdmin";
 import {
   mapAdminDuplicateReviewToDbAdminDuplicateReview,
   mapDbAdminDuplicateReviewToAdminDuplicateReview,

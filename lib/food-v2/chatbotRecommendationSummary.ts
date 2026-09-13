@@ -2,6 +2,7 @@ import type { FoodV2RecommendationGoal } from "@/lib/food-v2/recommendationRanki
 import { customerFoodName } from "@/lib/food-v2/customerFoodName";
 
 export type FoodV2ChatbotRecommendationItem = {
+  id?: string | null;
   brand?: string | null;
   display_name?: string | null;
   data_quality_status?: string | null;

@@ -16,7 +16,12 @@ import { detectFoodV2RecommendationGuardFlags } from "@/lib/food-v2/recommendati
 import { isLikelyNonCompleteFoodProduct } from "@/lib/food-v2/productFormGuards";
 import { getFoodV2NutritionConfidence } from "@/lib/food-v2/nutritionConfidence";
 import { evaluateFoodIntelligence } from "@/lib/food-intelligence/evaluateFood";
-import { detectSafetyWarnings, hasHardStop } from "@/lib/chatbot/safetyRules";
+import {
+  blocksFoodRecommendations,
+  detectSafetyWarnings,
+  hasHardStop,
+  hasMedicalHandoff,
+} from "@/lib/chatbot/safetyRules";
 import type { FoodNutrientsV2, FoodProductV2 } from "@/types/food-v2";
 import type { PetSpecies } from "@/types/pet";
 
@@ -68,6 +73,7 @@ function safetyMessageFromRequest(body: Record<string, unknown>, pet: Record<str
     body.message,
     body.prompt,
     body.query,
+    body.goal,
     pet.currentFood,
     pet.currentFoodName,
     ...stringArrayFromRecommendationValue(pet.healthIssues ?? pet.health_issues),
@@ -258,7 +264,9 @@ export async function POST(request: Request) {
       locale: "el",
     });
 
-    if (hasHardStop(safetyWarnings)) {
+    if (blocksFoodRecommendations(safetyWarnings)) {
+      const emergency = hasHardStop(safetyWarnings);
+      const medicalHandoff = hasMedicalHandoff(safetyWarnings);
       return NextResponse.json({
         goal,
         pet: petContext,
@@ -267,12 +275,16 @@ export async function POST(request: Request) {
         value: [],
         hold: [],
         safety: {
-          hard_stop: true,
+          hard_stop: emergency,
+          medical_handoff: medicalHandoff,
+          blocks_recommendations: true,
           warnings: safetyWarnings,
         },
         notes: [
-          "Urgent symptom safety interrupt blocked customer-facing food recommendations.",
-          "Recommend veterinary assessment before shopping-mode food advice.",
+          emergency
+            ? "Urgent symptom safety interrupt blocked customer-facing food recommendations."
+            : "Medical handoff blocked product rankings, calorie targets, and portion guidance.",
+          "Veterinary assessment is required before shopping-mode food advice.",
         ],
       });
     }

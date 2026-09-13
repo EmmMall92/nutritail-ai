@@ -136,7 +136,7 @@ const requiredCustomerCopy = [
   },
   {
     file: "app/account/layout.tsx",
-    text: "Σύμβουλος",
+    text: "Βοηθός",
   },
   {
     file: "lib/ai/responseComposer.ts",

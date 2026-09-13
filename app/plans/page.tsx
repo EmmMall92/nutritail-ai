@@ -1,284 +1,181 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { brand } from "@/lib/brand";
-import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";
+import { ArrowRight, Check, Clock3, PawPrint, ShieldCheck, Sparkles } from "lucide-react";
+import { PublicFooter } from "@/components/PublicFooter";
+import { PublicHeader } from "@/components/PublicHeader";
+import { launchFeatures } from "@/lib/launch/features";
 
 export const metadata: Metadata = {
-  title: `Plans | ${brand.name}`,
-  description:
-    "NutriTail beta access, current temporary limits, and future Personal and Pro plan direction.",
-  alternates: {
-    canonical: "/plans",
-  },
+  title: "Πλάνα | Nutritail AI",
+  description: "Δες τι περιλαμβάνει η δωρεάν πρόσβαση του Nutritail AI.",
+  alternates: { canonical: "/plans" },
 };
 
-const currentLimits = [
-  {
-    label: "Κατοικίδια",
-    value: `${betaAccessPlanConfig.petLimit}`,
-    detail:
-      "Αρκετά για να δοκιμάσεις πραγματικά προφίλ σκύλου ή γάτας μέσα στην beta.",
-  },
-  {
-    label: "Αναλύσεις / μήνα",
-    value: `${betaAccessPlanConfig.monthlyAnalysisLimit}`,
-    detail:
-      "Για νέα πρόταση, έλεγχο προόδου, αλλαγή τροφής ή αλλαγή γεύσης.",
-  },
-  {
-    label: "Πληρωμή στην beta",
-    value: "0",
-    detail:
-      "Δεν ζητάμε κάρτα και δεν ενεργοποιούμε συνδρομή όσο το προϊόν είναι σε beta.",
-  },
+const betaFeatures = [
+  "Έως 3 αποθηκευμένα κατοικίδια",
+  "Έως 20 νέες αναλύσεις τον μήνα",
+  "Υπολογισμός θερμίδων και ημερήσιας μερίδας",
+  "Προτάσεις τροφών από τη βάση NutriTail",
+  "Ιστορικό αναλύσεων και αναφορές",
 ];
 
-const planCards = [
-  {
-    name: "Beta",
-    status: "Διαθέσιμο σταδιακά",
-    price: "Χωρίς πληρωμή",
-    audience:
-      "Για πρώτους χρήστες που θέλουν να δοκιμάσουν το NutriTail και να δώσουν σχόλια.",
-    features: [
-      "Προσωπικό account",
-      "Αποθηκευμένα κατοικίδια",
-      "Διατροφική ανάλυση με chatbot",
-      "Εκτυπώσιμη αναφορά και ιστορικό",
-      "Έλεγχοι προόδου",
-    ],
-    cta: "Μπες στη beta",
-    href: "/beta",
-    highlighted: true,
-  },
+const futurePlans = [
   {
     name: "Personal",
-    status: "Μελλοντικό πλάνο",
-    price: "Θα ανακοινωθεί",
-    audience:
-      "Για κηδεμόνες που θέλουν σταθερή παρακολούθηση για λίγα κατοικίδια.",
-    features: [
-      "Περισσότερες μηνιαίες αναλύσεις",
-      "Πιο καθαρές αποθηκευμένες αναφορές",
-      "Ιστορικό αλλαγών τροφής",
-      "Υπενθυμίσεις προόδου",
-      "Πιο αναλυτικές εξηγήσεις",
-    ],
-    cta: "Δες πρώτα την beta",
-    href: "/beta",
-    highlighted: false,
+    description: "Για κηδεμόνες που θέλουν συνεχή παρακολούθηση και περισσότερες αναλύσεις.",
+    features: ["Περισσότερα κατοικίδια", "Εκτενέστερο ιστορικό", "Συχνότεροι έλεγχοι προόδου"],
   },
   {
-    name: "Pro",
-    status: "Μελλοντικό πλάνο",
-    price: "Θα ανακοινωθεί",
-    audience:
-      "Για πιο απαιτητική χρήση, πολλά κατοικίδια ή επαγγελματική παρακολούθηση.",
-    features: [
-      "Περισσότερα προφίλ",
-      "Συχνότεροι έλεγχοι προόδου",
-      "Εξαγωγές και αναφορές",
-      "Πιο οργανωμένος κύκλος βελτίωσης",
-      "Πιο πλούσιο ιστορικό παρακολούθησης",
-    ],
-    cta: "Ξεκίνα με beta",
-    href: "/beta",
-    highlighted: false,
-  },
-];
-
-const launchSignals = [
-  "Το NutriTail δεν πουλά συνδρομή πριν σταθεροποιηθούν τα beta όρια.",
-  "Τα beta όρια είναι προσωρινά και ήπια: μας βοηθούν να καταλάβουμε πραγματική χρήση χωρίς να μπλοκάρουμε απότομα τον χρήστη.",
-  "Πριν ενεργοποιηθούν πληρωμές, θα υπάρχουν καθαροί όροι, τιμές, limits και τρόπος ακύρωσης.",
-];
-
-const paymentReadinessChecklist = [
-  {
-    title: "Beta proof",
-    text: "Πρώτα θέλουμε πραγματικά beta sessions που δείχνουν ότι ο πελάτης καταλαβαίνει την πρόταση χωρίς βοήθεια.",
-  },
-  {
-    title: "Τιμή και limits",
-    text: "Πριν ζητηθεί πληρωμή πρέπει να είναι ξεκάθαρα η τιμή, τα κατοικίδια, οι αναλύσεις ανά μήνα και τι γίνεται αν φτάσεις το όριο.",
-  },
-  {
-    title: "Ακύρωση και υποστήριξη",
-    text: "Πρέπει να υπάρχει απλή πολιτική ακύρωσης, επικοινωνία υποστήριξης και καθαρή εξήγηση για αλλαγές πλάνου.",
-  },
-  {
-    title: "Legal review",
-    text: "Οι όροι, το απόρρητο και τα όρια της διατροφικής καθοδήγησης πρέπει να είναι έτοιμα πριν ενεργοποιηθούν συνδρομές.",
+    name: "Professional",
+    description: "Για επαγγελματίες που διαχειρίζονται περισσότερα προφίλ και αναφορές.",
+    features: ["Πολλαπλά προφίλ", "Οργανωμένες αναφορές", "Εργαλεία επαγγελματικής ροής"],
   },
 ];
 
 export default function PlansPage() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="text-xl font-black tracking-tight">
-            Nutritail AI
-          </Link>
-          <nav className="flex flex-wrap gap-2 text-sm font-semibold">
-            <Link href="/how-it-works" className="rounded-full border border-slate-300 px-4 py-2">
-              Πώς δουλεύει
-            </Link>
-            <Link href="/beta" className="rounded-full border border-emerald-300 px-4 py-2 text-emerald-800">
-              Beta
-            </Link>
-            <Link href="/support" className="rounded-full border border-slate-300 px-4 py-2">
-              Support
-            </Link>
-            <Link href="/login" className="rounded-full bg-slate-950 px-4 py-2 text-white">
-              Σύνδεση
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <main className="min-h-screen overflow-x-hidden bg-[#fbfcfa] text-[#14221b]">
+      <PublicHeader />
 
-      <section className="mx-auto max-w-6xl px-6 py-14 md:py-20" data-testid="plans-hero">
-        <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
-          NutriTail plans
-        </p>
-        <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight md:text-6xl">
-          Ξεκινάμε με προσεκτική beta, πριν ανοίξουμε πληρωμές.
-        </h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-700">
-          Σε αυτή τη φάση ο στόχος είναι σωστή εμπειρία, αξιόπιστες προτάσεις
-          και πραγματικά σχόλια από χρήστες. Τα Personal και Pro πλάνα είναι
-          κατεύθυνση προϊόντος, όχι ενεργή χρέωση.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/beta"
-            className="rounded-full bg-emerald-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-emerald-800"
-          >
-            Ζήτησε beta πρόσβαση
-          </Link>
-          <Link
-            href="/how-it-works"
-            className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-bold transition hover:bg-slate-100"
-          >
-            Δες τη μεθοδολογία
-          </Link>
+      <section className="border-b border-[#dce5df] bg-[#eef7f1]" data-testid="plans-hero">
+        <div className="nt-container grid gap-10 py-16 sm:py-20 lg:grid-cols-[1fr_0.85fr] lg:items-center">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-extrabold text-[#17663f] shadow-sm">
+              <Sparkles size={15} />
+              Δωρεάν beta πρόσβαση
+            </div>
+            <h1 className="mt-5 text-4xl font-black leading-tight sm:text-5xl">
+              Γνώρισε το NutriTail χωρίς χρέωση.
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[#52635a] sm:text-lg">
+              Αυτή την περίοδο δίνουμε προτεραιότητα στην ποιότητα των προτάσεων
+              και στα σχόλια των πρώτων χρηστών. Δεν ζητάμε κάρτα και δεν
+              ενεργοποιούμε συνδρομή.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/register" className="nt-button nt-button-primary nt-focus">
+                Δημιούργησε δωρεάν λογαριασμό
+                <ArrowRight size={17} />
+              </Link>
+              <Link href="/how-it-works" className="nt-button nt-button-secondary nt-focus">
+                Δες τη μεθοδολογία
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[#cbdacf] bg-white p-6 shadow-[0_18px_50px_rgba(22,64,43,0.10)] sm:p-8">
+            <div className="flex items-center justify-between gap-4 border-b border-[#dce5df] pb-5">
+              <div>
+                <p className="text-sm font-black text-[#1f7a4d]">Beta</p>
+                <p className="mt-1 text-3xl font-black">€0</p>
+              </div>
+              <span className="rounded-md bg-[#eaf7ef] px-3 py-2 text-xs font-extrabold text-[#17663f]">
+                Διαθέσιμο τώρα
+              </span>
+            </div>
+            <ul className="mt-6 grid gap-4">
+              {betaFeatures.map((feature) => (
+                <li key={feature} className="flex gap-3 text-sm leading-6 text-[#42534a]">
+                  <Check size={18} className="mt-1 shrink-0 text-[#1f7a4d]" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-white" data-testid="plans-current-beta-limits">
-        <div className="mx-auto max-w-6xl px-6 py-10">
-          <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-slate-500">
-              Τρέχον beta access
-            </p>
-            <h2 className="mt-2 text-3xl font-black">Τα όρια είναι καθαρά και προσωρινά.</h2>
-            <p className="mt-4 leading-7 text-slate-700">
-              Θέλουμε αρκετή χρήση για πραγματική δοκιμή, αλλά όχι ανεξέλεγκτη
-              χρήση πριν κλείσουν όλοι οι έλεγχοι κυκλοφορίας.
+      <section className="py-16 sm:py-20" data-testid="plans-current-beta-limits">
+        <div className="nt-container">
+          <div className="max-w-2xl">
+            <p className="nt-eyebrow">Τι παίρνεις σήμερα</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+              Αρκετός χώρος για να το δοκιμάσεις πραγματικά.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-8 border-y border-[#dce5df] py-8 md:grid-cols-3">
+            <div>
+              <PawPrint size={24} className="text-[#1f7a4d]" />
+              <p className="mt-5 text-4xl font-black">3</p>
+              <p className="mt-2 text-sm font-bold">κατοικίδια ανά λογαριασμό</p>
+            </div>
+            <div>
+              <Clock3 size={24} className="text-[#e56f51]" />
+              <p className="mt-5 text-4xl font-black">20</p>
+              <p className="mt-2 text-sm font-bold">νέες αναλύσεις κάθε μήνα</p>
+            </div>
+            <div>
+              <ShieldCheck size={24} className="text-[#1f7a4d]" />
+              <p className="mt-5 text-4xl font-black">0</p>
+              <p className="mt-2 text-sm font-bold">χρεώσεις κατά τη beta</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {launchFeatures.paidPlans && (
+      <section className="border-y border-[#dce5df] bg-white py-16 sm:py-20" data-testid="plans-future-direction">
+        <div className="nt-container">
+          <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <p className="nt-eyebrow">Μετά τη beta</p>
+              <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+                Η μελλοντική κατεύθυνση.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base leading-7 text-[#5f6f66] lg:justify-self-end">
+              Τα παρακάτω πλάνα δείχνουν πού κατευθύνεται το προϊόν. Οι τελικές
+              δυνατότητες και τιμές θα ανακοινωθούν μόνο όταν ολοκληρωθεί η beta.
             </p>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {currentLimits.map((item) => (
-              <article key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-                <p className="text-sm font-bold text-slate-500">{item.label}</p>
-                <p className="mt-3 text-4xl font-black">{item.value}</p>
-                <p className="mt-3 text-sm leading-6 text-slate-700">{item.detail}</p>
+          <div className="mt-10 grid gap-4 md:grid-cols-2">
+            {futurePlans.map((plan) => (
+              <article key={plan.name} className="rounded-lg border border-[#dce5df] bg-[#f7faf8] p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl font-black">{plan.name}</h3>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f6f66]">{plan.description}</p>
+                  </div>
+                  <span className="shrink-0 rounded-md bg-white px-3 py-2 text-xs font-extrabold text-[#6b7b72]">
+                    Σύντομα
+                  </span>
+                </div>
+                <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex gap-2 text-sm font-bold text-[#42534a]">
+                      <Check size={17} className="shrink-0 text-[#1f7a4d]" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               </article>
             ))}
           </div>
         </div>
       </section>
+      )}
 
-      <section className="mx-auto max-w-6xl px-6 py-12" data-testid="plans-future-direction">
-        <div className="max-w-3xl">
-          <p className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Business direction
-          </p>
-          <h2 className="mt-2 text-3xl font-black">Πού πάει το προϊόν μετά την beta.</h2>
-          <p className="mt-4 leading-7 text-slate-700">
-            Η δημόσια εικόνα των πλάνων κρατά την υπόσχεση απλή: πρώτα ποιότητα
-            και εμπιστοσύνη, μετά πληρωμές.
-          </p>
-        </div>
-
-        <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
-          {planCards.map((plan) => (
-            <article
-              key={plan.name}
-              className={`rounded-lg border p-6 ${
-                plan.highlighted
-                  ? "border-emerald-300 bg-white shadow-lg shadow-emerald-900/10"
-                  : "border-slate-200 bg-white"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="text-2xl font-black">{plan.name}</h3>
-                  <p className="mt-1 text-sm font-bold text-emerald-700">{plan.status}</p>
-                </div>
-                <p className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
-                  {plan.price}
-                </p>
-              </div>
-              <p className="mt-5 text-sm leading-6 text-slate-700">{plan.audience}</p>
-              <ul className="mt-5 space-y-2 text-sm text-slate-800">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex gap-2">
-                    <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-600" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={plan.href}
-                className={`mt-6 inline-flex w-full justify-center rounded-full px-5 py-3 text-sm font-bold transition ${
-                  plan.highlighted
-                    ? "bg-emerald-700 text-white hover:bg-emerald-800"
-                    : "border border-slate-300 bg-white hover:bg-slate-100"
-                }`}
-              >
-                {plan.cta}
-              </Link>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200 bg-slate-900 text-white" data-testid="plans-payment-readiness">
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-emerald-300">
-              Πριν τις πληρωμές
+      <section className="bg-[#123d2b] py-14 text-white" data-testid="plans-payment-readiness">
+        <div className="nt-container flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-2xl">
+            <h2 className="text-3xl font-black">Δοκίμασέ το με το δικό σου κατοικίδιο.</h2>
+            <p className="mt-3 text-sm leading-6 text-white/75">
+              Η beta είναι δωρεάν και τα σχόλιά σου βοηθούν να γίνει κάθε πρόταση καλύτερη.
             </p>
-            <h2 className="mt-2 text-3xl font-black">Τι πρέπει να είναι ξεκάθαρο.</h2>
           </div>
-          <div className="grid gap-3">
-            {launchSignals.map((signal) => (
-              <div key={signal} className="rounded-lg border border-white/10 bg-white/5 p-4 text-sm leading-6">
-                {signal}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
-          className="mx-auto grid max-w-6xl gap-3 px-6 pb-12 md:grid-cols-4"
-          data-testid="plans-payment-readiness-checklist"
-        >
-          {paymentReadinessChecklist.map((item) => (
-            <article
-              key={item.title}
-              className="rounded-lg border border-white/10 bg-white/5 p-4"
-              data-testid="plans-payment-readiness-checklist-item"
-            >
-              <h3 className="font-black text-white">{item.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-200">
-                {item.text}
-              </p>
-            </article>
-          ))}
+          <Link
+            href="/register"
+            className="nt-focus inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-black text-[#123d2b] hover:bg-[#eaf7ef]"
+          >
+            Ξεκίνα δωρεάν
+            <ArrowRight size={17} />
+          </Link>
         </div>
       </section>
+
+      <PublicFooter />
     </main>
   );
 }

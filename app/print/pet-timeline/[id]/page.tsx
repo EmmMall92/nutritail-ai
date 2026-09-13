@@ -535,7 +535,7 @@ export default function PetTimelineReportPage() {
           <InfoCard
             label="Έλεγχοι προόδου"
             value={progressLogs.length}
-            detail="Σημειώσεις προόδου από τον σύμβουλο"
+            detail="Σημειώσεις προόδου από τον βοηθό"
           />
           <InfoCard
             label="Τελευταίο βάρος ελέγχου"
@@ -574,7 +574,7 @@ export default function PetTimelineReportPage() {
 
         {progressLogs.length === 0 ? (
           <p className="text-sm text-gray-600">
-            Δεν έχουν αποθηκευτεί ακόμη έλεγχοι προόδου από τον σύμβουλο.
+            Δεν έχουν αποθηκευτεί ακόμη έλεγχοι προόδου από τον βοηθό.
           </p>
         ) : (
           <div className="space-y-4">
@@ -747,7 +747,7 @@ export default function PetTimelineReportPage() {
       <Section title="Τελευταία αποθηκευμένα food insights">
         <p className="mb-4 text-sm text-gray-600">
           Αυτές οι τροφές αποθηκεύτηκαν με την τελευταία ανάλυση ως χρήσιμο
-          διατροφικό πλαίσιο. Για νέα λίστα αγοράς, κάνε νέα πρόταση στον σύμβουλο
+          διατροφικό πλαίσιο. Για νέα λίστα αγοράς, κάνε νέα επιλογή με τον βοηθό
           με τωρινό βάρος, τροφή και προτιμήσεις.
         </p>
         <div className="space-y-4">

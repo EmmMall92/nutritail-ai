@@ -35,7 +35,7 @@ const checks: MobileCheck[] = [
     area: "Account chatbot mobile frame",
     file: "app/account/chatbot/page.tsx",
     markers: [
-      "h-[calc(100dvh-7.75rem)]",
+      "h-[calc(100dvh-10.25rem)]",
       "sm:h-[calc(100svh-11rem)]",
       "overflow-hidden",
       "scroll-pb-72",
@@ -70,7 +70,7 @@ const checks: MobileCheck[] = [
       'data-testid="account-beta-usage"',
       "Ενεργό πλάνο",
       "Η πλήρης ανάλυση μένει στην αναφορά",
-      "grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4",
+      "grid grid-cols-2 gap-x-4 gap-y-5 border-t border-[#dce5df] pt-5 xl:grid-cols-4",
       "flex flex-col gap-4 lg:flex-row",
       "w-full max-w-sm",
       "md:grid-cols-4",

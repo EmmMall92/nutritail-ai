@@ -6,6 +6,7 @@ import {
   isOpenAiConfigured,
 } from "@/lib/ai/openaiServer";
 import { searchFoodProductsV2 } from "@/lib/food-v2/retrieval";
+import { launchFeatures } from "@/lib/launch/features";
 import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
 
 const MAX_IMAGE_DATA_URL_LENGTH = 9_000_000;
@@ -132,6 +133,10 @@ function buildExtractionPrompt(locale: "el" | "en") {
 }
 
 export async function POST(request: Request) {
+  if (!launchFeatures.foodPhotoAnalysis) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
+
   try {
     const supabase = await createServerSupabaseClient();
     const {

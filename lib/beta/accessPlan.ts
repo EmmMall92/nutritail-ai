@@ -43,7 +43,7 @@ export const futurePaidPlanDirection = [
   {
     name: "Beta",
     audience: "Για τους πρώτους χρήστες που βοηθούν με feedback.",
-    includes: "Βασικός σύμβουλος, αποθηκευμένα pets, reports, timeline και progress checks μέσα στα beta όρια.",
+    includes: "Βασικός βοηθός επιλογής τροφής, αποθηκευμένα pets, reports, timeline και progress checks μέσα στα beta όρια.",
     status: "Διαθέσιμο χωρίς πληρωμή στην beta.",
   },
   {

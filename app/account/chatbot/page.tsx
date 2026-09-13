@@ -5,7 +5,10 @@ import { generateNutritionInsights } from "@/lib/nutrition/nutritionInsights";
 import { classifyIntakeNotes } from "@/lib/nutrition/intakeClassifier";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Bot, Camera, RotateCcw, Send, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { launchFeatures } from "@/lib/launch/features";
 import { calculateFeedingGrams } from "@/lib/feedingCalculator";
 import { buildFoodExplanation } from "@/lib/foodExplanation";
 import {
@@ -42,9 +45,9 @@ import {
 } from "@/lib/chatbot/foodFormatPreference";
 import { formatMissingFormatRecommendationMessage as formatMissingFoodFormatRecommendationMessage } from "@/lib/food-v2/missingFormatRecommendationMessage";
 import {
+  blocksFoodRecommendations,
   detectSafetyWarnings,
   formatSafetyInterruptMessage,
-  hasHardStop,
   shouldInterruptForSafety,
 } from "@/lib/chatbot/safetyRules";
 import { localizeNutritionAdviceItem } from "@/lib/chatbot/nutritionAdvicePresentation";
@@ -204,6 +207,7 @@ function buildSafetyMessageFromIntake(pet: PetIntake) {
 }
 
 type RecommendedFoodChoice = {
+  foodProductId?: string | null;
   name: string;
   brand?: string | null;
   role?: "best" | "value";
@@ -216,6 +220,28 @@ type RecommendedFoodChoice = {
   proteinPercent?: number | null;
   fatPercent?: number | null;
   fiberPercent?: number | null;
+};
+
+type FoodPurchaseOption = {
+  id: string;
+  partnerName: string;
+  channel: "local_store" | "online" | "both";
+  city?: string | null;
+  area?: string | null;
+  address?: string | null;
+  websiteUrl?: string | null;
+  productUrl?: string | null;
+  phone?: string | null;
+  availabilityStatus: "in_stock" | "order_available" | "unknown";
+  isSponsored: boolean;
+  estimatedPriceEuro?: number | null;
+};
+
+type FoodAvailabilityResponse = {
+  options?: FoodPurchaseOption[];
+  total?: number;
+  partnerDisclosure?: string;
+  error?: string;
 };
 
 type AccountPetAnalysisHistoryItem = {
@@ -356,9 +382,9 @@ const starterCards = [
   {
     title: "Find the right food",
     titleEl: "Βρες κατάλληλη τροφή",
-    helper: "Best first step for allergies, weight control, sterilised pets, or sensitive digestion.",
+    helper: "Best first step for weight control, sterilised pets, preferences, or sensitive digestion without a diagnosed condition.",
     helperEl:
-      "Ιδανικό πρώτο βήμα για αλλεργίες, βάρος, στείρωση ή ευαίσθητη πέψη.",
+      "Ιδανικό πρώτο βήμα για βάρος, στείρωση, προτιμήσεις ή ευαίσθητη πέψη χωρίς διαγνωσμένη πάθηση.",
     prompt: "I want a food recommendation for my pet.",
     promptEl: "Θέλω πρόταση τροφής για το κατοικίδιό μου.",
   },
@@ -383,9 +409,9 @@ const starterCards = [
   {
     title: "Health caution",
     titleEl: "Θέμα υγείας",
-    helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the advisor stays careful.",
+    helper: "For urinary, renal, pancreatitis, vomiting, diarrhea, or not eating, the flow stops before products and portions and directs you to a veterinarian.",
     helperEl:
-      "Για ουρολογικό, νεφρικό, παγκρεατίτιδα, εμετό, διάρροια ή ανορεξία, ο σύμβουλος απαντά προσεκτικά.",
+      "Για ουρολογικό, νεφρικό, παγκρεατίτιδα, εμετό, διάρροια ή ανορεξία, η ροή σταματά πριν από προϊόν και ποσότητα και σε κατευθύνει σε κτηνίατρο.",
     prompt: "My pet has a health concern and I need safe food guidance.",
     promptEl:
       "Το κατοικίδιό μου έχει θέμα υγείας και θέλω ασφαλή διατροφική καθοδήγηση.",
@@ -1189,6 +1215,7 @@ function toRecommendationChoice(
   if (!name) return null;
 
   return {
+    foodProductId: food.id ?? null,
     name,
     brand: food.brand ?? null,
     role,
@@ -2727,7 +2754,7 @@ function formatFoodPhotoAnalysisResult(
     return [
       match
         ? `Διάβασα τη φωτογραφία και το ταίριαξα με: ${matchedName}.`
-        : `Διάβασα πιθανή τροφή: ${extractedName || "δεν φαίνεται καθαρά"}. Δεν βρήκα αρκετά σίγουρο match στη βάση.`,
+        : `Διάβασα την τροφή ως: ${extractedName || "δεν φαίνεται καθαρά"}. Δεν μπόρεσα να επιβεβαιώσω ακριβή αντιστοίχιση στη βάση.`,
       extracted?.confidence
         ? `Εμπιστοσύνη ανάγνωσης φωτογραφίας: ${extracted.confidence}.`
         : "",
@@ -3822,7 +3849,7 @@ function formatAnalysisResult(
 
   if (language === "el") {
     return [
-      "Το διατροφικό πλάνο είναι έτοιμο.",
+      "Η ενημερωτική εκτίμηση είναι έτοιμη.",
       `Ημερήσιος στόχος: ${finalCalories} kcal.`,
       treats
         ? `Λιχουδιές: έως περίπου ${treats.maxTreatCalories} kcal μέσα σε αυτόν τον στόχο.`
@@ -4156,6 +4183,16 @@ export default function AccountChatbotPage() {
   >([]);
   const [selectedRecommendedFoodName, setSelectedRecommendedFoodName] =
     useState<string | null>(null);
+  const [selectedRecommendedFoodProductId, setSelectedRecommendedFoodProductId] =
+    useState<string | null>(null);
+  const [foodPurchaseArea, setFoodPurchaseArea] = useState("");
+  const [foodPurchaseOptions, setFoodPurchaseOptions] = useState<
+    FoodPurchaseOption[]
+  >([]);
+  const [foodPurchaseDisclosure, setFoodPurchaseDisclosure] = useState("");
+  const [isLoadingFoodPurchaseOptions, setIsLoadingFoodPurchaseOptions] =
+    useState(false);
+  const [foodPurchaseError, setFoodPurchaseError] = useState("");
   const [pendingCompareQueries, setPendingCompareQueries] = useState<string[]>(
     []
   );
@@ -5196,7 +5233,7 @@ What food is ${targetPetName} eating now? Write the exact brand and formula if y
         locale: chatLanguage,
       });
 
-      if (hasHardStop(safetyWarnings)) {
+      if (blocksFoodRecommendations(safetyWarnings)) {
         setRecommendedFoodChoices([]);
         setShowSave(false);
         setStep("done");
@@ -5627,7 +5664,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     if (shouldInterruptForSafety(immediateSafetyWarnings)) {
       setRecommendedFoodChoices([]);
       setShowSave(false);
-      if (hasHardStop(immediateSafetyWarnings)) {
+      if (blocksFoodRecommendations(immediateSafetyWarnings)) {
         setStep("done");
       }
       addMessages(createMessage("bot", formatSafetyInterruptMessage(immediateSafetyWarnings, chatLanguage)));
@@ -6190,6 +6227,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   async function handleFoodPhotoUpload(file: File | null) {
+    if (!launchFeatures.foodPhotoAnalysis) return;
+
     if (
       !file ||
       isProcessingMessage ||
@@ -6255,7 +6294,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       const result = (await response.json()) as FoodPhotoAnalysisResponse;
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to analyze food photo.");
+        console.error(result.error);
+        throw new Error("Food photo analysis failed.");
       }
 
       addMessages(createMessage("bot", formatFoodPhotoAnalysisResult(result, chatLanguage)));
@@ -6303,9 +6343,82 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
     }
   }
 
+  async function loadFoodPurchaseOptions({
+    foodProductId,
+    area,
+  }: {
+    foodProductId: string | null | undefined;
+    area?: string;
+  }) {
+    if (!launchFeatures.partnerStores) return;
+
+    if (!foodProductId) {
+      setFoodPurchaseOptions([]);
+      setFoodPurchaseDisclosure("");
+      setFoodPurchaseError("");
+      return;
+    }
+
+    setIsLoadingFoodPurchaseOptions(true);
+    setFoodPurchaseError("");
+
+    try {
+      const params = new URLSearchParams({ foodProductId });
+      const cleanArea = String(area ?? "").trim();
+      if (cleanArea) params.set("area", cleanArea);
+
+      const response = await fetch(
+        `/api/account/foods/availability?${params.toString()}`,
+        { cache: "no-store" }
+      );
+      const result = (await response.json()) as FoodAvailabilityResponse;
+
+      if (!response.ok) {
+        console.error(result.error);
+        throw new Error("Food purchase options failed to load.");
+      }
+
+      setFoodPurchaseOptions(result.options ?? []);
+      setFoodPurchaseDisclosure(result.partnerDisclosure ?? "");
+    } catch (error) {
+      console.error(error);
+      setFoodPurchaseOptions([]);
+      setFoodPurchaseDisclosure("");
+      setFoodPurchaseError(
+        botText(
+          "Δεν μπορέσαμε να φορτώσουμε καταστήματα αυτή τη στιγμή.",
+          "We could not load purchase options right now."
+        )
+      );
+    } finally {
+      setIsLoadingFoodPurchaseOptions(false);
+    }
+  }
+
+  function recordFoodPurchaseReferral(
+    listingId: string,
+    destination: "product" | "website" | "phone"
+  ) {
+    if (!launchFeatures.partnerStores) return;
+
+    void fetch("/api/account/retail-partner-referrals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ listingId, destination }),
+      keepalive: true,
+    }).catch(() => {
+      // Referral measurement is best effort and must never block navigation.
+    });
+  }
+
   function chooseRecommendedFood(choice: RecommendedFoodChoice) {
     addMessages(createMessage("user", choice.name));
     setSelectedRecommendedFoodName(choice.name);
+    setSelectedRecommendedFoodProductId(choice.foodProductId ?? null);
+    setFoodPurchaseArea("");
+    setFoodPurchaseOptions([]);
+    setFoodPurchaseDisclosure("");
+    setFoodPurchaseError("");
 
     const adjustedCalories = latestAnalysis
       ? adjustCaloriesForWeightGoal({
@@ -6332,12 +6445,19 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
       weightGoal: pet.weightGoal ?? "maintain",
     }));
 
+    if (launchFeatures.partnerStores) {
+      void loadFoodPurchaseOptions({
+        foodProductId: choice.foodProductId,
+      });
+    }
+
     void submitChatFeedback({
       eventType: "food_choice_selected",
       rating: "unknown",
       message: `User selected recommended food: ${choice.name}.`,
       context: {
         selectedFoodName: choice.name,
+        selectedFoodProductId: choice.foodProductId ?? null,
         selectedFoodBrand: choice.brand ?? null,
         selectedFoodRole: choice.role,
         selectedFoodScore: choice.score ?? null,
@@ -6517,32 +6637,35 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
   }
 
   return (
-    <section className="relative mx-auto flex h-[calc(100dvh-7.75rem)] min-h-[500px] max-w-3xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:h-[calc(100svh-11rem)] sm:min-h-[560px] sm:rounded-2xl">
+    <section className="relative mx-auto flex h-[calc(100dvh-10.25rem)] min-h-[430px] max-w-4xl flex-col overflow-hidden rounded-lg border border-[#cfdcd3] bg-white shadow-[0_18px_45px_rgba(18,61,43,0.08)] sm:h-[calc(100svh-11rem)] sm:min-h-[560px]">
       <div
         data-testid="mobile-chatbot-header"
-        className="flex shrink-0 items-center justify-between gap-2 border-b border-gray-200 p-2.5 sm:items-start sm:p-5"
+        className="flex shrink-0 items-center justify-between gap-2 border-b border-[#cfe4d6] bg-[#eef8f1] p-2.5 sm:items-start sm:p-5"
       >
         <div className="min-w-0">
-          <h1 className="text-lg font-bold leading-6 text-black sm:text-2xl">
+          <h1 className="flex items-center gap-2 text-lg font-black leading-6 text-[#14221b] sm:text-2xl">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#123d2b] text-white">
+              <Sparkles size={17} aria-hidden="true" />
+            </span>
             <span className="sm:hidden">NutriTail AI</span>
             <span className="hidden sm:inline">
               {botText(
-                "Διατροφικός σύμβουλος NutriTail AI",
-                "NutriTail AI Nutrition Advisor"
+                "Βοηθός επιλογής τροφής NutriTail AI",
+                "NutriTail AI Food Selection Assistant"
               )}
             </span>
           </h1>
 
-          <p className="mt-1 hidden text-sm text-gray-600 sm:block">
+          <p className="ml-10 mt-1 hidden text-sm text-[#5f6f66] sm:block">
             {botText(
-              "Ξεκίνα με αποθηκευμένο ή νέο κατοικίδιο και πάρε προτάσεις τροφών, θερμίδες και επόμενο βήμα.",
-              "Start with a saved pet or a new profile, then get a grounded food shortlist, calories, and safety notes."
+              "Για μη ιατρικές περιπτώσεις: επιλογές τροφών, ενδεικτικές θερμίδες και επόμενο βήμα.",
+              "For non-medical cases: grounded food options, estimated calories, and a next step."
             )}
           </p>
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:flex-wrap sm:justify-end sm:gap-2">
-          <div className="flex rounded-lg border border-gray-300 bg-white p-1">
+          <div className="flex rounded-lg border border-[#c5d8cb] bg-white p-1">
             {(["el", "en"] as const).map((language) => (
               <button
                 key={language}
@@ -6550,8 +6673,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 onClick={() => handleChatLanguageChange(language)}
                 className={`rounded-md px-2 py-1.5 text-xs font-semibold transition sm:px-3 sm:text-sm ${
                   chatLanguage === language
-                    ? "bg-black text-white"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? "bg-[#123d2b] text-white"
+                    : "text-[#52635a] hover:bg-[#eef5f0]"
                 }`}
               >
                 {language.toUpperCase()}
@@ -6561,7 +6684,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
           <a
             href="/account"
-            className="hidden rounded-lg border border-gray-300 px-4 py-2 text-center text-sm text-black transition hover:bg-gray-100 sm:block"
+            className="nt-focus hidden rounded-lg border border-[#c5d8cb] bg-white px-4 py-2 text-center text-sm font-bold text-[#31463a] transition hover:bg-[#f5f8f6] sm:block"
           >
             {botText("Λογαριασμός", "Account")}
           </a>
@@ -6569,34 +6692,61 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <button
             type="button"
             onClick={restartChat}
-            className="rounded-lg border border-black px-2.5 py-2 text-xs text-black transition hover:bg-gray-100 sm:px-4 sm:text-sm"
+            className="nt-focus inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#c5d8cb] bg-white text-[#31463a] transition hover:bg-[#f5f8f6] sm:w-auto sm:gap-2 sm:px-3"
+            aria-label={botText("Επανεκκίνηση", "Restart")}
+            title={botText("Επανεκκίνηση", "Restart")}
           >
-            {botText("Επανεκκίνηση", "Restart")}
+            <RotateCcw size={17} aria-hidden="true" />
+            <span className="hidden text-sm font-bold sm:inline">
+              {botText("Επανεκκίνηση", "Restart")}
+            </span>
           </button>
         </div>
       </div>
 
       <div
+        data-testid="chatbot-ai-transparency-notice"
+        className="flex shrink-0 items-start gap-2 border-b border-[#dce5df] bg-white px-3 py-2 text-xs leading-5 text-[#42534a] sm:px-5"
+      >
+        <Bot size={16} className="mt-0.5 shrink-0 text-[#1f7a4d]" aria-hidden="true" />
+        <p>
+          <strong className="text-[#14221b]">
+            {botText("Συνομιλείς με σύστημα AI.", "You are chatting with an AI system.")}
+          </strong>{" "}
+          {botText(
+            "Κάνει ενημερωτική αντιστοίχιση για μη ιατρικές περιπτώσεις και δεν αντικαθιστά κτηνίατρο.",
+            "It provides informational matching for non-medical cases and does not replace a veterinarian."
+          )}{" "}
+          <Link
+            href="/ai-transparency"
+            className="nt-focus rounded font-bold text-[#17663f] underline underline-offset-4"
+          >
+            {botText("Πώς λειτουργεί", "How it works")}
+          </Link>
+        </p>
+      </div>
+
+      <div
         ref={messagesContainerRef}
         onScroll={handleMessagesScroll}
-        className="flex flex-1 scroll-pb-72 flex-col gap-4 overflow-y-auto overscroll-contain p-3 pb-40 [overflow-anchor:none] sm:p-5 sm:pb-44"
+        className="flex flex-1 scroll-pb-72 flex-col gap-4 overflow-y-auto overscroll-contain bg-[#fbfcfb] p-3 pb-40 [overflow-anchor:none] sm:p-5 sm:pb-44"
       >
         {!showSave && messages.length <= 1 && (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+          <div className="rounded-lg border border-[#bde6cc] bg-[#eaf7ef] p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="font-semibold text-emerald-950">
+                <p className="font-bold text-[#153d2b]">
                   {botText("Πώς μπορώ να βοηθήσω;", "What can I help with?")}
                 </p>
-                <p className="mt-1 text-sm text-emerald-900">
+                <p className="mt-1 text-sm leading-6 text-[#37634b]">
                   {botText(
                     "Διάλεξε πρώτα κατοικίδιο και μετά γράψε τον στόχο ή την ερώτησή σου.",
                     "Choose a pet first, then use one of these goals or write your own question."
                   )}
                 </p>
               </div>
-              <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
-                {botText("Έξυπνη πρόταση τροφής", "Smart food guidance")}
+              <span className="rounded-md bg-white px-3 py-1.5 text-xs font-bold text-[#1f7a4d] ring-1 ring-[#cfe4d6]">
+                {botText("Ενημερωτική επιλογή τροφής", "Informational food matching")}
               </span>
             </div>
 
@@ -6608,12 +6758,12 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                   onClick={() =>
                     setInput(chatLanguage === "el" ? card.promptEl : card.prompt)
                   }
-                  className="rounded-xl border border-emerald-200 bg-white p-4 text-left transition hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                  className="nt-focus rounded-lg border border-[#cfe4d6] bg-white p-4 text-left transition hover:border-[#5fa47a] hover:shadow-sm"
                 >
-                  <span className="block font-semibold text-black">
+                  <span className="block font-bold text-[#14221b]">
                     {chatLanguage === "el" ? card.titleEl : card.title}
                   </span>
-                  <span className="mt-1 block text-sm text-gray-600">
+                  <span className="mt-1 block text-sm leading-6 text-[#5f6f66]">
                     {chatLanguage === "el" ? card.helperEl : card.helper}
                   </span>
                 </button>
@@ -6623,7 +6773,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )}
 
         {step === "petChoice" && (
-          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+          <div className="rounded-lg border border-[#dce5df] bg-white p-4 shadow-sm">
             <p className="font-semibold text-black">
               {botText("Διάλεξε κατοικίδιο", "Choose a pet")}
             </p>
@@ -6645,7 +6795,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                     key={savedPet.id}
                     type="button"
                     onClick={() => selectSavedPet(savedPet)}
-                    className="min-h-[92px] rounded-xl border border-gray-300 bg-white p-4 text-left transition hover:border-black focus:outline-none focus:ring-2 focus:ring-black"
+                    className="nt-focus min-h-[92px] rounded-lg border border-[#dce5df] bg-[#f7faf8] p-4 text-left transition hover:border-[#5fa47a]"
                   >
                     <span className="block font-semibold text-black">
                       {formatCustomerPetName(savedPet.name)}
@@ -6922,27 +7072,27 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )}
 
         {!showSave && messages.length <= 1 && (
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="font-semibold text-amber-950">
+          <div className="rounded-lg border border-[#efd4a3] bg-[#fff8e8] p-4">
+            <p className="font-bold text-[#624516]">
               {botText(
                 "Πώς κρατάμε τις προτάσεις λογικές",
                 "How Nutritail keeps recommendations sensible"
               )}
             </p>
-            <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-amber-900 sm:grid-cols-3">
-              <p className="rounded-xl bg-white p-3">
+            <div className="mt-3 grid grid-cols-1 gap-3 border-t border-[#efdcb8] pt-3 text-sm leading-6 text-[#765820] sm:grid-cols-3 sm:divide-x sm:divide-[#efdcb8]">
+              <p className="sm:pr-3">
                 {botText(
                   "Χρησιμοποιούμε ηλικία, βάρος, δραστηριότητα, στειρωμένο και προτιμήσεις πριν προτείνουμε τροφή.",
                   "We use your pet's age, weight, activity, neuter status, and preferences before suggesting food."
                 )}
               </p>
-              <p className="rounded-xl bg-white p-3">
+              <p className="sm:px-3">
                 {botText(
-                  "Αποφεύγουμε τροφές που συγκρούονται με αλλεργίες, ευαισθησίες ή πρωτεΐνες που δεν τρώει.",
-                  "We avoid foods that conflict with declared allergies, sensitivities, or disliked proteins."
+                  "Δηλωμένη ή ύποπτη αλλεργία σταματά την πρόταση και οδηγεί σε κτηνίατρο. Οι απλές προτιμήσεις υλικών καταγράφονται ξεχωριστά.",
+                  "A declared or suspected allergy stops the recommendation and directs you to a veterinarian. Ingredient preferences are recorded separately."
                 )}
               </p>
-              <p className="rounded-xl bg-white p-3">
+              <p className="sm:pl-3">
                 {botText(
                   "Ουρολογικό, νεφρικό, παγκρεατίτιδα, αίμα, ανορεξία, εμετός ή διάρροια θέλουν κτηνίατρο.",
                   "Urinary blockage, renal disease, pancreatitis, blood, not eating, vomiting, or diarrhea need veterinary care."
@@ -6964,10 +7114,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               {archivedConversationMessages.map((message) => (
                 <div
                   key={`archived-${message.id}`}
-                  className={`max-w-[96%] whitespace-pre-line rounded-xl px-3 py-2 text-sm leading-6 sm:max-w-[85%] ${
+                  className={`max-w-[96%] whitespace-pre-line rounded-lg px-3 py-2 text-sm leading-6 sm:max-w-[85%] ${
                     message.role === "bot"
-                      ? "self-start bg-gray-100 text-black"
-                      : "self-end bg-black text-white"
+                      ? "self-start border border-[#dce5df] bg-white text-[#22362b]"
+                      : "self-end bg-[#123d2b] text-white"
                   }`}
                 >
                   {message.text}
@@ -6980,10 +7130,10 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         {visibleConversationMessages.map((message) => (
           <div
             key={message.id}
-            className={`max-w-[96%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
+            className={`max-w-[96%] whitespace-pre-line rounded-lg px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[85%] ${
               message.role === "bot"
-                ? "self-start bg-gray-100 text-black"
-                : "self-end bg-black text-white"
+                ? "self-start border border-[#dce5df] bg-white text-[#22362b]"
+                : "self-end bg-[#123d2b] text-white"
             }`}
           >
             {message.text}
@@ -7229,6 +7379,190 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               </div>
             )}
 
+            {launchFeatures.partnerStores &&
+              analysisMetadata?.matchedFoodName &&
+              (!hasSelectableFoodRecommendations || hasSelectedRecommendedFood) && (
+              <div
+                data-testid="selected-food-purchase-options"
+                className="rounded-2xl border border-sky-200 bg-white p-4"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                      {botText("Πού θα τη βρεις", "Where to buy")}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-sky-950">
+                      {botText(
+                        "Δείχνουμε συνεργαζόμενα καταστήματα και e-shops που έχουν δηλώσει ότι διαθέτουν τη συγκεκριμένη τροφή.",
+                        "We show partner stores and e-shops that have listed this exact food."
+                      )}
+                    </p>
+                  </div>
+                  {selectedRecommendedFoodProductId && (
+                    <form
+                      className="flex w-full gap-2 sm:w-auto"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        void loadFoodPurchaseOptions({
+                          foodProductId: selectedRecommendedFoodProductId,
+                          area: foodPurchaseArea,
+                        });
+                      }}
+                    >
+                      <input
+                        value={foodPurchaseArea}
+                        onChange={(event) => setFoodPurchaseArea(event.target.value)}
+                        placeholder={botText("Πόλη ή ΤΚ", "City or ZIP")}
+                        aria-label={botText("Πόλη ή ταχυδρομικός κώδικας", "City or ZIP code")}
+                        className="min-h-11 min-w-0 flex-1 rounded-xl border border-sky-200 px-3 py-2 text-sm text-black"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isLoadingFoodPurchaseOptions}
+                        className="min-h-11 shrink-0 rounded-xl bg-sky-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                      >
+                        {isLoadingFoodPurchaseOptions
+                          ? botText("...", "...")
+                          : botText("Εύρεση", "Find")}
+                      </button>
+                    </form>
+                  )}
+                </div>
+
+                {!selectedRecommendedFoodProductId && (
+                  <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-gray-100">
+                    {botText(
+                      "Για αυτή την επιλογή δεν έχουμε ακόμα καθαρό product ID, οπότε δεν εμφανίζουμε καταστήματα για να μη δώσουμε λάθος διαθεσιμότητα.",
+                      "This choice does not have a clean product ID yet, so we are not showing stores that might be wrong."
+                    )}
+                  </p>
+                )}
+
+                {foodPurchaseError && (
+                  <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-100">
+                    {foodPurchaseError}
+                  </p>
+                )}
+
+                {selectedRecommendedFoodProductId &&
+                  !isLoadingFoodPurchaseOptions &&
+                  !foodPurchaseError &&
+                  foodPurchaseOptions.length === 0 && (
+                  <p className="mt-3 rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-gray-100">
+                    {botText(
+                      "Δεν έχουμε ακόμα συνεργαζόμενο κατάστημα για αυτή την τροφή. Μπορείς να την αναζητήσεις με το ακριβές όνομα ή να ρωτήσεις το τοπικό pet shop σου.",
+                      "We do not have a partner store for this food yet. Search by the exact food name or ask your local pet shop."
+                    )}
+                  </p>
+                )}
+
+                {foodPurchaseOptions.length > 0 && (
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {foodPurchaseOptions.map((option) => (
+                      <div
+                        key={option.id}
+                        className="rounded-xl border border-sky-100 bg-sky-50 p-3 text-sm text-sky-950"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-bold">{option.partnerName}</p>
+                            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-sky-700">
+                              {option.channel === "online"
+                                ? botText("Online e-shop", "Online shop")
+                                : option.channel === "local_store"
+                                  ? botText("Τοπικό κατάστημα", "Local store")
+                                  : botText("Κατάστημα + online", "Store + online")}
+                            </p>
+                          </div>
+                          <div className="flex shrink-0 flex-col items-end gap-1.5">
+                            <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-sky-800 ring-1 ring-sky-200">
+                              {botText(
+                                "Συνεργαζόμενο κατάστημα",
+                                "Partner store"
+                              )}
+                            </span>
+                            {option.isSponsored && (
+                              <span className="rounded-full bg-[#fff6df] px-2 py-1 text-xs font-bold text-[#805b00] ring-1 ring-[#efd58c]">
+                                {botText(
+                                  "Χορηγούμενη εμφάνιση",
+                                  "Sponsored placement"
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {(option.area || option.city || option.address) && (
+                          <p className="mt-2 text-sm text-sky-900">
+                            {[option.area, option.city, option.address]
+                              .filter(Boolean)
+                              .join(", ")}
+                          </p>
+                        )}
+                        <p className="mt-2 text-xs text-sky-800">
+                          {option.availabilityStatus === "in_stock"
+                            ? botText("Δηλωμένο ως διαθέσιμο", "Listed as in stock")
+                            : option.availabilityStatus === "order_available"
+                              ? botText("Διαθέσιμο κατόπιν παραγγελίας", "Available to order")
+                              : botText("Διαθεσιμότητα προς επιβεβαίωση", "Availability to confirm")}
+                          {option.estimatedPriceEuro
+                            ? ` · ${option.estimatedPriceEuro.toFixed(2)}€`
+                            : ""}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {(option.productUrl || option.websiteUrl) && (
+                            <a
+                              href={option.productUrl ?? option.websiteUrl ?? "#"}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={() =>
+                                recordFoodPurchaseReferral(
+                                  option.id,
+                                  option.productUrl ? "product" : "website"
+                                )
+                              }
+                              className="rounded-lg bg-sky-700 px-3 py-2 text-xs font-semibold text-white"
+                            >
+                              {botText("Άνοιγμα", "Open")}
+                            </a>
+                          )}
+                          {option.phone && (
+                            <a
+                              href={`tel:${option.phone}`}
+                              onClick={() =>
+                                recordFoodPurchaseReferral(option.id, "phone")
+                              }
+                              className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-sky-900 ring-1 ring-sky-200"
+                            >
+                              {botText("Τηλέφωνο", "Call")}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {foodPurchaseDisclosure && (
+                  <div className="mt-3 text-xs leading-5 text-gray-500">
+                    <p>
+                      {chatLanguage === "el"
+                        ? foodPurchaseDisclosure
+                        : "All results are partner stores. A sponsored placement may rank higher only among eligible stores for the same already selected food. Food recommendations remain independent and availability should be confirmed before purchase."}
+                    </p>
+                    <Link
+                      href="/store-ranking"
+                      className="nt-focus mt-1 inline-flex rounded font-bold text-[#17663f] underline underline-offset-4"
+                    >
+                      {botText(
+                        "Πώς κατατάσσονται τα καταστήματα",
+                        "How stores are ranked"
+                      )}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div
               id="save-analysis-panel"
               data-testid="save-analysis-panel"
@@ -7470,7 +7804,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         </button>
       )}
 
-      <div className="sticky bottom-0 z-20 shrink-0 border-t border-gray-200 bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sm:p-5">
+      <div className="sticky bottom-0 z-20 shrink-0 border-t border-[#dce5df] bg-white px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_rgba(18,61,43,0.07)] sm:p-5">
         {followUpPet && step === "petChoice" && !followUpMode && (
           <div className="mb-3 sm:hidden">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">
@@ -7581,7 +7915,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 key={reply}
                 type="button"
                 onClick={() => sendQuickReply(reply)}
-                className="min-h-10 max-w-[82vw] shrink-0 snap-start rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black transition hover:border-black hover:bg-gray-100"
+                className="nt-focus min-h-10 max-w-[82vw] shrink-0 snap-start rounded-lg border border-[#cfdcd3] bg-white px-3 py-2 text-sm font-bold text-[#31463a] transition hover:border-[#5fa47a] hover:bg-[#f4f8f5]"
               >
                 {reply}
               </button>
@@ -7593,7 +7927,7 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
           <p className="mb-2 text-xs leading-5 text-gray-500">{inputHelper}</p>
         )}
 
-        {isAnalyzingFoodPhoto && (
+        {launchFeatures.foodPhotoAnalysis && isAnalyzingFoodPhoto && (
           <p className="mb-2 text-xs font-medium leading-5 text-emerald-700">
             {botText("Διαβάζω τη φωτογραφία τροφής...", "Reading the food photo...")}
           </p>
@@ -7606,6 +7940,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
         )}
 
         <div className="flex items-end gap-2 sm:gap-3">
+          {launchFeatures.foodPhotoAnalysis && (
+          <>
           <input
             ref={foodPhotoInputRef}
             type="file"
@@ -7626,14 +7962,20 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
               isAnalyzingFoodPhoto ||
               isSaving
             }
-            className="min-h-12 shrink-0 rounded-xl border border-gray-300 bg-white px-3 py-3 text-sm font-medium text-black transition hover:bg-gray-100 disabled:opacity-50"
+            className="nt-focus flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#cfdcd3] bg-white text-[#31463a] transition hover:bg-[#f4f8f5] disabled:opacity-50"
+            aria-label={botText(
+              "Ανέβασε φωτογραφία τροφής ή ετικέτας",
+              "Upload a food or label photo"
+            )}
             title={botText(
               "Ανέβασε φωτογραφία τροφής ή ετικέτας",
               "Upload a food or label photo"
             )}
           >
-            {botText("Φωτο", "Photo")}
+            <Camera size={19} aria-hidden="true" />
           </button>
+          </>
+          )}
 
           <input
             value={input}
@@ -7651,16 +7993,27 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
                 ? botText("Γίνεται ανάλυση...", "Analyzing...")
                 : botText("Γράψε μήνυμα...", "Write a message...")
             }
-            className="min-h-12 min-w-0 flex-1 rounded-xl border border-gray-300 px-3 py-3 text-base text-black disabled:bg-gray-100 sm:text-sm"
+            className="nt-focus min-h-12 min-w-0 flex-1 rounded-lg border border-[#cfdcd3] bg-[#fbfcfb] px-3 py-3 text-base text-[#14221b] placeholder:text-[#849188] disabled:bg-gray-100 sm:text-sm"
           />
 
           <button
             type="button"
             onClick={sendMessage}
             disabled={isProcessingMessage || isAnalyzing || isAnalyzingFoodPhoto || isSaving}
-            className="min-h-12 shrink-0 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white disabled:opacity-50 sm:px-5"
+            className="nt-focus flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#123d2b] text-white transition hover:bg-[#0d3021] disabled:opacity-50 sm:w-auto sm:gap-2 sm:px-5"
+            aria-label={botText("Αποστολή", "Send")}
+            title={botText("Αποστολή", "Send")}
           >
-            {isAnalyzing ? "..." : botText("Αποστολή", "Send")}
+            {isAnalyzing ? (
+              "..."
+            ) : (
+              <>
+                <Send size={18} aria-hidden="true" />
+                <span className="hidden text-sm font-bold sm:inline">
+                  {botText("Αποστολή", "Send")}
+                </span>
+              </>
+            )}
           </button>
         </div>
       </div>

@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { brand } from "@/lib/brand";
 import { WebVitalsReporter } from "./WebVitalsReporter";
+
+const inter = Inter({
+  subsets: ["greek", "latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: brand.name,
@@ -39,7 +46,7 @@ export const metadata: Metadata = {
     url: brand.domain,
     siteName: brand.name,
     type: "website",
-    locale: "en_US",
+    locale: "el_GR",
   },
 
   twitter: {
@@ -61,7 +68,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="el">
-      <body>
+      <body className={inter.variable}>
         <WebVitalsReporter />
         {children}
       </body>

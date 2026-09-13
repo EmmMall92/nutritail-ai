@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { brand } from "@/lib/brand";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 type AuthShellProps = {
   eyebrow: string;
@@ -8,28 +9,10 @@ type AuthShellProps = {
   children: React.ReactNode;
 };
 
-const TRUST_POINTS = [
-  "Προσωπική καθοδήγηση για σκύλους και γάτες",
-  "Προτάσεις τροφής με βάση το κατοικίδιο",
-  "Αποθηκευμένα προφίλ, αναφορές και νέες αναλύσεις",
-];
-
-const CUSTOMER_JOURNEY_STEPS = [
-  {
-    label: "\u03a3\u03cd\u03bd\u03b4\u03b5\u03c3\u03b7",
-    detail:
-      "\u039c\u03c0\u03b1\u03af\u03bd\u03b5\u03b9\u03c2 \u03bc\u03b5 \u03b1\u03c3\u03c6\u03ac\u03bb\u03b5\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03c3\u03c5\u03bd\u03b5\u03c7\u03af\u03b6\u03b5\u03b9\u03c2 \u03b1\u03ba\u03c1\u03b9\u03b2\u03ce\u03c2 \u03b5\u03ba\u03b5\u03af \u03c0\u03bf\u03c5 \u03ae\u03c3\u03bf\u03c5\u03bd.",
-  },
-  {
-    label: "\u0391\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7",
-    detail:
-      "\u0394\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03b5\u03af\u03c2 \u03ae \u03b1\u03bd\u03bf\u03af\u03b3\u03b5\u03b9\u03c2 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf \u03ba\u03b1\u03b9 \u03c0\u03b1\u03af\u03c1\u03bd\u03b5\u03b9\u03c2 \u03c3\u03c4\u03bf\u03c7\u03b5\u03c5\u03bc\u03ad\u03bd\u03b7 \u03c0\u03c1\u03cc\u03c4\u03b1\u03c3\u03b7.",
-  },
-  {
-    label: "\u03a0\u03b1\u03c1\u03b1\u03ba\u03bf\u03bb\u03bf\u03cd\u03b8\u03b7\u03c3\u03b7",
-    detail:
-      "\u039a\u03c1\u03b1\u03c4\u03ac\u03c2 report, \u03c0\u03cc\u03c3\u03b1 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ac\u03c1\u03b9\u03b1 \u03ba\u03b1\u03b9 \u03bd\u03ad\u03bf progress check \u03b3\u03b9\u03b1 \u03bc\u03b5\u03c4\u03ac.",
-  },
+const trustPoints = [
+  "Προσωπικό προφίλ για κάθε κατοικίδιο",
+  "Θερμίδες, μερίδα και προτάσεις τροφής",
+  "Υπεύθυνα όρια σε θέματα υγείας",
 ];
 
 export function AuthShell({
@@ -39,100 +22,69 @@ export function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-[#f6f7f5] px-4 py-8 text-black sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="order-2 space-y-8 lg:order-1">
-          <Link
-            href="/"
-            className="hidden items-center gap-3 text-sm font-semibold text-black lg:inline-flex"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
-              NT
-            </span>
-            {brand.name}
-          </Link>
+    <main className="min-h-screen bg-white text-[#14221b] lg:grid lg:grid-cols-[0.9fr_1.1fr]">
+      <aside className="relative hidden min-h-screen overflow-hidden bg-[#123d2b] lg:block">
+        <Image
+          src="/nutritail-hero.png"
+          alt="Σκύλος και γάτα δίπλα στα μπολ της τροφής τους"
+          fill
+          priority
+          sizes="45vw"
+          className="object-cover object-[72%_center]"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(9,35,24,0.94)_0%,rgba(9,35,24,0.1)_72%)]" />
 
-          <div className="max-w-xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-green-700">
-              {eyebrow}
-            </p>
-            <h1 className="mt-4 text-3xl font-bold leading-tight text-black sm:text-5xl">
-              Διατροφική καθοδήγηση που βγάζει νόημα από το πρώτο βήμα.
-            </h1>
-            <p className="mt-5 text-base leading-7 text-gray-700">
-              Το Nutritail AI βοηθά να καταλάβεις θερμίδες, ποσότητα τροφής,
-              ευαισθησίες και πρακτικά επόμενα βήματα χωρίς να μπερδεύει τη
-              διατροφή με δύσκολους πίνακες.
-            </p>
-          </div>
-
-          <div className="grid max-w-2xl gap-3 sm:grid-cols-3">
-            {TRUST_POINTS.map((point) => (
-              <div
-                key={point}
-                className="rounded-xl border border-gray-200 bg-white/80 p-4 shadow-sm"
-              >
-                <div className="h-2 w-10 rounded-full bg-green-500" />
-                <p className="mt-3 text-sm font-medium text-gray-800">
-                  {point}
-                </p>
-              </div>
+        <div className="absolute inset-x-0 bottom-0 p-10 text-white xl:p-14">
+          <p className="max-w-xl text-3xl font-black leading-tight xl:text-4xl">
+            Μια πιο καθαρή εικόνα για τη διατροφή του.
+          </p>
+          <p className="mt-4 max-w-lg text-sm leading-7 text-white/78">
+            Από το προφίλ και τη σημερινή τροφή μέχρι μια πρακτική ημερήσια
+            μερίδα και επιλογές που μπορείς να συζητήσεις με τον κτηνίατρό σου.
+          </p>
+          <div className="mt-7 grid gap-3">
+            {trustPoints.map((point) => (
+              <p key={point} className="flex items-center gap-2 text-sm font-bold text-white/90">
+                <CheckCircle2 size={18} className="shrink-0 text-[#72d39a]" />
+                {point}
+              </p>
             ))}
           </div>
+        </div>
+      </aside>
 
-          <div
-            className="max-w-2xl rounded-2xl border border-green-100 bg-white/85 p-4 shadow-sm"
-            data-testid="auth-customer-journey-strip"
-          >
-            <p className="text-sm font-semibold text-gray-950">
-              {"\u0397 \u03c1\u03bf\u03ae \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03c0\u03bb\u03ae \u03ba\u03b1\u03b9 \u03c3\u03c5\u03bd\u03b5\u03c7\u03ae\u03c2"}
-            </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              {CUSTOMER_JOURNEY_STEPS.map((step, index) => (
-                <div
-                  key={step.label}
-                  className="rounded-xl bg-[#f6f7f5] p-3"
-                  data-testid="auth-customer-journey-step"
-                >
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <p className="mt-2 text-sm font-semibold text-gray-950">
-                    {step.label}
-                  </p>
-                  <p className="mt-1 text-xs leading-5 text-gray-600">
-                    {step.detail}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="order-1 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 lg:order-2">
-          <Link
-            href="/"
-            className="mb-6 inline-flex items-center gap-3 text-sm font-semibold text-black lg:hidden"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
-              NT
-            </span>
-            {brand.name}
-          </Link>
-
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-green-700">
-              {eyebrow}
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-black">{title}</h2>
-            <p className="mt-2 text-sm leading-6 text-gray-600">
-              {description}
-            </p>
+      <section className="flex min-h-screen items-center px-5 py-8 sm:px-8 lg:px-12 xl:px-20">
+        <div className="mx-auto w-full max-w-[32rem]">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="nt-focus flex items-center gap-2.5 rounded-lg">
+              <Image src="/nutritail-icon.svg" alt="" width={38} height={38} />
+              <span className="text-lg font-black">
+                Nutritail <span className="text-[#1f7a4d]">AI</span>
+              </span>
+            </Link>
+            <Link
+              href="/"
+              className="nt-focus inline-flex items-center gap-1.5 rounded-lg text-xs font-bold text-[#5f6f66] hover:text-[#1f7a4d]"
+            >
+              <ArrowLeft size={15} />
+              Αρχική
+            </Link>
           </div>
 
-          <div className="mt-6">{children}</div>
-        </section>
-      </div>
+          <div className="mt-12 sm:mt-16">
+            <p className="nt-eyebrow">{eyebrow}</p>
+            <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">{title}</h1>
+            <p className="mt-3 text-sm leading-6 text-[#5f6f66]">{description}</p>
+          </div>
+
+          <div className="mt-8">{children}</div>
+
+          <p className="mt-8 text-xs leading-5 text-[#7a8980] lg:hidden">
+            Το NutriTail παρέχει ενημερωτική καθοδήγηση και δεν αντικαθιστά
+            την κτηνιατρική διάγνωση ή θεραπεία.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

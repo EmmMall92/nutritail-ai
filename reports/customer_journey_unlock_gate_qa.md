@@ -1,6 +1,6 @@
 # Customer Journey Unlock Gate QA
 
-Generated: 2026-07-20T20:33:57.822Z
+Generated: 2026-09-13T17:17:11.727Z
 
 This report is customer-product evidence, not a substitute for a logged-in browser smoke test.
 It proves that the five Customer UX unlock journeys have protected code paths across chatbot, account, report, timeline, and CI scripts.

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { mapDbCustomerToCustomer } from "@/mappers/customerMapper";
 import type { DbCustomer } from "@/types/db/db-customer";
@@ -6,19 +7,14 @@ import type { DbCustomer } from "@/types/db/db-customer";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
 
-    const authUserId = String(body.authUserId ?? "").trim();
-    const email = body.email ? String(body.email).trim() : null;
+    const authUserId = access.user.id;
+    const email = access.user.email?.trim() || null;
     const fullName = body.fullName
       ? String(body.fullName).trim()
       : email ?? "Customer";
-
-    if (!authUserId) {
-      return NextResponse.json(
-        { error: "Missing auth user id." },
-        { status: 400 }
-      );
-    }
 
     const { data: existingCustomer, error: existingError } = await supabaseAdmin
       .from("customers")
@@ -30,31 +26,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: existingError.message }, { status: 500 });
     }
 
-    if (existingCustomer) {
-      return NextResponse.json(
-        mapDbCustomerToCustomer(existingCustomer as DbCustomer)
-      );
+    let customer = existingCustomer;
+
+    if (!customer) {
+      const now = new Date().toISOString();
+      const { data: newCustomer, error: createError } = await supabaseAdmin
+        .from("customers")
+        .insert({
+          auth_user_id: authUserId,
+          email,
+          full_name: fullName,
+          created_at: now,
+          updated_at: now,
+        })
+        .select("*")
+        .single();
+
+      if (createError) {
+        return NextResponse.json({ error: createError.message }, { status: 500 });
+      }
+
+      customer = newCustomer;
     }
 
-    const now = new Date().toISOString();
-
-    const { data: newCustomer, error: createError } = await supabaseAdmin
-      .from("customers")
-      .insert({
-        auth_user_id: authUserId,
-        email,
-        full_name: fullName,
-        created_at: now,
-        updated_at: now,
-      })
-      .select("*")
-      .single();
-
-    if (createError) {
-      return NextResponse.json({ error: createError.message }, { status: 500 });
-    }
-
-    return NextResponse.json(mapDbCustomerToCustomer(newCustomer as DbCustomer));
+    return NextResponse.json(mapDbCustomerToCustomer(customer as DbCustomer));
   } catch (error) {
     return NextResponse.json(
       {

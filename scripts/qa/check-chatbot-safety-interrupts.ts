@@ -1,4 +1,5 @@
 import {
+  blocksFoodRecommendations,
   detectSafetyWarnings,
   hasHardStop,
   shouldInterruptForSafety,
@@ -9,8 +10,10 @@ type SafetyCase = {
   id: string;
   message: string;
   species?: "dog" | "cat";
+  allergies?: string[];
   expectedHardStop: boolean;
   expectedInterrupt: boolean;
+  expectedRecommendationBlock?: boolean;
   expectedCode?: string;
 };
 
@@ -177,6 +180,7 @@ const cases: SafetyCase[] = [
     species: "cat",
     expectedHardStop: false,
     expectedInterrupt: true,
+    expectedRecommendationBlock: true,
     expectedCode: "renal",
   },
   {
@@ -185,6 +189,7 @@ const cases: SafetyCase[] = [
     species: "dog",
     expectedHardStop: false,
     expectedInterrupt: true,
+    expectedRecommendationBlock: true,
     expectedCode: "pancreatitis",
   },
   {
@@ -193,6 +198,7 @@ const cases: SafetyCase[] = [
     species: "dog",
     expectedHardStop: false,
     expectedInterrupt: true,
+    expectedRecommendationBlock: true,
     expectedCode: "diabetes",
   },
   {
@@ -201,13 +207,70 @@ const cases: SafetyCase[] = [
     species: "cat",
     expectedHardStop: false,
     expectedInterrupt: false,
+    expectedRecommendationBlock: false,
   },
   {
-    id: "male-cat-flutd-history-not-urgent",
+    id: "greek-no-known-allergies-does-not-block",
+    message: "Σκύλος 3 ετών, δεν έχει γνωστές αλλεργίες και προτιμά αρνί",
+    species: "dog",
+    allergies: ["Καμία αλλεργία"],
+    expectedHardStop: false,
+    expectedInterrupt: false,
+    expectedRecommendationBlock: false,
+  },
+  {
+    id: "english-no-known-allergies-does-not-block",
+    message: "Adult cat with no known food allergies and a preference for chicken",
+    species: "cat",
+    allergies: ["No known allergies"],
+    expectedHardStop: false,
+    expectedInterrupt: false,
+    expectedRecommendationBlock: false,
+  },
+  {
+    id: "male-cat-flutd-history-needs-medical-handoff",
     message: "Στειρωμένος γάτος 6kg με ιστορικό FLUTD",
     species: "cat",
     expectedHardStop: false,
-    expectedInterrupt: false,
+    expectedInterrupt: true,
+    expectedRecommendationBlock: true,
+    expectedCode: "urinary_condition",
+  },
+  {
+    id: "declared-food-allergy-needs-medical-handoff",
+    message: "Θέλω τροφή χωρίς κοτόπουλο λόγω αλλεργίας",
+    species: "dog",
+    expectedHardStop: false,
+    expectedInterrupt: true,
+    expectedRecommendationBlock: true,
+    expectedCode: "allergy_context",
+  },
+  {
+    id: "liver-disease-needs-medical-handoff",
+    message: "Ο σκύλος έχει ηπατική νόσο και θέλω νέα τροφή",
+    species: "dog",
+    expectedHardStop: false,
+    expectedInterrupt: true,
+    expectedRecommendationBlock: true,
+    expectedCode: "hepatic_condition",
+  },
+  {
+    id: "cardiac-medication-needs-medical-handoff",
+    message: "Η γάτα έχει καρδιολογική πάθηση και παίρνει φάρμακα",
+    species: "cat",
+    expectedHardStop: false,
+    expectedInterrupt: true,
+    expectedRecommendationBlock: true,
+    expectedCode: "cardiac_condition",
+  },
+  {
+    id: "therapeutic-diet-needs-medical-handoff",
+    message: "Θέλω να αλλάξω την κτηνιατρική τροφή που τρώει",
+    species: "cat",
+    expectedHardStop: false,
+    expectedInterrupt: true,
+    expectedRecommendationBlock: true,
+    expectedCode: "therapeutic_diet",
   },
   {
     id: "greedy-eating-not-blood",
@@ -234,11 +297,15 @@ const failures: string[] = [];
 for (const safetyCase of cases) {
   const warnings = detectSafetyWarnings({
     message: safetyCase.message,
-    pet: { species: safetyCase.species },
+    pet: {
+      species: safetyCase.species,
+      allergies: safetyCase.allergies,
+    },
     locale: "el",
   });
   const hardStop = hasHardStop(warnings);
   const interrupt = shouldInterruptForSafety(warnings);
+  const recommendationBlocked = blocksFoodRecommendations(warnings);
   const warningCodes = codes(warnings);
 
   if (hardStop !== safetyCase.expectedHardStop) {
@@ -256,6 +323,15 @@ for (const safetyCase of cases) {
   if (safetyCase.expectedCode && !warningCodes.includes(safetyCase.expectedCode)) {
     failures.push(
       `${safetyCase.id}: expected code ${safetyCase.expectedCode}; codes=${warningCodes.join(", ")}`
+    );
+  }
+
+  if (
+    safetyCase.expectedRecommendationBlock !== undefined &&
+    recommendationBlocked !== safetyCase.expectedRecommendationBlock
+  ) {
+    failures.push(
+      `${safetyCase.id}: expected recommendationBlocked=${safetyCase.expectedRecommendationBlock}, got ${recommendationBlocked}; codes=${warningCodes.join(", ")}`
     );
   }
 }

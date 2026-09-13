@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 
@@ -54,11 +55,9 @@ export async function POST(request: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const authUserId = String(body.authUserId ?? "").trim();
-
-    if (!authUserId) {
-      return NextResponse.json({ error: "Missing auth user id." }, { status: 400 });
-    }
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
+    const authUserId = access.user.id;
 
     const customer = await getCustomerForAuthUser(authUserId);
 
@@ -112,11 +111,9 @@ export async function PATCH(request: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const authUserId = String(body.authUserId ?? "").trim();
-
-    if (!authUserId) {
-      return NextResponse.json({ error: "Missing auth user id." }, { status: 400 });
-    }
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
+    const authUserId = access.user.id;
 
     const customer = await getCustomerForAuthUser(authUserId);
 
@@ -178,11 +175,9 @@ export async function DELETE(request: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await request.json().catch(() => ({}));
-    const authUserId = String(body.authUserId ?? "").trim();
-
-    if (!authUserId) {
-      return NextResponse.json({ error: "Missing auth user id." }, { status: 400 });
-    }
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
+    const authUserId = access.user.id;
 
     const customer = await getCustomerForAuthUser(authUserId);
 

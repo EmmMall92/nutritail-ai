@@ -1,12 +1,12 @@
 # Gatoskilo Product Extract
 
-- Product rows extracted: 1
-- Raw local/category pages parsed: 2
-- Duplicate local/pack rows skipped: 1
+- Product rows extracted: 0
+- Raw local/category pages parsed: 0
+- Duplicate local/pack rows skipped: 0
 - Registry links queued: 0
-- Local HTML/MHTML files scanned: 2
-- Importable after QA: 1
-- Needs backfill/errors: 0
+- Local HTML/MHTML files scanned: 0
+- Importable after QA: 0
+- Needs backfill/errors: 1
 
 Outputs:
 - data/imports/gatoskilo_product_extract_v2.csv

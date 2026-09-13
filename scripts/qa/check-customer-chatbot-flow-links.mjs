@@ -224,7 +224,8 @@ const checks = [
   {
     label: "Chatbot disables input while preparing a reply",
     file: "app/account/chatbot/page.tsx",
-    expected: "disabled={isProcessingMessage || isAnalyzing || isSaving}",
+    expected:
+      "disabled={isProcessingMessage || isAnalyzing || isAnalyzingFoodPhoto || isSaving}",
   },
   {
     label: "Chatbot uses layout scroll effect to keep newest content visible",
@@ -234,7 +235,7 @@ const checks = [
   {
     label: "Chatbot scroll effect updates the message container directly",
     file: "app/account/chatbot/page.tsx",
-    expected: "container.scrollTop = targetTop",
+    expected: "container.scrollTo({",
   },
   {
     label: "Chatbot scroll effect computes the bottom of the message container",
@@ -244,7 +245,7 @@ const checks = [
   {
     label: "Chatbot scroll effect responds while a reply is being prepared",
     file: "app/account/chatbot/page.tsx",
-    expected: "isProcessingMessage, recommendedFoodChoices.length",
+    expected: "isProcessingMessage,\n    isSaving,\n    recommendedFoodChoices.length",
   },
   {
     label: "Chatbot message list reserves room above sticky input",
@@ -470,17 +471,17 @@ const checks = [
   {
     label: "Account shell dashboard nav is customer-localized",
     file: "app/account/layout.tsx",
-    expected: 'label="Πίνακας"',
+    expected: 'label: "Πίνακας"',
   },
   {
     label: "Account shell pets nav is customer-localized",
     file: "app/account/layout.tsx",
-    expected: 'label="Κατοικίδια"',
+    expected: 'label: "Κατοικίδια"',
   },
   {
     label: "Account shell profile nav is customer-localized",
     file: "app/account/layout.tsx",
-    expected: 'label="Προφίλ"',
+    expected: 'label: "Προφίλ"',
   },
   {
     label: "Account dashboard welcome is customer-localized",
@@ -1362,8 +1363,9 @@ async function runInitialCompareStartsIntakeCheck() {
 }
 
 async function runCheck(check) {
-  const content = await readFile(check.file, "utf8");
-  const ok = content.includes(check.expected);
+  const content = (await readFile(check.file, "utf8")).replace(/\r\n/g, "\n");
+  const expected = check.expected.replace(/\r\n/g, "\n");
+  const ok = content.includes(expected);
   return {
     ...check,
     ok,
@@ -1371,8 +1373,9 @@ async function runCheck(check) {
 }
 
 async function runForbiddenCheck(check) {
-  const content = await readFile(check.file, "utf8");
-  const ok = !content.includes(check.forbidden);
+  const content = (await readFile(check.file, "utf8")).replace(/\r\n/g, "\n");
+  const forbidden = check.forbidden.replace(/\r\n/g, "\n");
+  const ok = !content.includes(forbidden);
   return {
     label: check.label,
     file: check.file,

@@ -3,6 +3,17 @@
 import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+  Activity,
+  ArrowLeft,
+  Clock3,
+  FileText,
+  HeartPulse,
+  PawPrint,
+  Save,
+  Scale,
+  Sparkles,
+} from "lucide-react";
 import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
@@ -144,7 +155,7 @@ function getLatestAnalysisNextSteps(item?: AnalysisHistoryItem) {
 
 function getResultStatusDetail(item?: AnalysisHistoryItem) {
   if (!item) {
-    return "Ξεκίνα ανάλυση με τον σύμβουλο για θερμίδες, προτάσεις τροφής, αναφορά και ιστορικό.";
+    return "Ξεκίνα ενημερωτική εκτίμηση με τον βοηθό για θερμίδες, επιλογές τροφής, αναφορά και ιστορικό.";
   }
 
   if (item.matched_food_name && item.feeding_grams_per_day) {
@@ -416,10 +427,10 @@ export default function AccountPetDetailPage() {
 
   if (isLoading) {
     return (
-      <section className="mx-auto max-w-4xl space-y-6">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-black">Φορτώνω το κατοικίδιο...</p>
-          <p className="mt-2 text-sm text-gray-600">
+      <section className="mx-auto max-w-5xl space-y-5">
+        <div className="rounded-lg border border-[#dce5df] bg-white p-6 shadow-sm">
+          <p className="text-sm font-bold text-[#14221b]">Φορτώνω το κατοικίδιο...</p>
+          <p className="mt-2 text-sm text-[#5f6f66]">
             Φέρνω το αποθηκευμένο προφίλ και το ιστορικό αναλύσεων.
           </p>
         </div>
@@ -429,16 +440,17 @@ export default function AccountPetDetailPage() {
 
   if (error || !data) {
     return (
-      <section className="mx-auto max-w-4xl space-y-6">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
+      <section className="mx-auto max-w-5xl space-y-5">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-700 shadow-sm">
           <p className="font-semibold">Δεν μπόρεσα να φορτώσω αυτό το κατοικίδιο</p>
           <p className="mt-2 text-sm">
             {error || "Το κατοικίδιο δεν βρέθηκε."}
           </p>
           <Link
             href="/account/pets"
-            className="mt-4 inline-block rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100"
+            className="nt-focus mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-bold text-red-700 transition hover:bg-red-100"
           >
+            <ArrowLeft size={16} aria-hidden="true" />
             Πίσω στα κατοικίδιά μου
           </Link>
         </div>
@@ -452,21 +464,29 @@ export default function AccountPetDetailPage() {
   const maxPetWeightKg = pet.species === "cat" ? 15 : 90;
 
   return (
-      <section className="mx-auto max-w-4xl space-y-6">
-        <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-start md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-black">{formatCustomerPetName(pet.name)}</h1>
-            <p className="mt-2 text-gray-600">
+      <section className="mx-auto max-w-5xl space-y-5">
+        <div className="flex flex-col gap-4 border-b border-[#dce5df] pb-6 pt-2 md:flex-row md:items-start md:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#eaf7ef] text-[#1f7a4d]">
+              <PawPrint size={22} aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+            <p className="nt-eyebrow">Προφίλ κατοικιδίου</p>
+            <h1 className="mt-1 text-3xl font-black text-[#14221b]">{formatCustomerPetName(pet.name)}</h1>
+            <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
               Προφίλ κατοικιδίου, διατροφική ανάλυση και ιστορικό προόδου.
             </p>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <Link
               href="/account/pets"
-              className="rounded-xl border border-black px-4 py-2 text-sm text-black"
+              className="nt-focus flex h-10 w-10 items-center justify-center rounded-lg border border-[#cfdcd3] bg-white text-[#31463a] transition hover:bg-[#f3f7f4]"
+              aria-label="Πίσω στα κατοικίδιά μου"
+              title="Πίσω στα κατοικίδιά μου"
             >
-              Πίσω στα κατοικίδιά μου
+              <ArrowLeft size={18} aria-hidden="true" />
             </Link>
 
             <Link
@@ -475,8 +495,9 @@ export default function AccountPetDetailPage() {
                   ? `/account/chatbot?petId=${pet.id}&mode=progress`
                   : `/account/chatbot?petId=${pet.id}`
               }
-              className="rounded-xl bg-black px-4 py-2 text-sm text-white"
+              className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
             >
+              {latest ? <Activity size={16} aria-hidden="true" /> : <Sparkles size={16} aria-hidden="true" />}
               {latest ? "Έλεγχος προόδου" : "Νέα ανάλυση"}
             </Link>
 
@@ -484,61 +505,36 @@ export default function AccountPetDetailPage() {
               <>
                 <Link
                   href={`/print/pet-report/${pet.id}`}
-                  className="rounded-xl bg-green-600 px-4 py-2 text-sm text-white transition hover:bg-green-700"
+                  className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
                 >
+                  <FileText size={16} aria-hidden="true" />
                   Αναφορά
                 </Link>
 
                 <Link
                   href={`/print/pet-timeline/${pet.id}`}
-                  className="rounded-xl border border-gray-300 px-4 py-2 text-sm text-black transition hover:bg-gray-100"
+                  className="nt-focus flex h-10 w-10 items-center justify-center rounded-lg border border-[#cfdcd3] bg-white text-[#31463a] transition hover:bg-[#f3f7f4]"
+                  aria-label="Ιστορικό"
+                  title="Ιστορικό"
                 >
-                  Ιστορικό
+                  <Clock3 size={17} aria-hidden="true" />
                 </Link>
               </>
             )}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(16rem,0.85fr)]">
+        <div className="rounded-lg border border-[#bde6cc] bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-amber-700">
-                Σημειώσεις φροντίδας
-              </p>
-              <h2 className="mt-2 text-xl font-bold text-amber-950">
-                Η επιλογή τροφής πρέπει να λαμβάνει υπόψη αυτό το προφίλ
-              </h2>
-              <ul className="mt-3 space-y-2 text-sm text-amber-900">
-                {getCareNotes(pet).map((note) => (
-                  <li key={note}>- {note}</li>
-                ))}
-              </ul>
-            </div>
-
-            <Link
-              href={
-                latest
-                  ? `/account/chatbot?petId=${pet.id}&mode=progress`
-                  : `/account/chatbot?petId=${pet.id}`
-              }
-              className="rounded-xl bg-amber-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-amber-800"
-            >
-              Επανέλεγχος τροφής
-            </Link>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+              <p className="nt-eyebrow">
                 Τελευταίο αποτέλεσμα
               </p>
-              <h2 className="mt-2 text-xl font-bold text-emerald-950">
+              <h2 className="mt-2 text-2xl font-black text-[#14221b]">
                 {getReportReadiness(latest)}
               </h2>
-              <p className="mt-2 max-w-2xl text-sm text-emerald-900">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#52645a]">
                 {getResultStatusDetail(latest)}
               </p>
             </div>
@@ -549,101 +545,129 @@ export default function AccountPetDetailPage() {
                   ? `/account/chatbot?petId=${pet.id}&mode=progress`
                   : `/account/chatbot?petId=${pet.id}`
               }
-              className="rounded-xl bg-emerald-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-emerald-800"
+              className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
             >
+              {latest ? <Activity size={16} aria-hidden="true" /> : <Sparkles size={16} aria-hidden="true" />}
               {getResultFollowUp(latest, progressLogs.length)}
             </Link>
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl bg-white p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-[#dce5df] pt-5 lg:grid-cols-4">
+            <div>
+              <p className="text-xs font-extrabold text-[#1f7a4d]">
                 Ημερήσιος στόχος
               </p>
-              <p className="mt-2 text-lg font-semibold text-black">
+              <p className="mt-2 text-base font-bold text-[#14221b]">
                 {latest?.mer ? `${latest.mer} kcal/ημέρα` : "Δεν έχει υπολογιστεί"}
               </p>
             </div>
 
-            <div className="rounded-xl bg-white p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Τροφή
               </p>
-              <p className="mt-2 text-sm font-semibold text-black">
+              <p className="mt-2 text-sm font-bold text-[#14221b]">
                 {latest?.matched_food_name ?? "Θέλει ακριβές όνομα τροφής"}
               </p>
             </div>
 
-            <div className="rounded-xl bg-white p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Μερίδα
               </p>
-              <p className="mt-2 text-lg font-semibold text-black">
+              <p className="mt-2 text-base font-bold text-[#14221b]">
                 {latest?.feeding_grams_per_day
                   ? `${latest.feeding_grams_per_day}g/ημέρα`
                   : "Θέλει έλεγχο θερμίδων"}
               </p>
             </div>
 
-            <div className="rounded-xl bg-white p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Συνέχεια
               </p>
-              <p className="mt-2 text-sm font-semibold text-black">
+              <p className="mt-2 text-sm font-bold text-[#14221b]">
                 {getResultFollowUp(latest, progressLogs.length)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Είδος</p>
-            <p className="mt-2 text-xl font-semibold text-black">
+        <aside className="rounded-lg border border-[#efd4a3] bg-[#fff8e8] p-5 sm:p-6">
+          <HeartPulse size={21} className="text-[#9a671b]" aria-hidden="true" />
+          <p className="mt-4 text-xs font-extrabold text-[#9a671b]">Σημειώσεις φροντίδας</p>
+          <h2 className="mt-2 text-lg font-black text-[#4d3716]">
+            Τι πρέπει να λαμβάνει υπόψη η επιλογή τροφής
+          </h2>
+          <ul className="mt-4 space-y-3 text-sm leading-6 text-[#765820]">
+            {getCareNotes(pet).map((note) => (
+              <li key={note} className="border-t border-[#efdcb8] pt-3 first:border-t-0 first:pt-0">
+                {note}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href={
+              latest
+                ? `/account/chatbot?petId=${pet.id}&mode=progress`
+                : `/account/chatbot?petId=${pet.id}`
+            }
+            className="nt-focus mt-5 inline-flex min-h-10 items-center gap-2 rounded-lg border border-[#d7ae6e] bg-white px-4 py-2 text-sm font-bold text-[#765820] transition hover:bg-[#fffdf8]"
+          >
+            <Sparkles size={16} aria-hidden="true" />
+            Επανέλεγχος τροφής
+          </Link>
+        </aside>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 rounded-lg border border-[#dce5df] bg-white p-5 shadow-sm md:grid-cols-3">
+          <div className="border-b border-[#e3ebe6] pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-5">
+            <p className="text-xs font-extrabold text-[#6b7b72]">Είδος</p>
+            <p className="mt-2 text-xl font-black text-[#14221b]">
               {pet.species === "dog" ? "σκύλος" : pet.species === "cat" ? "γάτα" : pet.species}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Βάρος</p>
-            <p className="mt-2 text-xl font-semibold text-black">{pet.weight} kg</p>
+          <div className="border-b border-[#e3ebe6] pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-5">
+            <p className="flex items-center gap-2 text-xs font-extrabold text-[#6b7b72]"><Scale size={15} /> Βάρος</p>
+            <p className="mt-2 text-xl font-black text-[#14221b]">{pet.weight} kg</p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-600">Αναλύσεις</p>
-            <p className="mt-2 text-xl font-semibold text-black">
+          <div>
+            <p className="text-xs font-extrabold text-[#6b7b72]">Αναλύσεις</p>
+            <p className="mt-2 text-xl font-black text-[#14221b]">
               {analysisHistory.length}
             </p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+        <div className="rounded-lg border border-[#c9ddd1] bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              <p className="nt-eyebrow">
                 Τελευταία πρόοδος
               </p>
               {progressSummary.latestLog ? (
                 <>
-                  <h2 className="mt-2 text-xl font-bold text-blue-950">
+                  <h2 className="mt-2 text-xl font-black text-[#14221b]">
                     {progressSummary.mode}
                   </h2>
-                  <p className="mt-2 text-sm text-blue-900">
+                  <p className="mt-2 text-sm text-[#52645a]">
                     {progressSummary.deltaText}
                   </p>
                   {progressSummary.progressDecisionHeadline && (
-                    <p className="mt-2 text-sm font-semibold text-blue-950">
+                    <p className="mt-2 text-sm font-bold text-[#1f5138]">
                       {progressSummary.progressDecisionHeadline}
                     </p>
                   )}
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-blue-950">
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-[#52645a]">
                     {progressSummary.progressDecisionStatus && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Απόφαση: {formatProgressChipLabel(progressSummary.progressDecisionStatus)}
                       </span>
                     )}
                     {progressSummary.progressDecisionConfidence && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Πώς το βλέπουμε:{" "}
                         {formatProgressDecisionConfidence(
                           progressSummary.progressDecisionConfidence
@@ -651,46 +675,46 @@ export default function AccountPetDetailPage() {
                       </span>
                     )}
                     {progressSummary.currentWeight && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Τωρινό βάρος {progressSummary.currentWeight} kg
                       </span>
                     )}
                     {progressSummary.feedingGramsPerDay && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         {progressSummary.feedingGramsPerDay}g/ημέρα
                       </span>
                     )}
                     {progressSummary.treatsNote && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Λιχουδιές: {formatProgressChipLabel(progressSummary.treatsNote)}
                       </span>
                     )}
                     {progressSummary.appetiteNote && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Όρεξη: {formatProgressChipLabel(progressSummary.appetiteNote)}
                       </span>
                     )}
                     {progressSummary.stoolNote && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Κόπρανα: {formatProgressChipLabel(progressSummary.stoolNote)}
                       </span>
                     )}
                     {progressSummary.energyNote && (
-                      <span className="rounded-full bg-white px-3 py-1">
+                      <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                         Ενέργεια: {formatProgressChipLabel(progressSummary.energyNote)}
                       </span>
                     )}
-                    <span className="rounded-full bg-white px-3 py-1">
+                    <span className="rounded-md bg-[#f3f7f4] px-3 py-1.5">
                       {new Date(progressSummary.latestLog.created_at).toLocaleString()}
                     </span>
                   </div>
                 </>
               ) : (
                 <>
-                  <h2 className="mt-2 text-xl font-bold text-blue-950">
+                  <h2 className="mt-2 text-xl font-black text-[#14221b]">
                     Δεν υπάρχουν έλεγχοι προόδου ακόμη
                   </h2>
-                  <p className="mt-2 text-sm text-blue-900">
+                  <p className="mt-2 text-sm leading-6 text-[#52645a]">
                     Πρόσθεσε έλεγχο όταν αλλάξει βάρος, όρεξη, κόπρανα,
                     λιχουδιές ή αποδοχή τροφής.
                   </p>
@@ -700,35 +724,36 @@ export default function AccountPetDetailPage() {
 
             <Link
               href={`/account/chatbot?petId=${pet.id}&mode=progress`}
-              className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
+              className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
             >
+              <Activity size={16} aria-hidden="true" />
               Πρόσθεσε έλεγχο προόδου
             </Link>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-black">Στοιχεία κατοικιδίου</h2>
+        <div className="rounded-lg border border-[#dce5df] bg-white p-5 shadow-sm sm:p-6">
+          <h2 className="text-xl font-black text-[#14221b]">Στοιχεία κατοικιδίου</h2>
 
           <div className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-            <p className="text-black">
+            <p className="text-[#31463a]">
               <span className="font-semibold">Ράτσα:</span> {pet.breed || "-"}
             </p>
-            <p className="text-black">
+            <p className="text-[#31463a]">
               <span className="font-semibold">Ηλικία:</span> {pet.age}
             </p>
-            <p className="text-black">
+            <p className="text-[#31463a]">
               <span className="font-semibold">Δραστηριότητα:</span> {pet.activity_level}
             </p>
-            <p className="text-black">
+            <p className="text-[#31463a]">
               <span className="font-semibold">Στειρωμένο:</span>{" "}
               {pet.neutered ? "Ναι" : "Όχι"}
             </p>
-            <p className="text-black md:col-span-2">
+            <p className="text-[#31463a] md:col-span-2">
               <span className="font-semibold">Αλλεργίες:</span>{" "}
               {pet.allergies?.length ? pet.allergies.join(", ") : "-"}
             </p>
-            <p className="text-black md:col-span-2">
+            <p className="text-[#31463a] md:col-span-2">
               <span className="font-semibold">Θέματα υγείας:</span>{" "}
               {pet.health_issues?.length ? pet.health_issues.join(", ") : "-"}
             </p>
@@ -738,22 +763,23 @@ export default function AccountPetDetailPage() {
         {editForm && (
           <form
             onSubmit={handleContextSave}
-            className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+            className="rounded-lg border border-[#dce5df] bg-white p-5 shadow-sm sm:p-6"
           >
             <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-black">
+                <h2 className="text-xl font-black text-[#14221b]">
                   Ενημέρωση προφίλ κατοικιδίου
                 </h2>
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
                   Κράτα ενημερωμένα βάρος, δραστηριότητα, αλλεργίες και σημειώσεις
                   υγείας, ώστε η επόμενη ανάλυση να ξεκινά σωστά.
                 </p>
               </div>
               <Link
                 href={`/account/chatbot?petId=${pet.id}`}
-                className="rounded-xl border border-gray-300 px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
+                <Sparkles size={16} aria-hidden="true" />
                 Νέα ανάλυση
               </Link>
             </div>
@@ -865,8 +891,9 @@ export default function AccountPetDetailPage() {
               <button
                 type="submit"
                 disabled={isSavingContext}
-                className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+                className="nt-button nt-button-primary nt-focus disabled:cursor-not-allowed disabled:opacity-50"
               >
+                <Save size={16} aria-hidden="true" />
                 {isSavingContext ? "Αποθήκευση..." : "Αποθήκευση προφίλ"}
               </button>
 
@@ -878,47 +905,48 @@ export default function AccountPetDetailPage() {
         )}
 
         {latest && (
-          <div className="rounded-2xl border border-green-200 bg-green-50 p-6 shadow-sm">
+          <div className="space-y-5 border-t border-[#dce5df] pt-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-black">
+                <h2 className="flex items-center gap-2 text-xl font-black text-[#14221b]">
+                  <FileText size={20} className="text-[#1f7a4d]" aria-hidden="true" />
                   Τελευταία ανάλυση
                 </h2>
-                <p className="mt-1 text-sm text-gray-700">
+                <p className="mt-1 text-sm text-[#5f6f66]">
                   {new Date(latest.createdAt).toLocaleString()}
                 </p>
               </div>
 
-              <span className="rounded-full border border-green-300 bg-white px-3 py-1 text-sm font-semibold text-green-800">
+              <span className="rounded-md border border-[#bde6cc] bg-[#eaf7ef] px-3 py-1.5 text-sm font-bold text-[#17663f]">
                 {getReportReadiness(latest)}
               </span>
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Θερμίδες ηρεμίας</p>
-                <p className="mt-1 text-xl font-semibold text-black">
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm text-[#5f6f66]">Θερμίδες ηρεμίας</p>
+                <p className="mt-1 text-xl font-black text-[#14221b]">
                   {latest.rer} kcal
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Ημερήσιος στόχος</p>
-                <p className="mt-1 text-xl font-semibold text-black">
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm text-[#5f6f66]">Ημερήσιος στόχος</p>
+                <p className="mt-1 text-xl font-black text-[#14221b]">
                   {latest.mer} kcal
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Καταλληλότητα τροφής</p>
-                <p className="mt-1 text-xl font-semibold text-black">
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm text-[#5f6f66]">Καταλληλότητα τροφής</p>
+                <p className="mt-1 text-xl font-black text-[#14221b]">
                   {getFoodScoreLabel(latest.food_score)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
                   Βασισμένο στην αποθηκευμένη τροφή και το προφίλ κατοικιδίου.
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-4">
-                <p className="text-sm text-gray-600">Ποσότητα τροφής</p>
-                <p className="mt-1 text-xl font-semibold text-black">
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm text-[#5f6f66]">Ποσότητα τροφής</p>
+                <p className="mt-1 text-xl font-black text-[#14221b]">
                   {latest.feeding_grams_per_day
                     ? `${latest.feeding_grams_per_day}g/ημέρα`
                     : "-"}
@@ -927,22 +955,22 @@ export default function AccountPetDetailPage() {
             </div>
 
             <div
-              className="mt-4 rounded-xl border border-green-200 bg-white p-4"
+              className="rounded-lg border border-[#dce5df] bg-white p-4 sm:p-5"
               data-testid="pet-profile-calorie-explainer"
             >
-              <p className="text-sm font-semibold text-black">
+              <p className="text-sm font-bold text-[#14221b]">
                 Τι σημαίνουν αυτές οι θερμίδες
               </p>
-              <div className="mt-3 grid gap-3 text-sm text-gray-700 md:grid-cols-2">
-                <div className="rounded-lg bg-green-50 p-3">
-                  <p className="font-semibold text-green-950">Θερμίδες ηρεμίας</p>
+              <div className="mt-3 grid gap-4 border-t border-[#e3ebe6] pt-4 text-sm leading-6 text-[#52645a] md:grid-cols-2 md:divide-x md:divide-[#e3ebe6]">
+                <div className="md:pr-4">
+                  <p className="font-bold text-[#1f5138]">Θερμίδες ηρεμίας</p>
                   <p className="mt-1">
                     Είναι η βασική ενέργεια που χρειάζεται το σώμα σε πλήρη
                     ηρεμία. Δεν είναι η τελική ποσότητα που ταΐζουμε.
                   </p>
                 </div>
-                <div className="rounded-lg bg-lime-50 p-3">
-                  <p className="font-semibold text-lime-950">Ημερήσιος στόχος</p>
+                <div className="md:pl-4">
+                  <p className="font-bold text-[#1f5138]">Ημερήσιος στόχος</p>
                   <p className="mt-1">
                     Είναι ο πρακτικός στόχος της ημέρας, αφού υπολογιστούν
                     ηλικία, βάρος, δραστηριότητα, στείρωση και στόχος βάρους.
@@ -957,8 +985,8 @@ export default function AccountPetDetailPage() {
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <div className="rounded-xl border border-green-200 bg-white p-4">
-                <p className="text-sm font-semibold text-black">Στοιχεία τροφής</p>
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm font-bold text-[#14221b]">Στοιχεία τροφής</p>
                 <p className="mt-2 text-sm text-gray-700">
                   Τροφή:{" "}
                   <span className="font-semibold">
@@ -973,8 +1001,8 @@ export default function AccountPetDetailPage() {
                 </p>
               </div>
 
-              <div className="rounded-xl border border-green-200 bg-white p-4">
-                <p className="text-sm font-semibold text-black">Επόμενα βήματα</p>
+              <div className="rounded-lg border border-[#dce5df] bg-white p-4">
+                <p className="text-sm font-bold text-[#14221b]">Επόμενα βήματα</p>
                 <ul className="mt-2 space-y-2 text-sm text-gray-700">
                   {getLatestAnalysisNextSteps(latest).map((step) => (
                     <li key={step}>- {step}</li>
@@ -986,54 +1014,60 @@ export default function AccountPetDetailPage() {
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
               <Link
                 href={`/account/chatbot?petId=${pet.id}&mode=progress`}
-                className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+                className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
               >
+                <Activity size={16} aria-hidden="true" />
                 Έλεγχος προόδου
               </Link>
               <Link
                 href={`/print/pet-report/${pet.id}`}
-                className="rounded-xl bg-green-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-green-700"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
+                <FileText size={16} aria-hidden="true" />
                 Άνοιγμα αναφοράς
               </Link>
               <Link
                 href={`/print/pet-timeline/${pet.id}`}
-                className="rounded-xl border border-green-300 bg-white px-4 py-2 text-center text-sm font-medium text-green-800 transition hover:bg-green-100"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
+                <Clock3 size={16} aria-hidden="true" />
                 Άνοιγμα ιστορικού
               </Link>
               <Link
                 href={`/account/chatbot?petId=${pet.id}&mode=recommendation&reason=flavour`}
-                className="rounded-xl border border-violet-300 bg-violet-50 px-4 py-2 text-center text-sm font-medium text-violet-950 transition hover:bg-violet-100"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
+                <Sparkles size={16} aria-hidden="true" />
                 Άλλη γεύση / εταιρεία
               </Link>
             </div>
           </div>
         )}
 
-        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+        <div className="border-t border-[#dce5df] pt-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-blue-950">
+              <h2 className="flex items-center gap-2 text-xl font-black text-[#14221b]">
+                <Clock3 size={20} className="text-[#1f7a4d]" aria-hidden="true" />
                 Ιστορικό προόδου
               </h2>
-              <p className="mt-1 text-sm text-blue-900">
+              <p className="mt-1 text-sm leading-6 text-[#5f6f66]">
                 Σημειώσεις από ελέγχους προόδου, χρήσιμες για παρακολούθηση
                 βάρους και αποδοχής τροφής.
               </p>
             </div>
             <Link
               href={`/account/chatbot?petId=${pet.id}&mode=progress`}
-              className="rounded-xl bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-800"
+              className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
             >
+              <Activity size={16} aria-hidden="true" />
               Νέος έλεγχος
             </Link>
           </div>
 
           {progressLogs.length === 0 ? (
-            <div className="mt-4 rounded-xl border border-dashed border-blue-300 bg-white p-5 text-sm text-blue-900">
-              Δεν υπάρχουν έλεγχοι προόδου ακόμη. Άνοιξε τον σύμβουλο, διάλεξε αυτό το
+            <div className="mt-4 rounded-lg border border-dashed border-[#b8c8be] bg-white p-5 text-sm leading-6 text-[#52645a]">
+              Δεν υπάρχουν έλεγχοι προόδου ακόμη. Άνοιξε τον βοηθό, διάλεξε αυτό το
               κατοικίδιο και χρησιμοποίησε έλεγχο προόδου.
             </div>
           ) : (
@@ -1041,7 +1075,7 @@ export default function AccountPetDetailPage() {
               {progressLogs.map((log) => (
                 <div
                   key={log.id}
-                  className="rounded-xl border border-blue-200 bg-white p-4"
+                  className="rounded-lg border border-[#dce5df] bg-white p-4 shadow-sm"
                 >
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -1053,7 +1087,7 @@ export default function AccountPetDetailPage() {
                       </p>
                     </div>
                     {log.metadata?.currentWeightKg && (
-                      <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-900">
+                      <span className="rounded-md bg-[#eaf7ef] px-3 py-1.5 text-sm font-bold text-[#17663f]">
                         {log.metadata.currentWeightKg} kg
                       </span>
                     )}
@@ -1114,20 +1148,24 @@ export default function AccountPetDetailPage() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-black">Ιστορικό αναλύσεων</h2>
+        <div className="border-t border-[#dce5df] pt-6">
+          <h2 className="flex items-center gap-2 text-xl font-black text-[#14221b]">
+            <FileText size={20} className="text-[#1f7a4d]" aria-hidden="true" />
+            Ιστορικό αναλύσεων
+          </h2>
 
           {analysisHistory.length === 0 ? (
-            <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5">
-              <p className="font-semibold text-black">Δεν υπάρχει ιστορικό ανάλυσης ακόμη</p>
+            <div className="mt-4 rounded-lg border border-dashed border-[#b8c8be] bg-white p-5">
+              <p className="font-bold text-[#14221b]">Δεν υπάρχει ιστορικό ανάλυσης ακόμη</p>
               <p className="mt-2 text-sm text-gray-600">
                 Κάνε νέα ανάλυση για να δημιουργηθεί η πρώτη διατροφική αναφορά
                 και η πρώτη εγγραφή ιστορικού.
               </p>
               <Link
                 href={`/account/chatbot?petId=${pet.id}`}
-                className="mt-4 inline-block rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+                className="nt-button nt-button-primary nt-focus mt-4"
               >
+                <Sparkles size={16} aria-hidden="true" />
                 Νέα ανάλυση
               </Link>
             </div>
@@ -1136,7 +1174,7 @@ export default function AccountPetDetailPage() {
               {analysisHistory.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                  className="rounded-lg border border-[#dce5df] bg-white p-4 shadow-sm"
                 >
                   <p className="font-semibold text-black">
                     {new Date(item.createdAt).toLocaleString()}
@@ -1165,7 +1203,7 @@ export default function AccountPetDetailPage() {
                     Πρόταση τροφής:{" "}
                     {item.matched_food_name
                       ? "αποθηκεύτηκε με αυτή την ανάλυση"
-                      : "διάλεξε τροφή στον σύμβουλο για πιο συγκεκριμένη συμβουλή"}
+                      : "διάλεξε τροφή στον βοηθό για πιο συγκεκριμένη ενημέρωση"}
                   </p>
                 </div>
               ))}

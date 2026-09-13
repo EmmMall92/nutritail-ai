@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/db/supabase";
+import { supabaseAdmin as supabase } from "@/lib/db/supabaseAdmin";
 import { mapDbPetToPet, mapPetToDbPet } from "@/mappers/petMapper";
 import type { Pet } from "@/types/pet";
 import type { DbPet } from "@/types/db/db-pet";

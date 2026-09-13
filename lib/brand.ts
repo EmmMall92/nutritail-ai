@@ -32,18 +32,18 @@ export const defaultBrandSettings: BrandSettings = {
   website: "https://nutritail.ai",
   address: "",
   logoText: "NT",
-  accentColor: "#22c55e",
+  accentColor: "#1f7a4d",
   logoDataUrl: "",
 
   name: "Nutritail AI",
   shortName: "Nutritail",
   slogan: "Personalized Pet Nutrition",
-  description: "AI-powered pet nutrition guidance for dogs and cats.",
+  description: "Ενημερωτική επιλογή τροφής για σκύλους και γάτες.",
   domain: "https://nutritail.ai",
   colors: {
-    primary: "#111111",
-    secondary: "#f3f4f6",
-    accent: "#22c55e",
+    primary: "#123d2b",
+    secondary: "#eaf7ef",
+    accent: "#1f7a4d",
   },
 };
 

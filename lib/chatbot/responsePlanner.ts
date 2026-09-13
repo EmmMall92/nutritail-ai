@@ -1,7 +1,10 @@
 import { getDialogueTemplate } from "@/lib/chatbot/dialoguePlaybook";
 import { detectUserIntent } from "@/lib/chatbot/intentDetector";
 import { checkPetDataCompleteness } from "@/lib/chatbot/petDataCompleteness";
-import { detectSafetyWarnings, hasHardStop } from "@/lib/chatbot/safetyRules";
+import {
+  blocksFoodRecommendations,
+  detectSafetyWarnings,
+} from "@/lib/chatbot/safetyRules";
 import { detectMessageLocale, uncertaintyForMissingData } from "@/lib/chatbot/humanTone";
 import type {
   ChatbotIntent,
@@ -89,7 +92,7 @@ function confidenceFor({
   safetyWarnings: ReturnType<typeof detectSafetyWarnings>;
   eligibleFoods: MatchedFoodForPlanning[];
 }): "high" | "medium" | "low" {
-  if (hasHardStop(safetyWarnings)) return "low";
+  if (blocksFoodRecommendations(safetyWarnings)) return "low";
   if (missingCount >= 2) return "low";
   if (eligibleFoods.length === 0) return "low";
   if (
@@ -120,6 +123,7 @@ export function planChatbotResponse({
   const template = getDialogueTemplate(detectedIntent);
   const completeness = checkPetDataCompleteness(pet, detectedIntent, locale);
   const safetyWarnings = detectSafetyWarnings({ message, pet, locale });
+  const recommendationBlocked = blocksFoodRecommendations(safetyWarnings);
   const rejectedFoods = matchedFoods
     .map((food) => ({ food, reasons: rejectReasons(food, pet, detectedIntent) }))
     .filter((item) => item.reasons.length > 0);
@@ -144,7 +148,7 @@ export function planChatbotResponse({
     });
   }
 
-  if (!hasHardStop(safetyWarnings) && eligibleFoods.length > 0) {
+  if (!recommendationBlocked && eligibleFoods.length > 0) {
     responseSections.push({
       title: locale === "el" ? "Τροφές που μπορούν να συζητηθούν" : "Foods to consider",
       bullets: eligibleFoods.slice(0, 3).map((food) => foodLabel(food) || "Unnamed food"),
@@ -168,9 +172,9 @@ export function planChatbotResponse({
     intent: detectedIntent,
     missing_fields: completeness.missing_fields,
     should_ask_followup:
-      completeness.missing_fields.length > 0 && !hasHardStop(safetyWarnings),
-    followup_question: hasHardStop(safetyWarnings) ? null : completeness.next_question,
-    eligible_foods: hasHardStop(safetyWarnings) ? [] : eligibleFoods,
+      completeness.missing_fields.length > 0 && !recommendationBlocked,
+    followup_question: recommendationBlocked ? null : completeness.next_question,
+    eligible_foods: recommendationBlocked ? [] : eligibleFoods,
     rejected_foods: rejectedFoods,
     safety_warnings: safetyWarnings,
     response_sections: responseSections,

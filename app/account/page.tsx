@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ArrowRight, Bot, FileText, PawPrint, Sparkles } from "lucide-react";
 import {
   betaAccessPlanConfig,
   betaPlanHighlights,
 } from "@/lib/beta/accessPlan";
 import { getBetaLimitStatus } from "@/lib/beta/limitPolicy";
+import { launchFeatures } from "@/lib/launch/features";
 import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
@@ -207,7 +209,9 @@ function getNutritionPlanStatusCopy(score?: number | null) {
 
   return {
     label: "Προτείνεται νέος έλεγχος",
-    text: "Η τελευταία επιλογή θέλει επανέλεγχο. Χρησιμοποίησε ξανά τον σύμβουλο με ακριβές όνομα τροφής, φωτογραφία ετικέτας ή νεότερα στοιχεία.",
+    text: launchFeatures.foodPhotoAnalysis
+      ? "Η τελευταία επιλογή θέλει επανέλεγχο. Χρησιμοποίησε ξανά τον βοηθό με ακριβές όνομα τροφής, φωτογραφία ετικέτας ή νεότερα στοιχεία."
+      : "Η τελευταία επιλογή θέλει επανέλεγχο. Χρησιμοποίησε ξανά τον βοηθό με ακριβές όνομα τροφής ή νεότερα στοιχεία.",
   };
 }
 
@@ -336,7 +340,7 @@ function getDashboardNextActions({
     return [
       {
         title: "Ξεκίνα με το πρώτο κατοικίδιο",
-        detail: "Ο σύμβουλος θα φτιάξει προφίλ, θερμίδες και πρώτη λίστα τροφών.",
+        detail: "Ο βοηθός θα οργανώσει το προφίλ, τις ενδεικτικές θερμίδες και την πρώτη λίστα τροφών.",
         href: "/account/chatbot",
         tone: "primary",
       },
@@ -748,63 +752,60 @@ export default function AccountPage() {
   const showDetailedDashboardReference = false;
 
   return (
-    <section className="space-y-6">
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <section className="space-y-5">
+      <div className="border-b border-[#dce5df] pb-6 pt-2">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-black">
+            <p className="nt-eyebrow">Ο λογαριασμός σου</p>
+            <h1 className="mt-2 text-3xl font-black text-[#14221b]">
               Καλώς ήρθες, {customer.fullName}
             </h1>
-            <p className="mt-2 max-w-3xl text-gray-600">
-              Ο προσωπικός σου πίνακας NutriTail AI για διατροφική καθοδήγηση,
-              αποθηκευμένα κατοικίδια, αναφορές και επόμενα βήματα.
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#5f6f66]">
+              Εδώ βρίσκεις το ενεργό πλάνο, τις αναφορές και την επόμενη κίνηση
+              για κάθε κατοικίδιο.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-gray-700">
-              <span className="rounded-full bg-gray-100 px-3 py-1">
+              <span className="rounded-md bg-white px-3 py-1.5 ring-1 ring-[#dce5df]">
                 {profileProgress}% κάλυψη αναφορών
               </span>
-              <span className="rounded-full bg-gray-100 px-3 py-1">
+              <span className="rounded-md bg-white px-3 py-1.5 ring-1 ring-[#dce5df]">
                 {readyReports} έτοιμες αναφορές
               </span>
-              <span className="rounded-full bg-gray-100 px-3 py-1">
+              <span className="rounded-md bg-white px-3 py-1.5 ring-1 ring-[#dce5df]">
                 {petsNeedingAnalysisCount} θέλουν ανάλυση
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Link
               href="/account/chatbot"
-              className="rounded-xl bg-black px-5 py-3 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+              className="nt-button nt-button-primary nt-focus"
             >
+              <Sparkles size={17} />
               Νέα διατροφική ανάλυση
             </Link>
             <Link
               href="/account/pets"
-              className="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+              className="nt-button nt-button-secondary nt-focus"
             >
+              <PawPrint size={17} />
               Δες τα κατοικίδια
-            </Link>
-            <Link
-              href="/account/food-compare"
-              className="rounded-xl border border-teal-300 px-5 py-3 text-center text-sm font-medium text-teal-950 transition hover:bg-teal-50"
-            >
-              Σύγκριση τροφών
             </Link>
           </div>
         </div>
       </div>
 
       <div
-        className="rounded-2xl border border-black bg-black p-6 text-white shadow-sm"
+        className="rounded-lg border border-[#123d2b] bg-[#123d2b] p-5 text-white shadow-[0_14px_35px_rgba(18,61,43,0.16)] sm:p-6"
         data-testid="account-next-best-move"
       >
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+            <p className="text-xs font-extrabold text-[#72d39a]">
               {accountNextBestMove.eyebrow}
             </p>
-            <h2 className="mt-2 text-2xl font-bold">
+            <h2 className="mt-2 text-2xl font-black">
               {accountNextBestMove.title}
             </h2>
             <p className="mt-3 text-sm leading-6 text-gray-200">
@@ -820,13 +821,14 @@ export default function AccountPage() {
               <Link
                 key={action.label}
                 href={action.href}
-                className={`rounded-xl px-4 py-3 text-center text-sm font-semibold transition ${
+                className={`nt-focus flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 py-3 text-center text-sm font-bold transition ${
                   action.tone === "primary"
-                    ? "bg-white text-black hover:bg-gray-100"
+                    ? "bg-white text-[#123d2b] hover:bg-[#eaf7ef]"
                     : "border border-white/30 text-white hover:bg-white/10"
                 }`}
               >
                 {action.label}
+                {action.tone === "primary" && <ArrowRight size={16} />}
               </Link>
             ))}
           </div>
@@ -835,21 +837,21 @@ export default function AccountPage() {
 
       {accountPlanSnapshot && (
         <div
-          className="rounded-2xl border border-teal-200 bg-white p-6 shadow-sm"
+          className="rounded-lg border border-[#cfdcd3] bg-white p-5 shadow-sm sm:p-6"
           data-testid="account-plan-snapshot"
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
+              <p className="nt-eyebrow">
                 Ενεργό πλάνο
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-black">
+              <h2 className="mt-2 text-2xl font-black text-[#14221b]">
                 {accountPlanSnapshot.petName}
               </h2>
-              <p className="mt-1 text-sm font-medium text-teal-800">
+              <p className="mt-1 text-sm font-bold text-[#1f7a4d]">
                 {accountPlanSnapshot.weightGoal}
               </p>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-700">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-[#5f6f66]">
                 Τα βασικά που χρειάζεσαι σήμερα: τροφή, θερμίδες, ποσότητα και επόμενο βήμα.
                 Η πλήρης ανάλυση μένει στην αναφορά.
               </p>
@@ -858,55 +860,55 @@ export default function AccountPage() {
             <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
               <Link
                 href={accountPlanSnapshot.reportHref}
-                className="rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+                className="nt-button nt-button-primary nt-focus min-h-10 px-4 py-2"
               >
                 Άνοιγμα αναφοράς
               </Link>
               <Link
                 href={accountPlanSnapshot.progressHref}
-                className="rounded-xl border border-teal-300 px-4 py-2 text-center text-sm font-medium text-teal-900 transition hover:bg-teal-50"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
                 Έλεγχος προόδου
               </Link>
               <Link
                 href={accountPlanSnapshot.alternativeHref}
-                className="rounded-xl border border-violet-200 px-4 py-2 text-center text-sm font-medium text-violet-900 transition hover:bg-violet-50"
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
               >
                 Άλλη τροφή
               </Link>
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-xl border border-teal-100 bg-teal-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">
+          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-[#dce5df] pt-5 xl:grid-cols-4">
+            <div>
+              <p className="text-xs font-extrabold text-[#1f7a4d]">
                 Τροφή
               </p>
-              <p className="mt-2 font-semibold text-teal-950">
+              <p className="mt-2 font-bold text-[#14221b]">
                 {accountPlanSnapshot.foodName}
               </p>
             </div>
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Θερμίδες
               </p>
-              <p className="mt-2 font-semibold text-gray-950">
+              <p className="mt-2 font-bold text-[#14221b]">
                 {accountPlanSnapshot.dailyCalories}
               </p>
             </div>
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Ποσότητα
               </p>
-              <p className="mt-2 font-semibold text-gray-950">
+              <p className="mt-2 font-bold text-[#14221b]">
                 {accountPlanSnapshot.gramsPerDay}
               </p>
             </div>
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div>
+              <p className="text-xs font-extrabold text-[#6b7b72]">
                 Επανέλεγχος
               </p>
-              <p className="mt-2 font-semibold text-gray-950">
+              <p className="mt-2 font-bold text-[#14221b]">
                 2-4 εβδομάδες
               </p>
             </div>
@@ -1463,19 +1465,22 @@ export default function AccountPage() {
         </>
       )}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Προτεινόμενο επόμενο βήμα</p>
-          <p className="mt-2 text-lg font-semibold text-black">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg border border-[#bde6cc] bg-[#eaf7ef] p-5">
+          <Sparkles size={20} className="text-[#1f7a4d]" aria-hidden="true" />
+          <p className="mt-4 text-xs font-extrabold text-[#1f7a4d]">
+            Προτεινόμενο επόμενο βήμα
+          </p>
+          <p className="mt-2 text-lg font-bold text-[#14221b]">
             {pets.length === 0
               ? "Δημιούργησε το πρώτο κατοικίδιο"
               : petsNeedingAnalysisCount > 0
                 ? "Κάνε τις αναλύσεις που λείπουν"
                 : "Δες την τελευταία αναφορά"}
           </p>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm leading-6 text-[#52645a]">
             {pets.length === 0
-              ? "Ξεκίνα από τον σύμβουλο για να αποθηκευτούν προφίλ και αναφορά."
+              ? "Ξεκίνα από τον βοηθό για να αποθηκευτούν προφίλ και αναφορά."
               : petsNeedingAnalysisCount > 0
                 ? "Κάποια αποθηκευμένα κατοικίδια δεν έχουν ακόμη ανάλυση."
                 : "Τα κατοικίδια έχουν αποθηκευμένο ιστορικό αναλύσεων."}
@@ -1484,51 +1489,58 @@ export default function AccountPage() {
 
         <Link
           href="/account/chatbot"
-          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+          className="nt-focus group rounded-lg border border-[#dce5df] bg-white p-5 transition hover:border-[#8ab89b] hover:shadow-sm"
         >
-          <h2 className="text-lg font-semibold text-black">
-            Διατροφικός σύμβουλος
+          <Bot size={20} className="text-[#1f7a4d]" aria-hidden="true" />
+          <h2 className="mt-4 text-lg font-bold text-[#14221b] group-hover:text-[#1f7a4d]">
+            Βοηθός επιλογής τροφής
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
             Ξεκίνα νέα καθοδηγούμενη ανάλυση για αποθηκευμένο ή νέο κατοικίδιο.
           </p>
         </Link>
 
         <Link
           href="/account/pets"
-          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+          className="nt-focus group rounded-lg border border-[#dce5df] bg-white p-5 transition hover:border-[#8ab89b] hover:shadow-sm"
         >
-          <h2 className="text-lg font-semibold text-black">Κατοικίδια</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <PawPrint size={20} className="text-[#1f7a4d]" aria-hidden="true" />
+          <h2 className="mt-4 text-lg font-bold text-[#14221b] group-hover:text-[#1f7a4d]">
+            Κατοικίδια
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
             Δες προφίλ, ιστορικό αναλύσεων, αναφορές και πορεία.
           </p>
         </Link>
 
         <Link
           href="/account/profile"
-          className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+          className="nt-focus group rounded-lg border border-[#dce5df] bg-white p-5 transition hover:border-[#8ab89b] hover:shadow-sm"
         >
-          <h2 className="text-lg font-semibold text-black">Προφίλ</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <FileText size={20} className="text-[#1f7a4d]" aria-hidden="true" />
+          <h2 className="mt-4 text-lg font-bold text-[#14221b] group-hover:text-[#1f7a4d]">
+            Προφίλ
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
             Διαχειρίσου στοιχεία λογαριασμού και πληροφορίες πελάτη.
           </p>
         </Link>
       </div>
 
       {petsNeedingAnalysis.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-[#dce5df] bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-black">
+              <h2 className="text-xl font-bold text-[#14221b]">
                 Κατοικίδια που θέλουν ανάλυση
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm leading-6 text-[#5f6f66]">
                 Ξεκίνα από εδώ ώστε κάθε αποθηκευμένο κατοικίδιο να έχει χρήσιμη ανάλυση.
               </p>
             </div>
             <Link
               href="/account/chatbot"
-              className="rounded-xl border border-black px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-100"
+              className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2"
             >
               Έναρξη ανάλυσης
             </Link>
@@ -1539,12 +1551,12 @@ export default function AccountPage() {
               <Link
                 key={pet.id}
                 href={`/account/pets/${pet.id}`}
-                className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-black"
+                className="nt-focus rounded-lg border border-[#dce5df] bg-[#f7faf8] p-4 transition hover:border-[#8ab89b]"
               >
-                <p className="font-semibold text-black">
+                <p className="font-bold text-[#14221b]">
                   {formatCustomerPetName(pet.name)}
                 </p>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-[#5f6f66]">
                   {getPetLabel(pet)}
                 </p>
               </Link>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { mapDbCustomerToCustomer } from "@/mappers/customerMapper";
 import type { DbCustomer } from "@/types/db/db-customer";
@@ -6,21 +7,16 @@ import type { DbCustomer } from "@/types/db/db-customer";
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
 
-    const authUserId = String(body.authUserId ?? "").trim();
+    const authUserId = access.user.id;
     const fullName = String(body.fullName ?? "").trim();
     const phone = body.phone ? String(body.phone).trim() : null;
     const bonusCardCode = body.bonusCardCode
       ? String(body.bonusCardCode).trim()
       : null;
     const notes = body.notes ? String(body.notes).trim() : null;
-
-    if (!authUserId) {
-      return NextResponse.json(
-        { error: "Missing auth user id." },
-        { status: 400 }
-      );
-    }
 
     if (!fullName) {
       return NextResponse.json(

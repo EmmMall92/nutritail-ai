@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/db/supabase";
+import { supabaseAdmin as supabase } from "@/lib/db/supabaseAdmin";
 import { adminActivityLogService } from "@/services/adminActivityLogService";
 import type { DbFood } from "@/types/db/db-food";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";

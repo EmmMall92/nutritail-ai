@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+:root {
+  --nt-ink: #14221b;
+  --nt-muted: #5f6f66;
+  --nt-forest: #123d2b;
+  --nt-green: #1f7a4d;
+  --nt-green-bright: #72d39a;
+  --nt-mint: #eaf7ef;
+  --nt-coral: #e56f51;
+  --nt-sun: #f4c95d;
+  --nt-paper: #fbfcfa;
+  --nt-line: #dce5df;
+}
+
 html,
 body {
   margin: 0;
@@ -7,5 +20,97 @@ body {
 }
 
 body {
-  background: #f9fafb;
+  background: var(--nt-paper);
+  color: var(--nt-ink);
+  font-family: var(--font-inter), Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #bce8cc;
+  color: var(--nt-ink);
+}
+
+.nt-container {
+  width: min(calc(100% - 2rem), 76rem);
+  margin-inline: auto;
+}
+
+.nt-eyebrow {
+  color: var(--nt-green);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.nt-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.15rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.nt-button:hover {
+  transform: translateY(-1px);
+}
+
+.nt-button-primary {
+  background: var(--nt-green);
+  color: white;
+}
+
+.nt-button-primary:hover {
+  background: #196740;
+}
+
+.nt-button-secondary {
+  border: 1px solid var(--nt-line);
+  background: white;
+  color: var(--nt-ink);
+}
+
+.nt-button-secondary:hover {
+  border-color: #a9b8af;
+  background: #f5f8f6;
+}
+
+.nt-focus:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--nt-coral) 55%, white);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .nt-container {
+    width: min(calc(100% - 3rem), 76rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

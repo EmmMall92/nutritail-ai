@@ -152,9 +152,10 @@ const privacyTrustMarkers = [
   "όχι για να εφευρίσκει τροφές, θερμίδες ή ιατρικές οδηγίες",
   "Οι προτάσεις τροφών, οι αποκλεισμοί αλλεργιών και τα όρια ασφάλειας παραμένουν στον κώδικα και στη βάση NutriTail.",
   "Διατήρηση, διόρθωση και διαγραφή",
-  "Κρατάμε στοιχεία λογαριασμού, κατοικιδίων και αναλύσεων όσο χρειάζονται",
-  "διόρθωση, εξαγωγή ή διαγραφή",
-  "τι μπορεί να διαγραφεί άμεσα",
+  "PRIVACY_RETENTION.accountData",
+  "Μπορείς να κατεβάσεις άμεσα αντίγραφο σε μορφή JSON",
+  "Η διαγραφή από το Privacy Center αφαιρεί τον ενεργό λογαριασμό",
+  "Cookies, περιοχή και συνεργαζόμενα καταστήματα",
 ];
 
 const privacyCustomerSummaryMarkers = [
@@ -179,7 +180,7 @@ const termsRecommendationBoundaryMarkers = [
   "Owner decision with vet boundary",
   "Το AI δεν επιτρέπεται να εφευρίσκει προϊόντα, θρεπτικές τιμές ή claims.",
   "προηγούνται από οποιαδήποτε εμπορική προτεραιότητα ή featured επιλογή",
-  "η τελική καθοδήγηση ανήκει στον κτηνίατρο",
+  "Η επόμενη απόφαση ανήκει στον κτηνίατρο",
 ];
 
 for (const marker of aboutMarkers) {
@@ -280,9 +281,9 @@ assert(
 
 assert(
   packageJson.includes(
-    "qa:account-dashboard-readiness-contract && npm run qa:public-trust-copy && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
+    "qa:account-dashboard-readiness-contract && npm run qa:public-trust-copy && npm run qa:gdpr-privacy-contract && npm run qa:legal-readiness-contract && npm run qa:partner-referral-contract && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
   ),
-  "CI readiness must include qa:public-trust-copy and qa:support-flow-contract before launch recommendation checks."
+  "CI readiness must include public trust, GDPR, legal, partner referral, and support contracts before launch recommendation checks."
 );
 
 console.log("Public trust copy contract passed.");

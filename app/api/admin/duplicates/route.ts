@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/db/supabase";
+import { supabaseAdmin as supabase } from "@/lib/db/supabaseAdmin";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 
 type DuplicateGroup = {

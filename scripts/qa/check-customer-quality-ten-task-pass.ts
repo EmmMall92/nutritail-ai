@@ -125,7 +125,7 @@ assert(
   "Auto-scroll must not observe and force-scroll every chat child."
 );
 assert(
-  accountLayout.includes("grid-cols-4") &&
+  accountLayout.includes('gridTemplateColumns: "repeat(6, minmax(0, 1fr))"') &&
     !accountLayout.includes("overflow-x-auto px-4 py-3"),
   "Mobile account navigation must fit without a horizontal scrollbar."
 );

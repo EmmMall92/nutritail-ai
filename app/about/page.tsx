@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PublicFooter } from "@/components/PublicFooter";
+import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -22,7 +24,7 @@ const values = [
   },
   {
     title: "Ασφαλή όρια",
-    text: "Όταν το θέμα μοιάζει ιατρικό ή επείγον, η ροή δεν προσποιείται ότι κάνει διάγνωση. Κατευθύνει τον χρήστη σε κτηνίατρο.",
+    text: "Όταν το θέμα είναι ιατρικό, η ροή σταματά πριν από προϊόν, θερμίδες ή ποσότητα και κατευθύνει τον χρήστη σε κτηνίατρο.",
   },
   {
     title: "Συνεχής βελτίωση",
@@ -40,21 +42,7 @@ const roadmap = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
-      <header className="border-b border-black/10 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="text-xl font-black tracking-tight">
-            Nutritail AI
-          </Link>
-          <nav className="flex flex-wrap gap-2 text-sm font-semibold">
-            <Link href="/how-it-works" className="rounded-full border border-black/15 px-4 py-2">
-              Πώς δουλεύει
-            </Link>
-            <Link href="/register" className="rounded-full bg-black px-4 py-2 text-white">
-              Ξεκίνα δωρεάν
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto max-w-6xl px-6 py-14 md:py-20">
         <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
@@ -66,8 +54,8 @@ export default function AboutPage() {
         <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-700">
           Το Nutritail AI δημιουργείται για ιδιοκτήτες σκύλων και γατών που
           θέλουν πιο καθαρές απαντήσεις: πόσες θερμίδες χρειάζεται το ζώο, ποιες
-          τροφές ταιριάζουν καλύτερα, τι να προσέξουν και πώς να παρακολουθούν
-          την πρόοδο.
+          εμπορικές τροφές ταιριάζουν στα δηλωμένα στοιχεία, τι να προσέξουν και
+          πώς να παρακολουθούν την πρόοδο σε μη ιατρικές περιπτώσεις.
         </p>
       </section>
 
@@ -210,6 +198,30 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
+
+      <section className="border-b border-black/10 bg-[#eef7f1]">
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 md:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">
+              Επαγγελματική διαφάνεια
+            </p>
+            <h2 className="mt-3 text-3xl font-black">Τι δεν ισχυριζόμαστε</h2>
+          </div>
+          <div className="space-y-4 text-sm leading-7 text-gray-700">
+            <p>
+              Το Nutritail δεν είναι κτηνιατρείο και οι αυτοματοποιημένες
+              απαντήσεις του δεν είναι κτηνιατρικές γνωματεύσεις.
+            </p>
+            <p>
+              Σεμινάρια, σπουδές βοηθητικού ρόλου ή άλλη κατάρτιση της ομάδας δεν
+              παρουσιάζονται ως πτυχίο ή άδεια κτηνιάτρου. Κτηνίατρος ή
+              επιστημονικός υπεύθυνος θα κατονομάζεται μόνο μετά από επαλήθευση
+              της επαγγελματικής του ιδιότητας.
+            </p>
+          </div>
+        </div>
+      </section>
+      <PublicFooter />
     </main>
   );
 }

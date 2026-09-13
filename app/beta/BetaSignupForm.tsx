@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { launchFeatures } from "@/lib/launch/features";
 
 export function BetaSignupForm() {
   const [name, setName] = useState("");
@@ -103,6 +104,7 @@ export function BetaSignupForm() {
         />
       </label>
 
+      {launchFeatures.professionalSignup && (
       <label className="block">
         <span className="text-sm font-semibold text-gray-800">Ποιος είσαι;</span>
         <select
@@ -116,6 +118,7 @@ export function BetaSignupForm() {
           <option value="other">Άλλο</option>
         </select>
       </label>
+      )}
 
       <label className="block">
         <span className="text-sm font-semibold text-gray-800">Τι κατοικίδια έχεις;</span>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { launchFeatures } from "@/lib/launch/features";
 import type { Profile } from "@/types/profile";
 
 function AdminNavLink({
@@ -69,6 +70,9 @@ const ADMIN_NAV_GROUPS = [
 const ADMIN_ONLY_NAV_GROUP = {
   label: "Operations",
   links: [
+    ...(launchFeatures.partnerStores
+      ? [{ href: "/admin/partners", label: "Partners" }]
+      : []),
     { href: "/admin/export", label: "Export" },
     { href: "/admin/restore", label: "Restore" },
     { href: "/admin/settings", label: "Settings" },
@@ -76,7 +80,12 @@ const ADMIN_ONLY_NAV_GROUP = {
 } as const;
 
 function isAdminOnlyPath(pathname: string) {
-  return ["/admin/export", "/admin/restore", "/admin/settings"].some(
+  return [
+    "/admin/partners",
+    "/admin/export",
+    "/admin/restore",
+    "/admin/settings",
+  ].some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/db/supabase";
+import { supabaseAdmin as supabase } from "@/lib/db/supabaseAdmin";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import { requireAdminApiAccess } from "@/lib/auth/adminApiGuard";
 

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { PublicFooter } from "@/components/PublicFooter";
+import { PublicHeader } from "@/components/PublicHeader";
 import {
   betaPlanLimits,
   futurePaidPlanDirection,
 } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
+import { launchFeatures } from "@/lib/launch/features";
 import { BetaSignupForm } from "./BetaSignupForm";
 
 export const metadata: Metadata = {
@@ -59,7 +62,7 @@ const betaPlainTerms = [
   },
   {
     title: "Τι παίρνεις τώρα",
-    text: "Πρόσβαση στον σύμβουλο, αποθήκευση κατοικιδίων, προτάσεις τροφών, αναφορά, ιστορικό και έλεγχο προόδου μέσα στα beta όρια.",
+    text: "Πρόσβαση στον βοηθό επιλογής τροφής, αποθήκευση κατοικιδίων, επιλογές τροφών, αναφορά, ιστορικό και έλεγχο προόδου μέσα στα beta όρια.",
   },
   {
     title: "Τι δεν είναι ακόμη τελικό",
@@ -74,29 +77,13 @@ const betaLaunchSignals = [
 ];
 
 export default function BetaPage() {
+  if (!launchFeatures.betaWaitlist) {
+    redirect("/register");
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
-      <header className="border-b border-black/10 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="text-xl font-black tracking-tight">
-            Nutritail AI
-          </Link>
-          <nav className="flex flex-wrap gap-2 text-sm font-semibold">
-            <Link href="/about" className="rounded-full border border-black/15 px-4 py-2">
-              Σχετικά
-            </Link>
-            <Link href="/how-it-works" className="rounded-full border border-black/15 px-4 py-2">
-              Πώς δουλεύει
-            </Link>
-            <Link href="/plans" className="rounded-full border border-black/15 px-4 py-2">
-              Plans
-            </Link>
-            <Link href="/support" className="rounded-full border border-black/15 px-4 py-2">
-              Support
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.05fr_0.95fr] md:items-start md:py-20">
         <div>
@@ -167,6 +154,8 @@ export default function BetaPage() {
         </div>
       </section>
 
+      {launchFeatures.paidPlans && (
+      <>
       <section className="border-t border-black/10 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="max-w-3xl">
@@ -309,6 +298,9 @@ export default function BetaPage() {
           </div>
         </div>
       </section>
+      </>
+      )}
+      <PublicFooter />
     </main>
   );
 }

@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
 import { buildAuthCallbackPath, normalizeSafeRedirectPath } from "@/lib/auth/safeRedirect";
 import { getCustomerAuthErrorMessage } from "@/lib/auth/customerAuthMessages";
+import {
+  REGISTRATION_LEGAL_SOURCE,
+  TERMS_VERSION,
+} from "@/lib/legal/config";
+import { PRIVACY_POLICY_VERSION } from "@/lib/privacy/config";
 import { createClient } from "@/lib/supabase/client";
 
 function getSafeRedirectPath() {
@@ -52,6 +58,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -76,6 +83,12 @@ export default function RegisterPage() {
         );
       }
 
+      if (!termsAccepted) {
+        throw new Error(
+          "Για να δημιουργηθεί ο λογαριασμός, χρειάζεται να αποδεχτείς τους Όρους Χρήσης."
+        );
+      }
+
       const trimmedEmail = email.trim();
 
       if (!isValidCustomerEmail(trimmedEmail)) {
@@ -93,6 +106,11 @@ export default function RegisterPage() {
           emailRedirectTo: `${window.location.origin}${buildAuthCallbackPath(redirectPath)}`,
           data: {
             full_name: fullName.trim(),
+            terms_accepted: true,
+            terms_version: TERMS_VERSION,
+            privacy_notice_acknowledged: true,
+            privacy_notice_version: PRIVACY_POLICY_VERSION,
+            legal_acceptance_source: REGISTRATION_LEGAL_SOURCE,
           },
         },
       });
@@ -143,47 +161,6 @@ export default function RegisterPage() {
       title="Δημιουργία λογαριασμού"
       description="Αποθήκευσε κατοικίδια, διατροφικές αναλύσεις και αναφορές για να επιστρέφεις όποτε τα χρειάζεσαι."
     >
-      <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
-        <p className="font-semibold text-green-950">
-          Ο λογαριασμός κρατά το NutriTail χρήσιμο όσο περνάει ο καιρός.
-        </p>
-        <ul className="mt-2 space-y-1">
-          <li>- Αποθηκεύεις προφίλ κατοικιδίων και σημειώσεις υγείας.</li>
-          <li>- Κρατάς εκτυπώσιμες αναφορές σε ένα σημείο.</li>
-          <li>- Ξανατρέχεις προτάσεις όταν αλλάζει τροφή ή βάρος.</li>
-        </ul>
-      </div>
-
-      <div
-        className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900"
-        data-testid="auth-next-step-card"
-      >
-        <p className="font-semibold text-blue-950">Μετά την εγγραφή ξεκινάς αμέσως πρακτικά.</p>
-        <p className="mt-1">
-          Μπορείς να δημιουργήσεις προφίλ κατοικιδίου, να τρέξεις ανάλυση και να κρατήσεις
-          αναφορά για μελλοντικό έλεγχο προόδου.
-        </p>
-        <p
-          className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-blue-950"
-          data-testid="auth-redirect-destination"
-        >
-          Μετά την εγγραφή θα συνεχίσεις {redirectLabel}.
-        </p>
-      </div>
-
-      <div
-        className="mb-5 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
-        data-testid="auth-chatbot-prep-card"
-      >
-        <p className="font-semibold">{"\u0393\u03b9\u03b1 \u03c0\u03b9\u03bf \u03b3\u03c1\u03ae\u03b3\u03bf\u03c1\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7, \u03ad\u03c7\u03b5 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b1:"}</p>
-        <ul className="mt-2 space-y-1">
-          <li>{"- \u0392\u03ac\u03c1\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03b7\u03bb\u03b9\u03ba\u03af\u03b1 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03b9\u03b4\u03af\u03bf\u03c5"}</li>
-          <li>{"- \u03a3\u03c4\u03b5\u03af\u03c1\u03c9\u03c3\u03b7 \u03ba\u03b1\u03b9 \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1"}</li>
-          <li>{"- \u03a4\u03c9\u03c1\u03b9\u03bd\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae \u03ae \u03c6\u03c9\u03c4\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1 \u03b5\u03c4\u03b9\u03ba\u03ad\u03c4\u03b1\u03c2"}</li>
-          <li>{"- \u03a3\u03c4\u03cc\u03c7\u03bf\u03c2, \u03c0\u03c1\u03bf\u03c4\u03b9\u03bc\u03ae\u03c3\u03b5\u03b9\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03b1\u03c0\u03bf\u03c6\u03b5\u03cd\u03b3\u03b5\u03b9"}</li>
-        </ul>
-      </div>
-
       <form onSubmit={handleRegister} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Ονοματεπώνυμο</span>
@@ -192,7 +169,7 @@ export default function RegisterPage() {
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Ονοματεπώνυμο"
             autoComplete="name"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
+            className="mt-2 h-12 w-full rounded-lg border border-[#cbd7cf] px-3 text-black outline-none transition focus:border-[#1f7a4d] focus:ring-2 focus:ring-[#d8efe1]"
           />
         </label>
 
@@ -204,31 +181,65 @@ export default function RegisterPage() {
             placeholder="you@example.com"
             type="email"
             autoComplete="email"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
+            className="mt-2 h-12 w-full rounded-lg border border-[#cbd7cf] px-3 text-black outline-none transition focus:border-[#1f7a4d] focus:ring-2 focus:ring-[#d8efe1]"
           />
         </label>
 
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Κωδικός</span>
-          <div className="mt-2 flex rounded-xl border border-gray-300 bg-white transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-100">
+          <div className="mt-2 flex h-12 rounded-lg border border-[#cbd7cf] bg-white transition focus-within:border-[#1f7a4d] focus-within:ring-2 focus-within:ring-[#d8efe1]">
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Τουλάχιστον 6 χαρακτήρες"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
-              className="min-w-0 flex-1 rounded-l-xl p-3 text-black outline-none"
+              className="min-w-0 flex-1 rounded-l-lg px-3 text-black outline-none"
             />
             <button
               type="button"
               aria-label={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
               onClick={() => setShowPassword((value) => !value)}
-              className="shrink-0 rounded-r-xl border-l border-gray-200 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+              className="nt-focus flex w-12 shrink-0 items-center justify-center rounded-r-lg border-l border-[#dce5df] text-[#52635a] transition hover:bg-[#f3f7f4]"
+              title={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
             >
-              {showPassword ? "Απόκρυψη" : "Εμφάνιση"}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
         </label>
+
+        <div
+          className="flex items-start gap-3 rounded-lg border border-[#dce5df] bg-[#f7faf8] p-3"
+          data-testid="registration-legal-acceptance"
+        >
+          <input
+            id="terms-accepted"
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(event) => setTermsAccepted(event.target.checked)}
+            required
+            className="nt-focus mt-0.5 h-5 w-5 shrink-0 accent-[#1f7a4d]"
+          />
+          <label htmlFor="terms-accepted" className="text-sm leading-6 text-[#42534a]">
+            Αποδέχομαι τους{" "}
+            <Link
+              href="/terms"
+              target="_blank"
+              className="font-bold text-[#123d2b] underline underline-offset-4"
+            >
+              Όρους Χρήσης
+            </Link>{" "}
+            και επιβεβαιώνω ότι ενημερώθηκα για την{" "}
+            <Link
+              href="/privacy"
+              target="_blank"
+              className="font-bold text-[#123d2b] underline underline-offset-4"
+            >
+              Πολιτική Απορρήτου
+            </Link>
+            .
+          </label>
+        </div>
 
         {error && (
           <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">
@@ -259,7 +270,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="nt-focus w-full rounded-lg bg-[#1f7a4d] py-3.5 text-sm font-bold text-white transition hover:bg-[#196740] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "Δημιουργείται λογαριασμός..." : "Δημιουργία λογαριασμού"}
         </button>
@@ -272,6 +283,12 @@ export default function RegisterPage() {
           >
             Σύνδεση
           </Link>
+        </p>
+        <p
+          className="text-center text-xs text-[#7a8980]"
+          data-testid="auth-redirect-destination"
+        >
+          Μετά την εγγραφή θα συνεχίσεις {redirectLabel}.
         </p>
       </form>
     </AuthShell>

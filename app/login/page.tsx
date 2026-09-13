@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -150,52 +151,6 @@ export default function LoginPage() {
       title="Σύνδεση"
       description="Συνέχισε στα κατοικίδια, τις αναλύσεις και τις προτάσεις τροφών που έχεις αποθηκεύσει."
     >
-      <div className="mb-5 rounded-xl border border-green-100 bg-green-50 p-4 text-sm text-green-900">
-        <p className="font-semibold text-green-950">Μετά τη σύνδεση μπορείς να:</p>
-        <ul className="mt-2 space-y-1">
-          <li>- Συνεχίσεις μια διατροφική ανάλυση κατοικιδίου.</li>
-          <li>- Δεις αποθηκευμένες αναφορές και σημειώσεις σίτισης.</li>
-          <li>- Ανανεώσεις προτάσεις όταν αλλάξει βάρος, τροφή ή συμπτώματα.</li>
-        </ul>
-      </div>
-
-      <div
-        className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900"
-        data-testid="auth-next-step-card"
-      >
-        <p className="font-semibold text-blue-950">Θα συνεχίσεις από εκεί που έμεινες.</p>
-        <p className="mt-1">
-          Αν ήρθες από αναφορά, σύνδεσμο ή έλεγχο προόδου, θα σε γυρίσουμε αυτόματα
-          στη σωστή σελίδα μετά τη σύνδεση.
-        </p>
-        <p
-          className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-medium text-blue-950"
-          data-testid="auth-login-confirmation-reminder"
-        >
-          Αν μόλις δημιούργησες λογαριασμό, άνοιξε πρώτα το email επιβεβαίωσης
-          και μετά γύρνα εδώ για σύνδεση.
-        </p>
-        <p
-          className="mt-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-blue-950"
-          data-testid="auth-redirect-destination"
-        >
-          Επόμενος προορισμός: {redirectLabel}.
-        </p>
-      </div>
-
-      <div
-        className="mb-5 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
-        data-testid="auth-chatbot-prep-card"
-      >
-        <p className="font-semibold">{"\u0393\u03b9\u03b1 \u03c0\u03b9\u03bf \u03b3\u03c1\u03ae\u03b3\u03bf\u03c1\u03b7 \u03b1\u03bd\u03ac\u03bb\u03c5\u03c3\u03b7, \u03ad\u03c7\u03b5 \u03ad\u03c4\u03bf\u03b9\u03bc\u03b1:"}</p>
-        <ul className="mt-2 space-y-1">
-          <li>{"- \u0392\u03ac\u03c1\u03bf\u03c2 \u03ba\u03b1\u03b9 \u03b7\u03bb\u03b9\u03ba\u03af\u03b1 \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03b9\u03b4\u03af\u03bf\u03c5"}</li>
-          <li>{"- \u03a3\u03c4\u03b5\u03af\u03c1\u03c9\u03c3\u03b7 \u03ba\u03b1\u03b9 \u03b4\u03c1\u03b1\u03c3\u03c4\u03b7\u03c1\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1"}</li>
-          <li>{"- \u03a4\u03c9\u03c1\u03b9\u03bd\u03ae \u03c4\u03c1\u03bf\u03c6\u03ae \u03ae \u03c6\u03c9\u03c4\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1 \u03b5\u03c4\u03b9\u03ba\u03ad\u03c4\u03b1\u03c2"}</li>
-          <li>{"- \u03a3\u03c4\u03cc\u03c7\u03bf\u03c2, \u03c0\u03c1\u03bf\u03c4\u03b9\u03bc\u03ae\u03c3\u03b5\u03b9\u03c2 \u03ba\u03b1\u03b9 \u03c4\u03b9 \u03b1\u03c0\u03bf\u03c6\u03b5\u03cd\u03b3\u03b5\u03b9"}</li>
-        </ul>
-      </div>
-
       <form onSubmit={handleLogin} className="space-y-4">
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Email</span>
@@ -205,28 +160,29 @@ export default function LoginPage() {
             placeholder="you@example.com"
             type="email"
             autoComplete="email"
-            className="mt-2 w-full rounded-xl border border-gray-300 p-3 text-black outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
+            className="mt-2 h-12 w-full rounded-lg border border-[#cbd7cf] px-3 text-black outline-none transition focus:border-[#1f7a4d] focus:ring-2 focus:ring-[#d8efe1]"
           />
         </label>
 
         <label className="block">
           <span className="text-sm font-medium text-gray-800">Κωδικός</span>
-          <div className="mt-2 flex rounded-xl border border-gray-300 bg-white transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-100">
+          <div className="mt-2 flex h-12 rounded-lg border border-[#cbd7cf] bg-white transition focus-within:border-[#1f7a4d] focus-within:ring-2 focus-within:ring-[#d8efe1]">
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Κωδικός"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
-              className="min-w-0 flex-1 rounded-l-xl p-3 text-black outline-none"
+              className="min-w-0 flex-1 rounded-l-lg px-3 text-black outline-none"
             />
             <button
               type="button"
               aria-label={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
               onClick={() => setShowPassword((value) => !value)}
-              className="shrink-0 rounded-r-xl border-l border-gray-200 px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+              className="nt-focus flex w-12 shrink-0 items-center justify-center rounded-r-lg border-l border-[#dce5df] text-[#52635a] transition hover:bg-[#f3f7f4]"
+              title={showPassword ? "Απόκρυψη κωδικού" : "Εμφάνιση κωδικού"}
             >
-              {showPassword ? "Απόκρυψη" : "Εμφάνιση"}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
         </label>
@@ -269,7 +225,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="nt-focus w-full rounded-lg bg-[#1f7a4d] py-3.5 text-sm font-bold text-white transition hover:bg-[#196740] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "Γίνεται σύνδεση..." : "Σύνδεση"}
         </button>
@@ -282,6 +238,12 @@ export default function LoginPage() {
           >
             Δημιουργία λογαριασμού
           </Link>
+        </p>
+        <p
+          className="text-center text-xs text-[#7a8980]"
+          data-testid="auth-redirect-destination"
+        >
+          Μετά τη σύνδεση θα συνεχίσεις {redirectLabel}.
         </p>
       </form>
     </AuthShell>

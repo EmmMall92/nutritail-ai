@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 
 type Context = {
@@ -20,14 +21,9 @@ export async function POST(request: Request, context: Context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const authUserId = cleanText(body.authUserId);
-
-    if (!authUserId) {
-      return NextResponse.json(
-        { error: "Missing auth user id." },
-        { status: 400 }
-      );
-    }
+    const access = await requireAccountApiUser(body.authUserId);
+    if (access.response) return access.response;
+    const authUserId = access.user.id;
 
     const { data: customer, error: customerError } = await supabaseAdmin
       .from("customers")

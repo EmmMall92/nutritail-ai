@@ -11,9 +11,7 @@ function read(path: string) {
 }
 
 const supportPage = read("app/support/page.tsx");
-const homepage = read("app/page.tsx");
-const betaPage = read("app/beta/page.tsx");
-const plansPage = read("app/plans/page.tsx");
+const publicHeader = read("components/PublicHeader.tsx");
 const sitemap = read("app/sitemap.ts");
 const publicLiveRoutes = read("scripts/qa/check-public-launch-live-routes.mjs");
 const packageJson = read("package.json");
@@ -41,18 +39,8 @@ for (const marker of [
 assert(sitemap.includes('path: "/support"'), "Sitemap must include /support.");
 
 assert(
-  homepage.includes('href="/support"') && homepage.includes("Support"),
-  "Homepage navigation must link to /support."
-);
-
-assert(
-  betaPage.includes('href="/support"') && betaPage.includes("Support"),
-  "Beta page navigation must link to /support."
-);
-
-assert(
-  plansPage.includes('href="/support"') && plansPage.includes("Support"),
-  "Plans page navigation must link to /support."
+  publicHeader.includes('href: "/support"') && publicHeader.includes('label: "Υποστήριξη"'),
+  "Shared public navigation must link to /support."
 );
 
 assert(
@@ -68,7 +56,7 @@ assert(
 
 assert(
   packageJson.includes(
-    "qa:public-trust-copy && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
+    "qa:public-trust-copy && npm run qa:gdpr-privacy-contract && npm run qa:legal-readiness-contract && npm run qa:partner-referral-contract && npm run qa:support-flow-contract && npm run qa:launch-recommendation-contract"
   ),
   "CI readiness must run support flow contract after public trust copy."
 );
