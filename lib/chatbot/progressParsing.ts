@@ -91,19 +91,41 @@ function detectTreatsNote(text: string): ProgressUpdateDetails["treatsNote"] {
 }
 
 function detectAppetiteNote(text: string): ProgressUpdateDetails["appetiteNote"] {
-  if (/(καλη|φυσιολογικη|normal)\s+(ορεξη|appetite)/u.test(text)) return "normal";
+  if (
+    /(καλη|φυσιολογικη|normal)\s+(ορεξη|appetite)|(ορεξη|appetite)(?:\s+ειναι)?\s+(καλη|φυσιολογικη|normal)/u.test(
+      text
+    )
+  ) {
+    return "normal";
+  }
   if (/(πειναει|ζητιανευει|πεινασμεν|hungry|begging)/u.test(text)) return "hungry";
-  if (/(μειωμενη|χαμηλη|δεν τρωει πολυ|low)\s+(ορεξη|appetite)/u.test(text)) return "low";
+  if (
+    /(μειωμενη|χαμηλη|δεν τρωει πολυ|low)\s+(ορεξη|appetite)|(ορεξη|appetite)(?:\s+ειναι)?\s+(μειωμενη|χαμηλη|low)/u.test(
+      text
+    )
+  ) {
+    return "low";
+  }
   if (/(δυσκολ|επιλεκτικ|picky|fussy)/u.test(text)) return "picky";
   return null;
 }
 
 function detectStoolNote(text: string): ProgressUpdateDetails["stoolNote"] {
   if (/(καλυτερ\p{L}*)\s+(κοπρανα|κακα|stool)/u.test(text)) return "better";
-  if (/(κανονικ\p{L}*|σφιχτ\p{L}*|normal)\s+(κοπρανα|κακα|stool)/u.test(text)) {
+  if (
+    /(κανονικ\p{L}*|φυσιολογικ\p{L}*|σφιχτ\p{L}*|normal)\s+(κοπρανα|κακα|stool)|(κοπρανα|κακα|stool)(?:\s+ειναι)?\s+(κανονικ\p{L}*|φυσιολογικ\p{L}*|σφιχτ\p{L}*|normal)/u.test(
+      text
+    )
+  ) {
     return "normal";
   }
-  if (/(μαλακ\p{L}*|soft)\s+(κοπρανα|κακα|stool)/u.test(text)) return "soft";
+  if (
+    /(μαλακ\p{L}*|soft)\s+(κοπρανα|κακα|stool)|(κοπρανα|κακα|stool)(?:\s+ειναι)?\s+(μαλακ\p{L}*|soft)/u.test(
+      text
+    )
+  ) {
+    return "soft";
+  }
   if (/(διαρροια|diarrhea|diarrhoea)/u.test(text)) return "diarrhea";
   if (/(δυσκοιλιοτητα|constipation)/u.test(text)) return "constipation";
   return null;
@@ -113,17 +135,35 @@ function detectEnergyNote(text: string): ProgressUpdateDetails["energyNote"] {
   if (/(περισσοτερη|καλυτερη|more|better)\s+(ενεργεια|energy)/u.test(text)) {
     return "better";
   }
-  if (/(κανονικη|φυσιολογικη|normal)\s+(ενεργεια|energy)/u.test(text)) {
+  if (
+    /(κανονικη|φυσιολογικη|normal)\s+(ενεργεια|energy)|(ενεργεια|energy)(?:\s+ειναι)?\s+(κανονικη|φυσιολογικη|normal)/u.test(
+      text
+    )
+  ) {
     return "normal";
   }
-  if (/(χαμηλη|λιγη|κουραζεται|low)\s+(ενεργεια|energy)/u.test(text)) return "low";
-  if (/(πολλη|υψηλη|high)\s+(ενεργεια|energy)/u.test(text)) return "high";
+  if (
+    /(χαμηλη|λιγη|κουραζεται|low)\s+(ενεργεια|energy)|(ενεργεια|energy)(?:\s+ειναι)?\s+(χαμηλη|λιγη|low)/u.test(
+      text
+    )
+  ) {
+    return "low";
+  }
+  if (
+    /(πολλη|υψηλη|high)\s+(ενεργεια|energy)|(ενεργεια|energy)(?:\s+ειναι)?\s+(πολλη|υψηλη|high)/u.test(
+      text
+    )
+  ) {
+    return "high";
+  }
   return null;
 }
 
 function detectBodyChangeNote(text: string): ProgressUpdateDetails["bodyChangeNote"] {
   if (/(αδυνατισ|πιο λεπ|leaner|slimmer)/u.test(text)) return "leaner";
-  if (/(ιδιο σωμα|καμια αλλαγη|same body|unchanged)/u.test(text)) return "same";
+  if (/(ιδιο σωμα|καμια αλλαγη|δεν βλεπω αλλαγη|same body|unchanged)/u.test(text)) {
+    return "same";
+  }
   if (/(παχυνε|πιο βαρυ|heavier|gained)/u.test(text)) return "heavier";
   return null;
 }

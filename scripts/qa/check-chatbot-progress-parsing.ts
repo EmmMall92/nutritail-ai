@@ -100,6 +100,18 @@ const cases: Expected[] = [
     enough: true,
     missing: [],
   },
+  {
+    text: "Το βάρος είναι 18 κιλά. Τρώει 268 γραμμάρια την ημέρα, χωρίς λιχουδιές. Η όρεξη είναι φυσιολογική, τα κόπρανα φυσιολογικά, η ενέργεια κανονική και δεν βλέπω αλλαγή στο σώμα.",
+    weight: 18,
+    grams: 268,
+    treats: "none",
+    appetite: "normal",
+    stool: "normal",
+    energy: "normal",
+    foodAcceptance: null,
+    enough: true,
+    missing: [],
+  },
 ];
 
 const failures: string[] = [];
