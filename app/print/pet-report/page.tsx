@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
+import {
+  formatCustomerActivity,
+  formatCustomerBreed,
+  formatCustomerSpecies,
+} from "@/lib/petCustomerLabels";
 import { formatCustomerPetName } from "@/lib/petName";
 import { getPetSession } from "@/lib/storage";
-import { petAnalysisService } from "@/services/petAnalysisService";
 import type { PetNutritionSession } from "@/types/nutrition";
 import type { PetAnalysis } from "@/types/pet-analysis";
 
@@ -44,24 +48,42 @@ export default function PetReportPage() {
   const [analysis, setAnalysis] = useState<PetAnalysis | null>(null);
   const [brandSettings, setBrandSettings] = useState<BrandSettings | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadReport() {
-      const storedSession = getPetSession();
-      const settings = getBrandSettings();
+      try {
+        const storedSession = getPetSession();
+        const settings = getBrandSettings();
 
-      setBrandSettings(settings);
+        setBrandSettings(settings);
 
-      if (!storedSession) {
+        if (!storedSession) return;
+
+        setSession(storedSession);
+
+        const response = await fetch("/api/analysis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(storedSession.pet),
+        });
+        const result = (await response.json()) as PetAnalysis & { error?: string };
+
+        if (!response.ok) {
+          throw new Error(result.error || "Δεν ήταν δυνατή η δημιουργία της αναφοράς.");
+        }
+
+        setAnalysis(result);
+      } catch (error) {
+        console.error("Δεν μπόρεσε να δημιουργηθεί η αναφορά:", error);
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Δεν ήταν δυνατή η δημιουργία της αναφοράς."
+        );
+      } finally {
         setIsLoaded(true);
-        return;
       }
-
-      setSession(storedSession);
-
-      const result = await petAnalysisService.analyzePet(storedSession.pet);
-      setAnalysis(result);
-      setIsLoaded(true);
     }
 
     loadReport();
@@ -90,12 +112,13 @@ export default function PetReportPage() {
     );
   }
 
-  if (!session || !analysis || !brandSettings) {
+  if (loadError || !session || !analysis || !brandSettings) {
     return (
       <main className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="text-2xl font-bold text-black">Δεν υπάρχουν διαθέσιμα στοιχεία αναφοράς</h1>
         <p className="mt-2 text-gray-600">
-          Δημιούργησε ή άνοιξε πρώτα ένα προφίλ κατοικιδίου και δοκίμασε ξανά.
+          {loadError ??
+            "Δημιούργησε ή άνοιξε πρώτα ένα προφίλ κατοικιδίου και δοκίμασε ξανά."}
         </p>
       </main>
     );
@@ -165,17 +188,19 @@ export default function PetReportPage() {
       <Section title="Προφίλ κατοικιδίου">
         <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
           <p>
-            <span className="font-semibold">Είδος:</span> {pet.species}
+            <span className="font-semibold">Είδος:</span>{" "}
+            {formatCustomerSpecies(pet.species)}
           </p>
           <p>
-            <span className="font-semibold">Φυλή:</span> {pet.breed}
+            <span className="font-semibold">Φυλή:</span>{" "}
+            {formatCustomerBreed(pet.breed)}
           </p>
           <p>
             <span className="font-semibold">Ηλικία:</span> {pet.age}
           </p>
           <p>
             <span className="font-semibold">Δραστηριότητα:</span>{" "}
-            {pet.activityLevel}
+            {formatCustomerActivity(pet.activityLevel)}
           </p>
           <p>
             <span className="font-semibold">Στειρωμένο:</span>{" "}

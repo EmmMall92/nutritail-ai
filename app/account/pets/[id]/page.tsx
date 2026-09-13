@@ -14,6 +14,12 @@ import {
   Scale,
   Sparkles,
 } from "lucide-react";
+import {
+  formatCustomerActivity,
+  formatCustomerBreed,
+  formatCustomerSpecies,
+  formatCustomerWeightGoal,
+} from "@/lib/petCustomerLabels";
 import { formatCustomerPetName } from "@/lib/petName";
 import { createClient } from "@/lib/supabase/client";
 import { formatProgressDecisionConfidence } from "@/lib/progressDecisionCopy";
@@ -624,7 +630,7 @@ export default function AccountPetDetailPage() {
           <div className="border-b border-[#e3ebe6] pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-5">
             <p className="text-xs font-extrabold text-[#6b7b72]">Είδος</p>
             <p className="mt-2 text-xl font-black text-[#14221b]">
-              {pet.species === "dog" ? "σκύλος" : pet.species === "cat" ? "γάτα" : pet.species}
+              {formatCustomerSpecies(pet.species)}
             </p>
           </div>
 
@@ -737,13 +743,15 @@ export default function AccountPetDetailPage() {
 
           <div className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
             <p className="text-[#31463a]">
-              <span className="font-semibold">Ράτσα:</span> {pet.breed || "-"}
+              <span className="font-semibold">Ράτσα:</span>{" "}
+              {formatCustomerBreed(pet.breed)}
             </p>
             <p className="text-[#31463a]">
               <span className="font-semibold">Ηλικία:</span> {pet.age}
             </p>
             <p className="text-[#31463a]">
-              <span className="font-semibold">Δραστηριότητα:</span> {pet.activity_level}
+              <span className="font-semibold">Δραστηριότητα:</span>{" "}
+              {formatCustomerActivity(pet.activity_level)}
             </p>
             <p className="text-[#31463a]">
               <span className="font-semibold">Στειρωμένο:</span>{" "}
@@ -996,7 +1004,7 @@ export default function AccountPetDetailPage() {
                 <p className="mt-1 text-sm text-gray-700">
                   Στόχος βάρους:{" "}
                   <span className="font-semibold">
-                    {latest.weight_goal ?? "-"}
+                    {formatCustomerWeightGoal(latest.weight_goal)}
                   </span>
                 </p>
               </div>

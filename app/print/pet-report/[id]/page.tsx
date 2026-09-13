@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import {
+  formatCustomerActivity,
+  formatCustomerBreed,
+  formatCustomerSpecies,
+  formatCustomerWeightGoal,
+} from "@/lib/petCustomerLabels";
 import { formatCustomerPetName } from "@/lib/petName";
 
 type AnalysisHistoryItem = {
@@ -77,14 +83,8 @@ function formatDate(value?: string) {
 
 function formatWeightGoal(value?: string | null) {
   if (!value) return "-";
-  if (value === "loss") return "Απώλεια βάρους";
-  if (value === "gain") return "Αύξηση βάρους";
-  if (value === "maintenance") return "Διατήρηση βάρους";
 
-  return value
-    .split("_")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+  return formatCustomerWeightGoal(value);
 }
 
 function getCustomerGoalLabel(value?: string | null) {
@@ -913,7 +913,7 @@ function getReportPlanSnapshot(
   return [
     {
       label: "Κατοικίδιο",
-      value: `${formatCustomerPetName(pet.name)} · ${pet.species}`,
+      value: `${formatCustomerPetName(pet.name)} · ${formatCustomerSpecies(pet.species)}`,
       detail: `${pet.weight} kg · ${pet.age} έτη`,
     },
     {
@@ -2443,7 +2443,11 @@ export default function PrintablePetReportPage() {
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <ReportCard label="Κατοικίδιο" value={formatCustomerPetName(pet.name)} detail={pet.species} />
+          <ReportCard
+            label="Κατοικίδιο"
+            value={formatCustomerPetName(pet.name)}
+            detail={formatCustomerSpecies(pet.species)}
+          />
           <ReportCard label="Βάρος" value={`${pet.weight} kg`} />
           <ReportCard
             label="Ημερήσιος στόχος"
@@ -2953,11 +2957,15 @@ export default function PrintablePetReportPage() {
             <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-gray-500">Είδος</dt>
-                <dd className="font-semibold text-black">{pet.species}</dd>
+                <dd className="font-semibold text-black">
+                  {formatCustomerSpecies(pet.species)}
+                </dd>
               </div>
               <div>
                 <dt className="text-gray-500">Ράτσα</dt>
-                <dd className="font-semibold text-black">{pet.breed || "-"}</dd>
+                <dd className="font-semibold text-black">
+                  {formatCustomerBreed(pet.breed)}
+                </dd>
               </div>
               <div>
                 <dt className="text-gray-500">Ηλικία</dt>
@@ -2966,7 +2974,7 @@ export default function PrintablePetReportPage() {
               <div>
                 <dt className="text-gray-500">Δραστηριότητα</dt>
                 <dd className="font-semibold text-black">
-                  {pet.activity_level || "-"}
+                  {formatCustomerActivity(pet.activity_level)}
                 </dd>
               </div>
               <div>
