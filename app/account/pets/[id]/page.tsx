@@ -13,6 +13,7 @@ import {
   Save,
   Scale,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import {
   formatCustomerActivity,
@@ -312,6 +313,9 @@ export default function AccountPetDetailPage() {
   const [editForm, setEditForm] = useState<PetContextForm | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingContext, setIsSavingContext] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const [error, setError] = useState("");
   const [contextMessage, setContextMessage] = useState("");
 
@@ -431,6 +435,47 @@ export default function AccountPetDetailPage() {
     }
   }
 
+  async function handleDeletePet() {
+    if (!data) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError("");
+
+      const supabase = createClient();
+      const { data: sessionData } = await supabase.auth.getSession();
+
+      if (!sessionData.session?.user) {
+        router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+        return;
+      }
+
+      const response = await fetch(`/api/account/pets/${params.id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ authUserId: sessionData.session.user.id }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error(result.error);
+        throw new Error("Δεν μπόρεσα να αφαιρέσω το κατοικίδιο.");
+      }
+
+      router.replace("/account/pets");
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      setDeleteError(
+        err instanceof Error
+          ? err.message
+          : "Δεν μπόρεσα να αφαιρέσω το κατοικίδιο."
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <section className="mx-auto max-w-5xl space-y-5">
@@ -527,8 +572,62 @@ export default function AccountPetDetailPage() {
                 </Link>
               </>
             )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteError("");
+                setIsDeleteConfirmOpen(true);
+              }}
+              className="nt-focus flex h-10 w-10 items-center justify-center rounded-lg border border-red-200 bg-white text-red-700 transition hover:bg-red-50"
+              aria-label="Αφαίρεση κατοικιδίου"
+              title="Αφαίρεση κατοικιδίου"
+            >
+              <Trash2 size={17} aria-hidden="true" />
+            </button>
           </div>
         </div>
+
+        {isDeleteConfirmOpen && (
+          <div
+            className="rounded-lg border border-red-200 bg-red-50 p-5 text-red-950 shadow-sm"
+            role="region"
+            aria-labelledby="delete-pet-title"
+            data-testid="pet-delete-confirmation"
+          >
+            <h2 id="delete-pet-title" className="text-lg font-black">
+              Αφαίρεση του/της {formatCustomerPetName(pet.name)};
+            </h2>
+            <p className="mt-2 text-sm leading-6">
+              Το προφίλ, οι αναλύσεις και το ιστορικό του δεν θα εμφανίζονται
+              πλέον στον λογαριασμό σου.
+            </p>
+            {deleteError && (
+              <p className="mt-3 text-sm font-semibold" role="alert">
+                {deleteError}
+              </p>
+            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                disabled={isDeleting}
+                className="nt-button nt-button-secondary nt-focus min-h-10 px-4 py-2 disabled:opacity-60"
+              >
+                Ακύρωση
+              </button>
+              <button
+                type="button"
+                onClick={handleDeletePet}
+                disabled={isDeleting}
+                className="nt-focus inline-flex min-h-10 items-center gap-2 rounded-lg bg-red-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Trash2 size={16} aria-hidden="true" />
+                {isDeleting ? "Αφαίρεση..." : "Αφαίρεση κατοικιδίου"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(16rem,0.85fr)]">
         <div className="rounded-lg border border-[#bde6cc] bg-white p-5 shadow-sm sm:p-6">

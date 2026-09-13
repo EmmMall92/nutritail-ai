@@ -135,6 +135,18 @@ assert(
   "Pet detail page must keep the calorie explainer for customers."
 );
 
+for (const marker of [
+  'method: "DELETE"',
+  'data-testid="pet-delete-confirmation"',
+  'aria-label="Αφαίρεση κατοικιδίου"',
+  "handleDeletePet",
+]) {
+  assert(
+    petDetailPage.includes(marker),
+    `Pet detail page must expose guarded pet removal: ${marker}`
+  );
+}
+
 assert(
   packageJson.includes('"qa:account-dashboard-readiness-contract"'),
   "package.json must expose the account dashboard readiness QA script."
