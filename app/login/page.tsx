@@ -94,7 +94,7 @@ export default function LoginPage() {
     if (params.get("error") === "confirmation") {
       setConfirmationRecovery(true);
       setError(
-        "Ο σύνδεσμος επιβεβαίωσης δεν ολοκληρώθηκε ή έχει λήξει. Ζήτησε νέο email και δοκίμασε ξανά."
+        "Ο σύνδεσμος επιβεβαίωσης δεν ολοκληρώθηκε ή έχει λήξει. Ο λογαριασμός μπορεί να έχει ήδη επιβεβαιωθεί, οπότε δοκίμασε πρώτα να συνδεθείς."
       );
     }
   }, []);
@@ -181,7 +181,7 @@ export default function LoginPage() {
       }
 
       setConfirmationSuccess(
-        "Αν υπάρχει λογαριασμός που περιμένει επιβεβαίωση, στείλαμε νέο email. Άνοιξε μόνο τον πιο πρόσφατο σύνδεσμο."
+        "Αν ο λογαριασμός περίμενε επιβεβαίωση, στείλαμε νέο email. Αν έχει ήδη επιβεβαιωθεί, δεν θα σταλεί νέο email και μπορείς να συνδεθείς."
       );
     } catch (err) {
       console.error(err);
@@ -253,7 +253,7 @@ export default function LoginPage() {
             {error}
             <p className="mt-1 text-xs text-red-600">
               {confirmationRecovery
-                ? "Γράψε το ίδιο email που χρησιμοποίησες στην εγγραφή και ζήτησε νέο σύνδεσμο."
+                ? "Αν η σύνδεση αναφέρει ότι το email δεν είναι επιβεβαιωμένο, γράψε το ίδιο email της εγγραφής και ζήτησε νέο σύνδεσμο."
                 : "Έλεγξε email και κωδικό ή κάνε επαναφορά αν δεν είσαι σίγουρος/η."}
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">

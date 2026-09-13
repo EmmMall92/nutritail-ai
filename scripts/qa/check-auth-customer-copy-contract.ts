@@ -21,6 +21,7 @@ const authPages = [
       'data-testid="auth-resend-confirmation"',
       'data-testid="auth-resend-confirmation-success"',
       "Νέο email επιβεβαίωσης",
+      "Αν έχει ήδη επιβεβαιωθεί",
       'data-testid="auth-redirect-destination"',
       "showPassword",
       "EyeOff",
