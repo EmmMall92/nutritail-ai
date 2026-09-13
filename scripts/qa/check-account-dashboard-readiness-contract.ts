@@ -148,6 +148,16 @@ for (const marker of [
 }
 
 assert(
+  /progressDecisionHeadline:\s*metadata\?\.progressDecisionHeadlineEl \?\?\s*metadata\?\.progressDecisionHeadlineEn/.test(
+    petDetailPage
+  ) &&
+    /log\.metadata\.progressDecisionHeadlineEl \?\?\s*log\.metadata\.progressDecisionHeadlineEn/.test(
+      petDetailPage
+    ),
+  "Greek pet profile must prefer the Greek progress headline."
+);
+
+assert(
   packageJson.includes('"qa:account-dashboard-readiness-contract"'),
   "package.json must expose the account dashboard readiness QA script."
 );

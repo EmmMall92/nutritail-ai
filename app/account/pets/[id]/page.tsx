@@ -249,8 +249,8 @@ function getLatestProgressSummary(progressLogs: ProgressLog[], pet: AccountPet) 
     progressDecisionStatus: metadata?.progressDecisionStatus ?? null,
     progressDecisionConfidence: metadata?.progressDecisionConfidence ?? null,
     progressDecisionHeadline:
-      metadata?.progressDecisionHeadlineEn ??
       metadata?.progressDecisionHeadlineEl ??
+      metadata?.progressDecisionHeadlineEn ??
       null,
     mode: formatProgressMode(metadata?.mode),
     deltaText: formatWeightDelta(currentWeight, previousWeight),
@@ -1236,11 +1236,11 @@ export default function AccountPetDetailPage() {
                     ))}
                   </div>
 
-                  {(log.metadata?.progressDecisionHeadlineEn ||
-                    log.metadata?.progressDecisionHeadlineEl) && (
+                  {(log.metadata?.progressDecisionHeadlineEl ||
+                    log.metadata?.progressDecisionHeadlineEn) && (
                     <p className="mt-3 text-sm font-semibold text-blue-950">
-                      {log.metadata.progressDecisionHeadlineEn ??
-                        log.metadata.progressDecisionHeadlineEl}
+                      {log.metadata.progressDecisionHeadlineEl ??
+                        log.metadata.progressDecisionHeadlineEn}
                     </p>
                   )}
 
