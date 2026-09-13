@@ -57,3 +57,26 @@ export function localizeNutritionAdviceItem(
     }
   );
 }
+
+export function localizeNutritionAdviceNotes(
+  notes: string | null | undefined,
+  locale: NutritionAdviceLocale
+) {
+  const normalized = notes?.trim();
+
+  if (!normalized || locale !== "el") return normalized ?? "";
+
+  return normalized
+    .split(" | ")
+    .map((note) => {
+      const separatorIndex = note.indexOf(":");
+      const title = separatorIndex >= 0 ? note.slice(0, separatorIndex).trim() : note;
+      const localized = GREEK_ADVICE_COPY[title];
+
+      if (localized) return `${localized.title}: ${localized.description}`;
+      if (/[Ͱ-Ͽ]/i.test(note)) return note;
+
+      return "Διατροφική σημείωση: Χρειάζεται παρακολούθηση με βάση την πορεία του κατοικιδίου.";
+    })
+    .join(" ");
+}

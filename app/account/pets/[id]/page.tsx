@@ -103,7 +103,7 @@ function toStringList(value: string) {
 
 function toPetContextForm(pet: AccountPet): PetContextForm {
   return {
-    breed: pet.breed ?? "",
+    breed: pet.breed?.trim().toLowerCase() === "unknown" ? "" : pet.breed ?? "",
     age: String(pet.age ?? ""),
     weight: String(pet.weight ?? ""),
     activity_level: pet.activity_level || "normal",

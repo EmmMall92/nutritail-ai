@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { localizeNutritionAdviceNotes } from "../../lib/chatbot/nutritionAdvicePresentation";
 import {
   formatCustomerActivity,
   formatCustomerBreed,
@@ -60,5 +61,13 @@ for (const [actual, expected] of [
 ] as const) {
   assert(actual === expected, `Expected customer label ${expected}, got ${actual}.`);
 }
+
+assert(
+  localizeNutritionAdviceNotes(
+    "Weight Control: Neutered pets need measured portions.",
+    "el"
+  ).startsWith("Έλεγχος βάρους:"),
+  "Saved nutrition notes must be localized for the Greek timeline."
+);
 
 console.log("Pet timeline saved data contract passed.");

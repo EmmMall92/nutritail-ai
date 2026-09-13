@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { getBrandSettings, type BrandSettings } from "@/lib/brand";
+import { localizeNutritionAdviceNotes } from "@/lib/chatbot/nutritionAdvicePresentation";
 import {
   formatCustomerActivity,
   formatCustomerBreed,
@@ -764,7 +765,7 @@ export default function PetTimelineReportPage() {
 
       <Section title="Τελευταίες διατροφικές σημειώσεις">
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-          {latestHistory?.notes?.trim() ||
+          {localizeNutritionAdviceNotes(latestHistory?.notes, "el") ||
             "Δεν υπάρχουν αποθηκευμένες σημειώσεις για την τελευταία ανάλυση."}
         </div>
       </Section>

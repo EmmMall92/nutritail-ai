@@ -3200,8 +3200,8 @@ export default function PrintablePetReportPage() {
               Checklist παρακολούθησης
             </h2>
             <p className="mt-2 text-sm text-blue-900">
-              Χρησιμοποίησε αυτή την ενότητα ανάμεσα στις αναφορές ώστε το
-              ο επόμενος έλεγχος προόδου να έχει πραγματικά δεδομένα προόδου.
+              Χρησιμοποίησε αυτή την ενότητα ανάμεσα στις αναφορές ώστε ο
+              επόμενος έλεγχος προόδου να έχει πραγματικά δεδομένα.
             </p>
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -3323,14 +3323,14 @@ export default function PrintablePetReportPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                Feedback αναφοράς
+                Αξιολόγηση αναφοράς
               </p>
               <h2 className="mt-1 text-xl font-bold text-emerald-950">
                 Ήταν χρήσιμη αυτή η αναφορά;
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-emerald-900">
-                Η απάντησή σου βοηθά να βελτιώνουμε τις προτάσεις, τα reports
-                και το follow-up για πραγματικούς πελάτες.
+                Η απάντησή σου βοηθά να βελτιώνουμε τις προτάσεις, τις αναφορές
+                και τον επανέλεγχο για πραγματικούς πελάτες.
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
