@@ -1,23 +1,21 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 import {
   PRIVACY_POLICY_LAST_UPDATED_EL,
   PRIVACY_POLICY_VERSION,
   PRIVACY_RETENTION,
 } from "@/lib/privacy/config";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Πολιτική απορρήτου | ${brand.name}`,
   description:
     "Δες πώς το Nutritail AI χειρίζεται στοιχεία λογαριασμού, προφίλ κατοικιδίου και διατροφικών αναλύσεων.",
-  alternates: {
-    canonical: "/privacy",
-  },
-};
+  path: "/privacy",
+});
 
 const sections = [
   {

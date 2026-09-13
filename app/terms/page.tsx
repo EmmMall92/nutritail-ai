@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
@@ -6,15 +5,14 @@ import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
 import { TERMS_LAST_UPDATED_EL, TERMS_VERSION } from "@/lib/legal/config";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Όροι χρήσης | ${brand.name}`,
   description:
     "Διάβασε τους όρους χρήσης του Nutritail AI για ενημερωτική επιλογή τροφής κατοικιδίων.",
-  alternates: {
-    canonical: "/terms",
-  },
-};
+  path: "/terms",
+});
 
 const sections = [
   {

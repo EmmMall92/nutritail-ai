@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
@@ -8,16 +7,16 @@ import {
 } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 import { BetaSignupForm } from "./BetaSignupForm";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Beta πρόσβαση | ${brand.name}`,
   description:
     "Ζήτησε beta πρόσβαση στο Nutritail AI και βοήθησε να βελτιωθεί η διατροφική εμπειρία για σκύλους και γάτες.",
-  alternates: {
-    canonical: "/beta",
-  },
-};
+  path: "/beta",
+  index: launchFeatures.betaWaitlist,
+});
 
 const benefits = [
   {

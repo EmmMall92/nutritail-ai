@@ -1,65 +1,65 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `Support | ${brand.name}`,
+export const metadata = createPublicMetadata({
+  title: `Υποστήριξη | ${brand.name}`,
   description:
-    "How to get help with NutriTail beta access, pet reports, saved analyses, data requests, and nutrition guidance boundaries.",
-  alternates: {
-    canonical: "/support",
-  },
-};
+    "Βρες βοήθεια για τον λογαριασμό, τις αναφορές κατοικιδίων, τα στοιχεία τροφών και τα αιτήματα προσωπικών δεδομένων στο Nutritail AI.",
+  path: "/support",
+});
 
 const supportTopics = [
   {
-    title: "Account or beta access",
+    title: "Πρόσβαση στον λογαριασμό",
     detail:
-      "Use this for login trouble, beta access questions, password recovery, or if a beta limit blocks a real test.",
-    action: "Include the email you use for NutriTail and what page you were on.",
+      "Για προβλήματα σύνδεσης, ανάκτηση κωδικού ή όταν κάποιο όριο εμποδίζει μια πραγματική δοκιμή.",
+    action: "Ανάφερε το email του λογαριασμού και τη σελίδα στην οποία βρισκόσουν.",
   },
   {
-    title: "Nutrition analysis or report",
+    title: "Διατροφική ανάλυση ή αναφορά",
     detail:
-      "Use this when the recommendation looks confusing, the grams/day do not make sense, or a saved report is missing context.",
+      "Όταν η πρόταση δεν είναι ξεκάθαρη, τα γραμμάρια ανά ημέρα δεν φαίνονται σωστά ή λείπει πληροφορία από αποθηκευμένη αναφορά.",
     action:
-      "Send the pet name, goal, selected food if any, and the part of the answer that felt unclear.",
+      "Στείλε το όνομα του κατοικιδίου, τον στόχο, την επιλεγμένη τροφή και το σημείο που χρειάζεται διευκρίνιση.",
   },
   {
-    title: "Food data or missing product",
+    title: "Στοιχεία τροφής ή προϊόν που λείπει",
     detail:
-      "Use this when a food is missing, the formula title looks wrong, or nutrients look incomplete.",
+      "Όταν μια τροφή λείπει, ο τίτλος της φόρμουλας φαίνεται λάθος ή τα διατροφικά στοιχεία είναι ελλιπή.",
     action:
-      "Send the brand, exact product name, product link or label photo, and which field looks wrong.",
+      "Στείλε τη μάρκα, το ακριβές προϊόν, έναν σύνδεσμο ή φωτογραφία ετικέτας και το πεδίο που χρειάζεται έλεγχο.",
   },
   {
-    title: "Privacy or data request",
+    title: "Απόρρητο ή αίτημα δεδομένων",
     detail:
-      "Use this for account data, pet profile correction, export, or deletion questions.",
+      "Για διόρθωση στοιχείων, εξαγωγή ή διαγραφή δεδομένων λογαριασμού και προφίλ κατοικιδίου.",
     action:
-      "Tell us whether you want correction, export, deletion, or a privacy explanation.",
+      "Ανάφερε αν ζητάς διόρθωση, εξαγωγή, διαγραφή ή διευκρίνιση για την επεξεργασία δεδομένων.",
   },
 ] as const;
 
 const responseFlow = [
-  "We first identify whether the issue is account access, nutrition output, food data, privacy, or urgent veterinary risk.",
-  "For product issues, we check the saved pet context, selected food, report, and feedback trail before changing rules.",
-  "For food-data issues, we prefer official sources, label photos, or trusted retailer pages before updating the database.",
-  "For medical red flags, NutriTail stops shopping advice and points the user to a veterinarian.",
+  "Αρχικά ξεχωρίζουμε αν το θέμα αφορά πρόσβαση, διατροφικό αποτέλεσμα, στοιχεία τροφής, απόρρητο ή επείγον κτηνιατρικό κίνδυνο.",
+  "Για θέμα πρότασης ελέγχουμε το αποθηκευμένο προφίλ, την επιλεγμένη τροφή, την αναφορά και το σχετικό σχόλιο.",
+  "Για στοιχεία τροφών προτιμάμε επίσημες πηγές, φωτογραφίες ετικέτας ή αξιόπιστες σελίδες λιανικής πριν ενημερώσουμε τη βάση.",
+  "Σε ιατρική ένδειξη το Nutritail σταματά την καθοδήγηση προϊόντος και παραπέμπει σε κτηνίατρο.",
 ] as const;
 
 const emergencySignals = [
-  "cat straining or unable to urinate",
-  "blood in urine or stool",
-  "repeated vomiting or diarrhea",
-  "not eating, collapse, or severe pain",
-  "known kidney disease, pancreatitis, diabetes, or serious allergy symptoms",
+  "γάτα που δυσκολεύεται ή αδυνατεί να ουρήσει",
+  "αίμα στα ούρα ή στα κόπρανα",
+  "επαναλαμβανόμενος εμετός ή διάρροια",
+  "άρνηση τροφής, κατάρρευση ή έντονος πόνος",
+  "γνωστή νεφρική νόσος, παγκρεατίτιδα, διαβήτης ή σοβαρή αλλεργική αντίδραση",
 ] as const;
 
 export default function SupportPage() {
-  const mailto = `mailto:${brand.contactEmail}?subject=NutriTail support request`;
+  const mailto = `mailto:${brand.contactEmail}?subject=${encodeURIComponent(
+    "Αίτημα υποστήριξης Nutritail"
+  )}`;
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -67,15 +67,15 @@ export default function SupportPage() {
 
       <section className="mx-auto max-w-6xl px-6 py-14 md:py-20" data-testid="support-hero">
         <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
-          NutriTail support
+          Υποστήριξη Nutritail
         </p>
         <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight md:text-6xl">
-          Help for beta access, reports, food data, and account questions.
+          Βοήθεια για λογαριασμό, αναφορές και στοιχεία τροφών.
         </h1>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-700">
-          NutriTail is still in beta, so support is intentionally simple: tell
-          us what happened, include the pet or food context when relevant, and
-          we will use it to improve the product loop.
+          Περιέγραψέ μας τι συνέβη και πρόσθεσε τα σχετικά στοιχεία του
+          κατοικιδίου ή της τροφής. Έτσι μπορούμε να απαντήσουμε πιο γρήγορα και
+          να διορθώσουμε το σωστό σημείο.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a
@@ -83,13 +83,13 @@ export default function SupportPage() {
             className="rounded-full bg-emerald-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-emerald-800"
             data-testid="support-primary-email"
           >
-            Email support
+            Στείλε email
           </a>
           <Link
-            href="/account/chatbot"
+            href="/login?next=/account/chatbot"
             className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-bold transition hover:bg-slate-100"
           >
-            Open chatbot
+            Άνοιξε τον βοηθό
           </Link>
         </div>
       </section>
@@ -98,10 +98,10 @@ export default function SupportPage() {
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="max-w-3xl">
             <p className="text-sm font-bold uppercase tracking-wide text-slate-500">
-              What to send
+              Τι να συμπεριλάβεις
             </p>
             <h2 className="mt-2 text-3xl font-black">
-              The fastest support request includes the right context.
+              Το σωστό πλαίσιο οδηγεί σε πιο γρήγορη απάντηση.
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -124,14 +124,14 @@ export default function SupportPage() {
 
       <section className="mx-auto grid max-w-6xl gap-6 px-6 py-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div
-          className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+          className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
           data-testid="support-operating-flow"
         >
           <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">
-            Support operating flow
+            Πώς χειριζόμαστε το αίτημα
           </p>
           <h2 className="mt-2 text-3xl font-black">
-            How we handle beta feedback.
+            Από την αναφορά μέχρι την απάντηση.
           </h2>
           <div className="mt-6 grid gap-3">
             {responseFlow.map((step, index) => (
@@ -146,19 +146,19 @@ export default function SupportPage() {
         </div>
 
         <aside
-          className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm"
+          className="rounded-lg border border-red-200 bg-red-50 p-6 shadow-sm"
           data-testid="support-vet-boundary"
         >
           <p className="text-sm font-bold uppercase tracking-wide text-red-700">
-            Veterinary boundary
+            Όριο κτηνιατρικής ασφάλειας
           </p>
           <h2 className="mt-2 text-2xl font-black text-red-950">
-            Some cases should not wait for app support.
+            Ορισμένες περιπτώσεις δεν πρέπει να περιμένουν απάντηση υποστήριξης.
           </h2>
           <p className="mt-4 text-sm leading-6 text-red-950">
-            NutriTail can help organize nutrition information, but it does not
-            diagnose, treat, or replace veterinary care. Contact a veterinarian
-            urgently for:
+            Το Nutritail οργανώνει διατροφικές πληροφορίες, αλλά δεν κάνει
+            διάγνωση, δεν παρέχει θεραπεία και δεν αντικαθιστά την κτηνιατρική
+            φροντίδα. Επικοινώνησε άμεσα με κτηνίατρο σε περίπτωση:
           </p>
           <ul className="mt-4 space-y-2 text-sm text-red-950">
             {emergencySignals.map((signal) => (
@@ -174,22 +174,22 @@ export default function SupportPage() {
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-emerald-300">
-              Customer trust
+              Εμπιστοσύνη και βελτίωση
             </p>
             <h2 className="mt-2 text-2xl font-black">
-              Support feedback becomes product improvement.
+              Κάθε χρήσιμο σχόλιο βελτιώνει την υπηρεσία.
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-              Helpful and not-helpful signals, missing foods, confusing report
-              sections, and beta access issues are reviewed as part of the
-              launch feedback loop.
+              Ελέγχουμε σχόλια για προτάσεις, τροφές που λείπουν, δυσνόητα
+              σημεία αναφορών και προβλήματα πρόσβασης ώστε οι επόμενες εκδόσεις
+              να γίνονται πιο καθαρές και αξιόπιστες.
             </p>
           </div>
           <Link
             href="/about"
             className="rounded-full bg-white px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-slate-100"
           >
-            Read our trust promise
+            Δες τη δέσμευσή μας
           </Link>
         </div>
       </section>

@@ -1,25 +1,10 @@
-import type { Metadata } from "next";
-import { brand } from "@/lib/brand";
+import { createNoIndexMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `Pet Nutrition Chatbot | ${brand.name}`,
-  description:
-    "Open Nutritail AI's account chatbot for educational dog and cat feeding guidance.",
-  alternates: {
-    canonical: "/account/chatbot",
-  },
-  robots: {
-    index: false,
-    follow: true,
-  },
-  openGraph: {
-    title: `Pet Nutrition Chatbot | ${brand.name}`,
-    description:
-      "Get educational pet nutrition guidance for dogs and cats with Nutritail AI.",
-    url: "/account/chatbot",
-    type: "website",
-  },
-};
+export const metadata = createNoIndexMetadata(
+  "Βοηθός επιλογής τροφής",
+  "Συνέχισε στον προσωπικό βοηθό επιλογής τροφής του Nutritail AI.",
+  "/chatbot"
+);
 
 export default function ChatbotLayout({
   children,

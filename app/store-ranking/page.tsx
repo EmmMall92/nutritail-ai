@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeEuro, CheckCircle2, MapPin, PackageCheck, ShieldCheck } from "lucide-react";
@@ -8,13 +7,15 @@ import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 import { STORE_RANKING_POLICY_VERSION } from "@/lib/legal/config";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Κατάταξη καταστημάτων | ${brand.name}`,
   description:
     "Τα βασικά κριτήρια κατάταξης συνεργαζόμενων καταστημάτων και η επίδραση της πληρωμένης προβολής.",
-  alternates: { canonical: "/store-ranking" },
-};
+  path: "/store-ranking",
+  index: launchFeatures.partnerStores,
+});
 
 const rankingSteps = [
   {

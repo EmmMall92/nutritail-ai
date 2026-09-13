@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { brand } from "@/lib/brand";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 import { WebVitalsReporter } from "./WebVitalsReporter";
 
 const inter = Inter({
@@ -12,16 +13,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: brand.name,
-  description: brand.description,
+  ...createPublicMetadata({
+    title: brand.name,
+    description: brand.description,
+    path: "/",
+  }),
   applicationName: brand.name,
   metadataBase: new URL(brand.domain),
   keywords: [
-    "pet nutrition",
-    "dog food calculator",
-    "cat food calculator",
-    "pet calorie calculator",
-    "AI pet nutrition",
+    "τροφή σκύλου",
+    "τροφή γάτας",
+    "υπολογισμός θερμίδων σκύλου",
+    "υπολογισμός θερμίδων γάτας",
+    "ημερήσια μερίδα κατοικιδίου",
+    "διατροφική καθοδήγηση κατοικιδίων",
   ],
   authors: [{ name: brand.businessName }],
   creator: brand.businessName,
@@ -35,25 +40,9 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-
-  openGraph: {
-    title: brand.name,
-    description: brand.description,
-    url: brand.domain,
-    siteName: brand.name,
-    type: "website",
-    locale: "el_GR",
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: brand.name,
-    description: brand.description,
-  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {

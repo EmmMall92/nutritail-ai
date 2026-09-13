@@ -1,17 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Πώς δουλεύει | ${brand.name}`,
   description:
     "Δες πώς το Nutritail AI χρησιμοποιεί στοιχεία κατοικιδίου, βάση τροφών, κανόνες διατροφής και ασφαλή όρια για πιο πρακτική καθοδήγηση.",
-  alternates: {
-    canonical: "/how-it-works",
-  },
-};
+  path: "/how-it-works",
+});
 
 const steps = [
   {

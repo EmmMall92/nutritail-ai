@@ -41,7 +41,7 @@ export function PublicFooter() {
         </nav>
       </div>
       <div className="border-t border-[#dce5df]">
-        <div className="nt-container flex flex-col gap-2 py-5 text-xs text-[#6b7b72] sm:flex-row sm:items-center sm:justify-between">
+        <div className="nt-container flex flex-col gap-2 py-5 text-xs text-[#52635a] sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 Nutritail AI. Με την επιφύλαξη κάθε δικαιώματος.</p>
           <p>Η καθοδήγηση δεν αντικαθιστά την κτηνιατρική διάγνωση.</p>
         </div>

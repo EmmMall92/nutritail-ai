@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, Clock3, PawPrint, ShieldCheck, Sparkles } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: "Πλάνα | Nutritail AI",
   description: "Δες τι περιλαμβάνει η δωρεάν πρόσβαση του Nutritail AI.",
-  alternates: { canonical: "/plans" },
-};
+  path: "/plans",
+  index: launchFeatures.paidPlans,
+});
 
 const betaFeatures = [
   "Έως 3 αποθηκευμένα κατοικίδια",

@@ -25,7 +25,7 @@ export type BrandSettings = {
 
 export const defaultBrandSettings: BrandSettings = {
   appName: "Nutritail AI",
-  tagline: "Personalized Pet Nutrition",
+  tagline: "Ενημερωτική επιλογή τροφής κατοικιδίων",
   businessName: "Nutritail AI",
   contactEmail: "info@nutritail.ai",
   contactPhone: "",
@@ -37,7 +37,7 @@ export const defaultBrandSettings: BrandSettings = {
 
   name: "Nutritail AI",
   shortName: "Nutritail",
-  slogan: "Personalized Pet Nutrition",
+  slogan: "Ενημερωτική επιλογή τροφής κατοικιδίων",
   description: "Ενημερωτική επιλογή τροφής για σκύλους και γάτες.",
   domain: "https://nutritail.ai",
   colors: {

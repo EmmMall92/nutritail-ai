@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function proxy() {
   const response = NextResponse.next();
 
-  response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
 
   return response;
 }

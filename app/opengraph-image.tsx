@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { brand } from "@/lib/brand";
 
-export const alt = `${brand.name} - AI pet nutrition guidance`;
+export const alt = `${brand.name} - ενημερωτική επιλογή τροφής για σκύλους και γάτες`;
 export const size = {
   width: 1200,
   height: 630,
@@ -67,7 +67,7 @@ export default function OpenGraphImage() {
               letterSpacing: "0",
             }}
           >
-            AI pet nutrition guidance for dogs and cats
+            Επιλογή τροφής για σκύλους και γάτες
           </div>
           <div
             style={{
@@ -78,8 +78,8 @@ export default function OpenGraphImage() {
               color: "#374151",
             }}
           >
-            Calories, feeding estimates, food quality insights, and saved pet
-            nutrition history.
+            Θερμίδες, ενδεικτική μερίδα και κατάλληλες επιλογές με υπεύθυνα
+            όρια υγείας.
           </div>
         </div>
       </div>

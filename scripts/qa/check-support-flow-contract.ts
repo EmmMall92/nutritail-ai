@@ -17,21 +17,21 @@ const publicLiveRoutes = read("scripts/qa/check-public-launch-live-routes.mjs");
 const packageJson = read("package.json");
 
 for (const marker of [
-  'title: `Support | ${brand.name}`',
-  'canonical: "/support"',
+  'title: `Υποστήριξη | ${brand.name}`',
+  'path: "/support"',
   'data-testid="support-hero"',
   'data-testid="support-primary-email"',
   'data-testid="support-request-types"',
   'data-testid="support-request-type"',
   'data-testid="support-operating-flow"',
   'data-testid="support-vet-boundary"',
-  "Account or beta access",
-  "Nutrition analysis or report",
-  "Food data or missing product",
-  "Privacy or data request",
-  "Support feedback becomes product improvement",
-  "NutriTail can help organize nutrition information, but it does not",
-  "cat straining or unable to urinate",
+  "Πρόσβαση στον λογαριασμό",
+  "Διατροφική ανάλυση ή αναφορά",
+  "Στοιχεία τροφής ή προϊόν που λείπει",
+  "Απόρρητο ή αίτημα δεδομένων",
+  "Κάθε χρήσιμο σχόλιο βελτιώνει την υπηρεσία",
+  "Το Nutritail οργανώνει διατροφικές πληροφορίες",
+  "γάτα που δυσκολεύεται ή αδυνατεί να ουρήσει",
 ]) {
   assert(supportPage.includes(marker), `Support page is missing marker: ${marker}`);
 }

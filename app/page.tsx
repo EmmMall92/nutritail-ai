@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,13 +16,14 @@ import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 import { launchFeatures } from "@/lib/launch/features";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `${brand.name} | Ενημερωτική επιλογή τροφής κατοικιδίων`,
   description:
     "Κατανόησε τις ανάγκες του σκύλου ή της γάτας σου, υπολόγισε τη σωστή μερίδα και βρες κατάλληλες τροφές με υπεύθυνη καθοδήγηση.",
-  alternates: { canonical: "/" },
-};
+  path: "/",
+});
 
 const steps = [
   {
@@ -70,25 +70,52 @@ const recommendationCards = [
   },
 ];
 
-const structuredData = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: brand.name,
-    url: brand.domain,
-    email: brand.contactEmail,
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: brand.name,
-    applicationCategory: "HealthApplication",
-    operatingSystem: "Web",
-    url: brand.domain,
-    description: brand.description,
-    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-  },
-];
+const organizationId = `${brand.domain}/#organization`;
+const websiteId = `${brand.domain}/#website`;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: brand.name,
+      alternateName: brand.shortName,
+      url: brand.domain,
+      logo: `${brand.domain}/icon-512.png`,
+      email: brand.contactEmail,
+      description: brand.description,
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: brand.contactEmail,
+        contactType: "customer support",
+        availableLanguage: "Greek",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: brand.name,
+      alternateName: brand.shortName,
+      url: brand.domain,
+      inLanguage: "el-GR",
+      publisher: { "@id": organizationId },
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${brand.domain}/#application`,
+      name: brand.name,
+      url: brand.domain,
+      description: brand.description,
+      applicationCategory: "LifestyleApplication",
+      operatingSystem: "Any",
+      inLanguage: "el-GR",
+      isAccessibleForFree: true,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+      publisher: { "@id": organizationId },
+    },
+  ],
+};
 
 export default function HomePage() {
   return (
@@ -200,7 +227,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-3 border-b border-[#dce5df] bg-[#f4f8f5] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-black">Η σημερινή εικόνα της Λούνας</p>
-                <p className="mt-1 text-xs text-[#6b7b72]">Ενήλικη γάτα · 4,8 kg · στειρωμένη</p>
+                <p className="mt-1 text-xs text-[#52635a]">Ενήλικη γάτα · 4,8 kg · στειρωμένη</p>
               </div>
               <span className="w-fit rounded-md bg-[#eaf7ef] px-2.5 py-1.5 text-xs font-extrabold text-[#17663f]">
                 Το προφίλ είναι πλήρες
@@ -219,14 +246,14 @@ export default function HomePage() {
                   className={`px-4 py-5 ${index % 2 === 0 ? "border-r" : ""} border-[#dce5df] sm:border-r sm:last:border-r-0`}
                 >
                   <p className="text-2xl font-black text-[#14221b]">{value}</p>
-                  <p className="mt-1 text-xs leading-5 text-[#6b7b72]">{label}</p>
+                  <p className="mt-1 text-xs leading-5 text-[#52635a]">{label}</p>
                 </div>
               ))}
             </div>
 
             <div className="grid gap-0 md:grid-cols-[1fr_0.9fr]">
               <div className="border-b border-[#dce5df] p-5 md:border-b-0 md:border-r">
-                <p className="text-xs font-extrabold text-[#6b7b72]">Η ΠΡΑΚΤΙΚΗ ΠΡΟΤΑΣΗ</p>
+                <p className="text-xs font-extrabold text-[#52635a]">Η ΠΡΑΚΤΙΚΗ ΠΡΟΤΑΣΗ</p>
                 <p className="mt-3 text-lg font-black">29 g το πρωί + 29 g το βράδυ</p>
                 <p className="mt-2 text-sm leading-6 text-[#5f6f66]">
                   Μέτρησε τη μερίδα με ζυγαριά κουζίνας και επανέλεγξε το βάρος
@@ -262,7 +289,7 @@ export default function HomePage() {
                 <article key={step.title} className="border-t border-[#b9c9bf] pt-5">
                   <div className="flex items-center justify-between">
                     <Icon size={25} className="text-[#1f7a4d]" />
-                    <span className="text-sm font-black text-[#90a198]">0{index + 1}</span>
+                    <span className="text-sm font-black text-[#52635a]">0{index + 1}</span>
                   </div>
                   <h3 className="mt-7 text-lg font-black">{step.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-[#5f6f66]">{step.text}</p>
@@ -295,9 +322,9 @@ export default function HomePage() {
                 <span className={`inline-flex rounded-md px-2.5 py-1.5 text-xs font-extrabold ${food.tone}`}>
                   {food.label}
                 </span>
-                <p className="mt-6 text-xs font-extrabold text-[#6b7b72]">{food.brand}</p>
+                <p className="mt-6 text-xs font-extrabold text-[#52635a]">{food.brand}</p>
                 <h3 className="mt-1 text-xl font-black">{food.name}</h3>
-                <p className="mt-2 text-sm text-[#6b7b72]">{food.detail}</p>
+                <p className="mt-2 text-sm text-[#52635a]">{food.detail}</p>
                 <div className="mt-5 border-t border-[#e2e9e4] pt-4">
                   <p className="flex gap-2 text-sm leading-6 text-[#42534a]">
                     <Check size={17} className="mt-1 shrink-0 text-[#1f7a4d]" />

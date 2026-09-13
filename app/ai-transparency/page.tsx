@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Bot, Database, Scale, ShieldCheck, Stethoscope } from "lucide-react";
 
@@ -6,13 +5,14 @@ import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
 import { AI_TRANSPARENCY_VERSION } from "@/lib/legal/config";
+import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPublicMetadata({
   title: `Διαφάνεια AI | ${brand.name}`,
   description:
     "Πώς χρησιμοποιεί AI το Nutritail, ποια είναι τα όριά του και πότε χρειάζεται κτηνίατρος.",
-  alternates: { canonical: "/ai-transparency" },
-};
+  path: "/ai-transparency",
+});
 
 const boundaries = [
   {
