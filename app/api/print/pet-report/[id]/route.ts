@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { createClient } from "@/lib/supabase/server";
-import { mapDbPetAnalysisToPetAnalysisHistory } from "@/mappers/petAnalysisMapper";
+import {
+  mapDbPetAnalysisToPetAnalysisHistory,
+  mapPetAnalysisHistoryToApiRecord,
+} from "@/mappers/petAnalysisMapper";
 import type { DbPetAnalysis } from "@/types/db/db-pet-analysis";
 
 type Context = {
@@ -79,7 +82,10 @@ export async function GET(_: Request, context: Context) {
     }
 
     const history = ((analyses ?? []) as DbPetAnalysis[]).map(
-      mapDbPetAnalysisToPetAnalysisHistory
+      (analysis) =>
+        mapPetAnalysisHistoryToApiRecord(
+          mapDbPetAnalysisToPetAnalysisHistory(analysis)
+        )
     );
     const { data: progressLogs, error: progressError } = await supabaseAdmin
       .from("admin_activity_logs")

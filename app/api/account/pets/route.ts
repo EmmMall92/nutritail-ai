@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { mapPetAnalysisHistoryToApiRecord } from "@/mappers/petAnalysisMapper";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 
 export async function POST(request: Request) {
@@ -60,7 +61,9 @@ export async function POST(request: Request) {
 
     const petsWithHistory = await Promise.all(
       (pets ?? []).map(async (pet) => {
-        const history = await petAnalysisHistoryService.getPetHistory(String(pet.id));
+        const history = (
+          await petAnalysisHistoryService.getPetHistory(String(pet.id))
+        ).map(mapPetAnalysisHistoryToApiRecord);
 
         return {
           ...pet,

@@ -1,6 +1,15 @@
 import type { DbPetAnalysis } from "@/types/db/db-pet-analysis";
 import type { PetAnalysisHistory } from "@/types/pet-analysis-history";
 
+export type PetAnalysisApiRecord = PetAnalysisHistory & {
+  created_at: string;
+  food_score: number | null;
+  matched_food_id: string | null;
+  matched_food_name: string | null;
+  feeding_grams_per_day: number | null;
+  weight_goal: string | null;
+};
+
 function normalizeStringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.map((item) => String(item).trim()).filter(Boolean)
@@ -51,5 +60,19 @@ export function mapPetAnalysisHistoryToDbPetAnalysis(
     allergies: analysis.allergies ?? [],
     health_issues: analysis.healthIssues ?? [],
     created_at: analysis.createdAt,
+  };
+}
+
+export function mapPetAnalysisHistoryToApiRecord(
+  analysis: PetAnalysisHistory
+): PetAnalysisApiRecord {
+  return {
+    ...analysis,
+    created_at: analysis.createdAt,
+    food_score: analysis.foodScore ?? null,
+    matched_food_id: analysis.matchedFoodId ?? null,
+    matched_food_name: analysis.matchedFoodName ?? null,
+    feeding_grams_per_day: analysis.feedingGramsPerDay ?? null,
+    weight_goal: analysis.weightGoal ?? null,
   };
 }

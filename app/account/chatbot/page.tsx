@@ -6440,6 +6440,8 @@ If vomiting, diarrhea, or strong discomfort appears, stop the transition and spe
 
     setAnalysisMetadata((prev) => ({
       ...(prev ?? {}),
+      foodScore: choice.score ?? null,
+      matchedFoodId: choice.foodProductId ?? null,
       matchedFoodName: choice.name,
       feedingGramsPerDay: gramsPerDay,
       weightGoal: pet.weightGoal ?? "maintain",

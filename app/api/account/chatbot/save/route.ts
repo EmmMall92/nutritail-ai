@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
 import { formatPetDisplayName } from "@/lib/petName";
+import { mapDbPetAnalysisToPetAnalysisHistory } from "@/mappers/petAnalysisMapper";
 import { buildPetAnalysisHistoryRecord } from "@/services/petAnalysisHistoryBuilder";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 import type { Pet } from "@/types/pet";
 import type { PetAnalysis } from "@/types/pet-analysis";
+import type { DbPetAnalysis } from "@/types/db/db-pet-analysis";
 
 const MAX_PET_AGE_YEARS = 40;
 const MAX_PET_WEIGHT_KG = 150;
@@ -189,7 +191,7 @@ export async function POST(request: Request) {
         await petAnalysisHistoryService.saveAnalysis(historyRecord);
 
       if (metadata && savedHistory?.id) {
-        await supabaseAdmin
+        const { data: updatedHistory, error: metadataError } = await supabaseAdmin
           .from("pet_analyses")
           .update({
             food_score: toFiniteNumberOrNull(metadata.foodScore),
@@ -200,7 +202,17 @@ export async function POST(request: Request) {
             ),
             weight_goal: toTrimmedStringOrNull(metadata.weightGoal),
           })
-          .eq("id", savedHistory.id);
+          .eq("id", savedHistory.id)
+          .select("*")
+          .single();
+
+        if (metadataError) {
+          throw new Error(metadataError.message);
+        }
+
+        historyRecord = mapDbPetAnalysisToPetAnalysisHistory(
+          updatedHistory as DbPetAnalysis
+        );
       }
     }
 

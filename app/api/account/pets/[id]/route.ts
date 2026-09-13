@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAccountApiUser } from "@/lib/auth/accountApiGuard";
 import { supabaseAdmin } from "@/lib/db/supabaseAdmin";
+import { mapPetAnalysisHistoryToApiRecord } from "@/mappers/petAnalysisMapper";
 import { petAnalysisHistoryService } from "@/services/petAnalysisHistoryService";
 
 type Context = {
@@ -81,7 +82,9 @@ export async function POST(request: Request, context: Context) {
       return NextResponse.json({ error: "Pet not found." }, { status: 404 });
     }
 
-    const history = await petAnalysisHistoryService.getPetHistory(String(pet.id));
+    const history = (
+      await petAnalysisHistoryService.getPetHistory(String(pet.id))
+    ).map(mapPetAnalysisHistoryToApiRecord);
     const { data: progressLogs, error: progressError } = await supabaseAdmin
       .from("admin_activity_logs")
       .select("*")
