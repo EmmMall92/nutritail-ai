@@ -17,6 +17,7 @@ const nextConfig = read("next.config.ts");
 const proxy = read("proxy.ts");
 const openGraphImage = read("app/opengraph-image.tsx");
 const publicFooter = read("components/PublicFooter.tsx");
+const publicHeader = read("components/PublicHeader.tsx");
 const supportPage = read("app/support/page.tsx");
 const packageJson = read("package.json");
 
@@ -45,6 +46,9 @@ for (const path of [
   "app/privacy/page.tsx",
   "app/terms/page.tsx",
   "app/ai-transparency/page.tsx",
+  "app/guides/page.tsx",
+  "app/guides/dog-food-portion/page.tsx",
+  "app/guides/cat-food-portion/page.tsx",
 ]) {
   assert(
     read(path).includes("createPublicMetadata"),
@@ -66,6 +70,27 @@ assert(
   sitemap.includes('path: "/ai-transparency"'),
   "Sitemap must include the public AI transparency page."
 );
+for (const path of ["/guides", "/guides/dog-food-portion", "/guides/cat-food-portion"]) {
+  assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
+}
+assert(
+  publicHeader.includes('href: "/guides"') &&
+    publicFooter.includes('href: "/guides"') &&
+    homePage.includes('href="/guides/dog-food-portion"') &&
+    homePage.includes('href="/guides/cat-food-portion"'),
+  "Nutrition guides must be discoverable from public navigation and the homepage."
+);
+for (const path of [
+  "app/guides/dog-food-portion/page.tsx",
+  "app/guides/cat-food-portion/page.tsx",
+]) {
+  const guide = read(path);
+  assert(
+    guide.includes("europeanpetfood.org") && guide.includes("wsava.org") &&
+      guide.includes("κτηνίατρο") && guide.includes("προτεινόμενος"),
+    `${path} must cite primary sources and keep examples non-prescriptive.`
+  );
+}
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),
   "Sitemap must not claim that every page changed at deployment time."

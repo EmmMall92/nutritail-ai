@@ -14,6 +14,21 @@ const publicRoutes = [
     priority: 0.8,
   },
   {
+    path: "/guides",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/guides/dog-food-portion",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/guides/cat-food-portion",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/about",
     changeFrequency: "monthly",
     priority: 0.7,

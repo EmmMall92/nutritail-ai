@@ -9,6 +9,7 @@ import { launchFeatures } from "@/lib/launch/features";
 
 const links = [
   { href: "/how-it-works", label: "Πώς λειτουργεί" },
+  { href: "/guides", label: "Οδηγοί" },
   ...(launchFeatures.paidPlans
     ? [{ href: "/plans", label: "Πλάνα" }]
     : []),

@@ -359,6 +359,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-[#dce5df] bg-white py-14 sm:py-16">
+        <div className="nt-container">
+          <p className="nt-eyebrow">Οδηγοί διατροφής</p>
+          <h2 className="mt-3 max-w-2xl text-3xl font-black leading-tight sm:text-4xl">
+            Πόση τροφή βάζω στο μπολ;
+          </h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <Link href="/guides/dog-food-portion" className="nt-focus group border-t-2 border-[#1f7a4d] pt-5">
+              <span className="text-sm font-bold text-[#17663f]">Σκύλος</span>
+              <span className="mt-2 flex items-center gap-2 text-xl font-black group-hover:underline">
+                Πόση τροφή χρειάζεται ο σκύλος μου; <ArrowRight size={19} className="shrink-0" aria-hidden="true" />
+              </span>
+              <span className="mt-3 block text-sm leading-6 text-[#52635a]">
+                Ετικέτα, θερμίδες, λιχουδιές και παρακολούθηση βάρους.
+              </span>
+            </Link>
+            <Link href="/guides/cat-food-portion" className="nt-focus group border-t-2 border-[#e56f51] pt-5">
+              <span className="text-sm font-bold text-[#a7442c]">Γάτα</span>
+              <span className="mt-2 flex items-center gap-2 text-xl font-black group-hover:underline">
+                Πόση τροφή χρειάζεται η γάτα μου; <ArrowRight size={19} className="shrink-0" aria-hidden="true" />
+              </span>
+              <span className="mt-3 block text-sm leading-6 text-[#52635a]">
+                Υγρή και ξηρά τροφή σε μία ημερήσια μερίδα.
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <PublicFooter />
     </main>
   );
