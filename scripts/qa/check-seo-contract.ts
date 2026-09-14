@@ -47,6 +47,7 @@ for (const path of [
   "app/terms/page.tsx",
   "app/ai-transparency/page.tsx",
   "app/guides/page.tsx",
+  "app/guides/choosing-dog-food/page.tsx",
   "app/guides/dog-food-portion/page.tsx",
   "app/guides/cat-food-portion/page.tsx",
 ]) {
@@ -70,12 +71,13 @@ assert(
   sitemap.includes('path: "/ai-transparency"'),
   "Sitemap must include the public AI transparency page."
 );
-for (const path of ["/guides", "/guides/dog-food-portion", "/guides/cat-food-portion"]) {
+for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/cat-food-portion"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }
 assert(
   publicHeader.includes('href: "/guides"') &&
     publicFooter.includes('href: "/guides"') &&
+    homePage.includes('href="/guides/choosing-dog-food"') &&
     homePage.includes('href="/guides/dog-food-portion"') &&
     homePage.includes('href="/guides/cat-food-portion"'),
   "Nutrition guides must be discoverable from public navigation and the homepage."
@@ -91,6 +93,18 @@ for (const path of [
     `${path} must cite primary sources and keep examples non-prescriptive.`
   );
 }
+const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
+const guidesHub = read("app/guides/page.tsx");
+assert(
+  choosingDogFoodGuide.includes('path: "/guides/choosing-dog-food"') &&
+    choosingDogFoodGuide.includes("Τι τροφή να πάρω στον σκύλο μου;") &&
+    choosingDogFoodGuide.includes("europeanpetfood.org") &&
+    choosingDogFoodGuide.includes("wsava.org") &&
+    choosingDogFoodGuide.includes("κτηνίατρο") &&
+    choosingDogFoodGuide.includes('href="/guides/dog-food-portion"') &&
+    guidesHub.includes('href: "/guides/choosing-dog-food"'),
+  "Dog food selection guide must be sourced, bounded, and discoverable."
+);
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),
   "Sitemap must not claim that every page changed at deployment time."

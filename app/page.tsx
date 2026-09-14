@@ -363,9 +363,18 @@ export default function HomePage() {
         <div className="nt-container">
           <p className="nt-eyebrow">Οδηγοί διατροφής</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black leading-tight sm:text-4xl">
-            Πόση τροφή βάζω στο μπολ;
+            Επιλογή τροφής και σωστή μερίδα
           </h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Link href="/guides/choosing-dog-food" className="nt-focus group border-t-2 border-[#1f7a4d] pt-5">
+              <span className="text-sm font-bold text-[#17663f]">Σκύλος</span>
+              <span className="mt-2 flex items-center gap-2 text-xl font-black group-hover:underline">
+                Τι τροφή να πάρω στον σκύλο μου; <ArrowRight size={19} className="shrink-0" aria-hidden="true" />
+              </span>
+              <span className="mt-3 block text-sm leading-6 text-[#52635a]">
+                Στάδιο ζωής, ετικέτα και σύγκριση επιλογών.
+              </span>
+            </Link>
             <Link href="/guides/dog-food-portion" className="nt-focus group border-t-2 border-[#1f7a4d] pt-5">
               <span className="text-sm font-bold text-[#17663f]">Σκύλος</span>
               <span className="mt-2 flex items-center gap-2 text-xl font-black group-hover:underline">

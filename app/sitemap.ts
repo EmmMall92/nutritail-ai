@@ -19,6 +19,11 @@ const publicRoutes = [
     priority: 0.7,
   },
   {
+    path: "/guides/choosing-dog-food",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/guides/dog-food-portion",
     changeFrequency: "monthly",
     priority: 0.7,
