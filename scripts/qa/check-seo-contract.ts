@@ -49,6 +49,7 @@ for (const path of [
   "app/guides/page.tsx",
   "app/guides/choosing-dog-food/page.tsx",
   "app/guides/dog-food-portion/page.tsx",
+  "app/guides/choosing-cat-food/page.tsx",
   "app/guides/cat-food-portion/page.tsx",
 ]) {
   assert(
@@ -71,7 +72,7 @@ assert(
   sitemap.includes('path: "/ai-transparency"'),
   "Sitemap must include the public AI transparency page."
 );
-for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/cat-food-portion"]) {
+for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }
 assert(
@@ -79,6 +80,7 @@ assert(
     publicFooter.includes('href: "/guides"') &&
     homePage.includes('href="/guides/choosing-dog-food"') &&
     homePage.includes('href="/guides/dog-food-portion"') &&
+    homePage.includes('href="/guides/choosing-cat-food"') &&
     homePage.includes('href="/guides/cat-food-portion"'),
   "Nutrition guides must be discoverable from public navigation and the homepage."
 );
@@ -100,6 +102,7 @@ for (const path of [
   );
 }
 const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
+const choosingCatFoodGuide = read("app/guides/choosing-cat-food/page.tsx");
 const guidesHub = read("app/guides/page.tsx");
 assert(
   choosingDogFoodGuide.includes('path: "/guides/choosing-dog-food"') &&
@@ -110,6 +113,18 @@ assert(
     choosingDogFoodGuide.includes('href="/guides/dog-food-portion"') &&
     guidesHub.includes('href: "/guides/choosing-dog-food"'),
   "Dog food selection guide must be sourced, bounded, and discoverable."
+);
+assert(
+  choosingCatFoodGuide.includes('path: "/guides/choosing-cat-food"') &&
+    choosingCatFoodGuide.includes("Τι τροφή να πάρω στη γάτα μου;") &&
+    choosingCatFoodGuide.includes("europeanpetfood.org") &&
+    choosingCatFoodGuide.includes("wsava.org") &&
+    choosingCatFoodGuide.includes("vet.cornell.edu") &&
+    choosingCatFoodGuide.includes("κτηνίατρο") &&
+    choosingCatFoodGuide.includes('href="/guides/cat-food-portion"') &&
+    read("app/guides/cat-food-portion/page.tsx").includes('href="/guides/choosing-cat-food"') &&
+    guidesHub.includes('href: "/guides/choosing-cat-food"'),
+  "Cat food selection guide must be sourced, bounded, and linked to the portion guide."
 );
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),

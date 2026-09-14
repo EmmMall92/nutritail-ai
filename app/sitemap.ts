@@ -29,6 +29,11 @@ const publicRoutes = [
     priority: 0.7,
   },
   {
+    path: "/guides/choosing-cat-food",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/guides/cat-food-portion",
     changeFrequency: "monthly",
     priority: 0.7,

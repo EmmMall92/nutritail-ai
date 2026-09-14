@@ -113,8 +113,8 @@ export default function CatFoodPortionGuide() {
         </section>
 
         <nav aria-label="Σχετικοί σύνδεσμοι" className="flex flex-col gap-4 border-t border-[#dce5df] py-8 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/guides/dog-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
-            Δες και τον οδηγό για σκύλους
+          <Link href="/guides/choosing-cat-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+            Δες πώς να επιλέξεις τροφή γάτας
           </Link>
           <Link href="/register" className="nt-button nt-button-primary nt-focus inline-flex gap-2">
             Ξεκίνα δωρεάν ανάλυση <ArrowRight size={17} aria-hidden="true" />
