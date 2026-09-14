@@ -41,7 +41,7 @@ function AccountNavLink({
   return (
     <Link
       href={href}
-      className={`nt-focus flex min-h-[3.5rem] min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-[10px] font-bold transition sm:min-h-10 sm:flex-row sm:gap-2 sm:px-3 sm:text-sm ${
+      className={`nt-focus flex min-h-[3.5rem] min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-[10px] font-bold transition lg:min-h-10 lg:flex-row lg:gap-2 lg:px-3 lg:text-sm ${
         isActive
           ? "bg-[#123d2b] text-white"
           : "text-[#52635a] hover:bg-[#eef5f0] hover:text-[#14221b]"
@@ -51,7 +51,7 @@ function AccountNavLink({
       title={label}
     >
       <Icon size={18} className="shrink-0" />
-      <span className="hidden sm:inline">{label}</span>
+      <span>{label}</span>
     </Link>
   );
 }
@@ -96,8 +96,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
       <nav className="sticky top-0 z-40 border-b border-[#dce5df] bg-white/95 backdrop-blur">
         <div
-          className="mx-auto grid max-w-6xl gap-1 px-2 py-2 sm:flex sm:gap-1 sm:px-6"
-          style={{ gridTemplateColumns: "repeat(6, minmax(0, 1fr))" }}
+          className="mx-auto grid max-w-6xl grid-cols-3 gap-1 px-2 py-2 sm:grid-cols-6 sm:px-6 lg:flex"
         >
           {accountLinks.map((link) => (
             <AccountNavLink key={link.href} {...link} pathname={pathname} />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowRight, Bot, FileText, PawPrint, Sparkles } from "lucide-react";
+import { ArrowRight, Bot, FileText, PawPrint, Scale, Sparkles } from "lucide-react";
 import {
   betaAccessPlanConfig,
   betaPlanHighlights,
@@ -777,13 +777,20 @@ export default function AccountPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap lg:max-w-[27rem] lg:justify-end">
             <Link
               href="/account/chatbot"
               className="nt-button nt-button-primary nt-focus"
             >
               <Sparkles size={17} />
               Νέα διατροφική ανάλυση
+            </Link>
+            <Link
+              href="/account/food-compare"
+              className="nt-button nt-button-secondary nt-focus"
+            >
+              <Scale size={17} aria-hidden="true" />
+              Σύγκρινε τροφές
             </Link>
             <Link
               href="/account/pets"

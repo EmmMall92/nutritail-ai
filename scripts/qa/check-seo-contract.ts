@@ -82,6 +82,12 @@ assert(
     homePage.includes('href="/guides/cat-food-portion"'),
   "Nutrition guides must be discoverable from public navigation and the homepage."
 );
+assert(
+  publicHeader.includes('href: "/account/food-compare"') &&
+    publicFooter.includes('href: "/account/food-compare"') &&
+    homePage.includes('href="/account/food-compare"'),
+  "Food comparison must be discoverable from the public website."
+);
 for (const path of [
   "app/guides/dog-food-portion/page.tsx",
   "app/guides/cat-food-portion/page.tsx",

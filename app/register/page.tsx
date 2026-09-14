@@ -26,6 +26,10 @@ function getSafeRedirectPath() {
 }
 
 function getRedirectLabel(path: string) {
+  if (path.startsWith("/account/food-compare")) {
+    return "στη σύγκριση τροφών";
+  }
+
   if (path.startsWith("/account/chatbot")) {
     return "στο chatbot για την πρώτη ανάλυση";
   }

@@ -5,6 +5,7 @@ import { launchFeatures } from "@/lib/launch/features";
 const footerLinks = [
   { href: "/about", label: "Σχετικά" },
   { href: "/how-it-works", label: "Πώς λειτουργεί" },
+  { href: "/account/food-compare", label: "Σύγκριση τροφών" },
   { href: "/guides", label: "Οδηγοί" },
   ...(launchFeatures.paidPlans
     ? [{ href: "/plans", label: "Πλάνα" }]

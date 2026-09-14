@@ -15,6 +15,7 @@ function assert(condition: unknown, message: string) {
 }
 
 const accountPage = read("app/account/page.tsx");
+const accountLayout = read("app/account/layout.tsx");
 const chatbotPage = read("app/account/chatbot/page.tsx");
 const petsPage = read("app/account/pets/page.tsx");
 const petDetailPage = read("app/account/pets/[id]/page.tsx");
@@ -41,6 +42,15 @@ const requiredAccountMarkers = [
 for (const marker of requiredAccountMarkers) {
   assert(accountPage.includes(marker), `Account dashboard is missing marker: ${marker}`);
 }
+
+assert(
+  accountPage.includes('href="/account/food-compare"') &&
+    accountPage.includes("Σύγκρινε τροφές") &&
+    accountLayout.includes('href: "/account/food-compare"') &&
+    accountLayout.includes("grid-cols-3") &&
+    accountLayout.includes("<span>{label}</span>"),
+  "Food comparison must be visible from the account dashboard and labeled on mobile."
+);
 
 const currentPlanCopy = [
   "Ενεργό πλάνο",

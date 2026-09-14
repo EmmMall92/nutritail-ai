@@ -7,6 +7,7 @@ import {
   Check,
   HeartPulse,
   MessagesSquare,
+  Scale,
   ShieldCheck,
   Sparkles,
   Utensils,
@@ -163,10 +164,11 @@ export default function HomePage() {
                 <ArrowRight size={18} />
               </Link>
               <Link
-                href="/how-it-works"
-                className="nt-focus inline-flex min-h-12 items-center justify-center rounded-lg border border-white/35 bg-white/10 px-5 py-3 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                href="/account/food-compare"
+                className="nt-focus inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/35 bg-white/10 px-5 py-3 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
               >
-                Δες πώς λειτουργεί
+                <Scale size={18} aria-hidden="true" />
+                Σύγκρινε τροφές
               </Link>
             </div>
 

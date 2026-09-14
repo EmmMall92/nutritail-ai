@@ -69,6 +69,15 @@ for (const page of authPages) {
   }
 }
 
+for (const path of ["app/login/page.tsx", "app/register/page.tsx"]) {
+  const source = read(path);
+  assert(
+    source.includes('path.startsWith("/account/food-compare")') &&
+      source.includes("στη σύγκριση τροφών"),
+    `${path} must name the comparison destination after authentication.`
+  );
+}
+
 const authShell = read("components/AuthShell.tsx");
 for (const marker of [
   "trustPoints",
