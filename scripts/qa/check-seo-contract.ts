@@ -66,6 +66,7 @@ for (const path of [
   "app/guides/dog-food-portion/page.tsx",
   "app/guides/choosing-cat-food/page.tsx",
   "app/guides/cat-food-portion/page.tsx",
+  "app/guides/changing-pet-food/page.tsx",
 ]) {
   const guide = read(path);
   assert(
@@ -103,7 +104,7 @@ assert(
   sitemap.includes('path: "/ai-transparency"'),
   "Sitemap must include the public AI transparency page."
 );
-for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion"]) {
+for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion", "/guides/changing-pet-food"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }
 assert(
@@ -152,6 +153,7 @@ assert(
 );
 const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
 const choosingCatFoodGuide = read("app/guides/choosing-cat-food/page.tsx");
+const changingPetFoodGuide = read("app/guides/changing-pet-food/page.tsx");
 const guidesHub = read("app/guides/page.tsx");
 assert(
   choosingDogFoodGuide.includes('path: "/guides/choosing-dog-food"') &&
@@ -160,6 +162,7 @@ assert(
     choosingDogFoodGuide.includes("wsava.org") &&
     choosingDogFoodGuide.includes("κτηνίατρο") &&
     choosingDogFoodGuide.includes('href="/guides/dog-food-portion"') &&
+    choosingDogFoodGuide.includes('href="/guides/changing-pet-food"') &&
     guidesHub.includes('href: "/guides/choosing-dog-food"'),
   "Dog food selection guide must be sourced, bounded, and discoverable."
 );
@@ -171,6 +174,7 @@ assert(
     choosingCatFoodGuide.includes("vet.cornell.edu") &&
     choosingCatFoodGuide.includes("κτηνίατρο") &&
     choosingCatFoodGuide.includes('href="/guides/cat-food-portion"') &&
+    choosingCatFoodGuide.includes('href="/guides/changing-pet-food"') &&
     read("app/guides/cat-food-portion/page.tsx").includes('href="/guides/choosing-cat-food"') &&
     guidesHub.includes('href: "/guides/choosing-cat-food"'),
   "Cat food selection guide must be sourced, bounded, and linked to the portion guide."
@@ -182,6 +186,21 @@ for (const guide of [choosingDogFoodGuide, choosingCatFoodGuide]) {
     "Food selection guides must connect readers to comparison and chatbot flows."
   );
 }
+assert(
+  changingPetFoodGuide.includes('path: "/guides/changing-pet-food"') &&
+    changingPetFoodGuide.includes("Πώς αλλάζω τροφή στον σκύλο ή στη γάτα;") &&
+    changingPetFoodGuide.includes("wsava.org") &&
+    changingPetFoodGuide.includes("aaha.org") &&
+    changingPetFoodGuide.includes("vet.cornell.edu") &&
+    changingPetFoodGuide.includes("75%") &&
+    changingPetFoodGuide.includes("25%") &&
+    changingPetFoodGuide.includes("κτηνίατρο") &&
+    changingPetFoodGuide.includes('href="/account/food-compare"') &&
+    changingPetFoodGuide.includes('href="/register?next=/account/chatbot"') &&
+    guidesHub.includes('href: "/guides/changing-pet-food"') &&
+    homePage.includes('href="/guides/changing-pet-food"'),
+  "Pet food transition guide must be sourced, bounded, and discoverable."
+);
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),
   "Sitemap must not claim that every page changed at deployment time."

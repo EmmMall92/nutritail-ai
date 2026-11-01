@@ -157,6 +157,9 @@ export default function ChoosingDogFoodGuide() {
             <Link href="/guides/dog-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Υπολόγισε την ενδεικτική μερίδα
             </Link>
+            <Link href="/guides/changing-pet-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Άλλαξε τροφή σταδιακά
+            </Link>
             <Link href="/account/food-compare" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Σύγκρινε τροφές
             </Link>

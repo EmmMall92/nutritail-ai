@@ -365,7 +365,7 @@ export default function HomePage() {
         <div className="nt-container">
           <p className="nt-eyebrow">Οδηγοί διατροφής</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black leading-tight sm:text-4xl">
-            Επιλογή τροφής και ενδεικτική μερίδα
+            Επιλογή, μερίδα και αλλαγή τροφής
           </h2>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <Link href="/guides/choosing-dog-food" className="nt-focus group border-t-2 border-[#1f7a4d] pt-5">
@@ -402,6 +402,15 @@ export default function HomePage() {
               </span>
               <span className="mt-3 block text-sm leading-6 text-[#52635a]">
                 Ποσότητα για γατάκι και συνδυασμός υγρής και ξηράς τροφής.
+              </span>
+            </Link>
+            <Link href="/guides/changing-pet-food" className="nt-focus group border-t-2 border-[#1f7a4d] pt-5 md:col-span-2">
+              <span className="text-sm font-bold text-[#17663f]">Σκύλος &amp; γάτα</span>
+              <span className="mt-2 flex items-center gap-2 text-xl font-black group-hover:underline">
+                Πώς αλλάζω τροφή με ασφάλεια; <ArrowRight size={19} className="shrink-0" aria-hidden="true" />
+              </span>
+              <span className="mt-3 block max-w-2xl text-sm leading-6 text-[#52635a]">
+                Σταδιακή μετάβαση, πρακτικές αναλογίες και σημάδια που χρειάζονται κτηνίατρο.
               </span>
             </Link>
           </div>

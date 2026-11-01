@@ -45,6 +45,12 @@ const publicRoutes = [
     lastModified: "2026-11-01",
   },
   {
+    path: "/guides/changing-pet-food",
+    changeFrequency: "monthly",
+    priority: 0.7,
+    lastModified: "2026-11-01",
+  },
+  {
     path: "/about",
     changeFrequency: "monthly",
     priority: 0.7,
