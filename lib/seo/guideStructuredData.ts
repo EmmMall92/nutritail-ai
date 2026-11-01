@@ -1,4 +1,5 @@
 import { brand } from "@/lib/brand";
+import { localizePath, localeTag, type Locale } from "@/lib/i18n/config";
 
 type GuideStructuredDataInput = {
   title: string;
@@ -6,6 +7,7 @@ type GuideStructuredDataInput = {
   path: `/guides/${string}`;
   datePublished: `${number}-${number}-${number}`;
   dateModified: `${number}-${number}-${number}`;
+  locale?: Locale;
 };
 
 export function createGuideStructuredData({
@@ -14,8 +16,10 @@ export function createGuideStructuredData({
   path,
   datePublished,
   dateModified,
+  locale = "el",
 }: GuideStructuredDataInput) {
-  const url = `${brand.domain}${path}`;
+  const localizedPath = localizePath(path, locale);
+  const url = `${brand.domain}${localizedPath}`;
 
   return {
     "@context": "https://schema.org",
@@ -30,7 +34,7 @@ export function createGuideStructuredData({
           "@type": "WebPage",
           "@id": url,
         },
-        inLanguage: "el-GR",
+        inLanguage: localeTag(locale),
         datePublished,
         dateModified,
         image: {
@@ -60,14 +64,14 @@ export function createGuideStructuredData({
           {
             "@type": "ListItem",
             position: 1,
-            name: "Αρχική",
-            item: brand.domain,
+            name: locale === "el" ? "Αρχική" : "Home",
+            item: `${brand.domain}${localizePath("/", locale)}`,
           },
           {
             "@type": "ListItem",
             position: 2,
-            name: "Οδηγοί διατροφής",
-            item: `${brand.domain}/guides`,
+            name: locale === "el" ? "Οδηγοί διατροφής" : "Nutrition guides",
+            item: `${brand.domain}${localizePath("/guides", locale)}`,
           },
           {
             "@type": "ListItem",

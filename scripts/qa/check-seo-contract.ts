@@ -25,11 +25,15 @@ const packageJson = read("package.json");
 for (const marker of [
   "createPublicMetadata",
   "createNoIndexMetadata",
-  "alternates: { canonical: path }",
+  "canonical: canonicalPath",
+  "languages: {",
+  '"el-GR": localizePath(path, "el")',
+  'en: localizePath(path, "en")',
   "noarchive: true",
   '"max-image-preview": "large"',
   'card: "summary_large_image"',
-  "images: [socialImage]",
+  "images: [socialImage(locale)]",
+  "alternateLocale:",
 ]) {
   assert(metadataHelper.includes(marker), `SEO metadata helper is missing: ${marker}`);
 }
@@ -38,7 +42,7 @@ for (const marker of [
   '"@type": "Article"',
   '"@type": "BreadcrumbList"',
   '"@type": "Organization"',
-  'inLanguage: "el-GR"',
+  "inLanguage: localeTag(locale)",
   "datePublished",
   "dateModified",
 ]) {
@@ -95,7 +99,7 @@ for (const marker of [
   '"@type": "WebSite"',
   '"@type": "WebApplication"',
   '"@graph"',
-  'inLanguage: "el-GR"',
+  "inLanguage: localeTag(locale)",
 ]) {
   assert(homePage.includes(marker), `Homepage JSON-LD is missing: ${marker}`);
 }
@@ -104,6 +108,14 @@ assert(
   sitemap.includes('path: "/ai-transparency"'),
   "Sitemap must include the public AI transparency page."
 );
+for (const marker of [
+  'const locales: Locale[] = ["el", "en"]',
+  '"el-GR":',
+  '"x-default":',
+  "alternates: { languages }",
+]) {
+  assert(sitemap.includes(marker), `Localized sitemap is missing: ${marker}`);
+}
 for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion", "/guides/changing-pet-food"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }

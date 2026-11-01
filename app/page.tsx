@@ -16,15 +16,28 @@ import {
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { localizePath, localeTag, type Locale } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { launchFeatures } from "@/lib/launch/features";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `${brand.name} | Τροφή και μερίδα για σκύλο ή γάτα`,
-  description:
-    "Βρες ενημερωτική καθοδήγηση για επιλογή τροφής σκύλου ή γάτας, ενδεικτικές θερμίδες και ημερήσια μερίδα, με σαφή όρια κτηνιατρικής συμβουλής.",
-  path: "/",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title:
+      locale === "el"
+        ? `${brand.name} | Τροφή και μερίδα για σκύλο ή γάτα`
+        : `${brand.name} | Food and portions for dogs and cats`,
+    description:
+      locale === "el"
+        ? "Βρες ενημερωτική καθοδήγηση για επιλογή τροφής σκύλου ή γάτας, ενδεικτικές θερμίδες και ημερήσια μερίδα, με σαφή όρια κτηνιατρικής συμβουλής."
+        : "Get informational guidance for choosing dog or cat food, estimated calories and daily portions, with clear veterinary safety boundaries.",
+    path: "/",
+    locale,
+  });
+}
 
 const steps = [
   {
@@ -74,7 +87,14 @@ const recommendationCards = [
 const organizationId = `${brand.domain}/#organization`;
 const websiteId = `${brand.domain}/#website`;
 
-const structuredData = {
+function createStructuredData(locale: Locale) {
+  const localizedUrl = `${brand.domain}${localizePath("/", locale)}`;
+  const description =
+    locale === "el"
+      ? brand.description
+      : "Informational food guidance, calorie estimates and practical portions for dogs and cats.";
+
+  return {
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -82,15 +102,15 @@ const structuredData = {
       "@id": organizationId,
       name: brand.name,
       alternateName: brand.shortName,
-      url: brand.domain,
+      url: localizedUrl,
       logo: `${brand.domain}/icon-512.png`,
       email: brand.contactEmail,
-      description: brand.description,
+      description,
       contactPoint: {
         "@type": "ContactPoint",
         email: brand.contactEmail,
         contactType: "customer support",
-        availableLanguage: "Greek",
+        availableLanguage: ["Greek", "English"],
       },
     },
     {
@@ -98,28 +118,32 @@ const structuredData = {
       "@id": websiteId,
       name: brand.name,
       alternateName: brand.shortName,
-      url: brand.domain,
-      inLanguage: "el-GR",
+      url: localizedUrl,
+      inLanguage: localeTag(locale),
       publisher: { "@id": organizationId },
     },
     {
       "@type": "WebApplication",
       "@id": `${brand.domain}/#application`,
       name: brand.name,
-      url: brand.domain,
-      description: brand.description,
+      url: localizedUrl,
+      description,
       applicationCategory: "LifestyleApplication",
       operatingSystem: "Any",
-      inLanguage: "el-GR",
+      inLanguage: localeTag(locale),
       isAccessibleForFree: true,
       offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
       publisher: { "@id": organizationId },
     },
   ],
 };
+}
 
-export default function HomePage() {
-  return (
+export default async function HomePage() {
+  const locale = await getRequestLocale();
+  const structuredData = createStructuredData(locale);
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen overflow-x-hidden bg-[#fbfcfa] text-[#14221b]">
       <script
         type="application/ld+json"
@@ -419,5 +443,5 @@ export default function HomePage() {
 
       <PublicFooter />
     </main>
-  );
+  ));
 }

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicText, translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createGuideStructuredData } from "@/lib/seo/guideStructuredData";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
@@ -9,19 +11,16 @@ const guideTitle = "Πόση τροφή χρειάζεται η γάτα ή το
 const guideDescription =
   "Πρακτικός οδηγός για ποσότητα τροφής σε γατάκι 1-12 μηνών και ενήλικη ή στειρωμένη γάτα: γεύματα, θερμίδες, υγρή και ξηρά τροφή.";
 
-export const metadata = createPublicMetadata({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/cat-food-portion",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
 
-const structuredData = createGuideStructuredData({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/cat-food-portion",
-  datePublished: "2026-09-14",
-  dateModified: "2026-11-01",
-});
+  return createPublicMetadata({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/cat-food-portion",
+    locale,
+  });
+}
 
 const kittenStages = [
   {
@@ -62,8 +61,18 @@ const kittenEnergyStages = [
   { age: "9-12 μηνών", relativeNeed: "1,5 × ενέργεια συντήρησης" },
 ] as const;
 
-export default function CatFoodPortionGuide() {
-  return (
+export default async function CatFoodPortionGuide() {
+  const locale = await getRequestLocale();
+  const structuredData = createGuideStructuredData({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/cat-food-portion",
+    datePublished: "2026-09-14",
+    dateModified: "2026-11-01",
+    locale,
+  });
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
       <script
         type="application/ld+json"
@@ -291,5 +300,5 @@ export default function CatFoodPortionGuide() {
       </article>
       <PublicFooter />
     </main>
-  );
+  ));
 }

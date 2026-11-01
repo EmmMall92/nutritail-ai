@@ -3,16 +3,25 @@ import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { betaAccessPlanConfig } from "@/lib/beta/accessPlan";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { TERMS_LAST_UPDATED_EL, TERMS_VERSION } from "@/lib/legal/config";
 import { launchFeatures } from "@/lib/launch/features";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `Όροι χρήσης | ${brand.name}`,
-  description:
-    "Διάβασε τους όρους χρήσης του Nutritail AI για ενημερωτική επιλογή τροφής κατοικιδίων.",
-  path: "/terms",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Όροι χρήσης | ${brand.name}` : `Terms of Use | ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Διάβασε τους όρους χρήσης του Nutritail AI για ενημερωτική επιλογή τροφής κατοικιδίων."
+        : "Read the NutriTail AI Terms of Use for informational pet food guidance.",
+    path: "/terms",
+    locale,
+  });
+}
 
 const sections = [
   {
@@ -127,14 +136,29 @@ const recommendationBoundaries = [
   },
 ] as const;
 
-export default function TermsPage() {
-  return (
+export default async function TermsPage() {
+  const locale = await getRequestLocale();
+  const lastUpdated = locale === "el" ? TERMS_LAST_UPDATED_EL : "17 August 2026";
+  const betaAccessSummary =
+    locale === "el"
+      ? `Στην τρέχουσα beta περίοδο το πλάνο είναι ${betaAccessPlanConfig.accessPlan}, με ${betaAccessPlanConfig.accountLimit} λογαριασμό, έως ${betaAccessPlanConfig.petLimit} κατοικίδια και έως ${betaAccessPlanConfig.monthlyAnalysisLimit} αναλύσεις τον μήνα.`
+      : `During the current beta period, the plan is ${betaAccessPlanConfig.accessPlan}, with ${betaAccessPlanConfig.accountLimit} account, up to ${betaAccessPlanConfig.petLimit} pets and up to ${betaAccessPlanConfig.monthlyAnalysisLimit} analyses per month.`;
+  const localizedSections = sections.map((section) => ({
+    ...section,
+    items: section.items.map((item) =>
+      item.startsWith("Στην τρέχουσα beta περίοδο το πλάνο είναι")
+        ? betaAccessSummary
+        : item
+    ),
+  }));
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-gray-50">
       <PublicHeader />
       <section className="mx-auto max-w-4xl space-y-8 px-6 py-12">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-            Τελευταία ενημέρωση {TERMS_LAST_UPDATED_EL} · Έκδοση {TERMS_VERSION}
+            Τελευταία ενημέρωση {lastUpdated} · Έκδοση {TERMS_VERSION}
           </p>
           <h1 className="mt-3 text-3xl font-bold text-black">Όροι χρήσης</h1>
 
@@ -219,7 +243,7 @@ export default function TermsPage() {
           </div>
         </div>
 
-        {sections.map((section) => (
+        {localizedSections.map((section) => (
           <div
             key={section.title}
             className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm"
@@ -256,5 +280,5 @@ export default function TermsPage() {
       </section>
       <PublicFooter />
     </main>
-  );
+  ));
 }

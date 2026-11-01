@@ -2,14 +2,23 @@ import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `Σχετικά με το ${brand.name}`,
-  description:
-    "Μάθε τι είναι το Nutritail AI, γιατί δημιουργήθηκε και πώς βοηθά ιδιοκτήτες σκύλων και γατών να παίρνουν πιο καθαρές διατροφικές αποφάσεις.",
-  path: "/about",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Σχετικά με το ${brand.name}` : `About ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Μάθε τι είναι το Nutritail AI, γιατί δημιουργήθηκε και πώς βοηθά ιδιοκτήτες σκύλων και γατών να παίρνουν πιο καθαρές διατροφικές αποφάσεις."
+        : "Learn what NutriTail AI is, why it was created and how it helps dog and cat owners make clearer food decisions.",
+    path: "/about",
+    locale,
+  });
+}
 
 const values = [
   {
@@ -37,8 +46,10 @@ const roadmap = [
   "Πιο καθαρές αναφορές που μπορείς να ξαναδείς ή να εκτυπώσεις.",
 ];
 
-export default function AboutPage() {
-  return (
+export default async function AboutPage() {
+  const locale = await getRequestLocale();
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
       <PublicHeader />
 
@@ -221,5 +232,5 @@ export default function AboutPage() {
       </section>
       <PublicFooter />
     </main>
-  );
+  ));
 }

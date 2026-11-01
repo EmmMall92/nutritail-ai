@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brand } from "@/lib/brand";
+import { localizePath, type Locale } from "@/lib/i18n/config";
 import { launchFeatures } from "@/lib/launch/features";
 
 const publicRoutes = [
@@ -84,10 +85,21 @@ const publicRoutes = [
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return publicRoutes.map((route) => ({
-    url: `${brand.domain}${route.path}`,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-    ...("lastModified" in route ? { lastModified: route.lastModified } : {}),
-  }));
+  const locales: Locale[] = ["el", "en"];
+
+  return publicRoutes.flatMap((route) => {
+    const languages = {
+      "el-GR": `${brand.domain}${localizePath(route.path, "el")}`,
+      en: `${brand.domain}${localizePath(route.path, "en")}`,
+      "x-default": `${brand.domain}${localizePath(route.path, "el")}`,
+    };
+
+    return locales.map((locale) => ({
+      url: `${brand.domain}${localizePath(route.path, locale)}`,
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+      alternates: { languages },
+      ...("lastModified" in route ? { lastModified: route.lastModified } : {}),
+    }));
+  });
 }

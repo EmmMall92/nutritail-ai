@@ -4,15 +4,24 @@ import { Bot, Database, Scale, ShieldCheck, Stethoscope } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { AI_TRANSPARENCY_VERSION } from "@/lib/legal/config";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `Διαφάνεια AI | ${brand.name}`,
-  description:
-    "Πώς χρησιμοποιεί AI το Nutritail, ποια είναι τα όριά του και πότε χρειάζεται κτηνίατρος.",
-  path: "/ai-transparency",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Διαφάνεια AI | ${brand.name}` : `AI transparency | ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Πώς χρησιμοποιεί AI το Nutritail, ποια είναι τα όριά του και πότε χρειάζεται κτηνίατρος."
+        : "How NutriTail uses AI, what its limits are and when a veterinarian is needed.",
+    path: "/ai-transparency",
+    locale,
+  });
+}
 
 const boundaries = [
   {
@@ -37,8 +46,10 @@ const boundaries = [
   },
 ] as const;
 
-export default function AiTransparencyPage() {
-  return (
+export default async function AiTransparencyPage() {
+  const locale = await getRequestLocale();
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#f4f7f5] text-[#14221b]">
       <PublicHeader />
 
@@ -145,5 +156,5 @@ export default function AiTransparencyPage() {
 
       <PublicFooter />
     </main>
-  );
+  ));
 }

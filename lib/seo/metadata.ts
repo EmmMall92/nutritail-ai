@@ -1,19 +1,30 @@
 import type { Metadata } from "next";
 
 import { brand } from "@/lib/brand";
+import {
+  localizePath,
+  openGraphLocale,
+  type Locale,
+} from "@/lib/i18n/config";
 
-const socialImage = {
-  url: "/opengraph-image",
-  width: 1200,
-  height: 630,
-  alt: `${brand.name} - ενημερωτική επιλογή τροφής για σκύλους και γάτες`,
-};
+function socialImage(locale: Locale) {
+  return {
+    url: "/opengraph-image",
+    width: 1200,
+    height: 630,
+    alt:
+      locale === "el"
+        ? `${brand.name} - ενημερωτική επιλογή τροφής για σκύλους και γάτες`
+        : `${brand.name} - informational food guidance for dogs and cats`,
+  };
+}
 
 type PublicMetadataInput = {
   title: string;
   description: string;
   path: "/" | `/${string}`;
   index?: boolean;
+  locale?: Locale;
 };
 
 function withBrand(title: string) {
@@ -25,13 +36,22 @@ export function createPublicMetadata({
   description,
   path,
   index = true,
+  locale = "el",
 }: PublicMetadataInput): Metadata {
   const fullTitle = withBrand(title);
+  const canonicalPath = localizePath(path, locale);
 
   return {
     title: fullTitle,
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        "el-GR": localizePath(path, "el"),
+        en: localizePath(path, "en"),
+        "x-default": localizePath(path, "el"),
+      },
+    },
     robots: index
       ? {
           index: true,
@@ -48,17 +68,18 @@ export function createPublicMetadata({
     openGraph: {
       title: fullTitle,
       description,
-      url: path,
+      url: canonicalPath,
       siteName: brand.name,
       type: "website",
-      locale: "el_GR",
-      images: [socialImage],
+      locale: openGraphLocale(locale),
+      alternateLocale: [openGraphLocale(locale === "el" ? "en" : "el")],
+      images: [socialImage(locale)],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [socialImage],
+      images: [socialImage(locale)],
     },
   };
 }
@@ -66,29 +87,31 @@ export function createPublicMetadata({
 export function createNoIndexMetadata(
   title: string,
   description: string,
-  path: "/" | `/${string}`
+  path: "/" | `/${string}`,
+  locale: Locale = "el"
 ): Metadata {
   const fullTitle = withBrand(title);
+  const canonicalPath = localizePath(path, locale);
 
   return {
     title: fullTitle,
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: canonicalPath },
     robots: { index: false, follow: false, noarchive: true },
     openGraph: {
       title: fullTitle,
       description,
-      url: path,
+      url: canonicalPath,
       siteName: brand.name,
       type: "website",
-      locale: "el_GR",
-      images: [socialImage],
+      locale: openGraphLocale(locale),
+      images: [socialImage(locale)],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [socialImage],
+      images: [socialImage(locale)],
     },
   };
 }

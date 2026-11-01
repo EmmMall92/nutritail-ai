@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicText, translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createGuideStructuredData } from "@/lib/seo/guideStructuredData";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
@@ -9,19 +11,16 @@ const guideTitle = "Πόση τροφή χρειάζεται ο σκύλος ή 
 const guideDescription =
   "Πρακτικός οδηγός για ποσότητα τροφής σε κουτάβι ανά ηλικία, βάρος και αναμενόμενο ενήλικο μέγεθος: γεύματα, θερμίδες και ανάπτυξη.";
 
-export const metadata = createPublicMetadata({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/dog-food-portion",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
 
-const structuredData = createGuideStructuredData({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/dog-food-portion",
-  datePublished: "2026-09-14",
-  dateModified: "2026-11-01",
-});
+  return createPublicMetadata({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/dog-food-portion",
+    locale,
+  });
+}
 
 const puppyStages = [
   {
@@ -69,8 +68,18 @@ const puppySizeNotes = [
   },
 ] as const;
 
-export default function DogFoodPortionGuide() {
-  return (
+export default async function DogFoodPortionGuide() {
+  const locale = await getRequestLocale();
+  const structuredData = createGuideStructuredData({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/dog-food-portion",
+    datePublished: "2026-09-14",
+    dateModified: "2026-11-01",
+    locale,
+  });
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
       <script
         type="application/ld+json"
@@ -313,5 +322,5 @@ export default function DogFoodPortionGuide() {
       </article>
       <PublicFooter />
     </main>
-  );
+  ));
 }

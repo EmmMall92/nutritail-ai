@@ -2,14 +2,23 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: "Οδηγοί διατροφής σκύλου και γάτας",
-  description:
-    "Πρακτικοί οδηγοί για επιλογή, μερίδα και σταδιακή αλλαγή τροφής σκύλου και γάτας, με πηγές και σαφή όρια κτηνιατρικής συμβουλής.",
-  path: "/guides",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? "Οδηγοί διατροφής σκύλου και γάτας" : "Dog and cat nutrition guides",
+    description:
+      locale === "el"
+        ? "Πρακτικοί οδηγοί για επιλογή, μερίδα και σταδιακή αλλαγή τροφής σκύλου και γάτας, με πηγές και σαφή όρια κτηνιατρικής συμβουλής."
+        : "Practical guides for choosing, portioning and gradually changing dog and cat food, with sources and clear veterinary boundaries.",
+    path: "/guides",
+    locale,
+  });
+}
 
 const guides = [
   {
@@ -49,8 +58,10 @@ const guides = [
   },
 ];
 
-export default function GuidesPage() {
-  return (
+export default async function GuidesPage() {
+  const locale = await getRequestLocale();
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
       <PublicHeader />
       <div className="nt-container py-12 sm:py-16">
@@ -87,5 +98,5 @@ export default function GuidesPage() {
       </div>
       <PublicFooter />
     </main>
-  );
+  ));
 }

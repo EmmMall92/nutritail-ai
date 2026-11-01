@@ -2,14 +2,23 @@ import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `Υποστήριξη | ${brand.name}`,
-  description:
-    "Βρες βοήθεια για τον λογαριασμό, τις αναφορές κατοικιδίων, τα στοιχεία τροφών και τα αιτήματα προσωπικών δεδομένων στο Nutritail AI.",
-  path: "/support",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Υποστήριξη | ${brand.name}` : `Support | ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Βρες βοήθεια για τον λογαριασμό, τις αναφορές κατοικιδίων, τα στοιχεία τροφών και τα αιτήματα προσωπικών δεδομένων στο Nutritail AI."
+        : "Get help with your account, pet reports, food data and personal-data requests in NutriTail AI.",
+    path: "/support",
+    locale,
+  });
+}
 
 const supportTopics = [
   {
@@ -56,12 +65,13 @@ const emergencySignals = [
   "γνωστή νεφρική νόσος, παγκρεατίτιδα, διαβήτης ή σοβαρή αλλεργική αντίδραση",
 ] as const;
 
-export default function SupportPage() {
+export default async function SupportPage() {
+  const locale = await getRequestLocale();
   const mailto = `mailto:${brand.contactEmail}?subject=${encodeURIComponent(
-    "Αίτημα υποστήριξης Nutritail"
+    locale === "el" ? "Αίτημα υποστήριξης Nutritail" : "NutriTail support request"
   )}`;
 
-  return (
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <PublicHeader />
 
@@ -195,5 +205,5 @@ export default function SupportPage() {
       </section>
       <PublicFooter />
     </main>
-  );
+  ));
 }

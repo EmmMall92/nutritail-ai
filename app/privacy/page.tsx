@@ -2,6 +2,8 @@ import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { launchFeatures } from "@/lib/launch/features";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 import {
@@ -10,12 +12,19 @@ import {
   PRIVACY_RETENTION,
 } from "@/lib/privacy/config";
 
-export const metadata = createPublicMetadata({
-  title: `Πολιτική απορρήτου | ${brand.name}`,
-  description:
-    "Δες πώς το Nutritail AI χειρίζεται στοιχεία λογαριασμού, προφίλ κατοικιδίου και διατροφικών αναλύσεων.",
-  path: "/privacy",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Πολιτική απορρήτου | ${brand.name}` : `Privacy policy | ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Δες πώς το Nutritail AI χειρίζεται στοιχεία λογαριασμού, προφίλ κατοικιδίου και διατροφικών αναλύσεων."
+        : "Learn how NutriTail AI handles account details, pet profiles and food-analysis data.",
+    path: "/privacy",
+    locale,
+  });
+}
 
 const sections = [
   {
@@ -115,14 +124,17 @@ const customerTrustSummary = [
   },
 ] as const;
 
-export default function PrivacyPage() {
-  return (
+export default async function PrivacyPage() {
+  const locale = await getRequestLocale();
+  const lastUpdated = locale === "el" ? PRIVACY_POLICY_LAST_UPDATED_EL : "17 August 2026";
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-gray-50">
       <PublicHeader />
       <section className="mx-auto max-w-4xl space-y-8 px-6 py-12">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-            Τελευταία ενημέρωση {PRIVACY_POLICY_LAST_UPDATED_EL} · Έκδοση {PRIVACY_POLICY_VERSION}
+            Τελευταία ενημέρωση {lastUpdated} · Έκδοση {PRIVACY_POLICY_VERSION}
           </p>
           <h1 className="mt-3 text-3xl font-bold text-black">
             Πολιτική απορρήτου
@@ -223,5 +235,5 @@ export default function PrivacyPage() {
       </section>
       <PublicFooter />
     </main>
-  );
+  ));
 }

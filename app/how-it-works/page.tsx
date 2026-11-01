@@ -2,14 +2,23 @@ import Link from "next/link";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
 import { brand } from "@/lib/brand";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
-export const metadata = createPublicMetadata({
-  title: `Πώς δουλεύει | ${brand.name}`,
-  description:
-    "Δες πώς το Nutritail AI χρησιμοποιεί στοιχεία κατοικιδίου, βάση τροφών, κανόνες διατροφής και ασφαλή όρια για πιο πρακτική καθοδήγηση.",
-  path: "/how-it-works",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+
+  return createPublicMetadata({
+    title: locale === "el" ? `Πώς δουλεύει | ${brand.name}` : `How it works | ${brand.name}`,
+    description:
+      locale === "el"
+        ? "Δες πώς το Nutritail AI χρησιμοποιεί στοιχεία κατοικιδίου, βάση τροφών, κανόνες διατροφής και ασφαλή όρια για πιο πρακτική καθοδήγηση."
+        : "See how NutriTail AI combines pet details, a food database, nutrition rules and responsible boundaries to provide practical guidance.",
+    path: "/how-it-works",
+    locale,
+  });
+}
 
 const steps = [
   {
@@ -144,8 +153,10 @@ const betaUserProofChecklist = [
   "Άφησε feedback αν η πρόταση ήταν μπερδεμένη, αν λείπει τροφή ή αν το κατοικίδιο δεν δέχτηκε τη γεύση.",
 ];
 
-export default function HowItWorksPage() {
-  return (
+export default async function HowItWorksPage() {
+  const locale = await getRequestLocale();
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#f7f7f4] text-black">
       <PublicHeader />
 
@@ -545,5 +556,5 @@ export default function HowItWorksPage() {
       </section>
       <PublicFooter />
     </main>
-  );
+  ));
 }

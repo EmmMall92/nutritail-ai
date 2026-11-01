@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translatePublicText, translatePublicTree } from "@/lib/i18n/translatePublicTree";
 import { createGuideStructuredData } from "@/lib/seo/guideStructuredData";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
@@ -9,22 +11,29 @@ const guideTitle = "Τι τροφή να πάρω στον σκύλο μου;";
 const guideDescription =
   "Πρακτικός οδηγός επιλογής τροφής σκύλου: στάδιο ζωής, πλήρης τροφή, ετικέτα, θερμίδες, σύγκριση επιλογών και πότε χρειάζεται κτηνίατρος.";
 
-export const metadata = createPublicMetadata({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/choosing-dog-food",
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
 
-const structuredData = createGuideStructuredData({
-  title: guideTitle,
-  description: guideDescription,
-  path: "/guides/choosing-dog-food",
-  datePublished: "2026-09-14",
-  dateModified: "2026-11-01",
-});
+  return createPublicMetadata({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/choosing-dog-food",
+    locale,
+  });
+}
 
-export default function ChoosingDogFoodGuide() {
-  return (
+export default async function ChoosingDogFoodGuide() {
+  const locale = await getRequestLocale();
+  const structuredData = createGuideStructuredData({
+    title: translatePublicText(guideTitle, locale),
+    description: translatePublicText(guideDescription, locale),
+    path: "/guides/choosing-dog-food",
+    datePublished: "2026-09-14",
+    dateModified: "2026-11-01",
+    locale,
+  });
+
+  return translatePublicTree(locale, (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
       <script
         type="application/ld+json"
@@ -171,5 +180,5 @@ export default function ChoosingDogFoodGuide() {
       </article>
       <PublicFooter />
     </main>
-  );
+  ));
 }
