@@ -7,7 +7,7 @@ import { createPublicMetadata } from "@/lib/seo/metadata";
 
 const guideTitle = "Πόση τροφή χρειάζεται η γάτα ή το γατάκι μου;";
 const guideDescription =
-  "Πρακτικός οδηγός για την ημερήσια ποσότητα τροφής για γάτα ή γατάκι: ηλικία, γεύματα, υγρή και ξηρά τροφή, θερμίδες και έλεγχος βάρους.";
+  "Πρακτικός οδηγός για ποσότητα τροφής σε γατάκι 1-12 μηνών και ενήλικη ή στειρωμένη γάτα: γεύματα, θερμίδες, υγρή και ξηρά τροφή.";
 
 export const metadata = createPublicMetadata({
   title: guideTitle,
@@ -22,6 +22,45 @@ const structuredData = createGuideStructuredData({
   datePublished: "2026-09-14",
   dateModified: "2026-11-01",
 });
+
+const kittenStages = [
+  {
+    id: "kitten-one-month",
+    age: "Γατάκι 1 μήνα",
+    title: "Θηλασμός και αρχή απογαλακτισμού",
+    text: "Στις περίπου 4 εβδομάδες πολλά γατάκια θηλάζουν ακόμη και μόλις αρχίζουν να γνωρίζουν στερεή τροφή. Δεν τα υπολογίζουμε σαν μικρή ενήλικη γάτα με ξηρά τροφή. Αν το γατάκι είναι ορφανό, δεν θηλάζει ή δεν παίρνει βάρος, χρειάζεται άμεσα κτηνιατρικό πλάνο και κατάλληλο εμπορικό υποκατάστατο γάλακτος σύμφωνα με τις οδηγίες του προϊόντος.",
+  },
+  {
+    id: "kitten-two-months",
+    age: "Γατάκι 2 μηνών",
+    title: "Πλήρης τροφή ανάπτυξης και μικρά γεύματα",
+    text: "Γύρω στις 8 εβδομάδες το γατάκι συνήθως βρίσκεται στο τέλος του απογαλακτισμού. Ξεκίνα από τον πίνακα μιας πλήρους τροφής για γατάκια, χρησιμοποιώντας την ηλικία και το τωρινό βάρος. Η υγρή, η ξηρά ή ο συνδυασμός τους μπορούν να χρησιμοποιηθούν όταν είναι πλήρεις τροφές και μετριούνται μαζί.",
+  },
+  {
+    id: "kitten-three-months",
+    age: "Γατάκι 3 μηνών",
+    title: "Τρία γεύματα μέσα στην ημερήσια ποσότητα",
+    text: "Η ανάπτυξη παραμένει γρήγορη και τρία γεύματα την ημέρα είναι μια συνήθης πρακτική έως τους 6 μήνες. Μοίρασε τη συνολική ημερήσια ποσότητα του πίνακα στα γεύματα· μην δίνεις την αναγραφόμενη ημερήσια ποσότητα σε κάθε γεύμα.",
+  },
+  {
+    id: "kitten-four-six-months",
+    age: "Γατάκι 4-6 μηνών",
+    title: "Συνεχής ανάπτυξη με τακτικό έλεγχο βάρους",
+    text: "Συνέχισε με πλήρη τροφή ανάπτυξης και ανανέωνε την αφετηρία της ετικέτας όσο αλλάζει το βάρος. Έλεγχε ότι το γατάκι αναπτύσσεται σταθερά χωρίς να χάνει βάρος ή να αποκτά υπερβολικό λίπος.",
+  },
+  {
+    id: "kitten-six-twelve-months",
+    age: "Γατάκι 6-12 μηνών",
+    title: "Συνήθως δύο γεύματα και σταδιακή ωρίμανση",
+    text: "Από τους 6 έως τους 12 μήνες δύο γεύματα την ημέρα είναι συνήθως πρακτική αφετηρία. Η τροφή ανάπτυξης διατηρείται συνήθως μέχρι την ενηλικίωση, περίπου στους 9-12 μήνες, εκτός αν ο κτηνίατρος ή η ετικέτα της κατάλληλης τροφής ορίζει διαφορετικά.",
+  },
+] as const;
+
+const kittenEnergyStages = [
+  { age: "Έως 4 μηνών", relativeNeed: "2,0-2,5 × ενέργεια συντήρησης" },
+  { age: "4-9 μηνών", relativeNeed: "1,75-2,0 × ενέργεια συντήρησης" },
+  { age: "9-12 μηνών", relativeNeed: "1,5 × ενέργεια συντήρησης" },
+] as const;
 
 export default function CatFoodPortionGuide() {
   return (
@@ -71,7 +110,7 @@ export default function CatFoodPortionGuide() {
 
           <section aria-labelledby="kitten-portion">
             <h2 id="kitten-portion" className="text-2xl font-black text-[#14221b]">
-              2. Πόση τροφή χρειάζεται ένα γατάκι;
+              2. Πόση τροφή χρειάζεται ένα γατάκι ανά ηλικία;
             </h2>
             <p className="mt-4">
               Τα γατάκια χρειάζονται πλήρη τροφή ανάπτυξης και περισσότερη
@@ -80,18 +119,65 @@ export default function CatFoodPortionGuide() {
               βάρους της συγκεκριμένης συσκευασίας, ζύγισε τη συνολική
               ημερήσια ποσότητα και μοίρασέ τη στα γεύματα.
             </p>
+            <div className="mt-6 divide-y divide-[#dce5df] border-y border-[#dce5df]">
+              {kittenStages.map((stage) => (
+                <div key={stage.id} className="py-5" aria-labelledby={stage.id}>
+                  <p className="text-sm font-extrabold text-[#17663f]">{stage.age}</p>
+                  <h3 id={stage.id} className="mt-1 text-lg font-black text-[#14221b]">
+                    {stage.title}
+                  </h3>
+                  <p className="mt-2">{stage.text}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section aria-labelledby="kitten-energy">
+            <h2 id="kitten-energy" className="text-2xl font-black text-[#14221b]">
+              3. Από τις ανάγκες ενέργειας στα γραμμάρια
+            </h2>
             <p className="mt-4">
-              Ως γενική συχνότητα, το Κέντρο Υγείας Γάτας του Cornell αναφέρει
-              συνήθως τρία γεύματα την ημέρα έως τους 6 μήνες και δύο γεύματα
-              από 6 έως 12 μήνες. Αυτό αφορά το μοίρασμα της ημερήσιας
-              ποσότητας, όχι επιπλέον τροφή. Για ορφανό, πολύ μικρό, άρρωστο ή
-              λιποβαρές γατάκι χρειάζεται κτηνιατρικό πλάνο.
+              Η ηλικία αλλάζει σημαντικά τις ανάγκες ανάπτυξης. Η FEDIAF
+              εκφράζει τις μέσες ανάγκες των γατιών ως πολλαπλάσιο της
+              ενέργειας συντήρησης μιας ενήλικης γάτας. Αυτό δείχνει γιατί δεν
+              αρκεί ένας ενιαίος κανόνας «γραμμάρια ανά κιλό».
             </p>
+            <div className="mt-6 border-y border-[#dce5df]">
+              {kittenEnergyStages.map((stage) => (
+                <div
+                  key={stage.age}
+                  className="grid gap-1 border-b border-[#e7ede9] py-4 last:border-b-0 sm:grid-cols-[9rem_1fr] sm:gap-5"
+                >
+                  <p className="font-black text-[#14221b]">{stage.age}</p>
+                  <p>{stage.relativeNeed}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5">
+              Τα παραπάνω δεν είναι γραμμάρια και δεν πρέπει να εφαρμόζονται
+              απευθείας πάνω σε ποσότητα ενήλικης τροφής. Ο κατάλληλος
+              ημερήσιος στόχος εξαρτάται από το πραγματικό βάρος, την ηλικία,
+              τη σωματική κατάσταση και την πορεία ανάπτυξης. Αφού οριστεί ο
+              στόχος θερμίδων, η ποσότητα της συγκεκριμένης τροφής προκύπτει
+              από την ενεργειακή της πυκνότητα.
+            </p>
+            <div className="mt-5 border-l-4 border-[#1f7a4d] bg-[#f1f7f3] px-5 py-4 text-[#14221b]">
+              <p className="font-bold">
+                Γραμμάρια τροφής/ημέρα = ημερήσιες kcal ÷
+                (kcal ανά 100 g ÷ 100)
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#42534a]">
+                Χρειάζονται και τα δύο δεδομένα: κατάλληλος στόχος θερμίδων
+                ανάπτυξης και επιβεβαιωμένες kcal της επιλεγμένης τροφής. Αν
+                λείπει ένα από τα δύο, δεν υπάρχει αξιόπιστη απάντηση σε
+                γραμμάρια.
+              </p>
+            </div>
           </section>
 
           <section aria-labelledby="cat-mix">
             <h2 id="cat-mix" className="text-2xl font-black text-[#14221b]">
-              3. Αν δίνεις υγρή και ξηρά, μέτρησε το σύνολο
+              4. Αν δίνεις υγρή και ξηρά, μέτρησε το σύνολο
             </h2>
             <p className="mt-4">
               Οι ποσότητες στους δύο πίνακες σίτισης συνήθως αφορούν την
@@ -114,9 +200,32 @@ export default function CatFoodPortionGuide() {
             </div>
           </section>
 
+          <section aria-labelledby="sterilised-cat-portion">
+            <h2
+              id="sterilised-cat-portion"
+              className="text-2xl font-black text-[#14221b]"
+            >
+              5. Πόσο πρέπει να τρώει μια στειρωμένη γάτα;
+            </h2>
+            <p className="mt-4">
+              Δεν υπάρχει σταθερή ποσότητα μόνο και μόνο επειδή η γάτα είναι
+              στειρωμένη. Οι μέσες ανάγκες μιας στειρωμένης ή γάτας εσωτερικού
+              χώρου είναι συχνά χαμηλότερες από μιας πολύ δραστήριας γάτας,
+              αλλά η σωστή αφετηρία εξαρτάται από το ιδανικό βάρος, τη
+              δραστηριότητα, τη σωματική κατάσταση και τις kcal της τροφής.
+            </p>
+            <p className="mt-4">
+              Χρησιμοποίησε τον πίνακα της συγκεκριμένης πλήρους τροφής,
+              μέτρησε και τις λιχουδιές και έλεγχε την τάση του βάρους. Μην
+              κόβεις αυτόματα ένα σταθερό ποσοστό από τη μερίδα και μην
+              θεωρείς ότι κάθε προϊόν με την ένδειξη «sterilised» έχει την
+              ίδια ενεργειακή πυκνότητα.
+            </p>
+          </section>
+
           <section aria-labelledby="cat-follow-up">
             <h2 id="cat-follow-up" className="text-2xl font-black text-[#14221b]">
-              4. Παρακολούθησε την πορεία
+              6. Παρακολούθησε την πορεία
             </h2>
             <p className="mt-4">
               Ζύγιζε την τροφή και σημείωνε όλα τα γεύματα και τις λιχουδιές.
@@ -145,11 +254,15 @@ export default function CatFoodPortionGuide() {
           <h2 id="cat-sources" className="text-lg font-black text-[#14221b]">Πηγές και όρια</h2>
           <p className="mt-3">
             Ενημερωτικό περιεχόμενο για υγιή ζώα, όχι διάγνωση ή εξατομικευμένη
-            διατροφική οδηγία. Οι ανάγκες ανάπτυξης προέρχονται από τις
+            διατροφική οδηγία. Τα στάδια ενεργειακών αναγκών και οι αρχές
+            ανάπτυξης προέρχονται από τις
             <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://europeanpetfood.org/self-regulation/nutritional-guidelines/">διατροφικές οδηγίες FEDIAF 2025</a>.
             {" "}Η μετατροπή θερμίδων σε ποσότητα και η χρήση της ετικέτας ως
             αφετηρίας τεκμηριώνονται στις
             <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://wsava.org/wp-content/uploads/2020/01/Frequently-Asked-Questions-and-Myths.pdf">ερωτήσεις διατροφής της WSAVA</a>.
+            {" "}Για νεογνά, υποκατάστατο γάλακτος και παρακολούθηση βάρους,
+            δες το
+            <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://www.merckvetmanual.com/management-and-nutrition/management-of-the-neonate/management-of-the-neonate-in-dogs-and-cats">Merck Veterinary Manual</a>.
             {" "}Για τη συχνότητα γευμάτων στα γατάκια, δες το
             <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://www.vet.cornell.edu/departments-centers-and-institutes/cornell-feline-health-center/health-information/feline-health-topics/how-often-should-you-feed-your-cat">Κέντρο Υγείας Γάτας του Cornell</a>.
           </p>
@@ -163,6 +276,9 @@ export default function CatFoodPortionGuide() {
             </Link>
             <Link href="/guides/dog-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Οδηγός μερίδας σκύλου
+            </Link>
+            <Link href="/guides/changing-pet-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Αλλαγή τροφής βήμα βήμα
             </Link>
             <Link href="/account/food-compare" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Σύγκρινε τροφές

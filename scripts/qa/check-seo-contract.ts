@@ -126,30 +126,67 @@ assert(
     homePage.includes('href="/account/food-compare"'),
   "Food comparison must be discoverable from the public website."
 );
-for (const path of [
-  "app/guides/dog-food-portion/page.tsx",
-  "app/guides/cat-food-portion/page.tsx",
-]) {
-  const guide = read(path);
+const dogPortionGuide = read("app/guides/dog-food-portion/page.tsx");
+const catPortionGuide = read("app/guides/cat-food-portion/page.tsx");
+
+for (const [path, guide] of [
+  ["app/guides/dog-food-portion/page.tsx", dogPortionGuide],
+  ["app/guides/cat-food-portion/page.tsx", catPortionGuide],
+] as const) {
   assert(
     guide.includes("europeanpetfood.org") && guide.includes("wsava.org") &&
-      guide.includes("κτηνίατρο") && guide.includes("προτεινόμενος"),
+      guide.includes("merckvetmanual.com") && guide.includes("κτηνίατρο") &&
+      guide.includes("προτεινόμενος"),
     `${path} must cite primary sources and keep examples non-prescriptive.`
   );
   assert(
     guide.includes('href="/account/food-compare"') &&
-      guide.includes('href="/register?next=/account/chatbot"'),
-    `${path} must connect readers to food comparison and the chatbot flow.`
+      guide.includes('href="/register?next=/account/chatbot"') &&
+      guide.includes('href="/guides/changing-pet-food"'),
+    `${path} must connect readers to comparison, chatbot, and transition guidance.`
   );
 }
+
+for (const marker of [
+  "Πόση τροφή χρειάζεται ένα γατάκι ανά ηλικία;",
+  "Γατάκι 1 μήνα",
+  "Γατάκι 2 μηνών",
+  "Γατάκι 3 μηνών",
+  "Γατάκι 4-6 μηνών",
+  "Γατάκι 6-12 μηνών",
+  "Γραμμάρια τροφής/ημέρα",
+  "kcal ανά 100 g",
+  "Πόσο πρέπει να τρώει μια στειρωμένη γάτα;",
+  "vet.cornell.edu",
+]) {
+  assert(
+    catPortionGuide.includes(marker),
+    `Cat portion guide is missing search-demand coverage: ${marker}`
+  );
+}
+
+for (const marker of [
+  "Πόση τροφή χρειάζεται ένα κουτάβι ανά ηλικία;",
+  "Απογαλακτισμός έως 6 μηνών",
+  "6-12 μηνών",
+  "αναμενόμενο ενήλικο βάρος",
+  "Μικρόσωμο",
+  "Μεσαίο",
+  "Μεγαλόσωμο",
+  "Γιγαντόσωμο",
+  "Ασβέστιο και φώσφορος σε μεγαλόσωμο κουτάβι",
+  "Γραμμάρια κύριας τροφής",
+]) {
+  assert(
+    dogPortionGuide.includes(marker),
+    `Dog portion guide is missing search-demand coverage: ${marker}`
+  );
+}
+
 assert(
-  read("app/guides/dog-food-portion/page.tsx").includes(
-    "Πόση τροφή χρειάζεται ένα κουτάβι;"
-  ) &&
-    read("app/guides/cat-food-portion/page.tsx").includes(
-      "Πόση τροφή χρειάζεται ένα γατάκι;"
-    ),
-  "Existing portion guides must answer puppy and kitten demand without duplicate pages."
+  sitemap.match(/path: "\/guides\/dog-food-portion"/g)?.length === 1 &&
+    sitemap.match(/path: "\/guides\/cat-food-portion"/g)?.length === 1,
+  "Existing portion guides must answer puppy and kitten demand without duplicate sitemap URLs."
 );
 const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
 const choosingCatFoodGuide = read("app/guides/choosing-cat-food/page.tsx");

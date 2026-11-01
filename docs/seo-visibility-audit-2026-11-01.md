@@ -1,144 +1,193 @@
-# NutriTail AI SEO Visibility Audit
+# NutriTail AI SEO Growth Sprint
 
 Date: 2026-11-01
 
 ## Evidence baseline
 
-The starting Search Console evidence supplied for this work was:
+The Search Console evidence supplied for this sprint was:
 
-- Homepage indexed.
 - 78 impressions and 2 clicks in the previous three months.
-- Average position 34.5.
-- Existing impressions around kitten feeding quantities, cat feeding amounts,
-  and puppy portions.
+- Average CTR 2.6% and average position 34.5.
+- Brand query `nutritail`: 6 impressions, average position 5.2.
+- Homepage indexed successfully.
+- Existing impressions for kitten ages and portions, cat feeding amounts,
+  sterilised cats, and puppy portions.
 
-These figures are a baseline, not a performance claim or forecast.
+These figures are a baseline, not proof of broad demand or a performance
+forecast.
 
 ## Findings by SEO impact
 
-### High: existing demand was only partially answered
+### High: demonstrated kitten demand was answered too briefly
 
-The two portion guides targeted adult dog and cat wording in their titles and
-main headings. Puppy and kitten information appeared mainly as a veterinary
-caution, despite those topics already producing impressions.
+The existing cat portion URL was the correct page to target this intent, but it
+did not directly answer the age-specific queries already visible in Search
+Console.
 
-Implemented:
+Implemented on `/guides/cat-food-portion`:
 
-- Expanded the existing dog and cat portion guides instead of creating
-  competing thin pages.
-- Added direct, visible answers for puppy and kitten portions.
-- Aligned title, H1, description, homepage anchors, and guide-hub anchors.
-- Kept all quantities non-prescriptive and tied to the specific food label,
-  age, weight, expected adult size, and follow-up of body condition.
+- Kept the existing URL, title, canonical, and Article/BreadcrumbList data.
+- Added distinct guidance for 1 month, 2 months, 3 months, 4-6 months, and
+  6-12 months.
+- Added weaning and commercial milk-replacer boundaries for very young or
+  orphaned kittens.
+- Added meal frequency, wet/dry accounting, growth monitoring, and
+  age-relative energy context.
+- Added a calorie-density conversion method without inventing universal grams.
+- Added a dedicated answer for a sterilised cat without prescribing a fixed
+  percentage reduction.
 
-### High: guide journeys stopped before product tools
+### High: puppy intent lacked enough age and size context
 
-The guides linked to related editorial content and registration, but not
-consistently to food comparison or directly into the chatbot onboarding flow.
+The existing dog portion URL already matched the intent and did not need a
+second calculator or another SEO page.
 
-Implemented:
+Implemented on `/guides/dog-food-portion`:
 
-- Added contextual links from all four guides to food comparison.
-- Added chatbot CTAs through `/register?next=/account/chatbot`.
-- Preserved the existing private routes and their `noindex` protection.
+- Added stages before weaning, from weaning to 6 months, 6-12 months, and
+  after 12 months.
+- Explained why current weight and expected adult weight both matter.
+- Added small, medium, large, and giant breed considerations.
+- Added meal frequency, weekly growth monitoring, food-energy density, and a
+  non-prescriptive grams formula.
+- Added calcium/phosphorus and vitamin D cautions for complete growth diets,
+  especially for large and giant breeds.
+- Added a safe transition path to the existing food-change guide.
 
-### Medium: guide structured data was absent
+### Medium: the next useful editorial step was not prominent
 
-The homepage already emitted valid Organization, WebSite, and WebApplication
-JSON-LD. The four guides had no page-specific Article or BreadcrumbList data.
+Both portion guides already linked to food comparison and chatbot onboarding.
+They now also link descriptively to `/guides/changing-pet-food`, so the path is:
 
-Implemented:
+`Homepage -> guides -> portion guide -> food-change guide / comparison -> chatbot`
 
-- Added shared Article and BreadcrumbList JSON-LD for all four guides.
-- Used NutriTail AI as the organization author and publisher.
-- Used the actual publication date and this significant-update date.
+### No change needed
 
-### Medium: sitemap had no reliable modification dates
+- Homepage title and description already match the demonstrated food and
+  portion intent better than the stale title quoted in the task brief.
+- Homepage canonical, robots, Open Graph, Twitter, and Organization/WebSite/
+  WebApplication JSON-LD were already correct.
+- Guide Article and BreadcrumbList JSON-LD were already valid and supported by
+  the page content.
+- Sitemap coverage and fixed `lastModified` values were already correct.
+- The existing food-change guide serves a distinct intent; no duplicate or
+  thin route was added.
+- Food V2, chatbot, account, auth, APIs, database, and medical interrupts were
+  not modified.
 
-Coverage was complete and canonical URLs were consistent, but the sitemap had
-no `lastmod` values. Fixed dates were added only to pages significantly changed
-in this update. Dynamic deployment-time dates were intentionally avoided.
+## Metadata decisions
 
-### No fix needed
+### Homepage
 
-- Homepage canonical, robots directives, Open Graph, Twitter metadata, and
-  rendered Greek metadata were already correct.
-- No `Create Next App` title or description remains in source or rendered HTML.
-- All four guide URLs were already included in the sitemap.
-- The two feeding examples are arithmetically correct:
-  `200 kcal / 4 kcal per g = 50 g` and `120 kcal / 4 kcal per g = 30 g`.
-- Selection and portion guides serve distinct intents; no duplicate SEO page
-  was added.
+- Title before and after:
+  `Nutritail AI | Τροφή και μερίδα για σκύλο ή γάτα`
+- Description before and after:
+  `Βρες ενημερωτική καθοδήγηση για επιλογή τροφής σκύλου ή γάτας, ενδεικτικές θερμίδες και ημερήσια μερίδα, με σαφή όρια κτηνιατρικής συμβουλής.`
+- Decision: no title churn without new evidence. The current wording is
+  accurate, readable, and closer to the queries already producing impressions.
 
-Scope note: this audit validates the public-guide calculations and examples.
-The existing account/chatbot calorie engine was intentionally not recalibrated,
-because changing its RER/MER factors would alter product behavior and requires a
-separate nutrition-logic review. This SEO work does not certify those internal
-factors as clinical recommendations.
+### Cat portion guide
+
+- Title before and after:
+  `Πόση τροφή χρειάζεται η γάτα ή το γατάκι μου; | Nutritail AI`
+- Description before:
+  `Πρακτικός οδηγός για την ημερήσια ποσότητα τροφής για γάτα ή γατάκι: ηλικία, γεύματα, υγρή και ξηρά τροφή, θερμίδες και έλεγχος βάρους.`
+- Description after:
+  `Πρακτικός οδηγός για ποσότητα τροφής σε γατάκι 1-12 μηνών και ενήλικη ή στειρωμένη γάτα: γεύματα, θερμίδες, υγρή και ξηρά τροφή.`
+
+### Dog portion guide
+
+- Title before and after:
+  `Πόση τροφή χρειάζεται ο σκύλος ή το κουτάβι μου; | Nutritail AI`
+- Description before:
+  `Πρακτικός οδηγός για την ημερήσια ποσότητα τροφής για σκύλο ή κουτάβι: ετικέτα, θερμίδες, γραμμάρια, λιχουδιές και έλεγχος βάρους.`
+- Description after:
+  `Πρακτικός οδηγός για ποσότητα τροφής σε κουτάβι ανά ηλικία, βάρος και αναμενόμενο ενήλικο μέγεθος: γεύματα, θερμίδες και ανάπτυξη.`
 
 ## Source review
 
-Feeding guidance was checked against current primary or institutional sources:
+The new feeding content was checked against institutional sources:
 
 - [FEDIAF Nutritional Guidelines 2025](https://europeanpetfood.org/self-regulation/nutritional-guidelines/)
 - [WSAVA feeding amount questions](https://wsava.org/wp-content/uploads/2020/01/Frequently-Asked-Questions-and-Myths.pdf)
+- [Merck feeding practices in small animals](https://www.merckvetmanual.com/management-and-nutrition/nutrition-small-animals/feeding-practices-in-small-animals)
+- [Merck management of dog and cat neonates](https://www.merckvetmanual.com/management-and-nutrition/management-of-the-neonate/management-of-the-neonate-in-dogs-and-cats)
 - [Cornell Feline Health Center meal-frequency guidance](https://www.vet.cornell.edu/departments-centers-and-institutes/cornell-feline-health-center/health-information/feline-health-topics/how-often-should-you-feed-your-cat)
+
+The content remains educational. It does not present a clinical diagnosis,
+universal gram amount, or personalised treatment plan.
 
 ## Changed URLs
 
-- `https://nutritail.ai/`
-- `https://nutritail.ai/guides`
-- `https://nutritail.ai/guides/choosing-dog-food`
-- `https://nutritail.ai/guides/dog-food-portion`
-- `https://nutritail.ai/guides/choosing-cat-food`
 - `https://nutritail.ai/guides/cat-food-portion`
-- `https://nutritail.ai/sitemap.xml`
+- `https://nutritail.ai/guides/dog-food-portion`
+
+## Files modified
+
+- `app/guides/cat-food-portion/page.tsx`
+- `app/guides/dog-food-portion/page.tsx`
+- `scripts/qa/check-seo-contract.ts`
+- `docs/seo-visibility-audit-2026-11-01.md`
+
+## QA completed
+
+- `git diff --check`
+- `npm run qa:seo-contract`
+- `npm run lint`
+- `npm run typecheck`
+- `npm run build`
+- All seven important public routes return HTTP 200.
+- Important public titles are unique.
+- Canonicals are present and consistent; public pages emit `index, follow`.
+- Article and BreadcrumbList JSON-LD parse successfully on both changed pages.
+- Both changed pages have one H1 and server-rendered content.
+- Sitemap includes all guide URLs.
+- All 15 unique internal destinations from each changed guide are reachable.
+- Desktop and 390 x 844 mobile rendering have no horizontal overflow.
+- Browser console has no warnings or errors on the changed pages.
+
+## Remaining issues and limits
+
+- This sprint does not claim that the pages will gain rankings or traffic.
+- Search Console query data is still sparse, so a new route or major title test
+  is not justified yet.
+- The account/chatbot calorie engine was not recalibrated. That is a separate
+  nutrition-logic review with product-behaviour impact.
+- Live indexing and Google's selected title/canonical can only be evaluated
+  after deployment and recrawl.
 
 ## Search Console follow-up
 
 ### After deployment
 
-- Inspect the homepage and both portion-guide URLs with URL Inspection.
-- Confirm that the live canonical matches each inspected URL.
-- Request indexing once for the two substantially expanded portion guides.
-- Resubmit `https://nutritail.ai/sitemap.xml` only if Search Console reports a
-  fetch problem; otherwise the existing submission is sufficient.
+- Inspect and request indexing once for both changed portion-guide URLs.
+- Confirm the declared canonical and rendered HTML in URL Inspection.
+- Keep the existing sitemap submission unless Search Console reports a fetch
+  problem.
+
+### Day 7
+
+- Confirm both URLs were recrawled and remain indexed.
+- Check total impressions, clicks, CTR, average position, branded performance,
+  and indexed page count.
+- Record whether the new age-specific kitten and puppy queries begin appearing;
+  do not draw conclusions from a few impressions.
 
 ### Day 14
 
-- Confirm all six changed public pages are indexed and the declared canonical
-  is selected by Google.
-- Compare page-level impressions, clicks, CTR, and average position for the two
-  portion guides against the pre-deployment period.
-- Review queries containing the Greek equivalents of puppy, kitten, portion,
-  amount, grams, dog food, and cat food.
-- Check whether Google is showing the updated titles. Recrawling and title
-  reprocessing can take days or weeks, so do not rewrite again solely because
-  an old title still appears.
-- Record observations without claiming uplift from a small sample.
+- Compare equal date ranges for each changed URL.
+- Review queries containing `γατάκι`, `κουτάβι`, `στειρωμένη`, `ποσότητα`,
+  `γραμμάρια`, and age terms.
+- Check whether Google shows the current titles and selected canonicals.
+- Avoid another rewrite solely because processing is still incomplete.
 
 ### Day 30
 
-- Compare the same pages and queries over equal date ranges.
-- Prioritize queries with impressions and positions roughly 10-40 for the next
-  content refinement.
-- If impressions rise but CTR remains weak, test title and description wording
-  on the existing page rather than creating a duplicate URL.
-- If a genuinely distinct intent appears repeatedly, document it first and add
-  a new page only when the existing guides cannot answer it without becoming
-  unfocused.
-- Review internal-link clicks to food comparison and chatbot separately from
-  organic ranking; they measure different outcomes.
+- Compare page-level and query-level results over equal periods.
+- Prioritise queries with repeat impressions and positions roughly 10-40.
+- If impressions increase but CTR remains weak, test metadata on the existing
+  URL rather than creating a duplicate page.
+- Add a new URL only when repeated evidence shows a genuinely distinct intent
+  that the existing guide cannot answer clearly.
 
-## Verification completed
-
-- `npm run lint`
-- `npm run typecheck`
-- `npm run qa:seo-contract`
-- `npm run build`
-- Rendered metadata, canonical, robots, JSON-LD parsing, sitemap output, private
-  `X-Robots-Tag` headers, desktop layout, mobile layout, and browser console.
-
-No ranking or traffic improvement is guaranteed by these changes. Search
-performance should be evaluated from Search Console after recrawl and with
-enough data to reduce noise.
+No ranking position or traffic increase is guaranteed by these changes.
