@@ -2,18 +2,34 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { createGuideStructuredData } from "@/lib/seo/guideStructuredData";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
+const guideTitle = "Τι τροφή να πάρω στον σκύλο μου;";
+const guideDescription =
+  "Πρακτικός οδηγός επιλογής τροφής σκύλου: στάδιο ζωής, πλήρης τροφή, ετικέτα, θερμίδες, σύγκριση επιλογών και πότε χρειάζεται κτηνίατρος.";
+
 export const metadata = createPublicMetadata({
-  title: "Τι τροφή να πάρω στον σκύλο μου;",
-  description:
-    "Πρακτικός οδηγός για να επιλέξεις τροφή σκύλου: στάδιο ζωής, πλήρης τροφή, ετικέτα, θερμίδες και ερωτήσεις προς τον κατασκευαστή. Πότε χρειάζεται κτηνίατρος.",
+  title: guideTitle,
+  description: guideDescription,
   path: "/guides/choosing-dog-food",
+});
+
+const structuredData = createGuideStructuredData({
+  title: guideTitle,
+  description: guideDescription,
+  path: "/guides/choosing-dog-food",
+  datePublished: "2026-09-14",
+  dateModified: "2026-11-01",
 });
 
 export default function ChoosingDogFoodGuide() {
   return (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <PublicHeader />
       <article className="nt-container max-w-4xl py-10 sm:py-16">
         <Link href="/guides" className="nt-focus rounded text-sm font-bold text-[#17663f] hover:underline">
@@ -135,13 +151,19 @@ export default function ChoosingDogFoodGuide() {
           </p>
         </section>
 
-        <nav aria-label="Σχετικοί σύνδεσμοι" className="flex flex-col gap-4 border-t border-[#dce5df] py-8 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/guides/dog-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
-            Δες τον οδηγό για τη μερίδα
-          </Link>
-          <Link href="/register" className="nt-button nt-button-primary nt-focus inline-flex gap-2">
-            Ξεκίνα δωρεάν ανάλυση <ArrowRight size={17} aria-hidden="true" />
-          </Link>
+        <nav aria-label="Επόμενα βήματα" className="border-t border-[#dce5df] py-8">
+          <h2 className="text-lg font-black">Επόμενα βήματα</h2>
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link href="/guides/dog-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Υπολόγισε την ενδεικτική μερίδα
+            </Link>
+            <Link href="/account/food-compare" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Σύγκρινε τροφές
+            </Link>
+            <Link href="/register?next=/account/chatbot" className="nt-button nt-button-primary nt-focus inline-flex gap-2 sm:ml-auto">
+              Ρώτησε το chatbot <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
         </nav>
       </article>
       <PublicFooter />

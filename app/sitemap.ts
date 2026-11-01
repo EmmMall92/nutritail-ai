@@ -7,6 +7,7 @@ const publicRoutes = [
     path: "/",
     changeFrequency: "weekly",
     priority: 1,
+    lastModified: "2026-11-01",
   },
   {
     path: "/how-it-works",
@@ -17,26 +18,31 @@ const publicRoutes = [
     path: "/guides",
     changeFrequency: "monthly",
     priority: 0.7,
+    lastModified: "2026-11-01",
   },
   {
     path: "/guides/choosing-dog-food",
     changeFrequency: "monthly",
     priority: 0.7,
+    lastModified: "2026-11-01",
   },
   {
     path: "/guides/dog-food-portion",
     changeFrequency: "monthly",
     priority: 0.7,
+    lastModified: "2026-11-01",
   },
   {
     path: "/guides/choosing-cat-food",
     changeFrequency: "monthly",
     priority: 0.7,
+    lastModified: "2026-11-01",
   },
   {
     path: "/guides/cat-food-portion",
     changeFrequency: "monthly",
     priority: 0.7,
+    lastModified: "2026-11-01",
   },
   {
     path: "/about",
@@ -76,5 +82,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${brand.domain}${route.path}`,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
+    ...("lastModified" in route ? { lastModified: route.lastModified } : {}),
   }));
 }

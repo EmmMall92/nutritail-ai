@@ -9,6 +9,7 @@ function read(path: string) {
 }
 
 const metadataHelper = read("lib/seo/metadata.ts");
+const guideStructuredData = read("lib/seo/guideStructuredData.ts");
 const rootLayout = read("app/layout.tsx");
 const homePage = read("app/page.tsx");
 const sitemap = read("app/sitemap.ts");
@@ -33,6 +34,20 @@ for (const marker of [
   assert(metadataHelper.includes(marker), `SEO metadata helper is missing: ${marker}`);
 }
 
+for (const marker of [
+  '"@type": "Article"',
+  '"@type": "BreadcrumbList"',
+  '"@type": "Organization"',
+  'inLanguage: "el-GR"',
+  "datePublished",
+  "dateModified",
+]) {
+  assert(
+    guideStructuredData.includes(marker),
+    `Guide structured data is missing: ${marker}`
+  );
+}
+
 assert(
   rootLayout.includes("NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION"),
   "Root metadata must support Google Search Console verification."
@@ -52,11 +67,27 @@ for (const path of [
   "app/guides/choosing-cat-food/page.tsx",
   "app/guides/cat-food-portion/page.tsx",
 ]) {
+  const guide = read(path);
   assert(
-    read(path).includes("createPublicMetadata"),
+    guide.includes("createPublicMetadata"),
     `${path} must use shared public SEO metadata.`
   );
+
+  if (path.startsWith("app/guides/") && path !== "app/guides/page.tsx") {
+    assert(
+      guide.includes("createGuideStructuredData") &&
+        guide.includes('type="application/ld+json"'),
+      `${path} must emit Article and BreadcrumbList structured data.`
+    );
+  }
 }
+
+assert(
+  homePage.includes("Τροφή και μερίδα για σκύλο ή γάτα") &&
+    !rootLayout.toLowerCase().includes("create next app") &&
+    !homePage.toLowerCase().includes("create next app"),
+  "Homepage metadata must describe the live product and exclude starter metadata."
+);
 
 for (const marker of [
   '"@type": "Organization"',
@@ -75,6 +106,10 @@ assert(
 for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }
+assert(
+  sitemap.includes('lastModified: "2026-11-01"'),
+  "Significantly updated public pages must expose an accurate fixed lastModified date."
+);
 assert(
   publicHeader.includes('href: "/guides"') &&
     publicFooter.includes('href: "/guides"') &&
@@ -100,7 +135,21 @@ for (const path of [
       guide.includes("κτηνίατρο") && guide.includes("προτεινόμενος"),
     `${path} must cite primary sources and keep examples non-prescriptive.`
   );
+  assert(
+    guide.includes('href="/account/food-compare"') &&
+      guide.includes('href="/register?next=/account/chatbot"'),
+    `${path} must connect readers to food comparison and the chatbot flow.`
+  );
 }
+assert(
+  read("app/guides/dog-food-portion/page.tsx").includes(
+    "Πόση τροφή χρειάζεται ένα κουτάβι;"
+  ) &&
+    read("app/guides/cat-food-portion/page.tsx").includes(
+      "Πόση τροφή χρειάζεται ένα γατάκι;"
+    ),
+  "Existing portion guides must answer puppy and kitten demand without duplicate pages."
+);
 const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
 const choosingCatFoodGuide = read("app/guides/choosing-cat-food/page.tsx");
 const guidesHub = read("app/guides/page.tsx");
@@ -126,6 +175,13 @@ assert(
     guidesHub.includes('href: "/guides/choosing-cat-food"'),
   "Cat food selection guide must be sourced, bounded, and linked to the portion guide."
 );
+for (const guide of [choosingDogFoodGuide, choosingCatFoodGuide]) {
+  assert(
+    guide.includes('href="/account/food-compare"') &&
+      guide.includes('href="/register?next=/account/chatbot"'),
+    "Food selection guides must connect readers to comparison and chatbot flows."
+  );
+}
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),
   "Sitemap must not claim that every page changed at deployment time."

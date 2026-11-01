@@ -2,18 +2,34 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PublicFooter } from "@/components/PublicFooter";
 import { PublicHeader } from "@/components/PublicHeader";
+import { createGuideStructuredData } from "@/lib/seo/guideStructuredData";
 import { createPublicMetadata } from "@/lib/seo/metadata";
 
+const guideTitle = "Πόση τροφή χρειάζεται ο σκύλος ή το κουτάβι μου;";
+const guideDescription =
+  "Πρακτικός οδηγός για την ημερήσια ποσότητα τροφής για σκύλο ή κουτάβι: ετικέτα, θερμίδες, γραμμάρια, λιχουδιές και έλεγχος βάρους.";
+
 export const metadata = createPublicMetadata({
-  title: "Πόση τροφή χρειάζεται ο σκύλος μου;",
-  description:
-    "Μάθε πώς να ξεκινήσεις από την ετικέτα της τροφής, να υπολογίσεις ενδεικτικά γραμμάρια από θερμίδες και να παρακολουθείς το βάρος του σκύλου σου.",
+  title: guideTitle,
+  description: guideDescription,
   path: "/guides/dog-food-portion",
+});
+
+const structuredData = createGuideStructuredData({
+  title: guideTitle,
+  description: guideDescription,
+  path: "/guides/dog-food-portion",
+  datePublished: "2026-09-14",
+  dateModified: "2026-11-01",
 });
 
 export default function DogFoodPortionGuide() {
   return (
     <main className="min-h-screen bg-[#fbfcfa] text-[#14221b]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <PublicHeader />
       <article className="nt-container max-w-4xl py-10 sm:py-16">
         <Link href="/guides" className="nt-focus rounded text-sm font-bold text-[#17663f] hover:underline">
@@ -22,12 +38,18 @@ export default function DogFoodPortionGuide() {
         <header className="mt-7 border-b border-[#dce5df] pb-9">
           <p className="nt-eyebrow">Μερίδα σκύλου</p>
           <h1 className="mt-3 text-3xl font-black leading-tight sm:text-5xl">
-            Πόση τροφή χρειάζεται ο σκύλος μου;
+            Πόση τροφή χρειάζεται ο σκύλος ή το κουτάβι μου;
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#42534a]">
             Δεν υπάρχει μία ποσότητα σε γραμμάρια για όλους τους σκύλους. Η
             σωστή αφετηρία εξαρτάται από την τροφή, την ηλικία, τη δραστηριότητα
             και τη σωματική κατάσταση του συγκεκριμένου ζώου.
+          </p>
+          <p className="mt-5 max-w-3xl border-l-4 border-[#1f7a4d] bg-[#f1f7f3] px-5 py-4 text-sm font-semibold leading-7 text-[#283a30]">
+            Σύντομη απάντηση: ξεκίνα από τον ημερήσιο πίνακα της συγκεκριμένης
+            πλήρους τροφής και ζύγισε την ποσότητα. Για κουτάβι, χρησιμοποίησε
+            τον πίνακα ανάπτυξης για την ηλικία, το τωρινό βάρος και το
+            αναμενόμενο ενήλικο μέγεθος, όχι τον πίνακα ενήλικου σκύλου.
           </p>
         </header>
 
@@ -47,9 +69,30 @@ export default function DogFoodPortionGuide() {
             </p>
           </section>
 
+          <section aria-labelledby="puppy-portion">
+            <h2 id="puppy-portion" className="text-2xl font-black text-[#14221b]">
+              2. Πόση τροφή χρειάζεται ένα κουτάβι;
+            </h2>
+            <p className="mt-4">
+              Δεν υπάρχει μία ασφαλής ποσότητα σε γραμμάρια ανά κιλό για όλα
+              τα κουτάβια. Διάλεξε πλήρη τροφή ανάπτυξης κατάλληλη για το
+              αναμενόμενο ενήλικο μέγεθος και βρες στη συσκευασία τη γραμμή
+              που αντιστοιχεί στην ηλικία και στο τωρινό βάρος. Οι ανάγκες
+              αλλάζουν γρήγορα όσο μεγαλώνει, γι&apos; αυτό ζύγιζε το κουτάβι
+              τακτικά και ανανέωνε την αφετηρία του πίνακα.
+            </p>
+            <p className="mt-4">
+              Η FEDIAF χρησιμοποιεί την ηλικία, το πραγματικό βάρος και το
+              αναμενόμενο βάρος ενηλικίωσης στις εκτιμήσεις ανάπτυξης. Ειδικά
+              στα μεγαλόσωμα κουτάβια, απόφυγε την ελεύθερη πρόσβαση σε τροφή:
+              η ελεγχόμενη μερίδα και η παρακολούθηση της σωματικής κατάστασης
+              βοηθούν να αποφεύγεται υπερβολικά γρήγορη ανάπτυξη.
+            </p>
+          </section>
+
           <section aria-labelledby="dog-math">
             <h2 id="dog-math" className="text-2xl font-black text-[#14221b]">
-              2. Μετάτρεψε τις θερμίδες σε γραμμάρια
+              3. Μετάτρεψε τις θερμίδες σε γραμμάρια
             </h2>
             <p className="mt-4">
               Αν έχεις ήδη έναν κατάλληλο ημερήσιο στόχο θερμίδων για τον σκύλο
@@ -76,7 +119,7 @@ export default function DogFoodPortionGuide() {
 
           <section aria-labelledby="dog-follow-up">
             <h2 id="dog-follow-up" className="text-2xl font-black text-[#14221b]">
-              3. Δες αν η αφετηρία λειτουργεί
+              4. Δες αν η αφετηρία λειτουργεί
             </h2>
             <p className="mt-4">
               Κατέγραψε τι τρώει συνολικά, συμπεριλαμβανομένων των λιχουδιών,
@@ -104,20 +147,31 @@ export default function DogFoodPortionGuide() {
           <h2 id="dog-sources" className="text-lg font-black text-[#14221b]">Πηγές και όρια</h2>
           <p className="mt-3">
             Ενημερωτικό περιεχόμενο για υγιή ζώα, όχι διάγνωση ή εξατομικευμένη
-            διατροφική οδηγία. Βασίζεται στις οδηγίες της FEDIAF για την
-            <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://europeanpetfood.org/pet-food-facts/fact-sheets/nutrition/understanding-pet-food-labels/">ανάγνωση της ετικέτας</a>
-            {" "}και της WSAVA για την
-            <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://wsava.org/Global-Guidelines/Global-Nutrition-Guidelines/">αξιολόγηση διατροφής και σωματικής κατάστασης</a>.
+            διατροφική οδηγία. Οι αρχές για ανάπτυξη και ενεργειακές ανάγκες
+            προέρχονται από τις
+            <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://europeanpetfood.org/self-regulation/nutritional-guidelines/">διατροφικές οδηγίες FEDIAF 2025</a>.
+            {" "}Η μετατροπή θερμίδων σε ποσότητα, η χρήση της ετικέτας ως
+            αφετηρίας και ο έλεγχος σωματικής κατάστασης τεκμηριώνονται στις
+            <a className="nt-focus ml-1 rounded font-semibold text-[#17663f] underline" href="https://wsava.org/wp-content/uploads/2020/01/Frequently-Asked-Questions-and-Myths.pdf">ερωτήσεις διατροφής της WSAVA</a>.
           </p>
         </section>
 
-        <nav aria-label="Σχετικοί σύνδεσμοι" className="flex flex-col gap-4 border-t border-[#dce5df] py-8 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/guides/cat-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
-            Δες και τον οδηγό για γάτες
-          </Link>
-          <Link href="/register" className="nt-button nt-button-primary nt-focus inline-flex gap-2">
-            Ξεκίνα δωρεάν ανάλυση <ArrowRight size={17} aria-hidden="true" />
-          </Link>
+        <nav aria-label="Επόμενα βήματα" className="border-t border-[#dce5df] py-8">
+          <h2 className="text-lg font-black">Επόμενα βήματα</h2>
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link href="/guides/choosing-dog-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Πώς να επιλέξεις τροφή σκύλου
+            </Link>
+            <Link href="/guides/cat-food-portion" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Οδηγός μερίδας γάτας
+            </Link>
+            <Link href="/account/food-compare" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Σύγκρινε τροφές
+            </Link>
+            <Link href="/register?next=/account/chatbot" className="nt-button nt-button-primary nt-focus inline-flex gap-2 sm:ml-auto">
+              Ρώτησε το chatbot <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
         </nav>
       </article>
       <PublicFooter />
