@@ -1,4 +1,5 @@
 import { termsEnglishTranslations } from "@/lib/i18n/termsTranslations";
+import { speciesFoodEnglishTranslations } from "@/lib/i18n/speciesFoodTranslations";
 
 export const publicEnglishTranslations: Record<string, string> = {
   "Κύρια πλοήγηση": "Main navigation",
@@ -880,5 +881,6 @@ export const publicEnglishTranslations: Record<string, string> = {
   "Ελληνική Αρχή Προστασίας Δεδομένων":
     "Hellenic Data Protection Authority",
   "Πίσω στην αρχική": "Back to home",
+  ...speciesFoodEnglishTranslations,
   ...termsEnglishTranslations,
 };

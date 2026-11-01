@@ -14,6 +14,7 @@ const localizedPages = [
   ["/ai-transparency", "app/ai-transparency/page.tsx"],
   ["/guides", "app/guides/page.tsx"],
   ["/guides/cat-food-portion", "app/guides/cat-food-portion/page.tsx"],
+  ["/guides/can-dogs-eat-cat-food", "app/guides/can-dogs-eat-cat-food/page.tsx"],
   ["/guides/changing-pet-food", "app/guides/changing-pet-food/page.tsx"],
   ["/guides/choosing-cat-food", "app/guides/choosing-cat-food/page.tsx"],
   ["/guides/choosing-dog-food", "app/guides/choosing-dog-food/page.tsx"],

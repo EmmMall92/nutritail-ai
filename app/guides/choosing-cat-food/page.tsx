@@ -169,6 +169,9 @@ export default async function ChoosingCatFoodGuide() {
             <Link href="/guides/changing-pet-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Άλλαξε τροφή σταδιακά
             </Link>
+            <Link href="/guides/can-dogs-eat-cat-food" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
+              Γιατί δεν δίνουμε σκυλοτροφή στη γάτα
+            </Link>
             <Link href="/account/food-compare" className="nt-focus rounded font-bold text-[#17663f] hover:underline">
               Σύγκρινε τροφές
             </Link>

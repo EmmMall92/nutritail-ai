@@ -66,6 +66,7 @@ for (const path of [
   "app/terms/page.tsx",
   "app/ai-transparency/page.tsx",
   "app/guides/page.tsx",
+  "app/guides/can-dogs-eat-cat-food/page.tsx",
   "app/guides/choosing-dog-food/page.tsx",
   "app/guides/dog-food-portion/page.tsx",
   "app/guides/choosing-cat-food/page.tsx",
@@ -116,7 +117,7 @@ for (const marker of [
 ]) {
   assert(sitemap.includes(marker), `Localized sitemap is missing: ${marker}`);
 }
-for (const path of ["/guides", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion", "/guides/changing-pet-food"]) {
+for (const path of ["/guides", "/guides/can-dogs-eat-cat-food", "/guides/choosing-dog-food", "/guides/dog-food-portion", "/guides/choosing-cat-food", "/guides/cat-food-portion", "/guides/changing-pet-food"]) {
   assert(sitemap.includes(`path: "${path}"`), `Sitemap must include ${path}.`);
 }
 assert(
@@ -203,6 +204,7 @@ assert(
 const choosingDogFoodGuide = read("app/guides/choosing-dog-food/page.tsx");
 const choosingCatFoodGuide = read("app/guides/choosing-cat-food/page.tsx");
 const changingPetFoodGuide = read("app/guides/changing-pet-food/page.tsx");
+const speciesFoodGuide = read("app/guides/can-dogs-eat-cat-food/page.tsx");
 const guidesHub = read("app/guides/page.tsx");
 assert(
   choosingDogFoodGuide.includes('path: "/guides/choosing-dog-food"') &&
@@ -249,6 +251,21 @@ assert(
     guidesHub.includes('href: "/guides/changing-pet-food"') &&
     homePage.includes('href="/guides/changing-pet-food"'),
   "Pet food transition guide must be sourced, bounded, and discoverable."
+);
+assert(
+  speciesFoodGuide.includes('path: "/guides/can-dogs-eat-cat-food"') &&
+    speciesFoodGuide.includes("Μπορεί ο σκύλος να φάει γατοτροφή") &&
+    speciesFoodGuide.includes("europeanpetfood.org") &&
+    speciesFoodGuide.includes("aafco.org") &&
+    speciesFoodGuide.includes("msdvetmanual.com") &&
+    speciesFoodGuide.includes("vcahospitals.com") &&
+    speciesFoodGuide.includes("κτηνίατρο") &&
+    speciesFoodGuide.includes('href="/account/food-compare"') &&
+    speciesFoodGuide.includes('href="/register?next=/account/chatbot"') &&
+    choosingDogFoodGuide.includes('href="/guides/can-dogs-eat-cat-food"') &&
+    choosingCatFoodGuide.includes('href="/guides/can-dogs-eat-cat-food"') &&
+    guidesHub.includes('href: "/guides/can-dogs-eat-cat-food"'),
+  "Species-specific food guide must be sourced, bounded, and discoverable."
 );
 assert(
   !sitemap.includes("lastModified: now") && !sitemap.includes("new Date()"),
