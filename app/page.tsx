@@ -130,12 +130,12 @@ export default function HomePage() {
 
       <section className="relative isolate min-h-[620px] overflow-hidden bg-[#123d2b] sm:min-h-[680px] lg:min-h-[710px]">
         <Image
-          src="/nutritail-hero.png"
-          alt="Ένας σκύλος και μία γάτα δίπλα στα μπολ της τροφής τους"
+          src="/nutritail-hero-v3.png"
+          alt="Σκίτσο ενός σκύλου και μιας γάτας δίπλα στα μπολ της τροφής τους"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[67%_center] sm:object-[62%_center] lg:object-center"
+          className="object-cover object-[82%_center] sm:object-[64%_center] lg:object-center"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,31,22,0.96)_0%,rgba(10,31,22,0.82)_38%,rgba(10,31,22,0.20)_70%,rgba(10,31,22,0.04)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,31,22,0.52)_0%,transparent_45%)] lg:hidden" />
